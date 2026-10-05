@@ -1,0 +1,111 @@
+project:
+  pre-render:
+  - _extensions/Afonenko-Course-Tools/course-core/entrypoints/pre.ts
+  post-render:
+  - _extensions/Afonenko-Course-Tools/course-core/entrypoints/post.ts
+  - _extensions/Afonenko-Course-Tools/reference-catalog/entrypoints/post.ts
+  - ../_extensions/Afonenko-Course-Tools/course-site/entrypoints/collect.ts
+  type: book
+  output-dir: _output
+  resources:
+  - '!**/projects/**'
+  - '!**/_control.qmd'
+  - '!_generated/**'
+  - '!tools/**'
+  - '!docs/**'
+  - '!_extensions/**'
+  - '!**/_*.qmd'
+  - '!_freeze/**'
+  - '!.quarto/**'
+book:
+  title: Теория Java
+  subtitle: Язык, инструменты и разработка приложений
+  search: true
+  page-navigation: true
+  sidebar:
+    collapse-level: 1
+    tools:
+    - icon: house
+      href: ../index.html#sec-portal
+      text: Навигация курса
+  chapters:
+  - index.qmd
+  - part: Основы языка и платформы Java (Core Java)
+    chapters:
+    - java/platform.qmd
+    - java/runtime/execution.qmd
+    - java/basics.qmd
+    - java/types/numbers.qmd
+    - java/references.qmd
+    - java/types/arrays.qmd
+    - java/types/text.qmd
+    - java/runtime/memory.qmd
+    - java/classes.qmd
+    - java/inheritance.qmd
+    - java/interfaces.qmd
+    - java/types/contracts.qmd
+    - java/generics.qmd
+    - java/lambdas.qmd
+    - java/exceptions.qmd
+  - part: Коллекции, ввод-вывод и представление данных
+    chapters:
+    - data/collections.qmd
+    - data/io.qmd
+    - data/formats.qmd
+  - part: Инструменты и процесс разработки
+    chapters:
+    - development/git/basics.qmd
+    - development/git/branches.qmd
+    - development/build.qmd
+    - development/testing.qmd
+  - part: Объектно ориентированное проектирование
+    chapters:
+    - design/principles.qmd
+    - design/patterns/creation.qmd
+    - design/patterns/structure.qmd
+    - design/patterns/behavior.qmd
+    - design/events.qmd
+  - part: Многопоточное и асинхронное программирование
+    chapters:
+    - concurrency/threads.qmd
+    - concurrency/synchronization.qmd
+    - concurrency/tasks.qmd
+  - part: Сетевое программирование, веб и базы данных
+    chapters:
+    - web/http.qmd
+    - web/servlets.qmd
+    - web/presentation.qmd
+    - persistence/database.qmd
+  - part: Архитектура Java-приложений
+    chapters:
+    - architecture/modules.qmd
+    - architecture/dependencies.qmd
+    - architecture/frameworks.qmd
+  - part: Качество, безопасность и разработка приложения
+    chapters:
+    - quality/diagnostics.qmd
+    - quality/security.qmd
+    - quality/reliability.qmd
+    - integration/application.qmd
+lang: ru
+number-sections: false
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+profile:
+  default: student
+  group:
+  - - student
+    - full
+course:
+  id: java-book
+filters:
+- course-core
+- course-presentation
+- reference-catalog
+reference-catalog:
+  namespace: theory
+course-presentation:
+  mode: study

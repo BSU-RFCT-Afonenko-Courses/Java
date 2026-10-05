@@ -1,0 +1,80 @@
+project:
+  type: book
+  output-dir: _output
+  resources:
+  - ./assets/**
+  - '!materials/**'
+  - '!**/_*.qmd'
+  - '!_generated/**'
+  - '!_freeze/**'
+  - '!.quarto/**'
+  - '!_extensions/**'
+  pre-render:
+  - _extensions/Afonenko-Course-Tools/course-core/entrypoints/pre.ts
+  post-render:
+  - _extensions/Afonenko-Course-Tools/course-core/entrypoints/post.ts
+  - _extensions/Afonenko-Course-Tools/reference-catalog/entrypoints/post.ts
+  - ../_extensions/Afonenko-Course-Tools/course-site/entrypoints/collect.ts
+profile:
+  default: student
+  group:
+  - - student
+    - full
+course:
+  id: java-handbook
+filters:
+- course-core
+- course-presentation
+- reference-catalog
+book:
+  sidebar:
+    tools:
+    - icon: house
+      href: ../index.html#sec-portal
+      text: Навигация курса
+  title: Справочник Java
+  chapters:
+  - index.qmd
+  appendices:
+  - part: Стандартная библиотека
+    chapters:
+    - appendices/standard-library/numbers.qmd
+    - appendices/standard-library/text.qmd
+    - appendices/standard-library/collections.qmd
+    - appendices/standard-library/streams.qmd
+    - appendices/standard-library/io.qmd
+    - appendices/standard-library/xml.qmd
+    - appendices/standard-library/time.qmd
+    - appendices/standard-library/concurrency/synchronization.qmd
+    - appendices/standard-library/concurrency/tasks.qmd
+    - appendices/standard-library/net/http-client.qmd
+    - appendices/standard-library/sql/jdbc.qmd
+  - part: Внешние библиотеки
+    chapters:
+    - appendices/external-libraries/jackson.qmd
+  - part: Дополнительные инструменты
+    chapters:
+    - appendices/tools/tomcat.qmd
+    - appendices/tools/h2.qmd
+    - appendices/tools/diagnostics.qmd
+    - appendices/tools/alternatives.qmd
+    - appendices/tools/verification.qmd
+    - appendices/gui/javafx.qmd
+    - appendices/tools/jdk.qmd
+  - part: Прикладные фреймворки
+    chapters:
+    - appendices/frameworks/spring.qmd
+  - part: Сравнительные материалы
+    chapters:
+    - appendices/platforms/comparison.qmd
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    number-sections: false
+lang: ru
+reference-catalog:
+  namespace: handbook
+course-presentation:
+  mode: study

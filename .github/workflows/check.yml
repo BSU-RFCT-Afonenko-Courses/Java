@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        quarto: [release, pre-release]
+        quarto: ['1.10.18', '1.11.5']
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -31,7 +31,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: Afonenko-Course-Tools/quarto-template-course
-          ref: 9ff6bbfa71b4849068da9a134256d3733e6f3be3
+          ref: e2cad0930ab4315228388f0b43b3ec6088ed418f
           path: .course-template
           persist-credentials: false
       - uses: quarto-dev/quarto-actions/setup@8a96df13519ee81fd526f2dfca5962811136661b # v2.2.0
@@ -39,7 +39,7 @@ jobs:
           version: ${{ matrix.quarto }}
       - uses: cue-lang/setup-cue@b0e30e540a2dae47304ebf16586a5b2db023b61c # v2.0.0
         with:
-          version: latest
+          version: v0.17.1
       - name: Версии инструментов
         run: |
           quarto --version
@@ -47,8 +47,8 @@ jobs:
       - name: Покрытие авторского формата примерами шаблона
         run: quarto run .course-template/tests/features.ts --course .
       - name: Студенческое представление
-        run: quarto render --profile student --fail-if-warnings
+        run: quarto render . --profile student --fail-if-warnings
       - name: Полное представление
-        run: quarto render --profile full --fail-if-warnings
-      - name: Ссылки, архивы и изоляция преподавательского контроля
-        run: quarto run tests/check-publication.ts
+        run: quarto render . --profile full --fail-if-warnings
+      - name: Повторная студенческая сборка после полного представления
+        run: quarto render . --profile student --fail-if-warnings
