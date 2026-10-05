@@ -27,6 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -46,9 +47,11 @@ jobs:
           cue version
       - name: Покрытие авторского формата примерами шаблона
         run: quarto run .course-template/tests/features.ts --course .
-      - name: Студенческое представление
-        run: quarto render --profile student --fail-if-warnings
+      - name: Сохранность предметных текстов и Java-проектов
+        run: quarto run tests/check-preservation.ts
       - name: Полное представление
         run: quarto render --profile full --fail-if-warnings
-      - name: Ссылки, архивы и изоляция преподавательского контроля
+      - name: Студенческое представление
+        run: quarto render --profile student --fail-if-warnings
+      - name: Пять частей, ссылки, архивы и изоляция контроля
         run: quarto run tests/check-publication.ts

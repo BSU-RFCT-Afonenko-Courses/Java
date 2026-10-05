@@ -1,0 +1,33 @@
+pagetitle: Практика по Java
+project:
+  type: default
+  render:
+  - index.qmd
+  output-dir: _output
+  resources:
+  - ./assets/**
+  - '!materials/**'
+  - '!**/_*.qmd'
+  pre-render:
+  - _extensions/Afonenko-Course-Tools/course-core/entrypoints/pre.ts
+  post-render:
+  - _extensions/Afonenko-Course-Tools/course-core/entrypoints/post.ts
+profile:
+  default: student
+  group:
+  - - student
+    - full
+course:
+  id: java-practice
+  validate: true
+filters:
+- course-core
+- course-presentation
+format:
+  revealjs:
+    theme: default
+    show-notes: false
+    slide-number: true
+    revealjs-plugins:
+    - course-navigation
+lang: ru
