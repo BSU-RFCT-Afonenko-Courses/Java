@@ -12,10 +12,17 @@ project:
   - ./assets/**
   - '!materials/**'
   - '!**/*.qmd'
+  - '!**/_*.qmd'
+  - '!_generated/**'
+  - '!_freeze/**'
+  - '!.quarto/**'
+  - '!_extensions/**'
   pre-render:
   - _extensions/Afonenko-Course-Tools/course-core/entrypoints/pre.ts
   post-render:
   - _extensions/Afonenko-Course-Tools/course-core/entrypoints/post.ts
+  - _extensions/Afonenko-Course-Tools/reference-catalog/entrypoints/post.ts
+  - ../_extensions/Afonenko-Course-Tools/course-site/entrypoints/collect.ts
 profile:
   default: student
   group:
@@ -23,10 +30,10 @@ profile:
     - full
 course:
   id: java-practice
-  validate: true
 filters:
 - course-core
 - course-presentation
+- reference-catalog
 format:
   revealjs:
     theme: default
@@ -35,3 +42,7 @@ format:
     revealjs-plugins:
     - course-navigation
 lang: ru
+reference-catalog:
+  namespace: practice
+course-presentation:
+  mode: study

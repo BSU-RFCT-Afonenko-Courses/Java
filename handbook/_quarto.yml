@@ -5,10 +5,16 @@ project:
   - ./assets/**
   - '!materials/**'
   - '!**/_*.qmd'
+  - '!_generated/**'
+  - '!_freeze/**'
+  - '!.quarto/**'
+  - '!_extensions/**'
   pre-render:
   - _extensions/Afonenko-Course-Tools/course-core/entrypoints/pre.ts
   post-render:
   - _extensions/Afonenko-Course-Tools/course-core/entrypoints/post.ts
+  - _extensions/Afonenko-Course-Tools/reference-catalog/entrypoints/post.ts
+  - ../_extensions/Afonenko-Course-Tools/course-site/entrypoints/collect.ts
 profile:
   default: student
   group:
@@ -16,10 +22,10 @@ profile:
     - full
 course:
   id: java-handbook
-  validate: true
 filters:
 - course-core
 - course-presentation
+- reference-catalog
 book:
   sidebar:
     tools:
@@ -68,3 +74,7 @@ format:
     toc-depth: 3
     number-sections: false
 lang: ru
+reference-catalog:
+  namespace: handbook
+course-presentation:
+  mode: study

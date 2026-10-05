@@ -1,8 +1,8 @@
 :::::: {.when-full}
 
-## Контроль освоения темы
+## Контроль освоения темы {#sec-essay-tcp-framing-control}
 
-:::: {#exr-essay-tcp-framing-experiment target="prairielearn" project="/io-networking/tcp-framing/projects/experiment"}
+:::: {#exr-essay-tcp-framing-experiment target="prairielearn" project="/io-networking/tcp-framing/projects/experiment" course-role="control" difficulty="intermediate"}
 ### Разбиение входа на короткие чтения
 
 Для выданного формата сообщения подобрать допустимое разбиение его байтов на порции, нарушающее работу реализации с единственным read. Представить байтовое содержимое и размеры возвращаемых порций. Проверяется поведение на управляемом InputStream, а не сетевые пакеты.
@@ -17,7 +17,7 @@
 :::
 ::::
 
-:::: {#exr-essay-tcp-framing-test-design target="prairielearn" project="/io-networking/tcp-framing/projects/test-design"}
+:::: {#exr-essay-tcp-framing-test-design target="prairielearn" project="/io-networking/tcp-framing/projects/test-design" course-role="control" difficulty="intermediate"}
 ### Проверка границ и обрыва сообщения
 
 Написать тест декодера с частичным заголовком, разделённым телом и двумя последовательными сообщениями. Отдельно проверить EOF до начала нового сообщения и EOF внутри сообщения в соответствии с контрактом. Размеры порций задаются тестовым источником.
@@ -32,7 +32,7 @@
 :::
 ::::
 
-:::: {#exr-essay-tcp-framing-implementation target="prairielearn" project="/io-networking/tcp-framing/projects/implementation"}
+:::: {#exr-essay-tcp-framing-implementation target="prairielearn" project="/io-networking/tcp-framing/projects/implementation" course-role="control" difficulty="intermediate"}
 ### Декодирование одного формата кадра
 
 Реализовать чтение сообщения заданного формата, учитывая частичные чтения. Проверять допустимую длину до выделения тела, сохранять границы следующих сообщений и выдавать предусмотренный результат при EOF. Порядок байтов заголовка фиксирован условием.

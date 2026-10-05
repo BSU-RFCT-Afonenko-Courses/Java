@@ -3,8 +3,10 @@ project:
   - _extensions/Afonenko-Course-Tools/course-core/entrypoints/pre.ts
   post-render:
   - _extensions/Afonenko-Course-Tools/course-core/entrypoints/post.ts
+  - _extensions/Afonenko-Course-Tools/reference-catalog/entrypoints/post.ts
+  - ../_extensions/Afonenko-Course-Tools/course-site/entrypoints/collect.ts
   type: book
-  output-dir: _output/student
+  output-dir: _output
   resources:
   - '!**/projects/**'
   - '!**/_control.qmd'
@@ -12,6 +14,9 @@ project:
   - '!tools/**'
   - '!docs/**'
   - '!_extensions/**'
+  - '!**/_*.qmd'
+  - '!_freeze/**'
+  - '!.quarto/**'
 book:
   title: Теория Java
   subtitle: Язык, инструменты и разработка приложений
@@ -96,8 +101,11 @@ profile:
     - full
 course:
   id: java-book
-  validate: true
-  view: student
 filters:
 - course-core
 - course-presentation
+- reference-catalog
+reference-catalog:
+  namespace: theory
+course-presentation:
+  mode: study

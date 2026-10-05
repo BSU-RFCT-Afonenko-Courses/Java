@@ -1,8 +1,8 @@
 :::::: {.when-full}
 
-## Контроль освоения темы
+## Контроль освоения темы {#sec-essay-constant-inlining-control}
 
-:::: {#exr-essay-constant-inlining-experiment target="prairielearn" project="/failures-boundaries/constant-inlining/projects/experiment"}
+:::: {#exr-essay-constant-inlining-experiment target="prairielearn" project="/failures-boundaries/constant-inlining/projects/experiment" course-role="control" difficulty="advanced"}
 ### Наблюдение результата частичного обновления
 
 На предоставленных двух версиях библиотеки сравнить константу public static final int VALUE и метод static int value(): в первой версии оба задают 1, во второй — 2. Собрать клиента с первой версией, заменить только библиотеку и указать оба наблюдаемых значения; сопоставить с полной пересборкой клиента.
@@ -17,7 +17,7 @@
 :::
 ::::
 
-:::: {#exr-essay-constant-inlining-test-design target="prairielearn" project="/failures-boundaries/constant-inlining/projects/test-design"}
+:::: {#exr-essay-constant-inlining-test-design target="prairielearn" project="/failures-boundaries/constant-inlining/projects/test-design" course-role="control" difficulty="advanced"}
 ### Проверка обновления параметра библиотеки
 
 Подготовить проверку матрицы из старого клиента со старой библиотекой, старого клиента с новой библиотекой и нового клиента с новой библиотекой. Контракт требует, чтобы значение config() соответствовало загруженной библиотеке; обнаружить встраивание public-константы в клиент.
@@ -32,7 +32,7 @@
 :::
 ::::
 
-:::: {#exr-essay-constant-inlining-implementation target="prairielearn" project="/failures-boundaries/constant-inlining/projects/implementation"}
+:::: {#exr-essay-constant-inlining-implementation target="prairielearn" project="/failures-boundaries/constant-inlining/projects/implementation" course-role="control" difficulty="advanced"}
 ### Проектирование обновляемого значения библиотеки
 
 В предоставленном интерфейсе конфигурации реализовать доступ через метод int value() и изменить клиент так, чтобы он получал значение при выполнении. После компиляции клиента обновление тела метода библиотеки должно изменять результат без пересборки клиента.

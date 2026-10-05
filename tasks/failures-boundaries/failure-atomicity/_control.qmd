@@ -1,8 +1,8 @@
 :::::: {.when-full}
 
-## Контроль освоения темы
+## Контроль освоения темы {#sec-essay-failure-atomicity-control}
 
-:::: {#exr-essay-failure-atomicity-experiment target="prairielearn" project="/failures-boundaries/failure-atomicity/projects/experiment"}
+:::: {#exr-essay-failure-atomicity-experiment target="prairielearn" project="/failures-boundaries/failure-atomicity/projects/experiment" course-role="control" difficulty="advanced"}
 ### Обнаружение частично изменённого состояния
 
 Для дефектного transfer, сначала уменьшающего баланс источника, затем проверяющего ограничение получателя, выбрать состояние и сумму, вызывающие отказ второй проверки. Указать оба баланса до и после, нарушенный инвариант и независимый успешный контроль.
@@ -17,7 +17,7 @@
 :::
 ::::
 
-:::: {#exr-essay-failure-atomicity-test-design target="prairielearn" project="/failures-boundaries/failure-atomicity/projects/test-design"}
+:::: {#exr-essay-failure-atomicity-test-design target="prairielearn" project="/failures-boundaries/failure-atomicity/projects/test-design" course-role="control" difficulty="advanced"}
 ### Проверка сильной гарантии состояния
 
 Написать тесты для transfer(Account from, Account to, int amount): при успехе перенести сумму, при недостатке средств или превышении лимита получателя выбросить IllegalArgumentException без изменения обоих счетов. Выявить преждевременное списание и частичное зачисление.
@@ -32,7 +32,7 @@
 :::
 ::::
 
-:::: {#exr-essay-failure-atomicity-implementation target="prairielearn" project="/failures-boundaries/failure-atomicity/projects/implementation"}
+:::: {#exr-essay-failure-atomicity-implementation target="prairielearn" project="/failures-boundaries/failure-atomicity/projects/implementation" course-role="control" difficulty="advanced"}
 ### Реализация составного переноса без частичных изменений
 
 Реализовать transfer(Account from, Account to, int amount). До изменения проверить неотрицательность amount, достаточность from.balance и непревышение to.limit после зачисления; при нарушении выбросить IllegalArgumentException. При успехе изменить оба баланса согласованно.

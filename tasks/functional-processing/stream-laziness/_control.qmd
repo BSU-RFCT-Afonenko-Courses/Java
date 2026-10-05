@@ -1,8 +1,8 @@
 :::::: {.when-full}
 
-## Контроль освоения темы
+## Контроль освоения темы {#sec-essay-stream-laziness-control}
 
-:::: {#exr-essay-stream-laziness-experiment target="prairielearn" project="/functional-processing/stream-laziness/projects/experiment"}
+:::: {#exr-essay-stream-laziness-experiment target="prairielearn" project="/functional-processing/stream-laziness/projects/experiment" course-role="control" difficulty="intermediate"}
 ### Наблюдение необязательного промежуточного действия
 
 На закреплённом JDK сравнить stream().peek(recorder).count() для готового ArrayList и последовательный forEach(recorder). Указать размер входа, итог count и журналы вызовов; отдельно отметить, какой результат задан контрактом, а какие пропуски промежуточного действия наблюдаются на стенде.
@@ -17,7 +17,7 @@
 :::
 ::::
 
-:::: {#exr-essay-stream-laziness-test-design target="prairielearn" project="/functional-processing/stream-laziness/projects/test-design"}
+:::: {#exr-essay-stream-laziness-test-design target="prairielearn" project="/functional-processing/stream-laziness/projects/test-design" course-role="control" difficulty="intermediate"}
 ### Проверка обязательной регистрации элементов
 
 Написать тесты для long registerAll(`List<String>` input, `Consumer<String>` sink): метод передаёт каждый элемент в sink ровно один раз в исходном порядке и возвращает размер списка. Выявить peek(...).count() и раннее завершение после первого элемента.
@@ -32,7 +32,7 @@
 :::
 ::::
 
-:::: {#exr-essay-stream-laziness-implementation target="prairielearn" project="/functional-processing/stream-laziness/projects/implementation"}
+:::: {#exr-essay-stream-laziness-implementation target="prairielearn" project="/functional-processing/stream-laziness/projects/implementation" course-role="control" difficulty="intermediate"}
 ### Реализация полного обхода с обязательным действием
 
 Реализовать long registerAll(`List<String>` input, `Consumer<String>` sink), вызывающий sink для каждого элемента ровно один раз и в исходном порядке, включая повторы, после чего возвращающий число переданных элементов.

@@ -1,8 +1,8 @@
 :::::: {.when-full}
 
-## Контроль освоения темы
+## Контроль освоения темы {#sec-essay-thread-context-control}
 
-:::: {#exr-essay-thread-context-experiment target="prairielearn" project="/task-lifecycle/thread-context/projects/experiment"}
+:::: {#exr-essay-thread-context-experiment target="prairielearn" project="/task-lifecycle/thread-context/projects/experiment" course-role="control" difficulty="intermediate"}
 ### Утечка контекста между запросами
 
 Представить две последовательные операции на одном работнике, при которых отсутствие очистки ThreadLocal приводит к наблюдению чужого контекста. Зафиксировать значение до первой установки, после завершения первого запроса и во втором запросе. Стенд гарантирует повторное использование того же потока.
@@ -17,7 +17,7 @@
 :::
 ::::
 
-:::: {#exr-essay-thread-context-test-design target="prairielearn" project="/task-lifecycle/thread-context/projects/test-design"}
+:::: {#exr-essay-thread-context-test-design target="prairielearn" project="/task-lifecycle/thread-context/projects/test-design" course-role="control" difficulty="intermediate"}
 ### Проверка восстановления вложенного контекста
 
 Написать тест обёртки контекста для вложенных вызовов. Проверить видимость внутреннего значения, восстановление внешнего после возврата и после исключения, а затем отсутствие утечки в следующий запрос. Контракт различает отсутствие привязки и установленное значение.
@@ -32,7 +32,7 @@
 :::
 ::::
 
-:::: {#exr-essay-thread-context-implementation target="prairielearn" project="/task-lifecycle/thread-context/projects/implementation"}
+:::: {#exr-essay-thread-context-implementation target="prairielearn" project="/task-lifecycle/thread-context/projects/implementation" course-role="control" difficulty="intermediate"}
 ### Обёртка ограниченной области контекста
 
 Реализовать выполнение действия с временным контекстом, сохраняя предыдущее состояние и восстанавливая его в finally. Для исходного отсутствия привязки выполнить предусмотренное удаление. Результат и исключение действия должны проходить через обёртку без изменения.

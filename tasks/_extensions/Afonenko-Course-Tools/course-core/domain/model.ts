@@ -1,17 +1,19 @@
 export type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
 export interface Body { "pandoc-api-version": number[]; meta: Record<string, Json>; blocks: Json[] }
 export interface Exercise {
-  id: string; target: string; project: string;
+  id: string; target: string; authoredTarget?: string; project: string;
+  purpose: ExercisePurpose; difficulty: Difficulty; time?: number; workMode?: WorkMode;
+  sourceTopic: { id: string; owner: string; rootQmd: string };
   head: { kind: string; level: number; title: string };
   nested: number; unknownAttributes: string[];
   body: Body; gradingNotes?: Body[]; source: string; extensions: Record<string, Json>;
 }
 export interface Assessment {
-  id: string; kind: string; title: string; body: Body; items: string[];
+  id: string; kind: AssessmentKind; title: string; body: Body; items: string[];
   memberContainers: number; memberKinds: string[]; memberSizes: number[];
   source: string; extensions: Record<string, Json>;
 }
-import type { PedagogicalKind, Difficulty, WorkMode, Requirement, View } from "./vocabulary.ts";
+import type { AssessmentKind, ExercisePurpose, PedagogicalKind, Difficulty, WorkMode, Requirement, View } from "./vocabulary.ts";
 export type { PedagogicalKind } from "./vocabulary.ts";
 export interface PedagogicalMetadata {
   difficulty?: Difficulty; time?: number; workMode?: WorkMode; requirement?: Requirement;
@@ -32,6 +34,17 @@ export interface Fragment {
     elements: (Omit<PedagogicalElement, "body" | "source"> & { bodyJson: string })[];
     defaults?: PedagogicalMetadata;
   };
+}
+export interface DocumentResult extends Fragment {
+  scope: "document";
+  body?: { publicExercises: Fragment["exercises"]; publicAssessment?: Fragment["assessment"]; publicAnswers?: Record<string, {answerType: string; publicAnswerJson: string}> };
+  resources?: import("../infrastructure/resources.ts").ResourceFacts;
+  document: { source: string; format: string; output: string; profiles: string[] };
+}
+export interface ReleaseResult {
+  scope: "release";
+  documents: DocumentResult[];
+  model: Course;
 }
 export interface AdapterFragment { source: string; exercises: { id: string; payload: Json }[]; assessment?: Json }
 export interface Contract { name: string; rules: string }

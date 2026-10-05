@@ -5,8 +5,10 @@ project:
   post-render:
   - _extensions/Afonenko-Course-Tools/course-core/entrypoints/post.ts
   - _extensions/Afonenko-Course-Tools/project-download/entrypoints/post.ts
+  - _extensions/Afonenko-Course-Tools/reference-catalog/entrypoints/post.ts
+  - ../_extensions/Afonenko-Course-Tools/course-site/entrypoints/collect.ts
   type: book
-  output-dir: _output/student
+  output-dir: _output
   resources:
   - '!**/projects/**'
   - '!**/_control.qmd'
@@ -14,6 +16,9 @@ project:
   - '!tools/**'
   - '!docs/**'
   - '!_extensions/**'
+  - '!**/_*.qmd'
+  - '!_freeze/**'
+  - '!.quarto/**'
 profile:
   default: student
   group:
@@ -23,8 +28,6 @@ course:
   adapters:
   - prairielearn
   id: java-essays
-  validate: true
-  view: student
 course-pedagogy:
   document-defaults: true
 work-mode: individual
@@ -36,10 +39,11 @@ prairielearn:
     assignment:
       mode: assessment-id
 filters:
-- project-download
 - course-core
-- course-prairielearn
 - course-presentation
+- project-download
+- course-prairielearn
+- reference-catalog
 book:
   title: Задания и исследования по Java
   chapters:
@@ -149,17 +153,33 @@ project-download:
       path: failures-boundaries/charset-decoding/projects/experiment/student
       profiles:
       - full
+      exclude:
+      - '**/.*'
     exr-essay-charset-decoding-implementation:
       path: failures-boundaries/charset-decoding/projects/implementation/student
       profiles:
       - full
+      exclude:
+      - '**/.*'
     exr-essay-charset-decoding-test-design:
       path: failures-boundaries/charset-decoding/projects/test-design/student
       profiles:
       - full
+      exclude:
+      - '**/.*'
     exr-essay-unicode-demonstration-experiment:
       path: text-arrays/unicode-demonstration/projects/experiment/student
+      exclude:
+      - '**/.*'
     exr-essay-unicode-demonstration-implementation:
       path: text-arrays/unicode-demonstration/projects/implementation/student
+      exclude:
+      - '**/.*'
     exr-essay-unicode-demonstration-test-design:
       path: text-arrays/unicode-demonstration/projects/test-design/student
+      exclude:
+      - '**/.*'
+reference-catalog:
+  namespace: tasks
+course-presentation:
+  mode: study

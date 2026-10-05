@@ -1,8 +1,8 @@
 :::::: {.when-full}
 
-## Контроль освоения темы
+## Контроль освоения темы {#sec-essay-timeouts-cancellation-control}
 
-:::: {#exr-essay-timeouts-cancellation-experiment target="prairielearn" project="/task-lifecycle/timeouts-cancellation/projects/experiment"}
+:::: {#exr-essay-timeouts-cancellation-experiment target="prairielearn" project="/task-lifecycle/timeouts-cancellation/projects/experiment" course-role="control" difficulty="intermediate"}
 ### Раздельное наблюдение отмены и работы
 
 На выданном стенде с вручную управляемой работой составить последовательность, в которой CompletableFuture отменена, но разрешённый эффект ещё выполняется. Зафиксировать состояние результата, событие эффекта и действительное завершение. Не использовать неограниченное вычисление или случайные задержки.
@@ -17,7 +17,7 @@
 :::
 ::::
 
-:::: {#exr-essay-timeouts-cancellation-test-design target="prairielearn" project="/task-lifecycle/timeouts-cancellation/projects/test-design"}
+:::: {#exr-essay-timeouts-cancellation-test-design target="prairielearn" project="/task-lifecycle/timeouts-cancellation/projects/test-design" course-role="control" difficulty="intermediate"}
 ### Проверка кооперативной остановки
 
 Разработать тест владельца операции, передающего отдельный сигнал отмены. Дождаться заданной контрольной точки, запросить отмену и проверить отсутствие запрещённого последующего эффекта после подтверждения завершения. Тест должен отдельно фиксировать состояние возвращённого результата.
@@ -32,7 +32,7 @@
 :::
 ::::
 
-:::: {#exr-essay-timeouts-cancellation-implementation target="prairielearn" project="/task-lifecycle/timeouts-cancellation/projects/implementation"}
+:::: {#exr-essay-timeouts-cancellation-implementation target="prairielearn" project="/task-lifecycle/timeouts-cancellation/projects/implementation" course-role="control" difficulty="intermediate"}
 ### Владелец отменяемой операции
 
 Реализовать управление предоставленной операцией: выдачу результата, передачу кооперативной отмены и отдельное ожидание завершения работы. Сохранить указанное поведение при отмене до старта и после успеха. Освобождение ресурса должно происходить независимо от состояния future.

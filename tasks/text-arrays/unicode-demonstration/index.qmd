@@ -14,7 +14,7 @@ categories:
 мероприятия PrairieLearn. Архивы возле заданий содержат только стартовые проекты
 и открытые проверки; авторские решения размещены рядом в исходном репозитории.
 
-:::: {#exr-essay-unicode-demonstration target="manual"}
+:::: {#exr-essay-unicode-demonstration target="manual" course-role="demonstration" difficulty="introductory"}
 ## Содержание исследования
 
 {{< include ../_prerequisites.qmd >}}
@@ -34,7 +34,7 @@ categories:
 
 :::::: {course-role="demonstration"}
 
-:::: {#exr-essay-unicode-prediction course-role="prediction"}
+:::: {#exm-essay-unicode-prediction course-role="prediction"}
 ### Прогноз перед разбором
 
 Для строки `"A\uD83D\uDE80B"` предскажите результаты `length()` и
@@ -42,7 +42,7 @@ categories:
 точек `[1, 2)`? Обоснуйте ответ до просмотра объяснения.
 ::::
 
-:::: {#sol-essay-unicode-prediction for="exr-essay-unicode-prediction"}
+:::: {#sol-essay-unicode-prediction for="exm-essay-unicode-prediction"}
 Строка `"A\uD83D\uDE80B"` содержит четыре кодовые единицы UTF-16 и три кодовые точки.
 Дополнительная кодовая точка U+1F680 занимает два значения `char`, поэтому позиция
 следующей кодовой точки не совпадает с её индексом в строке. Диапазону кодовых
@@ -54,14 +54,14 @@ categories:
 
 ::::::
 
-:::: {#exr-essay-unicode-self-check course-role="self-check"}
+:::: {#exm-essay-unicode-self-check course-role="self-check"}
 ### Проверка границы применимости
 
 Строка `"e\u0301"` выглядит как один символ. Обеспечивает ли диапазон по кодовым
 точкам сохранение такого символа целиком?
 ::::
 
-:::: {#sol-essay-unicode-self-check for="exr-essay-unicode-self-check"}
+:::: {#sol-essay-unicode-self-check for="exm-essay-unicode-self-check"}
 Строка `"e\u0301"` задаёт другую границу применимости: две кодовые точки могут
 образовывать один воспринимаемый символ. В заданиях ниже допустимо разделить
 такое сочетание, поскольку единицей диапазона является кодовая точка.

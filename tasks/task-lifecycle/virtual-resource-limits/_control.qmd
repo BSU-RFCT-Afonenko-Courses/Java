@@ -1,8 +1,8 @@
 :::::: {.when-full}
 
-## Контроль освоения темы
+## Контроль освоения темы {#sec-essay-virtual-resource-limits-control}
 
-:::: {#exr-essay-virtual-resource-limits-experiment target="prairielearn" project="/task-lifecycle/virtual-resource-limits/projects/experiment"}
+:::: {#exr-essay-virtual-resource-limits-experiment target="prairielearn" project="/task-lifecycle/virtual-resource-limits/projects/experiment" course-role="control" difficulty="intermediate"}
 ### Сценарий превышения ёмкости ресурса
 
 Для сервиса с указанным пределом одновременных обращений составить управляемый сценарий запуска виртуальных потоков, обнаруживающий отсутствие ограничителя. Использовать события входа и выхода ресурса, указать максимальное наблюдаемое число активных обращений. Готовность участников подтверждается до снятия удерживающего барьера.
@@ -17,7 +17,7 @@
 :::
 ::::
 
-:::: {#exr-essay-virtual-resource-limits-test-design target="prairielearn" project="/task-lifecycle/virtual-resource-limits/projects/test-design"}
+:::: {#exr-essay-virtual-resource-limits-test-design target="prairielearn" project="/task-lifecycle/virtual-resource-limits/projects/test-design" course-role="control" difficulty="intermediate"}
 ### Проверка возврата разрешений
 
 Написать тест ограничителя доступа, проверяющий ошибку внутри ресурса и отмену до получения разрешения. После каждого сценария запустить успешное обращение и проверить доступную ёмкость. Стенд предоставляет счётчик активных операций и управляемые точки отказа.
@@ -32,7 +32,7 @@
 :::
 ::::
 
-:::: {#exr-essay-virtual-resource-limits-implementation target="prairielearn" project="/task-lifecycle/virtual-resource-limits/projects/implementation"}
+:::: {#exr-essay-virtual-resource-limits-implementation target="prairielearn" project="/task-lifecycle/virtual-resource-limits/projects/implementation" course-role="control" difficulty="intermediate"}
 ### Ограничитель обращений к сервису
 
 Реализовать обёртку обращения к предоставленному ресурсу через Semaphore. Разрешение возвращается только после его успешного получения и независимо от исхода операции. Сохранить заданную политику прерывания и не допустить превышения объявленного числа активных обращений.

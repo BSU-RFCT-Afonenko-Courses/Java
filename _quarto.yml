@@ -11,17 +11,19 @@ project:
   - '!handbook/**'
   - '!docs/**'
   - '!_extensions/**'
-  - '!_publication/**'
-  - '!.project-publish/**'
   - '!_generated/**'
   - '!_site*/**'
-  pre-render: _extensions/Afonenko-Course-Tools/project-publish/entrypoints/pre.ts
-  post-render: _extensions/Afonenko-Course-Tools/project-publish/entrypoints/post.ts
+  - '!tools/**'
+  - '!providers.json'
+  - '!installed-packages.json'
+  - '!_freeze/**'
+  - '!.quarto/**'
+  pre-render:
+  - _extensions/Afonenko-Course-Tools/course-site/entrypoints/pre.ts
+  post-render:
+  - _extensions/Afonenko-Course-Tools/course-site/entrypoints/post.ts
   preview:
     watch-inputs: false
-    serve:
-      cmd: quarto run ../.project-publish/preview.ts --port {port} --host {host}
-      ready: Публикация предпросмотр готов
 format:
   html:
     theme: cosmo
@@ -31,6 +33,7 @@ website:
   title: Программирование на Java
   search: true
 filters:
+- course-core
 - course-presentation
 - reference-catalog
 reference-catalog:
@@ -122,27 +125,35 @@ reference-catalog:
     - sec-practice-boundaries
     - sec-practice-runtime
     - sec-practice-review
+    portal:
+    - sec-portal
+    - sec-course-plan
 profile:
   default: student
   group:
   - - student
     - full
-project-publish:
+course-site:
   projects:
-    theory:
-      path: theory
-      format: html
-    tasks:
-      path: tasks
-      format: html
-    lectures:
-      path: lectures
-      format: revealjs
-    practice:
-      path: practice
-      format: revealjs
-    handbook:
-      path: handbook
-      format: html
-  integrations:
-  - _extensions/Afonenko-Course-Tools/reference-catalog/entrypoints/publication.ts
+  - id: theory
+    path: theory
+    format: html
+    mount: theory
+  - id: tasks
+    path: tasks
+    format: html
+    mount: tasks
+  - id: lectures
+    path: lectures
+    format: revealjs
+    mount: lectures
+  - id: practice
+    path: practice
+    format: revealjs
+    mount: practice
+  - id: handbook
+    path: handbook
+    format: html
+    mount: handbook
+course:
+  id: java-portal
