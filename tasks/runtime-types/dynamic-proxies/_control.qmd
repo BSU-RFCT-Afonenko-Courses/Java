@@ -1,8 +1,6 @@
-:::::: {.when-full}
-
 ## Контроль освоения темы {#sec-essay-dynamic-proxies-control}
 
-:::: {#exr-essay-dynamic-proxies-experiment target="prairielearn" project="/runtime-types/dynamic-proxies/projects/experiment" course-role="control" difficulty="advanced"}
+:::: {#exr-essay-dynamic-proxies-experiment target="prairielearn" project="/runtime-types/dynamic-proxies/projects/experiment" course-role="control" difficulty="advanced" time="40" statement-visibility="restricted"}
 ### Изменение исключения при проксировании
 
 Для подготовленного интерфейса и целевого объекта выбрать вызов, на котором ошибочный InvocationHandler изменяет наблюдаемое исключение относительно прямого вызова. Представить цепочку причин в обоих случаях и определить лишнюю обёртку. Сигнатура интерфейса и допустимые отказы заданы.
@@ -17,7 +15,7 @@
 :::
 ::::
 
-:::: {#exr-essay-dynamic-proxies-test-design target="prairielearn" project="/runtime-types/dynamic-proxies/projects/test-design" course-role="control" difficulty="advanced"}
+:::: {#exr-essay-dynamic-proxies-test-design target="prairielearn" project="/runtime-types/dynamic-proxies/projects/test-design" course-role="control" difficulty="advanced" time="60" statement-visibility="restricted"}
 ### Проверка результата и причин отказа
 
 Написать тест прокси для успешного значения, непроверяемого исключения и объявленного проверяемого исключения. Сопоставить наблюдаемое поведение с прямым вызовом. Тест должен обнаруживать передачу InvocationTargetException вместо исходной допустимой причины.
@@ -32,7 +30,7 @@
 :::
 ::::
 
-:::: {#exr-essay-dynamic-proxies-implementation target="prairielearn" project="/runtime-types/dynamic-proxies/projects/implementation" course-role="control" difficulty="advanced"}
+:::: {#exr-essay-dynamic-proxies-implementation target="prairielearn" project="/runtime-types/dynamic-proxies/projects/implementation" course-role="control" difficulty="advanced" time="70" statement-visibility="restricted"}
 ### Исправление отражённого делегирования
 
 Исправить InvocationHandler в предоставленной заготовке, чтобы отражённый вызов сохранял нормальный результат и допустимую причину отказа. Обработать InvocationTargetException согласно контракту интерфейса и не заменять причину универсальным исключением. Специальное поведение методов Object задаётся отдельно.
@@ -47,7 +45,7 @@
 :::
 ::::
 
-::: {.assessment-items}
+::: {.task-items}
 1. @exr-essay-dynamic-proxies-experiment
 2. @exr-essay-dynamic-proxies-test-design
 3. @exr-essay-dynamic-proxies-implementation
@@ -57,5 +55,3 @@
 
 - [Proxy: контракт динамического делегирования](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Proxy.html)
 - [Method: отражённый вызов и его исключения](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Method.html)
-
-::::::

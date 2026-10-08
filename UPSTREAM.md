@@ -1,14 +1,16 @@
 # Источники установленных расширений
 
-Курс согласован с [quarto-template-course](https://github.com/Afonenko-Course-Tools/quarto-template-course/tree/d3c92b96090658b9ab15a66f46a3fab83faa54e2), коммит `d3c92b96090658b9ab15a66f46a3fab83faa54e2`. Используются полные пакеты из текущих основных веток поставщиков на 5 октября 2026 года.
+Рекомендации сверены с документацией [template e36fd64](https://github.com/Afonenko-Course-Tools/quarto-template-course/tree/e36fd64cdc9fb8fb56238883248206c8856104f5). Template теперь является руководством и каталогом примеров; его учебные исходники не копируются в курс. Код, контракт и документация каждого установленного пакета берутся из одного immutable release.
 
-| Пакеты | Исходный репозиторий | Закреплённый коммит |
+| Пакеты | Выпуск владельца | Закреплённый коммит |
 |---|---|---|
-| `course-core`, `course-presentation`, `course-navigation` | [quarto-course](https://github.com/Afonenko-Course-Tools/quarto-course) | `6c292c61c628e67bf590211f9852c23a2fc2be01` |
-| `course-site` | [quarto-project-publish](https://github.com/Afonenko-Course-Tools/quarto-project-publish) | `be92f189f267a8bbc986c40254c685b4f33f9f0b` |
-| `reference-catalog` | [quarto-reference-catalog](https://github.com/Afonenko-Course-Tools/quarto-reference-catalog) | `84f653c8d4e3e74fdb1a62249af28250846721a4` |
-| `project-download` | [quarto-project-download](https://github.com/Afonenko-Course-Tools/quarto-project-download) | `f25475af13f42c1a32c3bbacb0d1feb205920df8` |
-| `course-prairielearn` | [quarto-course-prairielearn](https://github.com/Afonenko-Course-Tools/quarto-course-prairielearn) | `4287b5bb0d243239a10db99ab9b069dd2ee74e6a` |
+| Core, Presentation, Navigation | [quarto-course v4.0.1](https://github.com/Afonenko-Course-Tools/quarto-course/tree/v4.0.1) | `a9a439bd6e6498806d4d4943efd71232e70170be` |
+| Course Site | [Publisher v5.0.0](https://github.com/Afonenko-Course-Tools/quarto-project-publish/tree/v5.0.0) | `215309b5c41669e56a857a1bc3e4f7f2ce782c5f` |
+| Reference Catalog | [QRC v3.0.0](https://github.com/Afonenko-Course-Tools/quarto-reference-catalog/tree/v3.0.0) | `559583805a514ae8a244b6ea4cb5124867064024` |
+| Project Download | [Download v2.0.0](https://github.com/Afonenko-Course-Tools/quarto-project-download/tree/v2.0.0) | `ee5ae76255d265ad7c7f43a765bc061ffc8eec75` |
+| Course PrairieLearn | [PrairieLearn v3.0.1](https://github.com/Afonenko-Course-Tools/quarto-course-prairielearn/tree/v3.0.1) | `9f815582ad271d2c0d2335d644de119c6afdb3aa` |
+
+Patch доставки корневого `student/.gitignore` выпущен как v3.0.1 после [PR #10](https://github.com/Afonenko-Course-Tools/quarto-course-prairielearn/pull/10). Полный payload установлен через manifest и штатный installation interface; vendored implementation вручную не меняется.
 
 `providers.json` задаёт репозитории, коммиты и места установки. `installed-packages.json` содержит полный состав файлов, SHA256, размеры и режимы каждого установленного пакета. Манифесты нужны для воспроизводимого обновления; сборка работает непосредственно с установленными расширениями.
 

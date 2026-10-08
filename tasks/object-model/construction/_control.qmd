@@ -1,8 +1,6 @@
-:::::: {.when-full}
-
 ## Контроль освоения темы {#sec-essay-construction-control}
 
-:::: {#exr-essay-construction-experiment target="prairielearn" project="/object-model/construction/projects/experiment" course-role="control" difficulty="advanced"}
+:::: {#exr-essay-construction-experiment target="prairielearn" project="/object-model/construction/projects/experiment" course-role="control" difficulty="advanced" time="40" statement-visibility="restricted"}
 ### Наблюдение состояния в конструкторном вызове
 
 Для готовой пары Base и Derived, где конструктор Base вызывает переопределяемый report, восстановить журнал значений поля Derived.value: оно имеет инициализатор 7 и присваивание 9 в теле конструктора после super. Сопоставить вызов report из Base и после завершения new Derived().
@@ -17,7 +15,7 @@
 :::
 ::::
 
-:::: {#exr-essay-construction-test-design target="prairielearn" project="/object-model/construction/projects/test-design" course-role="control" difficulty="advanced"}
+:::: {#exr-essay-construction-test-design target="prairielearn" project="/object-model/construction/projects/test-design" course-role="control" difficulty="advanced" time="60" statement-visibility="restricted"}
 ### Проверка готовности объекта перед callback
 
 Написать тесты для фабрики Widget.create(int size, Observer observer), обязанной уведомить observer ровно один раз после установки size и состояния ready. Выявить преждевременный callback и его повторный вызов.
@@ -32,7 +30,7 @@
 :::
 ::::
 
-:::: {#exr-essay-construction-implementation target="prairielearn" project="/object-model/construction/projects/implementation" course-role="control" difficulty="advanced"}
+:::: {#exr-essay-construction-implementation target="prairielearn" project="/object-model/construction/projects/implementation" course-role="control" difficulty="advanced" time="70" statement-visibility="restricted"}
 ### Разделение конструирования и уведомления
 
 Исправить фабрику Widget.create(int size, Observer observer): полностью создать Widget, установить его допустимое состояние и затем выполнить единственный callback. Для size &lt;= 0 выбросить IllegalArgumentException до создания наблюдаемого объекта.
@@ -47,7 +45,7 @@
 :::
 ::::
 
-::: {.assessment-items}
+::: {.task-items}
 1. @exr-essay-construction-experiment
 2. @exr-essay-construction-test-design
 3. @exr-essay-construction-implementation
@@ -57,5 +55,3 @@
 
 - [JLS §12: выполнение, создание и инициализация классов](https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html)
 - [Oracle Java 25 Language Updates: Flexible Constructor Bodies](https://docs.oracle.com/en/java/javase/25/language/flexible-constructor-bodies.html)
-
-::::::

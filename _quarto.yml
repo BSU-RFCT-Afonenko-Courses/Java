@@ -18,6 +18,17 @@ project:
   - '!installed-packages.json'
   - '!_freeze/**'
   - '!.quarto/**'
+  - '!**/*.qmd'
+  - '!**/*.rmd'
+  - '!**/*.ipynb'
+  - '!**/_output/**'
+  - '!**/_site*/**'
+  - '!**/_generated/**'
+  - '!**/projects/**'
+  - '!**/.superpowers/**'
+  - '!prairielearn/**'
+  - '!AGENTS.md'
+  - '!UPSTREAM.md'
   pre-render:
   - _extensions/Afonenko-Course-Tools/course-site/entrypoints/pre.ts
   post-render:
@@ -133,27 +144,12 @@ profile:
   group:
   - - student
     - full
-course-site:
-  projects:
-  - id: theory
-    path: theory
-    format: html
-    mount: theory
-  - id: tasks
-    path: tasks
-    format: html
-    mount: tasks
-  - id: lectures
-    path: lectures
-    format: revealjs
-    mount: lectures
-  - id: practice
-    path: practice
-    format: revealjs
-    mount: practice
-  - id: handbook
-    path: handbook
-    format: html
-    mount: handbook
+subprojects:
+- theory
+- tasks
+- lectures
+- practice
+- handbook
 course:
   id: java-portal
+fail-if-warnings: true

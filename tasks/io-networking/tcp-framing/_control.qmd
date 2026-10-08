@@ -1,8 +1,6 @@
-:::::: {.when-full}
-
 ## Контроль освоения темы {#sec-essay-tcp-framing-control}
 
-:::: {#exr-essay-tcp-framing-experiment target="prairielearn" project="/io-networking/tcp-framing/projects/experiment" course-role="control" difficulty="intermediate"}
+:::: {#exr-essay-tcp-framing-experiment target="prairielearn" project="/io-networking/tcp-framing/projects/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
 ### Разбиение входа на короткие чтения
 
 Для выданного формата сообщения подобрать допустимое разбиение его байтов на порции, нарушающее работу реализации с единственным read. Представить байтовое содержимое и размеры возвращаемых порций. Проверяется поведение на управляемом InputStream, а не сетевые пакеты.
@@ -17,7 +15,7 @@
 :::
 ::::
 
-:::: {#exr-essay-tcp-framing-test-design target="prairielearn" project="/io-networking/tcp-framing/projects/test-design" course-role="control" difficulty="intermediate"}
+:::: {#exr-essay-tcp-framing-test-design target="prairielearn" project="/io-networking/tcp-framing/projects/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
 ### Проверка границ и обрыва сообщения
 
 Написать тест декодера с частичным заголовком, разделённым телом и двумя последовательными сообщениями. Отдельно проверить EOF до начала нового сообщения и EOF внутри сообщения в соответствии с контрактом. Размеры порций задаются тестовым источником.
@@ -32,7 +30,7 @@
 :::
 ::::
 
-:::: {#exr-essay-tcp-framing-implementation target="prairielearn" project="/io-networking/tcp-framing/projects/implementation" course-role="control" difficulty="intermediate"}
+:::: {#exr-essay-tcp-framing-implementation target="prairielearn" project="/io-networking/tcp-framing/projects/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
 ### Декодирование одного формата кадра
 
 Реализовать чтение сообщения заданного формата, учитывая частичные чтения. Проверять допустимую длину до выделения тела, сохранять границы следующих сообщений и выдавать предусмотренный результат при EOF. Порядок байтов заголовка фиксирован условием.
@@ -47,7 +45,7 @@
 :::
 ::::
 
-::: {.assessment-items}
+::: {.task-items}
 1. @exr-essay-tcp-framing-experiment
 2. @exr-essay-tcp-framing-test-design
 3. @exr-essay-tcp-framing-implementation
@@ -57,5 +55,3 @@
 
 - [InputStream: неполное чтение и EOF](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/InputStream.html)
 - [Socket: потоки соединения, закрытие и half-close](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/Socket.html)
-
-::::::

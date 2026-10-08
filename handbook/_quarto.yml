@@ -9,6 +9,14 @@ project:
   - '!_freeze/**'
   - '!.quarto/**'
   - '!_extensions/**'
+  - '!**/*.qmd'
+  - '!**/*.rmd'
+  - '!**/*.ipynb'
+  - '!**/_output/**'
+  - '!**/_site*/**'
+  - '!**/_generated/**'
+  - '!**/projects/**'
+  - '!**/.superpowers/**'
   pre-render:
   - _extensions/Afonenko-Course-Tools/course-core/entrypoints/pre.ts
   post-render:
@@ -20,8 +28,6 @@ profile:
   group:
   - - student
     - full
-course:
-  id: java-handbook
 filters:
 - course-core
 - course-presentation
@@ -76,5 +82,4 @@ format:
 lang: ru
 reference-catalog:
   namespace: handbook
-course-presentation:
-  mode: study
+fail-if-warnings: true

@@ -1,8 +1,6 @@
-:::::: {.when-full}
-
 ## Контроль освоения темы {#sec-essay-type-erasure-control}
 
-:::: {#exr-essay-type-erasure-experiment target="prairielearn" project="/generics-collections/type-erasure/projects/experiment" course-role="control" difficulty="advanced"}
+:::: {#exr-essay-type-erasure-experiment target="prairielearn" project="/generics-collections/type-erasure/projects/experiment" course-role="control" difficulty="advanced" time="40" statement-visibility="restricted"}
 ### Локализация отложенного нарушения типа
 
 В предоставленном фрагменте с `List<String>`, raw-представлением и последующим чтением выбрать вставляемое значение так, чтобы запись завершилась, а получение String вызвало ClassCastException. Указать этап предупреждения компилятора и этап исключения; привести строковый контроль.
@@ -17,7 +15,7 @@
 :::
 ::::
 
-:::: {#exr-essay-type-erasure-test-design target="prairielearn" project="/generics-collections/type-erasure/projects/test-design" course-role="control" difficulty="advanced"}
+:::: {#exr-essay-type-erasure-test-design target="prairielearn" project="/generics-collections/type-erasure/projects/test-design" course-role="control" difficulty="advanced" time="60" statement-visibility="restricted"}
 ### Проверка типизированного адаптера списка
 
 Написать тесты для `List<String>` strings(`List<?>` input): вернуть независимый список при наличии только String; при null или ином элементе выбросить IllegalArgumentException. Выявить непроверяемое приведение всего списка и проверку только первого элемента.
@@ -32,7 +30,7 @@
 :::
 ::::
 
-:::: {#exr-essay-type-erasure-implementation target="prairielearn" project="/generics-collections/type-erasure/projects/implementation" course-role="control" difficulty="advanced"}
+:::: {#exr-essay-type-erasure-implementation target="prairielearn" project="/generics-collections/type-erasure/projects/implementation" course-role="control" difficulty="advanced" time="70" statement-visibility="restricted"}
 ### Реализация проверяемой границы типизации
 
 Реализовать `List<String>` strings(`List<?>` input), проверяющий каждый элемент. String переносится в новый список с сохранением порядка, null и любой иной тип вызывают IllegalArgumentException до возврата результата; вход изменять запрещено.
@@ -47,7 +45,7 @@
 :::
 ::::
 
-::: {.assessment-items}
+::: {.task-items}
 1. @exr-essay-type-erasure-experiment
 2. @exr-essay-type-erasure-test-design
 3. @exr-essay-type-erasure-implementation
@@ -58,5 +56,3 @@
 - [JLS §4: типы, стирание, переменные и их ограничения](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html)
 - [JLS §5: преобразования, boxing/unboxing, числовое продвижение](https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html)
 - [Dev.java: введение в generics и отношения типов](https://dev.java/learn/generics/intro/)
-
-::::::

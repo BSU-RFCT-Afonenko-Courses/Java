@@ -1,8 +1,6 @@
-:::::: {.when-full}
-
 ## Контроль освоения темы {#sec-essay-virtual-resource-limits-control}
 
-:::: {#exr-essay-virtual-resource-limits-experiment target="prairielearn" project="/task-lifecycle/virtual-resource-limits/projects/experiment" course-role="control" difficulty="intermediate"}
+:::: {#exr-essay-virtual-resource-limits-experiment target="prairielearn" project="/task-lifecycle/virtual-resource-limits/projects/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
 ### Сценарий превышения ёмкости ресурса
 
 Для сервиса с указанным пределом одновременных обращений составить управляемый сценарий запуска виртуальных потоков, обнаруживающий отсутствие ограничителя. Использовать события входа и выхода ресурса, указать максимальное наблюдаемое число активных обращений. Готовность участников подтверждается до снятия удерживающего барьера.
@@ -17,7 +15,7 @@
 :::
 ::::
 
-:::: {#exr-essay-virtual-resource-limits-test-design target="prairielearn" project="/task-lifecycle/virtual-resource-limits/projects/test-design" course-role="control" difficulty="intermediate"}
+:::: {#exr-essay-virtual-resource-limits-test-design target="prairielearn" project="/task-lifecycle/virtual-resource-limits/projects/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
 ### Проверка возврата разрешений
 
 Написать тест ограничителя доступа, проверяющий ошибку внутри ресурса и отмену до получения разрешения. После каждого сценария запустить успешное обращение и проверить доступную ёмкость. Стенд предоставляет счётчик активных операций и управляемые точки отказа.
@@ -32,7 +30,7 @@
 :::
 ::::
 
-:::: {#exr-essay-virtual-resource-limits-implementation target="prairielearn" project="/task-lifecycle/virtual-resource-limits/projects/implementation" course-role="control" difficulty="intermediate"}
+:::: {#exr-essay-virtual-resource-limits-implementation target="prairielearn" project="/task-lifecycle/virtual-resource-limits/projects/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
 ### Ограничитель обращений к сервису
 
 Реализовать обёртку обращения к предоставленному ресурсу через Semaphore. Разрешение возвращается только после его успешного получения и независимо от исхода операции. Сохранить заданную политику прерывания и не допустить превышения объявленного числа активных обращений.
@@ -47,7 +45,7 @@
 :::
 ::::
 
-::: {.assessment-items}
+::: {.task-items}
 1. @exr-essay-virtual-resource-limits-experiment
 2. @exr-essay-virtual-resource-limits-test-design
 3. @exr-essay-virtual-resource-limits-implementation
@@ -57,5 +55,3 @@
 
 - [Oracle Java 25: Virtual Threads](https://docs.oracle.com/en/java/javase/25/core/virtual-threads.html)
 - [JEP 491: изменение поведения virtual threads и мониторов в JDK 24](https://openjdk.org/jeps/491)
-
-::::::

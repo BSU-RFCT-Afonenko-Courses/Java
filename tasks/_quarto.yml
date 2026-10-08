@@ -19,6 +19,13 @@ project:
   - '!**/_*.qmd'
   - '!_freeze/**'
   - '!.quarto/**'
+  - '!**/*.qmd'
+  - '!**/*.rmd'
+  - '!**/*.ipynb'
+  - '!**/_output/**'
+  - '!**/_site*/**'
+  - '!**/_generated/**'
+  - '!**/.superpowers/**'
 profile:
   default: student
   group:
@@ -27,10 +34,6 @@ profile:
 course:
   adapters:
   - prairielearn
-  id: java-essays
-course-pedagogy:
-  document-defaults: true
-work-mode: individual
 prairielearn:
   assessment-defaults:
     attempts: 3
@@ -133,6 +136,7 @@ book:
     - lifecycle-measurement/explicit-cleanup/index.qmd
     - lifecycle-measurement/microbenchmark-design/index.qmd
     - lifecycle-measurement/regex-literals/index.qmd
+  - prairielearn-pilot/index.qmd
   sidebar:
     tools:
     - icon: house
@@ -181,5 +185,4 @@ project-download:
       - '**/.*'
 reference-catalog:
   namespace: tasks
-course-presentation:
-  mode: study
+fail-if-warnings: true

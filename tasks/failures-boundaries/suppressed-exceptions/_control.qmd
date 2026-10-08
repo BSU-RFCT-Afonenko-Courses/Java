@@ -1,8 +1,6 @@
-:::::: {.when-full}
-
 ## Контроль освоения темы {#sec-essay-suppressed-exceptions-control}
 
-:::: {#exr-essay-suppressed-exceptions-experiment target="prairielearn" project="/failures-boundaries/suppressed-exceptions/projects/experiment" course-role="control" difficulty="intermediate"}
+:::: {#exr-essay-suppressed-exceptions-experiment target="prairielearn" project="/failures-boundaries/suppressed-exceptions/projects/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
 ### Восстановление протокола завершения ресурсов
 
 Для двух предоставленных AutoCloseable выбрать конфигурацию, в которой тело и оба close выбрасывают различные исключения. Указать журнал открытия и закрытия, основной объект исключения и порядок suppressed; сопоставить с отказом создания второго ресурса.
@@ -17,7 +15,7 @@
 :::
 ::::
 
-:::: {#exr-essay-suppressed-exceptions-test-design target="prairielearn" project="/failures-boundaries/suppressed-exceptions/projects/test-design" course-role="control" difficulty="intermediate"}
+:::: {#exr-essay-suppressed-exceptions-test-design target="prairielearn" project="/failures-boundaries/suppressed-exceptions/projects/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
 ### Проверка владения двумя ресурсами
 
 Написать тесты для операции useTwo(factory, action), владеющей обоими успешно открытыми ресурсами. Проверить закрытие в обратном порядке при успехе и закрытие первого ресурса при отказе открытия второго; выявить утечку и неправильный порядок.
@@ -32,7 +30,7 @@
 :::
 ::::
 
-:::: {#exr-essay-suppressed-exceptions-implementation target="prairielearn" project="/failures-boundaries/suppressed-exceptions/projects/implementation" course-role="control" difficulty="intermediate"}
+:::: {#exr-essay-suppressed-exceptions-implementation target="prairielearn" project="/failures-boundaries/suppressed-exceptions/projects/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
 ### Организация использования двух ресурсов
 
 Реализовать useTwo(factory, action): открыть первый ресурс, затем второй, выполнить action с обоими и закрыть успешно созданные ресурсы в обратном порядке. Сохранить стандартную семантику основных и suppressed-исключений при отказах открытия, тела и закрытия.
@@ -47,7 +45,7 @@
 :::
 ::::
 
-::: {.assessment-items}
+::: {.task-items}
 1. @exr-essay-suppressed-exceptions-experiment
 2. @exr-essay-suppressed-exceptions-test-design
 3. @exr-essay-suppressed-exceptions-implementation
@@ -57,5 +55,3 @@
 
 - [JLS §14: statements, patterns, try, finally, try-with-resources](https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html)
 - [AutoCloseable: договор закрытия ресурса](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/AutoCloseable.html)
-
-::::::

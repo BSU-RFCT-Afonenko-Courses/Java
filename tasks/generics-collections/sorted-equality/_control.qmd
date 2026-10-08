@@ -1,8 +1,6 @@
-:::::: {.when-full}
-
 ## Контроль освоения темы {#sec-essay-sorted-equality-control}
 
-:::: {#exr-essay-sorted-equality-experiment target="prairielearn" project="/generics-collections/sorted-equality/projects/experiment" course-role="control" difficulty="intermediate"}
+:::: {#exr-essay-sorted-equality-experiment target="prairielearn" project="/generics-collections/sorted-equality/projects/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
 ### Различение уникальности числовых представлений
 
 Выбрать два BigDecimal, равных по compareTo, но не по equals. Добавить их в HashSet и TreeSet с естественным порядком, указать размеры множеств и результаты проверки принадлежности каждого значения.
@@ -17,7 +15,7 @@
 :::
 ::::
 
-:::: {#exr-essay-sorted-equality-test-design target="prairielearn" project="/generics-collections/sorted-equality/projects/test-design" course-role="control" difficulty="intermediate"}
+:::: {#exr-essay-sorted-equality-test-design target="prairielearn" project="/generics-collections/sorted-equality/projects/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
 ### Проверка каталога с сохранением масштаба
 
 Написать тесты для catalog(`Collection<BigDecimal>` input), возвращающего отсортированное множество и сохраняющего различия equals. Порядок: сначала численное значение, затем scale. Выявить использование одного естественного порядка без второго критерия.
@@ -32,7 +30,7 @@
 :::
 ::::
 
-:::: {#exr-essay-sorted-equality-implementation target="prairielearn" project="/generics-collections/sorted-equality/projects/implementation" course-role="control" difficulty="intermediate"}
+:::: {#exr-essay-sorted-equality-implementation target="prairielearn" project="/generics-collections/sorted-equality/projects/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
 ### Реализация согласованного порядка каталога
 
 Реализовать comparator для BigDecimal: сначала сравнивать численное значение, при равенстве — scale. Использовать его для построения TreeSet, сохраняющего все различия equals, но объединяющего полностью равные представления.
@@ -47,7 +45,7 @@
 :::
 ::::
 
-::: {.assessment-items}
+::: {.task-items}
 1. @exr-essay-sorted-equality-experiment
 2. @exr-essay-sorted-equality-test-design
 3. @exr-essay-sorted-equality-implementation
@@ -58,5 +56,3 @@
 - [TreeSet: эквивалентность по порядку](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/TreeSet.html)
 - [BigDecimal: различие численного порядка и equals](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigDecimal.html)
 - [Comparator: законы отношения сравнения](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Comparator.html)
-
-::::::

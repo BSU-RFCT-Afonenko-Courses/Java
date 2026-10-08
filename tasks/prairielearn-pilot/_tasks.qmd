@@ -1,0 +1,21 @@
+:::: {#exr-pl-java25-unicode-slice target="prairielearn" project="/prairielearn-pilot/projects/unicode-slice" course-role="control" difficulty="introductory" time="35" statement-visibility="restricted"}
+## Диапазон кодовых точек Unicode
+
+Реализуйте `public static String slice(String text, int from, int to)` в классе
+`UnicodeSlice`. Метод возвращает кодовые точки строки `text` с позиции `from`
+включительно до позиции `to` исключительно. Позиции отсчитываются от нуля по
+кодовым точкам, а не кодовым единицам UTF-16.
+
+Допустимо ровно `0 <= from <= to <= число кодовых точек`. Для недопустимых
+границ выбрасывайте `IndexOutOfBoundsException`; для `null` —
+`NullPointerException`. Пустой диапазон возвращает пустую строку; полный диапазон
+сохраняет содержимое исходной строки. Входная непустая строка содержит корректный
+UTF-16 без непарных суррогатов. Графемная сегментация и идентичность объекта
+результата не проверяются.
+
+Для строки `"A😀Б"` диапазон `[1, 2)` должен дать `"😀"`. Допускается разделить
+графемный кластер: единица задачи — кодовая точка. Разрешено использовать
+стандартную библиотеку JDK 25. Сдайте один исходный файл `UnicodeSlice.java`.
+
+{{< include _control.qmd >}}
+::::

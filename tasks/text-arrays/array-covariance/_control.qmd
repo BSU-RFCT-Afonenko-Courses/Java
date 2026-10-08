@@ -1,8 +1,6 @@
-:::::: {.when-full}
-
 ## Контроль освоения темы {#sec-essay-array-covariance-control}
 
-:::: {#exr-essay-array-covariance-experiment target="prairielearn" project="/text-arrays/array-covariance/projects/experiment" course-role="control" difficulty="advanced"}
+:::: {#exr-essay-array-covariance-experiment target="prairielearn" project="/text-arrays/array-covariance/projects/experiment" course-role="control" difficulty="advanced" time="40" statement-visibility="restricted"}
 ### Исследование частичного копирования
 
 Предъявить Object[] из трёх элементов и String[] назначения из трёх элементов так, чтобы System.arraycopy записал ровно первые два элемента и завершился ArrayStoreException. Указать полное содержимое назначения после отказа и независимый успешный контроль.
@@ -17,7 +15,7 @@
 :::
 ::::
 
-:::: {#exr-essay-array-covariance-test-design target="prairielearn" project="/text-arrays/array-covariance/projects/test-design" course-role="control" difficulty="advanced"}
+:::: {#exr-essay-array-covariance-test-design target="prairielearn" project="/text-arrays/array-covariance/projects/test-design" course-role="control" difficulty="advanced" time="60" statement-visibility="restricted"}
 ### Проверка гарантии сохранения назначения
 
 Написать тесты для atomicCopy(Object[] src, String[] dst), копирующего src целиком в dst равной длины. Элементы допускаются только String или null; при другом элементе требуется ArrayStoreException без изменения dst.
@@ -32,7 +30,7 @@
 :::
 ::::
 
-:::: {#exr-essay-array-covariance-implementation target="prairielearn" project="/text-arrays/array-covariance/projects/implementation" course-role="control" difficulty="advanced"}
+:::: {#exr-essay-array-covariance-implementation target="prairielearn" project="/text-arrays/array-covariance/projects/implementation" course-role="control" difficulty="advanced" time="70" statement-visibility="restricted"}
 ### Реализация переноса с предварительной проверкой
 
 Реализовать void atomicCopy(Object[] src, String[] dst) для различных массивов равной длины. Если все элементы src являются String либо null, заменить содержимое dst; иначе выбросить ArrayStoreException и полностью сохранить прежний dst.
@@ -47,7 +45,7 @@
 :::
 ::::
 
-::: {.assessment-items}
+::: {.task-items}
 1. @exr-essay-array-covariance-experiment
 2. @exr-essay-array-covariance-test-design
 3. @exr-essay-array-covariance-implementation
@@ -57,5 +55,3 @@
 
 - [System.arraycopy: состояние назначения при разных отказах](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/System.html)
 - [JLS §5: преобразования, boxing/unboxing, числовое продвижение](https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html)
-
-::::::

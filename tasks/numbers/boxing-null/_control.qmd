@@ -1,8 +1,6 @@
-:::::: {.when-full}
-
 ## Контроль освоения темы {#sec-essay-boxing-null-control}
 
-:::: {#exr-essay-boxing-null-experiment target="prairielearn" project="/numbers/boxing-null/projects/experiment" course-role="control" difficulty="intermediate"}
+:::: {#exr-essay-boxing-null-experiment target="prairielearn" project="/numbers/boxing-null/projects/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
 ### Обнаружение неявной распаковки
 
 Для заданного метода Integer select(boolean use, Integer value), возвращающего use ? value : 0, указать вход, приводящий к NullPointerException, и контрольный вход с тем же value, успешно возвращающий результат. Зафиксировать исход каждого запуска.
@@ -17,7 +15,7 @@
 :::
 ::::
 
-:::: {#exr-essay-boxing-null-test-design target="prairielearn" project="/numbers/boxing-null/projects/test-design" course-role="control" difficulty="intermediate"}
+:::: {#exr-essay-boxing-null-test-design target="prairielearn" project="/numbers/boxing-null/projects/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
 ### Проверка сравнения nullable-чисел
 
 Написать тесты для boolean same(Integer a, Integer b): два null равны, один null не равен числу, два числа сравниваются по значению. Обнаружить реализацию со сравнением ссылок и реализацию с безусловной распаковкой.
@@ -32,7 +30,7 @@
 :::
 ::::
 
-:::: {#exr-essay-boxing-null-implementation target="prairielearn" project="/numbers/boxing-null/projects/implementation" course-role="control" difficulty="intermediate"}
+:::: {#exr-essay-boxing-null-implementation target="prairielearn" project="/numbers/boxing-null/projects/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
 ### Реализация явной политики отсутствующего значения
 
 Реализовать Integer choose(boolean preferred, Integer value, Integer fallback): при preferred вернуть value, даже если он null; иначе вернуть fallback без преобразования в примитив. Сохранить числовые значения и null для всех сочетаний аргументов.
@@ -47,7 +45,7 @@
 :::
 ::::
 
-::: {.assessment-items}
+::: {.task-items}
 1. @exr-essay-boxing-null-experiment
 2. @exr-essay-boxing-null-test-design
 3. @exr-essay-boxing-null-implementation
@@ -57,5 +55,3 @@
 
 - [JLS §5: преобразования, boxing/unboxing, числовое продвижение](https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html)
 - [Integer: объектное представление и valueOf](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html)
-
-::::::
