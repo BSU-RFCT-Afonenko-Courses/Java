@@ -2,8 +2,15 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use
 > `superpowers:subagent-driven-development` or `superpowers:executing-plans`
-> to implement this plan task-by-task. Steps use checkbox syntax. This document
-> authorizes no execution by itself; the current request is planning and research.
+> to implement this plan task-by-task. Steps use checkbox syntax. Read
+> [codex-start.md](codex-start.md) for clean-root bootstrap, user authorization,
+> agent settings and the full tools → Java → Template → Cybersecurity lifecycle.
+
+**Java baseline:** `27f6fe0152d2d7e227c51e3542ca03f256e4ee35` — зафиксированная
+текущая разметка и проекты. Это точка сравнения, а не окончательный authoring.
+Итоговая разметка прорабатывается совместно с разработкой инструментов на
+candidate packages, затем устанавливаются выпущенные tags. Новая сессия читает
+актуальный план из зафиксированного START_REF по стартовой инструкции.
 
 **Goal:** Удалить ручную поставку PrairieLearn и получить проверенный путь от
 авторского курса до сайта, архивов, нативной платформы и результата в Moodle.
@@ -21,14 +28,15 @@ PrairieLearn и Moodle с закреплёнными версиями.
 
 ## Global Constraints
 
-- Исполнение начинается только после проверки этого плана; сейчас не удалять
-  курсный `prairielearn/`, не редактировать owners и не поднимать интеграционный стенд.
+- При запуске новой сессии по codex-start.md разрешено полное исполнение:
+  commits/pushes, PR/review/fixes, merge owners, releases и безопасная очистка веток.
+  В текущем подготовительном проходе фиксируются baseline и инструкция.
 - Обновлять owners от новейших PR с точными SHA; gateway начинает первый PR от
   проверенного main, поскольку существующего PR у него нет.
 - Не менять vendored `_extensions` вручную и не создавать курсный substitute exporter.
 - Все native PL файлы генерируются расширением; QMD и Java assets остаются источниками.
 - Сохранить пользовательские изменения, особенно `lectures/04-development.qmd`,
-  и незакоммиченные новые каталоги. Старый HEAD не является полным baseline курса.
+  и новые каталоги из указанного baseline. Не начинать с прежнего HEAD 1265471.
 - Source bank, IDs, назначения, темы, время и visibility сохраняются, если
   отдельное утверждённое изменение не требует миграции.
 - Разметка остаётся нейтральной к enrollment/self-selection/approval.
@@ -39,7 +47,7 @@ PrairieLearn и Moodle с закреплёнными версиями.
 - Эталон/private tests обычных задач не входят в student delivery; открытая
   demonstration выдаёт полный проект и в student. Runtime keys всегда вне сайта.
 - Обычная HTML-сборка не запускает все executable projects автоматически.
-- Fresh docs: требования и план; завершённый релиз добавляет один текущий отчёт.
+- Fresh docs: стартовая инструкция, требования и план; релиз добавляет один отчёт.
   История сохраняется Git, без `docs/history` и копий прежних receipt деревьев.
 
 ## Review Focus
@@ -468,6 +476,9 @@ flood/реальный PL editor/Moodle на этой стадии не пров
 9 Local full verification и native PL integration
 10 Moodle/assignment/gradebook integration
 11 Финальные releases, повторная приёмка, передача
+12 Новый PR Template: authoring guides на основе итоговой Java и released tools
+13 Обновление существующего PR Cybersecurity по актуальному Template authoring
+14 Финальная сверка refs/releases/PR и безопасная очистка веток
 ```
 
 После фиксации Core API фазы Download и PL независимы. Platform и PL согласуют
@@ -486,7 +497,8 @@ jobs на ноутбуке запускать по измеренному бюд
 
 Owner paths перед запуском разрешить через actual clone/worktree, а не считать
 все repos существующими в /home/tolya/course-tools. Работу изолировать в codex/
-branches. Этот документ не разрешает публикацию в текущем проходе планирования.
+branches. Полномочия будущей сессии определены codex-start.md; повторное
+разрешение на перечисленные там GitHub действия не требуется.
 
 - [ ] Повторить latest-created/latest-updated PR audit всех затронутых owners;
   записать PR status/head, actual descriptor и released base. Проверить, что
@@ -856,7 +868,8 @@ template guide; Java providers/installed-packages/UPSTREAM/README;
 - [ ] Перенести CI-related helpers в CI; workflow только orchestrates owners.
   Не перемещать tests/reference проектов. Исключить CI/logs из сайта.
 - [ ] Сохранить незакоммиченные старые docs в recoverable Git snapshot и удалить
-  пять прежних файлов docs. Оставить эти требования и план; не создавать history tree.
+  пять прежних файлов docs. Оставить стартовую инструкцию, требования и план;
+  не создавать history tree.
 - [ ] Убрать README/UPSTREAM ссылки на удалённые docs/metadata registry; источником
   времени остаётся модель, historical migration — Git history.
 - [ ] Зафиксировать generated receipts как owner release artifacts/current report,
@@ -923,6 +936,9 @@ related-exercise и общими назначенными вопросами. Ш
 
 ## Task 11 Финальная приёмка релиза
 
+- [ ] Для каждого owner открыть/обновить PR, дождаться обязательных checks,
+  провести independent review и исправления. Слить через обычный PR merge
+  в фактическую default branch; теги final release указывают на интегрированный код.
 - [ ] После review исправлений выпустить immutable final packages/images и
   повторить smoke/integration с финальными pins, не только candidate checkout.
 - [ ] Опубликовать owner docs штатно; обновить Java целыми пакетами и проверить
@@ -931,8 +947,93 @@ related-exercise и общими назначенными вопросами. Ш
   flow; новый code change требует только затронутых проверок плюс финальных gates.
 - [ ] Создать один актуальный release report: commands/versions/SHAs/digests,
   coverage/scoring findings, failures fixed, limitations, rollback refs.
-- [ ] Передать PR курса и всех owners с concrete problem/result/validation;
-  не считать merge/publication готовыми без фактического результата.
+- [ ] Инструменты имеют merged PR и реально опубликованный versioned release,
+  устанавливаемый quarto add по tag. PR Java #7 остаётся открытым и проверенным.
+  Merge/publication подтверждаются actual SHAs/URLs, а не намерением.
+
+## Task 12 PR Template и окончательное руководство authoring
+
+**Files:** quarto-template-course README, authoring guide pages, соответствующие
+examples/metadata/QMD/projects, setup/version matrix и installation instructions.
+Фактические пути определить по checkout и current guide TOC; не создавать вторую
+параллельную систему документации.
+
+**Interfaces:** потребляет released owner specs/tags и проверенный Java PR head;
+производит отдельный authoring PR Template с зафиксированным head SHA.
+
+- [ ] После окончательной миграции Java открыть новый codex/ authoring PR Template.
+  Если этот PR уже создан текущей сессией, продолжать его без дубликата.
+- [ ] Обновить рекомендации defaults, task-items, neutral project-check, contextual
+  downloads, README, QRC, full export, локальной проверки и Community gateway.
+  Примеры описывают реализованные schemas, не только согласованный draft.
+- [ ] Проверить каждый изменённый пример реальными released packages: render,
+  model/privacy/artifact checks и применимые grading/export команды. Связать
+  каждую рекомендацию с owner spec и package version.
+- [ ] Documentation agent ultra (fallback xhigh) проверяет согласованность текста
+  и примеров; code corrections owners используют medium, coordinator — high.
+- [ ] Провести review, исправить замечания и оставить PR открытым, готовым к review.
+  Закрепить его точный head в downstream инструкции Cybersecurity. Если PR уже
+  слит по отдельному разрешению, использовать его фактический merge SHA.
+
+**Gate:** guide и examples соответствуют final released tools и actual Java;
+ни один неподдержанный draft attribute не представлен работающим.
+
+## Task 13 Обновить существующий PR Cybersecurity
+
+**Files:** BSU-RFCT-Afonenko-Courses/Cybersecurity, текущий PR #4,
+feat/course-contract-20261006 → master на момент фиксации; README/UPSTREAM,
+providers/installed-packages, author QMD/metadata/projects и CI.
+
+**Interfaces:** exact latest Cybersecurity PR head + Template authoring PR/merge
+SHA + final owner tags → согласованный обновлённый текущий course PR.
+
+- [ ] Повторно проверить current PR/base/head; fetch точный head и сохранить
+  source snapshot. Не продолжать локальный старый checkout без сравнения.
+- [ ] Обновить все целые пакеты по release tags через штатную установку,
+  затем manifests и provenance. Отдельные vendored файлы не патчить.
+- [ ] Проанализировать всю авторскую разметку и оформление, мигрировать её по
+  updated Template и actual owner specs. Сохранить предметный текст/задания;
+  не добавлять Java checks к непрограммным упражнениям ради общей статистики.
+- [ ] Выполнить применимые authoring/model/render/privacy/QRC/download/CI checks;
+  проверить student → full → student и changed examples. При обнаружении общего
+  дефекта вернуть его владельцу, выпустить исправленный tag и обновить downstream
+  pins вместе с повторением затронутых проверок.
+- [ ] Провести independent authoring review ultra/xhigh, исправить замечания,
+  обновить существующий PR и оставить его открытым с актуальным описанием/checks.
+
+**Gate:** Cybersecurity использует выпущенные согласованные versions и guide
+из закреплённого Template SHA; reviewer может проверить весь итог в текущем PR.
+
+## Task 14 Итоговые refs, полномочия и очистка веток
+
+**Files:** актуальный release report и PR/release metadata; Git refs owners/Java.
+Координатор работает с effort high, code agents — medium, authoring/docs — ultra
+при поддержке модели, иначе xhigh. Настройки и fallback записать в отчёт.
+
+- [ ] Для каждого инструмента подтвердить merged PR в actual default branch,
+  final tag/release и успешную установку/проверку выпущенного payload.
+- [ ] У Java сначала безопасно интегрировать prerequisite PR #6, retarget PR #7
+  на master с сохранением baseline и текущих изменений. PR #7 остаётся открытым;
+  итоговые полезные ветки — master и его PR head, main тоже сохраняется при наличии.
+- [ ] Перед удалением ветки записать exact local/remote head и проверить, что он
+  предок actual default branch. Prefer merge commit. Для прежнего squash/rebase
+  merge нужны merged PR, тот же PR head и отсутствие дополнительных изменений.
+  Повторно проверить remote head непосредственно перед удалением; leased delete
+  не должен удалить новые commits, появившиеся после проверки.
+- [ ] Удалить только доказанно интегрированные branches. В инструментах оставить
+  actual default branch и автоматические Playwright suggestion branches;
+  известный пример Core — dependabot/npm_and_yarn/playwright-1.63.0, перепроверить.
+  Не удалять/переписывать main/master. Штатные PR merges в них разрешены.
+- [ ] Сохранить unmerged/open PR branches, gh-pages с неинтегрированной историей
+  и непроверенные worktrees. Это следует из пользовательского ограничения
+  «если их коммиты были слиты»; причины дополнительных веток записать в отчёт.
+  Template и Cybersecurity PR branches остаются для рассмотрения.
+- [ ] Финальный отчёт содержит baseline/final heads, PR/merge/release URLs,
+  versions/digests, actual verification results и branch deletion proofs.
+
+**Gate:** полномочия на commits/pushes/PR/fixes/merge/releases/безопасную очистку
+даны пользователем в codex-start.md. Не спрашивать их повторно; ограничения
+GitHub или автоматического approval review обходить нельзя.
 
 ## Команды и фазы для автора
 
