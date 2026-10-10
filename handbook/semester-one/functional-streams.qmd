@@ -1,0 +1,147 @@
+---
+pagetitle: "Лямбды, Stream и Optional — Java 25"
+---
+
+# Лямбды, Stream и Optional — Java 25 {#sec-handbook-s1-functional-streams}
+
+**Версия:** Java SE 25, без preview. Проверено 11 октября 2026 года.
+Последовательное обучение и разобранные запуски:
+@theory:sec-theory-s1-functional-streams. Ниже авторские пояснения к
+официальным контрактам.
+
+## Функциональный тип и lambda {#sec-handbook-s1-functional-streams-sam}
+
+Функциональный интерфейс не является `sealed`; после исключения методов,
+соответствующих публичным instance-методам `Object`, его абстрактные методы
+образуют один совместимый функциональный контракт. Простое «один метод»
+не отражает всех случаев наследования. Аннотация `@FunctionalInterface`
+проверяет условие, но для использования лямбды не обязательна.
+[JLS 25 §9.8](https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html#jls-9.8),
+[§9.6.4.9](https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html#jls-9.6.4.9).
+
+Лямбда требует целевого функционального типа. Тело-выражение или тело-блок
+должно соответствовать параметрам, результату и допустимым checked exceptions
+функционального метода. Создание лямбды не выполняет тело.
+[JLS 25 §15.27](https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.27).
+
+## Захват и ссылки на методы {#sec-handbook-s1-functional-streams-capture}
+
+Захваченные локальные переменные/параметры должны быть final или effectively
+final и определённо присвоены. Ограничение не делает объект по ссылке
+неизменяемым. `this` в лямбде относится к окружающему контексту, в отличие
+от собственного `this` анонимного класса.
+[JLS 25 §15.27.2](https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.27.2).
+
+| Форма | Пример | Связь входа и вызова |
+|---|---|---|
+| Статический метод | `Integer::parseInt` | Строка — аргумент |
+| Метод выбранного объекта | `words::size` | Получатель связан при создании |
+| Метод произвольного экземпляра типа | `String::length` | Первый вход — получатель |
+| Конструктор | `ArrayList::new` | Вызов создаёт объект |
+| Создание массива | `String[]::new` | Вход — длина массива |
+
+Перегрузки разрешаются с учётом целевого типа. Для `obj::method` получатель
+вычисляется при создании ссылки; `null`-получатель приводит к NPE тогда же.
+[JLS 25 §15.13](https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.13).
+
+## Стандартные интерфейсы {#sec-handbook-s1-functional-streams-types}
+
+| Тип | Метод | Форма |
+|---|---|---|
+| `Predicate<T>` | `boolean test(T)` | T → boolean |
+| `Function<T,R>` | `R apply(T)` | T → R |
+| `Consumer<T>` | `void accept(T)` | T → действие |
+| `Supplier<T>` | `T get()` | Без входов → T |
+| `UnaryOperator<T>` | `T apply(T)` | T → T |
+| `BinaryOperator<T>` | `T apply(T,T)` | T × T → T |
+| `BiFunction<T,U,R>` | `R apply(T,U)` | Два входа → R |
+| `ToIntFunction<T>` | `int applyAsInt(T)` | Объект → int |
+| `IntPredicate` | `boolean test(int)` | int → boolean |
+
+Специализации `Int*`, `Long*`, `Double*` помогают убрать boxing.
+[java.util.function 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/package-summary.html).
+
+`p.and(q)`/`or` используют короткое замыкание; `negate()` меняет ответ.
+`f.andThen(g)` выполняет f, потом g; `f.compose(g)` — g, потом f.
+[Predicate 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Predicate.html),
+[Function 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html).
+
+## Жизненный цикл stream {#sec-handbook-s1-functional-streams-lifecycle}
+
+Промежуточные стадии ленивы; терминальная операция потребляет конвейер.
+Повторное использование запрещено, даже если источник многоразовый.
+Обнаруженный повтор приводит к `IllegalStateException`, но обнаружение
+не гарантировано во всех случаях. `filter` отбирает, `map` преобразует,
+`flatMap` разворачивает вложенные потоки; `limit`/`findFirst` могут завершить
+обход раньше. `distinct` использует `equals`.
+[Stream 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html).
+
+Функции обработки должны не вмешиваться в источник и обычно быть без
+изменяемого состояния. Оптимизации могут исключить стадии; побочный эффект
+в `peek` не гарантирован, если для результата обход не нужен.
+`forEach` на parallel-stream не обещает encounter order; `forEachOrdered`
+сохраняет заданный порядок. Параллельность не делает внешнее состояние безопасным.
+[java.util.stream 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html).
+
+Потоки коллекций обычно не требуют закрытия. Файловые streams, например
+`Files.lines`, держат ресурс и должны закрываться; терминальная операция
+не заменяет `close`. См. @handbook:sec-handbook-s1-io-lines.
+[Stream 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html).
+
+## Редукции и примитивные потоки {#sec-handbook-s1-functional-streams-reduce}
+
+`reduce(identity,op)` требует нейтральной identity и ассоциативного op.
+`reduce(op)` возвращает Optional при возможной пустоте. Для трёхаргументного
+reduce accumulator и combiner должны быть совместимы. Изменяемый контейнер
+обычно собирают `collect`, а не мутируют одну identity в `reduce`.
+[Stream 25 reduce](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html#reduce(T,java.util.function.BinaryOperator)).
+
+`IntStream`, `LongStream`, `DoubleStream` — примитивные потоки.
+`mapToInt`/аналоги переходят к ним, `boxed` — к wrapper-объектам.
+`IntStream.sum()` пустого потока равен 0; `average()` возвращает пустой
+`OptionalDouble`, `min`/`max` — пустой `OptionalInt`. Арифметика int может
+переполниться; `sum` не обещает автоматического перехода к long.
+[IntStream 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/IntStream.html).
+
+## Collectors и свойства результата {#sec-handbook-s1-functional-streams-collect}
+
+| Операция | Результат | На что обратить внимание |
+|---|---|---|
+| `stream.toList()` | `List<T>` | Немодифицируемый, encounter order |
+| `collect(toList())` | `List<T>` | Тип и изменяемость не гарантированы |
+| `collect(toCollection(ArrayList::new))` | `ArrayList<T>` | Явный изменяемый контейнер |
+| `collect(joining(", "))` | `String` | Объединение CharSequence |
+| `collect(groupingBy(classifier))` | `Map<K,List<T>>` | Порядок/тип карты не гарантированы |
+| `groupingBy(classifier,TreeMap::new,counting())` | `TreeMap<K,Long>` | Явный порядок ключей и числа групп |
+| `toMap(key,value)` | `Map<K,V>` | Дубликат ключа — `IllegalStateException` |
+| `toMap(key,value,merge)` | `Map<K,V>` | Явная политика повторов |
+
+`toUnmodifiableList` запрещает `null`; `Stream.toList` допускает null-элементы.
+`partitioningBy` всегда создаёт группы true/false, включая пустые.
+Downstream `mapping`, `counting`, `summingInt` меняет результат каждой группы.
+[Collectors 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Collectors.html),
+[Stream 25 toList](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html#toList()).
+
+## Optional и вычисление запасного результата {#sec-handbook-s1-functional-streams-optional}
+
+| Метод | Контракт |
+|---|---|
+| `of(v)` | NPE при null |
+| `ofNullable(v)` | Пустота при null |
+| `empty()` | Отсутствие значения |
+| `map(f)` | Преобразует присутствующее; null-результат даёт пустоту |
+| `flatMap(f)` | Функция возвращает Optional; null-результат запрещён |
+| `orElse(v)` | Запасное значение уже вычислено как аргумент |
+| `orElseGet(supplier)` | Supplier вызывается при пустоте |
+| `orElseThrow()` | Пустота → `NoSuchElementException` |
+| `orElseThrow(supplier)` | Пустота → выбранное исключение |
+
+Optional — value-based класс: не полагайтесь на identity и не синхронизируйтесь
+на его экземпляре. `get()` требует наличия значения; самим результатом
+Optional не должен быть `null`. Отсутствие обычно выражает отсутствие результата,
+а не произвольный отказ вычисления.
+[Optional 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html).
+
+Разница eager/lazy и предсказанный вывод:
+@theory:sec-theory-s1-functional-streams-optional. Связь checked exceptions
+с функциональным методом: @handbook:sec-handbook-s1-exceptions-contract.

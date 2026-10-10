@@ -1,0 +1,363 @@
+---
+pagetitle: "Ввод-вывод: байты, текст и ресурсы"
+---
+
+# Ввод-вывод: байты, текст и ресурсы {#sec-theory-s1-io}
+
+Файл хранит байты. Чтобы получить текст, нужно знать кодировку; чтобы получить
+числа и записи, нужно ещё знать формат текста. Работа с файлом включает
+несколько отдельных решений: обозначить путь, открыть ресурс, прочитать/записать
+данные, разобрать формат, закрыть ресурс и сообщить о возможном отказе.
+
+**Предпосылки:** строки, массивы, исключения; для ленивого чтения строк — streams:
+@sec-theory-s1-map-strings, @sec-theory-s1-map-arrays,
+@sec-theory-s1-exceptions, @sec-theory-s1-functional-streams.
+**Результат:** выбрать байтовое или символьное API, явно задать UTF-8,
+различить путь и файл, читать строки с правильным временем жизни ресурса
+и определить состояние результата после ошибки.
+Справочник: @handbook:sec-handbook-s1-io.
+Работа: @tasks:sec-tasks-s1-lab-10; банк: @tasks:sec-tasks-s1-bank-io.
+
+## Уровни: байт, символ, строка, запись {#sec-theory-s1-io-encoding}
+
+Основа — Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл. 10,
+с. 290–294 (PDF 292–296). Фрагмент с. 290, с восстановленными переносами:
+
+> Все потоки ввода последовательности байтов являются подклассами
+> абстрактного класса InputStream, потоки вывода — подклассами абстрактного
+> класса OutputStream. При работе с файлами используются подклассы этих
+> классов, соответственно, FileInputStream и FileOutputStream, конструкторы
+> которых открывают поток и связывают его с соответствующим физическим файлом.
+
+Байтовое копирование не интерпретирует содержимое: пригодно для изображения,
+архива и текста, если требуется точная копия. `Reader`/`Writer` работают с
+символьным уровнем Java; `InputStreamReader`/`OutputStreamWriter` связывают
+его с байтами через кодировку. UTF-8 использует переменное число байтов на
+кодовую точку. Java `char` — UTF-16 code unit, поэтому supplementary character
+в строке занимает два char. Ни byte, ни char не является универсальным
+«одним видимым символом».
+
+`EncodingBoundary.java` — авторская коррекция к побайтовому чтению Шилдта,
+гл. 10, с. 381–382: вместо `(char)byte` используется явное UTF-8 декодирование.
+
+```java
+import java.nio.charset.StandardCharsets;
+public class EncodingBoundary {
+    public static void main(String[] args) {
+        String text = "Я🙂";
+        byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+        System.out.println(bytes.length);
+        System.out.println(text.length());
+        System.out.println(text.codePointCount(0, text.length()));
+        System.out.println(new String(bytes, StandardCharsets.UTF_8));
+    }
+}
+```
+
+Вывод: `6`, `3`, `2`, `Я🙂`. Кириллическая буква занимает два UTF-8 байта,
+эмодзи — четыре. В UTF-16 буква занимает одну code unit, эмодзи — две.
+Приведение каждого прочитанного байта к char не выполняет декодирования.
+Оно подходит только для специально ограниченного ASCII-примера, но не для
+общего текстового файла. Обработка отдельных буферов также не должна
+разрывать многобайтовую последовательность: decoder/Reader хранит её состояние.
+
+## read и признак конца {#sec-theory-s1-io-byte-read}
+
+`InputStream.read()` возвращает int: `0..255` для байта или `-1` для конца.
+Если сразу привести результат к byte, значение 255 станет `-1`, и различие
+с EOF потеряется. При буферном чтении результат — количество прочитанных
+байтов, которое может быть меньше длины буфера. Записывайте именно это
+количество; иначе на последнем шаге добавите старый хвост буфера.
+`available()` не является размером файла и не служит условием полного обхода.
+
+`ByteReadDemo.java` — авторский разбор протокола EPAM, с. 290–293:
+вместо внешнего файла известные байты помещены в память.
+
+```java
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+public class ByteReadDemo {
+    public static void main(String[] args) throws IOException {
+        byte[] data = {0, (byte) 255, 65};
+        try (ByteArrayInputStream input = new ByteArrayInputStream(data)) {
+            int value;
+            while ((value = input.read()) != -1) System.out.println(value);
+        }
+    }
+}
+```
+
+Вывод: `0`, `255`, `65`. Нулевой байт — данные, а не конец;
+255 тоже данные. Пустой массив даст ноль строк. Форма
+`while ((value = input.read()) != -1)` отделяет чтение от проверки EOF.
+
+## Два ресурса: точное копирование {#sec-theory-s1-io-copy}
+
+Шилдт, *Java: руководство для начинающих*, 9-е изд., перевод Ю. Н. Артеменко,
+2023 (JDK 17), гл. 10, с. 381 (PDF 382), объясняет TWR. Фрагмент почти
+без редакции, с восстановленными OCR-пробелами:
+
+> Когда блок try заканчивается, ресурс автоматически освобождается.
+> В случае файла это означает автоматическое закрытие файла.
+> (Соответственно нет необходимости явно вызывать метод close().)
+> Оператор try с ресурсами может также содержать конструкции catch и finally.
+
+`CopyFile.java` — программа Шилдта с. 383 (PDF 384), почти без изменений:
+исправлены OCR `FilelnputStream`/`! =`, восстановлена строка подсказки,
+класс сделан public для именованного файла. Сохранены два ресурса и цикл
+по одному байту. Аргументы должны задавать **разные файлы**; целевой файл
+будет создан или усечён при открытии. Для демонстрации используйте новую копию.
+
+```java
+import java.io.*;
+public class CopyFile {
+    public static void main(String[] args) throws IOException {
+        int i;
+        if (args.length != 2) {
+            System.out.println("Использование: CopyFile исходный-файл целевой-файл");
+            return;
+        }
+        try (FileInputStream fin = new FileInputStream(args[0]);
+             FileOutputStream fout = new FileOutputStream(args[1])) {
+            do {
+                i = fin.read();
+                if (i != -1) fout.write(i);
+            } while (i != -1);
+        } catch (IOException exc) {
+            System.out.println("Ошибка ввода-вывода: " + exc);
+        }
+    }
+}
+```
+
+Если `input.txt` содержит UTF-8 текст `Я🙂` и перевод строки LF,
+запуск `java CopyFile input.txt copy.txt` ничего не печатает при успехе,
+а `copy.txt` содержит те же 7 байтов. Код не знает про кириллицу и эмодзи;
+они сохраняются именно благодаря копированию без интерпретации.
+При отсутствии input исключение перехватывается; текст системной части
+сообщения зависит от ОС. Сначала открывается fin, потом fout; если второе
+открытие отказало, уже открытый fin закрывается.
+
+Цена простоты — много мелких чтений и записей. Для собственного копирования
+можно использовать буфер: читать `byte[]`, пока результат не равен -1,
+затем `write(buffer,0,count)`. Для обычной утилиты без преобразования
+содержимого есть `Files.copy`. Ни ручной цикл, ни обычный `Files.copy`
+не гарантируют транзакционный откат: после ошибки назначения возможен
+частичный файл. Политика замены и удаления частичного результата должна
+быть согласована отдельно.
+
+## Path обозначает имя, Files выполняет действие {#sec-theory-s1-io-path}
+
+EPAM, с. 295–298, рассматривает File/Path/Files. `Path` — объект пути,
+его создание само по себе не создаёт файл и не проверяет существование.
+`Path.of("data", "res.txt")` выражает компоненты с разделителем нужной файловой
+системы, поэтому удобнее буквальной строки `"data\\res.txt"` для переносимого
+курса. Относительный путь интерпретируется от рабочей директории процесса,
+а не обязательно от каталога исходного файла Java.
+
+`PathNames.java` — адаптация именования пути EPAM, с. 299–300:
+заменены устаревшие/платформенные строковые формы, показана чисто лексическая операция.
+
+```java
+import java.nio.file.Path;
+public class PathNames {
+    public static void main(String[] args) {
+        Path path = Path.of("data", "temporary", "..", "res.txt");
+        System.out.println(path.normalize().getFileName());
+        System.out.println(path.isAbsolute());
+        System.out.println(path.normalize().getNameCount());
+    }
+}
+```
+
+Вывод: `res.txt`, `false`, `2`. `normalize()` убирает избыточные компоненты
+имени, не обращаясь к файлу. При символических ссылках лексическая нормализация
+может обозначить иной объект, поэтому для реального существующего пути есть
+`toRealPath()`, которое выполняет IO и может отказать.
+`Files.exists` удобно для отображения состояния, но не заменяет обработку
+самого открытия: между проверкой и действием файл может измениться.
+
+## Весь текст или построчное чтение {#sec-theory-s1-io-text}
+
+Для небольшого текста `Files.readString(path, UTF_8)` получает одну строку
+с переводами строк; `readAllLines(path, UTF_8)` получает список строк
+без их разделителей. API само закрывает внутренний ресурс до возврата.
+Оба варианта помещают весь результат в память.
+
+`ReadStringMain1.java` адаптирован по EPAM, с. 299 (PDF 301): сохранено
+`readAllLines` с явной UTF-8; путь получен из аргумента, неуспешный ввод
+не превращается в фиктивный список, добавлена подсказка запуска.
+
+```java
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+public class ReadStringMain1 {
+    public static void main(String[] args) {
+        if (args.length != 1) {
+            System.out.println("Usage: ReadStringMain1 text-file");
+            return;
+        }
+        try {
+            List<String> lines = Files.readAllLines(Path.of(args[0]), StandardCharsets.UTF_8);
+            System.out.println(lines);
+        } catch (IOException e) {
+            System.out.println("Read failed: " + e.getClass().getSimpleName());
+        }
+    }
+}
+```
+
+Для файла `lines.txt` с байтами UTF-8 `java\nЯ🙂\n` вывод `[java, Я🙂]`.
+Разделители LF не входят в элементы; последняя завершающая LF не добавляет
+пустую третью строку. Пустая строка **между** двумя разделителями даст пустой
+элемент. Пустой файл даёт `[]`. Обратная запись через `write(lines)` может
+использовать разделитель ОС, поэтому это преобразование текста, а не точная
+копия байтов.
+
+Для большого файла используйте BufferedReader. Он сглаживает мелкие чтения;
+`readLine()` возвращает строку без разделителя, а `null` означает EOF.
+Пустая строка `""` не равна EOF. У buffered writer данные могут оставаться
+в буфере до flush/close; `flush` не закрывает ресурс и не обещает
+физической устойчивости хранения.
+
+`BufferedLines.java` — авторское завершение схем чтения EPAM, с. 298–300.
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+public class BufferedLines {
+    public static void main(String[] args) throws IOException {
+        if (args.length != 1) throw new IllegalArgumentException("one file required");
+        try (BufferedReader reader = Files.newBufferedReader(Path.of(args[0]), StandardCharsets.UTF_8)) {
+            String line;
+            int number = 0;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(++number + ":" + line);
+            }
+        }
+    }
+}
+```
+
+Для `java\nЯ🙂\n` вывод `1:java`, `2:Я🙂`.
+При ошибке чтения метод передаст IOException; уже открытый reader закроется.
+Напечатанные до ошибки строки не откатываются: если нужен целый успешный
+результат, сначала собирайте/проверяйте данные, затем публикуйте их.
+
+## Ленивые строки и их владелец {#sec-theory-s1-io-lines}
+
+`ReadStringMain4.java` адаптирован по соседнему корректному примеру EPAM,
+с. 300 (PDF 302): сохранены `Files.lines` внутри TWR и `joining`;
+добавлены явная UTF-8, разделитель `" | "`, аргумент и обработка
+`UncheckedIOException` во время ленивого чтения.
+
+```java
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+public class ReadStringMain4 {
+    public static void main(String[] args) {
+        if (args.length != 1) throw new IllegalArgumentException("one file required");
+        try (Stream<String> streamLines = Files.lines(Path.of(args[0]), StandardCharsets.UTF_8)) {
+            String result = streamLines.collect(Collectors.joining(" | "));
+            System.out.println(result);
+        } catch (IOException | UncheckedIOException e) {
+            System.out.println("Read failed: " + e.getClass().getSimpleName());
+        }
+    }
+}
+```
+
+Для `java\nЯ🙂\n` вывод `java | Я🙂`. Открытие может бросить checked
+IOException; последующее чтение внутри terminal operation может бросить
+UncheckedIOException. Короткое замыкание не отменяет обязанности close.
+Сбор через joining сохраняет весь итог в памяти, хотя чтение источника лениво.
+
+**Поправка к EPAM с. 300:** `Files.newBufferedReader(path).lines()` нельзя
+помещать в TWR только как Stream и считать reader закрытым. У `reader.lines()`
+закрытие stream не гарантирует закрытие reader. Нужно объявить сам
+BufferedReader ресурсом, как в предыдущем примере, и выполнять обработку
+его `lines()` до выхода из try, либо использовать `Files.lines` как выше.
+Не возвращайте незавершённый ленивый stream из блока, который уже закрыл reader.
+
+## Ошибка кодировки и ошибка формата {#sec-theory-s1-io-errors}
+
+Путь не существует, байты не являются корректной UTF-8, строка не является
+числом — три разных отказа. Выбор кодировки не проверяет формат числа.
+`new String(bytes,UTF_8)` заменяет некорректные последовательности;
+если требуется обнаружить испорченный ввод, используйте decoder с `REPORT`
+или документированное файловое API, которое сообщает такую ошибку.
+
+`StrictUtf8.java` — авторская проверка границы декодирования:
+
+```java
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
+public class StrictUtf8 {
+    public static void main(String[] args) {
+        byte[] invalid = {(byte) 0xC3, 0x28};
+        try {
+            System.out.println(StandardCharsets.UTF_8.newDecoder()
+                    .onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT)
+                    .decode(ByteBuffer.wrap(invalid)));
+        } catch (CharacterCodingException e) {
+            System.out.println("invalid UTF-8");
+        }
+    }
+}
+```
+
+Вывод `invalid UTF-8`. После ведущего байта C3 нужен continuation byte,
+но 28 им не является. Вариант `0xC3,0xA9` даст `é`.
+Для файловых чисел отдельно задайте разделитель, локаль, допустимый диапазон
+и проверку полного разбора строки. Не публикуйте частично разобранный массив
+как успешный результат без такого контракта.
+
+## Самопроверка {#sec-theory-s1-io-check}
+
+1. Почему копирование байтов сохраняет UTF-8 текст без знания букв?
+2. Чем `read() == -1` отличается от нулевого байта и пустой строки?
+3. Создаёт ли `Path.of(...)` файл и что делает normalize?
+4. Кто закрывает `readAllLines`, `Files.lines` и `reader.lines`?
+5. Почему IOException и UncheckedIOException встречаются в одной операции?
+6. Восстанавливается ли прежний целевой файл после отказа CopyFile?
+
+::: {.callout-note collapse="true" title="Ответы и объяснения"}
+1. Сохраняется сама закодированная последовательность байтов; декодирование
+   нужно только для интерпретации/преобразования текста.
+2. -1 — EOF байтового read; 0 — допустимые данные; `""` — строка нулевой длины.
+3. Нет. Это обозначение пути; normalize лексически устраняет лишние компоненты.
+4. Весь readAllLines закрывается внутри API. Files.lines закрывает вызывающий
+   код через TWR. Для reader.lines ресурсом должен оставаться сам reader.
+5. Открытие непосредственно объявляет checked отказ; ленивый traversal Stream
+   не объявляет IOException и оборачивает поздний отказ в unchecked форму.
+6. Нет, отката нет; файл может быть усечён/частично заполнен. Для сохранения
+   предыдущего результата нужен отдельный протокол записи и замены.
+:::
+
+Исследования: @tasks:sec-tasks-s1-essay-resource-failure-preservation,
+@tasks:sec-tasks-s1-essay-utf8-byte-text-boundary.
+Практические условия: @tasks:sec-tasks-s1-bank-io.
+
+## Источники и границы {#sec-theory-s1-io-sources}
+
+EPAM: Блинов, Романчик, 2-е изд., 2021, гл. 10, с. 290–301.
+Шилдт: 9-е изд., 2023, гл. 10, с. 380–384. Из пользовательских PDF сохранены
+фрагменты и почти исходный двухресурсный CopyFile; чтение строк адаптировано
+с явной UTF-8 и исправлением владения reader. Сериализация объектов,
+сеть и асинхронный ввод-вывод не входят в эту главу.
+Java 25/API и адресные ограничения методов:
+@handbook:sec-handbook-s1-io.

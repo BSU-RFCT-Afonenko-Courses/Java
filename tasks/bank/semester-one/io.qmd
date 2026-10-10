@@ -7,6 +7,8 @@ default-exercise-statement-visibility: open
 
 # Ввод-вывод {#sec-tasks-s1-bank-io}
 
+Теория: @theory:sec-theory-s1-io; точные контракты: @handbook:sec-handbook-s1-io.
+
 Канонические условия. Порядок выбора задаёт лабораторная работа;
 время каждой карточки — рабочая оценка, включая чтение и самопроверку.
 Атрибуция: @tasks:sec-tasks-s1-bank-sources.
@@ -14,7 +16,7 @@ default-exercise-statement-visibility: open
 :::: {#exr-tasks-s1-byte-file-copy difficulty="introductory" time="45"}
 ## Копирование файла: байтовые потоки
 
-Подготовка: @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-map-exceptions.
+Подготовка: @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-exceptions.
 
 Напишите программу, которая копирует текстовый файл. Пусть в процессе она преобразует все пробелы в дефисы. Воспользуйтесь классами потоков байтовых данных для файлов. Примените традиционный подход к закрытию файла, явно вызывая метод close(). Для учебных текстовых файлов используйте UTF-8.
 
@@ -68,7 +70,7 @@ default-exercise-statement-visibility: open
 :::: {#exr-tasks-s1-transpose-file-matrix difficulty="intermediate" time="45"}
 ## Матрица из файла и транспонирование
 
-Подготовка: @theory:sec-theory-s1-map-arrays, @theory:sec-theory-s1-map-exceptions.
+Подготовка: @theory:sec-theory-s1-map-arrays, @theory:sec-theory-s1-exceptions.
 
 Для вывода результатов создайте новую директорию и файл средствами класса File. Входной файл содержит совокупность строк. Строка файла содержит строку квадратной матрицы. Введите матрицу в двумерный массив, самостоятельно определив её размер. Выведите исходную матрицу и результат её транспонирования.
 
@@ -95,7 +97,7 @@ default-exercise-statement-visibility: open
 :::: {#exr-tasks-s1-poem-word-frequency difficulty="intermediate" time="60"}
 ## Частота слов в строках стихотворения
 
-Подготовка: @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-map-collections, @theory:sec-theory-s1-map-exceptions.
+Подготовка: @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-collections, @theory:sec-theory-s1-exceptions.
 
 Введите последовательность строк из текстового файла; строка может содержать несколько слов. Имена входного и выходного файлов и пути к ним передавайте как параметры командной строки. В каждой строке стихотворения Максима Богдановича подсчитайте частоту повторяемости каждого слова из заданного списка и выведите эти слова в порядке возрастания частоты повторяемости.
 
@@ -122,7 +124,7 @@ default-exercise-statement-visibility: open
 :::: {#exr-tasks-s1-poem-letter-word-frequency difficulty="intermediate" time="60"}
 ## Частота букв и слов в стихотворении
 
-Подготовка: @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-map-collections, @theory:sec-theory-s1-map-exceptions.
+Подготовка: @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-collections, @theory:sec-theory-s1-exceptions.
 
 Введите последовательность строк из текстового файла; строка может содержать несколько слов. Имена входного и выходного файлов и пути к ним передавайте как параметры командной строки. Определите частоту повторяемости букв и слов в стихотворении Адама Мицкевича.
 
@@ -149,7 +151,7 @@ default-exercise-statement-visibility: open
 :::: {#exr-tasks-s1-compare-files difficulty="introductory" time="45"}
 ## Утилита сравнения файлов
 
-Подготовка: @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-map-exceptions.
+Подготовка: @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-exceptions.
 
 Создайте утилиту `CompFiles`, предназначенную для сравнения двух файлов. При запуске имена файлов передаются в командной строке. Утилита открывает оба файла, затем читает и сравнивает соответствующие байты. При обнаружении несовпадения файлы считаются различными. Если концы файлов достигнуты одновременно и несовпадений не было, файлы считаются совпадающими. Используйте `try` с ресурсами для автоматического закрытия файлов.
 
@@ -178,7 +180,7 @@ default-exercise-statement-visibility: open
 :::: {#exr-tasks-s1-sort-file-numbers difficulty="intermediate" time="45"}
 ## Сортировка чисел в файле
 
-Подготовка: @theory:sec-theory-s1-map-arrays, @theory:sec-theory-s1-map-exceptions.
+Подготовка: @theory:sec-theory-s1-map-arrays, @theory:sec-theory-s1-exceptions.
 
 Для вывода результатов создайте новую директорию и файл средствами класса File. В текстовом файле содержатся целые числа. Прочитайте их и запишите содержимое в новый файл, отсортировав по возрастанию.
 
@@ -205,7 +207,7 @@ default-exercise-statement-visibility: open
 :::: {#exr-tasks-s1-final-line-words difficulty="intermediate" time="45"}
 ## Последние слова последних строк
 
-Подготовка: @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-map-exceptions.
+Подготовка: @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-exceptions.
 
 Для вывода результатов создайте новую директорию и файл средствами класса File. Введите из текстового файла, связанного с входным потоком, последовательность строк. Выберите и сохраните m последних слов в каждой из последних n строк.
 
@@ -232,7 +234,7 @@ default-exercise-statement-visibility: open
 :::: {#exr-tasks-s1-remove-short-words difficulty="intermediate" time="45"}
 ## Удаление чётного количества коротких слов
 
-Подготовка: @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-map-exceptions.
+Подготовка: @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-exceptions.
 
 Для вывода результатов создайте новую директорию и файл средствами класса File. Из файла удалите все слова, содержащие от трёх до пяти символов, но при этом из каждой строки должно быть удалено только максимальное чётное количество таких слов.
 
@@ -259,7 +261,7 @@ default-exercise-statement-visibility: open
 :::: {#exr-tasks-s1-phone-owner-records difficulty="intermediate" time="45"}
 ## Телефоны и владельцы
 
-Подготовка: @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-map-exceptions.
+Подготовка: @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-exceptions.
 
 Для вывода результатов создайте новую директорию и файл средствами класса File. Сохраните в файл, связанный с выходным потоком, записи о телефонах и их владельцах. Выведите в файл записи, телефоны в которых начинаются на k и на j.
 
@@ -286,7 +288,7 @@ default-exercise-statement-visibility: open
 :::: {#exr-tasks-s1-matching-line-numbers difficulty="introductory" time="30"}
 ## Номера совпадающих строк
 
-Подготовка: @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-map-exceptions.
+Подготовка: @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-exceptions.
 
 Для вывода результатов создайте новую директорию и файл средствами класса File. В файле содержится совокупность строк. Найдите номера строк, совпадающих с заданной строкой. Имя файла и строка для поиска — аргументы командной строки. Выведите строки файла и номера строк, совпадающих с заданной.
 
@@ -313,7 +315,7 @@ default-exercise-statement-visibility: open
 :::: {#exr-tasks-s1-disk-help-menu difficulty="advanced" time="75"}
 ## Справочная система, использующая диск
 
-Подготовка: @theory:sec-theory-s1-map-control-statements, @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-classes-methods, @theory:sec-theory-s1-map-exceptions.
+Подготовка: @theory:sec-theory-s1-map-control-statements, @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-classes-methods, @theory:sec-theory-s1-exceptions.
 
 Создайте справочную систему, которая хранит сведения в обычном текстовом файле `helpfile.txt`, позволяя изменять и расширять справку без изменения кода программы. Пользователь вводит название темы; программа находит эту тему в файле и отображает соответствующую информацию.
 
@@ -344,7 +346,7 @@ default-exercise-statement-visibility: open
 :::: {#exr-tasks-s1-remove-java-comments difficulty="advanced" time="90"}
 ## Удаление комментариев из Java-программы
 
-Подготовка: @theory:sec-theory-s1-map-control-statements, @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-map-exceptions.
+Подготовка: @theory:sec-theory-s1-map-control-statements, @theory:sec-theory-s1-map-strings, @theory:sec-theory-s1-exceptions.
 
 Для вывода результатов создайте новую директорию и файл средствами класса File. Из текста Java-программы удалите все виды комментариев. Результат сохраните в новый текстовый файл.
 
