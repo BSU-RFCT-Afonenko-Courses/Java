@@ -17,6 +17,13 @@ project:
   - '!**/_*.qmd'
   - '!_freeze/**'
   - '!.quarto/**'
+  - '!**/*.qmd'
+  - '!**/*.rmd'
+  - '!**/*.ipynb'
+  - '!**/_output/**'
+  - '!**/_site*/**'
+  - '!**/_generated/**'
+  - '!**/.superpowers/**'
 book:
   title: Теория Java
   subtitle: Язык, инструменты и разработка приложений
@@ -24,10 +31,6 @@ book:
   page-navigation: true
   sidebar:
     collapse-level: 1
-    tools:
-    - icon: house
-      href: ../index.html#sec-portal
-      text: Навигация курса
   chapters:
   - index.qmd
   - part: Основы языка и платформы Java (Core Java)
@@ -99,13 +102,10 @@ profile:
   group:
   - - student
     - full
-course:
-  id: java-book
 filters:
 - course-core
 - course-presentation
 - reference-catalog
 reference-catalog:
   namespace: theory
-course-presentation:
-  mode: study
+fail-if-warnings: true

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="360" viewBox="0 0 960 360" role="img" aria-labelledby="title desc">
+  <title id="title">Выбор переопределённого метода по фактическому классу объекта</title>
+  <desc id="desc">Ссылка p указывает на объект Child. Объект связан с метаданными класса Child, которые выбирают реализацию Child.name. Поля экземпляра и общий код метода находятся отдельно.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#235789"/></marker>
+    <style>text{font-family:system-ui,sans-serif;fill:#172b4d} .heading{font-size:20px;font-weight:600}.label{font-size:17px}.code{font-family:monospace;font-size:18px}.box{fill:#f7faff;stroke:#235789;stroke-width:2;rx:12}.line{fill:none;stroke:#235789;stroke-width:3;marker-end:url(#arrow)}.note{font-size:15px;fill:#475569}</style>
+  </defs>
+  <rect x="1" y="1" width="958" height="358" rx="16" fill="white" stroke="#d5deea"/>
+  <text x="44" y="50" class="heading">Ссылка</text>
+  <text x="228" y="50" class="heading">Объект</text>
+  <text x="476" y="50" class="heading">Метаданные класса</text>
+  <text x="766" y="50" class="heading">Код метода</text>
+  <rect x="38" y="120" width="115" height="72" class="box"/>
+  <text x="58" y="148" class="code">Base p</text><text x="57" y="174" class="note">ссылка</text>
+  <rect x="215" y="95" width="185" height="150" class="box"/>
+  <text x="237" y="128" class="code">Child</text><path d="M215 143 H400" stroke="#a8bbd0"/>
+  <text x="237" y="174" class="label">класс →</text><text x="237" y="211" class="label">поля экземпляра</text>
+  <rect x="467" y="95" width="224" height="150" class="box"/>
+  <text x="487" y="128" class="code">Child</text><path d="M467 143 H691" stroke="#a8bbd0"/>
+  <text x="487" y="176" class="code">Base.name</text><text x="487" y="207" class="label">→ Child.name</text>
+  <rect x="755" y="150" width="174" height="95" class="box"/>
+  <text x="773" y="185" class="code">Child.name</text><text x="773" y="215" class="note">общая реализация</text>
+  <path d="M153 156 H207" class="line"/><path d="M370 168 H459" class="line"/><path d="M691 199 H747" class="line"/>
+  <text x="44" y="300" class="label">p.name() → фактический класс Child → выбранная реализация Child.name</text>
+  <text x="44" y="331" class="note">Упрощённая схема: общий код метода хранится отдельно от полей каждого экземпляра.</text>
+</svg>

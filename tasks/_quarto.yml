@@ -11,7 +11,7 @@ project:
   output-dir: _output
   resources:
   - '!**/projects/**'
-  - '!**/_control.qmd'
+  - '!assessments/**'
   - '!_generated/**'
   - '!tools/**'
   - '!docs/**'
@@ -19,6 +19,13 @@ project:
   - '!**/_*.qmd'
   - '!_freeze/**'
   - '!.quarto/**'
+  - '!**/*.qmd'
+  - '!**/*.rmd'
+  - '!**/*.ipynb'
+  - '!**/_output/**'
+  - '!**/_site*/**'
+  - '!**/_generated/**'
+  - '!**/.superpowers/**'
 profile:
   default: student
   group:
@@ -27,17 +34,41 @@ profile:
 course:
   adapters:
   - prairielearn
-  id: java-essays
-course-pedagogy:
-  document-defaults: true
-work-mode: individual
 prairielearn:
   assessment-defaults:
     attempts: 3
+    question-points: 1
     pass:
       at-least: 2
     assignment:
       mode: assessment-id
+  delivery:
+    book: tasks
+    course:
+      name: JAVA
+      title: Программирование на Java
+      timezone: Europe/Minsk
+      topics:
+      - name: Java
+        color: blue2
+        description: Программирование на Java 25
+    instances:
+      pilot:
+        publishing:
+          start-date: "1970-01-01T00:00:00Z"
+          end-date: "9999-12-31T00:00:00Z"
+        title: Локальный пилот Java 25
+        self-enrollment: false
+        works:
+        - sec-lab-numbers
+        - sec-pl-java25-pilot
+        - sec-essay-charset-decoding-control
+  question-defaults:
+    topic: Java
+    single-variant: true
+    submission:
+      mode: editor
+      ace-mode: ace/mode/java
 filters:
 - course-core
 - course-presentation
@@ -45,99 +76,29 @@ filters:
 - course-prairielearn
 - reference-catalog
 book:
-  title: Задания и исследования по Java
+  title: Задания по Java
   chapters:
   - index.qmd
-  - part: numbers/index.qmd
+  - part: Лабораторные работы
     chapters:
-    - numbers/integer-promotions/index.qmd
-    - numbers/cyclic-indices/index.qmd
-    - numbers/floating-equality/index.qmd
-    - numbers/boxing-null/index.qmd
-    - numbers/evaluation-order/index.qmd
-  - part: text-arrays/index.qmd
+    - exercises/numbers.qmd
+  - part: essays.qmd
     chapters:
-    - text-arrays/unicode-codepoints/index.qmd
-    - text-arrays/normalization-locale/index.qmd
-    - text-arrays/string-identity/index.qmd
-    - text-arrays/array-covariance/index.qmd
-    - text-arrays/matrix-copying/index.qmd
-    - text-arrays/unicode-demonstration/index.qmd
-  - part: object-model/index.qmd
+    - essays/numbers.qmd
+    - essays/text-arrays.qmd
+    - essays/object-model.qmd
+    - essays/generics-collections.qmd
+    - essays/functional-processing.qmd
+    - essays/failures-boundaries.qmd
+    - essays/shared-state.qmd
+    - essays/task-lifecycle.qmd
+    - essays/collection-contracts.qmd
+    - essays/io-networking.qmd
+    - essays/runtime-types.qmd
+    - essays/lifecycle-measurement.qmd
+  - part: Учебные демонстрации
     chapters:
-    - object-model/overload-dispatch/index.qmd
-    - object-model/construction/index.qmd
-    - object-model/equality-inheritance/index.qmd
-    - object-model/record-components/index.qmd
-    - object-model/sealed-switch/index.qmd
-  - part: generics-collections/index.qmd
-    chapters:
-    - generics-collections/generic-variance/index.qmd
-    - generics-collections/type-erasure/index.qmd
-    - generics-collections/mutable-keys/index.qmd
-    - generics-collections/sorted-equality/index.qmd
-    - generics-collections/views-snapshots/index.qmd
-  - part: functional-processing/index.qmd
-    chapters:
-    - functional-processing/lambda-capture/index.qmd
-    - functional-processing/stream-laziness/index.qmd
-    - functional-processing/reduction-laws/index.qmd
-    - functional-processing/optional-evaluation/index.qmd
-    - functional-processing/map-collisions/index.qmd
-  - part: failures-boundaries/index.qmd
-    chapters:
-    - failures-boundaries/finally-control/index.qmd
-    - failures-boundaries/suppressed-exceptions/index.qmd
-    - failures-boundaries/failure-atomicity/index.qmd
-    - failures-boundaries/constant-inlining/index.qmd
-    - failures-boundaries/charset-decoding/index.qmd
-  - part: shared-state/index.qmd
-    chapters:
-    - shared-state/safe-publication/index.qmd
-    - shared-state/atomic-invariants/index.qmd
-    - shared-state/monitor-protocols/index.qmd
-    - shared-state/cooperative-interruption/index.qmd
-    - shared-state/lock-order/index.qmd
-  - part: task-lifecycle/index.qmd
-    chapters:
-    - task-lifecycle/executor-progress/index.qmd
-    - task-lifecycle/future-composition/index.qmd
-    - task-lifecycle/timeouts-cancellation/index.qmd
-    - task-lifecycle/thread-context/index.qmd
-    - task-lifecycle/virtual-resource-limits/index.qmd
-  - part: collection-contracts/index.qmd
-    chapters:
-    - collection-contracts/concurrent-map/index.qmd
-    - collection-contracts/iteration-models/index.qmd
-    - collection-contracts/collector-laws/index.qmd
-    - collection-contracts/spliterator-contract/index.qmd
-    - collection-contracts/comparator-laws/index.qmd
-  - part: io-networking/index.qmd
-    chapters:
-    - io-networking/tcp-framing/index.qmd
-    - io-networking/socket-half-close/index.qmd
-    - io-networking/http-outcomes/index.qmd
-    - io-networking/bytebuffer-state/index.qmd
-    - io-networking/path-resolution/index.qmd
-  - part: runtime-types/index.qmd
-    chapters:
-    - runtime-types/classloader-identity/index.qmd
-    - runtime-types/reflective-types/index.qmd
-    - runtime-types/module-access/index.qmd
-    - runtime-types/dynamic-proxies/index.qmd
-    - runtime-types/binary-compatibility/index.qmd
-  - part: lifecycle-measurement/index.qmd
-    chapters:
-    - lifecycle-measurement/time-models/index.qmd
-    - lifecycle-measurement/serialization-graphs/index.qmd
-    - lifecycle-measurement/explicit-cleanup/index.qmd
-    - lifecycle-measurement/microbenchmark-design/index.qmd
-    - lifecycle-measurement/regex-literals/index.qmd
-  sidebar:
-    tools:
-    - icon: house
-      href: ../index.html#sec-portal
-      text: Навигация курса
+    - demonstrations/unicode.qmd
 format:
   html:
     theme: cosmo
@@ -146,40 +107,102 @@ format:
     number-depth: 1
     code-copy: true
     code-tools: false
+    toc-depth: 2
 lang: ru
-project-download:
-  resources:
-    exr-essay-charset-decoding-experiment:
-      path: failures-boundaries/charset-decoding/projects/experiment/student
-      profiles:
-      - full
-      exclude:
-      - '**/.*'
-    exr-essay-charset-decoding-implementation:
-      path: failures-boundaries/charset-decoding/projects/implementation/student
-      profiles:
-      - full
-      exclude:
-      - '**/.*'
-    exr-essay-charset-decoding-test-design:
-      path: failures-boundaries/charset-decoding/projects/test-design/student
-      profiles:
-      - full
-      exclude:
-      - '**/.*'
-    exr-essay-unicode-demonstration-experiment:
-      path: text-arrays/unicode-demonstration/projects/experiment/student
-      exclude:
-      - '**/.*'
-    exr-essay-unicode-demonstration-implementation:
-      path: text-arrays/unicode-demonstration/projects/implementation/student
-      exclude:
-      - '**/.*'
-    exr-essay-unicode-demonstration-test-design:
-      path: text-arrays/unicode-demonstration/projects/test-design/student
-      exclude:
-      - '**/.*'
 reference-catalog:
   namespace: tasks
-course-presentation:
-  mode: study
+fail-if-warnings: true
+project-download:
+  course-model: true
+project-checks:
+  defaults:
+    runtime: java25-junit-v1
+    java:
+      release: 25
+      encoding: UTF-8
+      compiler-options:
+      - -proc:none
+      - -Xmaxerrs
+      - '5'
+    limits:
+      outer-seconds: 30
+      networking: false
+      max-output-bytes: 65536
+    scoring:
+      mode: weighted
+    references:
+    - name: default
+      root: reference
+      optional: true
+    verification-tests:
+    - student/src/test/java/**/*Test.java
+    contract-cases: tests/contract-cases.json
+    verification-expectations:
+      reference:
+        student-compilation: success
+        job: complete
+        required-tests: all-pass
+      starter:
+        student-compilation: success
+        job: complete
+    discovery:
+      min-executed: 1
+      allow-skipped: false
+  source-profiles:
+    java-main:
+      mode: implementation
+      root: student/src/main/java
+      include:
+      - '**/*.java'
+    java-root:
+      mode: implementation
+      root: student
+      include:
+      - '*.java'
+    java-tests:
+      mode: student-tests
+      root: student/src/test/java
+      include:
+      - '**/*.java'
+  profiles:
+    java25-junit:
+      source-profile: java-main
+      tests:
+      - tests/junit/**/*.java
+      - tests/*Test.java
+    java25-junit-root:
+      source-profile: java-root
+      tests:
+      - tests/junit/**/*.java
+      - tests/*Test.java
+    java25-pilot:
+      source-profile: java-root
+      tests:
+      - tests/junit/**/*.java
+      scoring:
+        mode: all-pass
+    java25-mutation:
+      source-profile: java-tests
+      runtime: java25-mutation-v1
+      tests:
+      - tests/variants/**/*.java
+      verification-tests: []
+      variants:
+        correct:
+        - correct
+        - correctGenericException
+        mutants:
+        - alwaysReject
+        - emptyResult
+        - mutatesFailure
+        - mutatesSuccess
+        - rejectEmpty
+        - rejectFourByte
+        - rejectReplacement
+        - rejectThreeByte
+        - rejectTwoByte
+        - replacement
+        - unfinished
+        - wrongException
+      scoring:
+        mode: all-pass
