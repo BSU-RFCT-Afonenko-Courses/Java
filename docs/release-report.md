@@ -13,8 +13,10 @@ question-points: 1, attempts: 3, single-variant: true. Ожидаются все
 
 Целые опубликованные пакеты установлены штатным provider interface: Core 5.0.1,
 exporter 5.0.0, Download 3.0.0; site/QRC pins сохранены. Независимо проверены 968
-file/scope пар по составу, байтам, размерам и Git modes. Platform 1.0.0 source tag
-и опубликованные Java/Community digests закреплены в UPSTREAM и CI/toolchain.json.
+file/scope пар по составу, байтам, размерам и Git modes. Текущая Platform metadata
+version1.0.1 normal merged main source и фактически опубликованные Java/Community
+digests закреплены в UPSTREAM и CI/toolchain.json. Source v1.0.1 tag ещё ожидается;
+CI release gate закрыт до его фактической публикации.
 
 Сборка student/full/student и проверки DOM, ZIP, QRC и приватности выполняются
 отдельно от grading. Преподавательский текст перенесён на full-only teacher.qmd;

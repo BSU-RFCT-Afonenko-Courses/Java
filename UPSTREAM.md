@@ -27,16 +27,21 @@ schemas имеют version1; compiler/student failures и infrastructure outcome
 разделены. Host diagnostic, container authoritative. Runtime/source/version
 pins должны подтверждаться owner receipt и actual registry digest.
 
-Platform v1.0.0 опубликован из source commit
-`d85e16ef11ff2cc22b9bc1afdfbc76e5cda609be`. Runtime profiles закрепляют
-`ghcr.io/afonenko-course-tools/java25-grader@sha256:c464389a45e5e073b3d11844e23a5c295b4c1c345ca7bc9937618d9abde36bf3`.
-Community runtime опубликован как
-`ghcr.io/afonenko-course-tools/prairielearn-community-gateway@sha256:124e1e90f755184f868ed45bfa0d2c48552f154e33cdae8bc757df48abcd92a7`.
-Publication run 38057307347 собирал image source fc5a4d4e9d0795940b8cdf68e30e753ebfd27cec,
-runner source hash d0c94460f1bd23200cf05aa93bc9c9090126fe624ec38e000be8da96e02d6ce1.
-Tag и все Java profile digests независимо проверены по опубликованному Git source.
-Анонимный pull GHCR ещё ожидает изменения видимости пакетов владельцем; publication
-receipt сам по себе не подтверждает публичную переносимость.
+Текущая Platform metadata version1.0.1 закреплена на normal merged main source
+`0083e3e102f47860cabc1d1e62e6434353f5c4c6`. Образы фактически опубликованы: Java
+`ghcr.io/afonenko-course-tools/java25-grader@sha256:1084c3e254105383d476303a4983d70abef58cb046a4899f05339f1d13c9a9a6` и Community
+`ghcr.io/afonenko-course-tools/prairielearn-community-gateway@sha256:a1fd72637587782766d8f2f1fd37fad23b8a56ade7f5754b7f2f3bcfda50bc34`. Publication run38061254263 собирал
+image source `756d9dfb96fcb43cb02d499594a7408d174be16c`; runner source hash
+`3e6d45c783e3972aa02c294312244f6f81c284897418954a7653cf64bfe4a051`.
+Source runtime registry и durable publication assets независимо совпадают.
+Source tag v1.0.1 ещё не опубликован: CI/toolchain.json содержит tag:null и
+workflow не проходит release gate до фактического тега. Анонимный pull GHCR
+ожидает изменения видимости пакетов владельцем; publication receipt не
+подтверждает публичную переносимость.
+
+Исторический Platform v1.0.0 source tag остаётся
+`d85e16ef11ff2cc22b9bc1afdfbc76e5cda609be`; его прежние receipts не являются
+приёмкой текущего feedback runtime.
 
 CI закрепляет Quarto 1.11.5, CUE 0.17.1 и Java 25 в CI/toolchain.json и workflow.
 Source/OCI pins разделены: source release содержит окончательные published digests,
