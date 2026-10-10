@@ -1,0 +1,25 @@
+## Обобщение и самопроверка {#sec-lectures-s1-functional-streams-review}
+
+Лямбда реализует контракт, stream связывает преобразования. Укажите единицу данных на каждом шаге и свойства терминального результата.
+
+### Самостоятельный прогноз {#sec-lectures-s1-functional-streams-selfcheck}
+
+1. Кто задаёт тип лямбды?
+2. Можно ли повторно читать один stream?
+3. Что исправляет merge-функция toMap?
+4. Какие законы нужны для reduce?
+
+### Разбор самопроверки {#sec-lectures-s1-functional-streams-feedback}
+
+1. Target type в месте использования.
+2. Нет: новый обход требует нового stream.
+3. Определяет результат повторного ключа.
+4. Нейтральность identity и ассоциативность операции; для многопоточного объединения есть дополнительные требования.
+
+### Чтение и дальнейшая работа {#sec-lectures-s1-functional-streams-reading}
+
+Полное объяснение: @theory:sec-theory-s1-functional-streams.
+
+Сигнатуры и ограничения: @handbook:sec-handbook-s1-functional-streams.
+
+Полные примеры collectors и Optional: @theory:sec-theory-s1-functional-streams-collectors и @theory:sec-theory-s1-functional-streams-optional.

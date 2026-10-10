@@ -1,0 +1,357 @@
+---
+pagetitle: "Исключения: отказ, контракт и состояние"
+---
+
+# Исключения: отказ, контракт и состояние {#sec-theory-s1-exceptions}
+
+Метод обещает результат при выполнении своего контракта. Если обещание нельзя
+выполнить, нужно сообщить об отказе и определить состояние после него.
+Исключение переносит информацию об отказе к месту, которое способно принять
+решение: повторить ввод, отказаться от операции или завершить текущую работу.
+Сам механизм исключений не откатывает уже сделанные изменения.
+
+**Предпосылки:** методы, управление, классы и наследование:
+@sec-theory-s1-map-control-statements, @sec-theory-s1-map-classes-methods,
+@sec-theory-s1-map-inheritance-interfaces. **Результат:** различать `throw`,
+`throws`, `catch`; выбрать обработчик, сохранить причину и инвариант объекта,
+объяснить `finally` и исключения при закрытии ресурса.
+Справочник: @handbook:sec-handbook-s1-exceptions.
+Работа: @tasks:sec-tasks-s1-lab-10; банк: @tasks:sec-tasks-s1-bank-exceptions.
+
+## Исключение меняет путь выполнения {#sec-theory-s1-exceptions-flow}
+
+Основа — Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл. 9,
+с. 264–268 (PDF 266–270). Фрагмент с. 264, с восстановленными переносами:
+
+> При возникновении исключения в приложении создается объект, описывающий
+> это исключение. Затем текущий ход выполнения приложения останавливается,
+> и включается механизм обработки исключений. При этом ссылка на
+> объект-исключение передается обработчику исключений, который пытается
+> решить возникшую проблему и продолжить выполнение программы.
+
+Уточнение: бросить можно и уже существующий объект. Отказ прерывает текущую
+операцию; выполнение не продолжается с той строки, на которой возникло
+исключение. Обработчик получает управление, когда закончился прерываемый
+путь и выполнены необходимые блоки очистки. Если обработчик завершился
+обычно, программа продолжится после всей конструкции `try/catch`.
+Необработанное исключение завершает соответствующий поток исполнения;
+фраза книги об обязательной остановке всего приложения слишком широка.
+
+`ExceptionFlow.java` — авторское выделение механизма из EPAM, с. 264–268.
+
+```java
+public class ExceptionFlow {
+    static int parse(String text) {
+        System.out.println("parse " + text);
+        return Integer.parseInt(text);
+    }
+    public static void main(String[] args) {
+        try {
+            System.out.println("begin");
+            int value = parse("oops");
+            System.out.println("value " + value);
+        } catch (NumberFormatException e) {
+            System.out.println("invalid number");
+        }
+        System.out.println("after try");
+    }
+}
+```
+
+Вывод:
+
+```text
+begin
+parse oops
+invalid number
+after try
+```
+
+Строка `value ...` не достигается. Переменная `value` не получает результата
+неудачного вызова; сообщение обработчика не делает исходный ввод правильным.
+Вариант `parse("17")` даёт `begin`, `parse 17`, `value 17`, `after try`;
+catch тогда пропускается.
+
+## Throwable и проверяемость {#sec-theory-s1-exceptions-hierarchy}
+
+Все бросаемые объекты — `Throwable` или его подклассы. Две основные ветви —
+`Exception` и `Error`. `RuntimeException` наследует `Exception`.
+Непроверяемые типы — `RuntimeException`/его потомки и `Error`/его потомки;
+остальные бросаемые типы проверяемые.
+
+Проверяемость относится к **контролю компилятора**, а не к времени возникновения:
+любое реальное исключение возникает во время исполнения. Для checked exception
+компилятор требует поймать возможный отказ или объявить его в `throws`.
+Для unchecked этого требования нет, но ответственность за контракт остаётся.
+`IOException` описывает возможный отказ внешнего ввода/вывода;
+`IllegalArgumentException` часто сигнализирует нарушение предусловия;
+`NullPointerException` и `IndexOutOfBoundsException` часто обнаруживают ошибку
+программы. Это примеры смысла, а не абсолютная классификация возможности
+восстановления. `Error` обычно не следует перехватывать ради обычного продолжения.
+
+`throw new ResourceException(...)` — действие в конкретной точке.
+`throws ResourceException` — объявление возможного выхода из метода.
+`catch (ResourceException e)` — выбор места обработки. Создание объекта
+`new ResourceException(...)` без `throw` само по себе не бросает его.
+
+## Собственное исключение и исходная причина {#sec-theory-s1-exceptions-custom}
+
+EPAM, с. 274–275 (PDF 276–277), предлагает `ResourceException extends Exception`
+и конструкторы, передающие сообщение и причину в `super`. Ниже `CheckedResource.java`
+сохраняет эти четыре конструктора почти без изменений: класс вложен в демонстрацию,
+добавлен `serialVersionUID`; вместо незавершённых методов `Resource` учебника
+дан полностью определённый вход в виде строки.
+
+```java
+public class CheckedResource {
+    static class ResourceException extends Exception {
+        private static final long serialVersionUID = 1L;
+        public ResourceException() { }
+        public ResourceException(String message, Throwable cause) { super(message, cause); }
+        public ResourceException(String message) { super(message); }
+        public ResourceException(Throwable cause) { super(cause); }
+    }
+    static int loadCount(String text) throws ResourceException {
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            throw new ResourceException("count is not an integer", e);
+        }
+    }
+    public static void main(String[] args) {
+        try {
+            System.out.println(loadCount("bad"));
+        } catch (ResourceException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getCause().getClass().getSimpleName());
+        }
+    }
+}
+```
+
+Вывод: `count is not an integer`, затем `NumberFormatException`.
+Клиент получает предметный отказ, исходная техническая причина не потеряна.
+Без catch клиент должен был бы объявить `throws ResourceException`.
+Объявление `throws` допустимо и у публичного метода, и у `main`: встречающееся
+в EPAM с. 268–269 ограничение такого подхода private-методами и оценка
+`main throws` — авторские рекомендации, не правила языка.
+
+Выбирайте место обработки по тому, кто знает решение. Библиотечный метод
+не должен молча превращать ошибку разбора в 0, если контракт не объявляет
+такое запасное значение. Catch, который только печатает стек и возвращает
+правдоподобный результат, может скрыть повреждение. Не всякое стандартное
+исключение нужно автоматически оборачивать своим типом: обёртка полезна,
+когда задаёт понятную границу абстракции и сохраняет cause.
+
+## Порядок catch и multi-catch {#sec-theory-s1-exceptions-catch}
+
+Обработчики проверяются сверху вниз. Подкласс нужно ставить до суперкласса,
+иначе конкретный catch окажется недостижимым. Для нескольких независимых
+типов с одинаковым решением используется multi-catch `A | B`.
+Альтернативы не могут включать друг друга по наследованию: например,
+`IOException | FileNotFoundException` недопустимы. Его параметр нельзя
+переприсваивать.
+
+`CatchAlternatives.java` — авторский разбор по теме EPAM, с. 269–271;
+обе ветви multi-catch действительно выполняются на разных входах.
+
+```java
+public class CatchAlternatives {
+    static int divide(String text) {
+        int divisor = Integer.parseInt(text);
+        return 12 / divisor;
+    }
+    public static void main(String[] args) {
+        for (String text : new String[] {"x", "0", "3"}) {
+            try {
+                System.out.println(divide(text));
+            } catch (NumberFormatException | ArithmeticException e) {
+                System.out.println(e.getClass().getSimpleName());
+            }
+        }
+    }
+}
+```
+
+Вывод: `NumberFormatException`, `ArithmeticException`, `4`.
+Неверный формат и нулевой делитель различаются причиной, но демонстрация
+выбирает одно действие — сообщение и переход к следующему входу.
+Catch `Exception` может включить лишние ошибки и превратить дефект программы
+в «плохой ввод»; широкую границу обработки выбирают сознательно.
+
+При переопределении checked exceptions нельзя расширять относительно
+обещания базового метода: клиент базового типа не готов к новым обязательным
+отказам. Можно сузить тип или убрать объявление. У конструкторов нет
+переопределения: возможное checked exception вызванного конструктора нужно
+учесть в декларации и пути создания. См. задания
+@tasks:exr-tasks-s1-constructor-checked-exception,
+@tasks:exr-tasks-s1-override-exceptions.
+
+## Состояние после отказа {#sec-theory-s1-exceptions-state}
+
+Исключение не является транзакцией. Если сначала списать со счёта, а потом
+проверить возможность зачисления, отказ второй части оставит половину
+перевода. Для обычного однопоточного объекта часто достаточно схемы:
+проверить входы → вычислить новые значения в локальных переменных → изменить
+поля после всех ожидаемых проверок. Это сильная гарантия для объявленных
+отказов, а не обещание восстановиться после любого `Error`.
+
+`TransferState.java` — авторский пример для
+@tasks:exr-tasks-s1-essay-failed-transfer-invariants. Числа — условные единицы,
+счета не финансовая модель. Обработка положительной суммы, self-transfer,
+недостатка средств и переполнения определена до изменения полей.
+
+```java
+public class TransferState {
+    static final class Account {
+        private int balance;
+        Account(int balance) {
+            if (balance < 0) throw new IllegalArgumentException("negative balance");
+            this.balance = balance;
+        }
+        void transferTo(Account target, int amount) {
+            if (target == null) throw new IllegalArgumentException("missing target");
+            if (amount <= 0) throw new IllegalArgumentException("non-positive amount");
+            if (amount > balance) throw new IllegalArgumentException("insufficient funds");
+            if (target == this) return;
+            int newTarget = Math.addExact(target.balance, amount);
+            int newSource = balance - amount;
+            balance = newSource;
+            target.balance = newTarget;
+        }
+    }
+    public static void main(String[] args) {
+        Account source = new Account(10);
+        Account target = new Account(Integer.MAX_VALUE);
+        try {
+            source.transferTo(target, 3);
+        } catch (ArithmeticException e) {
+            System.out.println("overflow");
+        }
+        System.out.println(source.balance + " " + target.balance);
+        target = new Account(2);
+        source.transferTo(target, 3);
+        System.out.println(source.balance + " " + target.balance);
+    }
+}
+```
+
+Вывод: `overflow`, `10 2147483647`, `7 5`.
+`Math.addExact` отказывает до присваиваний; после ожидаемого отказа состояние
+сохранено. Вариант с ранним `balance -= amount` перед `addExact` дал бы
+`7 2147483647` после отказа: catch сам это не исправит.
+Аналогично у очереди/стека сначала проверяйте пустоту или ёмкость, затем
+изменяйте индексы; это требуется в @tasks:exr-tasks-s1-queue-exceptions и
+@tasks:exr-tasks-s1-stack-exceptions.
+
+## finally и автоматическое закрытие {#sec-theory-s1-exceptions-resources}
+
+`finally` выполняет завершающее действие при обычном выходе из try/catch
+и при прерывании через exception/return. Оно не является обещанием выполнения
+после прекращения процесса, `System.exit`, аварии JVM или вечного цикла.
+Если finally само завершается броском или return, оно заменяет прежний
+результат выхода. Поэтому return в finally обычно уничтожает нужную информацию.
+
+`FinallyMask.java` — авторская демонстрация замены отказа:
+
+```java
+public class FinallyMask {
+    static int masked() {
+        try {
+            throw new IllegalStateException("original failure");
+        } finally {
+            return 7;
+        }
+    }
+    public static void main(String[] args) {
+        System.out.println(masked());
+    }
+}
+```
+
+Вывод `7`: исключение скрыто return из finally. Это пример ошибки дизайна,
+не рекомендуемое решение. Вариант без `return` и с обычной очисткой сохранит
+исходное исключение.
+
+Для ресурсов с `AutoCloseable` используйте try-with-resources (TWR).
+Ресурсы создаются слева направо и закрываются в обратном порядке.
+Если тело бросило, а `close` тоже бросил, основной отказ сохраняется,
+отказ закрытия добавляется как suppressed. Cause — исходная причина
+обёртки; suppressed — дополнительный отказ при завершении. Это разные связи.
+
+`SuppressedDemo.java` — авторский минимальный ресурс по теме Шилдта,
+*Java: руководство для начинающих*, 9-е изд., 2023, гл. 10, с. 381–384.
+Вместо файла ресурс намеренно отказывает, чтобы сделать порядок наблюдаемым.
+
+```java
+public class SuppressedDemo {
+    static final class Resource implements AutoCloseable {
+        private final String name;
+        Resource(String name) { this.name = name; }
+        public void close() throws Exception {
+            System.out.println("close " + name);
+            throw new Exception("close " + name);
+        }
+    }
+    public static void main(String[] args) {
+        try (Resource first = new Resource("A"); Resource second = new Resource("B")) {
+            throw new Exception("body");
+        } catch (Exception e) {
+            System.out.println("primary " + e.getMessage());
+            for (Throwable suppressed : e.getSuppressed()) {
+                System.out.println("suppressed " + suppressed.getMessage());
+            }
+        }
+    }
+}
+```
+
+Вывод:
+
+```text
+close B
+close A
+primary body
+suppressed close B
+suppressed close A
+```
+
+Если тело завершается нормально, первый отказ закрытия становится основным,
+остальные — подавленными. Если создание второго ресурса отказало, первый
+всё равно закрывается. Реальный ресурс и границы checked/unchecked IO
+разбираются в @sec-theory-s1-io.
+
+## Самопроверка {#sec-theory-s1-exceptions-check}
+
+1. `throws IOException` выполняет throw или только описывает возможный выход?
+2. Почему checked не означает «возникает на компиляции»?
+3. Что происходит с уже изменённым полем, когда метод бросает исключение?
+4. Можно ли объединить `Exception | IOException` в multi-catch?
+5. Чем `getCause()` отличается от `getSuppressed()`?
+6. Почему catch с возвратом 0 может сделать программу менее достоверной?
+
+::: {.callout-note collapse="true" title="Ответы и объяснения"}
+1. Описывает контракт; конкретный выход вызывает throw или отказ операции.
+2. Компилятор проверяет наличие обработки/декларации; реальный объект
+   исключения и передача управления относятся к исполнению.
+3. Изменение сохраняется, если код явно не восстановил его.
+4. Нет: IOException уже входит в Exception; alternatives должны быть независимы.
+5. Cause связывает обёртку с причиной; suppressed сохраняет сопутствующие
+   исключения, например при close во время основного отказа.
+6. Клиент может принять 0 за успешный результат; запасное значение допустимо
+   только как явно согласованная часть контракта.
+:::
+
+Исследования: @tasks:exr-tasks-s1-essay-failure-reporting-boundaries,
+@tasks:exr-tasks-s1-essay-failed-transfer-invariants,
+@tasks:exr-tasks-s1-essay-resource-failure-preservation.
+
+## Источники {#sec-theory-s1-exceptions-sources}
+
+EPAM: Блинов, Романчик, 2-е изд., 2021, гл. 9, с. 264–281;
+Шилдт, 9-е изд., 2023 (книга для JDK 17), гл. 10, с. 381–384.
+Из пользовательских PDF сохранён фрагмент механизма и конструкторы
+ResourceException; неполные тела методов, скрытая ошибка возврата 0 и старое
+ручное освобождение не перенесены как готовое решение. Авторские примеры
+отдельно проверяют управление, состояние и закрытие. Актуальные правила
+Java 25: @handbook:sec-handbook-s1-exceptions.

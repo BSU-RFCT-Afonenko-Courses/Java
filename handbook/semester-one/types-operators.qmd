@@ -1,0 +1,199 @@
+# Типы, преобразования и числовые средства {#sec-handbook-s1-types-operators}
+
+Опора к @theory:sec-theory-s1-types-operators. Правила языка:
+[JLS 25 §3.10](https://docs.oracle.com/javase/specs/jls/se25/html/jls-3.html#jls-3.10),
+[§4.2](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.2),
+[§5](https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html),
+[§15](https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html).
+Таблицы и комментарии — изложение редакции; версионные API указаны рядом.
+
+## Примитивы и значения по умолчанию {#sec-handbook-s1-types-operators-primitives}
+
+| Тип | Диапазон/представление | Обёртка | По умолчанию для поля/элемента массива |
+|:---|:---|:---|:---|
+| byte | −2⁷…2⁷−1 | Byte | 0 |
+| short | −2¹⁵…2¹⁵−1 | Short | 0 |
+| int | −2³¹…2³¹−1 | Integer | 0 |
+| long | −2⁶³…2⁶³−1 | Long | 0L |
+| char | 0…2¹⁶−1, единица UTF-16 | Character | `'\u0000'` |
+| float | IEEE 754 binary32 | Float | +0.0f |
+| double | IEEE 754 binary64 | Double | +0.0d |
+| boolean | true/false | Boolean | false |
+
+Для ссылочных полей и элементов массива значение по умолчанию — null.
+Для локальной переменной автоматического начального значения нет.
+`Integer.MIN_VALUE/MAX_VALUE` и аналоги задают границы.
+`Float.MIN_VALUE`/`Double.MIN_VALUE` — наименьшее **положительное ненулевое**
+значение, а не самая отрицательная величина.
+
+## Литералы и преобразования {#sec-handbook-s1-types-operators-conversions}
+
+| Запись | Смысл |
+|:---|:---|
+| `42`, `0b101010`, `0x2A` | int 42 |
+| `042` | Восьмеричный int 34 |
+| `3_000_000_000L` | long; большой десятичный литерал с L |
+| `1.5`, `1.5D`, `15e-1` | double 1.5 |
+| `1.5F` | float 1.5 |
+| `'A'`, `'\n'` | char; одинарные кавычки |
+| `"A"`, `"\n"` | String; двойные кавычки |
+
+Обычное бинарное числовое продвижение: double → float → long → int
+в смысле выбора первого присутствующего типа; byte/short/char
+продвигаются до int. Расширение int→long точно, но int→float и
+long→float/double могут округляться. Сужение требует cast, кроме отдельных
+разрешённых константных присваиваний; cast не является проверкой диапазона.
+boolean не переводится числовым cast в int.
+
+`b += n` содержит неявное сужение обратно к типу b. Для сдвига
+продвижение каждого операнда отдельное; тип результата определяется левым.
+Используются младшие 5 бит расстояния для int и 6 для long.
+`>>` сохраняет знак, `>>>` заполняет слева нулями.
+
+Операнды вычисляются слева направо. `&&`, `||`, `?:` пропускают
+невыбранную/ненужную часть. Скобки определяют группировку;
+тип переменной слева не меняет промежуточный тип выражения.
+Целочисленное деление усекается к нулю; `%` не гарантирует
+неотрицательного остатка для отрицательного делимого.
+
+## Integer и обёртки {#sec-handbook-s1-types-operators-wrappers}
+
+Нормативный API: [Integer 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html).
+
+| Сигнатура | Результат/договор |
+|:---|:---|
+| `static int parseInt(String s)` | Десятичный int; плохой текст/диапазон → NumberFormatException |
+| `static int parseInt(String s, int radix)` | Число в указанном основании 2…36 |
+| `static Integer valueOf(int i)` | Обёртка; обязательный кэш −128…127, возможен больший |
+| `static Integer valueOf(String s)` | Обёртка из десятичного текста |
+| `static Integer decode(String nm)` | Обёртка; распознаёт десятичную, octal/hex-запись с определёнными префиксами |
+| `int intValue()` | Примитивное значение |
+| `static int compare(int x, int y)` | Знак сравнения без переполняющегося вычитания |
+| `static String toString(int i)` | Десятичное представление |
+
+`parseInt("042")` даёт 42, `decode("042")` — 34: правила текстового
+API и литерала исходника не тождественны. `parseInt("0x2A",16)`
+не снимает префикс; используйте `"2A"` либо подходящий decode.
+`parseInt` не применяет автоматически локаль и разделители разрядов.
+
+Autoboxing создаёт/получает обёртку; unboxing null → NullPointerException.
+Для двух обёрток `==` сравнивает ссылки; `equals` сравнивает значение
+**того же класса**. `Integer.valueOf(1).equals(Long.valueOf(1))` ложно.
+Смешанное `Integer == int` включает распаковку. Старые конструкторы
+обёрток не нужны; используйте valueOf/автоупаковку.
+`Boolean.parseBoolean` даёт true только для текста true без учёта регистра,
+в остальных случаях false: строгая проверка текста требует отдельного правила.
+
+```java
+System.out.println(Integer.parseInt("100010", 2));
+System.out.println(Integer.decode("042"));
+System.out.println(Integer.valueOf(42).equals(42));
+```
+
+Вывод: 34, 34, true.
+
+## Math: обычные и проверяемые операции {#sec-handbook-s1-types-operators-math}
+
+Нормативный API: [Math 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Math.html).
+Здесь показаны int-перегрузки; для ряда операций есть long-варианты.
+
+| Сигнатура | Особенность |
+|:---|:---|
+| `static int addExact(int x, int y)` | Переполнение → ArithmeticException |
+| `static int subtractExact(int x, int y)` | Та же проверка для разности |
+| `static int multiplyExact(int x, int y)` | Та же проверка для произведения |
+| `static int negateExact(int a)` | Не позволяет отрицать MIN_VALUE в том же диапазоне |
+| `static int toIntExact(long value)` | Проверяет диапазон при long→int |
+| `static int floorDiv(int x, int y)` | Округление частного вниз; отличается от `/` для разных знаков |
+| `static int floorMod(int x, int y)` | Остаток, согласованный с floorDiv |
+| `static int abs(int a)` | MIN_VALUE остаётся отрицательным |
+| `static double sqrt(double a)` | Отрицательный аргумент → NaN |
+| `static long round(double a)` | Округление по договору API, не числовой cast |
+| `static double floor(double a)` / `ceil(double a)` | Вниз/вверх до целого double |
+
+Для `x=-7`, `y=3`: `/` равно −2, `%` равно −1;
+floorDiv равно −3, floorMod равно 2. Нулевой целый делитель вызывает
+ArithmeticException. Не подменяйте договор операций только
+словом «округление»: round, floor, ceil и cast различаются.
+`StrictMath` задаёт дополнительные воспроизводимые правила ряда
+трансцендентных функций; для обычного кода сначала нужен предметный
+договор точности и измерений.
+
+## Double: специальные значения и сравнение {#sec-handbook-s1-types-operators-floating}
+
+Нормативный API: [Double 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Double.html).
+
+| Сигнатура/операция | Правило |
+|:---|:---|
+| `static boolean isNaN(double v)` | Проверка NaN; `v == NaN` непригодно |
+| `static boolean isInfinite(double v)` | Обе бесконечности |
+| `static boolean isFinite(double d)` | Только конечные значения |
+| `static int compare(double d1, double d2)` | Полный порядок API, включая NaN и знаки нуля |
+| `static double parseDouble(String s)` | Числовой текст по API; не локализованный десятичный разбор |
+| `boolean equals(Object obj)` | NaN равен NaN; −0.0 и +0.0 различаются |
+
+Примитивное `==` имеет другие крайние случаи: NaN не равен себе,
+а −0.0 равен +0.0. Допуск приближённого сравнения должен быть задан
+алгоритмом; `Double.compare` не вводит такой допуск.
+
+## BigInteger, BigDecimal, scale и precision {#sec-handbook-s1-types-operators-decimal}
+
+Версионные источники: [BigInteger 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigInteger.html),
+[BigDecimal 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigDecimal.html),
+[MathContext 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/MathContext.html).
+Оба числовых класса неизменяемы; методы возвращают результат.
+
+| Средство | Выбор |
+|:---|:---|
+| `new BigInteger(String val)` | Целое из десятичного текста |
+| `BigInteger add(BigInteger val)` / `multiply(BigInteger val)` | Арифметика целых без фиксированного диапазона int/long |
+| `new BigDecimal(String val)` | Десятичное значение из текста |
+| `BigDecimal.valueOf(double val)` | Использует стандартное строковое представление double |
+| `new BigDecimal(double val)` | Точное десятичное представление уже округлённого binary-значения |
+| `BigDecimal add(BigDecimal augend)` | Точная сумма без заданного ограничивающего context |
+| `BigDecimal divide(BigDecimal divisor)` | Требует точного конечного десятичного результата |
+| `BigDecimal divide(BigDecimal divisor, int scale, RoundingMode roundingMode)` | Явно заданные scale и округление |
+| `BigDecimal setScale(int newScale, RoundingMode roundingMode)` | Изменение scale с указанным округлением |
+| `int compareTo(BigDecimal val)` | Числовой порядок; scale не препятствует равенству |
+| `boolean equals(Object x)` | Учитывает и числовое значение, и scale |
+
+Scale — число десятичных позиций относительно целого коэффициента,
+precision — число значащих цифр. Scale может быть отрицательным.
+`new MathContext(3)` задаёт precision=3 с default HALF_UP;
+`MathContext.DECIMAL32` — precision=7 и HALF_EVEN.
+`new BigDecimal("1.0").equals(new BigDecimal("1.00"))` ложно,
+но compareTo даёт 0. Деление 1 на 3 без округляющего соглашения вызывает
+ArithmeticException; это не автоматическое создание бесконечной дроби.
+
+```java
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+public class DecimalLookup {
+    public static void main(String[] args) {
+        BigDecimal third = BigDecimal.ONE.divide(new BigDecimal("3"), 2, RoundingMode.HALF_UP);
+        System.out.println(third);
+        System.out.println(new BigDecimal("1.0").equals(new BigDecimal("1.00")));
+        System.out.println(new BigDecimal("1.0").compareTo(new BigDecimal("1.00")));
+    }
+}
+```
+
+Вывод: 0.33, false, 0. Десятичное представление не освобождает
+разработчика от выбора точности и округления.
+
+## Проверка применения {#sec-handbook-s1-types-operators-check}
+
+Перед вычислением назовите диапазон входа, промежуточный тип и правило
+при переполнении/округлении. Перед разбором текста назовите формат,
+основание, локаль и реакцию на ошибку. Перед сравнением различайте
+идентичность, точное значение и приближённую предметную эквивалентность.
+
+Самопроверка: почему `Math.abs(Integer.MIN_VALUE)` не положителен?
+**Ответ:** положительный модуль 2³¹ не представим как int;
+обычный abs не расширяет тип результата и не бросает проверочное исключение.
+Задания: @tasks:sec-tasks-s1-bank-types-operators.
+
+Исследовательское продолжение: @tasks:exr-tasks-s1-essay-integer-range-conversions,
+@tasks:exr-tasks-s1-essay-floating-value-comparison,
+@tasks:exr-tasks-s1-essay-optional-number-wrappers.

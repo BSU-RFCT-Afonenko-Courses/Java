@@ -1,0 +1,141 @@
+## Функциональный контракт {#sec-lectures-s1-functional-streams-sam}
+
+Функциональный интерфейс имеет один функциональный абстрактный контракт; default/static операции допустимы. Лямбда получает тип из места использования — target type.
+
+Аннотация @FunctionalInterface проверяет намерение, но подходящий интерфейс функционален и без неё.
+
+::: {.notes}
+Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл.7, с.201–218 (PDF203–220); [JLS25 §9.8](https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html#jls-9.8).
+:::
+
+### Predicate и применение {#sec-lectures-s1-functional-streams-predicate}
+
+```java
+Predicate<String> shortWord = text -> text.length() < 2;
+System.out.println(shortWord.test("A"));
+System.out.println(shortWord.test("Java"));
+```
+Вывод true, false. Лямбда задаёт реализацию test; условие можно передать алгоритму отбора вместо его жёсткого встраивания.
+
+::: {.notes}
+Адаптировано по Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, Predicate<String>, с.203 (PDF205). Сохранены условие длины и test, сокращены данные до двух строк.
+:::
+
+### Четыре роли функций {#sec-lectures-s1-functional-streams-functional-types}
+
+Predicate<T> проверяет и возвращает boolean; Function<T,R> преобразует T в R. Consumer<T> выполняет действие без результата; Supplier<T> создаёт результат без аргумента.
+
+Роль функции выбирается из смысла операции. Потеря результата и скрытый побочный эффект могут мешать композиции.
+
+### Ссылка на метод {#sec-lectures-s1-functional-streams-method-reference}
+
+```java
+Function<String, Integer> length = String::length;
+Function<String, Integer> same = text -> text.length();
+System.out.println(length.apply("Java"));
+```
+Вывод 4. String::length выбирает метод, получателем которого станет аргумент функции. target type задаёт, какая сигнатура подходит.
+
+### Захват локального значения {#sec-lectures-s1-functional-streams-capture}
+
+```java
+int limit = 3;
+Predicate<String> longWord = text -> text.length() > limit;
+// limit++; // тогда захват перестанет быть допустимым
+```
+Захватываемая локальная переменная должна быть final или effectively final. Если захвачена ссылка на изменяемый объект, его состояние всё ещё может изменяться; это другой вопрос.
+
+## От цикла к конвейеру {#sec-lectures-s1-functional-streams-pipeline}
+
+Последовательный конвейер описывает источник, промежуточные операции и терминальный результат. filter оставляет элементы, map преобразует.
+
+Промежуточные операции ленивы; терминальная запускает нужное вычисление. Stream используется один раз.
+
+::: {.notes}
+Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл.11, Stream API, с.331–339 (PDF333–341); [Stream25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html).
+:::
+
+### Прогноз обработки {#sec-lectures-s1-functional-streams-pipeline-predict}
+
+```java
+List<String> words = List.of("A", "Java", "API");
+List<Integer> lengths = words.stream()
+    .filter(text -> text.length() > 1)
+    .map(String::length)
+    .toList();
+System.out.println(lengths);
+```
+Какие элементы пройдут filter и что попадёт в итоговый список?
+
+### Причина результата {#sec-lectures-s1-functional-streams-pipeline-cause}
+
+Вывод `[4, 3]`: A отвергнута, Java и API преобразованы в длины. Последовательный упорядоченный источник сохраняет порядок этих операций.
+
+toList возвращает немодифицируемый список. Вариация: перенести filter после map; тогда predicate получит Integer и должен проверять число, а не String.
+
+### Ленивость и один запуск {#sec-lectures-s1-functional-streams-lifecycle}
+
+```java
+Stream<String> stream = words.stream().filter(shortWord);
+long count = stream.count();
+// stream.toList(); // повторная терминальная операция
+```
+Повторный обход того же Stream недопустим. Для нового результата постройте новый stream из источника.
+
+Не размещайте необходимую бизнес-логику в peek: реализация вправе исключить ненужные промежуточные эффекты.
+
+### flatMap и несколько результатов {#sec-lectures-s1-functional-streams-flatmap}
+
+```java
+List<String> tokens = List.of("A B", "C").stream()
+    .flatMap(line -> Arrays.stream(line.split(" ")))
+    .toList();
+System.out.println(tokens);
+```
+Вывод `[A, B, C]`. map дал бы поток массивов; flatMap разворачивает каждый вложенный поток в общую последовательность. Домен здесь — слова, разделённые одиночным пробелом.
+
+### Примитивный поток и свёртка {#sec-lectures-s1-functional-streams-reduction}
+
+```java
+int sum = words.stream()
+    .mapToInt(String::length)
+    .sum();
+int sameSum = Stream.of(1, 2, 3).reduce(0, Integer::sum);
+```
+Первый результат 8, второй 6. Identity 0 нейтральна для сложения. Для корректного объединения частей нужна ассоциативность; тип оператора этого закона не доказывает.
+
+### Неверная identity {#sec-lectures-s1-functional-streams-bad-reduction}
+
+Для суммы `[1,2,3]` identity 10 даёт 16, а не 6. При разделении вычисления лишняя 10 может войти в несколько частей.
+
+Проверьте пустой набор и соединение двух результатов. Вычитание также не ассоциативно: `(a-b)-c` и `a-(b-c)` могут различаться. Параллельные streams вне основного маршрута.
+
+## Сбор результата и отсутствие {#sec-lectures-s1-functional-streams-collect}
+
+Collector задаёт накопление и форму результата. groupingBy строит группы; toMap требует политику повторного ключа.
+
+Optional описывает наличие или отсутствие значения, а не скрытый обязательный результат.
+
+::: {.notes}
+[Collectors25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Collectors.html), [Optional25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html).
+:::
+
+### Дубликаты ключа {#sec-lectures-s1-functional-streams-duplicate-keys}
+
+```java
+Map<Integer, String> byLength = words.stream().collect(
+    Collectors.toMap(String::length, text -> text,
+                     (first, next) -> first,
+                     LinkedHashMap::new));
+```
+Сохраняется первое слово каждой длины, ключи идут по первому появлению. Без merge-функции повторный ключ приведёт к IllegalStateException. Политика «первое» — явный выбор, не правило любой карты.
+
+### Optional и запасное значение {#sec-lectures-s1-functional-streams-optional}
+
+```java
+Optional<String> found = words.stream()
+    .filter(text -> text.startsWith("Z"))
+    .findFirst();
+System.out.println(found.orElse("нет"));
+```
+Вывод нет. get без проверки не подходит для отсутствия. `orElseGet(() -> ...)` вычисляет запасной результат только при отсутствии; аргумент orElse вычисляется заранее.

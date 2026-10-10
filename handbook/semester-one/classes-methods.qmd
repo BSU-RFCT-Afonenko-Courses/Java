@@ -1,0 +1,186 @@
+---
+pagetitle: "Справочник: классы, методы и инициализация"
+---
+
+# Классы, методы и инициализация {#sec-handbook-s1-classes-methods}
+
+Версия: **Java SE 25, без preview**. Это справочная карта правил и малых
+демонстраций. Основное объяснение: @theory:sec-theory-s1-classes-methods;
+условия работы: @tasks:sec-tasks-s1-lab-05.
+Пояснения и программы ниже — авторские. Ссылки ведут к versioned JLS/API;
+текст спецификации дословно не воспроизводится.
+
+Канонический банк: @tasks:sec-tasks-s1-bank-classes-methods.
+Исследования: @tasks:sec-tasks-s1-essays-classes-methods.
+
+## Форма обычного класса {#sec-handbook-s1-classes-methods-declarations}
+
+| Элемент | Форма | Для чего |
+|---|---|---|
+| Поле экземпляра | `private int size;` | Состояние конкретного объекта |
+| Поле класса | `private static int count;` | Общее состояние runtime-класса |
+| Финальное поле | `private final int capacity;` | Одно присваивание по правилам definite assignment |
+| Конструктор | `Buffer(int capacity) { ... }` | Подготовка объекта; возвращаемого типа нет |
+| Метод экземпляра | `public int size() { return size; }` | Операция с получателем `this` |
+| Статический метод | `static int twice(int x) { return 2 * x; }` | Вызов без неявного получателя экземпляра |
+| Блок экземпляра | `{ ... }` прямо в теле класса | Подготовка каждого экземпляра |
+| Статический блок | `static { ... }` | Подготовка класса при инициализации |
+
+Значения по умолчанию полей: нули числовых типов, `false`, `\u0000` для `char`,
+`null` для ссылок. Чтение локальной переменной требует предшествующего
+определённого присваивания. `final` ссылки не фиксирует состояние объекта.
+Для произвольного имени финального поля верхний регистр не обязателен:
+соглашение о константах и правило языка нужно различать.
+[JLS 25 §4.12.5](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.12.5),
+[§8.3](https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.3).
+
+## Доступ {#sec-handbook-s1-classes-methods-access}
+
+| Модификатор члена | Область допустимого доступа |
+|---|---|
+| `private` | Внутри охватывающего верхнего типа (класса/интерфейса), включая вложенные типы |
+| Отсутствует | Внутри того же пакета |
+| `protected` | Тот же пакет; вне пакета — доступ из подкласса с дополнительными ограничениями |
+| `public` | Код, которому доступен объявивший тип, с учётом модульной доступности |
+
+Для `protected` поля/метода экземпляра из другого пакета обращение внутри
+подкласса `S` через выражение-получатель допускается, когда тип выражения —
+`S` либо подкласс `S`. Произвольный `Base other` не даёт подклассу права
+читать `other.protectedField`. У protected-конструктора дополнительные
+правила: обычное `new Base(...)` не становится доступным просто из-за
+наследования, тогда как допустимый `super(...)` обслуживает создание подкласса.
+
+Верхний обычный класс имеет `public` или пакетный доступ;
+`private`/`protected` применяются к классу-члену.
+[JLS 25 §6.6](https://docs.oracle.com/javase/specs/jls/se25/html/jls-6.html#jls-6.6),
+[§6.6.2](https://docs.oracle.com/javase/specs/jls/se25/html/jls-6.html#jls-6.6.2).
+
+## Конструкторы и цепочки {#sec-handbook-s1-classes-methods-constructors}
+
+- При отсутствии объявленных конструкторов у обычного класса создаётся
+  default constructor; это не произвольное добавление конструктора без
+  параметров к уже объявленным.
+- `this(...)` делегирует конструктору того же объекта; `super(...)` —
+  конструктору непосредственного родителя. Цикл `this(...)` запрещён.
+- Конструкторы не наследуются и не переопределяются. Возможна перегрузка.
+- Java 25 допускает ограниченный пролог до явного constructor invocation.
+  Его early-construction context имеет собственные ограничения; разрешение
+  проверки параметров не означает разрешения обычного вызова на `this`.
+
+Авторская демонстрация `ValidatedConstructor.java`:
+
+```java
+public class ValidatedConstructor {
+    static class Base {
+        final int capacity;
+        Base(int capacity) { this.capacity = capacity; }
+    }
+    static final class Child extends Base {
+        Child(int capacity) {
+            if (capacity < 1) throw new IllegalArgumentException("capacity");
+            super(capacity);
+        }
+    }
+    public static void main(String[] args) {
+        System.out.println(new Child(4).capacity);
+    }
+}
+```
+
+Вывод: `4`. Код компилируется для Java 25 без preview.
+Это адресное исправление правила EPAM, 2021, с. 128–129.
+[JLS 25 §8.8.7](https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.8.7),
+[default constructor](https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.8.9).
+
+## Порядок инициализации {#sec-handbook-s1-classes-methods-initialization}
+
+При активном использовании класса его статические инициализаторы выполняются
+в порядке объявления после требуемой инициализации суперкласса. Подготовка
+хранения и значений по умолчанию предшествует исполнению пользовательского
+кода. Загрузка, связывание и инициализация — разные операции.
+
+Для обычной цепочки создания без раннего присваивания в прологе:
+значения по умолчанию всего экземпляра → конструктор суперкласса →
+поля/блоки экземпляра в порядке текста → остаток тела конструктора.
+Делегирование `this(...)` не повторяет поля/блоки для одного объекта.
+Чтение compile-time constant variable не требует инициализации класса,
+который объявил эту константу.
+[JLS 25 §12.4–12.5](https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html#jls-12.4).
+
+Сбой подготовки относится ко всему runtime-классу. `InitFailureDemo.java`:
+
+```java
+public class InitFailureDemo {
+    static final class Settings {
+        static int value = read();
+        static int read() { throw new IllegalStateException("unavailable"); }
+    }
+    public static void main(String[] args) {
+        for (int attempt = 0; attempt < 2; attempt++) {
+            try {
+                System.out.println(Settings.value);
+            } catch (LinkageError error) {
+                System.out.println(error.getClass().getSimpleName());
+            }
+        }
+    }
+}
+```
+
+```text
+ExceptionInInitializerError
+NoClassDefFoundError
+```
+
+Первое исключение в данном примере оборачивается, класс получает ошибочное
+состояние. Второе обращение к тому же runtime-классу не повторяет `read()`.
+Это локальная демонстрация механизма, а не правило ловить `LinkageError`
+в обычной обработке данных. [JLS 25 §12.4.2](https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html#jls-12.4.2).
+
+## Сигнатура, перегрузка, параметры {#sec-handbook-s1-classes-methods-methods}
+
+Для негeneric-метода основа сигнатуры — имя и типы формальных параметров.
+Возвращаемый тип сам по себе не создаёт другую перегрузку. У generic-методов
+учитываются параметры типов по установленным правилам адаптации сигнатур.
+Подбор перегрузки выполняется при компиляции по типам выражений аргументов.
+Для метода экземпляра затем может происходить динамический выбор override.
+[JLS 25 §8.4.2](https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.2),
+[§15.12](https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.12).
+
+`Type... args` — один последний varargs-параметр, внутри метода имеющий тип
+`Type[]`. Нельзя различить перегрузки только заменой `Type[]` на `Type...`.
+Копирование значений аргументов не означает копирования объектов;
+переданный явно массив может быть изменён методом. `final` параметра
+запрещает его переприсваивание, но не изменение объекта по ссылке.
+
+## Полезные API для границ объекта {#sec-handbook-s1-classes-methods-api}
+
+```java
+public static <T> T Objects.requireNonNull(T obj)
+public static <T> T Objects.requireNonNull(T obj, String message)
+```
+
+Обе формы возвращают ту же ссылку, если она ненулевая, и выбрасывают
+`NullPointerException` при `null`; копии объекта нет.
+[Objects API 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Objects.html#requireNonNull(T)).
+
+`int[] copy = original.clone()` создаёт независимый массив с теми же `int`.
+Для `SomeType[]` копируются значения ссылок на элементы: контейнер независим,
+объекты элементов могут остаться общими. `clone` массива имеет специальный
+доступный контракт; не переносите его автоматически на `Object.clone()`.
+[JLS 25 §10.7](https://docs.oracle.com/javase/specs/jls/se25/html/jls-10.html#jls-10.7).
+
+## Диагностический список {#sec-handbook-s1-classes-methods-checklist}
+
+Если объект неожиданно изменился, проверьте alias на входе и при возврате.
+Если конструктор отсутствует, проверьте уже объявленные варианты.
+Если вызывается не та перегрузка, выпишите статические типы аргументов.
+Если поле неожиданно нулевое, проверьте порядок инициализации и ранний вызов.
+Если общий счётчик повторяется, различите поле экземпляра и статическое поле.
+Эти вопросы проверяют конкретные правила, не требуют гадать по расположению
+данных в stack/heap.
+
+Сверено по указанным JLS/API Java 25. Для обучения на основе книг:
+Блинов/Романчик, *Java from EPAM*, 2-е изд., 2021, гл. 3, с. 65–96;
+[чтение PDF](https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf#page=67).
+Пояснения справочника отделяют действующие правила от адаптированного примера.

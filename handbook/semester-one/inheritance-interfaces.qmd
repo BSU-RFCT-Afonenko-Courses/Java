@@ -1,0 +1,199 @@
+---
+pagetitle: "Справочник: наследование и интерфейсы"
+---
+
+# Наследование, интерфейсы и `Object` {#sec-handbook-s1-inheritance-interfaces}
+
+Версия: **Java SE 25 без preview**. Авторские пояснения, точные объявления
+методов и ссылки к текущим контрактам. Предпосылки и основное объяснение:
+@theory:sec-theory-s1-inheritance-interfaces.
+Работа: @tasks:sec-tasks-s1-lab-06.
+
+Канонический банк: @tasks:sec-tasks-s1-bank-inheritance-interfaces.
+Исследования: @tasks:sec-tasks-s1-essays-inheritance-interfaces.
+
+## Отношения типов и выбор вызова {#sec-handbook-s1-inheritance-interfaces-dispatch}
+
+| Конструкция | Что определяет |
+|---|---|
+| `class Child extends Base` | Один непосредственный суперкласс |
+| `class Worker implements A, B` | Реализация нескольких интерфейсов |
+| `interface B extends A, C` | Расширение нескольких интерфейсов |
+| `abstract class Base` | Непосредственное создание экземпляра запрещено |
+| `final class Value` | Создание подклассов запрещено |
+| `@Override` | Проверка соответствия переопределяемому/реализуемому объявлению |
+| `super.operation()` | Явное обращение к реализации родителя |
+
+Поля выбираются по статическому типу выражения. Перегрузка метода выбирается
+при компиляции; затем для переопределяемого instance-метода выбирается
+реализация фактического получателя. `static` метод скрывается, `private`
+метод не переопределяется, `final` метод нельзя переопределить.
+[JLS 25 §8.4.8](https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.8),
+[§15.11–15.12](https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.11).
+
+Переопределение не сужает доступ. Допускается совместимый ковариантный
+ссылочный результат. Checked-исключения реализации не должны расширять
+checked-обязательства клиента исходного объявления. Конструкторы не являются
+наследуемыми методами; их цепочка подготавливает общий объект.
+
+## Виды членов интерфейса {#sec-handbook-s1-inheritance-interfaces-interface-members}
+
+| Объявление | Контракт |
+|---|---|
+| `int read();` | По умолчанию `public abstract` |
+| `default int twice() { return 2 * read(); }` | Публичная реализация экземплярной операции |
+| `static int zero() { return 0; }` | Метод интерфейса; вызов по имени интерфейса |
+| `private int helper() { return 1; }` | Внутренний помощник; не наследуемый default-контракт |
+| `int LIMIT = 10;` | По умолчанию `public static final` |
+
+`private default` недопустимо; приватный метод с телом не называют
+`default`-методом. Интерфейс не объявляет изменяемые поля экземпляра.
+При конфликте несвязанных default-методов класс задаёт явную реализацию.
+[JLS 25 §9.3–9.4](https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html#jls-9.4).
+
+Авторская демонстрация разрешения конфликта, полный файл `DefaultConflictDemo.java`:
+
+```java
+public class DefaultConflictDemo {
+    interface First { default String name() { return "first"; } }
+    interface Second { default String name() { return "second"; } }
+    static final class Both implements First, Second {
+        @Override public String name() {
+            return First.super.name() + "+" + Second.super.name();
+        }
+    }
+    public static void main(String[] args) {
+        System.out.println(new Both().name());
+    }
+}
+```
+
+Вывод: `first+second`. Если удалить переопределение `Both.name()`, класс
+не компилируется из-за конфликта. Это явный выбор, а не неопределённый
+порядок поиска двух родителей.
+
+## Методы `Object`: объявления и обязательства {#sec-handbook-s1-inheritance-interfaces-object}
+
+Источник всех нижеследующих объявлений:
+[Object API 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html).
+
+```java
+public boolean equals(Object obj)
+public int hashCode()
+public String toString()
+public final Class<?> getClass()
+protected Object clone() throws CloneNotSupportedException
+```
+
+| Метод | Контракт, существенный для клиента |
+|---|---|
+| `equals` | Стандартный `Object` сравнивает идентичность; переопределение задаёт эквивалентность |
+| `hashCode` | Равные по `equals` объекты имеют одинаковый код; обратное не обязательно |
+| `toString` | Строковое описание; default-вид включает имя класса и hash-код в hex |
+| `getClass` | Runtime-класс объекта; `final`, не переопределяется |
+| `clone` | Стандартная поверхностная копия при соблюдении протокола `Cloneable`; обычный доступ `protected` |
+
+У `equals`: рефлексивность, симметрия, транзитивность, согласованность при
+неизменности учитываемых данных; `x.equals(null)` ложно для ненулевого `x`.
+У `hashCode`: согласованность в пределах исполнения, пока соответствующие
+данные не изменяются. Разным объектам разрешён одинаковый hash-код.
+`finalize()` deprecated for removal; гарантии закрытия ресурсов он не даёт.
+
+Не путайте `boolean equals(Value other)` и `boolean equals(Object other)`:
+первая форма перегружает имя, а не заменяет метод `Object`. Для оператора
+`==` переопределение `equals` ничего не меняет.
+
+## Null-safe помощники `Objects` {#sec-handbook-s1-inheritance-interfaces-objects}
+
+```java
+public static boolean Objects.equals(Object a, Object b)
+public static int Objects.hash(Object... values)
+public static int Objects.hashCode(Object o)
+```
+
+`equals` возвращает `true` для двух `null`; при одном ненулевом `a` вызывает
+`a.equals(b)`. `hashCode(null)` возвращает `0`. `hash(values)` вычисляет код
+последовательности, поэтому `Objects.hash(x)` в общем случае не совпадает
+с `x.hashCode()`; согласуйте выбор с равенством своего класса.
+[Objects API 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Objects.html).
+
+Полный файл `ObjectsDemo.java`:
+
+```java
+import java.util.Objects;
+
+public class ObjectsDemo {
+    public static void main(String[] args) {
+        System.out.println(Objects.equals(null, null));
+        System.out.println(Objects.equals("Java", null));
+        System.out.println(Objects.hashCode(null));
+        System.out.println(Objects.hash("x") == "x".hashCode());
+    }
+}
+```
+
+```text
+true
+false
+0
+false
+```
+
+Последнее сравнение — иллюстрация выбранного конкретного значения, не
+универсальный тест «hash всегда отличается». Для массивов обычный `equals`
+не сравнивает элементы; используйте явно подходящий array-контракт, когда
+это соответствует предметному равенству.
+
+## Записи и ограничение расширения {#sec-handbook-s1-inheritance-interfaces-record-sealed}
+
+`record Position(int row, int column) {}` объявляет финальный класс
+с компонентами. Для каждого компонента создаются закрытое финальное поле
+и публичный аксессор его имени; стандартные `equals`, `hashCode`, `toString`
+работают по record-контракту. Канонический конструктор принимает компоненты
+по порядку. Компактный конструктор может проверять/нормализовать параметры;
+не следует вручную присваивать компонентные поля внутри compact constructor.
+
+Авторский полный файл `RecordValidationDemo.java`:
+
+```java
+public class RecordValidationDemo {
+    record Position(int row, int column) {
+        Position {
+            if (row < 0 || column < 0) {
+                throw new IllegalArgumentException("negative coordinate");
+            }
+        }
+    }
+    public static void main(String[] args) {
+        Position position = new Position(2, 3);
+        System.out.println(position.row());
+        System.out.println(position.equals(new Position(2, 3)));
+    }
+}
+```
+
+Вывод: `2`, `true`. Ссылочные компоненты не становятся глубоко неизменяемыми;
+стандартное сравнение массива-компонента не становится поэлементным.
+[JLS 25 §8.10](https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.10).
+
+`sealed` ограничивает непосредственные подтипы, `permits` перечисляет их
+явно или список выводится в допускаемых спецификацией случаях. Непосредственные
+обычные наследники выбирают `final`, `sealed` либо `non-sealed`.
+Ограничение пакета/модуля: один пакет в unnamed module либо один named module.
+[JLS 25 §8.1.6](https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.1.6),
+[§9.1.4](https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html#jls-9.1.4).
+
+## Быстрая проверка модели {#sec-handbook-s1-inheritance-interfaces-checklist}
+
+Выпишите общий контракт операции: вход, результат, эффекты и возможный отказ.
+Проверьте, выполняет ли каждый подкласс обещание клиента. Для равенства
+сначала выберите учитываемые данные, затем согласуйте `equals` и `hashCode`.
+Если роль объекта состоит в использовании другого объекта, рассмотрите
+композицию. Если нужен только общий протокол без общего состояния,
+рассмотрите интерфейс.
+
+Книжное чтение: Блинов/Романчик, *Java from EPAM*, 2-е изд., 2021,
+гл. 4, с. 121–145; гл. 6, с. 177–184.
+[Наследование в PDF](https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf#page=123).
+Современные record/sealed и исправленные контракты имеют отдельные
+официальные источники Java 25 выше.

@@ -1,0 +1,123 @@
+## Имя, ресурс и данные {#sec-lectures-s1-io-layers}
+
+Path обозначает путь; он сам не читает файл. Files выполняет операции. Поток байтов переносит bytes, Reader/Writer работает с символами через выбранную кодировку.
+
+Далее из строк строятся записи, из записей — агрегат. Stream API обработки данных и I/O-поток — разные понятия.
+
+::: {.notes}
+Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл.10, с.290–300 (PDF292–302); [Files25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html).
+:::
+
+### UTF-8 явно {#sec-lectures-s1-io-charset}
+
+```java
+Path path = Path.of("requests.txt");
+String text = Files.readString(path, StandardCharsets.UTF_8);
+Files.writeString(Path.of("copy.txt"), text,
+                  StandardCharsets.UTF_8);
+```
+Bytes интерпретируются по UTF-8; запись использует ту же кодировку. Кириллицу нельзя декодировать приведением каждого байта к char. Возможный IOException требует выбранной обработки или throws.
+
+### Запись и добавление {#sec-lectures-s1-io-write-options}
+
+writeString без дополнительных опций обычно создаёт файл или обрезает существующий. Для дописывания явно задайте CREATE и APPEND.
+
+Прежде чем запускать пример, определите, какой файл будет перезаписан. Путь относителен к рабочему каталогу процесса, а не обязательно к месту исходника.
+
+## read, EOF и частичное чтение {#sec-lectures-s1-io-byte-reading}
+
+read() возвращает int: байт 0..255 или -1 при конце. read(buffer) сообщает фактически прочитанное число байтов; один вызов не обязан заполнить весь буфер.
+
+При записи используйте только прочитанную часть. Нулевой байт не является EOF.
+
+::: {.notes}
+Шилдт, *Java: руководство для начинающих*, русское 9-е изд., 2023 (основа JDK 17), гл.10, CopyFile, с.383 (PDF384); адаптация — буферное копирование вместо побайтового. [InputStream25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/InputStream.html).
+:::
+
+### Точное копирование {#sec-lectures-s1-io-byte-copy}
+
+```java
+try (InputStream input = Files.newInputStream(source);
+     OutputStream output = Files.newOutputStream(target)) {
+    byte[] buffer = new byte[1024];
+    int count;
+    while ((count = input.read(buffer)) != -1) {
+        output.write(buffer, 0, count);
+    }
+}
+```
+Последняя порция может быть короче буфера. Оба успешно открытых ресурса закрываются TWR, включая путь отказа.
+
+### Вариация последней порции {#sec-lectures-s1-io-partial-read}
+
+Пусть файл содержит 3 байта, буфер рассчитан на 1024. Запись всего buffer добавила бы лишние значения из неиспользованной части.
+
+write(buffer,0,count) сохраняет ровно прочитанную порцию. Файлы source и target должны различаться: открытие target с обрезанием не должно уничтожить источник.
+
+## Построчная обработка {#sec-lectures-s1-io-text-processing}
+
+Для большого текста не обязательно читать весь файл в память. BufferedReader получает строки по мере чтения; null означает EOF.
+
+У каждой строки должна быть политика формата и ошибки. В нашем сценарии файл содержит по одному ненулевому коду оборудования на строку.
+
+::: {.notes}
+Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл.10, с.298–300 (PDF300–302); авторская связная обработка строк/частот. [BufferedReader25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/BufferedReader.html).
+:::
+
+### Файл в карту частот {#sec-lectures-s1-io-file-frequency}
+
+```java
+Map<String, Integer> counts = new LinkedHashMap<>();
+try (BufferedReader reader = Files.newBufferedReader(
+        source, StandardCharsets.UTF_8)) {
+    String line;
+    while ((line = reader.readLine()) != null) {
+        if (line.isBlank()) continue;
+        counts.merge(line.strip(), 1, Integer::sum);
+    }
+}
+```
+Blank-строки явно пропускаются; strip снимает внешние пробелы. Порядок первого появления сохраняет LinkedHashMap.
+
+### Прогноз файлового сценария {#sec-lectures-s1-io-file-predict}
+
+```text
+A
+B
+A
+```
+Для этих входных строк ожидается `{A=2, B=1}`.
+
+Проверьте пустой файл, пустые строки и кириллицу. Вариация: код содержит значимые внешние пробелы — тогда strip меняет данные и нужно изменить контракт.
+
+### Сохранение агрегата {#sec-lectures-s1-io-save-result}
+
+```java
+List<String> outputLines = new ArrayList<>();
+for (var entry : counts.entrySet()) {
+    outputLines.add(entry.getKey() + ":" + entry.getValue());
+}
+Files.write(target, outputLines, StandardCharsets.UTF_8);
+```
+Для входа A,B,A получаем строки A:2 и B:1. Разделитель здесь допустим, потому что коды не содержат двоеточия. write не обещает транзакционной записи всего результата.
+
+### Ошибка кодировки и формата {#sec-lectures-s1-io-errors}
+
+IOException сообщает отказ I/O; декодирование может отвергнуть некорректные bytes. Ошибка предметной записи — другой уровень: нужны номер строки, контекст и правило пропуска или остановки.
+
+Для этого сценария I/O-ошибка останавливает обработку и сообщается вызывающему; нельзя молча выдать частичный агрегат за полный.
+
+### Files.lines и владелец {#sec-lectures-s1-io-lines}
+
+```java
+try (Stream<String> lines = Files.lines(
+        source, StandardCharsets.UTF_8)) {
+    long count = lines.filter(line -> !line.isBlank()).count();
+    System.out.println(count);
+}
+```
+Files.lines лениво читает и удерживает ресурс. Созданный Stream нужно закрыть; сбой во время обхода может прийти как UncheckedIOException.
+
+::: {.notes}
+Адаптировано по ReadStringMain4, Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл.10, с.300 (PDF302). Сохранён TWR для Files.lines, обработка заменена подсчётом непустых строк. Reader.lines не заменяет владение BufferedReader.
+:::

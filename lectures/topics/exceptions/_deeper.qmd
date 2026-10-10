@@ -1,0 +1,9 @@
+## Дополнительно: отказ инициализации класса {#sec-lectures-s1-exceptions-initialization-failure}
+
+При отказе static-инициализации весь runtime-класс может стать ошибочным. Первое активное обращение обычно даёт ExceptionInInitializerError при подходящей исходной причине; следующее — NoClassDefFoundError.
+
+Успешный повтор static-блока для того же ошибочного класса не обещан. Другой loader может определить другой runtime-класс: это другая идентичность.
+
+::: {.notes}
+[JLS25 §12.4.2](https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html#jls-12.4.2). Переработан init-failure исходной лекции. Не универсализировать формулировку для исходного Error.
+:::

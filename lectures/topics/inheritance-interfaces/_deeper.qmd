@@ -1,0 +1,58 @@
+## Дополнительно: record и глубокая неизменяемость {#sec-lectures-s1-inheritance-interfaces-record}
+
+```java
+record Batch(java.util.List<String> names) {
+    Batch { names = java.util.List.copyOf(names); }
+}
+```
+Компонент record final, но переданный список мог быть изменяемым. Копия задаёт самостоятельный контейнер; элементы остаются теми же.
+
+С массивом компонентное equals сравнивает массив по его обычному equals, а не автоматически по элементам.
+
+::: {.notes}
+[JLS25 §8.10](https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.10). Переработаны record/classforms исходной лекции.
+:::
+
+### Sealed и закрытое семейство {#sec-lectures-s1-inheritance-interfaces-sealed}
+
+```java
+sealed interface Result permits Found, Missing {}
+record Found(String value) implements Result {}
+record Missing() implements Result {}
+```
+Набор непосредственных подтипов ограничен. Record неявно final; другие разрешённые классы выбирают final, sealed или non-sealed.
+
+Ограничение расширения не заменяет контракт допустимых значений.
+
+::: {.notes}
+[JLS25 §9.1.4](https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html#jls-9.1.4).
+:::
+
+### Виртуальный вызов в C++ {#sec-lectures-s1-inheritance-interfaces-cpp-dispatch}
+
+```cpp
+struct Base {
+    const char* plain() const { return "Base"; }
+    virtual const char* name() const { return "Base"; }
+    virtual ~Base() = default;
+};
+struct Child : Base {
+    const char* plain() const { return "Child"; }
+    const char* name() const override { return "Child"; }
+};
+```
+Для `Child child; Base& p=child;` plain даёт Base, name — Child. `Base p=child` скопировало бы только базовую часть.
+
+::: {.notes}
+[C++ draft virtual](https://eel.is/c++draft/class.virtual). Адаптация сравнительного блока исходной лекции; демонстрация проверяется C++20.
+:::
+
+### Конструирование в C++ и Java {#sec-lectures-s1-inheritance-interfaces-construction-comparison}
+
+Во время конструктора Base виртуальный вызов в C++ ограничен строящейся частью иерархии. В Java обычный переопределяемый метод может попасть в Derived до его обычных инициализаторов.
+
+В Python методы ищутся динамически; проверка типов Java отдельно ограничивает допустимый вызов ещё до выполнения. Перенос конструктора требует проверить момент готовности состояния.
+
+::: {.notes}
+[C++ draft class.cdtor](https://eel.is/c++draft/class.cdtor), [Python classes](https://docs.python.org/3/tutorial/classes.html), [JLS25 §12.5](https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html#jls-12.5).
+:::

@@ -1,0 +1,42 @@
+## Перенос правила на выбранную ветвь {#sec-practice-s1-reserve-pipelines-files-experiment}
+
+### Короткое правило {#sec-practice-s1-reserve-pipelines-files-rule}
+
+Для reduce значение identity должно быть нейтральным для операции. Успех агрегирования и успех публикации файла — разные этапы; политика отказа должна определить, когда результат считается готовым.
+
+::: {.notes}
+Блинов/Романчик, Java from EPAM, 2-е изд., 2021, гл. 11, с. 331–339 (PDF 333–341), гл. 10, с. 298–301 (PDF 300–303). Авторский отрицательный пример identity; [Stream 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html). Пример независимо написан для разбора контракта; постановки резервного банка здесь не дублируются. Последовательность принята по hybrid: правило → прогноз → причина → вариация → обобщение.
+:::
+
+### Прогноз {#sec-practice-s1-reserve-pipelines-files-prediction}
+
+```java
+int result = java.util.List.of(3, 8).stream()
+    .reduce(100, Integer::sum);
+int empty = java.util.List.<Integer>of().stream()
+    .reduce(100, Integer::sum);
+System.out.println(result);
+System.out.println(empty);
+```
+
+Прогноз: почему непустой результат содержит лишние 100? Что означает пустой результат?
+
+Полный файл разбора: [PracticeReservePipelinesFiles.java](../assets/semester-one/PracticeReservePipelinesFiles.java). Java 25 без preview.
+
+### Видимая причина {#sec-practice-s1-reserve-pipelines-files-cause}
+
+Вывод `111`, `100`. Для сложения 100 не нейтрально: sum(100,x) не равно x. Последовательный reduce начинает с заданного значения, но контракт identity нарушен; корректная сумма использует 0. Нельзя обосновывать ошибочную identity только тем, что pipeline запускается.
+
+### Демонстрация из справочника {#sec-practice-s1-reserve-pipelines-files-demo}
+
+@handbook:sec-handbook-s1-functional-streams-reduce: проверьте identity/ассоциативность. @handbook:sec-handbook-s1-io-lines: запустите разобранный пример @theory:sec-theory-s1-io-lines и объясните границу жизни ресурса. Обработка stream завершается внутри TWR; ошибка позднего чтения может быть UncheckedIOException.
+
+### Самостоятельная вариация {#sec-practice-s1-reserve-pipelines-files-variation}
+
+Замените identity на 0 и повторите пустой/непустой вход. Составьте отдельно план файлового запуска: корректный вход; повреждённая запись; невозможность открыть файл; ошибка сохранения. Укажите, какие части результата успеют появиться.
+
+### Обратная связь {#sec-practice-s1-reserve-pipelines-files-feedback}
+
+Правильная сумма даёт `11` и `0`. Отказ разбора не равен отказу открытия/записи. После изменения файла catch не выполняет откат автоматически; если нужен только целый готовый результат, обрабатывайте данные до публикации и явно выберите политику временного файла.
+
+Сформулируйте одним предложением предусловие своего решения. Затем выберите вход, на котором нарушение этого предусловия видно.

@@ -1,0 +1,224 @@
+## Состояние и инвариант {#sec-lectures-s1-classes-methods-invariant}
+
+Класс объединяет состояние и операции, которые сохраняют его допустимость. Инвариант — условие, истинное после успешного создания и после каждой публичной операции.
+
+Пример: вместимость положительна, число занятых мест лежит от нуля до вместимости.
+
+::: {.notes}
+Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл.3, с.65–77 (PDF67–79): Account и TransferAction. Предметная модель мест авторская; проверка конструктора и методов переработана по этим учебным примерам.
+:::
+
+### Конструктор и доступ {#sec-lectures-s1-classes-methods-constructor}
+
+```java
+final class Room {
+    private final int capacity;
+    private int occupied;
+    Room(int capacity) {
+        if (capacity <= 0)
+            throw new IllegalArgumentException("capacity");
+        this.capacity = capacity;
+    }
+}
+```
+Поля скрыты. Клиент не может произвольно записать недопустимое число занятых мест; конструктор отклоняет недопустимую вместимость.
+
+### Операция предметного API {#sec-lectures-s1-classes-methods-method}
+
+```java
+boolean enter() {
+    if (occupied == capacity) return false;
+    occupied++;
+    return true;
+}
+int available() { return capacity - occupied; }
+```
+Методы внутри Room. Для `new Room(1)` первый `enter()` даст true, второй — false, доступных мест останется 0. Проверка предшествует мутации; отказ сохраняет состояние.
+
+### Параметры и временное состояние {#sec-lectures-s1-classes-methods-method-design}
+
+Параметр задаёт данные отдельного вызова; поле — состояние между вызовами. Если аргумент нужен только для вычисления результата, превращать его в поле обычно не требуется.
+
+`static`-метод не имеет получателя `this`. Метод экземпляра работает с конкретным объектом. Возвращаемое значение должно иметь ясный смысл для клиента.
+
+::: {.notes}
+Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл.3, TransferAction, с.73–74 (PDF75–76); адаптация принципа декомпозиции.
+:::
+
+## Аргументы и параметры {#sec-lectures-s1-classes-methods-reference-rule}
+
+В Java каждый параметр получает копию значения аргумента. Параметр — отдельная переменная. Для объекта копируется **значение ссылки**.
+
+Следить нужно отдельно за переменными и за состоянием объекта, на который они ссылаются.
+
+::: {.notes}
+Одобренный handoff hybrid, авторская переработка сценария. [JLS25 §8.4.1](https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.1).
+:::
+
+### Учебный Counter {#sec-lectures-s1-classes-methods-counter}
+
+```java
+static class Counter {
+    int value;
+    Counter(int value) { this.value = value; }
+}
+```
+Открытое поле здесь позволяет явно увидеть мутацию. В предметном API доступ обычно ограничивают методами.
+
+### Мутация и переприсваивание {#sec-lectures-s1-classes-methods-change}
+
+```java
+static Counter change(Counter c) {
+    c.value += 1;
+    c = new Counter(99);
+    return c;
+}
+```
+Первое действие меняет поле объекта, второе — только переменную `c`. Возвращаемая ссылка используется отдельно.
+
+### Прогноз вызова {#sec-lectures-s1-classes-methods-reference-predict}
+
+```java
+Counter counter = new Counter(5);
+Counter alias = counter;
+Counter result = change(counter);
+System.out.println(counter.value);
+System.out.println(alias.value);
+System.out.println(result.value);
+```
+Назовите три результата. Какое действие способно изменить `alias.value`?
+
+### Вход в метод {#sec-lectures-s1-classes-methods-reference-entry}
+
+`counter`, `alias` и параметр `c` первоначально хранят ссылки на один объект со значением 5. Новая переменная параметра не означает новый объект.
+
+![Копирование значения ссылки](../assets/semester-one/reference-entry.svg){height=220}
+
+::: {.notes}
+Схема адаптирована из handoff hybrid. Источник: [JLS25 §15.12.4.5](https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.12.4.5).
+:::
+
+### Изменение поля {#sec-lectures-s1-classes-methods-reference-mutation}
+
+После `c.value += 1` общий объект содержит 6. Чтение через `counter` или `alias` увидит 6: это один объект.
+
+![Общий объект после мутации](../assets/semester-one/reference-mutated.svg){height=220}
+
+### Другая ссылка параметра {#sec-lectures-s1-classes-methods-reference-rebind}
+
+После `c = new Counter(99)` параметр указывает на новый объект. Переменные клиента продолжают указывать на прежний со значением 6.
+
+![Переприсвоен только параметр](../assets/semester-one/reference-rebound.svg){height=220}
+
+### Результат и присваивание {#sec-lectures-s1-classes-methods-reference-result}
+
+```text
+6
+6
+99
+```
+`return c` передал ссылочное значение; `result = ...` сохранило его в переменной клиента. Вариация `counter = change(counter)` даст для counter 99, а для alias — 6. Alias не следует за переменной counter.
+
+### Примитив и final-параметр {#sec-lectures-s1-classes-methods-reference-variation}
+
+```java
+static void changeNumber(int n) { n = 99; }
+int number = 5;
+changeNumber(number); // number осталось 5
+```
+При `final Counter c` присваивание другой ссылки параметру запрещено, но `c.value += 1` допустимо. final ограничивает переменную, не делает объект глубоко неизменяемым.
+
+## Инициализация класса и экземпляра {#sec-lectures-s1-classes-methods-initialization}
+
+У класса есть общее static-состояние; у каждого объекта — свои поля. Успешная инициализация runtime-класса выполняется один раз; поля и блоки экземпляра — для каждого нового объекта.
+
+Далее рассматриваем последовательное выполнение в одном потоке.
+
+::: {.notes}
+Адаптировано из старой подробной лекции и одобренного handoff initialization. Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл.3, с.69–71, 81–86; [JLS25 §12.4–12.5](https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html).
+:::
+
+### Поля и блоки Ticket {#sec-lectures-s1-classes-methods-ticket-fields}
+
+```java
+static class Ticket {
+    static int next = 1;
+    static { System.out.println("static"); }
+    final int id = next++;
+    { System.out.println("instance " + id); }
+    // конструкторы на следующем экране
+}
+```
+Счётчик общий, id свой у каждого Ticket. Блок экземпляра выполняется в текстовом порядке после инициализатора id.
+
+### Конструкторы Ticket {#sec-lectures-s1-classes-methods-ticket-constructors}
+
+```java
+Ticket() {
+    this("guest");
+    System.out.println("body()");
+}
+Ticket(String who) {
+    System.out.println("body(" + who + ")");
+}
+```
+Это члены класса с предыдущего экрана. `this("guest")` вызывает другой конструктор **того же объекта**.
+
+### Первое создание {#sec-lectures-s1-classes-methods-ticket-first}
+
+```java
+new Ticket();
+```
+Предскажите порядок.
+
+```text
+static
+instance 1
+body(guest)
+body()
+```
+Подготовлен класс, затем экземпляр; целевой конструктор завершился до остатка делегирующего.
+
+### Второе создание {#sec-lectures-s1-classes-methods-ticket-second}
+
+```java
+new Ticket("staff");
+```
+```text
+instance 2
+body(staff)
+```
+Блок static успешно завершён прежде и не повторяется. Новый id получен из общего next. Блок экземпляра срабатывает для нового объекта.
+
+### Один объект при this(...) {#sec-lectures-s1-classes-methods-ticket-delegation}
+
+Делегирование не создаёт второй Ticket. Инициализатор id и блок экземпляра выполняются один раз для создаваемого объекта.
+
+Вариация: добавьте ещё один делегирующий конструктор. Изменится число тел в цепочке, но не число объектов и не число выполнений блока экземпляра.
+
+### Значения до инициализаторов {#sec-lectures-s1-classes-methods-default-values}
+
+Поля сначала имеют значения по умолчанию: 0, false или null. Затем выполняются соответствующие инициализаторы.
+
+Неприсвоенная локальная переменная не получает аналогичного разрешения на чтение. Это объясняет, почему ранний вызов метода может видеть 0 в поле ещё строящегося объекта.
+
+### Композиция и владение {#sec-lectures-s1-classes-methods-ownership}
+
+```java
+final class Samples {
+    private final int[] values;
+    Samples(int[] input) { values = input.clone(); }
+    int[] snapshot() { return values.clone(); }
+}
+```
+Копия на входе и выходе предотвращает изменение внутреннего массива клиентом. Для массива объектов такая копия защищает контейнер, но оставляет общими элементы.
+
+### Перегрузка и varargs {#sec-lectures-s1-classes-methods-overloads}
+
+Перегрузка выбирает сигнатуру по типам выражений при компиляции. Одного различия возвращаемого типа недостаточно.
+
+`int sum(int... values)` принимает переменное число аргументов как массив. Контракт должен определить результат для пустого вызова; для суммы это обычно 0.
+
+::: {.notes}
+Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл.3, с.86–94 (PDF88–96).
+:::

@@ -1,0 +1,400 @@
+---
+pagetitle: "Функциональные интерфейсы и конвейеры"
+---
+
+# Функциональные интерфейсы и конвейеры {#sec-theory-s1-functional-streams}
+
+Метод может получать не только данные, но и правило их обработки. Например,
+алгоритм отбора одинаков для разных условий: «длиннее двух символов»,
+«начинается с J», «не пустая строка». Функциональный интерфейс задаёт тип
+такого правила, лямбда реализует его, а Stream API связывает правила в конвейер.
+
+**Предпосылки:** методы, интерфейсы, generics, строки и коллекции:
+@sec-theory-s1-map-classes-methods, @sec-theory-s1-map-inheritance-interfaces,
+@sec-theory-s1-map-generics, @sec-theory-s1-map-strings,
+@sec-theory-s1-collections. **Результат:** передать поведение, объяснить
+захват, выполнить ленивый одноразовый конвейер и выбрать агрегат или отсутствие.
+Справочник: @handbook:sec-handbook-s1-functional-streams.
+Работа: @tasks:sec-tasks-s1-lab-09;
+банк: @tasks:sec-tasks-s1-bank-functional-streams.
+
+## Один функциональный контракт {#sec-theory-s1-functional-streams-sam}
+
+Основа — Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл. 7,
+с. 201–203 (PDF 203–205). Фрагмент с. 201:
+
+> Функциональный интерфейс должен иметь один единственный абстрактный
+> метод и любое число статических и default-методов.
+
+Это удобное первое приближение SAM — single abstract method. Формально
+Java учитывает наследование и совместимые сигнатуры, а методы, соответствующие
+публичным методам `Object`, не добавляют самостоятельного функционального
+контракта. `Comparator` поэтому функционален, хотя в его описании есть `equals`.
+Аннотация `@FunctionalInterface` просит компилятор проверить намерение;
+без аннотации подходящий интерфейс тоже можно реализовать лямбдой.
+Рекомендация книги избегать лямбд для интерфейсов без аннотации не является
+ограничением языка.
+
+`ShapeLambda.java` адаптирован по `ShapeService` EPAM, с. 201–202:
+сохранён интерфейс с `perimeter(double,double)`, оба способа реализации
+сведены в самостоятельный файл, добавлен предсказуемый вывод.
+
+```java
+public class ShapeLambda {
+    @FunctionalInterface
+    interface ShapeService {
+        double perimeter(double a, double b);
+    }
+    public static void main(String[] args) {
+        ShapeService object = new ShapeService() {
+            public double perimeter(double a, double b) {
+                return 2 * (a + b);
+            }
+        };
+        ShapeService lambda = (a, b) -> 2 * (a + b);
+        System.out.println(object.perimeter(3, 4));
+        System.out.println(lambda.perimeter(3, 4));
+    }
+}
+```
+
+Обе строки — `14.0`. Лямбда не вычисляет периметр при объявлении: она создаёт
+поведение для последующего вызова. Тип слева задаёт типы параметров и результата.
+При блочном теле результата нужен `return`; при теле-выражении значение
+выражения является результатом. Добавление второго независимого абстрактного
+метода лишит интерфейс функциональности и сделает лямбду недопустимой.
+
+## Стандартные формы поведения {#sec-theory-s1-functional-streams-functions}
+
+EPAM, с. 203–213, последовательно вводит четыре формы. Выбирать интерфейс
+стоит по входам и результату, затем уточнять предметное имя переменной.
+
+| Тип | Абстрактный метод | Смысл |
+|---|---|---|
+| `Predicate<T>` | `boolean test(T t)` | Условие |
+| `Function<T,R>` | `R apply(T t)` | Преобразование |
+| `Consumer<T>` | `void accept(T t)` | Действие с побочным эффектом |
+| `Supplier<T>` | `T get()` | Получение по запросу |
+| `UnaryOperator<T>` | `T apply(T t)` | Преобразование T → T |
+| `BinaryOperator<T>` | `T apply(T a,T b)` | Объединение двух T |
+
+У двух входов есть `BiPredicate`, `BiFunction`, `BiConsumer`; для примитивов
+— специализированные формы, например `IntPredicate` и `ToIntFunction<T>`.
+Они позволяют обойти boxing на соответствующей границе.
+
+`PredicateDemo.java` сохраняет фрагменты EPAM, с. 203–204, почти без изменения:
+добавлены imports, класс и `main`; массив и условия оставлены исходными.
+
+```java
+import java.util.Arrays;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+public class PredicateDemo {
+    public static void main(String[] args) {
+        Predicate<String> predicateStr1 = s -> s.length() < 2;
+        Predicate<String> predicateStr2 = String::isBlank;
+        Predicate<Integer> predicateInt = i -> i >= 9;
+        System.out.println(predicateStr1.test("java"));
+        System.out.println(predicateStr2.test(" "));
+        System.out.println(predicateInt.test(16));
+        String[] arrayStr = {"as", "a", "the", " ", "d", "on", "and", ""};
+        System.out.println(Arrays.stream(arrayStr)
+                .filter(s -> s.length() > 2)
+                .collect(Collectors.toList()));
+    }
+}
+```
+
+Вывод: `false`, `true`, `true`, `[the, and]`, по строкам.
+`test` — обычный полезный прямой вызов, вопреки замечанию книги с. 203,
+что на практике он «никогда» не используется. `filter` оставляет элементы,
+для которых условие истинно; он не удаляет их из исходного массива.
+Вариант `s.length() >= 2` даст `[as, the, on, and]`.
+
+`Predicate.and`/`or` используют короткое замыкание. Например,
+`nonNull.and(s -> !s.isEmpty())` не вызовет второй предикат на `null`, если
+первый вернул `false`. Для `Function` различайте порядок:
+`f.andThen(g)` означает сначала f, потом g; `f.compose(g)` — сначала g.
+Побочные эффекты `Consumer` нужно отдельно согласовать с алгоритмом:
+название типа не обещает, что действие безопасно повторять.
+
+## Ссылки на методы и захват {#sec-theory-s1-functional-streams-capture}
+
+Ссылка `String::length` в `Function<String,Integer>` означает функцию,
+получающую строку и вызывающую её `length`. `System.out::println` связывает
+конкретный получатель `System.out`; `Integer::parseInt` — статический метод;
+`ArrayList::new` — конструктор. Все формы требуют целевого функционального
+типа: ссылка сама по себе не задаёт универсального типа функции.
+
+EPAM, с. 216–219, показывает замыкание с параметром и локальным счётчиком.
+`ClosureDemo.java` почти сохраняет `FunctionBuilder.build` и его вызов
+с. 216–217: объединены два класса, сохранены `strNum`, `count` и числа.
+
+```java
+import java.util.function.Function;
+public class ClosureDemo {
+    static Function<String, Integer> build(String strNum) {
+        int count = 1;
+        return t -> Integer.valueOf(strNum + t) + count;
+    }
+    public static void main(String[] args) {
+        Function<String, Integer> function = build("100");
+        System.out.println(function.apply("77"));
+    }
+}
+```
+
+Вывод `10078`: строки сначала объединяются в `"10077"`, затем разбираются
+как целое и увеличиваются на 1. После выхода из `build` функция продолжает
+использовать захваченные значения. Локальные переменные должны быть `final`
+или effectively final — без переприсваивания после начального присваивания.
+Это не означает глубокого снимка объектов.
+
+`ReferenceCapture.java` — авторское уточнение к EPAM с. 217–218:
+изменяемый объект доступен через неизменяемую локальную ссылку.
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+public class ReferenceCapture {
+    public static void main(String[] args) {
+        List<String> words = new ArrayList<>();
+        Supplier<Integer> size = words::size;
+        words.add("java");
+        System.out.println(size.get());
+        words.add("code");
+        System.out.println(size.get());
+    }
+}
+```
+
+Вывод `1`, затем `2`. Переприсваивание `words = new ArrayList<>()` не
+изменит уже связанного получателя `words::size`; ссылка на метод сохраняет
+получатель при создании. Для лямбды `() -> words.size()` последующее
+переприсваивание локальной `words` сделало бы захват ошибкой компиляции.
+Использование массива из одного элемента для изменяемого счётчика, показанное
+в книге, не превращает вычисление в чистое и не делает его потокобезопасным.
+
+## Конвейер: источник, стадии, результат {#sec-theory-s1-functional-streams-pipeline}
+
+EPAM, гл. 11, с. 331–337, вводит Stream API. Коллекция хранит данные;
+stream описывает их прохождение через стадии. Источник может быть коллекцией,
+массивом, файлом или генератором. Промежуточные операции `filter`, `map`,
+`sorted`, `distinct`, `limit` возвращают продолжение конвейера. Терминальные
+`toList`, `count`, `collect`, `reduce`, `findFirst`, `anyMatch` запускают
+обработку и завершают использование этого stream.
+
+Ленивость означает, что промежуточные действия выполняются по потребности
+терминальной операции. Короткое замыкание может оставить часть источника
+непрочитанной. Оптимизация может вообще исключить ненужную стадию: нельзя
+делать обязательную работу в `peek` и рассчитывать, что `count` её вызовет.
+
+`LazyPipeline.java` — авторский пошаговый разбор схем EPAM, с. 331–334.
+Диагностическая печать намеренно показывает только последовательный
+конвейер с `findFirst`, не является шаблоном производственного фильтра.
+
+```java
+import java.util.List;
+import java.util.stream.Stream;
+public class LazyPipeline {
+    public static void main(String[] args) {
+        Stream<String> selected = List.of("as", "the", "and").stream()
+                .filter(s -> {
+                    System.out.println("test " + s);
+                    return s.length() > 2;
+                });
+        System.out.println("ready");
+        System.out.println(selected.findFirst().orElse("none"));
+        try {
+            selected.count();
+        } catch (IllegalStateException e) {
+            System.out.println("already used");
+        }
+    }
+}
+```
+
+Вывод:
+
+```text
+ready
+test as
+test the
+the
+already used
+```
+
+Построение не запускает predicate. Первый элемент не подходит, второй
+подходит, третий уже не нужен. Повторное использование недопустимо;
+для нового расчёта создайте новый `list.stream()`. Отказ повторного использования
+может обнаруживаться через `IllegalStateException`; отсутствие обнаружения
+не делает повторный обход допустимым.
+
+Порядок стадий имеет смысл: `limit(2).filter(...)` отбирает из первых двух,
+`filter(...).limit(2)` ищет первые два подходящих по всему источнику.
+Не меняйте источник во время обхода и не используйте внешнюю изменяемую
+сумму внутри `map`/`filter`. `parallel()` требует отдельного анализа
+ассоциативности, побочных эффектов и порядка; здесь все конвейеры последовательные.
+
+## Примитивные потоки и свёртка {#sec-theory-s1-functional-streams-reduction}
+
+`map` преобразует один элемент в один; `flatMap` разворачивает каждый элемент
+в поток элементов и объединяет их. `mapToInt(String::length)` возвращает
+`IntStream`, у которого есть `sum`, `average`, `summaryStatistics`.
+Длины строк в этих примерах — число UTF-16 code units, не универсальная
+мера видимых знаков.
+
+`ReductionDemo.java` адаптирован по EPAM, с. 339: сохранены строки и сумма
+длин; добавлены примитивный поток и контраст корректной/некорректной identity.
+
+```java
+import java.util.List;
+public class ReductionDemo {
+    public static void main(String[] args) {
+        List<String> strings = List.of("as", "a", "the", "d", "on", "and");
+        System.out.println(strings.stream().mapToInt(String::length).sum());
+        System.out.println(strings.stream().mapToInt(String::length).average().orElse(0));
+        System.out.println(List.of(2, 3, 4).stream().reduce(1, (a, b) -> a * b));
+        System.out.println(List.of(2, 3, 4).stream().reduce(0, (a, b) -> a * b));
+    }
+}
+```
+
+Вывод: `12`, `2.0`, `24`, `0`. Для умножения нейтральный элемент 1,
+для сложения 0. Последовательный расчёт с ошибочной identity может выглядеть
+как знакомый цикл, но нарушает контракт `reduce`. Объединяющая операция
+должна быть ассоциативной; вычитание не подходит. Без identity пустой поток
+не даёт агрегата: `reduce(op)` возвращает `Optional<T>`. Пустой `IntStream.sum()`
+даёт 0, `average()` — пустой `OptionalDouble`, поскольку среднего нет.
+
+## Сбор результата и группировка {#sec-theory-s1-functional-streams-collectors}
+
+`collect` выполняет изменяемую редукцию в контейнер по контракту коллектора.
+`toList` в Stream и `Collectors.toList` — разные API с разными гарантиями.
+Если нужен конкретно изменяемый `ArrayList`, закажите его явно через
+`Collectors.toCollection(ArrayList::new)`.
+
+`GroupingDemo.java` сохраняет компактные идеи EPAM с. 338–340:
+`joining`, `summingInt`, `groupingBy(String::length)`; добавлены standalone
+обёртка, явная `TreeMap` для порядка и downstream counting.
+
+```java
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+public class GroupingDemo {
+    public static void main(String[] args) {
+        List<String> strings = List.of("as", "a", "the", "d", "on", "and");
+        System.out.println(strings.stream().collect(Collectors.joining(", ")));
+        System.out.println(strings.stream().collect(Collectors.summingInt(String::length)));
+        Map<Integer, List<String>> byLength = strings.stream().collect(
+                Collectors.groupingBy(String::length, TreeMap::new, Collectors.toList()));
+        System.out.println(byLength);
+        Map<Integer, Long> counts = strings.stream().collect(
+                Collectors.groupingBy(String::length, TreeMap::new, Collectors.counting()));
+        System.out.println(counts);
+    }
+}
+```
+
+Вывод:
+
+```text
+as, a, the, d, on, and
+12
+{1=[a, d], 2=[as, on], 3=[the, and]}
+{1=2, 2=2, 3=2}
+```
+
+Classifier выбирает ключ группы; downstream определяет её значение:
+список исходных строк или число строк. Если убрать `TreeMap::new`,
+`groupingBy` не гарантирует конкретный тип карты и порядок печати ключей.
+`toMap(key,value)` без merge-функции отказывает при повторном ключе;
+для частот нужна политика объединения, например сумма. `distinct()` использует
+равенство элементов, а сортировка — порядок компаратора: это разные операции.
+
+## Optional: значение может отсутствовать {#sec-theory-s1-functional-streams-optional}
+
+`findFirst` может ничего не найти. Возврат `Optional<String>` делает этот
+случай частью типа результата. `Optional.of(value)` требует ненулевое значение;
+`ofNullable` превращает `null` в пустоту. `map` преобразует присутствующее
+значение, `flatMap` подходит для функции, уже возвращающей Optional.
+`get()` без проверки пустоты бросает `NoSuchElementException`; лучше явно
+выбрать запасное значение, действие или исключение.
+
+`OptionalFallback.java` — авторский пример, связанный с
+@tasks:exr-tasks-s1-essay-optional-fallback-evaluation.
+
+```java
+import java.util.Optional;
+public class OptionalFallback {
+    static String fallback() {
+        System.out.println("fallback calculated");
+        return "unknown";
+    }
+    public static void main(String[] args) {
+        Optional<String> present = Optional.of("java");
+        System.out.println(present.orElse(fallback()));
+        System.out.println(present.orElseGet(OptionalFallback::fallback));
+        System.out.println(Optional.<String>empty().orElseGet(OptionalFallback::fallback));
+    }
+}
+```
+
+Вывод:
+
+```text
+fallback calculated
+java
+java
+fallback calculated
+unknown
+```
+
+У `orElse` аргумент вычисляется до вызова метода, даже когда он не понадобится.
+`orElseGet` получает поведение и вызывает его при пустоте. Вариант с пустым
+`present` вызовет fallback в обеих формах. Optional не сообщает **почему**
+значение отсутствует и не заменяет исключение для отказа чтения файла.
+Не возвращайте `null` вместо самого Optional.
+
+## Самопроверка {#sec-theory-s1-functional-streams-check}
+
+1. Когда выполняется тело лямбды: при присваивании или вызове её метода?
+2. Почему изменение элемента захваченного списка допустимо, а переприсваивание
+   захваченной локальной ссылки в лямбде — нет?
+3. Что значит одноразовость stream, если его источник — многоразовый список?
+4. Как получить изменяемый список результата? Как пустота влияет на `average`?
+5. Что меняет `thenComparing` и что меняет downstream `counting`?
+6. Почему `orElse(expensive())` может быть дороже `orElseGet(() -> expensive())`?
+
+::: {.callout-note collapse="true" title="Ответы и объяснения"}
+1. При вызове функционального метода. Создание поведения и выполнение различны.
+2. Захватывается значение ссылки; effectively final ограничивает локальную
+   переменную, а не глубину изменяемости объекта.
+3. Одноразов именно конвейер. Для второго прохода создайте новый stream.
+4. `collect(toCollection(ArrayList::new))`. Среднее пустого потока отсутствует,
+   а нулевая сумма определена нейтральным элементом.
+5. Дополнительный критерий порядка разрешает совпадения первого критерия;
+   downstream меняет значение группы со списка на число элементов.
+6. Аргумент обычного вызова вычисляется заранее, Supplier вызывается по потребности.
+:::
+
+Практика: @tasks:exr-tasks-s1-filter-string-array,
+@tasks:exr-tasks-s1-divisibility-function. Для исследования:
+@tasks:exr-tasks-s1-essay-lambda-setting-capture,
+@tasks:exr-tasks-s1-essay-loop-pipeline-equivalence,
+@tasks:exr-tasks-s1-essay-frequency-result-merging.
+
+## Источники и продолжение {#sec-theory-s1-functional-streams-sources}
+
+EPAM: Блинов, Романчик, 2-е изд., 2021, гл. 7, с. 201–219 и гл. 11,
+с. 331–340. Сохранены форма `ShapeService`, исходные предикаты/массив,
+замыкание и компактные collector-выражения; редакционные изменения указаны
+у каждого примера. Java 25 уточняет SAM, ленивость, одноразовость и свойства
+результатов: @handbook:sec-handbook-s1-functional-streams.
+
+Работа с файловым stream требует ещё управления ресурсом, изучаемого в
+@sec-theory-s1-io; функциональный поток обработки и поток байтов — разные
+абстракции, несмотря на общее английское слово stream.

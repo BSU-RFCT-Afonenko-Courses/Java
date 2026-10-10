@@ -1,0 +1,132 @@
+---
+pagetitle: "Исключения и ресурсы — Java 25"
+---
+
+# Исключения и ресурсы — Java 25 {#sec-handbook-s1-exceptions}
+
+**Версия:** Java SE 25, без preview. Источники проверены 11 октября 2026 года.
+Это точные правила для обращения при разработке; объяснение механизма и
+разобранные примеры: @theory:sec-theory-s1-exceptions.
+Все формулировки ниже — авторские пояснения к JLS/API.
+
+## Иерархия и checked exceptions {#sec-handbook-s1-exceptions-hierarchy}
+
+Бросаемый объект имеет тип `Throwable` или подкласс. `Exception` и `Error`
+наследуют Throwable; RuntimeException наследует Exception. Unchecked:
+RuntimeException/потомки и Error/потомки. Остальные exception classes checked.
+«Проверяемое» означает обязательный анализ при компиляции; все фактические
+отказы относятся к исполнению. Error предназначен для проблем, после которых
+обычная программа обычно не восстанавливается.
+[JLS 25 §11.1.1](https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html#jls-11.1.1).
+
+Потенциальное checked exception нужно обработать или объявить `throws`
+с этим типом/супертипом. Это часть контракта метода; метод переопределения
+не расширяет множество обязательных checked exceptions базового метода.
+Unchecked не требуется объявлять, но они тоже входят в документацию поведения.
+[JLS 25 §11.2](https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html#jls-11.2).
+
+## throw, throws и catch {#sec-handbook-s1-exceptions-contract}
+
+| Конструкция | Значение |
+|---|---|
+| `new InputException("...")` | Создание объекта; сама по себе не бросает |
+| `throw exception;` | Прерывание текущего пути этим объектом |
+| `throws InputException` | Возможный выход из метода; не обработчик |
+| `catch (InputException e)` | Обработчик соответствующего типа/подкласса |
+
+Брошенное исключение прерывает текущие вычисления и ищет соответствующий
+обработчик в текущем потоке исполнения. `throw null` приводит к
+NullPointerException. После catch выполнение идёт после всей конструкции;
+возобновления на прерванной строке нет.
+[JLS 25 §14.18](https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.18),
+[§11.3](https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html#jls-11.3).
+
+Checked exceptions тела лямбды ограничены `throws` её функционального метода.
+Обычный `Function<T,R>.apply` не объявляет `IOException`; для IO-операции
+выберите отдельный интерфейс с throws или осмысленно преобразуйте отказ,
+сохранив причину. Нельзя просто «пропустить» checked exception через map.
+[JLS 25 §11.2.3](https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html#jls-11.2.3),
+[Function 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html).
+
+## Порядок обработчиков и multi-catch {#sec-handbook-s1-exceptions-catch}
+
+Первый подходящий catch получает управление; более общий тип перед
+подклассом делает последующий catch недостижимым. В `catch (A | B e)`
+альтернативы не могут быть в отношении subtype друг к другу; параметр
+не допускает переприсваивания. Проверяемый catch должен соответствовать
+возможному отказу try, с отдельными правилами для Exception/его суперклассов.
+[JLS 25 §14.20](https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20),
+[§11.2.3](https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html#jls-11.2.3).
+
+Практические решения: различить причины отдельными catch, объединить одинаковое
+решение multi-catch или передать отказ выше. Молчаливое поглощение не меняет
+исходных данных и не восстанавливает состояние.
+
+## finally: приоритет выхода {#sec-handbook-s1-exceptions-finally}
+
+Если finally завершается обычно, сохраняется прежняя причина выхода
+try/catch. Если finally завершилось через throw/return/break, эта причина
+заменяет прежнюю. Поэтому return в finally может скрыть исключение.
+Выполнение finally не обещано после прекращения процесса или при недостижении
+выхода из try. Для файлов обычно выбирайте TWR вместо ручного finally-close.
+[JLS 25 §14.20.2](https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.2).
+
+## Try-with-resources {#sec-handbook-s1-exceptions-twr}
+
+Ресурс должен реализовать `AutoCloseable`. Его можно объявить в заголовке
+или передать как ранее объявленную final/effectively-final переменную.
+[JLS 25 §14.20.3](https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3),
+[AutoCloseable 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/AutoCloseable.html).
+
+Ресурсы инициализируются слева направо, закрываются справа налево.
+Если поздняя инициализация отказала, уже созданные закрываются.
+Null-ресурс пропускается при закрытии. Catch/finally конструкции выполняются
+после закрытия управляемых ресурсов.
+[JLS 25 §14.20.3.1](https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3.1).
+
+| Где возник отказ | Основное исключение | Дополнительное |
+|---|---|---|
+| Только тело | Из тела | Нет |
+| Тело и close | Из тела | Close в suppressed |
+| Только один close | Из close | Нет |
+| Несколько close при успешном теле | Из первого выполненного неудачного close | Последующие в suppressed |
+
+Пример с наблюдаемым порядком: @theory:sec-theory-s1-exceptions-resources.
+[Throwable 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Throwable.html).
+
+## Данные исключения {#sec-handbook-s1-exceptions-details}
+
+| Метод Throwable | Что возвращает/делает |
+|---|---|
+| `getMessage()` | Подробность; может быть null |
+| `getCause()` | Причина обёртки или null |
+| `getSuppressed()` | Массив сопутствующих исключений |
+| `getStackTrace()` | Снимок элементов стека |
+| `printStackTrace()` | Диагностическое представление, включая cause/suppressed |
+
+При обёртке `new DomainException(message,cause)` сохраняйте cause.
+Cause и suppressed независимы; не заменяйте оба только текстом сообщения.
+`addSuppressed(null)` запрещён, подавление самого себя тоже запрещено.
+Подавление может быть отключено специально выбранным конструктором Throwable;
+обычные учебные exception-классы этого не делают.
+[Throwable 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Throwable.html).
+
+Для собственного checked exception наследуйте Exception вне RuntimeException;
+для unchecked — RuntimeException. Конструкторы не наследуются автоматически,
+поэтому нужные формы message/cause объявляйте явно. Exception-класс не может
+быть generic.
+[JLS 25 §11.1.1](https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html#jls-11.1.1).
+
+## Состояние и граница обработки {#sec-handbook-s1-exceptions-state}
+
+Java не предоставляет автоматического отката изменённых полей при throw.
+Для гарантии «ожидаемый отказ сохраняет состояние» сначала проверьте контракт,
+вычислите новые значения, затем измените поля. Для внешнего файла/БД потребуется
+собственный протокол целостности. Это проектное решение, а не свойство catch.
+Разобранный пример: @theory:sec-theory-s1-exceptions-state.
+
+Обрабатывайте отказ там, где известно следующее действие. Для отсутствующего
+результата поиска уместен Optional; для невозможности выполнить операцию
+может потребоваться exception. Выбор смысла исследуется в
+@tasks:exr-tasks-s1-essay-failure-reporting-boundaries.
+Закрытие файлов и ошибки чтения: @handbook:sec-handbook-s1-io.

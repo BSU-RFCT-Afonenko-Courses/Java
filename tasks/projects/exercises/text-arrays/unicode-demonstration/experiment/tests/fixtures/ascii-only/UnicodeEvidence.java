@@ -1,1 +1,0 @@
-public final class UnicodeEvidence { public record Example(String text,int utf16Units,int codePoints,String firstCodePoint){} public static Example[] examples(){return new Example[]{new Example("A",1,1,"A"),new Example("B",1,1,"B")};}}

@@ -1,0 +1,154 @@
+---
+pagetitle: "Коллекции — справочник Java 25"
+---
+
+# Коллекции — справочник Java 25 {#sec-handbook-s1-collections}
+
+**Версия:** Java SE 25, без preview. Официальные источники проверены
+11 октября 2026 года. Это адресный справочник контрактов; первый раз тему
+изучайте по @theory:sec-theory-s1-collections. Таблицы и примеры ниже —
+авторские пояснения, не цитаты документации.
+
+## Интерфейсы и операции {#sec-handbook-s1-collections-contracts}
+
+`Collection<E>` наследует `Iterable<E>`; карта `Map<K,V>` имеет отдельный
+контракт. Методы изменения могут быть optional: наличие метода в интерфейсе
+не гарантирует, что конкретный объект его поддерживает. Отказ такой операции
+обычно выражен `UnsupportedOperationException`.
+[Collection 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collection.html).
+
+| Интерфейс | Различающий смысл | Типичные операции |
+|---|---|---|
+| `List<E>` | Последовательность с позициями; повторы | `get`, `set`, `add(index,e)` |
+| `Set<E>` | Уникальные элементы | `add`, `contains`, `remove` |
+| `Deque<E>` | Два конца последовательности | `addFirst`, `addLast`, `pollFirst`, `pollLast` |
+| `Map<K,V>` | Уникальный ключ → значение | `put`, `get`, `containsKey`, `entrySet` |
+
+`size()` — число элементов/пар; у списка `get`/`set`/`remove(int)` требуют
+`0 <= index < size()`, `add(index,e)` разрешает также `index == size()`.
+В `List<Integer>` различайте `remove(int)` и `remove(Object)`.
+[List 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html).
+
+## Выбор реализации, порядок и null {#sec-handbook-s1-collections-implementations}
+
+| Реализация | Обход | `null` | Практическое применение |
+|---|---|---|---|
+| `ArrayList` | Позиционный | Разрешён | Индексированный список |
+| `HashSet` | Не гарантирован | Разрешён | Проверка принадлежности |
+| `LinkedHashSet` | Порядок добавления | Разрешён | Удаление повторов с сохранением первого появления |
+| `TreeSet` | Порядок сравнения | Естественный порядок запрещает; comparator может разрешить | Сортированное множество и поиск соседей |
+| `HashMap` | Не гарантирован | Один ключ и значения | Поиск по ключу |
+| `LinkedHashMap` | По умолчанию порядок вставки; отдельный режим по доступу | Разрешён | Воспроизводимый обход пар |
+| `TreeMap` | Порядок ключей | Ключи зависят от порядка; значения разрешены | Отсортированные ключи |
+| `ArrayDeque` | От головы к хвосту | Запрещён | FIFO/LIFO |
+
+Источники контракта:
+[ArrayList 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayList.html),
+[HashSet 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashSet.html),
+[LinkedHashSet 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/LinkedHashSet.html),
+[TreeSet 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/TreeSet.html),
+[HashMap 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html),
+[LinkedHashMap 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/LinkedHashMap.html),
+[TreeMap 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/TreeMap.html),
+[ArrayDeque 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayDeque.html).
+
+`LinkedHashSet.add` сохраняет положение уже существующего элемента;
+`addFirst`/`addLast` могут явно изменить encounter order.
+[LinkedHashSet 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/LinkedHashSet.html).
+
+У `ArrayList` `get`/`set` работают за постоянное время; `add(e)` —
+амортизированно за постоянное, вставка/удаление позиции обычно линейны.
+Это не обещает постоянного времени `contains`.
+[ArrayList 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayList.html).
+
+## Очередь: исключение или отсутствие {#sec-handbook-s1-collections-deque}
+
+| Действие | Отказ через исключение | Специальный результат |
+|---|---|---|
+| Добавить в хвост | `addLast(e)` | `offerLast(e)` → `false` при ограничении ёмкости |
+| Извлечь голову | `removeFirst()` | `pollFirst()` → `null` при пустоте |
+| Прочитать голову | `getFirst()` | `peekFirst()` → `null` при пустоте |
+
+Для стека `push == addFirst`, `pop == removeFirst`, `peek == peekFirst`.
+Обычные `offer`/`poll` выражают очередь. Выбор пары методов согласуйте с тем,
+является ли пустота ожидаемым результатом или нарушением протокола.
+[Deque 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Deque.html).
+
+## Равенство, hash и сравнение {#sec-handbook-s1-collections-equality}
+
+Равные по `equals` объекты должны иметь одинаковый hash; коллизия допустима.
+Не меняйте значимые для hash/equals поля ключа во время его хранения.
+[Object 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#hashCode()),
+[Map 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html).
+
+`Comparator.compare(a,b)` возвращает отрицательное число, ноль или
+положительное число. Требуются согласованность знака при перестановке,
+транзитивность и согласованность результатов относительно элементов,
+сравниваемых как равные. «Согласован с equals» означает
+`compare(a,b)==0` тогда и только тогда, когда `a.equals(b)`.
+`Comparator.equals` сравнивает наложенные компараторами порядки.
+[Comparator 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Comparator.html).
+
+Выбирайте `Integer.compare(a,b)` или `comparingInt`, а не `a-b` для произвольных
+целых: переполнение может нарушить порядок. Для разрешения равных первичных
+ключей добавьте `thenComparing`. В `TreeSet` уникальность определяется
+сравнением, поэтому несогласованность с equals нарушает общий контракт Set.
+[TreeSet 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/TreeSet.html).
+
+## Итераторы и удаления {#sec-handbook-s1-collections-iterator}
+
+`next()` без следующего элемента бросает `NoSuchElementException`.
+`remove()` удаляет последний возвращённый элемент, если поддерживается;
+до `next()` и дважды без продвижения вызывает `IllegalStateException`.
+[Iterator 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Iterator.html).
+
+Fail-fast у обычных `ArrayList`/`HashSet` обнаруживает сторонние структурные
+изменения по возможности; полагаться на обязательный
+`ConcurrentModificationException` нельзя. Удаляйте текущим итератором или
+используйте `removeIf`; не меняйте контейнер из обхода enhanced `for`.
+[ArrayList 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayList.html),
+[HashSet 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashSet.html).
+
+## Представления и копирование {#sec-handbook-s1-collections-copy}
+
+| Выражение | Размер/элементы можно менять? | Связь с исходной структурой |
+|---|---|---|
+| `new ArrayList<>(source)` | Да/да | Самостоятельная структура |
+| `Collections.unmodifiableList(source)` | Нет/нет через обёртку | Живое представление |
+| `List.copyOf(source)` | Нет/нет | Состав снимка не меняется с source |
+| `Arrays.asList(array)` | Нет/`set` можно | Связан с массивом |
+| `list.subList(from,to)` | По возможностям исходника | Диапазон исходного списка |
+
+Копии структуры остаются поверхностными: изменяемые объекты элементов общие.
+`List.of`/`copyOf` запрещают `null`; `of` допускает повторы. После стороннего
+структурного изменения backing list семантика `subList` не определена.
+[List 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html),
+[Collections 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collections.html#unmodifiableList(java.util.List)),
+[Arrays 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Arrays.html#asList(T...)).
+
+Немодифицируемость контейнера не равна глубокой неизменяемости и не запрещает
+изменение source через другую ссылку у представления. Стратегия глубокого
+копирования зависит от контракта конкретных объектов.
+[Collection 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collection.html).
+
+## Карты: отсутствие и представления {#sec-handbook-s1-collections-map}
+
+`put(k,v)` возвращает прежнее значение или `null`. `get(k)==null` при
+поддержке `null`-значений неоднозначен; `containsKey(k)` различает случаи.
+`keySet`, `values`, `entrySet` связаны с картой; поддерживаемое удаление через
+них удаляет пары. Добавление через эти представления не поддерживается.
+`getOrDefault` возвращает сохранённый `null`, если ключ присутствует.
+[Map 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html).
+
+Для частот можно применять `merge(word,1,Integer::sum)` на карте ненулевых
+счётчиков. Это изменяет карту; если функция возвращает `null`, запись удаляется.
+Параллельный доступ требует отдельного контракта.
+[Map 25 merge](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html#merge(K,V,java.util.function.BiFunction)).
+
+## Проверка понимания {#sec-handbook-s1-collections-check}
+
+Если нужен отчёт в порядке ключей — `TreeMap`; если в порядке первого появления
+— обычный `LinkedHashMap`. Для независимого редактирования списка копируйте
+его структуру. Если библиотека вернула `List`, сначала выясните мутацию и `null`,
+затем выбирайте операцию. Разобранные запуски и ответы:
+@theory:sec-theory-s1-collections-check.

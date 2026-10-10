@@ -1,0 +1,50 @@
+## Полиморфные контракты: короткий эксперимент {#sec-practice-s1-inheritance-interfaces-experiment}
+
+### Правило для чтения кода {#sec-practice-s1-inheritance-interfaces-rule}
+
+Клиент выбирает доступный метод по статическому типу; переопределённый instance-метод выполняется по фактическому объекту. Реализации общего интерфейса должны выполнять общий контракт.
+
+::: {.notes}
+Сценарий — правило → прогноз → причина → вариация → обобщение по принятому hybrid-образцу. Блинов, Романчик, Java from EPAM, 2-е изд., 2021, гл. 4, с. 129–134 (PDF 131–136), гл. 6, с. 177–184 (PDF 179–186). Авторский минимальный клиент Signal вместо книжного предметного класса.
+Нормативный источник: [Java 25](https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.12).
+:::
+
+### Прогноз до запуска {#sec-practice-s1-inheritance-interfaces-prediction}
+
+```java
+interface Signal { int level(); }
+final class Quiet implements Signal {
+    public int level() { return 1; }
+}
+final class Loud implements Signal {
+    public int level() { return 4; }
+}
+Signal signal = new Loud();
+System.out.println(signal.level());
+```
+
+Какой метод доступен клиенту и какая реализация выполнится? Требуется ли клиенту проверка instanceof?
+
+Полный файл разбора: [PracticeInheritanceInterfaces.java](../assets/semester-one/PracticeInheritanceInterfaces.java). Java 25 без preview.
+
+### Видимая причина результата {#sec-practice-s1-inheritance-interfaces-cause}
+
+Вывод `4`. Статический тип Signal задаёт доступный протокол level; фактический Loud определяет body instance-метода. Клиент, которому нужен только уровень, работает через контракт без знания класса реализации.
+
+### Справочная демонстрация {#sec-practice-s1-inheritance-interfaces-demo}
+
+@handbook:sec-handbook-s1-inheritance-interfaces-interface-members: выполните `DefaultConflictDemo`. Два default-источника требуют явного разрешения конфликта реализацией. Это не случайный выбор JVM.
+
+Сначала прочитайте предусловие и назовите ожидаемый результат; затем выполните код справочника в своей обычной Java 25 программе.
+
+### Самостоятельная вариация {#sec-practice-s1-inheritance-interfaces-variation}
+
+Замените new Loud() на new Quiet(). Затем сформулируйте контракт level: например, результат от 0 до 5. Почему компилятор не обнаружит реализацию, возвращающую -1?
+
+До запуска запишите прогноз и объясните его правилом. После запуска сравните состояния, а не только итоговую строку.
+
+### Обратная связь {#sec-practice-s1-inheritance-interfaces-feedback}
+
+Клиент выведет `1` без изменения своего кода. Тип int допускает -1; поведенческий диапазон — обязательство автора и предметной проверки, а не следствие implements. Нужен тест контракта для каждой реализации.
+
+Самопроверка: могу ли я объяснить исходный и изменённый пример одним правилом? Если нет, вернитесь к отмеченному справочному контракту.

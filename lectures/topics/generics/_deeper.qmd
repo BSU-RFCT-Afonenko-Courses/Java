@@ -1,0 +1,125 @@
+## Дополнительно: bridge для интерфейса {#sec-lectures-s1-generics-bridge}
+
+```java
+interface Sink<T> { void put(T value); }
+static class StringSink implements Sink<String> {
+    public void put(String value) {
+        System.out.println(value);
+    }
+}
+```
+После стирания нужен put(Object). Компилятор создаёт synthetic bridge: приводит Object к String и вызывает put(String). Так сохраняется полиморфизм; raw-вызов с числом может отказать в мосте.
+
+::: {.notes}
+[JVMS25 methods](https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html#jvms-4.6). Не добавлять bridge вручную в Java-исходник: он создаётся компилятором.
+:::
+
+### Общий Горнер и контракт операций {#sec-lectures-s1-generics-algebra}
+
+```java
+interface Algebra<T> {
+    T zero();
+    T add(T a, T b);
+    T multiply(T a, T b);
+}
+```
+Number не определяет общую арифметику матриц и чисел. Объект Algebra<T> передаёт необходимые операции отдельно. Коэффициенты идут от старшей степени к свободному члену.
+
+::: {.notes}
+Адаптировано из развёрнутой исходной лекции курса: Горнер и Algebra. Полная доступная программа: @theory:sec-theory-s1-generics-algebra.
+:::
+
+### Алгоритм Горнера {#sec-lectures-s1-generics-horner}
+
+```java
+static <T> T evaluate(T[] coefficients, T x,
+                      Algebra<T> algebra) {
+    T result = algebra.zero();
+    for (T coefficient : coefficients) {
+        result = algebra.add(
+            algebra.multiply(result, x), coefficient);
+    }
+    return result;
+}
+```
+На каждой итерации result умножается на x **справа**. Пустой набор даёт zero(). Типы согласуют T; нейтральность и законы операций обязан обеспечить контракт.
+
+### Числа и матрицы {#sec-lectures-s1-generics-horner-results}
+
+Для коэффициентов `[2,3,4]` и x=5 результат — **69**: сначала 2, затем 13, затем 69.
+
+Для коэффициентов `[I,C]`, `X=[[1,1],[0,1]]` и `C=[[0,1],[1,0]]` результат `I*X+C=[[1,2],[1,1]]`.
+
+Одна программа получает разные Algebra. Полные операции сложения/умножения матриц доступны в теории: @theory:sec-theory-s1-generics-algebra.
+
+### Порядок матричного умножения {#sec-lectures-s1-generics-noncommutative}
+
+Вариация: коэффициенты `[C,0]`. Выбранный алгоритм даст `C*X=[[0,1],[1,1]]`. Если переставить операнды, получится `X*C=[[1,1],[1,0]]`.
+
+Обе версии могут компилироваться. Совпадение типов не доказывает совпадение значения: перестановка требует математического основания.
+
+### Java и templates C++ {#sec-lectures-s1-generics-cpp-model}
+
+Java проверяет тело по bound или переданному протоколу. C++ шаблон проверяет зависимые операции при подстановке типа; concept формулирует требования к выражениям.
+
+C++ допускает параметры-значения, например размер матрицы, и пользовательскую специализацию. Инстанцирование не обязывает сохранять отдельную копию одинакового машинного кода.
+
+::: {.notes}
+[C++ draft templates](https://eel.is/c++draft/temp), [constraints](https://eel.is/c++draft/temp.constr). Переработаны templates/value-parameters исходной лекции; актуальный draft не называется неизменным стандартом C++20.
+:::
+
+### Требования к выражению C++20 {#sec-lectures-s1-generics-requires}
+
+```cpp
+template<class T>
+concept Addable = requires(const T& a, const T& b) {
+    { a + b } -> std::same_as<T>;
+};
+template<class T> requires Addable<T>
+T twice(const T& x) { return x + x; }
+```
+Нужен `<concepts>`. Concept проверяет доступность и результат выражения, но не ассоциативность. У типа не требуется общая номинальная база.
+
+::: {.notes}
+[C++ requires-expression](https://eel.is/c++draft/expr.prim.req). Проверяется C++20; адаптировано из исходной лекции.
+:::
+
+### Сравнение контрактов Горнера {#sec-lectures-s1-generics-algebra-comparison}
+
+Java получает add/multiply через объект Algebra<T>; C++ может требовать подходящие операторы через concept; Python может вызвать операции динамически.
+
+Во всех трёх моделях «операция существует» слабее «операция выполняет нужные законы». Аннотации Python помогают внешнему анализатору, сами не вводят Java-проверку при запуске.
+
+::: {.notes}
+[Python typing](https://docs.python.org/3/library/typing.html), [C++ constraints](https://eel.is/c++draft/temp.constr).
+:::
+
+### Runtime generics C# {#sec-lectures-s1-generics-clr}
+
+CLR сохраняет аргументы сконструированного типа: List<string> и List<object> различаются во время выполнения. Для ссылочных типов возможен общий машинный код; типы значений используют специализированное представление.
+
+Reification решает доступность параметров в runtime, но не делает изменяемый List<T> ковариантным.
+
+::: {.notes}
+[Microsoft: generics in runtime](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/generics-in-the-run-time). Переработаны reification/sharing исходной лекции; исполняемый C#-пример не включён.
+:::
+
+### Вариантность и generic math C# {#sec-lectures-s1-generics-clr-contract}
+
+C# выражает направления через in/out у подходящих generic-интерфейсов и делегатов. IEnumerable<string> может служить источником object; изменяемый List<T> остаётся инвариантным.
+
+Современный C# предоставляет static abstract интерфейсные контракты generic math. Java Algebra<T>, C++ concept и C# static-контракт размещают обещания операций в разных местах.
+
+::: {.notes}
+[Microsoft variance](https://learn.microsoft.com/en-us/dotnet/standard/generics/covariance-and-contravariance), [generic math](https://learn.microsoft.com/en-us/dotnet/standard/generics/math). Без исторических дат и неподтверждённых мотивов.
+:::
+
+### Миграционная совместимость {#sec-lectures-s1-generics-migration}
+
+Документированное объяснение неполной reification Java — миграционная совместимость: типизированные библиотеки и старые raw-клиенты могли обновляться постепенно. Цена — unchecked-границы.
+
+Мысленный эксперимент «generics с первого дня» допускает разные runtime-модели; он не устанавливает реальные мотивы разработчиков Java 1.0.
+
+::: {.notes}
+[JLS25 §4.7](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.7). Сохранён смысл исходного исторического блока, гипотеза обозначена явно; неподтверждённые даты/мотивы исключены.
+:::

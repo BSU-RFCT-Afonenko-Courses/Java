@@ -1,0 +1,156 @@
+## Контракт и выбор структуры {#sec-lectures-s1-collections-contract}
+
+Тип элемента не определяет порядок, уникальность, изменяемость и стоимость операций. Сначала задайте требуемое поведение, затем выберите интерфейс и реализацию.
+
+Сценарий: поступают заявки по оборудованию; нужны порядок первого появления, частоты и очередь обслуживания.
+
+::: {.notes}
+Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл.11, с.320–362 (PDF322–364). Контракты/частоты/view переработаны из подробной исходной лекции. [Collections Framework25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/package-summary.html).
+:::
+
+### Семейства коллекций {#sec-lectures-s1-collections-families}
+
+List — последовательность с индексами, допускающая повторения. Set — уникальность по выбранному правилу. Queue/Deque — извлечение по дисциплине очереди или стека.
+
+Map связывает ключ с значением и не является подтипом Collection. Контракт null зависит от конкретной реализации.
+
+### Реализации и порядок {#sec-lectures-s1-collections-implementations}
+
+ArrayList подходит для индексного чтения; ArrayDeque — для очереди и стека. HashSet/HashMap не обещают порядок обхода. LinkedHashMap сохраняет выбранный контракт порядка, обычно порядок вставки.
+
+TreeSet/TreeMap используют сравнение и дают упорядоченный обход. Требуемый порядок — часть результата, а не украшение вывода.
+
+### Стоимость операции {#sec-lectures-s1-collections-costs}
+
+У ArrayList get по индексу O(1), добавление в конец амортизированно O(1), вставка в середину O(n). У LinkedList поиск позиции O(n); локальная вставка O(1) только при уже найденной позиции.
+
+HashMap ожидает распределённые хеши для обычного O(1). Эти оценки имеют условия, память и размер входа тоже существенны.
+
+## Равенство, уникальность и порядок {#sec-lectures-s1-collections-equality}
+
+Hash-структура использует equals и hashCode; дерево — сравнение, в котором 0 означает совпадение для структуры.
+
+Разные правила могут оставить разное число элементов. Ключевые данные нельзя менять после вставки так, чтобы изменились хеш, равенство или порядок.
+
+::: {.notes}
+[HashMap25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html), [TreeSet25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/TreeSet.html).
+:::
+
+### Прогноз TreeSet {#sec-lectures-s1-collections-treeset}
+
+```java
+Set<String> words = new TreeSet<>(
+    Comparator.comparingInt(String::length));
+words.add("кот");
+words.add("дом");
+words.add("Java");
+System.out.println(words);
+```
+Здесь `String::length` передаёт операцию получения длины компаратору. Две строки длины 3 дадут compare=0. Каков размер?
+
+::: {.notes}
+Краткая подготовка method reference дана до использования; полная модель — функциональный модуль.
+:::
+
+### Причина потери слова {#sec-lectures-s1-collections-treeset-cause}
+
+Вывод `[кот, Java]`, размер 2. Слова кот и дом различны по equals, но совпадают по выбранному порядку.
+
+Вариация: добавьте `thenComparing(Comparator.naturalOrder())`. Тогда сравнение различает строки одинаковой длины; все три останутся. Компаратор должен выражать нужную уникальность.
+
+### Изменяемый ключ {#sec-lectures-s1-collections-mutable-key}
+
+После вставки ключа его данные участвуют в поиске. Если эти данные изменить, поиск может обратиться к другому месту или нарушить порядок дерева.
+
+Не обещайте один фиксированный результат такого нарушения. Предпочтительны ключи с устойчивым равенством, например строка кода или record с неизменяемыми компонентами.
+
+## Список и изменение при обходе {#sec-lectures-s1-collections-iteration}
+
+Необходимое изменение структуры должно согласоваться с способом обхода. Итератор может поддерживать remove; метод removeIf выражает удаление по условию.
+
+Fail-fast — best effort обнаружение нарушения, а не гарантия корректности и не способ синхронизации.
+
+::: {.notes}
+[Iterator25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Iterator.html), [Collection25 removeIf](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collection.html#removeIf(java.util.function.Predicate)).
+:::
+
+### Две перегрузки remove {#sec-lectures-s1-collections-remove}
+
+```java
+List<Integer> values = new ArrayList<>(List.of(1, 2, 1));
+values.remove(1);
+System.out.println(values);
+values.remove(Integer.valueOf(1));
+System.out.println(values);
+```
+Вывод `[1, 1]`, затем `[1]`. int выбирает индекс; Integer выбирает значение. Тип аргумента определяет перегрузку до выполнения.
+
+### Удаление итератором {#sec-lectures-s1-collections-iterator}
+
+```java
+Iterator<Integer> iterator = values.iterator();
+while (iterator.hasNext()) {
+    if (iterator.next() == 1) iterator.remove();
+}
+```
+Удаляется текущий элемент через тот же итератор, если операция поддерживается. Изменение values.remove(...) во время этого обхода имеет другой контракт.
+
+### Очередь и отсутствие {#sec-lectures-s1-collections-queue}
+
+```java
+Deque<String> queue = new ArrayDeque<>();
+queue.addLast("A");
+System.out.println(queue.pollFirst());
+System.out.println(queue.pollFirst());
+```
+Вывод A, затем null. poll сообщает отсутствие; removeFirst отказал бы при пустой очереди. ArrayDeque запрещает null, поэтому маркер отсутствия однозначен.
+
+::: {.notes}
+Адаптировано по Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, ArrayDequeMain, гл.11, с.345–346 (PDF347–348). Сокращено до двух извлечений и объяснения пустого состояния.
+:::
+
+## Подсчёт заявок {#sec-lectures-s1-collections-frequencies}
+
+Выбираем LinkedHashMap, чтобы обход ключей соответствовал первому появлению оборудования. Начальное состояние пусто; каждый запрос увеличивает ровно один счётчик.
+
+Отсутствующий ключ должен иметь явно выбранный начальный счётчик 0.
+
+::: {.notes}
+Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл.11, карты, с.350–360 (PDF352–362). Связный сценарий частот переработан из подробной лекции; код и домен авторские.
+:::
+
+### Прогноз карты {#sec-lectures-s1-collections-frequency-predict}
+
+```java
+Map<String, Integer> counts = new LinkedHashMap<>();
+for (String device : List.of("A", "B", "A")) {
+    int previous = counts.getOrDefault(device, 0);
+    counts.put(device, previous + 1);
+}
+System.out.println(counts);
+```
+До запуска назовите значения и порядок ключей.
+
+### Причина результата карты {#sec-lectures-s1-collections-frequency-cause}
+
+Вывод `{A=2, B=1}`. Первый A получает 1, B — 1, повторный A — 2. Повторная запись значения не перемещает A в обычной карте с insertion order.
+
+Вариация: заменить LinkedHashMap на HashMap. Частоты сохранят смысл, но этот порядок вывода перестанет быть гарантией.
+
+### Отсутствующий ключ и null {#sec-lectures-s1-collections-missing-key}
+
+`get(key)` может дать null из-за отсутствия ключа или сохранённого null, если реализация его допускает. containsKey различает эти состояния.
+
+В нашем счётчике значения всегда ненулевые Integer; getOrDefault безопасно вводит 0 для отсутствующего ключа. Для другого контракта эту предпосылку нужно проверить.
+
+### Представление и снимок {#sec-lectures-s1-collections-view-snapshot}
+
+```java
+List<String> source = new ArrayList<>(List.of("A"));
+List<String> view = Collections.unmodifiableList(source);
+List<String> snapshot = List.copyOf(source);
+source.add("B");
+System.out.println(view);
+System.out.println(snapshot);
+```
+Вывод `[A, B]`, `[A]`. View наблюдает исходный контейнер, снимок — другой набор элементов. Оба могут содержать ссылки на общие изменяемые объекты.

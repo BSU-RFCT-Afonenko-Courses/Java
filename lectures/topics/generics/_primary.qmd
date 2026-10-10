@@ -1,0 +1,193 @@
+## Общий контейнер и связь типов {#sec-lectures-s1-generics-object-box}
+
+Параметр типа связывает места в API: тип переданного значения и тип возвращённого результата.
+
+У контейнера через Object эта связь утрачивается: запись строки не даёт типу get обещание вернуть String.
+
+::: {.notes}
+Шилдт, *Java: руководство для начинающих*, русское 9-е изд., 2023 (основа JDK 17), гл.13, Gen<T>, с.490 (PDF491). Box адаптирует поле/конструктор/get; переименован тип, добавлен контраст с Object и прогноз. Одобренный handoff generics.
+:::
+
+### Box через Object {#sec-lectures-s1-generics-object-example}
+
+```java
+static class ObjectBox {
+    private final Object value;
+    ObjectBox(Object value) { this.value = value; }
+    Object get() { return value; }
+}
+```
+`ObjectBox box = new ObjectBox("Java");` — результат box.get() имеет тип Object. Для String потребуется приведение, которое может отказать.
+
+### Параметр типа {#sec-lectures-s1-generics-typed-box}
+
+```java
+static class Box<T> {
+    private final T value;
+    Box(T value) { this.value = value; }
+    T get() { return value; }
+}
+```
+T — объявленный параметр, String в Box<String> — аргумент типа. Одна связь T используется в поле, конструкторе и результате.
+
+### Прогноз типизированного чтения {#sec-lectures-s1-generics-box-client}
+
+```java
+Box<String> text = new Box<>("Java");
+String value = text.get();
+Box<Integer> number = new Box<>(7);
+System.out.println(value);
+System.out.println(number.get());
+// String wrong = number.get(); // ошибка компиляции
+```
+Вывод Java и 7. Проверка отвергает несогласованный результат до запуска.
+
+### Обобщённый метод и вывод типов {#sec-lectures-s1-generics-generic-method}
+
+```java
+static <T> T same(T value) { return value; }
+String name = same("Java");
+Integer count = same(7);
+```
+Параметр метода объявляется перед возвращаемым типом. Вывод типов связывает аргумент и результат; это не динамическая смена T во время работы.
+
+::: {.notes}
+[JLS25 §8.4.4](https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.4).
+:::
+
+### Ограничение параметра {#sec-lectures-s1-generics-bounds}
+
+```java
+static <T extends Number> double twice(T value) {
+    return value.doubleValue() * 2;
+}
+```
+Bound предоставляет протокол Number: доступен doubleValue(). Он не даёт оператор `value + value` и не обещает безошибочную арифметику произвольных подтипов.
+
+::: {.notes}
+Шилдт, *Java: руководство для начинающих*, русское 9-е изд., 2023 (основа JDK 17), гл.13, NumericFns, с.495–498 (PDF496–499); адаптировано преобразование doubleValue, вместо большого класса дан один метод.
+:::
+
+### Сравнение и нижняя граница {#sec-lectures-s1-generics-comparable-bound}
+
+```java
+static <T extends Comparable<? super T>> T larger(T a, T b) {
+    return a.compareTo(b) >= 0 ? a : b;
+}
+```
+Comparable обещает операцию сравнения; super T допускает реализацию,
+сравнивающую и значения более общего типа. Клиент `larger("A", "B")`
+получит B. Контракт порядка и ненулевые аргументы остаются предпосылками.
+
+::: {.notes}
+Переработан Comparable-bound исходной подробной лекции.
+[Comparable API25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Comparable.html).
+:::
+
+## Инвариантность изменяемого списка {#sec-lectures-s1-generics-invariance}
+
+Минимальный List<T>: add(T) записывает, get(index) читает T. `Integer` — подтип Number, но List<Integer> не подтип List<Number>.
+
+Иначе клиент List<Number> записал бы Double в список, из которого другой клиент читает Integer.
+
+::: {.notes}
+[JLS25 §4.5](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.5). Сценарий переработан из исходной подробной лекции.
+:::
+
+### Опасная предполагаемая подстановка {#sec-lectures-s1-generics-invariance-predict}
+
+```java
+List<Integer> ints = new ArrayList<>();
+// List<Number> numbers = ints; // ошибка компиляции
+// numbers.add(3.5);
+// Integer value = ints.get(0);
+```
+Компилятор запрещает именно присваивание, которое позволило бы нарушить связь чтения и записи. Хранение параметров в runtime само по себе не исправило бы этот контракт.
+
+### Источник extends {#sec-lectures-s1-generics-extends}
+
+```java
+List<Integer> ints = new ArrayList<>(List.of(1, 2));
+List<? extends Number> source = ints;
+Number first = source.get(0);
+// source.add(3.5); // ошибка компиляции
+```
+Точный тип неизвестен, но каждый элемент — Number. Вставка Double небезопасна: фактический контейнер может быть List<Integer>. Wildcard не делает список immutable: clear/remove могут быть доступны.
+
+### Приёмник super {#sec-lectures-s1-generics-super}
+
+```java
+List<Number> numbers = new ArrayList<>();
+List<? super Integer> destination = numbers;
+destination.add(42);
+Object first = destination.get(0);
+```
+Запись Integer безопасна для Integer/Number/Object. Читать можно только Object: фактический список Object мог уже содержать строку.
+
+### Перенос и PECS {#sec-lectures-s1-generics-pecs}
+
+```java
+static <T> void append(List<? extends T> source,
+                       List<? super T> destination) {
+    for (T value : source) destination.add(value);
+}
+```
+Из List<Integer> можно переносить в List<Number>. Приёмник должен поддерживать add; источник и приёмник не должны разрушать общий обход. Переносятся значения ссылок, а не глубокие копии.
+
+::: {.notes}
+[Collections.copy API25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collections.html#copy(java.util.List,java.util.List)). В отличие от append, copy требует уже достаточного размера destination.
+:::
+
+### Capture неизвестного типа {#sec-lectures-s1-generics-capture}
+
+```java
+static void exchange(List<?> values) { exchangeKnown(values); }
+static <T> void exchangeKnown(List<T> values) {
+    T first = values.get(0);
+    values.set(0, values.get(1));
+    values.set(1, first);
+}
+```
+Helper даёт имя одному захваченному типу. Записать обратно значение того же T безопасно. Нужны размер ≥2 и поддержка set; типы эти условия не доказывают.
+
+## Стирание и runtime {#sec-lectures-s1-generics-erasure}
+
+Неограниченный T стирается до Object; ограниченный — до первой границы. Для обычных Box<String> и Box<Integer> runtime-класс один.
+
+Metadata Signature сохраняет сведения об объявлениях. Общий Class не доказывает единственную машинную реализацию после JIT.
+
+::: {.notes}
+[JLS25 §4.6](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.6), [JVMS25 Signature](https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html#jvms-4.7.9).
+:::
+
+### Прогноз runtime-класса {#sec-lectures-s1-generics-erasure-predict}
+
+```java
+Box<String> text = new Box<>("Java");
+Box<Integer> number = new Box<>(7);
+System.out.println(text.getClass() == number.getClass());
+```
+Вывод true. Исходные типы сохраняют разные обязанности клиента; это сравнение не разрешает присвоить Box<String> переменной Box<Integer>.
+
+### Raw и List<?> {#sec-lectures-s1-generics-raw}
+
+```java
+List<String> words = new ArrayList<>();
+List raw = words;
+raw.add(42); // unchecked warning
+String first = words.get(0); // ClassCastException
+```
+Запись через raw допустима с unchecked warning, но нарушает элементный
+контракт; чтение обнаруживает отказ. При `List<?> unknown = words` вызов
+`unknown.add(42)` запрещён компилятором: точный тип элемента неизвестен.
+Подавление warning у raw-вызова не исправляет данные.
+
+::: {.notes}
+[JLS25 §4.8](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.8). Намеренно небезопасный пример из подробной лекции.
+:::
+
+### Ограничения создания и проверки {#sec-lectures-s1-generics-restrictions}
+
+`new T()` не гарантируется объявлением T: передайте готовое значение или фабрику. `T.class` не является class-литералом; при необходимости передайте Class<T>.
+
+`new List<String>[n]` запрещён: runtime-компонент не проверяет String. Для общего Object проверка `instanceof List<?>` проверяет контейнер, а не тип всех элементов.

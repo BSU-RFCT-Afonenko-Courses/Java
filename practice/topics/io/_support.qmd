@@ -1,0 +1,47 @@
+## Файл, текст и фактический размер чтения {#sec-practice-s1-io}
+
+### Правило выбора уровня {#sec-practice-s1-io-rule}
+
+Байтовый поток передаёт байты; Reader декодирует выбранную кодировку. Path обозначает путь, а не создаёт файл. Для чтения в буфер обрабатывают только фактические n элементов; EOF — отдельный результат -1.
+
+::: {.notes}
+Авторская демонстрация UTF-8 по @handbook:sec-handbook-s1-io-levels и sec-handbook-s1-io-files. Блинов/Романчик, Java from EPAM, 2-е изд., 2021, гл. 10, с. 290–300 (PDF 292–302); не воспроизводится побайтовое приведение к char. [Files 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html), [InputStream 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/InputStream.html).
+:::
+
+### Прогноз: один текст, разные единицы {#sec-practice-s1-io-prediction}
+
+```java
+String text = "Я😀";
+byte[] bytes = text.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+System.out.println(bytes.length);
+System.out.println(text.length());
+System.out.println(text.codePointCount(0, text.length()));
+```
+
+Какой счётчик относится к файлу UTF-8? Какой — к индексу String?
+
+Полный файл разбора: [PracticeIo.java](../assets/semester-one/PracticeIo.java). Java 25 без preview.
+
+### Причина и Files API {#sec-practice-s1-io-cause}
+
+Вывод `6`, `3`, `2`: Я занимает 2 байта UTF-8, 😀 — 4; в String они занимают 1 и 2 UTF-16 units. Число bytes не задаёт число Java char.
+
+По @handbook:sec-handbook-s1-io-files создайте новый временный файл, запишите этот текст через writeString(path,text,UTF_8) и прочитайте readString(path,UTF_8). Результат equals(text) — true. Эти методы сами закрывают ресурс; Files.lines требует TWR. Полный запуск в новом временном файле: [PracticeFileRoundTrip.java](../assets/semester-one/PracticeFileRoundTrip.java); вывод `6`, `true`.
+
+### Протокол чтения: последняя порция {#sec-practice-s1-io-buffer}
+
+В @handbook:sec-handbook-s1-io-protocol рассмотрите read(buffer) и write(buffer,0,n). Для массива длины 8 возможны n=8, n=3 и EOF=-1.
+
+### Полезный диапазон последней порции {#sec-practice-s1-io-read-range}
+
+После n=3 полезны только индексы `[0,3)`; хвост может содержать данные предыдущего чтения. Файл размера 11 не гарантирует конкретное разбиение на порции: проверять надо любой положительный n в разрешённом диапазоне.
+
+Это контракт операций, из которого студент самостоятельно строит свой алгоритм копирования.
+
+### Самостоятельная вариация {#sec-practice-s1-io-variation}
+
+Замените text на пустую строку; затем на ASCII `"AB"`. Предскажите три счётчика и результат чтения. Откройте Files.lines в TWR и объясните, почему terminal operation не заменяет close.
+
+### Обратная связь: единицы и пустой ввод {#sec-practice-s1-io-feedback}
+
+Пустая строка даёт `0, 0, 0`; AB — `2, 2, 2`. Совпадение для ASCII не доказывает равенство единиц для Unicode. После отказа записи возможен частичный файл: политика результата должна быть названа отдельно.

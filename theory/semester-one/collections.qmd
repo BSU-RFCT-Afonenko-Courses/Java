@@ -1,0 +1,352 @@
+---
+pagetitle: "Коллекции: структура, порядок и владение"
+---
+
+# Коллекции: структура, порядок и владение {#sec-theory-s1-collections}
+
+Массив задаёт число ячеек при создании. Для последовательности, которая растёт,
+для множества уникальных слов или таблицы частот удобнее контейнер с подходящим
+контрактом. Выбор начинается с вопроса о данных и операциях: нужны позиции,
+уникальность, поиск по ключу или извлечение с определённого конца?
+
+**Предпосылки:** массивы, ссылки, `equals`/`hashCode`, интерфейсы и generics:
+@sec-theory-s1-map-arrays, @sec-theory-s1-map-classes-methods,
+@sec-theory-s1-map-inheritance-interfaces, @sec-theory-s1-map-generics.
+**Результат:** выбрать интерфейс и реализацию, объяснить порядок обхода,
+безопасно удалить элементы и отличить представление от самостоятельной копии.
+Точные контракты: @handbook:sec-handbook-s1-collections.
+Работа: @tasks:sec-tasks-s1-lab-08; банк: @tasks:sec-tasks-s1-bank-collections.
+
+## Контракт прежде реализации {#sec-theory-s1-collections-choice}
+
+Основа — И. Н. Блинов, В. С. Романчик, *Java from EPAM*, 2-е изд., 2021,
+гл. 11, с. 320–323 (PDF 322–325). Фрагмент с. 320, с восстановленными
+переносами слов:
+
+> Более удобным стал механизм работы с коллекциями, а именно:
+> предварительное сообщение компилятору о типе ссылок, которые будут храниться
+> в коллекции, при этом проверка осуществляется на этапе компиляции;
+> отсутствие необходимости постоянно преобразовывать возвращаемые по ссылке
+> объекты (тип Object) к требуемому типу.
+
+`List<String>` сообщает тип элементов, но ещё не сообщает, разрешены ли `null`,
+добавление или изменение. `Collection<E>` объединяет операции над группой
+элементов (`size`, `contains`, обход); `List`, `Set`, `Queue` уточняют смысл.
+`Map<K,V>` образует отдельную ветвь: один ключ связан не более чем с одним
+значением. Карта предоставляет коллекции ключей, значений и пар, но сама
+не является `Collection`.
+
+| Потребность | Интерфейс | Обычный начальный выбор | Что требуется проверить |
+|---|---|---|---|
+| Последовательность с индексами и повторами | `List<E>` | `ArrayList<E>` | Позиции и поддержка изменений |
+| Уникальные значения, порядок не нужен | `Set<E>` | `HashSet<E>` | `equals` и `hashCode` |
+| Уникальные значения в порядке добавления | `Set<E>` | `LinkedHashSet<E>` | Порядок первого появления |
+| Уникальные значения по сравнению | `NavigableSet<E>` | `TreeSet<E>` | Полный порядок и смысл равенства |
+| Соответствие ключ → значение | `Map<K,V>` | `HashMap<K,V>` | Стабильность ключей |
+| Соответствие с порядком обхода | `Map<K,V>` | `LinkedHashMap` или `TreeMap` | Порядок добавления или ключей |
+| Очередь FIFO или стек LIFO | `Deque<E>` | `ArrayDeque<E>` | Конец добавления и извлечения |
+
+Пишите `List<String> names = new ArrayList<>();`, когда клиенту достаточно
+контракта списка. Изменение реализации тогда меньше затрагивает код клиента.
+Контейнеры хранят ссылочные значения: для чисел используется `Integer`, а не
+параметр `int`. Boxing не отменяет возможный `null`: его unboxing приводит
+к `NullPointerException`.
+
+`ArrayList` даёт быстрый доступ по индексу; добавление в конец имеет
+амортизированную постоянную стоимость. Вставка в середину сдвигает хвост.
+Поиск неизвестного значения обычно требует обхода. В `LinkedList` поиск
+узла по индексу сам требует движения по цепочке; быстрая работа с уже найденной
+позицией не означает быстрый произвольный доступ. Поэтому фразу учебника
+с. 323 о «быстрых операциях поиска» нужно уточнять: доступ по индексу и поиск
+значения — разные операции. Производительность измеряют на реальной нагрузке.
+
+## Список и перегрузки удаления {#sec-theory-s1-collections-list}
+
+`ListMain.java` — пример EPAM, гл. 11, с. 324 (PDF 326), почти без изменений:
+удалена строка `package` для отдельного запуска, восстановлено оформление;
+сохранены учебные комментарии об ошибке примитивного параметра и позициях.
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+public class ListMain {
+    public static void main(String[] args) {
+        List<Integer> list = new ArrayList<>();
+        // List<int> integers = new ArrayList<>(); // compile error
+        list.add(5);
+        list.add(7);
+        list.add(42);
+        list.add(null); // ArrayList permits null
+        list.add(50);
+        list.add(77);
+        System.out.println(list);
+        list.add(5, 87); // insert before index 5
+        System.out.println(list);
+        list.remove(2); // remove at index 2
+        System.out.println(list);
+    }
+}
+```
+
+Предскажите три строки перед запуском:
+
+```text
+[5, 7, 42, null, 50, 77]
+[5, 7, 42, null, 50, 87, 77]
+[5, 7, null, 50, 87, 77]
+```
+
+Индексация начинается с нуля. Вставка перед индексом 5 сдвигает `77` вправо;
+удаление индекса 2 сдвигает хвост влево. `remove(2)` выбирает перегрузку
+`remove(int index)`. Для удаления **значения** 7 пишите
+`list.remove(Integer.valueOf(7))`: тогда вызывается `remove(Object)`.
+При добавлении индекс может равняться `size()`; при чтении и удалении он
+должен быть строго меньше `size()`.
+
+Вариант для проверки: заменить `remove(2)` на `remove(Integer.valueOf(2))`.
+Список останется `[5, 7, 42, null, 50, 87, 77]`, потому что значения 2 нет;
+возвращённый `boolean` будет `false`. Замена `ArrayList` на `List.of(...)`
+не сохраняет возможности изменения: фабрика создаёт немодифицируемый список
+и запрещает `null`.
+
+## Обход и изменение {#sec-theory-s1-collections-iteration}
+
+EPAM, с. 328–330, вводит `Iterator`: курсор хранит положение между элементами.
+`hasNext()` проверяет возможность продвижения, `next()` возвращает следующий
+элемент и продвигает курсор. Enhanced `for` использует этот протокол для
+`Iterable`. Он подходит для чтения, но не предоставляет явный курсор удаления.
+
+`IteratorRemoval.java` адаптирован по схеме `IteratorMain` EPAM, с. 328:
+вместо зависимых классов заказов используется самостоятельный список строк;
+добавлено удаление через текущий итератор.
+
+```java
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+public class IteratorRemoval {
+    public static void main(String[] args) {
+        List<String> words = new ArrayList<>(List.of("as", "a", "the", "d", "and"));
+        Iterator<String> iterator = words.iterator();
+        while (iterator.hasNext()) {
+            String word = iterator.next();
+            if (word.length() < 2) iterator.remove();
+        }
+        System.out.println(words);
+    }
+}
+```
+
+Вывод: `[as, the, and]`. `remove()` удаляет элемент, возвращённый последним
+`next()`. До первого `next()` и повторно без нового `next()` удалять нельзя.
+Операция удаления у конкретного итератора может не поддерживаться.
+
+Прямое `words.remove(word)` внутри enhanced `for` структурно меняет список
+мимо курсора и нарушает его протокол. `ArrayList` часто обнаруживает это
+через `ConcurrentModificationException`, даже в одном потоке исполнения.
+Отсутствие исключения в частном эксперименте не разрешает такой код: fail-fast
+работает как обнаружение ошибки, а не как доказательство корректности.
+После знакомства с лямбдами то же условие можно выразить `removeIf`.
+
+## Стек и очередь из двусторонней очереди {#sec-theory-s1-collections-deque}
+
+`ArrayDequeMain.java` — EPAM, с. 346 (PDF 348), почти без изменений:
+удалён `package`, исправлено оформление; сохранены числа и порядок операций.
+
+```java
+import java.util.ArrayDeque;
+import java.util.Deque;
+public class ArrayDequeMain {
+    public static void main(String[] args) {
+        Deque<Integer> stack = new ArrayDeque<>();
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+        while (!stack.isEmpty()) System.out.println(stack.pop());
+        Deque<Integer> queue = new ArrayDeque<>();
+        queue.offer(11);
+        queue.offer(22);
+        queue.offer(33);
+        while (!queue.isEmpty()) System.out.println(queue.poll());
+    }
+}
+```
+
+Вывод — `3`, `2`, `1`, `11`, `22`, `33`, каждое на своей строке.
+`push`/`pop` работают с первым концом: последняя добавленная величина выходит
+первой. `offer` добавляет в хвост, `poll` извлекает голову: получается FIFO.
+Метод `pop()` на пустой очереди бросает `NoSuchElementException`, `poll()`
+возвращает `null`. Поэтому `ArrayDeque` запрещает хранить `null`: результат
+`null` однозначно означает отсутствие элемента. Очередь приоритетов — другой
+контракт: общее слово `Queue` не обещает FIFO для любой реализации.
+
+## Уникальность и порядок {#sec-theory-s1-collections-equality-order}
+
+EPAM, с. 346–350, сравнивает множества; с. 213–216 обсуждает `Comparator`.
+У хеш-контейнера равные по `equals` ключи обязаны иметь одинаковый `hashCode`.
+Обратное неверно: одинаковый hash не доказывает равенство. Поля, участвующие
+в этих методах, нельзя изменять, пока объект служит ключом: контейнер продолжит
+искать по организации, рассчитанной для прежнего значения.
+
+`TreeSet` использует сравнение: `compare(a,b) == 0` означает один элемент
+для этого дерева. Если сравнивать строки только по длине, `"as"` и `"on"`
+сольются. Это может быть сознательным правилом группировки, но обычный набор
+различных слов требует дополнительного критерия.
+
+`OrderingDemo.java` — авторский разбор по мотивам EPAM, с. 213–216, 347–350.
+Композиция `thenComparing` заменяет рискованное вычитание числовых полей.
+
+В примере `String::length` — ссылка на метод: для каждой сравниваемой строки
+нужно вызвать её `length()`. `Comparator.comparingInt` строит из этого правила
+компаратор, сравнивающий полученные целые длины. Синтаксис передачи поведения
+будет разобран в @sec-theory-s1-functional-streams; здесь достаточно понимать,
+какой признак извлекается из каждой строки.
+
+```java
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+public class OrderingDemo {
+    public static void main(String[] args) {
+        List<String> words = List.of("as", "on", "the", "and", "a");
+        Set<String> onlyLength = new TreeSet<>(Comparator.comparingInt(String::length));
+        onlyLength.addAll(words);
+        System.out.println(onlyLength);
+        Comparator<String> order = Comparator.comparingInt(String::length)
+                .thenComparing(Comparator.naturalOrder());
+        Set<String> fullOrder = new TreeSet<>(order);
+        fullOrder.addAll(words);
+        System.out.println(fullOrder);
+    }
+}
+```
+
+Вывод: `[a, as, the]`, затем `[a, as, on, and, the]`.
+Первое дерево сохраняет первый добавленный представитель каждой длины;
+во втором строки одинаковой длины различаются лексикографически.
+`Comparable` задаёт естественный порядок в самом типе; `Comparator` задаёт
+внешний порядок для конкретной операции. `Comparator.equals` сравнивает
+**компараторы**, а не два сортируемых элемента: это поправка к тексту EPAM с. 213.
+
+Не переносите наблюдаемый порядок печати `HashSet`/`HashMap` из учебного запуска
+в контракт программы. Для воспроизводимого отчёта выбирайте явный порядок.
+
+## Карта частот и её представления {#sec-theory-s1-collections-map}
+
+В карте повторная запись того же ключа заменяет значение. Значения разных
+ключей могут повторяться. Обход `entrySet()` сразу даёт ключ и значение;
+`values()` возвращает `Collection<V>`, а не `Set<V>`, потому что повторы допустимы.
+
+`FrequencyMap.java` адаптирован по операциям карт EPAM, с. 350–354:
+предметный пример заменён подсчётом слов, выбрана `LinkedHashMap` для явного
+порядка первого появления, показана связь `keySet` с картой.
+
+```java
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+public class FrequencyMap {
+    public static void main(String[] args) {
+        Map<String, Integer> frequencies = new LinkedHashMap<>();
+        for (String word : List.of("java", "code", "java")) {
+            frequencies.put(word, frequencies.getOrDefault(word, 0) + 1);
+        }
+        System.out.println(frequencies);
+        Set<String> keys = frequencies.keySet();
+        keys.remove("code");
+        System.out.println(frequencies);
+        System.out.println(frequencies.get("missing"));
+        System.out.println(frequencies.containsKey("missing"));
+    }
+}
+```
+
+Вывод: `{java=2, code=1}`, `{java=2}`, `null`, `false`.
+`keySet()` — живое представление: удаление ключа удаляет пару из карты.
+Добавить только ключ через него нельзя, потому что не задано значение.
+Учебник с. 352 объясняет это параметризацией; точная причина — контракт
+представления карты. Для карты, разрешающей `null`-значения, одного `get()`
+недостаточно, чтобы отличить отсутствующий ключ от пары с `null`; нужен
+`containsKey`. `HashMap` разрешает один `null`-ключ и `null`-значения;
+эти возможности не распространяются автоматически на остальные карты.
+
+## Представление, копия и изменяемый элемент {#sec-theory-s1-collections-ownership}
+
+Два вопроса независимы: можно ли менять контейнер через данную ссылку и
+связан ли он с другим контейнером? `Collections.unmodifiableList(source)`
+запрещает изменения через обёртку, но показывает изменения `source`.
+`new ArrayList<>(source)` создаёт самостоятельную структуру.
+`List.copyOf(source)` создаёт немодифицируемый снимок состава, запрещающий
+`null`. Все эти варианты копируют **ссылки на элементы**, не объекты элементов.
+
+`ViewCopyDemo.java` — авторский пример для разграничения контрактов Java 25.
+
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+public class ViewCopyDemo {
+    public static void main(String[] args) {
+        List<StringBuilder> source = new ArrayList<>();
+        source.add(new StringBuilder("A"));
+        List<StringBuilder> view = Collections.unmodifiableList(source);
+        List<StringBuilder> copy = new ArrayList<>(source);
+        List<StringBuilder> snapshot = List.copyOf(source);
+        source.add(new StringBuilder("B"));
+        source.get(0).append("!");
+        System.out.println(view);
+        System.out.println(copy);
+        System.out.println(snapshot);
+    }
+}
+```
+
+Вывод: `[A!, B]`, `[A!]`, `[A!]`. Новый элемент видит только представление,
+изменение общего `StringBuilder` видят все три контейнера. Неизменяемость
+структуры не превращает изменяемый элемент в неизменяемый объект.
+
+`subList(from,to)` — диапазон исходного списка с правой исключённой границей,
+не самостоятельная копия. Если исходный список структурно изменить вне этого
+представления, дальнейшая работа с диапазоном имеет неопределённую семантику
+по контракту `List`. Для долгоживущего результата копируйте диапазон.
+`Arrays.asList(array)` связан с массивом, позволяет `set`, но имеет фиксированный
+размер. Это ещё один отдельный контракт.
+
+## Самопроверка и дальнейшая работа {#sec-theory-s1-collections-check}
+
+1. Почему `List<Integer>` допускает повтор 7, а `Set<Integer>` — нет?
+2. Как изменятся примеры, если заменить `LinkedHashMap` на `HashMap`?
+3. Почему `TreeSet` с порядком только по длине теряет слова?
+4. Защитит ли `unmodifiableList` от изменения исходного списка и его элементов?
+5. Какая операция корректно удаляет текущий элемент при обходе?
+
+::: {.callout-note collapse="true" title="Ответы и объяснения"}
+1. У списка позиции независимы; контракт множества требует уникальность.
+2. Частоты сохранятся, обещанный порядок печати исчезнет. Нельзя проверять
+   результат сравнением одной ожидаемой текстовой перестановки пар.
+3. Дерево считает равными по своему порядку строки с `compare == 0`.
+4. Нет. Обёртка запрещает структурные изменения через неё; исходник и объекты
+   элементов остаются общими. Для копии структуры нужен снимок, для независимых
+   изменяемых элементов — отдельная стратегия копирования объектов.
+5. `iterator.remove()` после `next()`, если реализация поддерживает удаление.
+:::
+
+Потренируйтесь на @tasks:exr-tasks-s1-word-frequency и
+@tasks:exr-tasks-s1-balanced-brackets (проверьте условия в банке).
+Исследовательские продолжения: @tasks:exr-tasks-s1-essay-collection-operation-choice,
+@tasks:exr-tasks-s1-essay-comparison-set-uniqueness,
+@tasks:exr-tasks-s1-essay-collection-view-ownership.
+
+## Источники и границы главы {#sec-theory-s1-collections-sources}
+
+EPAM: Блинов, Романчик, 2-е изд., 2021, гл. 11, с. 320–330, 341–354,
+360–362; гл. 7, с. 213–216. Из пользовательского PDF сохранены компактные
+`ListMain` и `ArrayDequeMain`; остальные примеры и объяснения помечены как
+адаптация или авторский разбор. Поправки о поиске, порядке, сравнении и
+представлениях изложены рядом с соответствующим материалом.
+
+Актуальные детали и ссылки Java 25 находятся в @handbook:sec-handbook-s1-collections.
+Поток обработки коллекции изучается в @sec-theory-s1-functional-streams;
+конкурентные коллекции и многопоточность выходят за границы первого семестра.

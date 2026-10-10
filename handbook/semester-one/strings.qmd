@@ -1,0 +1,202 @@
+# String, Unicode, StringBuilder и regex {#sec-handbook-s1-strings}
+
+Опора к @theory:sec-theory-s1-strings. Контракты Java 25:
+[String](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html),
+[Character](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Character.html),
+[StringBuilder](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/StringBuilder.html),
+[Pattern](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/Pattern.html),
+[Matcher](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/Matcher.html).
+Здесь сигнатуры и ловушки применения; мотивация и исходные примеры книг
+разобраны в теории. Кодировки байтового ввода-вывода изучаются отдельно.
+
+## String: чтение и сравнение {#sec-handbook-s1-strings-string}
+
+| Сигнатура | Договор |
+|:---|:---|
+| `int length()` | Число UTF-16 code units |
+| `char charAt(int index)` | Code unit, 0≤index<length |
+| `boolean isEmpty()` | length==0 |
+| `boolean isBlank()` | Пусто либо только Character.isWhitespace code points |
+| `boolean equals(Object anObject)` | Одинаковое содержимое String; не идентичность |
+| `boolean equalsIgnoreCase(String anotherString)` | Регистронезависимое равенство по API, без локального collation |
+| `int compareTo(String anotherString)` | Лексикографический знак по UTF-16 |
+| `boolean contentEquals(CharSequence cs)` | Сравнение содержимого, в том числе builder |
+| `int indexOf(String str)` / `lastIndexOf(String str)` | Индекс совпадения либо −1 |
+| `boolean startsWith(String prefix)` / `endsWith(String suffix)` | Проверка буквальных краёв |
+| `boolean contains(CharSequence s)` | Буквальное включение |
+
+Не вызывайте instance-метод у null. `Objects.equals(a,b)` сравнивает
+nullable-значения, `"value".equals(a)` безопасно для nullable a.
+Нулевая длина отличается от null. `==` проверяет общую ссылку.
+Индекс String — индекс code unit, даже если метод принимает кодовую точку.
+
+## Извлечение и результат преобразования {#sec-handbook-s1-strings-transform}
+
+| Сигнатура | Контракт |
+|:---|:---|
+| `String substring(int beginIndex, int endIndex)` | `[beginIndex,endIndex)` в code units |
+| `String substring(int beginIndex)` | До конца |
+| `String strip()` | Удаление Character.isWhitespace по краям |
+| `String trim()` | Историческая проверка code unit≤U+0020 по краям |
+| `String replace(CharSequence target, CharSequence replacement)` | Буквальные вхождения |
+| `String replaceAll(String regex, String replacement)` | Regex-поиск; replacement имеет свой синтаксис `$`/`\` |
+| `String toLowerCase(Locale locale)` / `toUpperCase(Locale locale)` | Явное соглашение о регистре |
+| `char[] toCharArray()` | Новый массив code units |
+| `void getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin)` | Копирует `[srcBegin,srcEnd)` в существующий dst |
+| `static String join(CharSequence delimiter, CharSequence... elements)` | Соединение частей с разделителем |
+
+String неизменяем. Результат преобразования нужно принять, но API не
+обещает новый объект при любом вызове. `getChars` возвращает **void**,
+исправляя печатную сигнатуру EPAM с.227.
+Для substring требуется 0≤begin≤end≤length; неправильные границы дают
+IndexOutOfBoundsException. Нельзя произвольно делить surrogate pair,
+если задача требует сохранения кодовых точек.
+
+```java
+String text = "  Java 25  ";
+String result = text.strip().replace("25", "SE 25");
+char[] destination = new char[4];
+result.getChars(0, 4, destination, 0);
+System.out.println(result);
+System.out.println(java.util.Arrays.toString(destination));
+```
+
+Вывод `Java SE 25` и `[J, a, v, a]`. Исходный text сохраняет пробелы.
+Для машинного преобразования регистра часто подходит Locale.ROOT;
+для пользовательского текста выбор локали — часть предметного контракта.
+
+## Character и кодовые точки {#sec-handbook-s1-strings-unicode}
+
+Character Java 25 основан на Unicode 16.0. char-перегрузка видит одну
+code unit; для supplementary code points нужны int-перегрузки.
+
+| Сигнатура | Назначение |
+|:---|:---|
+| `int String.codePointAt(int index)` | Code point с начального UTF-16 индекса; объединяет корректную пару |
+| `int String.codePointCount(int beginIndex, int endIndex)` | Число code points диапазона |
+| `int String.offsetByCodePoints(int index, int codePointOffset)` | Сместить UTF-16 индекс на число code points |
+| `static int Character.charCount(int codePoint)` | 1 либо 2 code units |
+| `static char[] Character.toChars(int codePoint)` | Корректное UTF-16 представление; недопустимое значение → IllegalArgumentException |
+| `static boolean Character.isLetter(int codePoint)` | Unicode-классификация букв |
+| `static boolean Character.isDigit(int codePoint)` | Unicode-классификация десятичных цифр |
+| `static boolean Character.isWhitespace(int codePoint)` | Пробельность по указанным API категориям/исключениям |
+
+Для `"A😀"`: length=3, codePointCount=2, offsetByCodePoints(0,2)=3.
+Обход: начать offset=0, читать codePointAt(offset), увеличить offset
+на charCount(cp). Для сборки используйте appendCodePoint.
+Счётчик code points не является счётчиком графем. Строка не обязана быть
+нормализована; визуально совпадающие варианты могут быть не equals.
+`Normalizer.normalize(text, Normalizer.Form.NFC)` применим лишь когда
+нормализация требуется договором обработки.
+
+## StringBuilder {#sec-handbook-s1-strings-builder}
+
+| Сигнатура | Контракт |
+|:---|:---|
+| `StringBuilder()` | Пустое содержимое, начальная capacity 16 |
+| `StringBuilder(int capacity)` | Пустое содержимое, заданная ёмкость |
+| `StringBuilder(String str)` | Содержимое исходной строки |
+| `StringBuilder append(String str)` / `append(int i)` | Добавление; возвращает этот builder |
+| `StringBuilder appendCodePoint(int codePoint)` | Добавление UTF-16 кодовой точки |
+| `StringBuilder insert(int offset, String str)` | Вставка по индексу code unit |
+| `StringBuilder delete(int start, int end)` | Удаление диапазона; контракт end отличается от substring при выходе за длину |
+| `void setLength(int newLength)` | Обрезка либо дополнение нулевыми code units |
+| `int length()` / `capacity()` | Длина содержимого / ёмкость |
+| `String toString()` | Строковое значение; дальнейшие изменения builder не меняют String |
+
+Builder изменяем и не даёт гарантии синхронизации.
+`delete` допускает end за длиной, удаляя до конца, но start должен быть
+допустим и не больше end. `deleteCharAt` удаляет одну code unit,
+поэтому может повредить supplementary-кодовую точку.
+`reverse` специально обрабатывает пары surrogate, но не гарантирует
+разворот текста по графемам и правилам естественного языка.
+`equals` builder не сравнивает текст; используйте toString/contentEquals.
+Не меняйте builder во время обхода его собственного chars/codePoints.
+
+```java
+StringBuilder builder = new StringBuilder();
+builder.append("A").appendCodePoint(0x1F600);
+String snapshot = builder.toString();
+builder.append("B");
+System.out.println(snapshot);
+System.out.println(builder);
+```
+
+Вывод `A😀` и `A😀B`.
+
+## Pattern и Matcher {#sec-handbook-s1-strings-regex}
+
+| Сигнатура | Роль |
+|:---|:---|
+| `static Pattern compile(String regex)` | Компилирует шаблон; неверный синтаксис → PatternSyntaxException |
+| `static Pattern compile(String regex, int flags)` | Шаблон с флагами |
+| `static String quote(String s)` | Буквальный текст безопасно вставлен в regex |
+| `Matcher matcher(CharSequence input)` | Новый stateful matcher |
+| `boolean Matcher.matches()` | Весь region |
+| `boolean Matcher.find()` | Следующее соответствие |
+| `String Matcher.group()` | Текст предыдущего успешного соответствия |
+| `int Matcher.start()` / `end()` | UTF-16 границы `[start,end)` соответствия |
+| `Matcher Matcher.reset()` | Сброс состояния поиска |
+| `String[] Pattern.split(CharSequence input, int limit)` | Разбиение по regex с правилом limit |
+| `static String Matcher.quoteReplacement(String s)` | Буквальный текст replacement для regex-замены |
+
+`Pattern` можно использовать повторно; состояние текущего поиска хранится
+в Matcher. До успешного matches/find методы group/start/end не имеют
+валидного результата и могут бросить IllegalStateException.
+Обновление region/reset меняет состояние; не используйте matcher как
+неизменяемое значение «совпадения».
+
+| Regex | Java-литерал | Смысл |
+|:---|:---|:---|
+| `[0-9]+` | `"[0-9]+"` | Одна или больше ASCII-цифр |
+| `\d+` | `"\\d+"` | Цифры по флагам Pattern |
+| `\.` | `"\\."` | Буквальная точка |
+| `a|b` | `"a|b"` | Альтернатива |
+| `[A-Z]{2}` | `"[A-Z]{2}"` | Ровно две ASCII-буквы A–Z |
+
+Без UNICODE_CHARACTER_CLASS `\d`, `\w`, `\s` используют указанные
+API ASCII-наборы; флаг расширяет их Unicode-семантику.
+UNICODE_CASE и UNICODE_CHARACTER_CLASS — разные настройки.
+Для независимого буквального текста используйте Pattern.quote,
+а для replacement — Matcher.quoteReplacement: это разные позиции
+с разным синтаксисом экранирования.
+
+limit>0 ограничивает число частей, limit==0 убирает завершающие пустые,
+limit<0 сохраняет их. `split(input)` означает limit=0.
+Совпадение положительной ширины в начале может дать пустую первую часть;
+нулевой ширины в начале такую часть не создаёт.
+
+```java
+import java.util.Arrays;
+import java.util.regex.Pattern;
+
+public class SplitLookup {
+    public static void main(String[] args) {
+        System.out.println(Arrays.toString("a.b.".split(Pattern.quote("."), -1)));
+        System.out.println(Pattern.compile("\\d+").matcher("٤٢").matches());
+        System.out.println(Pattern.compile("\\d+", Pattern.UNICODE_CHARACTER_CLASS)
+                .matcher("٤٢").matches());
+    }
+}
+```
+
+```text
+[a, b, ]
+false
+true
+```
+
+## Проверка применения {#sec-handbook-s1-strings-check}
+
+Сначала выберите единицу индекса и сравнения, нормализацию/локаль,
+буквальную либо regex-операцию. Для преобразования String примите
+результат; для builder проверьте разделяемые ссылки. Для split задайте
+смысл пустых полей, для regex — флаги и состояние matcher.
+
+Самопроверка: какой тип возвращает getChars?
+**Ответ:** void; данные записываются в переданный массив.
+Задания: @tasks:sec-tasks-s1-bank-strings, @tasks:sec-tasks-s1-lab-04.
+
+Исследовательское продолжение: @tasks:exr-tasks-s1-essay-string-value-identity,
+@tasks:exr-tasks-s1-essay-unicode-units-equivalence,
+@tasks:exr-tasks-s1-essay-regex-text-recognition.

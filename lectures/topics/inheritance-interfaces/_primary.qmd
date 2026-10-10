@@ -1,0 +1,138 @@
+## Подтип и поведенческий контракт {#sec-lectures-s1-inheritance-interfaces-subtype}
+
+Подтип пригоден там, где клиент ожидает базовый тип, если сохраняет его обещания: допустимые входы, смысл результата и состояние после операции.
+
+Наследование «похожего устройства» само по себе этого не доказывает. Композиция позволяет использовать объект без объявления отношения подтипов.
+
+::: {.notes}
+Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл.4, с.121–138, гл.6, с.177–184; авторская переработка CardAction/CardService и исходной подробной лекции.
+:::
+
+### Интерфейс и клиент {#sec-lectures-s1-inheritance-interfaces-interface}
+
+```java
+interface Labelled {
+    String label();
+}
+static void printLabel(Labelled item) {
+    System.out.println(item.label());
+}
+```
+Клиент знает обещание label, а не устройство объекта. Реализация должна предоставить публичный метод с подходящей сигнатурой.
+
+### Подстановка реализации {#sec-lectures-s1-inheritance-interfaces-client}
+
+```java
+static final class Sensor implements Labelled {
+    private final String name;
+    Sensor(String name) { this.name = name; }
+    public String label() { return "sensor:" + name; }
+}
+printLabel(new Sensor("A"));
+```
+Вывод `sensor:A`. Новый класс с тем же контрактом не требует переписывать printLabel.
+
+## Статический тип и динамический выбор {#sec-lectures-s1-inheritance-interfaces-dispatch-rule}
+
+Статический тип определяет доступность операции и выбирает перегрузку. Для переопределяемого метода экземпляра фактический объект определяет реализацию.
+
+Поля и static-методы не используют такое переопределение.
+
+::: {.notes}
+[JLS25 §15.11–15.12](https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.11). Переработаны dispatch/overload-override исходной лекции.
+:::
+
+### Прогноз поля и метода {#sec-lectures-s1-inheritance-interfaces-dispatch-predict}
+
+```java
+static class Base {
+    int x = 1;
+    String name() { return "Base"; }
+}
+static class Child extends Base {
+    int x = 2;
+    @Override String name() { return "Child"; }
+}
+```
+Для `Base p = new Child()` предскажите p.x и p.name().
+
+### Причина выбора {#sec-lectures-s1-inheritance-interfaces-dispatch-cause}
+
+`p.x` равно 1: обращение к полю определяется статическим типом Base. В объекте Child существуют оба поля.
+
+`p.name()` возвращает Child: выбрана реализация переопределённого метода. @Override проверяет намерение при компиляции, сама аннотация не включает dispatch.
+
+### Перегрузка до переопределения {#sec-lectures-s1-inheritance-interfaces-overload}
+
+```java
+static class Printer {
+    String show(Object x) { return "Object"; }
+    String show(String x) { return "String"; }
+}
+static class Fancy extends Printer {
+    @Override String show(Object x) { return "Fancy:Object"; }
+}
+```
+`Printer p = new Fancy(); Object x = "Java";` — какие два выбора сделает p.show(x)?
+
+### Выбранная сигнатура {#sec-lectures-s1-inheritance-interfaces-overload-cause}
+
+Результат `Fancy:Object`. Компилятор выбрал show(Object) по статическому типу x; runtime выбрал переопределение этой сигнатуры.
+
+Вариация: объявить `String x = "Java"`. Тогда выбирается show(String), не переопределённый в Fancy: результат String.
+
+### Доступ, final и static {#sec-lectures-s1-inheritance-interfaces-member-rules}
+
+Переопределение не сужает доступ базового метода. private-метод не переопределяется. final-метод запрещает переопределение; static-метод подкласса может скрыть static-метод базы.
+
+Вызывайте static через имя класса. `super.method()` задаёт реализацию базы. Эти правила — ограничения программы, а не обещание конкретной оптимизации JVM.
+
+### Интерфейс и abstract class {#sec-lectures-s1-inheritance-interfaces-abstract}
+
+Интерфейс задаёт контракт; default-метод даёт общую реализацию операции. Abstract class может объединить часть реализации и состояние.
+
+Класс наследует одну базу, но может реализовать несколько интерфейсов. При конфликте независимых default-реализаций требуется явное разрешение.
+
+::: {.notes}
+[JLS25 §9](https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html).
+:::
+
+## Равенство объектов {#sec-lectures-s1-inheritance-interfaces-equality}
+
+equals задаёт эквивалентность значений: рефлексивность, симметрию, транзитивность и согласованность при неизменных данных. Для ненулевого x, x.equals(null) должно быть false.
+
+Равные объекты обязаны иметь одинаковый hashCode. Обратное не требуется: коллизии допустимы.
+
+::: {.notes}
+[Object API25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html).
+:::
+
+### Компоненты и равенство {#sec-lectures-s1-inheritance-interfaces-equality-value}
+
+```java
+record Device(String code) {}
+Device a = new Device("A");
+Device b = new Device("A");
+System.out.println(a == b);
+System.out.println(a.equals(b));
+System.out.println(a.hashCode() == b.hashCode());
+```
+Вывод false, true, true. У обычного класса равенство по полям требуется определить явно; record выводит его из компонентов.
+
+### Ранний виртуальный вызов {#sec-lectures-s1-inheritance-interfaces-constructor-dispatch}
+
+```java
+static class Parent {
+    Parent() { show(); }
+    void show() {}
+}
+static class Derived extends Parent {
+    int value = 7;
+    @Override void show() { System.out.println(value); }
+}
+```
+`new Derived()` напечатает 0: поле ещё имеет default value. Не вызывайте расширяемое поведение до готовности его предпосылок.
+
+::: {.notes}
+[JLS25 §12.5](https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html#jls-12.5).
+:::

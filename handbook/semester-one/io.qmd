@@ -1,0 +1,164 @@
+---
+pagetitle: "Ввод-вывод и UTF-8 — Java 25"
+---
+
+# Ввод-вывод и UTF-8 — Java 25 {#sec-handbook-s1-io}
+
+**Версия:** Java SE 25, без preview. Источники проверены 11 октября 2026 года.
+Связное объяснение, исходный CopyFile и разобранные запуски:
+@theory:sec-theory-s1-io. Таблицы ниже — авторское изложение API-контрактов.
+
+## Уровни данных {#sec-handbook-s1-io-levels}
+
+| Уровень | API | Смысл |
+|---|---|---|
+| Байты | `InputStream`/`OutputStream` | Данные без текстовой интерпретации |
+| UTF-16 code units | `Reader`/`Writer` | Символьные данные Java |
+| Переход байты → текст | `InputStreamReader` | Decoder выбранной кодировки |
+| Переход текст → байты | `OutputStreamWriter` | Encoder выбранной кодировки |
+| Строки | `BufferedReader.readLine`, `Files.lines` | Удаление разделителей строк |
+| Предметные записи | Собственный разбор текста | Формат, локаль и диапазон задаёт программа |
+
+Источники:
+[InputStream 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/InputStream.html),
+[Reader 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Reader.html),
+[Writer 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Writer.html),
+[InputStreamReader 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/InputStreamReader.html),
+[OutputStreamWriter 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/OutputStreamWriter.html).
+
+UTF-8 задавайте `StandardCharsets.UTF_8`, доступной в каждой реализации Java.
+Количество байтов UTF-8, `String.length()` и количество code points различается.
+Преобразование каждого байта в char не декодирует UTF-8.
+[StandardCharsets 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/charset/StandardCharsets.html),
+[String 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html).
+
+`new String(bytes,charset)` заменяет некорректные последовательности.
+Для строгой проверки задайте decoder с `CodingErrorAction.REPORT`;
+`REPLACE` и `IGNORE` выражают иные сознательные политики.
+[String 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#%3Cinit%3E(byte%5B%5D,java.nio.charset.Charset)),
+[CharsetDecoder 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/charset/CharsetDecoder.html).
+
+## read, write и EOF {#sec-handbook-s1-io-protocol}
+
+| Вызов | Результат |
+|---|---|
+| `input.read()` | int 0..255 или -1 при EOF |
+| `input.read(buffer)` | Число байтов; может быть меньше buffer.length; -1 при EOF |
+| `reader.read()` | UTF-16 code unit как int или -1 |
+| `reader.read(chars)` | Число code units или -1 |
+| `bufferedReader.readLine()` | Строка без разделителя или null при EOF |
+| `output.write(buffer,0,n)` | Записывает именно n байтов |
+
+Для массива нулевой длины read возвращает 0. Не используйте `available()`
+как длину файла/условие конца. `readAllBytes` читает остаток, требует памяти,
+но не закрывает сам InputStream. Закрытие — ответственность владельца ресурса.
+[InputStream 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/InputStream.html),
+[Reader 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Reader.html),
+[BufferedReader 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/BufferedReader.html),
+[OutputStream 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/OutputStream.html).
+
+При буферном копировании используйте фактическое число прочитанных байтов,
+а не весь массив. После read=-1 записывать нельзя. Примеры EOF и числа 255:
+@theory:sec-theory-s1-io-byte-read.
+
+## Path и файловая система {#sec-handbook-s1-io-path}
+
+`Path.of(...)` создаёт обозначение пути, не файл. `resolve` объединяет пути;
+абсолютный аргумент resolve становится результатом. `normalize` лексически
+упрощает компоненты, не обращаясь к файловой системе. `toAbsolutePath`
+превращает относительный путь в абсолютный, а `toRealPath` требует
+существующего объекта и разрешает реальный путь с учётом ссылок/опций.
+[Path 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Path.html).
+
+Относительные пути зависят от рабочей директории процесса. Разделитель
+и правила имён определяет provider файловой системы; используйте компоненты
+`Path.of("data","res.txt")`. Проверка exists не гарантирует последующий
+успех открытия и может вернуть false при невозможности установить наличие.
+[Path 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Path.html),
+[Files 25 exists](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html#exists(java.nio.file.Path,java.nio.file.LinkOption...)).
+
+## Выбор Files API {#sec-handbook-s1-io-files}
+
+| Задача | Метод | Память/ресурс |
+|---|---|---|
+| Весь текст | `readString(path,UTF_8)` | Весь текст; ресурс закрывается внутри |
+| Все строки | `readAllLines(path,UTF_8)` | Весь список; закрывается внутри |
+| По строке | `newBufferedReader(path,UTF_8)` | Reader закрывает клиент |
+| Ленивый Stream строк | `lines(path,UTF_8)` | Stream закрывает клиент |
+| Записать текст | `writeString(path,text,UTF_8)` | Закрывается внутри |
+| Записать строки | `write(path,lines,UTF_8)` | Добавляет разделители ОС |
+| Копия байтов | `copy(source,target,options)` | Без декодирования |
+
+Формы text-методов без charset используют UTF-8. `readString` сохраняет
+разделители; `readAllLines`/`lines` выделяют строки без них. По умолчанию
+`writeString` и `newBufferedWriter` создают или усекают файл; options изменяют
+политику. `copy` по умолчанию не заменяет существующую цель; для этого есть
+`REPLACE_EXISTING`. После ошибки копирования возможна частичная цель.
+[Files 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html).
+
+Неподдерживаемые сочетания options и проблемы пути/доступа имеют отдельные
+отказы. Не заменяйте обработку IO предварительным exists.
+
+## Ленивые строки и закрытие {#sec-handbook-s1-io-lines}
+
+`Files.lines` держит открытый файл. Сразу заключайте результат в TWR;
+terminal operation не закрывает stream. IOException при открытии checked;
+ошибка позднего чтения или закрытия представлена UncheckedIOException.
+[Files 25 lines](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html#lines(java.nio.file.Path,java.nio.charset.Charset)),
+[UncheckedIOException 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/UncheckedIOException.html).
+
+`BufferedReader.lines` читает лениво и оборачивает ошибки IO в
+UncheckedIOException. Владельцем ресурса остаётся reader; закрытие этого
+stream не является документированной гарантией закрытия reader. Не используйте
+reader другими способами во время terminal operation его stream.
+[BufferedReader 25 lines](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/BufferedReader.html#lines()).
+
+Корректные схемы в обычной записи:
+
+```text
+try (Stream<String> lines = Files.lines(path, UTF_8)) {
+    // завершить обработку lines здесь
+}
+
+try (BufferedReader reader = Files.newBufferedReader(path, UTF_8)) {
+    // reader.readLine() или обработка reader.lines() здесь
+}
+```
+
+Не возвращайте ленивое вычисление, зависящее от ресурса, после его закрытия.
+Разобранный файл и ошибки: @theory:sec-theory-s1-io-lines.
+
+## Буферы и владение {#sec-handbook-s1-io-buffering}
+
+BufferedReader уменьшает мелкие обращения к Reader;
+BufferedWriter накапливает символы. `flush` передаёт буфер следующему уровню,
+не закрывает writer и не гарантирует физической фиксации на носителе.
+`close` BufferedWriter сначала выполняет flush, затем закрывает underlying writer.
+`newLine()` использует разделитель строк платформы.
+[BufferedReader 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/BufferedReader.html),
+[BufferedWriter 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/BufferedWriter.html).
+
+Reader/Writer wrappers обычно управляют underlying потоком, поэтому создавайте
+один понятный внешний ресурс в TWR. `System.in/out/err` — общие стандартные
+потоки: учебный helper не должен самовольно закрывать их, если владелец приложения
+ожидает продолжения работы. Это правило владения программы.
+
+## Ошибки и состояние результата {#sec-handbook-s1-io-errors}
+
+Повреждённая кодировка не равна неверному числу. `Files.readString`/
+`readAllLines` сообщают IOException для malformed/unmappable input.
+Для самостоятельно выбранного decoder используйте REPORT, если замены
+недопустимы.
+[Files 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html),
+[CharsetDecoder 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/charset/CharsetDecoder.html).
+
+Частично записанный файл и уже напечатанные строки не откатываются при catch.
+Нужна явная политика: сообщить отказ, удалить временный результат или заменить
+готовый файл только после успешной записи. Даже `ATOMIC_MOVE` — отдельная
+опция с условиями поддержки, не свойство любого копирования.
+[Files 25 move](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html#move(java.nio.file.Path,java.nio.file.Path,java.nio.file.CopyOption...)).
+
+Порядок close и suppressed exceptions:
+@handbook:sec-handbook-s1-exceptions-twr.
+Практика текста/UTF-8: @tasks:sec-tasks-s1-bank-io;
+исследование: @tasks:exr-tasks-s1-essay-utf8-byte-text-boundary.

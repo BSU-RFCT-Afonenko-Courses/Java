@@ -1,0 +1,229 @@
+---
+pagetitle: "Справочник: обобщённые типы"
+---
+
+# Обобщённые типы: контракты и ограничения {#sec-handbook-s1-generics}
+
+Версия: **Java SE 25 без preview**. Основное объяснение:
+@theory:sec-theory-s1-generics; работа: @tasks:sec-tasks-s1-lab-07.
+Это авторская справочная карта, сверенная с versioned JLS/API;
+примеры написаны для наблюдения контрактов, а не цитируют большие тексты.
+
+Канонический банк: @tasks:sec-tasks-s1-bank-generics.
+Исследования: @tasks:sec-tasks-s1-essays-generics.
+
+## Объявления и границы {#sec-handbook-s1-generics-declarations}
+
+| Конструкция | Значение |
+|---|---|
+| `class Box<T> { T value; }` | Параметр типа у класса |
+| `interface Source<E> { E get(); }` | Связь типа результата у интерфейса |
+| `static <T> T identity(T x)` | Собственный параметр типа метода |
+| `<T extends Number>` | Верхняя граница, открывающая протокол `Number` |
+| `<T extends Number & Comparable<T>>` | Несколько границ; класс идёт первым |
+| `new Box<String>()` / `new Box<>()` | Явный аргумент типа / вывод через diamond |
+
+Аргументы типов — ссылочные типы и wildcards, не примитивные `int`/`double`.
+Bound не разрешает произвольные операторы над `T`; он сообщает допустимые
+объявленные операции. Статический метод generic-класса может иметь
+собственный параметр типа, но не пользуется классовым `T` как типом общей
+статической переменной.
+[JLS 25 §4.4–4.5](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.4),
+[§8.4.4](https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.4).
+
+## Инвариантность и wildcard-взгляд {#sec-handbook-s1-generics-wildcards}
+
+`Box<Integer>` не подтип `Box<Number>`, даже если `Integer` — подтип `Number`.
+Ни runtime-стирание, ни выбор неизменяемой реализации не меняют это отношение
+исходных параметризованных типов.
+
+| Тип выражения | Безопасное чтение | Безопасная запись ненулевого значения |
+|---|---|---|
+| `List<Integer>` | `Integer` | `Integer` |
+| `List<? extends Number>` | `Number` | Произвольное число вставить нельзя |
+| `List<? super Integer>` | `Object` | `Integer` и его подтипы |
+| `List<?>` | `Object` | Произвольный объект вставить нельзя |
+| Raw `List` | `Object` | Некоторые операции компилируются с unchecked warning |
+
+Здесь «безопасная запись» означает согласование типов; поддержка мутации
+и `null` — отдельные свойства конкретного списка. Wildcard не обещает
+immutable: `clear`/`remove` могут оставаться доступными. Невозможность
+записать произвольный ненулевой элемент не запрещает helper с wildcard
+capture прочитать и записать значение того же захваченного типа.
+[JLS 25 §4.5.1](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.5.1),
+[capture conversion §5.1.10](https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html#jls-5.1.10).
+
+Для API-параметров PECS: источник `? extends T`, приёмник `? super T`.
+Если возвращаемый результат должен сохранять тип входа, именованный `T`
+часто выражает больше, чем независимые wildcard-параметры.
+
+## Минимальный протокол списков {#sec-handbook-s1-generics-list-api}
+
+Точные объявления важных методов `List<E>`:
+
+```java
+E get(int index)
+E set(int index, E element)
+boolean add(E element)
+int size()
+boolean isEmpty()
+static <E> List<E> of(E... elements)
+```
+
+`get`/`set` требуют индекс `0 <= index < size()`; `set` возвращает прежний
+элемент. Изменение — optional operation: возможен `UnsupportedOperationException`.
+Успешный `add(E)` у списка добавляет элемент в конец; возможны ограничения
+конкретной реализации на `null` и допустимые элементы. `List.of` создаёт
+unmodifiable-список, отклоняет `null`, но не копирует глубоко объекты элементов.
+[Полный List API 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html).
+
+Этот протокол используется в generics-примерах; стоимость операций и выбор
+контейнера относятся к отдельной теме коллекций. Тип списка не доказывает,
+что конкретный его объект разрешит `set`/`add`.
+
+## Стандартная копия: приёмник должен уже иметь размер {#sec-handbook-s1-generics-copy-api}
+
+```java
+public static <T> void Collections.copy(
+    List<? super T> dest, List<? extends T> src)
+```
+
+Метод **заменяет** первые позиции приёмника, а не добавляет позиции.
+Его размер должен быть не меньше размера источника, оставшийся хвост
+не изменяется. Слишком короткий приёмник даёт `IndexOutOfBoundsException`;
+неподдерживаемый `set` — `UnsupportedOperationException`.
+[Collections.copy API 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collections.html#copy(java.util.List,java.util.List)).
+
+Авторский полный файл `GenericCopyDemo.java`:
+
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class GenericCopyDemo {
+    public static void main(String[] args) {
+        List<Integer> source = List.of(7, 8);
+        List<Number> destination = new ArrayList<>(List.of(0, 0, 99));
+        Collections.copy(destination, source);
+        System.out.println(destination);
+        List<Number> onlyCapacity = new ArrayList<>(10);
+        System.out.println(onlyCapacity.size());
+        try {
+            Collections.copy(onlyCapacity, source);
+        } catch (IndexOutOfBoundsException exception) {
+            System.out.println("destination too short");
+        }
+    }
+}
+```
+
+```text
+[7, 8, 99]
+0
+destination too short
+```
+
+Ёмкость `ArrayList` не является его размером. Это отличие условий API
+от generic-связи: типы источника и приёмника согласованы в обоих вызовах,
+но второй не имеет требуемых позиций.
+
+## Сравнение и преобразования числа {#sec-handbook-s1-generics-bounded-api}
+
+```java
+public interface Comparable<T> {
+    int compareTo(T o);
+}
+// Number:
+public abstract double doubleValue();
+```
+
+`compareTo` возвращает отрицательное число, ноль или положительное число
+в соответствии с порядком; точное значение `-1` или `1` не требуется.
+Порядок обязан соблюдать знаковую симметрию и транзитивность согласно
+контракту. Согласованность с `equals` настоятельно рекомендуется, но её
+нужно проверять для конкретного типа.
+[Comparable API 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Comparable.html).
+`Number.doubleValue()` переводит значение к `double`; конкретная реализация
+определяет преобразование, при котором возможна потеря точности.
+[Number API 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Number.html#doubleValue()).
+
+Полный файл `InheritedComparableDemo.java` объясняет запись
+`T extends Comparable<? super T>` на наследуемом сравнении:
+
+```java
+public class InheritedComparableDemo {
+    static class Person implements Comparable<Person> {
+        final int rank;
+        Person(int rank) { this.rank = rank; }
+        @Override public int compareTo(Person other) {
+            return Integer.compare(rank, other.rank);
+        }
+    }
+    static final class Student extends Person {
+        Student(int rank) { super(rank); }
+    }
+    static <T extends Comparable<? super T>> T max(T a, T b) {
+        return a.compareTo(b) >= 0 ? a : b;
+    }
+    public static void main(String[] args) {
+        Student selected = max(new Student(2), new Student(5));
+        System.out.println(selected.rank);
+    }
+}
+```
+
+Вывод: `5`. `Student` сравнивается через `Comparable<Person>`;
+`Person` — подходящий надтип `Student`. Более узкий bound
+`T extends Comparable<T>` не выражает этот наследуемый протокол так же
+гибко. Типы не доказывают правильность предметного порядка; здесь он
+явно построен по `rank` без вычитания, которое могло бы переполниться.
+
+## Erasure, reifiable и raw {#sec-handbook-s1-generics-erasure}
+
+При стирании неограниченный type variable становится `Object`, ограниченный
+— стиранием своей самой левой границы. Обычные `Box<String>` и `Box<Integer>` имеют
+один runtime-класс. Компилятор может сохранять generic metadata и добавлять
+приведения/bridges; это не требование единственного машинного тела после JIT.
+[JLS 25 §4.6](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.6).
+
+Reifiable-тип имеет достаточное runtime-представление по правилам языка:
+например, `String`, raw `List`, `List<?>`. `List<String>` в общем случае
+не reifiable. Поэтому `new List<String>[3]` недопустимо, а `new List<?>[3]`
+допустимо; запись `new T[3]` не становится безопасной от добавления bound.
+Проверка `obj instanceof List<?>` не проверяет содержимое как `String`.
+[JLS 25 §4.7](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.7).
+
+Raw-присваивание способно перенести ошибку от места записи к месту чтения.
+Проверяйте `-Xlint:unchecked`; `@SuppressWarnings` скрывает диагностику,
+а не исправляет heap pollution. Wildcard-протокол сохраняет проверку
+неизвестного типа и не равнозначен raw-протоколу.
+[JLS 25 §4.8](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.8).
+
+## Checked-отказы как prerequisite контейнера {#sec-handbook-s1-generics-checked-preview}
+
+Минимальная форма обычного проверяемого исключения:
+
+```java
+class EmptyException extends Exception {
+    EmptyException(String message) { super(message); }
+}
+```
+
+Операция объявляет `T get() throws EmptyException`; путь отказа выполняет
+`throw new EmptyException("empty")`. Клиент ловит соответствующий тип
+в `try/catch` либо объявляет его в собственном `throws`. Это подготовка
+синтаксиса лабораторной 7; полный механизм распространяющихся отказов
+изучается отдельно. Generic-подкласс `Throwable` запрещён.
+[JLS 25 §11](https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html),
+[§8.1.2](https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.1.2).
+
+Для практики сначала проверяйте состояние контейнера, потом меняйте его:
+отказ не должен потерять элемент или сдвинуть индексы. Это обязательство
+предметного контракта задач, а не следствие только слова `throws`.
+
+Книжное чтение: Шилдт, *Java: руководство для начинающих*, русское 9-е изд.,
+2023, гл. 13, с. 490–521, PDF 491–522; Блинов/Романчик, *Java from EPAM*,
+2-е изд., 2021, с. 88–94.
+Библиографические ссылки не заменяют точных страниц;
+каноническое описание книг: @tasks:sec-tasks-s1-bank-sources.

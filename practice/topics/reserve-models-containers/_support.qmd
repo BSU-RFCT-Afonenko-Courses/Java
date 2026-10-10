@@ -1,0 +1,42 @@
+## Перенос правила на выбранную ветвь {#sec-practice-s1-reserve-models-containers-experiment}
+
+### Короткое правило {#sec-practice-s1-reserve-models-containers-rule}
+
+В TreeSet уникальность определяется compare(a,b)==0. Если предметная модель различает элементы, comparator тоже должен различать их; иначе часть данных не будет сохранена.
+
+::: {.notes}
+Блинов/Романчик, Java from EPAM, 2-е изд., 2021, гл. 11, с. 346–350 (PDF 348–352). Авторский пример отличия равенства и порядка; [Comparator 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Comparator.html). Пример независимо написан для разбора контракта; постановки резервного банка здесь не дублируются. Последовательность принята по hybrid: правило → прогноз → причина → вариация → обобщение.
+:::
+
+### Прогноз {#sec-practice-s1-reserve-models-containers-prediction}
+
+```java
+var byLength = new java.util.TreeSet<String>(
+    java.util.Comparator.comparingInt(String::length));
+byLength.add("кот");
+byLength.add("дом");
+System.out.println(byLength.size());
+System.out.println(byLength);
+```
+
+Прогноз: сохранит ли множество обе разные строки? Какие объекты comparator считает равными?
+
+Полный файл разбора: [PracticeReserveModelsContainers.java](../assets/semester-one/PracticeReserveModelsContainers.java). Java 25 без preview.
+
+### Видимая причина {#sec-practice-s1-reserve-models-containers-cause}
+
+Вывод `1`, `[кот]`. Длины равны, comparator возвращает 0; вторая вставка не добавляет элемент. String.equals различает эти строки, поэтому comparator не согласован с equals и TreeSet не выполняет общий смысл Set для этой модели.
+
+### Демонстрация из справочника {#sec-practice-s1-reserve-models-containers-demo}
+
+@handbook:sec-handbook-s1-collections-equality: рассмотрите comparingInt и thenComparing. @handbook:sec-handbook-s1-inheritance-interfaces-record-sealed: выполните RecordValidationDemo и сопоставьте инвариант конструктора с равенством значений.
+
+### Самостоятельная вариация {#sec-practice-s1-reserve-models-containers-variation}
+
+Добавьте вторичное сравнение `thenComparing(java.util.Comparator.naturalOrder())`. Сначала предскажите состав и порядок; затем решите, что будет при повторной вставке строки "кот".
+
+### Обратная связь {#sec-practice-s1-reserve-models-containers-feedback}
+
+Сохранятся обе строки в порядке `[дом, кот]`. Повтор "кот" не добавляется: совпадают и длина, и текст. Для собственной модели вторичный ключ должен отражать её смысл, а не скрывать потерю данных случайным порядком.
+
+Сформулируйте одним предложением предусловие своего решения. Затем выберите вход, на котором нарушение этого предусловия видно.
