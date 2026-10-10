@@ -21,7 +21,7 @@
 | Материал | Файл | Новый адрес |
 |---|---|---|
 | Портал первого семестра | `index.qmd` | `portal:sec-portal-s1`, `portal:sec-portal-s1-plan` |
-| Вход в теорию | `theory/index.qmd` | `theory:sec-theory-root` |
+| Вход в теорию | `theory/index.qmd` | `theory:sec-theory-s1-root` |
 | Предметная карта с предпосылками и результатами | `theory/semester-one.qmd` | `theory:sec-theory-s1-map` |
 | Внутренние заглушки System Practice | `theory/development/system-practice.qmd` | `theory:sec-theory-sp` |
 | Терминал; файлы; diff/patch; Git | Та же страница | `sec-theory-sp-terminal`, `sec-theory-sp-files`, `sec-theory-sp-diff`, `sec-theory-sp-git` |
@@ -194,3 +194,25 @@ Task 2 не содержит готовых Java-примеров или сла�
 Task 3 не содержит готовых Java-примеров или новых слайдов.
 Статические проверки и inspect student/full фиксируются в отчёте задачи;
 общую сборку и визуальные снимки отдельно выполняет контроллер плана.
+
+## Что опубликовано в Task 4
+
+В `theory/semester-one/` доступны введение/JDK и четыре главы основ:
+`introduction`, `types-operators`, `control-statements`, `arrays`, `strings`.
+Адреса — `sec-theory-s1-<slug>`; в `handbook/semester-one/` опубликованы
+пять соответствующих статей с `sec-handbook-s1-<slug>`.
+Новые корни — `theory:sec-theory-s1-root` и `handbook:sec-handbook-s1-root`.
+Карта, оглавления, портал и входящие QRC связаны с опубликованными темами.
+
+Теория использует реально прочитанные страницы EPAM и Шилдта: краткие
+фрагменты, почти неизменённые компактные программы, видимые поправки,
+разбор вывода, варианты и самопроверку с ответами. Справочник даёт
+Java 25/JLS/API/JDK-контракты. Удалены семь заменённых страниц theory
+и три приложения handbook; история исходников остаётся в Git, aliases нет.
+Черновики объектной партии Task 5 в этой интеграции не активированы.
+
+52 Java-блока скомпилированы и запущены настоящим JDK 25 с `--release 25`;
+отдельно проверены source-file mode и существенные числовые/Unicode-варианты.
+Статические проверки и inspect фиксируются в рабочем отчёте Task 4.
+Агрегатная сборка student/full и визуальный просмотр выполняются отдельно;
+успешная компиляция примеров не является утверждением готовности всего сайта.
