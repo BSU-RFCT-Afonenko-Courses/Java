@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-optional-evaluation
 semester: 1
 ---
 
@@ -10,9 +11,7 @@ semester: 1
 
 ## Контроль освоения темы {#sec-essay-optional-evaluation-control}
 
-Тема реферата: @sec-essay-optional-evaluation.
-
-:::: {#exr-essay-optional-evaluation-experiment target="prairielearn" project="/projects/essays/functional-processing/optional-evaluation/experiment" course-role="control" difficulty="introductory" time="20" statement-visibility="restricted"}
+:::: {#exr-essay-optional-evaluation-experiment project="/projects/essays/functional-processing/optional-evaluation/experiment" difficulty="introductory" time="20"}
 ### Наблюдение момента вычисления альтернативы
 
 Для Optional.of("ready") сравнить orElse(fallback()) и orElseGet(() -&gt; fallback()), где fallback записывает событие и возвращает "backup". Указать возвращённые значения и число событий; повторить сравнение для Optional.empty().
@@ -27,7 +26,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-optional-evaluation-test-design target="prairielearn" project="/projects/essays/functional-processing/optional-evaluation/test-design" course-role="control" difficulty="introductory" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-optional-evaluation-test-design project="/projects/essays/functional-processing/optional-evaluation/test-design" difficulty="introductory" time="30"}
 ### Проверка ленивого получения значения
 
 Написать тесты для String resolve(`Optional<String>` primary, `Supplier<String>` fallback): при наличии значения поставщик не вызывается, при отсутствии вызывается ровно один раз. Проверить также передачу исключения поставщика.
@@ -42,7 +41,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-optional-evaluation-implementation target="prairielearn" project="/projects/essays/functional-processing/optional-evaluation/implementation" course-role="control" difficulty="introductory" time="35" statement-visibility="restricted"}
+:::: {#exr-essay-optional-evaluation-implementation project="/projects/essays/functional-processing/optional-evaluation/implementation" difficulty="introductory" time="35"}
 ### Реализация ленивой альтернативы
 
 Реализовать String resolve(`Optional<String>` primary, `Supplier<String>` fallback), возвращающий присутствующее значение без обращения к fallback, а при отсутствии — результат единственного вызова fallback.get(). Исключение поставщика передать без замены.

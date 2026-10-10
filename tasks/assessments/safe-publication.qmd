@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-safe-publication
 semester: 2
 ---
 
@@ -10,9 +11,7 @@ semester: 2
 
 ## Контроль освоения темы {#sec-essay-safe-publication-control}
 
-Тема реферата: @sec-essay-safe-publication.
-
-:::: {#exr-essay-safe-publication-experiment target="prairielearn" project="/projects/essays/shared-state/safe-publication/experiment" course-role="control" difficulty="advanced" time="40" statement-visibility="restricted"}
+:::: {#exr-essay-safe-publication-experiment project="/projects/essays/shared-state/safe-publication/experiment" difficulty="advanced" time="40"}
 ### Граф событий протокола публикации
 
 Для выданной схемы одноразовой передачи сообщения указать в таблице действия чтения, записи и синхронизации, затем представить ориентированные связи happens-before. Отдельно обозначить связь, обеспечивающую видимость поля сообщения, и изменение протокола, при котором это обоснование утрачивается. Использовать только предложенные виды событий; проверяется модель протокола, а не частота проявления гонки.
@@ -27,7 +26,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-safe-publication-test-design target="prairielearn" project="/projects/essays/shared-state/safe-publication/test-design" course-role="control" difficulty="advanced" time="60" statement-visibility="restricted"}
+:::: {#exr-essay-safe-publication-test-design project="/projects/essays/shared-state/safe-publication/test-design" difficulty="advanced" time="60"}
 ### Проверка передачи результата и завершения
 
 Подготовить тест для выданного канала однократной передачи, использующего разрешённый механизм синхронизации. Проверить получение всех полей сообщения и завершение участвующих потоков. Стенд предоставляет сигналы готовности и контрольный вариант с преждевременным возвратом; дополнительные барьеры внутри исследуемой границы публикации запрещены.
@@ -42,7 +41,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-safe-publication-implementation target="prairielearn" project="/projects/essays/shared-state/safe-publication/implementation" course-role="control" difficulty="advanced" time="70" statement-visibility="restricted"}
+:::: {#exr-essay-safe-publication-implementation project="/projects/essays/shared-state/safe-publication/implementation" difficulty="advanced" time="70"}
 ### Исправление протокола одноразовой публикации
 
 Исправить небольшую реализацию передачи неизменяемого сообщения в соответствии с предоставленным протоколом. Сохранить публичный интерфейс и использовать один из разрешённых способов синхронизации. Получатель должен корректно ожидать результат, а владелец операции — завершать созданные потоки; произвольный опрос с задержками не допускается.

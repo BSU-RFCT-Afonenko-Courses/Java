@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-timeouts-cancellation
 semester: 2
 ---
 
@@ -10,9 +11,7 @@ semester: 2
 
 ## Контроль освоения темы {#sec-essay-timeouts-cancellation-control}
 
-Тема реферата: @sec-essay-timeouts-cancellation.
-
-:::: {#exr-essay-timeouts-cancellation-experiment target="prairielearn" project="/projects/essays/task-lifecycle/timeouts-cancellation/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-timeouts-cancellation-experiment project="/projects/essays/task-lifecycle/timeouts-cancellation/experiment" difficulty="intermediate" time="30"}
 ### Раздельное наблюдение отмены и работы
 
 На выданном стенде с вручную управляемой работой составить последовательность, в которой CompletableFuture отменена, но разрешённый эффект ещё выполняется. Зафиксировать состояние результата, событие эффекта и действительное завершение. Не использовать неограниченное вычисление или случайные задержки.
@@ -27,7 +26,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-timeouts-cancellation-test-design target="prairielearn" project="/projects/essays/task-lifecycle/timeouts-cancellation/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
+:::: {#exr-essay-timeouts-cancellation-test-design project="/projects/essays/task-lifecycle/timeouts-cancellation/test-design" difficulty="intermediate" time="45"}
 ### Проверка кооперативной остановки
 
 Разработать тест владельца операции, передающего отдельный сигнал отмены. Дождаться заданной контрольной точки, запросить отмену и проверить отсутствие запрещённого последующего эффекта после подтверждения завершения. Тест должен отдельно фиксировать состояние возвращённого результата.
@@ -42,7 +41,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-timeouts-cancellation-implementation target="prairielearn" project="/projects/essays/task-lifecycle/timeouts-cancellation/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
+:::: {#exr-essay-timeouts-cancellation-implementation project="/projects/essays/task-lifecycle/timeouts-cancellation/implementation" difficulty="intermediate" time="52"}
 ### Владелец отменяемой операции
 
 Реализовать управление предоставленной операцией: выдачу результата, передачу кооперативной отмены и отдельное ожидание завершения работы. Сохранить указанное поведение при отмене до старта и после успеха. Освобождение ресурса должно происходить независимо от состояния future.

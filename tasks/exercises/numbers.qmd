@@ -1,18 +1,25 @@
 ---
 semester: 1
-categories: [Целые числа, Числовые преобразования, Переполнение, Тестирование]
+categories:
+- Целые числа
+- Числовые преобразования
+- Переполнение
+- Тестирование
 assessment:
   kind: lab
   prairielearn:
     pass:
       at-least: 1
+default-exercise-target: prairielearn
+default-exercise-statement-visibility: open
+default-exercise-project-check: java25-junit
 ---
 
 # Числа и вычисления {#sec-lab-numbers}
 
 Подготовка: @theory:sec-java-types-numbers и @theory:sec-development-testing.
 
-:::: {#exr-lab-integer-arithmetic target="prairielearn" project="/projects/exercises/numbers/integer-arithmetic" difficulty="introductory" time="45" statement-visibility="open"}
+:::: {#exr-lab-integer-arithmetic project="/projects/exercises/numbers/integer-arithmetic" difficulty="introductory" time="45"}
 ## Сумма и среднее двух целых чисел
 
 Исправьте класс `IntegerArithmetic`, чтобы следующие методы работали для
@@ -33,7 +40,7 @@ public static double mean(int a, int b)
 В заготовке изменяйте `src/main/java/IntegerArithmetic.java`; сохраните имя
 public-класса без package и сигнатуры методов. Запустите `gradle test` из
 каталога скачанного проекта. Добавьте свои JUnit-проверки нуля, отрицательных
-значений, нечётной суммы и крайних значений int. Объясните, на каком этапе
+значений, нечётной суммы и крайних значений int. Для самостоятельной подготовки объясните, на каком этапе
 вычисления происходит расширение типа и почему расширение уже полученного
 результата сложения не устраняет переполнение.
 
@@ -47,12 +54,12 @@ public static методы с параметрами (int, int) и типами 
 Reflection изолирует компиляцию тестов от наличия методов студента, но не
 исправляет синтаксические ошибки в самой реализации. Полный контракт проверяет
 авторский набор tests/junit; открытые примеры помогают начать работу и не
-объявляются исчерпывающими. Результат лабораторной учитывает корректность кода
-и объяснение числовых преобразований. Персональные назначения и правила
+объявляются исчерпывающими. Оценка зависит только от корректности sum и mean; текстовое объяснение
+не входит в ответ PrairieLearn и не влияет на балл. Персональные назначения и правила
 приёма настраиваются на платформе для учебного потока.
 :::
 ::::
 
-::: {.task-items}
-1. [@exr-lab-integer-arithmetic]{requirement="required" work-mode="individual" stage="classroom"}
+::: {.task-items stage="classroom"}
+1. @exr-lab-integer-arithmetic
 :::

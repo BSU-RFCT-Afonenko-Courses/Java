@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-cyclic-indices
 semester: 1
 ---
 
@@ -10,9 +11,7 @@ semester: 1
 
 ## Контроль освоения темы {#sec-essay-cyclic-indices-control}
 
-Тема реферата: @sec-essay-cyclic-indices.
-
-:::: {#exr-essay-cyclic-indices-experiment target="prairielearn" project="/projects/essays/numbers/cyclic-indices/experiment" course-role="control" difficulty="introductory" time="20" statement-visibility="restricted"}
+:::: {#exr-essay-cyclic-indices-experiment project="/projects/essays/numbers/cyclic-indices/experiment" difficulty="introductory" time="20"}
 ### Сопоставление способов нормализации
 
 Для положительного int n предъявить входы x, n, при которых x % n и Math.abs(x) % n нарушают требование индекса от 0 до n - 1. Для каждого случая указать результат и корректный нормализованный индекс, затем привести общий контрольный случай.
@@ -27,7 +26,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-cyclic-indices-test-design target="prairielearn" project="/projects/essays/numbers/cyclic-indices/test-design" course-role="control" difficulty="introductory" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-cyclic-indices-test-design project="/projects/essays/numbers/cyclic-indices/test-design" difficulty="introductory" time="30"}
 ### Проверка контракта циклического индекса
 
 Написать тесты для int normalize(int x, int n), возвращающего Math.floorMod(x, n) при n &gt; 0. Набор должен различать корректное решение, использование %, а также Math.abs(x) % n.
@@ -42,7 +41,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-cyclic-indices-implementation target="prairielearn" project="/projects/essays/numbers/cyclic-indices/implementation" course-role="control" difficulty="introductory" time="35" statement-visibility="restricted"}
+:::: {#exr-essay-cyclic-indices-implementation project="/projects/essays/numbers/cyclic-indices/implementation" difficulty="introductory" time="35"}
 ### Вычисление циклической позиции
 
 Реализовать int move(int index, int shift, int size), возвращающий циклическую позицию, соответствующую математической сумме index + shift. size должен быть положительным, index — принадлежать диапазону от 0 до size - 1; нарушение предусловий отклоняется IllegalArgumentException.

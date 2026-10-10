@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-mutable-keys
 semester: 1
 ---
 
@@ -10,9 +11,7 @@ semester: 1
 
 ## Контроль освоения темы {#sec-essay-mutable-keys-control}
 
-Тема реферата: @sec-essay-mutable-keys.
-
-:::: {#exr-essay-mutable-keys-experiment target="prairielearn" project="/projects/essays/generics-collections/mutable-keys/experiment" course-role="control" difficulty="introductory" time="20" statement-visibility="restricted"}
+:::: {#exr-essay-mutable-keys-experiment project="/projects/essays/generics-collections/mutable-keys/experiment" difficulty="introductory" time="20"}
 ### Наблюдение изменения хешируемого ключа
 
 На предоставленном MutableKey и фиксированном HashMap зарегистрировать ключ, изменить его поле, участвующее в equals и hashCode, и записать результаты containsKey и get до и после изменения. Представить контроль с неизменяемым ключом и отдельно отметить, какие результаты являются наблюдением закреплённого стенда.
@@ -27,7 +26,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-mutable-keys-test-design target="prairielearn" project="/projects/essays/generics-collections/mutable-keys/test-design" course-role="control" difficulty="introductory" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-mutable-keys-test-design project="/projects/essays/generics-collections/mutable-keys/test-design" difficulty="introductory" time="30"}
 ### Проверка реестра со снимком идентификатора
 
 Написать тесты для Registry.register(User u), сохраняющего запись по значению u.id на момент регистрации. После изменения исходного User поиск find(oldId) должен находить запись, а find(newId) — не находить её.
@@ -42,7 +41,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-mutable-keys-implementation target="prairielearn" project="/projects/essays/generics-collections/mutable-keys/implementation" course-role="control" difficulty="introductory" time="35" statement-visibility="restricted"}
+:::: {#exr-essay-mutable-keys-implementation project="/projects/essays/generics-collections/mutable-keys/implementation" difficulty="introductory" time="35"}
 ### Реализация устойчивого ключа реестра
 
 Реализовать register(User u) и find(String id) в предоставленном Registry. При регистрации использовать снимок строкового идентификатора u.id, а объект User хранить как значение; последующие изменения User не должны переименовывать запись.

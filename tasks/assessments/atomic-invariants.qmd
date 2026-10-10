@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-atomic-invariants
 semester: 2
 ---
 
@@ -10,9 +11,7 @@ semester: 2
 
 ## Контроль освоения темы {#sec-essay-atomic-invariants-control}
 
-Тема реферата: @sec-essay-atomic-invariants.
-
-:::: {#exr-essay-atomic-invariants-experiment target="prairielearn" project="/projects/essays/shared-state/atomic-invariants/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-atomic-invariants-experiment project="/projects/essays/shared-state/atomic-invariants/experiment" difficulty="intermediate" time="30"}
 ### Чередование с потерей обновления
 
 Для предоставленной реализации ограниченного счётчика составить допустимую последовательность чтений, проверок и записей двух участников, нарушающую объявленный инвариант. Указать исходное состояние, результат каждого шага и итоговые решения участников. Последовательность проверяется симулятором доступных операций.
@@ -27,7 +26,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-atomic-invariants-test-design target="prairielearn" project="/projects/essays/shared-state/atomic-invariants/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
+:::: {#exr-essay-atomic-invariants-test-design project="/projects/essays/shared-state/atomic-invariants/test-design" difficulty="intermediate" time="45"}
 ### Контролируемый конфликт резервирования
 
 Разработать тест резервирования последней доступной единицы ресурса двумя участниками. Использовать предоставленные точки управления чтением и записью, проверить число успешных операций и оставшееся количество. Тест должен принимать корректный вариант и обнаруживать заданную реализацию с раздельными проверкой и уменьшением.
@@ -42,7 +41,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-atomic-invariants-implementation target="prairielearn" project="/projects/essays/shared-state/atomic-invariants/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
+:::: {#exr-essay-atomic-invariants-implementation project="/projects/essays/shared-state/atomic-invariants/implementation" difficulty="intermediate" time="52"}
 ### Атомарное резервирование ресурса
 
 Реализовать метод резервирования заданного положительного количества единиц при достаточном остатке. При отказе состояние не изменяется. Выбранный в условии механизм — монитор либо атомарная ячейка — должен обеспечивать единый результат проверки и изменения; публичный контракт и обработку недопустимых аргументов сохранить.

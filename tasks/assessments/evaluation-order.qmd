@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-evaluation-order
 semester: 1
 ---
 
@@ -10,9 +11,7 @@ semester: 1
 
 ## Контроль освоения темы {#sec-essay-evaluation-order-control}
 
-Тема реферата: @sec-essay-evaluation-order.
-
-:::: {#exr-essay-evaluation-order-experiment target="prairielearn" project="/projects/essays/numbers/evaluation-order/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-evaluation-order-experiment project="/projects/essays/numbers/evaluation-order/experiment" difficulty="intermediate" time="30"}
 ### Восстановление последовательности событий
 
 Для двух предоставленных последовательностей validate(x); debit(); publish() и debit(); validate(x); publish() выбрать успешный и отклоняемый вход. Указать точные журналы событий, включая место исключения; validate пишет событие до возможного отказа.
@@ -27,7 +26,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-evaluation-order-test-design target="prairielearn" project="/projects/essays/numbers/evaluation-order/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
+:::: {#exr-essay-evaluation-order-test-design project="/projects/essays/numbers/evaluation-order/test-design" difficulty="intermediate" time="45"}
 ### Проверка порядка валидации и записи
 
 Написать тесты для операции commit(int amount, Recorder r), которая сначала проверяет amount &gt;= 0, затем вызывает r.record(amount) ровно один раз. При отрицательном amount требуется IllegalArgumentException без вызова record.
@@ -42,7 +41,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-evaluation-order-implementation target="prairielearn" project="/projects/essays/numbers/evaluation-order/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
+:::: {#exr-essay-evaluation-order-implementation project="/projects/essays/numbers/evaluation-order/implementation" difficulty="intermediate" time="52"}
 ### Упорядочение операции с побочным эффектом
 
 Исправить метод accept(int amount, Recorder r): сначала отклонить отрицательный amount, затем выполнить единственную запись и вернуть её идентификатор. Если запись выбрасывает предусмотренное исключение, передать его вызывающему без повторной записи.

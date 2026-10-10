@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-unicode-codepoints
 semester: 1
 ---
 
@@ -10,9 +11,7 @@ semester: 1
 
 ## Контроль освоения темы {#sec-essay-unicode-codepoints-control}
 
-Тема реферата: @sec-essay-unicode-codepoints.
-
-:::: {#exr-essay-unicode-codepoints-experiment target="prairielearn" project="/projects/essays/text-arrays/unicode-codepoints/experiment" course-role="control" difficulty="introductory" time="20" statement-visibility="restricted"}
+:::: {#exr-essay-unicode-codepoints-experiment project="/projects/essays/text-arrays/unicode-codepoints/experiment" difficulty="introductory" time="20"}
 ### Различение единиц длины строки
 
 Предъявить корректную строку UTF-16, у которой String.length превышает число кодовых точек, и строку контроля с совпадающими величинами. Указать обе длины и результат выделения первого префикса длиной одна кодовая точка.
@@ -27,7 +26,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-unicode-codepoints-test-design target="prairielearn" project="/projects/essays/text-arrays/unicode-codepoints/test-design" course-role="control" difficulty="introductory" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-unicode-codepoints-test-design project="/projects/essays/text-arrays/unicode-codepoints/test-design" difficulty="introductory" time="30"}
 ### Проверка выделения префикса Unicode
 
 Написать тесты для String prefix(String s, int count), возвращающего первые min(count, число кодовых точек) кодовых точек. Выявить обрезку через substring с индексом count и ошибку обработки пустой строки.
@@ -42,7 +41,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-unicode-codepoints-implementation target="prairielearn" project="/projects/essays/text-arrays/unicode-codepoints/implementation" course-role="control" difficulty="introductory" time="35" statement-visibility="restricted"}
+:::: {#exr-essay-unicode-codepoints-implementation project="/projects/essays/text-arrays/unicode-codepoints/implementation" difficulty="introductory" time="35"}
 ### Реализация префикса по кодовым точкам
 
 Реализовать String prefix(String s, int count) по числу кодовых точек. При count &gt;= фактической длины вернуть строку с тем же содержимым, при count == 0 — пустую строку, при отрицательном count выбросить IllegalArgumentException.

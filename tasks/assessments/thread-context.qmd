@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-thread-context
 semester: 2
 ---
 
@@ -10,9 +11,7 @@ semester: 2
 
 ## Контроль освоения темы {#sec-essay-thread-context-control}
 
-Тема реферата: @sec-essay-thread-context.
-
-:::: {#exr-essay-thread-context-experiment target="prairielearn" project="/projects/essays/task-lifecycle/thread-context/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-thread-context-experiment project="/projects/essays/task-lifecycle/thread-context/experiment" difficulty="intermediate" time="30"}
 ### Утечка контекста между запросами
 
 Представить две последовательные операции на одном работнике, при которых отсутствие очистки ThreadLocal приводит к наблюдению чужого контекста. Зафиксировать значение до первой установки, после завершения первого запроса и во втором запросе. Стенд гарантирует повторное использование того же потока.
@@ -27,7 +26,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-thread-context-test-design target="prairielearn" project="/projects/essays/task-lifecycle/thread-context/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
+:::: {#exr-essay-thread-context-test-design project="/projects/essays/task-lifecycle/thread-context/test-design" difficulty="intermediate" time="45"}
 ### Проверка восстановления вложенного контекста
 
 Написать тест обёртки контекста для вложенных вызовов. Проверить видимость внутреннего значения, восстановление внешнего после возврата и после исключения, а затем отсутствие утечки в следующий запрос. Контракт различает отсутствие привязки и установленное значение.
@@ -42,7 +41,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-thread-context-implementation target="prairielearn" project="/projects/essays/task-lifecycle/thread-context/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
+:::: {#exr-essay-thread-context-implementation project="/projects/essays/task-lifecycle/thread-context/implementation" difficulty="intermediate" time="52"}
 ### Обёртка ограниченной области контекста
 
 Реализовать выполнение действия с временным контекстом, сохраняя предыдущее состояние и восстанавливая его в finally. Для исходного отсутствия привязки выполнить предусмотренное удаление. Результат и исключение действия должны проходить через обёртку без изменения.

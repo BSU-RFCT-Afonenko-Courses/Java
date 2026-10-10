@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-constant-inlining
 semester: 1
 ---
 
@@ -10,9 +11,7 @@ semester: 1
 
 ## Контроль освоения темы {#sec-essay-constant-inlining-control}
 
-Тема реферата: @sec-essay-constant-inlining.
-
-:::: {#exr-essay-constant-inlining-experiment target="prairielearn" project="/projects/essays/failures-boundaries/constant-inlining/experiment" course-role="control" difficulty="advanced" time="40" statement-visibility="restricted"}
+:::: {#exr-essay-constant-inlining-experiment project="/projects/essays/failures-boundaries/constant-inlining/experiment" difficulty="advanced" time="40"}
 ### Наблюдение результата частичного обновления
 
 На предоставленных двух версиях библиотеки сравнить константу public static final int VALUE и метод static int value(): в первой версии оба задают 1, во второй — 2. Собрать клиента с первой версией, заменить только библиотеку и указать оба наблюдаемых значения; сопоставить с полной пересборкой клиента.
@@ -27,7 +26,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-constant-inlining-test-design target="prairielearn" project="/projects/essays/failures-boundaries/constant-inlining/test-design" course-role="control" difficulty="advanced" time="60" statement-visibility="restricted"}
+:::: {#exr-essay-constant-inlining-test-design project="/projects/essays/failures-boundaries/constant-inlining/test-design" difficulty="advanced" time="60"}
 ### Проверка обновления параметра библиотеки
 
 Подготовить проверку матрицы из старого клиента со старой библиотекой, старого клиента с новой библиотекой и нового клиента с новой библиотекой. Контракт требует, чтобы значение config() соответствовало загруженной библиотеке; обнаружить встраивание public-константы в клиент.
@@ -42,7 +41,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-constant-inlining-implementation target="prairielearn" project="/projects/essays/failures-boundaries/constant-inlining/implementation" course-role="control" difficulty="advanced" time="70" statement-visibility="restricted"}
+:::: {#exr-essay-constant-inlining-implementation project="/projects/essays/failures-boundaries/constant-inlining/implementation" difficulty="advanced" time="70"}
 ### Проектирование обновляемого значения библиотеки
 
 В предоставленном интерфейсе конфигурации реализовать доступ через метод int value() и изменить клиент так, чтобы он получал значение при выполнении. После компиляции клиента обновление тела метода библиотеки должно изменять результат без пересборки клиента.

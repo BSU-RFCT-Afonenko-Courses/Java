@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-construction
 semester: 1
 ---
 
@@ -10,9 +11,7 @@ semester: 1
 
 ## Контроль освоения темы {#sec-essay-construction-control}
 
-Тема реферата: @sec-essay-construction.
-
-:::: {#exr-essay-construction-experiment target="prairielearn" project="/projects/essays/object-model/construction/experiment" course-role="control" difficulty="advanced" time="40" statement-visibility="restricted"}
+:::: {#exr-essay-construction-experiment project="/projects/essays/object-model/construction/experiment" difficulty="advanced" time="40"}
 ### Наблюдение состояния в конструкторном вызове
 
 Для готовой пары Base и Derived, где конструктор Base вызывает переопределяемый report, восстановить журнал значений поля Derived.value: оно имеет инициализатор 7 и присваивание 9 в теле конструктора после super. Сопоставить вызов report из Base и после завершения new Derived().
@@ -27,7 +26,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-construction-test-design target="prairielearn" project="/projects/essays/object-model/construction/test-design" course-role="control" difficulty="advanced" time="60" statement-visibility="restricted"}
+:::: {#exr-essay-construction-test-design project="/projects/essays/object-model/construction/test-design" difficulty="advanced" time="60"}
 ### Проверка готовности объекта перед callback
 
 Написать тесты для фабрики Widget.create(int size, Observer observer), обязанной уведомить observer ровно один раз после установки size и состояния ready. Выявить преждевременный callback и его повторный вызов.
@@ -42,7 +41,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-construction-implementation target="prairielearn" project="/projects/essays/object-model/construction/implementation" course-role="control" difficulty="advanced" time="70" statement-visibility="restricted"}
+:::: {#exr-essay-construction-implementation project="/projects/essays/object-model/construction/implementation" difficulty="advanced" time="70"}
 ### Разделение конструирования и уведомления
 
 Исправить фабрику Widget.create(int size, Observer observer): полностью создать Widget, установить его допустимое состояние и затем выполнить единственный callback. Для size &lt;= 0 выбросить IllegalArgumentException до создания наблюдаемого объекта.

@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-type-erasure
 semester: 1
 ---
 
@@ -10,9 +11,7 @@ semester: 1
 
 ## Контроль освоения темы {#sec-essay-type-erasure-control}
 
-Тема реферата: @sec-essay-type-erasure.
-
-:::: {#exr-essay-type-erasure-experiment target="prairielearn" project="/projects/essays/generics-collections/type-erasure/experiment" course-role="control" difficulty="advanced" time="40" statement-visibility="restricted"}
+:::: {#exr-essay-type-erasure-experiment project="/projects/essays/generics-collections/type-erasure/experiment" difficulty="advanced" time="40"}
 ### Локализация отложенного нарушения типа
 
 В предоставленном фрагменте с `List<String>`, raw-представлением и последующим чтением выбрать вставляемое значение так, чтобы запись завершилась, а получение String вызвало ClassCastException. Указать этап предупреждения компилятора и этап исключения; привести строковый контроль.
@@ -27,7 +26,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-type-erasure-test-design target="prairielearn" project="/projects/essays/generics-collections/type-erasure/test-design" course-role="control" difficulty="advanced" time="60" statement-visibility="restricted"}
+:::: {#exr-essay-type-erasure-test-design project="/projects/essays/generics-collections/type-erasure/test-design" difficulty="advanced" time="60"}
 ### Проверка типизированного адаптера списка
 
 Написать тесты для `List<String>` strings(`List<?>` input): вернуть независимый список при наличии только String; при null или ином элементе выбросить IllegalArgumentException. Выявить непроверяемое приведение всего списка и проверку только первого элемента.
@@ -42,7 +41,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-type-erasure-implementation target="prairielearn" project="/projects/essays/generics-collections/type-erasure/implementation" course-role="control" difficulty="advanced" time="70" statement-visibility="restricted"}
+:::: {#exr-essay-type-erasure-implementation project="/projects/essays/generics-collections/type-erasure/implementation" difficulty="advanced" time="70"}
 ### Реализация проверяемой границы типизации
 
 Реализовать `List<String>` strings(`List<?>` input), проверяющий каждый элемент. String переносится в новый список с сохранением порядка, null и любой иной тип вызывают IllegalArgumentException до возврата результата; вход изменять запрещено.

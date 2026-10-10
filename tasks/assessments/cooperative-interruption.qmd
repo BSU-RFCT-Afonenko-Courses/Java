@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-cooperative-interruption
 semester: 2
 ---
 
@@ -10,9 +11,7 @@ semester: 2
 
 ## Контроль освоения темы {#sec-essay-cooperative-interruption-control}
 
-Тема реферата: @sec-essay-cooperative-interruption.
-
-:::: {#exr-essay-cooperative-interruption-experiment target="prairielearn" project="/projects/essays/shared-state/cooperative-interruption/experiment" course-role="control" difficulty="introductory" time="20" statement-visibility="restricted"}
+:::: {#exr-essay-cooperative-interruption-experiment project="/projects/essays/shared-state/cooperative-interruption/experiment" difficulty="introductory" time="20"}
 ### Наблюдение состояния прерывания
 
 Для выделенного тестового потока представить последовательность вызовов interrupt, isInterrupted и Thread.interrupted, дающую указанный преподавателем переход состояний. Зафиксировать возвращаемые значения и состояние после каждого чтения. Все действия выполняются на управляемом потоке стенда, не затрагивая поток запуска проверки.
@@ -27,7 +26,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-cooperative-interruption-test-design target="prairielearn" project="/projects/essays/shared-state/cooperative-interruption/test-design" course-role="control" difficulty="introductory" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-cooperative-interruption-test-design project="/projects/essays/shared-state/cooperative-interruption/test-design" difficulty="introductory" time="30"}
 ### Проверка кооперативного завершения
 
 Подготовить тест рабочего цикла с предоставленным событием готовности к блокирующему ожиданию. Запросить отмену и проверить завершение и освобождение тестового ресурса. Преподаватель задаёт, должен ли конечный работник поглотить сигнал как штатное завершение либо передать его через интерфейс.
@@ -42,7 +41,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-cooperative-interruption-implementation target="prairielearn" project="/projects/essays/shared-state/cooperative-interruption/implementation" course-role="control" difficulty="introductory" time="35" statement-visibility="restricted"}
+:::: {#exr-essay-cooperative-interruption-implementation project="/projects/essays/shared-state/cooperative-interruption/implementation" difficulty="introductory" time="35"}
 ### Исправление обработки InterruptedException
 
 Исправить предоставленный метод, который подавляет InterruptedException и продолжает обработку. Следовать заданному контракту: прекратить действие, закрыть принадлежащий ресурс и передать сигнал допустимым способом. Исключение, восстановленный статус либо штатный возврат выбираются согласно сигнатуре и роли метода.

@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-virtual-resource-limits
 semester: 2
 ---
 
@@ -10,9 +11,7 @@ semester: 2
 
 ## Контроль освоения темы {#sec-essay-virtual-resource-limits-control}
 
-Тема реферата: @sec-essay-virtual-resource-limits.
-
-:::: {#exr-essay-virtual-resource-limits-experiment target="prairielearn" project="/projects/essays/task-lifecycle/virtual-resource-limits/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-virtual-resource-limits-experiment project="/projects/essays/task-lifecycle/virtual-resource-limits/experiment" difficulty="intermediate" time="30"}
 ### Сценарий превышения ёмкости ресурса
 
 Для сервиса с указанным пределом одновременных обращений составить управляемый сценарий запуска виртуальных потоков, обнаруживающий отсутствие ограничителя. Использовать события входа и выхода ресурса, указать максимальное наблюдаемое число активных обращений. Готовность участников подтверждается до снятия удерживающего барьера.
@@ -27,7 +26,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-virtual-resource-limits-test-design target="prairielearn" project="/projects/essays/task-lifecycle/virtual-resource-limits/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
+:::: {#exr-essay-virtual-resource-limits-test-design project="/projects/essays/task-lifecycle/virtual-resource-limits/test-design" difficulty="intermediate" time="45"}
 ### Проверка возврата разрешений
 
 Написать тест ограничителя доступа, проверяющий ошибку внутри ресурса и отмену до получения разрешения. После каждого сценария запустить успешное обращение и проверить доступную ёмкость. Стенд предоставляет счётчик активных операций и управляемые точки отказа.
@@ -42,7 +41,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-virtual-resource-limits-implementation target="prairielearn" project="/projects/essays/task-lifecycle/virtual-resource-limits/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
+:::: {#exr-essay-virtual-resource-limits-implementation project="/projects/essays/task-lifecycle/virtual-resource-limits/implementation" difficulty="intermediate" time="52"}
 ### Ограничитель обращений к сервису
 
 Реализовать обёртку обращения к предоставленному ресурсу через Semaphore. Разрешение возвращается только после его успешного получения и независимо от исхода операции. Сохранить заданную политику прерывания и не допустить превышения объявленного числа активных обращений.

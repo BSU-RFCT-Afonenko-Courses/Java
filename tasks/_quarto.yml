@@ -37,10 +37,38 @@ course:
 prairielearn:
   assessment-defaults:
     attempts: 3
+    question-points: 1
     pass:
       at-least: 2
     assignment:
       mode: assessment-id
+  delivery:
+    book: tasks
+    course:
+      name: JAVA
+      title: Программирование на Java
+      timezone: Europe/Minsk
+      topics:
+      - name: Java
+        color: blue2
+        description: Программирование на Java 25
+    instances:
+      pilot:
+        publishing:
+          start-date: "1970-01-01T00:00:00Z"
+          end-date: "9999-12-31T00:00:00Z"
+        title: Локальный пилот Java 25
+        self-enrollment: false
+        works:
+        - sec-lab-numbers
+        - sec-pl-java25-pilot
+        - sec-essay-charset-decoding-control
+  question-defaults:
+    topic: Java
+    single-variant: true
+    submission:
+      mode: editor
+      ace-mode: ace/mode/java
 filters:
 - course-core
 - course-presentation
@@ -81,36 +109,100 @@ format:
     code-tools: false
     toc-depth: 2
 lang: ru
-project-download:
-  resources:
-    exr-essay-charset-decoding-experiment:
-      path: projects/essays/failures-boundaries/charset-decoding/experiment/student
-      profiles:
-      - full
-      exclude:
-      - '**/.*'
-    exr-essay-charset-decoding-implementation:
-      path: projects/essays/failures-boundaries/charset-decoding/implementation/student
-      profiles:
-      - full
-      exclude:
-      - '**/.*'
-    exr-essay-charset-decoding-test-design:
-      path: projects/essays/failures-boundaries/charset-decoding/test-design/student
-      profiles:
-      - full
-      exclude:
-      - '**/.*'
-    exr-lab-integer-arithmetic:
-      path: projects/exercises/numbers/integer-arithmetic/student
-      exclude:
-      - '**/.*'
-    exr-pl-java25-unicode-slice:
-      path: projects/exercises/text-arrays/java25-pilot/unicode-slice/student
-      profiles:
-      - full
-      exclude:
-      - '**/.*'
 reference-catalog:
   namespace: tasks
 fail-if-warnings: true
+project-download:
+  course-model: true
+project-checks:
+  defaults:
+    runtime: java25-junit-v1
+    java:
+      release: 25
+      encoding: UTF-8
+      compiler-options:
+      - -proc:none
+      - -Xmaxerrs
+      - '5'
+    limits:
+      outer-seconds: 30
+      networking: false
+      max-output-bytes: 65536
+    scoring:
+      mode: weighted
+    references:
+    - name: default
+      root: reference
+      optional: true
+    verification-tests:
+    - student/src/test/java/**/*Test.java
+    contract-cases: tests/contract-cases.json
+    verification-expectations:
+      reference:
+        student-compilation: success
+        job: complete
+        required-tests: all-pass
+      starter:
+        student-compilation: success
+        job: complete
+    discovery:
+      min-executed: 1
+      allow-skipped: false
+  source-profiles:
+    java-main:
+      mode: implementation
+      root: student/src/main/java
+      include:
+      - '**/*.java'
+    java-root:
+      mode: implementation
+      root: student
+      include:
+      - '*.java'
+    java-tests:
+      mode: student-tests
+      root: student/src/test/java
+      include:
+      - '**/*.java'
+  profiles:
+    java25-junit:
+      source-profile: java-main
+      tests:
+      - tests/junit/**/*.java
+      - tests/*Test.java
+    java25-junit-root:
+      source-profile: java-root
+      tests:
+      - tests/junit/**/*.java
+      - tests/*Test.java
+    java25-pilot:
+      source-profile: java-root
+      tests:
+      - tests/junit/**/*.java
+      scoring:
+        mode: all-pass
+    java25-mutation:
+      source-profile: java-tests
+      runtime: java25-mutation-v1
+      tests:
+      - tests/variants/**/*.java
+      verification-tests: []
+      variants:
+        correct:
+        - correct
+        - correctGenericException
+        mutants:
+        - alwaysReject
+        - emptyResult
+        - mutatesFailure
+        - mutatesSuccess
+        - rejectEmpty
+        - rejectFourByte
+        - rejectReplacement
+        - rejectThreeByte
+        - rejectTwoByte
+        - replacement
+        - unfinished
+        - wrongException
+      scoring:
+        mode: all-pass

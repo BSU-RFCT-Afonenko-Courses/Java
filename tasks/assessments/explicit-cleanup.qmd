@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-explicit-cleanup
 semester: 2
 ---
 
@@ -10,9 +11,7 @@ semester: 2
 
 ## Контроль освоения темы {#sec-essay-explicit-cleanup-control}
 
-Тема реферата: @sec-essay-explicit-cleanup.
-
-:::: {#exr-essay-explicit-cleanup-experiment target="prairielearn" project="/projects/essays/lifecycle-measurement/explicit-cleanup/experiment" course-role="control" difficulty="advanced" time="40" statement-visibility="restricted"}
+:::: {#exr-essay-explicit-cleanup-experiment project="/projects/essays/lifecycle-measurement/explicit-cleanup/experiment" difficulty="advanced" time="40"}
 ### Достижимость владельца через действие очистки
 
 Для ограниченной модели объектов указать путь сильных ссылок, по которому зарегистрированное действие очистки удерживает владельца. Представить граф до и после разрешённого разделения состояния. Проверяется достижимость в модели, а не фактическое время сборки памяти.
@@ -27,7 +26,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-explicit-cleanup-test-design target="prairielearn" project="/projects/essays/lifecycle-measurement/explicit-cleanup/test-design" course-role="control" difficulty="advanced" time="60" statement-visibility="restricted"}
+:::: {#exr-essay-explicit-cleanup-test-design project="/projects/essays/lifecycle-measurement/explicit-cleanup/test-design" difficulty="advanced" time="60"}
 ### Проверка явного и повторного закрытия
 
 Написать тест владельца инструментируемого ресурса, проверяющий явный close, повторный close и закрытие при исключении внутри операции. Контракт требует однократного освобождения. Счётчик ресурсов предоставлен стендом и не связан с фактическим запуском Cleaner.
@@ -42,7 +41,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-explicit-cleanup-implementation target="prairielearn" project="/projects/essays/lifecycle-measurement/explicit-cleanup/implementation" course-role="control" difficulty="advanced" time="70" statement-visibility="restricted"}
+:::: {#exr-essay-explicit-cleanup-implementation project="/projects/essays/lifecycle-measurement/explicit-cleanup/implementation" difficulty="advanced" time="70"}
 ### Разделение владельца и состояния очистки
 
 Исправить предоставленный шаблон владельца: выделить состояние освобождения без обратной ссылки на владельца и обеспечить идемпотентный явный close. Резервное действие должно использовать то же согласованное состояние освобождения. Разрешённые поля и связи ограничены условием.

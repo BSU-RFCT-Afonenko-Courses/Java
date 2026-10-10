@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-lambda-capture
 semester: 1
 ---
 
@@ -10,9 +11,7 @@ semester: 1
 
 ## Контроль освоения темы {#sec-essay-lambda-capture-control}
 
-Тема реферата: @sec-essay-lambda-capture.
-
-:::: {#exr-essay-lambda-capture-experiment target="prairielearn" project="/projects/essays/functional-processing/lambda-capture/experiment" course-role="control" difficulty="introductory" time="20" statement-visibility="restricted"}
+:::: {#exr-essay-lambda-capture-experiment project="/projects/essays/functional-processing/lambda-capture/experiment" difficulty="introductory" time="20"}
 ### Наблюдение изменения захваченного объекта
 
 Для предоставленной фабрики `Predicate<String>`, захватывающей `List<String>` allowed и вызывающей allowed.contains, выбрать строку и изменение списка между созданием и применением predicate так, чтобы результат изменился. Сопоставить с фабрикой, захватывающей List.copyOf(allowed).
@@ -27,7 +26,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-lambda-capture-test-design target="prairielearn" project="/projects/essays/functional-processing/lambda-capture/test-design" course-role="control" difficulty="introductory" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-lambda-capture-test-design project="/projects/essays/functional-processing/lambda-capture/test-design" difficulty="introductory" time="30"}
 ### Проверка фиксации правил отложенной функции
 
 Написать тесты для `Predicate<String>` allowedAtCreation(`List<String>` allowed), проверяющего принадлежность списку на момент создания. Выявить прямой захват исходного списка и ошибку, при которой снимок создаётся только при первом вызове.
@@ -42,7 +41,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-lambda-capture-implementation target="prairielearn" project="/projects/essays/functional-processing/lambda-capture/implementation" course-role="control" difficulty="introductory" time="35" statement-visibility="restricted"}
+:::: {#exr-essay-lambda-capture-implementation project="/projects/essays/functional-processing/lambda-capture/implementation" difficulty="introductory" time="35"}
 ### Реализация функции с фиксированным окружением
 
 Реализовать `Predicate<String>` allowedAtCreation(`List<String>` allowed): сохранить множество разрешённых строк на момент вызова фабрики, затем проверять содержательное равенство с ними. Позднейшие изменения исходного списка не должны влиять на predicate; для null-кандидата возвращается false.

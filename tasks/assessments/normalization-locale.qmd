@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-normalization-locale
 semester: 1
 ---
 
@@ -10,9 +11,7 @@ semester: 1
 
 ## Контроль освоения темы {#sec-essay-normalization-locale-control}
 
-Тема реферата: @sec-essay-normalization-locale.
-
-:::: {#exr-essay-normalization-locale-experiment target="prairielearn" project="/projects/essays/text-arrays/normalization-locale/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-normalization-locale-experiment project="/projects/essays/text-arrays/normalization-locale/experiment" difficulty="intermediate" time="30"}
 ### Различение эквивалентности и сходства строк
 
 Предъявить две разные строки, совпадающие после NFC, и две строки, остающиеся различными после NFC. Указать нормализованный результат каждой пары и число кодовых точек до преобразования.
@@ -27,7 +26,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-normalization-locale-test-design target="prairielearn" project="/projects/essays/text-arrays/normalization-locale/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
+:::: {#exr-essay-normalization-locale-test-design project="/projects/essays/text-arrays/normalization-locale/test-design" difficulty="intermediate" time="45"}
 ### Проверка независимости ключа от локали
 
 Написать тесты для key(s) = NFC(s.toLowerCase(Locale.ROOT)). Выявить пропуск нормализации и использование default locale вместо Locale.ROOT. В каждом тесте восстанавливать глобальную локаль после временного изменения.
@@ -42,7 +41,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-normalization-locale-implementation target="prairielearn" project="/projects/essays/text-arrays/normalization-locale/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
+:::: {#exr-essay-normalization-locale-implementation project="/projects/essays/text-arrays/normalization-locale/implementation" difficulty="intermediate" time="52"}
 ### Реализация воспроизводимого текстового ключа
 
 Реализовать String key(String s): сначала преобразовать регистр через toLowerCase(Locale.ROOT), затем применить NFC. Не удалять пробелы и знаки, не заменять визуально похожие символы и не использовать настройки локали по умолчанию.

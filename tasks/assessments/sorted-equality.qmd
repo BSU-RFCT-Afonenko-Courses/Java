@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-sorted-equality
 semester: 1
 ---
 
@@ -10,9 +11,7 @@ semester: 1
 
 ## Контроль освоения темы {#sec-essay-sorted-equality-control}
 
-Тема реферата: @sec-essay-sorted-equality.
-
-:::: {#exr-essay-sorted-equality-experiment target="prairielearn" project="/projects/essays/generics-collections/sorted-equality/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-sorted-equality-experiment project="/projects/essays/generics-collections/sorted-equality/experiment" difficulty="intermediate" time="30"}
 ### Различение уникальности числовых представлений
 
 Выбрать два BigDecimal, равных по compareTo, но не по equals. Добавить их в HashSet и TreeSet с естественным порядком, указать размеры множеств и результаты проверки принадлежности каждого значения.
@@ -27,7 +26,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-sorted-equality-test-design target="prairielearn" project="/projects/essays/generics-collections/sorted-equality/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
+:::: {#exr-essay-sorted-equality-test-design project="/projects/essays/generics-collections/sorted-equality/test-design" difficulty="intermediate" time="45"}
 ### Проверка каталога с сохранением масштаба
 
 Написать тесты для catalog(`Collection<BigDecimal>` input), возвращающего отсортированное множество и сохраняющего различия equals. Порядок: сначала численное значение, затем scale. Выявить использование одного естественного порядка без второго критерия.
@@ -42,7 +41,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-sorted-equality-implementation target="prairielearn" project="/projects/essays/generics-collections/sorted-equality/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
+:::: {#exr-essay-sorted-equality-implementation project="/projects/essays/generics-collections/sorted-equality/implementation" difficulty="intermediate" time="52"}
 ### Реализация согласованного порядка каталога
 
 Реализовать comparator для BigDecimal: сначала сравнивать численное значение, при равенстве — scale. Использовать его для построения TreeSet, сохраняющего все различия equals, но объединяющего полностью равные представления.

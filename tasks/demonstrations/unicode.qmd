@@ -11,7 +11,8 @@ categories:
 
 Это открытый демонстрационный вариант: описание, задания, авторские решения и
 проверки доступны для самостоятельной подготовки. Он не включается в контрольные
-мероприятия PrairieLearn. Файлы проектов и инструкции для авторской проверки относятся к преподавательским материалам.
+мероприятия PrairieLearn. Полные проекты с заготовками, решениями и проверками доступны также студенту
+для самостоятельной подготовки.
 
 :::: {#exr-essay-unicode-demonstration target="manual" course-role="demonstration" difficulty="introductory"}
 ## Содержание исследования
@@ -80,15 +81,15 @@ categories:
 
 ## Практические задания {#sec-essay-unicode-demonstration-control}
 
-::: {.content-visible when-profile="full"}
 Каждое задание выполняется в отдельном проекте. Для проверки используйте
 `gradle test` из распакованного каталога. Требуются JDK 25 или новее и Gradle,
 совместимый с выбранным JDK. Разрешено обращаться к документации Java и выполнять
 промежуточные эксперименты.
-:::
 
-:::: {#exr-essay-unicode-demonstration-experiment target="manual" project="/projects/exercises/text-arrays/unicode-demonstration/experiment" course-role="independent-study" difficulty="introductory"}
+:::: {#exr-essay-unicode-demonstration-experiment target="manual" project="/projects/exercises/text-arrays/unicode-demonstration/experiment" course-role="demonstration" statement-visibility="open" project-check="java25-junit" difficulty="introductory"}
 ### Построение воспроизводимого примера для двух мер длины
+
+{{< project-download exr-essay-unicode-demonstration-experiment >}}
 
 Реализуйте `UnicodeEvidence.examples()`, возвращающий массив из двух записей
 `Example(String text, int utf16Units, int codePoints, String firstCodePoint)`.
@@ -102,8 +103,10 @@ ASCII-символов (U+0020–U+007E). Обе строки должны бы�
 
 ::::
 
-:::: {#exr-essay-unicode-demonstration-test-design target="manual" project="/projects/exercises/text-arrays/unicode-demonstration/test-design" course-role="independent-study" difficulty="introductory"}
+:::: {#exr-essay-unicode-demonstration-test-design target="manual" project="/projects/exercises/text-arrays/unicode-demonstration/test-design" course-role="demonstration" statement-visibility="open" project-check="java25-junit" difficulty="introductory"}
 ### Разработка проверок контракта строкового диапазона
+
+{{< project-download exr-essay-unicode-demonstration-test-design >}}
 
 Реализуйте `SliceChecks.verify(CodePointSlice operation)`. Переданная операция
 выделяет диапазон кодовых точек `[from, to)` непустой или пустой корректной строки
@@ -122,8 +125,10 @@ UTF-16. Допустимы ровно индексы `0 <= from <= to <= чис�
 
 ::::
 
-:::: {#exr-essay-unicode-demonstration-implementation target="manual" project="/projects/exercises/text-arrays/unicode-demonstration/implementation" course-role="independent-study" difficulty="introductory"}
+:::: {#exr-essay-unicode-demonstration-implementation target="manual" project="/projects/exercises/text-arrays/unicode-demonstration/implementation" course-role="demonstration" statement-visibility="open" project-check="java25-junit" difficulty="introductory"}
 ### Реализация диапазона, сохраняющего кодовые точки
+
+{{< project-download exr-essay-unicode-demonstration-implementation >}}
 
 Реализуйте `UnicodeSlice.slice(String text, int from, int to)`, возвращающий
 кодовые точки строки `text` с позиции `from` включительно до позиции `to`
@@ -136,7 +141,6 @@ UTF-16. Допустимы ровно индексы `0 <= from <= to <= чис�
 
 ::::
 
-::: {.content-visible when-profile="full"}
 ## Проверка авторских решений
 
 Авторские реализации находятся в каталогах `reference`, дополнительные проверки —
@@ -150,5 +154,4 @@ UTF-16. Допустимы ровно индексы `0 <= from <= to <= чис�
 ::: {course-role="reading" requirement="optional"}
 - [String: представление UTF-16 и операции над кодовыми точками](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html).
 - [Character: кодовые точки и суррогатные пары](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Character.html).
-:::
 :::

@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-overload-dispatch
 semester: 1
 ---
 
@@ -10,9 +11,7 @@ semester: 1
 
 ## Контроль освоения темы {#sec-essay-overload-dispatch-control}
 
-Тема реферата: @sec-essay-overload-dispatch.
-
-:::: {#exr-essay-overload-dispatch-experiment target="prairielearn" project="/projects/essays/object-model/overload-dispatch/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-overload-dispatch-experiment project="/projects/essays/object-model/overload-dispatch/experiment" difficulty="intermediate" time="30"}
 ### Разделение выбора сигнатуры и реализации
 
 Для предоставленной иерархии Base и Derived с перегрузками handle(Object), handle(String) и переопределением handle(Object) подобрать два вызова одного объекта с одинаковым строковым аргументом, но разными статическими типами ссылки на аргумент. Указать выбранную сигнатуру и возвращаемую метку.
@@ -27,7 +26,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-overload-dispatch-test-design target="prairielearn" project="/projects/essays/object-model/overload-dispatch/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
+:::: {#exr-essay-overload-dispatch-test-design project="/projects/essays/object-model/overload-dispatch/test-design" difficulty="intermediate" time="45"}
 ### Проверка полиморфного клиента
 
 Написать тесты для String process(Command command), который обязан возвращать результат виртуального command.execute(). Проверить два подтипа через ссылку Command и выявить клиент, выбирающий действие только по перегрузке вспомогательного метода.
@@ -42,7 +41,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-overload-dispatch-implementation target="prairielearn" project="/projects/essays/object-model/overload-dispatch/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
+:::: {#exr-essay-overload-dispatch-implementation project="/projects/essays/object-model/overload-dispatch/implementation" difficulty="intermediate" time="52"}
 ### Организация обработки через общий контракт
 
 Исправить process(Command command), используя предоставленный контракт String execute() у Command. Сохранить вызов соответствующей реализации каждого подтипа без перечня проверок конкретных классов и без изменения исходных типов.

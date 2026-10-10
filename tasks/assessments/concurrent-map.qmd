@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-concurrent-map
 semester: 2
 ---
 
@@ -10,9 +11,7 @@ semester: 2
 
 ## Контроль освоения темы {#sec-essay-concurrent-map-control}
 
-Тема реферата: @sec-essay-concurrent-map.
-
-:::: {#exr-essay-concurrent-map-experiment target="prairielearn" project="/projects/essays/collection-contracts/concurrent-map/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-concurrent-map-experiment project="/projects/essays/collection-contracts/concurrent-map/experiment" difficulty="intermediate" time="30"}
 ### Конфликт составного обновления
 
 Для выданной последовательности get и put представить чередование двух обновлений одного ключа, теряющее одно подтверждённое событие. Указать прочитанные значения, вычисленные результаты и итоговое состояние. Предоставленный симулятор проверяет допустимость порядка каждой операции.
@@ -27,7 +26,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-concurrent-map-test-design target="prairielearn" project="/projects/essays/collection-contracts/concurrent-map/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
+:::: {#exr-essay-concurrent-map-test-design project="/projects/essays/collection-contracts/concurrent-map/test-design" difficulty="intermediate" time="45"}
 ### Тестирование одноключевого обновления
 
 Написать тест накопления количества событий для одного ключа через предоставленный адаптер конкурентного отображения. Проверить первое добавление и управляемый конфликт двух обновлений. Тест должен принимать корректный атомарный вариант и отвергать реализацию с раздельными чтением и записью.
@@ -42,7 +41,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-concurrent-map-implementation target="prairielearn" project="/projects/essays/collection-contracts/concurrent-map/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
+:::: {#exr-essay-concurrent-map-implementation project="/projects/essays/collection-contracts/concurrent-map/implementation" difficulty="intermediate" time="52"}
 ### Атомарное накопление значения
 
 Реализовать обновление счётчика одного ключа с помощью подходящего атомарного метода ConcurrentHashMap. Определённая условием операция должна корректно обрабатывать отсутствующий ключ и сохранять все принятые изменения. Вычисляющая функция не должна выполнять необратимые внешние действия.

@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-finally-control
 semester: 1
 ---
 
@@ -10,9 +11,7 @@ semester: 1
 
 ## Контроль освоения темы {#sec-essay-finally-control-control}
 
-Тема реферата: @sec-essay-finally-control.
-
-:::: {#exr-essay-finally-control-experiment target="prairielearn" project="/projects/essays/failures-boundaries/finally-control/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-finally-control-experiment project="/projects/essays/failures-boundaries/finally-control/experiment" difficulty="intermediate" time="30"}
 ### Наблюдение замены результата в finally
 
 Для предоставленных фрагментов с return из try и return из finally, а также с исключениями из обоих блоков указать итоговый результат или исключение. Дополнить каждый сценарий точным журналом входа в try и finally.
@@ -27,7 +26,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-finally-control-test-design target="prairielearn" project="/projects/essays/failures-boundaries/finally-control/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
+:::: {#exr-essay-finally-control-test-design project="/projects/essays/failures-boundaries/finally-control/test-design" difficulty="intermediate" time="45"}
 ### Проверка сохранения основной причины отказа
 
 Написать тесты для run(action, cleanup): cleanup вызывается ровно один раз; если action выбросил исключение, именно оно передаётся вызывающему, а ошибка cleanup добавляется в suppressed. При успехе action ошибка cleanup передаётся непосредственно.
@@ -42,7 +41,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-finally-control-implementation target="prairielearn" project="/projects/essays/failures-boundaries/finally-control/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
+:::: {#exr-essay-finally-control-implementation project="/projects/essays/failures-boundaries/finally-control/implementation" difficulty="intermediate" time="52"}
 ### Реализация явной политики ошибок очистки
 
 Реализовать int run(IntSupplier action, Runnable cleanup). Cleanup выполняется ровно один раз после action. Сохранить результат action при успешной очистке; при двух RuntimeException сохранить исключение action, добавив исключение cleanup в suppressed; при отказе только cleanup передать его.

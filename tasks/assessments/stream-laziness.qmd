@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-stream-laziness
 semester: 1
 ---
 
@@ -10,9 +11,7 @@ semester: 1
 
 ## Контроль освоения темы {#sec-essay-stream-laziness-control}
 
-Тема реферата: @sec-essay-stream-laziness.
-
-:::: {#exr-essay-stream-laziness-experiment target="prairielearn" project="/projects/essays/functional-processing/stream-laziness/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-stream-laziness-experiment project="/projects/essays/functional-processing/stream-laziness/experiment" difficulty="intermediate" time="30"}
 ### Наблюдение необязательного промежуточного действия
 
 На закреплённом JDK сравнить stream().peek(recorder).count() для готового ArrayList и последовательный forEach(recorder). Указать размер входа, итог count и журналы вызовов; отдельно отметить, какой результат задан контрактом, а какие пропуски промежуточного действия наблюдаются на стенде.
@@ -27,7 +26,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-stream-laziness-test-design target="prairielearn" project="/projects/essays/functional-processing/stream-laziness/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
+:::: {#exr-essay-stream-laziness-test-design project="/projects/essays/functional-processing/stream-laziness/test-design" difficulty="intermediate" time="45"}
 ### Проверка обязательной регистрации элементов
 
 Написать тесты для long registerAll(`List<String>` input, `Consumer<String>` sink): метод передаёт каждый элемент в sink ровно один раз в исходном порядке и возвращает размер списка. Выявить peek(...).count() и раннее завершение после первого элемента.
@@ -42,7 +41,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-stream-laziness-implementation target="prairielearn" project="/projects/essays/functional-processing/stream-laziness/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
+:::: {#exr-essay-stream-laziness-implementation project="/projects/essays/functional-processing/stream-laziness/implementation" difficulty="intermediate" time="52"}
 ### Реализация полного обхода с обязательным действием
 
 Реализовать long registerAll(`List<String>` input, `Consumer<String>` sink), вызывающий sink для каждого элемента ровно один раз и в исходном порядке, включая повторы, после чего возвращающий число переданных элементов.

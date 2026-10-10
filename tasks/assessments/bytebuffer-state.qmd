@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-bytebuffer-state
 semester: 2
 ---
 
@@ -10,9 +11,7 @@ semester: 2
 
 ## Контроль освоения темы {#sec-essay-bytebuffer-state-control}
 
-Тема реферата: @sec-essay-bytebuffer-state.
-
-:::: {#exr-essay-bytebuffer-state-experiment target="prairielearn" project="/projects/essays/io-networking/bytebuffer-state/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-bytebuffer-state-experiment project="/projects/essays/io-networking/bytebuffer-state/experiment" difficulty="intermediate" time="30"}
 ### Различение представления и копии
 
 Подобрать последовательность операций над ByteBuffer и созданным представлением, при которой изменение через исходную ссылку наблюдается в представлении, но не в независимой копии. Зафиксировать позиции, границы и выбранные байты. Сценарий должен использовать только допустимые индексы.
@@ -27,7 +26,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-bytebuffer-state-test-design target="prairielearn" project="/projects/essays/io-networking/bytebuffer-state/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
+:::: {#exr-essay-bytebuffer-state-test-design project="/projects/essays/io-networking/bytebuffer-state/test-design" difficulty="intermediate" time="45"}
 ### Проверка сохранения неполного хвоста
 
 Написать тест порционного декодера, которому сообщение передаётся в двух частях с неполным хвостом после первого чтения. Проверить сохранение хвоста через compact, правильность результата и отсутствие захвата байтов следующего сообщения. Формат и порядок байтов предоставляет условие.
@@ -42,7 +41,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-bytebuffer-state-implementation target="prairielearn" project="/projects/essays/io-networking/bytebuffer-state/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
+:::: {#exr-essay-bytebuffer-state-implementation project="/projects/essays/io-networking/bytebuffer-state/implementation" difficulty="intermediate" time="52"}
 ### Исправление цикла накопления и чтения
 
 Исправить обработчик порций на ByteBuffer: переключение режимов, чтение полного сообщения и сохранение остатка для следующей порции. Сохранить заданный порядок байтов и ограничения размера. При недостатке данных не считать незаполненную область частью сообщения.

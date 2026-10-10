@@ -5,9 +5,44 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class EvidenceIndependentTest {
+    @Test void exactlyTwoExamplesAreRequired() throws Throwable {
+        assertEquals(2, examples().length, "Предъявите ровно две записи");
+    }
+
+    @Test void firstExampleStartsWithSupplementaryCodePoint() throws Throwable {
+        Object[] values = examples();
+        assertEquals(2, values.length);
+        String value = text(values[0]);
+        assertNotNull(value);
+        assertFalse(value.isEmpty());
+        assertTrue(value.codePointAt(0) >= Character.MIN_SUPPLEMENTARY_CODE_POINT);
+    }
+
+    @Test void secondExampleContainsOnlyPrintableAscii() throws Throwable {
+        Object[] values = examples();
+        assertEquals(2, values.length);
+        String value = text(values[1]);
+        assertNotNull(value);
+        assertFalse(value.isEmpty());
+        assertTrue(value.chars().allMatch(c -> c >= 0x20 && c <= 0x7e));
+    }
+
     @Test void observationsAgreeWithCodePointArray() throws Throwable {
         for (var example : examples()) {
-            int[] points = text(example).codePoints().toArray();
+            String value = text(example);
+            assertNotNull(value);
+            assertFalse(value.isEmpty());
+            for (int i = 0; i < value.length(); i++) {
+                char unit = value.charAt(i);
+                if (Character.isHighSurrogate(unit)) {
+                    assertTrue(i + 1 < value.length(), "Суррогатная пара не должна быть оборвана");
+                    assertTrue(Character.isLowSurrogate(value.charAt(++i)));
+                } else {
+                    assertFalse(Character.isLowSurrogate(unit));
+                }
+            }
+            assertEquals(value.length(), utf16Units(example));
+            int[] points = value.codePoints().toArray();
             assertEquals(points.length, codePoints(example));
             assertEquals(new String(points, 0, 1), firstCodePoint(example));
         }

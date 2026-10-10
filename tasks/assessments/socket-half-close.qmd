@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-socket-half-close
 semester: 2
 ---
 
@@ -10,9 +11,7 @@ semester: 2
 
 ## Контроль освоения темы {#sec-essay-socket-half-close-control}
 
-Тема реферата: @sec-essay-socket-half-close.
-
-:::: {#exr-essay-socket-half-close-experiment target="prairielearn" project="/projects/essays/io-networking/socket-half-close/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-socket-half-close-experiment project="/projects/essays/io-networking/socket-half-close/experiment" difficulty="intermediate" time="30"}
 ### Журнал взаимного ожидания сторон
 
 По предоставленному протоколу с EOF как границей запроса составить журнал, в котором клиент ждёт ответ, а сервер ждёт завершение запроса. Указать действия, уже выполненные каждой стороной, и событие, необходимое для продвижения. Сопоставить flush и завершение направления отправки.
@@ -27,7 +26,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-socket-half-close-test-design target="prairielearn" project="/projects/essays/io-networking/socket-half-close/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
+:::: {#exr-essay-socket-half-close-test-design project="/projects/essays/io-networking/socket-half-close/test-design" difficulty="intermediate" time="45"}
 ### Проверка ответа после завершения отправки
 
 Написать тест клиента с сервером, возвращающим ответ после получения EOF. Проверить полное содержимое запроса и возможность прочитать полный ответ. Сигнал готовности сервера и автоматически выделенный порт предоставляет стенд.
@@ -42,7 +41,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-socket-half-close-implementation target="prairielearn" project="/projects/essays/io-networking/socket-half-close/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
+:::: {#exr-essay-socket-half-close-implementation project="/projects/essays/io-networking/socket-half-close/implementation" difficulty="intermediate" time="52"}
 ### Исправление жизненного цикла клиента
 
 Исправить клиент учебного протокола: передать запрос, завершить направление отправки, прочитать ответ и освободить соединение. Не заменять завершение направления преждевременным закрытием общей обёртки. Сохранить установленную обработку неполного ответа и ошибки сервера.

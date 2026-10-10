@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-classloader-identity
 semester: 2
 ---
 
@@ -10,9 +11,7 @@ semester: 2
 
 ## Контроль освоения темы {#sec-essay-classloader-identity-control}
 
-Тема реферата: @sec-essay-classloader-identity.
-
-:::: {#exr-essay-classloader-identity-experiment target="prairielearn" project="/projects/essays/runtime-types/classloader-identity/experiment" course-role="control" difficulty="advanced" time="40" statement-visibility="restricted"}
+:::: {#exr-essay-classloader-identity-experiment project="/projects/essays/runtime-types/classloader-identity/experiment" difficulty="advanced" time="40"}
 ### Совпадение имени при различии типа
 
 Используя два предоставленных загрузчика, создать экземпляры одного указанного бинарного имени и представить результаты сравнения Class, определяющих загрузчиков и совместимости экземпляров. Стенд задаёт порядок делегирования и расположение class-файлов; собственный загрузчик с произвольными правилами не требуется.
@@ -27,7 +26,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-classloader-identity-test-design target="prairielearn" project="/projects/essays/runtime-types/classloader-identity/test-design" course-role="control" difficulty="advanced" time="60" statement-visibility="restricted"}
+:::: {#exr-essay-classloader-identity-test-design project="/projects/essays/runtime-types/classloader-identity/test-design" difficulty="advanced" time="60"}
 ### Проверка общего интерфейса компонентов
 
 Написать тест загрузки двух реализаций через предоставленный стенд. Проверить, что обе доступны через единый интерфейс, загруженный согласованным родителем, и сохраняют заданное поведение. Дефектный вариант повторно загружает интерфейс вместе с реализацией.
@@ -42,7 +41,7 @@ semester: 2
 :::
 ::::
 
-:::: {#exr-essay-classloader-identity-implementation target="prairielearn" project="/projects/essays/runtime-types/classloader-identity/implementation" course-role="control" difficulty="advanced" time="70" statement-visibility="restricted"}
+:::: {#exr-essay-classloader-identity-implementation project="/projects/essays/runtime-types/classloader-identity/implementation" difficulty="advanced" time="70"}
 ### Исправление границы загрузки API
 
 Изменить предоставленную схему размещения классов либо ограниченный метод делегирования так, чтобы интерфейс был общим для клиента и отдельно загруженной реализации. Сохранить изоляцию реализаций и их создание через подготовленный загрузочный механизм.

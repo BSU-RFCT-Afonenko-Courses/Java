@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-sealed-switch
 semester: 1
 ---
 
@@ -10,9 +11,7 @@ semester: 1
 
 ## Контроль освоения темы {#sec-essay-sealed-switch-control}
 
-Тема реферата: @sec-essay-sealed-switch.
-
-:::: {#exr-essay-sealed-switch-experiment target="prairielearn" project="/projects/essays/object-model/sealed-switch/experiment" course-role="control" difficulty="intermediate" time="30" statement-visibility="restricted"}
+:::: {#exr-essay-sealed-switch-experiment project="/projects/essays/object-model/sealed-switch/experiment" difficulty="intermediate" time="30"}
 ### Различение полноты типов и обработки null
 
 Для sealed Result с вариантами Success и Failure рассмотреть предоставленный исчерпывающий switch без case null. Зафиксировать исходы для каждого варианта и null; затем выбрать минимальное разрешённое изменение, при котором null получает отдельный результат.
@@ -27,7 +26,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-sealed-switch-test-design target="prairielearn" project="/projects/essays/object-model/sealed-switch/test-design" course-role="control" difficulty="intermediate" time="45" statement-visibility="restricted"}
+:::: {#exr-essay-sealed-switch-test-design project="/projects/essays/object-model/sealed-switch/test-design" difficulty="intermediate" time="45"}
 ### Проверка обработки закрытой модели результата
 
 Написать тесты для String render(Result r): Success(text) возвращает text, Failure(code) — "ERROR:" с десятичным code, null — "EMPTY". Выявить пропуск null и смешение ветвей двух вариантов.
@@ -42,7 +41,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-sealed-switch-implementation target="prairielearn" project="/projects/essays/object-model/sealed-switch/implementation" course-role="control" difficulty="intermediate" time="52" statement-visibility="restricted"}
+:::: {#exr-essay-sealed-switch-implementation project="/projects/essays/object-model/sealed-switch/implementation" difficulty="intermediate" time="52"}
 ### Реализация полного обработчика альтернатив
 
 Реализовать String render(Result r) для предоставленных sealed Result, Success(String text), Failure(int code). Вернуть text для успеха, "ERROR:" + code для ошибки и "EMPTY" для null, используя сопоставление с образцом в switch.

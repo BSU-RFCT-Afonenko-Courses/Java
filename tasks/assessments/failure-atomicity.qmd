@@ -3,6 +3,7 @@ number-sections: false
 assessment:
   kind: test
   prairielearn: {}
+  related-exercise: exr-essay-failure-atomicity
 semester: 1
 ---
 
@@ -10,9 +11,7 @@ semester: 1
 
 ## Контроль освоения темы {#sec-essay-failure-atomicity-control}
 
-Тема реферата: @sec-essay-failure-atomicity.
-
-:::: {#exr-essay-failure-atomicity-experiment target="prairielearn" project="/projects/essays/failures-boundaries/failure-atomicity/experiment" course-role="control" difficulty="advanced" time="40" statement-visibility="restricted"}
+:::: {#exr-essay-failure-atomicity-experiment project="/projects/essays/failures-boundaries/failure-atomicity/experiment" difficulty="advanced" time="40"}
 ### Обнаружение частично изменённого состояния
 
 Для дефектного transfer, сначала уменьшающего баланс источника, затем проверяющего ограничение получателя, выбрать состояние и сумму, вызывающие отказ второй проверки. Указать оба баланса до и после, нарушенный инвариант и независимый успешный контроль.
@@ -27,7 +26,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-failure-atomicity-test-design target="prairielearn" project="/projects/essays/failures-boundaries/failure-atomicity/test-design" course-role="control" difficulty="advanced" time="60" statement-visibility="restricted"}
+:::: {#exr-essay-failure-atomicity-test-design project="/projects/essays/failures-boundaries/failure-atomicity/test-design" difficulty="advanced" time="60"}
 ### Проверка сильной гарантии состояния
 
 Написать тесты для transfer(Account from, Account to, int amount): при успехе перенести сумму, при недостатке средств или превышении лимита получателя выбросить IllegalArgumentException без изменения обоих счетов. Выявить преждевременное списание и частичное зачисление.
@@ -42,7 +41,7 @@ semester: 1
 :::
 ::::
 
-:::: {#exr-essay-failure-atomicity-implementation target="prairielearn" project="/projects/essays/failures-boundaries/failure-atomicity/implementation" course-role="control" difficulty="advanced" time="70" statement-visibility="restricted"}
+:::: {#exr-essay-failure-atomicity-implementation project="/projects/essays/failures-boundaries/failure-atomicity/implementation" difficulty="advanced" time="70"}
 ### Реализация составного переноса без частичных изменений
 
 Реализовать transfer(Account from, Account to, int amount). До изменения проверить неотрицательность amount, достаточность from.balance и непревышение to.limit после зачисления; при нарушении выбросить IllegalArgumentException. При успехе изменить оба баланса согласованно.
