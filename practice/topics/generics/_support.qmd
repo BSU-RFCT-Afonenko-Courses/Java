@@ -1,0 +1,48 @@
+## Обобщённые контейнеры: короткий эксперимент {#sec-practice-s1-generics-experiment}
+
+### Правило для чтения кода {#sec-practice-s1-generics-rule}
+
+Тип-параметр связывает несколько типовых мест. `? extends Number` позволяет читать Number, но не обещает, что фактический список принимает любой Number.
+
+::: {.notes}
+Сценарий — правило → прогноз → причина → вариация → обобщение по принятому hybrid-образцу. Шилдт, русское 9-е изд., 2023, гл. 13, с. 499–502 (PDF 500–503). Авторское развитие wildcard-примера на минимальном List-протоколе; без raw types.
+Нормативный источник: [Java 25](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.5.1).
+:::
+
+### Прогноз до запуска {#sec-practice-s1-generics-prediction}
+
+```java
+java.util.List<Integer> integers =
+    new java.util.ArrayList<>(java.util.List.of(6, 9));
+java.util.List<? extends Number> numbers = integers;
+Number first = numbers.get(0);
+System.out.println(first);
+numbers.clear();
+System.out.println(integers.size());
+```
+
+Можно ли читать первый элемент? Изменит ли clear исходник? Где запрет на добавление 2.5?
+
+Полный файл разбора: [PracticeGenerics.java](../assets/semester-one/PracticeGenerics.java). Java 25 без preview.
+
+### Видимая причина результата {#sec-practice-s1-generics-cause}
+
+Вывод `6`, затем `0`. Неизвестный конкретный подтип безопасно читается как Number. Через wildcard нет права добавить Double в возможный List<Integer>, но clear не вставляет элемент и разрешён. Wildcard не означает immutable.
+
+### Справочная демонстрация {#sec-practice-s1-generics-demo}
+
+@handbook:sec-handbook-s1-generics-copy-api: выполните полный `GenericCopyDemo`. Collections.copy меняет существующие позиции; capacity без size недостаточно. Это проверка готового API-контракта, а не реализация контейнера лабораторной.
+
+Сначала прочитайте предусловие и назовите ожидаемый результат; затем выполните код справочника в своей обычной Java 25 программе.
+
+### Самостоятельная вариация {#sec-practice-s1-generics-variation}
+
+В отдельном файле попробуйте `numbers.add(2.5)` и прочитайте диагностику. В положительном варианте замените взгляд на `List<? super Integer>` и вставьте 5; каким типом теперь безопасно читать элемент?
+
+До запуска запишите прогноз и объясните его правилом. После запуска сравните состояния, а не только итоговую строку.
+
+### Обратная связь {#sec-practice-s1-generics-feedback}
+
+Вставка 2.5 через extends-взгляд не компилируется. Через super Integer вставка Integer разрешена, а чтение гарантирует только Object. Отрицательный пример держите отдельно от работающей программы; ошибка типов не является runtime-исключением.
+
+Самопроверка: могу ли я объяснить исходный и изменённый пример одним правилом? Если нет, вернитесь к отмеченному справочному контракту.

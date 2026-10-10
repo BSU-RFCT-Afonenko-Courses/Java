@@ -1,0 +1,53 @@
+## Классы и методы: короткий эксперимент {#sec-practice-s1-classes-methods-experiment}
+
+### Правило для чтения кода {#sec-practice-s1-classes-methods-rule}
+
+Инвариант должен сохраняться через весь публичный API. Защитная копия на входе и на выходе не даёт клиенту менять внутренний массив в обход методов объекта.
+
+::: {.notes}
+Сценарий — правило → прогноз → причина → вариация → обобщение по принятому hybrid-образцу. Блинов, Романчик, Java from EPAM, 2-е изд., 2021, гл. 3, с. 67–77 (PDF 69–79). Авторское развитие примеров доступа/методов: владение массивом вместо финансовой модели.
+Нормативный источник: [Java 25](https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html).
+:::
+
+### Прогноз до запуска {#sec-practice-s1-classes-methods-prediction}
+
+```java
+final class Readings {
+    private final int[] values;
+    Readings(int[] source) { values = source.clone(); }
+    int[] snapshot() { return values.clone(); }
+}
+int[] input = {12, 18};
+Readings readings = new Readings(input);
+input[0] = 90;
+int[] output = readings.snapshot();
+output[1] = 80;
+System.out.println(readings.snapshot()[0]);
+System.out.println(readings.snapshot()[1]);
+```
+
+Какой из двух внешних массивов способен изменить объект? Обозначьте места создания копии.
+
+Полный файл разбора: [PracticeClassesMethods.java](../assets/semester-one/PracticeClassesMethods.java). Java 25 без preview.
+
+### Видимая причина результата {#sec-practice-s1-classes-methods-cause}
+
+Вывод `12` и `18`. Конструктор копирует значения input в собственный массив, snapshot создаёт новую копию внутреннего массива. final запрещает заменить поле-ссылку, но именно копирование ограничивает внешнюю мутацию элементов.
+
+### Справочная демонстрация {#sec-practice-s1-classes-methods-demo}
+
+@handbook:sec-handbook-s1-classes-methods-api: рассмотрите защитную копию и Objects.requireNonNull. @handbook:sec-handbook-s1-classes-methods-constructors: выполните полный `ValidatedConstructor`, чтобы сопоставить проверку параметра и начало жизни объекта.
+
+Сначала прочитайте предусловие и назовите ожидаемый результат; затем выполните код справочника в своей обычной Java 25 программе.
+
+### Самостоятельная вариация {#sec-practice-s1-classes-methods-variation}
+
+По очереди уберите clone в конструкторе и в snapshot. Каждый запуск начинайте с нового объекта. Дополнительно решите, какой явный контракт нужен для null-входа.
+
+До запуска запишите прогноз и объясните его правилом. После запуска сравните состояния, а не только итоговую строку.
+
+### Обратная связь {#sec-practice-s1-classes-methods-feedback}
+
+Без входной копии внешнее `input[0] = 90` меняет внутреннее значение; без выходной копии `output[1] = 80` меняет его. null можно явно отвергнуть через requireNonNull; молчаливый выбор пустого массива означал бы иной предметный контракт.
+
+Самопроверка: могу ли я объяснить исходный и изменённый пример одним правилом? Если нет, вернитесь к отмеченному справочному контракту.

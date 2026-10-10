@@ -1,0 +1,45 @@
+## Функции и конвейеры: короткий эксперимент {#sec-practice-s1-functional-streams-experiment}
+
+### Правило для чтения кода {#sec-practice-s1-functional-streams-rule}
+
+Lambda получает тип из целевого функционального интерфейса. Stream описывает одноразовую обработку: промежуточные стадии выполняют нужную работу при терминальной операции.
+
+::: {.notes}
+Сценарий — правило → прогноз → причина → вариация → обобщение по принятому hybrid-образцу. Блинов, Романчик, Java from EPAM, 2-е изд., 2021, гл. 7, с. 201–218 (PDF 203–220), гл. 11, с. 331–339 (PDF 333–341). Авторская адаптация функционального преобразования к числовым измерениям.
+Нормативный источник: [Java 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/IntStream.html).
+:::
+
+### Прогноз до запуска {#sec-practice-s1-functional-streams-prediction}
+
+```java
+java.util.function.IntUnaryOperator shift = n -> n + 3;
+var pipeline = java.util.List.of(2, 5, 1).stream()
+    .mapToInt(n -> shift.applyAsInt(n));
+System.out.println(pipeline.sum());
+```
+
+Когда появится результат? Какой вход и выход у shift? Назовите промежуточную и терминальную стадии.
+
+Полный файл разбора: [PracticeFunctionalStreams.java](../assets/semester-one/PracticeFunctionalStreams.java). Java 25 без preview.
+
+### Видимая причина результата {#sec-practice-s1-functional-streams-cause}
+
+Вывод `17`: значения после преобразования `5, 8, 4`, сумма 17. IntUnaryOperator связывает int-вход и int-результат; mapToInt строит IntStream, sum потребляет его. Создание pipeline ещё не вычисляет сумму.
+
+### Справочная демонстрация {#sec-practice-s1-functional-streams-demo}
+
+@handbook:sec-handbook-s1-functional-streams-types: выберите IntUnaryOperator и его applyAsInt. @handbook:sec-handbook-s1-functional-streams-reduce: сопоставьте sum и reduce(0, Integer::sum); ноль должен быть нейтральным элементом сложения.
+
+Сначала прочитайте предусловие и назовите ожидаемый результат; затем выполните код справочника в своей обычной Java 25 программе.
+
+### Самостоятельная вариация {#sec-practice-s1-functional-streams-variation}
+
+Замените вход на пустой список. Затем в отдельном запуске выполните sum второй раз у того же pipeline. Для сравнения опишите такое же преобразование циклом без повторного обхода stream.
+
+До запуска запишите прогноз и объясните его правилом. После запуска сравните состояния, а не только итоговую строку.
+
+### Обратная связь {#sec-practice-s1-functional-streams-feedback}
+
+Пустой IntStream.sum даёт `0`. Повторное потребление того же pipeline вызывает IllegalStateException; для нового вычисления создают новый stream. Цикл и pipeline сравнивайте по значению и обработке пустоты, а не по наличию промежуточного вывода.
+
+Самопроверка: могу ли я объяснить исходный и изменённый пример одним правилом? Если нет, вернитесь к отмеченному справочному контракту.

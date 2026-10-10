@@ -1,0 +1,48 @@
+## Выбор коллекций: короткий эксперимент {#sec-practice-s1-collections-experiment}
+
+### Правило для чтения кода {#sec-practice-s1-collections-rule}
+
+Представление показывает изменения исходника; копия структуры имеет независимый состав. Запрет менять через ссылку не равен неизменяемости исходных данных.
+
+::: {.notes}
+Сценарий — правило → прогноз → причина → вариация → обобщение по принятому hybrid-образцу. Блинов, Романчик, Java from EPAM, 2-е изд., 2021, гл. 11, с. 323–328, 345–360 (PDF 325–330, 347–362). Авторская демонстрация view/snapshot по API Java 25.
+Нормативный источник: [Java 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html).
+:::
+
+### Прогноз до запуска {#sec-practice-s1-collections-prediction}
+
+```java
+var source = new java.util.ArrayList<>(
+    java.util.List.of("синий", "белый"));
+var view = java.util.Collections.unmodifiableList(source);
+var snapshot = java.util.List.copyOf(source);
+source.add("серый");
+System.out.println(view.size());
+System.out.println(snapshot.size());
+```
+
+У какого результата изменится размер? Можно ли вызвать view.add, чтобы изменить его?
+
+Полный файл разбора: [PracticeCollections.java](../assets/semester-one/PracticeCollections.java). Java 25 без preview.
+
+### Видимая причина результата {#sec-practice-s1-collections-cause}
+
+Вывод `3`, `2`. view делегирует чтение живому source; snapshot хранит состав на момент копирования. view.add бросит UnsupportedOperationException: запрет касается этого пути изменения, а source продолжает изменяться.
+
+### Справочная демонстрация {#sec-practice-s1-collections-demo}
+
+@handbook:sec-handbook-s1-collections-copy: сопоставьте три операции копирования. @handbook:sec-handbook-s1-collections-deque: создайте пустой ArrayDeque<String>, сравните pollFirst (null) и removeFirst (NoSuchElementException). Здесь выбирается политика пустоты, а не решается задача на стек.
+
+Сначала прочитайте предусловие и назовите ожидаемый результат; затем выполните код справочника в своей обычной Java 25 программе.
+
+### Самостоятельная вариация {#sec-practice-s1-collections-variation}
+
+Замените String-элемент на StringBuilder и вызовите append у первого элемента source. Затем отдельно смените копию на new ArrayList<>(source) и добавьте элемент в неё.
+
+До запуска запишите прогноз и объясните его правилом. После запуска сравните состояния, а не только итоговую строку.
+
+### Обратная связь {#sec-practice-s1-collections-feedback}
+
+Мутация общего StringBuilder видна в поверхностной копии и снимке: скопированы ссылки. Добавление в независимый ArrayList меняет только его состав. Для глубокой копии сначала нужен контракт копирования элементов.
+
+Самопроверка: могу ли я объяснить исходный и изменённый пример одним правилом? Если нет, вернитесь к отмеченному справочному контракту.
