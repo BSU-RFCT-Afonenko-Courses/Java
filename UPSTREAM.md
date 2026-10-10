@@ -1,32 +1,43 @@
 # Источники установленных расширений
 
-Рекомендации сверены с документацией [template e36fd64](https://github.com/Afonenko-Course-Tools/quarto-template-course/tree/e36fd64cdc9fb8fb56238883248206c8856104f5). Template теперь является руководством и каталогом примеров; его учебные исходники не копируются в курс. Код, контракт и документация каждого установленного пакета берутся из одного закреплённого immutable commit. Для PL редактора временно используется проверяемый кандидат отдельного выпуска.
+Пакеты устанавливаются целиком штатным `quarto add`; `providers.json` закрепляет
+immutable source commits и scopes, а `installed-packages.json` — полный состав,
+SHA256, размеры и Git modes. Реализация vendored `_extensions` вручную не меняется.
 
-| Пакеты | Выпуск владельца | Закреплённый коммит |
-|---|---|---|
-| Core, Presentation, Navigation | [quarto-course v4.0.1](https://github.com/Afonenko-Course-Tools/quarto-course/tree/v4.0.1) | `a9a439bd6e6498806d4d4943efd71232e70170be` |
-| Course Site | [Publisher v5.0.0](https://github.com/Afonenko-Course-Tools/quarto-project-publish/tree/v5.0.0) | `215309b5c41669e56a857a1bc3e4f7f2ce782c5f` |
-| Reference Catalog | [QRC v3.0.0](https://github.com/Afonenko-Course-Tools/quarto-reference-catalog/tree/v3.0.0) | `559583805a514ae8a244b6ea4cb5124867064024` |
-| Project Download | [Download v2.0.0](https://github.com/Afonenko-Course-Tools/quarto-project-download/tree/v2.0.0) | `ee5ae76255d265ad7c7f43a765bc061ffc8eec75` |
-| Course PrairieLearn | [кандидат 3.1.0 — native editor](https://github.com/Afonenko-Course-Tools/quarto-course-prairielearn/tree/11a6c73ee306c51b25f0714869af69def0234667) | `11a6c73ee306c51b25f0714869af69def0234667` |
+| Пакеты | Фактический опубликованный выпуск | Exact source commit |
+| --- | --- | --- |
+| Core / Presentation / Navigation | Core v5.0.1 | d9c764823beee6ea45af1d7093933382aafce663 |
+| Download | v3.0.0 | 6fb3945020cd74fda40cc4d333389864e06609b5 |
+| PrairieLearn exporter | v5.0.0 | 4a83958ed6ad3902dc23cfd6be01944ff2f61b65 |
+| Course Site | v5.0.0 | 215309b5c41669e56a857a1bc3e4f7f2ce782c5f |
+| Reference Catalog | v3.0.0 | 559583805a514ae8a244b6ea4cb5124867064024 |
 
-Patch доставки корневого `student/.gitignore` выпущен как v3.0.1 после [PR #10](https://github.com/Afonenko-Course-Tools/quarto-course-prairielearn/pull/10). Полный payload установлен через manifest и штатный installation interface; vendored implementation вручную не меняется.
-
-`providers.json` задаёт репозитории, коммиты и места установки. `installed-packages.json` содержит полный состав файлов, SHA256, размеры и режимы каждого установленного пакета. Манифесты нужны для воспроизводимого обновления; сборка работает непосредственно с установленными расширениями.
-
-Для обновления целых пакетов из локальных репозиториев поставщиков:
+Core, Presentation и QRC установлены в корне и пяти учебных частях. Course Site
+находится в корне; Download и exporter — в tasks; Navigation — в lectures,
+practice и tasks для native index. Whole packages обновляются существующим
+provider interface:
 
 ```sh
-python3 tools/sync-providers.py --providers-root /путь/к/репозиториям
+python3 tools/sync-providers.py --providers-root /absolute/provider/repositories
 ```
 
-Скрипт взят целиком из закреплённого шаблона. Он устанавливает архивы закреплённых коммитов штатным `quarto add`, сравнивает состав и содержимое с исходниками и обновляет манифест. Реализация расширений в учебном курсе не редактируется.
+Java использует release25, официальный JUnit console1.14.1/Jupiter5.14.1, общий
+Platform runner и versioned java25-junit-v1/java25-mutation-v1 registry. Check
+schemas имеют version1; compiler/student failures и infrastructure outcomes
+разделены. Host diagnostic, container authoritative. Runtime/source/version
+pins должны подтверждаться owner receipt и actual registry digest.
 
-Корень содержит Core, Presentation, Reference Catalog и Course Site. Все пять учебных частей имеют собственные полные копии Core, Presentation и Reference Catalog; `tasks` дополнительно содержит Download и PrairieLearn, `lectures` и `practice` — Navigation. Порядок обработчиков: Core → Download, если подключён → QRC → сбор текущего результата для Course Site. Прежний Publisher и его сервер предпросмотра заменены штатной сборкой и предпросмотром Quarto.
+Platform v1.0.0 опубликован из source commit
+`d85e16ef11ff2cc22b9bc1afdfbc76e5cda609be`. Runtime profiles закрепляют
+`ghcr.io/afonenko-course-tools/java25-grader@sha256:c464389a45e5e073b3d11844e23a5c295b4c1c345ca7bc9937618d9abde36bf3`.
+Community runtime опубликован как
+`ghcr.io/afonenko-course-tools/prairielearn-community-gateway@sha256:124e1e90f755184f868ed45bfa0d2c48552f154e33cdae8bc757df48abcd92a7`.
+Publication run 38057307347 собирал image source fc5a4d4e9d0795940b8cdf68e30e753ebfd27cec,
+runner source hash d0c94460f1bd23200cf05aa93bc9c9090126fe624ec38e000be8da96e02d6ce1.
+Tag и все Java profile digests независимо проверены по опубликованному Git source.
+Анонимный pull GHCR ещё ожидает изменения видимости пакетов владельцем; publication
+receipt сам по себе не подтверждает публичную переносимость.
 
-Таблица плана курса использует обычную Markdown-таблицу и стандартный контейнер Bootstrap `.table-responsive`. Лекции и практика используют штатные презентации Reveal.js. Подробности адаптации авторского формата описаны в [карте переноса](docs/original-author-migration.md).
-
-Пилот Java теперь использует стандартный `pl-file-editor` с одной заготовкой класса.
-PL provider установлен целым пакетом по commit `11a6c73ee306c51b25f0714869af69def0234667`
-(кандидат 3.1.0, отдельный выпуск ещё не опубликован). Остальные pins сохранены.
-Полный student проект предназначен для локальной работы; в editor delivery он не копируется.
+CI закрепляет Quarto 1.11.5, CUE 0.17.1 и Java 25 в CI/toolchain.json и workflow.
+Source/OCI pins разделены: source release содержит окончательные published digests,
+а image provenance сохраняет фактический исходный commit сборки образа.

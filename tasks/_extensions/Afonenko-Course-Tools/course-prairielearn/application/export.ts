@@ -71,7 +71,7 @@ async function command(
   if (writingFailure) throw external(writingFailure, result);
   return new TextDecoder().decode(result.stdout);
 }
-async function uuid(key: string): Promise<string> {
+export async function uuid(key: string): Promise<string> {
   // UUIDv5 DNS namespace; identity is course/exercise, never a source path.
   const ns = new Uint8Array([
     0x6b,
@@ -220,7 +220,7 @@ export async function exportPrairieLearn(
       "title",
       "items",
       "assignments",
-    ], ["theoryTime"]) ||
+    ], ["theoryTime", "relatedExercise"]) ||
     work.owner !== p.owner || typeof work.id !== "string" ||
     !/^[a-z][a-z0-9-]*$/.test(work.id) ||
     work.key !== p.owner + "/" + work.id || typeof work.source !== "string" ||
@@ -234,6 +234,9 @@ export async function exportPrairieLearn(
       !Object.hasOwn(work.assignments, key)
     ) ||
     Object.keys(work.assignments).some((key) => !work.items.includes(key)) ||
+    work.relatedExercise !== undefined &&
+      (typeof work.relatedExercise !== "string" ||
+        !/^exr-[a-z0-9][a-z0-9-]*$/.test(work.relatedExercise)) ||
     work.theoryTime !== undefined &&
       (typeof work.theoryTime !== "number" ||
         !Number.isFinite(work.theoryTime) || work.theoryTime <= 0)
@@ -326,7 +329,9 @@ export async function exportPrairieLearn(
     if (
       !fields(b, ["topic", "files", "externalGradingOptions"], [
         "submission",
+        "singleVariant",
       ]) ||
+      b.singleVariant !== undefined && typeof b.singleVariant !== "boolean" ||
       typeof b.topic !== "string" || !b.topic.trim() ||
       !Array.isArray(b.files) || !b.files.length ||
       new Set(b.files).size !== b.files.length || b.files.some((f: unknown) =>
@@ -574,7 +579,9 @@ export async function exportPrairieLearn(
           title: q.id,
           topic: b.topic,
           gradingMethod: "External",
-          singleVariant: true,
+          ...(b.singleVariant !== undefined
+            ? { singleVariant: b.singleVariant }
+            : {}),
           showCorrectAnswer: false,
           partialCredit: false,
           externalGradingOptions: grading,
