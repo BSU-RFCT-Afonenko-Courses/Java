@@ -1,0 +1,137 @@
+## Отказ и распространение {#sec-lectures-s1-exceptions-propagation}
+
+throw прерывает обычный путь вычисления с объектом исключения. Пока подходящий catch не найден, управление возвращается по цепочке вызовов.
+
+Исключение сообщает отказ; сохранность состояния и границу обработки должен определить контракт программы.
+
+::: {.notes}
+Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл.9, с.264–281 (PDF266–283); [JLS25 §11](https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html).
+:::
+
+### throw, throws и checked {#sec-lectures-s1-exceptions-declaration}
+
+```java
+static class Denied extends Exception {
+    Denied(String message) { super(message); }
+}
+static String enter(boolean allowed) throws Denied {
+    if (!allowed) throw new Denied("вход закрыт");
+    return "вход разрешён";
+}
+```
+throw выполняет отказ; throws объявляет возможность. Checked-исключение нужно обработать или объявить вызывающему.
+
+::: {.notes}
+Адаптировано по Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл.9, собственные исключения, с.272–276 (PDF274–278). Домен доступа авторский; выбран вместо готового решения лабораторного контейнера.
+:::
+
+### Прогноз перехвата {#sec-lectures-s1-exceptions-catch-predict}
+
+```java
+try {
+    System.out.println(enter(true));
+    System.out.println(enter(false));
+    System.out.println("после вызовов");
+} catch (Denied exception) {
+    System.out.println(exception.getMessage());
+}
+System.out.println("после обработки");
+```
+Какая из строк после вызова будет выполнена?
+
+### Причина перехода {#sec-lectures-s1-exceptions-catch-cause}
+
+```text
+вход разрешён
+вход закрыт
+после обработки
+```
+Второй вызов отказал; остаток try пропущен. Catch обработал исключение, затем выполнение продолжилось после конструкции.
+
+Вариация: enter(true) оба раза — catch не выполнится, строка после вызовов появится.
+
+### Checked и unchecked {#sec-lectures-s1-exceptions-hierarchy}
+
+Подтипы RuntimeException и Error — unchecked; остальные рассматриваемые Exception требуют catch/throws. Unchecked не означает «можно всегда игнорировать».
+
+Общий catch ставится после более конкретного, иначе частный обработчик недостижим. Перехватывайте там, где можно восстановиться или сообщить отказ осмысленно.
+
+### Причина и граница сообщения {#sec-lectures-s1-exceptions-cause}
+
+Когда операция преобразует низкоуровневый отказ в предметный, сохраняйте cause: новый уровень сообщает контекст, цепочка сохраняет исходную причину.
+
+Не заменяйте любой отказ пустым catch или безусловным успешным результатом. Текст stack trace помогает найти цепочку вызовов; его первая строка не всегда единственная причина.
+
+## Состояние после отказа {#sec-lectures-s1-exceptions-state}
+
+Проверка до мутации позволяет обещать: при недопустимом входе объект не изменён. Если работа изменяет несколько частей состояния, одной проверки может быть мало.
+
+Сначала вычислите и проверьте новый результат, затем установите его одним согласованным переходом.
+
+::: {.notes}
+[JLS25 §11.3](https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html#jls-11.3). Авторский предметный контракт; спецификация исключения сама не откатывает изменения.
+:::
+
+### Инвариант при отказе {#sec-lectures-s1-exceptions-state-example}
+
+```java
+void reserve(int amount) {
+    if (amount < 0 || amount > available)
+        throw new IllegalArgumentException("amount");
+    available -= amount;
+}
+```
+Если amount слишком велик, available сохранится. Вариация: сначала вычесть, потом проверить — ошибка оставит испорченное состояние. Исключение не выполняет автоматический rollback.
+
+### finally и выход {#sec-lectures-s1-exceptions-finally}
+
+finally выполняется при выходе из try в обычных условиях завершения. Его собственный return/throw может вытеснить прежний результат или исключение.
+
+Не используйте return из finally для обычной обработки. Для ресурсов предпочитайте try-with-resources, где правила закрытия и suppressed заданы отдельно.
+
+::: {.notes}
+[JLS25 §14.20](https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20).
+:::
+
+### Прогноз finally {#sec-lectures-s1-exceptions-finally-predict}
+
+```java
+static int value() {
+    try { return 1; }
+    finally { return 2; }
+}
+```
+Результат 2: выход из finally замещает выход из try. Это намеренная демонстрация причины, а не рекомендуемый стиль. Похожим способом throw из finally может скрыть первоначальный отказ.
+
+## Ресурс и try-with-resources {#sec-lectures-s1-exceptions-resource}
+
+AutoCloseable задаёт close(). Try-with-resources закрывает успешно открытые ресурсы при выходе, в обратном порядке объявления.
+
+Если тело и close отказали, основной отказ тела сохраняется, а отказ закрытия попадает в suppressed.
+
+::: {.notes}
+Шилдт, *Java: руководство для начинающих*, русское 9-е изд., 2023 (основа JDK 17), гл.10, с.380–384 (PDF381–385); [JLS25 §14.20.3](https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3).
+:::
+
+### Демонстрационный ресурс {#sec-lectures-s1-exceptions-resource-type}
+
+```java
+static class Resource implements AutoCloseable {
+    public void close() {
+        throw new IllegalStateException("close");
+    }
+}
+```
+Ресурс намеренно отказывает при закрытии, чтобы наблюдать правило выбора основного исключения.
+
+### Прогноз suppressed {#sec-lectures-s1-exceptions-suppressed}
+
+```java
+try (Resource resource = new Resource()) {
+    throw new IllegalArgumentException("body");
+} catch (Exception exception) {
+    System.out.println(exception.getMessage());
+    System.out.println(exception.getSuppressed()[0].getMessage());
+}
+```
+Вывод body, close. Если тело завершится успешно, отказ close станет основным. Если ресурс не открылся, его закрытие не выполняется.

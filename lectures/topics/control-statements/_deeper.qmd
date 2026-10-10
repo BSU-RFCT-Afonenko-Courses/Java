@@ -1,0 +1,16 @@
+## Дополнительно: значение из блока switch {#sec-lectures-s1-control-statements-yield}
+
+```java
+int length = switch ("Java") {
+    case "Java" -> {
+        int result = 4;
+        yield result;
+    }
+    default -> 0;
+};
+```
+`yield` отдаёт результат switch-выражению; `return` завершил бы содержащий метод. Локальный `result` вне блока недоступен.
+
+::: {.notes}
+[JLS25 §14.21](https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.21).
+:::

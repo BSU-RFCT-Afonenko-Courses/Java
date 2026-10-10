@@ -1,0 +1,56 @@
+## Язык и платформа {#sec-lectures-s1-introduction-platform}
+
+Java задаёт типы и смысл вычислений. JVM выполняет байткод, стандартная библиотека даёт строки, коллекции и файлы.
+
+JDK содержит средства разработки и выполнения. В курсе используется **JDK 25 без preview**; IDE должна запускать этот же JDK.
+
+::: {.notes}
+Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл. 1, с. 14–17 (PDF 16–19). [JDK 25 tools](https://docs.oracle.com/en/java/javase/25/docs/specs/man/index.html).
+:::
+
+### Исходник и выполнение {#sec-lectures-s1-introduction-execution}
+
+`.java` → проверка `javac` → `.class` → загрузка JVM → выполнение.
+
+Компиляция проверяет допустимость операций. Успешная компиляция не доказывает правильность алгоритма. JIT может переводить исполняемые участки в машинный код.
+
+### Первая программа {#sec-lectures-s1-introduction-hello}
+
+```java
+public class HelloCourse {
+    public static void main(String[] args) {
+        System.out.println("Java 25");
+    }
+}
+```
+Сохраните UTF-8 файл `HelloCourse.java`. Здесь `main` — точка входа, `println` печатает строку.
+
+::: {.notes}
+Адаптировано по Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл. 1, с.14 (PDF16), HelloTutorial. Переименованы класс и сообщение, сохранена классическая оболочка main.
+:::
+
+### Компиляция и запуск {#sec-lectures-s1-introduction-launch}
+
+```bash
+javac --release 25 -encoding UTF-8 -d out HelloCourse.java
+java -cp out HelloCourse
+```
+Какой файл читает первая команда? Какой класс выбирает вторая?
+
+Ожидаемый вывод: `Java 25`. В `out` появляется файл `HelloCourse.class`; расширение `.class` в команде запуска не пишется.
+
+### Диагностика {#sec-lectures-s1-introduction-diagnostics}
+
+Ошибка синтаксиса или типа обнаруживается при компиляции; неверное имя начального класса — при запуске. Деление целого числа на ноль может отказать при выполнении.
+
+Прочитайте первую содержательную строку диагностики, найдите указанный файл и строку, исправьте причину и повторите запуск.
+
+### Аргументы запуска {#sec-lectures-s1-introduction-arguments}
+
+```java
+System.out.println(args.length);
+if (args.length > 0) {
+    System.out.println(args[0]);
+}
+```
+Для `java -cp out HelloCourse привет` вывод этого тела — `1` и `привет`. Для запуска без аргументов — только `0`: условие защищает доступ к первому элементу.

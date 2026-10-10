@@ -1,0 +1,14 @@
+## Дополнительно: merge и живые представления {#sec-lectures-s1-collections-merge}
+
+```java
+counts.merge("A", 1, Integer::sum);
+Set<String> keys = counts.keySet();
+keys.remove("B");
+```
+Integer::sum задаёт сложение двух счётчиков. Для отсутствующего/null-значения merge начинает с 1. keySet — живое представление: удаление ключа удаляет запись карты.
+
+Возврат null из функции merge означает удаление записи: это нужно учитывать при другом агрегате.
+
+::: {.notes}
+[Map25 merge](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html#merge(K,V,java.util.function.BiFunction)).
+:::

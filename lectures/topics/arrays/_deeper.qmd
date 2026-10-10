@@ -1,0 +1,13 @@
+## Дополнительно: ковариантность {#sec-lectures-s1-arrays-covariance}
+
+```java
+Object[] values = new String[1];
+values[0] = 7; // ArrayStoreException
+```
+Статический тип допускает запись Object. Фактический компонент массива — String, и runtime отвергает число.
+
+Это отличается от инвариантного `List<T>`, где аналогичную небезопасную подстановку остановит компилятор.
+
+::: {.notes}
+[JLS25 §10.5](https://docs.oracle.com/javase/specs/jls/se25/html/jls-10.html#jls-10.5). Намеренный runtime-отказ.
+:::

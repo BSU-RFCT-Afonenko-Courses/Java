@@ -1,0 +1,93 @@
+## Строковое значение {#sec-lectures-s1-strings-value}
+
+String неизменяем: его текст нельзя переписать через API. Переменную со ссылкой на String можно переприсвоить.
+
+Метод преобразования возвращает результат; вызов без использования результата не обязан изменить что-либо у клиента.
+
+::: {.notes}
+Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл.8, с.225–231 (PDF227–233); [String API 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html).
+:::
+
+### Параметр String {#sec-lectures-s1-strings-parameter}
+
+```java
+static String change(String text) {
+    text = text + "!";
+    return text;
+}
+String original = "Java";
+String result = change(original);
+```
+Что содержат `original` и `result`?
+
+::: {.notes}
+Адаптировано по RefString, Блинов, Романчик, *Java from EPAM*, 2-е изд., 2021, гл.8, с.229 (PDF231). Упрощены имена/вывод, результат возвращается явно. Исправлено объяснение: копируется значение ссылки, не ссылка передаётся по reference-параметру.
+:::
+
+### Причина результата {#sec-lectures-s1-strings-parameter-cause}
+
+`original` содержит `Java`, `result` — `Java!`. Конкатенация вычисляет новое строковое значение; параметр получает другую ссылку.
+
+Вариация: `original = change(original)`. Теперь новое значение окажется у клиента вследствие его собственного присваивания.
+
+### Идентичность и равенство {#sec-lectures-s1-strings-equality}
+
+```java
+String first = new String("Java");
+String second = new String("Java");
+System.out.println(first == second);
+System.out.println(first.equals(second));
+```
+Вывод `false`, `true`. `==` проверяет один ли объект; `equals` сравнивает текст. Интернирование литералов не делает `==` универсальным сравнением текста.
+
+### Поиск и фрагмент {#sec-lectures-s1-strings-slice}
+
+```java
+String text = "Java course";
+int position = text.indexOf("course");
+String part = text.substring(position, position + 6);
+System.out.println(part);
+```
+Вывод `course`. Правая граница substring исключена. Если indexOf вернул `-1`, такой фрагмент строить нельзя: сначала обработайте отсутствие.
+
+## UTF-16 и кодовая точка {#sec-lectures-s1-strings-unicode}
+
+`length()` и индексы String считают единицы UTF-16. Одна кодовая точка вне BMP занимает две единицы.
+
+Кодовая точка ещё не обязательно целый видимый знак: пользовательский символ может включать несколько кодовых точек.
+
+::: {.notes}
+[String25: Unicode](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html), [Character25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Character.html).
+:::
+
+### Кодовая точка вне BMP {#sec-lectures-s1-strings-unicode-predict}
+
+```java
+String text = "A😀Б";
+System.out.println(text.length());
+System.out.println(text.codePointCount(0, text.length()));
+System.out.println(text.codePointAt(1));
+```
+Предскажите первые два числа. Значок 😀 расположен между A и Б.
+
+### Разбор длины {#sec-lectures-s1-strings-unicode-cause}
+
+```text
+4
+3
+128512
+```
+A и Б занимают по одной единице UTF-16; 😀 — суррогатную пару. `codePointAt(1)` соединяет пару в U+1F600.
+
+Вариация: `"e\u0301"` имеет две кодовые точки, но обычно отображается как один знак. Нельзя подменять grapheme числом code points.
+
+### Строитель результата {#sec-lectures-s1-strings-builder}
+
+```java
+StringBuilder result = new StringBuilder();
+for (int point : "A😀Б".codePoints().toArray()) {
+    result.appendCodePoint(point);
+}
+System.out.println(result.toString());
+```
+Вывод `A😀Б`. appendCodePoint сохраняет supplementary symbol; приведение `(char)point` его потеряло бы. Строитель изменяем, итоговый String — нет.
