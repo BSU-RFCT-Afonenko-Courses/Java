@@ -3,36 +3,36 @@ page-layout: full
 toc: false
 ---
 
-# Программирование на Java {#sec-portal}
+# Программирование на Java {#sec-portal-s1}
 
-Язык, модели выполнения и разработка приложений. План курса связывает
-пять видов материалов: лекции, практику, теорию, исследования и справочник.
+Первый семестр: язык Java и последовательная обработка данных.
+Версия курса — **Java 25 без preview**.
 
-## План курса {#sec-course-plan}
+Начните с {{< xref theory sec-theory-s1-map "предметной карты первого семестра" >}}:
+она определяет темы, необходимые знания и ожидаемые навыки.
+Для общей подготовки откройте
+{{< xref theory sec-theory-sp "System Practice" >}}.
 
-Каждая лекция и каждый практикум открываются как отдельная презентация.
-Один практикум может относиться к нескольким темам.
+## Материалы первого семестра {#sec-portal-s1-plan}
 
-| Тема | Лекция | Практика | Теория | Исследования | Справочник |
-|:-----|:-------|:---------|:-------|:-------------|:-----------|
-| Введение в курс | {{< xref lectures sec-lectures "01. Введение" >}} | {{< xref practice sec-practice "01. Исследование" >}} | {{< xref theory sec-index "О курсе" >}}<br>{{< xref theory sec-java-platform "Платформа Java" >}}<br>{{< xref theory sec-java-basics "Основы языка" >}} | {{< xref tasks sec-essays "Требования и защита" >}}<br>{{< xref tasks sec-essay-unicode-demonstration "Открытый образец" >}} | {{< xref handbook sec-handbook "Справочник" >}}<br>{{< xref handbook sec-appendices-tools-jdk "Инструменты JDK" >}} |
-| Основы языка и платформы | {{< xref lectures sec-lectures-language "02. Язык и платформа" >}} | {{< xref practice sec-practice-data "02. Границы данных" >}}<br>{{< xref practice sec-practice-contracts "03. Контракты" >}}<br>{{< xref tasks sec-lab-numbers "Лабораторная: числа" >}} | {{< xref theory sec-java-types-numbers "Числовые типы" >}}<br>{{< xref theory sec-java-types-text "Текст" >}}<br>{{< xref theory sec-java-types-contracts "Контракты типов" >}} | {{< xref tasks sec-tasks-numbers "Числа" >}}<br>{{< xref tasks sec-tasks-text-arrays "Текст и массивы" >}}<br>{{< xref tasks sec-tasks-object-model "Объектная модель" >}} | {{< xref handbook sec-appendices-standard-library-numbers "Числа" >}}<br>{{< xref handbook sec-appendices-standard-library-text "Текст" >}} |
-| Коллекции, ввод-вывод и данные | {{< xref lectures sec-lectures-data "03. Данные" >}} | {{< xref practice sec-practice-contracts "03. Контракты" >}} | {{< xref theory sec-data-collections "Коллекции" >}}<br>{{< xref theory sec-data-io "Ввод-вывод" >}}<br>{{< xref theory sec-data-formats "Форматы данных" >}} | {{< xref tasks sec-tasks-generics-collections "Обобщения и коллекции" >}}<br>{{< xref tasks sec-tasks-functional-processing "Потоковая обработка" >}} | {{< xref handbook sec-appendices-standard-library-collections "Коллекции" >}}<br>{{< xref handbook sec-appendices-standard-library-streams "Stream API" >}}<br>{{< xref handbook sec-appendices-standard-library-io "Ввод-вывод" >}} |
-| Инструменты и процесс разработки | {{< xref lectures sec-lectures-development "04. Разработка" >}} | {{< xref practice sec-practice-review "06. Самопроверка" >}} | {{< xref theory sec-development-git-basics "Git" >}}<br>{{< xref theory sec-development-build "Сборка" >}}<br>{{< xref theory sec-development-testing "Тестирование" >}} | {{< xref tasks sec-essays "Подготовка исследования" >}}<br>{{< xref tasks sec-essay-unicode-demonstration "Работающий пример" >}} | {{< xref handbook sec-appendices-tools-jdk "Инструменты JDK" >}}<br>{{< xref handbook sec-appendices-tools-alternatives "Выбор инструментов" >}}<br>{{< xref handbook sec-appendices-tools-verification "Проверка" >}} |
-| Объектное проектирование | {{< xref lectures sec-lectures-design "05. Проектирование" >}} | {{< xref practice sec-practice-contracts "03. Контракты" >}}<br>{{< xref practice sec-practice-boundaries "04. Границы компонентов" >}} | {{< xref theory sec-design-principles "Принципы" >}}<br>{{< xref theory sec-design-patterns-creation "Паттерны" >}}<br>{{< xref theory sec-design-events "События" >}} | {{< xref tasks sec-tasks-object-model "Объектная модель" >}}<br>{{< xref tasks sec-tasks-failures-boundaries "Исключения и ресурсы" >}} | {{< xref handbook sec-appendices-gui-javafx "JavaFX и события" >}}<br>{{< xref handbook sec-appendices-tools-verification "Проверка контрактов" >}} |
-| Многопоточность и асинхронность | {{< xref lectures sec-lectures-concurrency "06. Многопоточность" >}} | {{< xref practice sec-practice-boundaries "04. Границы компонентов" >}} | {{< xref theory sec-concurrency-threads "Потоки" >}}<br>{{< xref theory sec-concurrency-synchronization "Синхронизация" >}}<br>{{< xref theory sec-concurrency-tasks "Задачи" >}} | {{< xref tasks sec-tasks-shared-state "Разделяемое состояние" >}}<br>{{< xref tasks sec-tasks-task-lifecycle "Жизненный цикл задач" >}}<br>{{< xref tasks sec-tasks-collection-contracts "Конкурентные коллекции" >}} | {{< xref handbook sec-appendices-standard-library-concurrency-synchronization "Синхронизация" >}}<br>{{< xref handbook sec-appendices-standard-library-concurrency-tasks "Задачи и исполнители" >}} |
-| Сеть, веб и базы данных | {{< xref lectures sec-lectures-applications "07. Взаимодействие" >}} | {{< xref practice sec-practice-runtime "05. Поведение среды" >}} | {{< xref theory sec-web-http "HTTP" >}}<br>{{< xref theory sec-web-servlets "Сервлеты" >}}<br>{{< xref theory sec-persistence-database "Базы данных" >}} | {{< xref tasks sec-tasks-io-networking "Обмен данными и протоколы" >}} | {{< xref handbook sec-appendices-standard-library-net-http-client "HTTP-клиент" >}}<br>{{< xref handbook sec-appendices-standard-library-sql-jdbc "JDBC" >}}<br>{{< xref handbook sec-appendices-tools-tomcat "Tomcat" >}}<br>{{< xref handbook sec-appendices-tools-h2 "H2" >}} |
-| Архитектура приложений | {{< xref lectures sec-lectures-applications "07. Взаимодействие" >}} | {{< xref practice sec-practice-runtime "05. Поведение среды" >}} | {{< xref theory sec-architecture-modules "Модули" >}}<br>{{< xref theory sec-architecture-dependencies "Зависимости" >}}<br>{{< xref theory sec-architecture-frameworks "Фреймворки" >}} | {{< xref tasks sec-tasks-runtime-types "Типы времени выполнения" >}} | {{< xref handbook sec-appendices-frameworks-spring "Spring" >}}<br>{{< xref handbook sec-appendices-external-libraries-jackson "Jackson" >}} |
-| Качество и разработка приложения | {{< xref lectures sec-lectures-quality "08. Качество" >}} | {{< xref practice sec-practice-review "06. Самопроверка" >}}<br>{{< xref practice sec-practice-runtime "05. Поведение среды" >}} | {{< xref theory sec-quality-diagnostics "Диагностика" >}}<br>{{< xref theory sec-quality-security "Безопасность" >}}<br>{{< xref theory sec-quality-reliability "Надёжность" >}}<br>{{< xref theory sec-integration-application "Разработка приложения" >}} | {{< xref tasks sec-tasks-lifecycle-measurement "Воспроизводимость и измерения" >}} | {{< xref handbook sec-appendices-tools-diagnostics "Диагностика" >}}<br>{{< xref handbook sec-appendices-tools-verification "Проверка" >}}<br>{{< xref handbook sec-appendices-standard-library-time "Дата и время" >}} |
+Теория задаёт предметную структуру. Лекция может объединять несколько тем,
+а лабораторная — использовать знания из разных разделов. Номера лекций,
+практикумов и работ не определяют соответствие материалов.
 
-: Материалы курса {#tbl-course-plan .course-plan .striped .hover .responsive}
+| Проект | Что здесь будет | Доступность |
+|:---|:---|:---|
+| Теория | Понятия, предварительные знания, разобранные примеры и сравнения | {{< xref theory sec-theory-s1-map "Карта семестра" >}}; {{< xref theory sec-theory-sp "Подготовка System Practice" >}}. Предметное изложение готовится |
+| Лекции | Объяснение и обсуждение тем теории | Тематические презентации готовятся |
+| Практика | Вводный разбор, демонстрации из справочника и опоры для лабораторной | Презентации готовятся |
+| Задания | 127 задач, 10 основных и 3 резервные лабораторные, 30 тем рефератов | Канонический банк и работы готовятся |
+| Справочник | Конкретные средства и поведение Java 25/API/JDK | Адресные статьи готовятся |
 
-## Работа с материалами
+: Новый маршрут материалов {#tbl-portal-s1-projects .course-plan .striped .hover .responsive}
 
-Начните с введения и знакомства с инструментами JDK. Затем выберите тему в плане курса:
-лекция задаёт маршрут обсуждения, практика помогает проверить понимание,
-теория объясняет понятия, а справочник уточняет API и инструменты.
+Готовые тематические страницы будут связаны здесь и в карте семестра
+адресными переходами. Пока доступны карта и внутренние страницы подготовки;
+материалы прежней структуры используются при редакции содержания.
 
-Для самостоятельной работы изучите требования и открытый образец исследования.
-Подготовьте воспроизводимые примеры и объяснение результата; перед защитой
-пройдите практикум по самопроверке.
+Резервные лабораторные добровольны. Подготовка 30 тем рефератов не означает
+30 работ на студента: индивидуальная нагрузка и бюджет защиты ещё не установлены.
+Сети, многопоточность, JDBC и XML относятся к последующему обучению.
