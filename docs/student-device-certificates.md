@@ -53,18 +53,20 @@ openssl x509 -inform DER -in "$HOME/Downloads/ca.cer" -out "$HOME/Downloads/ca.p
 Если нужен доступ из разных приложений, после проверки CA администратор добавляет его в систему. Для **CachyOS/Arch** (публичный PEM или DER):
 
 ```sh
-sudo install -m 644 "$HOME/Downloads/ca.crt" /etc/ca-certificates/trust-source/anchors/course-device-ca.crt
-sudo update-ca-trust extract
+sudo test ! -e /etc/ca-certificates/trust-source/anchors/course-device-ca.crt && \
+  sudo install -m 644 "$HOME/Downloads/ca.crt" /etc/ca-certificates/trust-source/anchors/course-device-ca.crt && \
+  sudo update-ca-trust extract
 ```
 
 Для **Debian/Ubuntu** нужен PEM с расширением `.crt`:
 
 ```sh
-sudo install -m 644 "$HOME/Downloads/ca.crt" /usr/local/share/ca-certificates/course-device-ca.crt
-sudo update-ca-certificates
+sudo test ! -e /usr/local/share/ca-certificates/course-device-ca.crt && \
+  sudo install -m 644 "$HOME/Downloads/ca.crt" /usr/local/share/ca-certificates/course-device-ca.crt && \
+  sudo update-ca-certificates
 ```
 
-Эти имена принадлежат данной инструкции: перед установкой проверьте, что существующий файл с таким именем отсутствует либо содержит тот же сертификат. Не заменяйте чужой CA. Для других дистрибутивов используйте их процедуру; настройка на CachyOS не доказывает проверку всех дистрибутивов. [Arch update-ca-trust](https://man.archlinux.org/man/update-ca-trust.8), [Debian update-ca-certificates](https://manpages.debian.org/testing/ca-certificates/update-ca-certificates.8.en.html).
+Команды рассчитаны на первую установку: проверка `test` должна пройти; при ошибке остановитесь, не выполняйте следующую команду. Если файл уже существует, сверяйте его отпечаток: тот же CA повторно устанавливать не нужно. Не заменяйте чужой CA. Для других дистрибутивов используйте их процедуру; настройка на CachyOS не доказывает проверку всех дистрибутивов. [Arch update-ca-trust](https://man.archlinux.org/man/update-ca-trust.8), [Debian update-ca-certificates](https://manpages.debian.org/testing/ca-certificates/update-ca-certificates.8.en.html).
 
 Chromium в Linux также использует пользовательскую NSS-базу. Если системного импорта недостаточно, откройте менеджер сертификатов Chromium и импортируйте тот же проверенный CA для сайтов. При использовании `certutil` учитывайте актуальное расположение базы: с M146 это `$HOME/.local/share/pki/nssdb`, но существующая `$HOME/.pki/nssdb` имеет приоритет. NSS `certutil` отличается от одноимённой Windows-команды. [Официальная инструкция Chromium](https://chromium.googlesource.com/chromium/src/+/main/docs/linux/cert_management.md).
 
