@@ -177,7 +177,10 @@ List raw = words;
 raw.add(42); // unchecked warning
 String first = words.get(0); // ClassCastException
 ```
-Запись нарушила элементный контракт, чтение обнаружило отказ. List<?> сохраняет проверку неизвестного типа и отвергает raw.add(42). Подавление warning не исправляет данные.
+Запись через raw допустима с unchecked warning, но нарушает элементный
+контракт; чтение обнаруживает отказ. При `List<?> unknown = words` вызов
+`unknown.add(42)` запрещён компилятором: точный тип элемента неизвестен.
+Подавление warning у raw-вызова не исправляет данные.
 
 ::: {.notes}
 [JLS25 §4.8](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.8). Намеренно небезопасный пример из подробной лекции.

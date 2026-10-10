@@ -9,8 +9,12 @@ int length = switch ("Java") {
     default -> 0;
 };
 ```
-`yield` отдаёт результат switch-выражению; `return` завершил бы содержащий метод. Локальный `result` вне блока недоступен.
+`yield` задаёт результат switch-выражения. Заменить его здесь на `return`
+нельзя: выход из содержащего метода через switch-выражение запрещён
+при компиляции. Вне switch-выражения `return` завершает метод.
+Локальный `result` вне блока недоступен.
 
 ::: {.notes}
-[JLS25 §14.21](https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.21).
+[JLS25 §14.21: yield](https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.21),
+[§14.17: return](https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.17).
 :::
