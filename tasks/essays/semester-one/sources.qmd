@@ -1,0 +1,52 @@
+# Источники рефератов и правила чтения {#sec-tasks-s1-essays-sources}
+
+## Русскоязычная учебная основа
+
+1. **Блинов И. Н., Романчик В. С. Java from EPAM. 2-е изд. Минск: Четыре четверти, 2021.** ISBN 978-985-581-391-1. [Открытый PDF EPAM](https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf). Используется предоставленный пользователем PDF. В карточках указаны печатные страницы; в этом файле номер страницы PDF на 2 больше. Основная опора для терминов, главы о классах, строках, исключениях, коллекциях и Stream API.
+2. **Шилдт Г. Java. Руководство для начинающих. 9-е изд., русский перевод, 2023.** ISBN 978-617-550-100-9. [Библиографическая страница данного издания](https://kniga.biz.ua/ua/book-java-rukovodstvo-dlia-nachinaiushchikh-0027452.html). Используется предоставленный PDF, 754 страницы файла; печатная страница на 1 меньше номера PDF. Особенно полезны массивы, передача аргументов, обобщения, управление ресурсами и глава о новых возможностях языка. Ссылки на страницы не относятся автоматически к другому русскому изданию с похожей обложкой.
+3. **Metanit. Руководство по Java.** [Оглавление](https://metanit.com/java/tutorial/). Дополнительное русскоязычное объяснение по одноимённым разделам: типы, классы, строки, обобщения, коллекции, функциональные интерфейсы, исключения, ввод-вывод. Дата обновления оглавления не означает, что каждый пример проверен для Java 25; нормативная опора — отдельные ссылки ниже.
+
+Новый полный учебник к семестровой нагрузке не добавляется. Студенту достаточно выбранных фрагментов основной книги и адресных документов к своей теме.
+
+## Открытые курсы и официальные учебные материалы
+
+| Источник | Для каких тем | Как используется |
+|---|---|---|
+| Helsinki, [Separating the user interface from program logic](https://java-programming.mooc.fi/part-6/2-separating-user-interface-from-program-logic/) | {{< xref tasks sec-tasks-s1-essay-class-responsibility-design "Декомпозиция и проектирование классов" >}} | Обоснование отделения интерфейса от предметной логики |
+| Helsinki, [Interfaces](https://java-programming.mooc.fi/part-9/2-interface/) | {{< xref tasks sec-tasks-s1-essay-interfaces-composition-contracts "Наследование, интерфейсы и композиция" >}} | Клиентский код и взаимозаменяемые реализации |
+| Helsinki, [Handling collections as streams](https://java-programming.mooc.fi/part-10/1-handling-collections-as-streams/) | {{< xref tasks sec-tasks-s1-essay-loop-pipeline-equivalence "Stream API: преобразование цикла в конвейер" >}}–{{< xref tasks sec-tasks-s1-essay-frequency-result-merging "Collectors: группировка и объединение результатов" >}} | Переход от знакомых коллекций к преобразованию данных |
+| Г. Корнеев, [план «Введения в программирование»](https://www.kgeorgiy.info/courses/prog-intro/lectures/index.html), [массивы и ссылки](https://www.kgeorgiy.info/courses/prog-intro/lectures/arrays.html), [ввод-вывод и исключения](https://www.kgeorgiy.info/courses/prog-intro/lectures/io.html) | {{< xref tasks sec-tasks-s1-essay-matrix-reference-copies "Массивы: ссылки и копирование многомерных данных" >}}, {{< xref tasks sec-tasks-s1-essay-class-responsibility-design "Декомпозиция и проектирование классов" >}}–{{< xref tasks sec-tasks-s1-essay-method-value-aliasing "Использование параметров метода: значения и объектные ссылки" >}}, {{< xref tasks sec-tasks-s1-essay-failure-reporting-boundaries "Исключения и ошибки: выбор способа сообщения об отказе" >}}, {{< xref tasks sec-tasks-s1-essay-utf8-byte-text-boundary "Потоки ввода/вывода: байты, символы и UTF-8" >}} | Русскоязычный курс для сопоставления базовых понятий и прикладных случаев |
+| dev.java, [Introducing Generics](https://dev.java/learn/language/fp/generics/intro/) | {{< xref tasks sec-tasks-s1-essay-generic-source-destination "Обобщённые типы: ограничения и подстановочные параметры" >}}–{{< xref tasks sec-tasks-s1-essay-array-list-type-checks "Стирание типов и проверка типов во время выполнения" >}} | Назначение параметризации, затем её ограничения |
+| dev.java, [Storing Data Using the Collections Framework](https://dev.java/learn/api/collections-and-streams/collections-framework/intro/) | {{< xref tasks sec-tasks-s1-essay-collection-operation-choice "Коллекции: выбор List, Set, Map и очереди" >}}–{{< xref tasks sec-tasks-s1-essay-collection-view-ownership "Коллекции: представления и независимые копии" >}} | Интерфейсы коллекций и семантика обычных операций |
+| dev.java, [Refactoring from the Imperative to the Functional Style](https://dev.java/learn/language/fp/refactoring-to-functional-style/) | {{< xref tasks sec-tasks-s1-essay-loop-pipeline-equivalence "Stream API: преобразование цикла в конвейер" >}} | Сопоставление императивного и функционального представления одной обработки |
+
+Helsinki помечен авторами как [legacy-курс](https://java-programming.mooc.fi/): применять его для дидактики и примеров, а не как источник последних изменений языка. Количество и длительность занятий нашего курса не выводятся из продолжительности частей MOOC.
+
+## Точные правила Java 25
+
+[Java Language Specification, Java SE 25](https://docs.oracle.com/javase/specs/jls/se25/html/index.html) и [Java SE 25 API](https://docs.oracle.com/en/java/javase/25/docs/api/index.html). Карточки ведут к нужному разделу или классу, а не предлагают читать спецификацию целиком. Ссылки закреплены на версии 25; preview-возможности не используются.
+
+При расхождении учебного объяснения и спецификации студенту нужно различать версию языка, рекомендацию автора и языковое правило. Проверка материалов выявила конкретные места для осторожного чтения:
+
+| Место в EPAM 2021 | Что уточнить для нашего курса |
+|---|---|
+| С. 127, положение вызова `super` | Для Java 25 допустим ограниченный код перед вызовом конструктора; сверять JLS 8.8.7 и 12.5. |
+| С. 101–102, описание `record` | Неизменяемость ссылок на компоненты не обещает неизменяемости объектов, на которые они указывают. |
+| С. 80, пустой `Optional.get()` | Сверять с API: исключение — `NoSuchElementException`. |
+| С. 331, изменение объекта внутри `map` | Различать структуру исходного списка и состояние общих объектов; функциональная запись сама по себе не устраняет изменение данных. |
+
+Это не отказ от книг: такая адресная сверка непосредственно соответствует назначению реферата — объяснить правило и границы вывода по нескольким источникам.
+
+## Habr: отдельное чтение и обсуждение
+
+Эти материалы не подменяют спецификацию и не создают дополнительных тем сверх 30.
+
+| Материал | Связь с каталогом | Зачем читать |
+|---|---|---|
+| [«Забытая история Java: версия Патрика Ноутона»](https://habr.com/ru/articles/831426/) | {{< xref tasks sec-tasks-s1-essay-compiled-artifacts-constants "Компиляция и запуск приложения: исходный код, class-файлы и константы" >}}, общий контекст курса | Историческая мотивация Java и обсуждение; не источник текущей семантики языка |
+| [«Абсолютный минимум об Unicode на 2023 год»](https://habr.com/ru/companies/wunderfund/articles/777850/) | {{< xref tasks sec-tasks-s1-essay-unicode-units-equivalence "Строки Unicode: кодовые точки и нормализация" >}}, {{< xref tasks sec-tasks-s1-essay-utf8-byte-text-boundary "Потоки ввода/вывода: байты, символы и UTF-8" >}} | Понятный контекст различий символов и кодировок |
+| [«Пришел, увидел, обобщил: погружаемся в Java Generics»](https://habr.com/ru/companies/sberbank/articles/416413/) | {{< xref tasks sec-tasks-s1-essay-generic-source-destination "Обобщённые типы: ограничения и подстановочные параметры" >}}–{{< xref tasks sec-tasks-s1-essay-array-list-type-checks "Стирание типов и проверка типов во время выполнения" >}} | Дополнительное русскоязычное объяснение и дискуссия о модели типов; правила проверять по JLS |
+
+Ссылки перенесены из пакета передачи с проверкой источников от 10 октября 2026 года. Старый год публикации дополнительной статьи сам по себе не исключает её, если сохраняется поясняющая ценность и есть современная нормативная опора.
+
+Постановки — авторская редакционная адаптация согласованного каталога из пакета передачи от 10 октября 2026 года. Они не являются дословными заданиями авторов учебников. Каждый реферат сохраняет собственные вопрос, границы, подготовку и адресное чтение.
