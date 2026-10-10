@@ -69,7 +69,7 @@ Namespace QRC совпадает с проектом: `theory`, `lectures`, `pra
 | Тематический банк | `tasks/bank/semester-one/<slug>.qmd` | `sec-tasks-s1-bank-<slug>`; задача `exr-tasks-s1-<semantic-slug>` |
 | Основная лабораторная | `tasks/labs/semester-one/<semantic-slug>.qmd` | `sec-tasks-s1-lab-01` … `sec-tasks-s1-lab-10` |
 | Резервная лабораторная | `tasks/labs/semester-one/<semantic-slug>.qmd` | `sec-tasks-s1-reserve-01` … `sec-tasks-s1-reserve-03` |
-| Тематический каталог рефератов | `tasks/essays/semester-one/<slug>.qmd` | `sec-tasks-s1-essays-<slug>`; реферат `sec-tasks-s1-essay-<semantic-slug>` |
+| Тематический каталог рефератов | `tasks/essays/semester-one/<slug>.qmd` | `sec-tasks-s1-essays-<slug>`; реферат `exr-tasks-s1-essay-<semantic-slug>` |
 
 Предметные страницы не создаются пустыми ради будущих адресов. Материалы
 включаются в активный маршрут и получают QRC-ссылки после разработки.
@@ -166,7 +166,7 @@ Task 2 не содержит готовых Java-примеров или сла�
 Каталог `tasks/essays/semester-one/` содержит 30 согласованных постановок
 на 11 тематических страницах и отдельную страницу источников. Новые
 смысловые адреса: `sec-tasks-s1-essays-<topic>`,
-`sec-tasks-s1-essay-<semantic-slug>` и `exr-tasks-s1-essay-<semantic-slug>`.
+`exr-tasks-s1-essay-<semantic-slug>` и `exr-tasks-s1-essay-<semantic-slug>`.
 Все карточки имеют manual target, роль independent-study и открытые условия
 в обоих представлениях. Вопрос, содержание, ограничения, индивидуальная
 подготовка и адресные источники сохранены из согласованной редакции handoff.
