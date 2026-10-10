@@ -1,0 +1,648 @@
+---
+pagetitle: "Обобщённые типы"
+---
+
+# Обобщённые типы {#sec-theory-s1-generics}
+
+Обобщение связывает типы нескольких мест программы: входа, поля, результата,
+элемента контейнера. Один алгоритм работает с разными типами, а компилятор
+проверяет, что обещанная связь сохраняется. Для Java это generics — параметры
+типов у классов, интерфейсов и методов.
+
+**Предпосылки:** классы/методы, ссылки, массивы и интерфейсы:
+@sec-theory-s1-classes-methods, @sec-theory-s1-arrays,
+@sec-theory-s1-inheritance-interfaces. Знание всей библиотеки коллекций
+не требуется: минимальный протокол `List` объяснён прямо здесь.
+**Результат:** вы можете объявить типобезопасный контейнер, выбрать bound
+или wildcard и объяснить ограничения стирания.
+Работа: @tasks:sec-tasks-s1-lab-07;
+банк: @tasks:sec-tasks-s1-bank-generics.
+Для задач очереди/стека сначала прочитайте короткую подготовку отказов ниже;
+завершение лабораторной 10 предварительно не требуется.
+
+Справочные правила и демонстрации: @handbook:sec-handbook-s1-generics.
+Исследовательские вопросы: @tasks:sec-tasks-s1-essays-generics.
+
+## От `Object` к связанной типизации {#sec-theory-s1-generics-box}
+
+Шилдт, гл. 13, с. 489–492, объясняет проблему контейнера с полем `Object`:
+в нём можно хранить разные объекты, но клиенту приходится самому угадывать
+тип результата. Если в такую коробку положили строку, а извлекают целое,
+приведение отказало бы только при запуске. Параметр типа переносит проверку
+согласованности на компиляцию.
+
+Учебный фрагмент Шилдта, гл. 13, с. 489, почти без редакции
+(устранены разрывы строк и OCR-пробелы):
+
+> В своей основе термин обобщения означает параметризованные типы.
+> Параметризованные типы важны, поскольку они позволяют создавать
+> классы, интерфейсы и методы, где тип данных, с которым они работают,
+> указывается в качестве параметра. Например, с использованием обобщений
+> можно создать единственный класс, который автоматически работает
+> с разными типами данных. Класс, интерфейс или метод, оперирующий
+> на параметризованном типе, называется обобщенным.
+
+«Автоматически» здесь относится к сохранению связи типов при допустимой
+подстановке. Оно не обещает, что произвольный тип имеет любые операции:
+для них далее понадобятся bounds и явные контракты.
+
+Полный файл `GenDemo.java` адаптирован по `Gen<T>` Шилдта, с. 490
+(PDF 491). Сохранены поле, конструктор, `getOb()` и два конкретных типа;
+использованы diamond и `final` поле. Наблюдение `getClass()` явно названо
+классом **хранимого объекта**, поскольку оно не восстанавливает произвольный `T`.
+
+```java
+public class GenDemo {
+    static final class Gen<T> {
+        private final T ob;
+        Gen(T ob) { this.ob = ob; }
+        T getOb() { return ob; }
+        void showValueClass() {
+            System.out.println(ob.getClass().getName());
+        }
+    }
+    public static void main(String[] args) {
+        Gen<Integer> integer = new Gen<>(88);
+        integer.showValueClass();
+        int value = integer.getOb();
+        System.out.println(value);
+        Gen<String> string = new Gen<>("Тестирование обобщений");
+        string.showValueClass();
+        String text = string.getOb();
+        System.out.println(text);
+    }
+}
+```
+
+```text
+java.lang.Integer
+88
+java.lang.String
+Тестирование обобщений
+```
+
+`T` — параметр типа объявления; `Integer` и `String` — аргументы типа при
+использовании. Внутри одного `Gen<T>` тип поля, параметра конструктора
+и результата связан одним `T`. `Gen<String>.getOb()` возвращает `String`
+без явного приведения клиента. Список `<>` у `new` позволяет компилятору
+вывести аргумент из контекста. Примитив `int` не может быть аргументом типа;
+`88` при помещении в `Gen<Integer>` упаковывается, а при присваивании `int`
+распаковывается.
+
+Вариация: замените `new Gen<>(88)` на `new Gen<>("88")`, сохранив объявление
+`Gen<Integer>`. Ошибка появляется при компиляции. Объявите
+`Gen<Number> number = new Gen<>(Integer.valueOf(88))`: класс объекта внутри
+будет `Integer`, но аргумент типа контейнера — `Number`. Поэтому первый
+вариант `showType` из книги следует понимать как наблюдение значения,
+а не runtime-рефикацию параметра типа. При `ob == null` такой диагностический
+метод отказал бы; основной `getOb()` способен вернуть `null`.
+
+## Класс, интерфейс и отдельный generic-метод {#sec-theory-s1-generics-declarations}
+
+У класса параметр используется во всём его экземплярном контракте.
+У метода — только для одного вызова. Имя параметра условно: распространены
+`T` (тип), `E` (элемент), `K`/`V` (ключ/значение), но это не особые слова языка.
+Два параметра полезны, когда роли независимы; один общий `T` — когда нужна
+связь. Не заменяйте связи несколькими `Object` только ради короткой записи.
+
+Полный файл `GenericMethodDemo.java` адаптирует формы EPAM, гл. 3,
+с. 88–94, и пример generic method из Шилдта, с. 503–507.
+Незавершённые тела книжных иллюстраций заменены исполняемыми операциями.
+
+```java
+public class GenericMethodDemo {
+    interface Source<T> { T get(); }
+    static final class Box<T> implements Source<T> {
+        private final T value;
+        Box(T value) { this.value = value; }
+        @Override public T get() { return value; }
+    }
+    static <T> T identity(T value) { return value; }
+    static <T> T first(T[] values) {
+        if (values.length == 0) {
+            throw new IllegalArgumentException("nonempty array required");
+        }
+        return values[0];
+    }
+    public static void main(String[] args) {
+        Source<String> source = new Box<>("Java");
+        String text = identity(source.get());
+        System.out.println(text);
+        Integer number = first(new Integer[] {7, 9});
+        System.out.println(number);
+        System.out.println(GenericMethodDemo.<String>identity("explicit"));
+    }
+}
+```
+
+```text
+Java
+7
+explicit
+```
+
+`<T>` стоит перед возвращаемым типом generic-метода. `identity` — статический
+метод со **своим** параметром типа, независимым от любого `Box<T>`.
+Классовый `T` нельзя использовать в статическом поле `static T value`
+или статическом методе без собственного объявления параметра: такие члены
+общие для класса, а конкретные типы экземпляров различаются.
+Именно этот запрет следует читать в EPAM, с. 92–93; он не означает запрета
+статических generic-методов вообще.
+
+`first` связывает тип массива и результата. Он не доказывает непустоту,
+отсутствие `null` или отсутствие побочных эффектов; эти свойства задаёт контракт.
+Вариация: передайте пустой `String[]`; типы согласованы, но предметное условие
+нарушено, поэтому происходит исключение. В Java правильный тип не заменяет
+проверку данных.
+
+## Bound открывает известные операции {#sec-theory-s1-generics-bounds}
+
+Для неограниченного `T` доступны операции, гарантированные `Object`.
+Чтобы вызвать `doubleValue()`, нужен верхний bound `T extends Number`.
+Шилдт, с. 495–498, показывает это на `NumericFns`: ограничение сообщает
+компилятору протокол, на который можно опираться внутри класса.
+
+Полный файл `BoundDemo.java` сохраняет основную идею этого примера,
+сокращая число операций и делая ограничение точности явным.
+
+```java
+public class BoundDemo {
+    static final class NumericFns<T extends Number> {
+        private final T number;
+        NumericFns(T number) { this.number = number; }
+        double square() {
+            double value = number.doubleValue();
+            return value * value;
+        }
+        boolean sameMagnitude(NumericFns<?> other) {
+            return Math.abs(number.doubleValue())
+                    == Math.abs(other.number.doubleValue());
+        }
+    }
+    static <T extends Comparable<? super T>> T larger(T a, T b) {
+        return a.compareTo(b) >= 0 ? a : b;
+    }
+    public static void main(String[] args) {
+        NumericFns<Integer> integer = new NumericFns<>(3);
+        NumericFns<Double> real = new NumericFns<>(-3.0);
+        System.out.println(integer.square());
+        System.out.println(integer.sameMagnitude(real));
+        System.out.println(larger("beta", "alpha"));
+    }
+}
+```
+
+```text
+9.0
+true
+beta
+```
+
+После преобразования к `double` возможна потеря точности; сравнение модулей
+здесь демонстрируется для малых конечных чисел, не является универсальным
+точным сравнением любого `Number`. `T extends Number` не разрешает `a + b`
+для произвольных `T` и не гарантирует, что результат сложения имеет тип `T`.
+Метод `larger` опирается на другой протокол — `Comparable`. Верхняя граница
+может быть интерфейсом; для нескольких границ используют `&`, например
+`T extends Number & Comparable<T>`, причём класс, если есть, идёт первым.
+
+Вариация: попробуйте `new NumericFns<String>("3")`. Несоответствие bound
+отклоняется компилятором. Замените аргументы `larger` на две строки одной
+длины: сравнение всё равно лексикографическое, поскольку bound обеспечивает
+**наличие** `compareTo`, а смысл порядка задаёт реализация. Транзитивность
+и согласованность порядка не доказаны одним объявлением типов.
+
+## Инвариантность: почему `Box<Integer>` не `Box<Number>` {#sec-theory-s1-generics-invariance}
+
+`Integer` — подтип `Number`, но из этого не следует отношение подтипов
+`Box<Integer>` и `Box<Number>`. Для изменяемой коробки причина особенно ясна:
+через `Box<Number>` можно было бы записать `Double`, а клиент исходного
+`Box<Integer>` ожидал бы извлечь `Integer`. Поэтому Java-параметризация
+по умолчанию **инвариантна**. Это правило распространяется и на контейнер,
+который конкретная реализация сделала только для чтения.
+
+Намеренно ошибочный фрагмент; не включайте его в работающую программу:
+
+```java
+class Box<T> {
+    T value;
+    void set(T value) { this.value = value; }
+}
+Box<Integer> integers = new Box<>();
+Box<Number> numbers = integers; // ошибка компиляции
+```
+
+Чтобы выразить ограниченный взгляд на контейнер, нужны wildcards. Они меняют
+возможности **данной переменной**, а не класс фактического объекта.
+
+Для дальнейших примеров достаточно небольшого протокола `List<E>`:
+`add(E)` добавляет элемент, `get(int)` читает по индексу, `size()` даёт длину.
+`ArrayList<E>` — одна из изменяемых реализаций. Индексы начинаются с нуля;
+обход `for (E e : list)` читает элементы последовательно. `List.of(...)`
+создаёт список с заданными элементами, который не поддерживает изменение
+и не допускает `null`. Полный обзор коллекций будет отдельной темой.
+
+## Wildcards и PECS {#sec-theory-s1-generics-wildcards}
+
+`?` означает один неизвестный аргумент типа. У `List<?>` элементный тип
+не известен клиенту; результат можно читать как `Object`, но нельзя
+безопасно добавлять произвольный ненулевой объект.
+`List<? extends Number>` означает неизвестный подтип `Number`; чтение как
+`Number` безопасно. `List<? super Integer>` означает неизвестный надтип
+`Integer`; вставка `Integer` безопасна, а чтение даёт только `Object`.
+
+Полный файл `PecsDemo.java` развивает wildcards Шилдта, с. 499–502,
+EPAM `Task<?>`, с. 91–92, и последовательный пример исходной лекции.
+Назначение разных направлений выражено в одной операции копирования.
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class PecsDemo {
+    static <T> void append(List<? extends T> source,
+                           List<? super T> destination) {
+        for (T value : source) destination.add(value);
+    }
+    public static void main(String[] args) {
+        List<Integer> integers = new ArrayList<>();
+        integers.add(7);
+        integers.add(8);
+        List<? extends Number> source = integers;
+        Number value = source.get(0);
+        System.out.println(value);
+
+        List<Number> numbers = new ArrayList<>();
+        List<? super Integer> destination = numbers;
+        destination.add(9);
+        Object first = destination.get(0);
+        System.out.println(first);
+
+        append(integers, numbers);
+        System.out.println(numbers);
+        source.clear();
+        System.out.println(integers.size());
+    }
+}
+```
+
+```text
+7
+9
+[9, 7, 8]
+0
+```
+
+Для первого взгляда можно читать `Number`, но `source.add(3.5)` не допускается:
+за ним фактически `List<Integer>`. В приёмник разрешено записать `Integer`,
+но `Integer first = destination.get(0)` не допускается: настоящий список
+`Number` мог ранее содержать `Double`. Последняя строка доказывает, что
+`extends` не означает неизменяемость. Метод `clear` разрешён, и изменение
+видно через `integers`. `add(null)` может быть типобезопасным через wildcard,
+но допустимость `null` определяется ещё и реализацией списка.
+
+Правило **PECS** (*producer extends, consumer super*) — подсказка для API:
+источник отдаёт `T`, приёмник получает `T`. Если функция и читает, и пишет
+значения одного точного типа, часто удобнее обычный `List<T>`.
+`append` предполагает разные source/destination и поддержку вставки у
+приёмника: типы не доказывают ни отсутствие alias, ни изменяемость реализации.
+
+Вариация: замените `numbers` на `List.of(9)` и используйте его как приёмник.
+Тип аргумента может подходить, но операция добавления не поддерживается.
+Замените направление переноса с `Number` в `Integer`: компилятор уже
+не сможет доказать типобезопасность, потому что исходный `Number` может
+оказаться `Double`.
+
+## Захват wildcard: вернуть прочитанное на то же место {#sec-theory-s1-generics-capture}
+
+Иногда мы не знаем точный элементный тип, но хотим сохранить его связь
+внутри одной операции. Компилятор может захватить неизвестный аргумент
+в качестве собственного временного типа. Вспомогательный generic-метод
+даёт этому типу имя. Полный файл `CaptureDemo.java` — авторское пояснение
+wildcard capture из исходной лекции.
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class CaptureDemo {
+    static void repeatFirst(List<?> values) { repeatCaptured(values); }
+    private static <T> void repeatCaptured(List<T> values) {
+        if (values.isEmpty()) return;
+        T first = values.get(0);
+        values.add(first);
+    }
+    public static void main(String[] args) {
+        List<String> words = new ArrayList<>();
+        words.add("Java");
+        repeatFirst(words);
+        System.out.println(words);
+    }
+}
+```
+
+Вывод — `[Java, Java]`. Helper не подставляет произвольный `Object`:
+он получает значение того же неизвестного типа из того же списка и вставляет
+его обратно. Просто записать снаружи `values.add(values.get(0))` для
+`List<?>` недостаточно для этой формы связи; helper выражает один общий `T`.
+Вариация: пустой изменяемый список останется пустым; неизменяемый непустой
+список отвергнет вставку. Capture решает вопрос типов, а не контракт мутации.
+
+## Стирание и границы runtime-проверки {#sec-theory-s1-generics-erasure}
+
+Шилдт, с. 518–521, и EPAM, с. 90–93, описывают стирание (*erasure*).
+В runtime-представлении параметр `T` заменяется его первой границей;
+у неограниченного `T` это `Object`. Компилятор проверяет связь типов
+в исходнике, вставляет нужные приведения и при необходимости bridge-методы.
+Метаданные generic-сигнатур могут сохраниться в class-файле; слово «стирание»
+не означает исчезновения каждой записи о generic-объявлении.
+
+Полный файл `ErasureDemo.java`:
+
+```java
+public class ErasureDemo {
+    static final class Box<T> {
+        private final T value;
+        Box(T value) { this.value = value; }
+        T get() { return value; }
+    }
+    public static void main(String[] args) {
+        Box<Integer> number = new Box<>(7);
+        Box<String> text = new Box<>("Java");
+        System.out.println(number.getClass() == text.getClass());
+        System.out.println(number.get());
+        System.out.println(text.get());
+    }
+}
+```
+
+Вывод: `true`, `7`, `Java`. Обе ссылки ведут к экземплярам одного runtime-класса
+`Box`. Это не значит, что `Box<Integer>` и `Box<String>` взаимозаменяемы
+на уровне исходных типов, и не доказывает единственности машинного кода
+после оптимизаций JVM.
+
+Следствия нужно понимать, а не заучивать как произвольные запреты:
+
+| Запись | Почему не подходит | Практический путь |
+|---|---|---|
+| `new T()` | Объявление не гарантирует нужный конструктор | Передать готовое значение; позднее — фабрику |
+| `new T[n]` | Для массива требуется проверяемый runtime-тип компонента | Получить `T[]` от клиента с ясным владением либо выбрать коллекцию |
+| `value instanceof Box<String>` при `Object value` | Из общего `Object` нельзя так проверить аргумент `String` | `instanceof Box<?>` проверяет лишь контейнер |
+| `T.class` | Параметр не является отдельным class-литералом | Передать `Class<T>`, когда контракту нужен токен класса |
+| `static T shared` в `Box<T>` | Статическое состояние общее для всех аргументов | Собственный тип члена или отдельный generic-метод |
+| `take(List<String>)` и `take(List<Integer>)` | После стирания параметров методы сталкиваются | Разные имена либо другой различимый протокол |
+
+Массивы и generics имеют разные правила: массивы ковариантны и проверяют
+запись по runtime-компоненту, а `List<T>` инвариантен и связывает типы
+статически. Поэтому `Object[] a = new String[1]` допустимо, но запись
+`a[0] = Integer.valueOf(1)` отвергнется при запуске. Generics не следует
+обходить unchecked cast только ради того, чтобы получить похожий синтаксис.
+
+## Raw types: предупреждение связано с будущим отказом {#sec-theory-s1-generics-raw}
+
+`List` без аргумента типа — **raw type**, исторический протокол, ослабляющий
+проверки. `List<?>` — полноценный параметризованный тип с неизвестным
+аргументом; в него нельзя безопасно вставить произвольную строку или число.
+Raw-вызов способен испортить содержимое, которое другой клиент считает
+типобезопасным. Это *heap pollution*.
+
+Полный файл `RawTypeDemo.java` — намеренно небезопасная демонстрация,
+а не образец решения. Проверяйте её с `javac --release 25 -Xlint:unchecked`;
+предупреждение на `raw.add(7)` является ожидаемой частью результата.
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class RawTypeDemo {
+    public static void main(String[] args) {
+        List<String> words = new ArrayList<>();
+        List raw = words;
+        raw.add(7);
+        System.out.println(words.size());
+        try {
+            String first = words.get(0);
+            System.out.println(first);
+        } catch (ClassCastException exception) {
+            System.out.println("ClassCastException");
+        }
+    }
+}
+```
+
+Вывод — `1`, затем `ClassCastException`. Ошибка появилась при **чтении**,
+где компилятор вставил приведение к `String`, хотя нарушение было при записи
+через raw alias. Подавление warning не делает такой код корректным.
+
+Вариация: объявите `List<?> raw = words`. Строка `raw.add(7)` станет ошибкой
+компиляции, не поздним отказом. Неопределённость точного типа и отсутствие
+проверок — разные состояния.
+
+## Короткая подготовка отказов для лабораторной 7 {#sec-theory-s1-generics-checked-preview}
+
+В канонических задачах очереди и стека пустое/полное состояние сообщается
+проверяемыми исключениями. Их нельзя заменять молчаливым `null` или нулём:
+у контейнера есть иной согласованный контракт. Для начала достаточно
+четырёх средств: `extends Exception`, `throws`, `throw`, `try/catch`.
+Полная тема и распространение отказов — @sec-theory-s1-map-exceptions.
+
+Файл `CheckedPreviewDemo.java` использует разрешение на действие,
+а не готовое решение контейнера. Структура своего исключения адаптирована
+по EPAM, гл. 9, с. 272–276 (PDF 274–278); сообщения и предметная операция изменены.
+
+```java
+public class CheckedPreviewDemo {
+    static final class DeniedException extends Exception {
+        DeniedException(String message) { super(message); }
+    }
+    static String enter(boolean allowed) throws DeniedException {
+        if (!allowed) throw new DeniedException("вход закрыт");
+        return "вход разрешён";
+    }
+    public static void main(String[] args) {
+        try {
+            System.out.println(enter(true));
+            System.out.println(enter(false));
+            System.out.println("после второго вызова");
+        } catch (DeniedException exception) {
+            System.out.println(exception.getMessage());
+        }
+        System.out.println("после обработки");
+    }
+}
+```
+
+```text
+вход разрешён
+вход закрыт
+после обработки
+```
+
+`extends Exception` объявляет checked-класс (здесь не подкласс
+`RuntimeException`). `throws` сообщает возможный отказ вызывающему.
+`throw` создаёт конкретный путь отказа и прерывает обычное исполнение метода.
+Подходящий `catch` получает исключение; инструкции между отказавшим
+вызовом и концом `try` не исполняются. Вызывающий должен либо обработать
+проверяемое исключение, либо объявить его в собственном `throws`.
+
+Вариация: удалите `catch` и оставьте вызов без объявления в `main` —
+компилятор сообщит о необработанном исключении. Для двух вариантов отказа
+можно объявить два имени в `throws` и написать отдельные подходящие `catch`.
+Перед изменением состояния контейнера проверяйте допустимость операции,
+чтобы отказ сохранял прежние элементы и индексы. Для основного generics API
+checked-исключения могут быть обычными непараметризованными классами;
+сам `Throwable`-подкласс нельзя объявить generic-классом.
+
+## Дополнительно: общий алгоритм и объект операций {#sec-theory-s1-generics-algebra}
+
+`Number` не задаёт универсальные сложение и умножение. Для общего алгоритма
+можно передать **объект операций** `Algebra<T>`. Этот подход из подробной
+исходной лекции отделяет тип данных от способа вычисления. Для Горнера
+коэффициенты идут от старшей степени к свободному члену; выбрано умножение
+текущего результата на аргумент справа.
+
+Полный файл `HornerDemo.java` показывает один алгоритм для чисел и матриц
+2×2. Матрица — отдельный record; все числовые значения демонстрации малы
+и помещаются в `int`.
+
+```java
+public class HornerDemo {
+    interface Algebra<T> {
+        T zero();
+        T add(T a, T b);
+        T multiply(T a, T b);
+    }
+    static <T> T evaluate(T[] coefficients, T x, Algebra<T> algebra) {
+        T result = algebra.zero();
+        for (T coefficient : coefficients) {
+            result = algebra.add(algebra.multiply(result, x), coefficient);
+        }
+        return result;
+    }
+    record Matrix(int a, int b, int c, int d) {}
+    static final class IntegerAlgebra implements Algebra<Integer> {
+        public Integer zero() { return 0; }
+        public Integer add(Integer a, Integer b) { return a + b; }
+        public Integer multiply(Integer a, Integer b) { return a * b; }
+    }
+    static final class MatrixAlgebra implements Algebra<Matrix> {
+        public Matrix zero() { return new Matrix(0, 0, 0, 0); }
+        public Matrix add(Matrix x, Matrix y) {
+            return new Matrix(x.a() + y.a(), x.b() + y.b(),
+                              x.c() + y.c(), x.d() + y.d());
+        }
+        public Matrix multiply(Matrix x, Matrix y) {
+            return new Matrix(x.a() * y.a() + x.b() * y.c(),
+                              x.a() * y.b() + x.b() * y.d(),
+                              x.c() * y.a() + x.d() * y.c(),
+                              x.c() * y.b() + x.d() * y.d());
+        }
+    }
+    public static void main(String[] args) {
+        System.out.println(evaluate(new Integer[] {2, 3, 4}, 5,
+                                    new IntegerAlgebra()));
+        Matrix x = new Matrix(1, 1, 0, 1);
+        Matrix identity = new Matrix(1, 0, 0, 1);
+        Matrix constant = new Matrix(0, 1, 1, 0);
+        System.out.println(evaluate(new Matrix[] {identity, constant}, x,
+                                    new MatrixAlgebra()));
+    }
+}
+```
+
+```text
+69
+Matrix[a=1, b=2, c=1, d=1]
+```
+
+Числовой результат — `2 * 5 * 5 + 3 * 5 + 4`. Матричный — `I * X + C`.
+У пустого массива результат равен `zero()`. Сигнатура гарантирует связь
+`T`, но не законы алгебры: ассоциативность, нейтральность нуля и смысл
+умножения должны быть выполнены реализацией. Для матриц порядок
+существенен; нельзя без доказательства заменить `multiply(result, x)`
+на `multiply(x, result)`, когда коэффициенты и `x` не коммутируют.
+
+Вариация: замените `identity` в коэффициенте на `constant` и свободный член
+на нулевую матрицу. Исходный алгоритм даст `C * X`, переставленный — `X * C`;
+их результаты различаются. Сначала предскажите четыре компонента, потом
+проверьте. Такой опыт помогает отличить проверку типов от доказательства
+математической правильности.
+
+## Сравнение generic-контрактов {#sec-theory-s1-generics-comparison}
+
+В Java тело generic-метода проверяется относительно объявленного bound.
+Для доступа к операции у `T` обычно нужен интерфейс или отдельный объект
+операций, как в `Algebra<T>`. Стирание связано с runtime-представлением;
+инвариантность изменяемого контейнера связана с безопасностью чтения/записи.
+Это разные вопросы: сохранение аргументов типа в runtime само по себе
+не разрешило бы считать изменяемый `List<Integer>` списком `Number`.
+
+В C++ шаблон может использовать операции конкретного типа при инстанцировании;
+concepts позволяют выразить требования к допустимым подстановкам. Это не
+прямой эквивалент Java-bound: операторы и проверка конкретной подстановки
+играют другую роль. Ни concept, ни Java-интерфейс сами не доказывают
+ассоциативность умножения. Python может выполнить тот же алгоритм над
+объектами с подходящими операциями динамически; отсутствие такого метода
+выявится при выполнении, если не применяется отдельная статическая проверка.
+Type annotations дают средства такой проверки инструменту, но сами по себе
+не вводят Java-проверку при запуске программы.
+
+Сравнение адаптировано из исходной лекции, без исторических гипотез о
+«единственной причине» дизайна. Текущий C++ draft:
+[templates](https://eel.is/c++draft/temp),
+[constraints](https://eel.is/c++draft/temp.constr);
+официальная документация Python:
+[type hints](https://docs.python.org/3/library/typing.html).
+
+## Самопроверка {#sec-theory-s1-generics-selfcheck}
+
+1. Чем аргумент `Integer` отличается от параметра `T`?
+2. Почему `T extends Number` не разрешает `value + value`?
+3. Можно ли читать `Number` из `List<? extends Number>`? Можно ли добавить `3.5`?
+4. Почему чтение из `List<? super Integer>` имеет тип `Object`?
+5. Означает ли `List<?>` то же самое, что raw `List`?
+6. Почему два `Box` имеют одинаковый runtime-класс, но не взаимозаменяемые исходные типы?
+7. Доказывает ли `Algebra<T>` правильность матричного порядка в Горнере?
+8. Чем `throws` отличается от `throw` в подготовке к лабораторной?
+
+::: {.callout-note}
+## Ответы
+
+1. `T` объявляет роль типа в общем коде; `Integer` подставляет конкретный тип
+   в этой роли при использовании.
+2. Bound даёт протокол `Number`, а оператор сложения произвольных его
+   подтипов этим протоколом не определён.
+3. Читать можно; вставлять произвольный `Double` нельзя: фактический список
+   может быть `List<Integer>`.
+4. Приёмник может быть `List<Object>` с уже находящейся в нём строкой.
+5. Нет; wildcard сохраняет проверки неизвестного типа, raw позволяет
+   некоторые небезопасные операции с unchecked warnings.
+6. Проверка параметризации существует на уровне исходных типов;
+   стирание не отменяет её и не создаёт подтипов между аргументами.
+7. Нет; типы проверяют согласованность ролей, а законы и порядок операций
+   входят в смысловой контракт реализации и алгоритма.
+8. `throws` объявляет возможный checked-отказ, а `throw` выполняет отказ
+   с конкретным объектом исключения.
+:::
+
+## Чтение и источники {#sec-theory-s1-generics-sources}
+
+- Герберт Шилдт. *Java: руководство для начинающих*, русское 9-е изд.,
+  2023 (основа JDK 17), гл. 13: с. 487–521, PDF 488–522.
+  Основной пример `Gen<T>` — с. 490/PDF 491; bounds — с. 495–498;
+  wildcard — с. 499–502; generic method/interface — с. 503–509;
+  стирание — с. 518–521. Используйте переданный PDF и указанные страницы.
+  [Карточка русского издания](https://kniga.biz.ua/ua/book-java-rukovodstvo-dlia-nachinaiushchikh-0027452.html)
+  идентифицирует книгу; она не заменяет чтение переданного фрагмента.
+- И. Н. Блинов, В. С. Романчик. *Java from EPAM*, 2-е изд., 2021,
+  гл. 3, с. 88–94 (PDF 90–96), гл. 6, с. 184–186 (PDF 186–188).
+  [Параметризованные классы](https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf#page=90).
+  Подготовка исключений: гл. 9, с. 272–276,
+  [соответствующий фрагмент PDF](https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf#page=274).
+- Подробная исходная лекция курса `04-development`: Box → bound → invariance
+  → wildcard/PECS → capture/erasure; общий Горнер и объект `Algebra<T>`.
+  Программы и объяснения здесь открыты студенту, а не скрыты в notes.
+- [JLS 25 §§4.4–4.8](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.4),
+  [generic methods](https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.4),
+  [Comparable API 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Comparable.html).
+  Учебные пояснения авторские; правила сверены с текущей версией курса.
