@@ -1,0 +1,116 @@
+# Stream и Collectors {#sec-h-streams}
+
+Java 25. `Stream<T>` — одноразовый конвейер элементов; он не является
+хранилищем с индексным доступом. Объяснение вычисления:
+@theory:sec-t-streams [@bib-data-stream-api].
+
+## Источники и операции {#sec-h-streams-operations}
+
+Источники: `collection.stream()`, `Arrays.stream(array)`,
+`Stream.of(values...)`, `Stream.empty()`, `Stream.iterate(seed, next)`,
+`Stream.generate(supplier)`, `Files.lines(path, charset)`.
+Последние два общих генератора без ограничения могут быть бесконечными;
+файловый поток требует закрытия.
+
+Выбранные методы `Stream` ниже не объявляют проверяемых исключений.
+`Predicate`, `Function`, `Consumer`, `ToIntFunction`, `BinaryOperator`
+относятся к `java.util.function`, `Comparator`, `List`, `Optional` —
+к `java.util`, `Stream`, `IntStream`, `Collector` — к `java.util.stream`.
+
+| Промежуточная сигнатура | Смысл |
+|---|---|
+| `Stream<T> filter(Predicate<? super T> predicate)` | Сохранить элементы с истинным условием |
+| `<R> Stream<R> map(Function<? super T, ? extends R> mapper)` | Один новый результат для элемента |
+| `<R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper)` | Развернуть результаты-потоки |
+| `IntStream mapToInt(ToIntFunction<? super T> mapper)` | Перейти к `IntStream` |
+| `Stream<T> distinct()` | Уникальные элементы по равенству |
+| `Stream<T> sorted()` / `Stream<T> sorted(Comparator<? super T> comparator)` | Порядок элементов |
+| `Stream<T> limit(long maxSize)` / `Stream<T> skip(long n)` | Ограничить / пропустить; параметр неотрицателен |
+| `Stream<T> peek(Consumer<? super T> action)` | Наблюдение проходящих элементов |
+
+Промежуточные действия ленивы. Сортировка и другие операции с состоянием
+могут требовать накопления. Отрицательное значение у `limit/skip`
+даёт `IllegalArgumentException`. Естественная сортировка требует
+сравнимых элементов; несовместимость может обнаружиться при выполнении.
+
+| Терминальная сигнатура | Результат |
+|---|---|
+| `List<T> toList()` | Список с запрещёнными изменениями через его методы |
+| `long count()` | `long` |
+| `Optional<T> findFirst()` / `Optional<T> findAny()` | `Optional<T>` |
+| `Optional<T> min(Comparator<? super T> comparator)` / `Optional<T> max(Comparator<? super T> comparator)` | `Optional<T>` |
+| `boolean anyMatch(Predicate<? super T> predicate)` / `boolean allMatch(Predicate<? super T> predicate)` / `boolean noneMatch(Predicate<? super T> predicate)` | `boolean`, допускается короткое замыкание |
+| `void forEach(Consumer<? super T> action)` / `void forEachOrdered(Consumer<? super T> action)` | Выполнить действие; `void` |
+| `T reduce(T identity, BinaryOperator<T> accumulator)` | Свёртка значений |
+| `<R, A> R collect(Collector<? super T, A, R> collector)` | Результат, заданный коллектором |
+
+Повторное использование экземпляра после связи или терминальной операции
+недопустимо; обнаруженный повтор может дать `IllegalStateException`.
+`findFirst` сохраняет определённый порядок, `findAny` допускает любой
+элемент. На пустом потоке `anyMatch` — `false`, `allMatch/noneMatch` — `true`.
+При выборе `null` через `findFirst/findAny/min/max` результат может
+дать `NullPointerException`: `Optional` не представляет присутствующий `null`.
+
+## Сборка {#sec-h-streams-collectors}
+
+```java
+var names = students.stream().filter(s -> s.score() >= 80)
+    .map(Student::name).sorted().toList();
+```
+
+| Коллектор | Назначение и условие |
+|---|---|
+| `toList()` | Список; конкретный класс и изменяемость не обещаны |
+| `toCollection(ArrayList::new)` | Явно выбранная коллекция |
+| `joining(delimiter)` | Соединение строковых элементов |
+| `groupingBy(key)` | Карта ключа к группе |
+| `groupingBy(key, factory, downstream)` | Задать карту и способ сборки групп |
+| `toMap(key, value)` | Карта; повтор ключа — `IllegalStateException` |
+| `toMap(key, value, merge)` | Явная политика повторов |
+| `counting()` | Количество элементов группы |
+
+`Stream.toList()` и `Collectors.toList()` имеют разные гарантии.
+У результата `Stream.toList()` запрещены все изменения через методы
+списка: `add`, `remove`, `set`, `sort` и другие. Например,
+`Stream.of("Ada").toList().set(0, "Ann")` выбрасывает
+`UnsupportedOperationException`. Запрет не замораживает объекты элементов.
+`groupingBy` стандартной формы не обещает порядок ключей. Для
+изменяемого результата используйте нужную фабрику явно.
+
+Точные сигнатуры выбранных фабрик `Collectors` [@bib-java-api-25] (проверяемых исключений
+они не объявляют; `A` — тип промежуточного накопления):
+
+```java
+static <T> Collector<T, ?, List<T>> toList();
+static <T, C extends Collection<T>> Collector<T, ?, C>
+    toCollection(Supplier<C> collectionFactory);
+static Collector<CharSequence, ?, String> joining(CharSequence delimiter);
+static <T, K> Collector<T, ?, Map<K, List<T>>>
+    groupingBy(Function<? super T, ? extends K> classifier);
+static <T, K, D, A, M extends Map<K, D>> Collector<T, ?, M>
+    groupingBy(Function<? super T, ? extends K> classifier,
+               Supplier<M> mapFactory, Collector<? super T, A, D> downstream);
+static <T, K, U> Collector<T, ?, Map<K, U>>
+    toMap(Function<? super T, ? extends K> keyMapper,
+          Function<? super T, ? extends U> valueMapper);
+static <T, K, U> Collector<T, ?, Map<K, U>>
+    toMap(Function<? super T, ? extends K> keyMapper,
+          Function<? super T, ? extends U> valueMapper,
+          BinaryOperator<U> mergeFunction);
+static <T> Collector<T, ?, Long> counting();
+```
+
+Это справочные объявления методов, а не самостоятельный исходный класс.
+`Collection` и `Map` находятся в `java.util`, `Supplier` —
+в `java.util.function`.
+
+## Требования к функциям {#sec-h-streams-behavior}
+
+Действия не вмешиваются в источник и обычно не зависят от меняющегося
+внешнего состояния. Операция `reduce` требует ассоциативного объединения
+и подходящего нейтрального элемента. Параллельность не обещает ускорения.
+`forEach` не гарантирует порядок; `forEachOrdered` учитывает его при наличии.
+Не собирайте параллельный результат обычным внешним `ArrayList.add`.
+`peek` и другие эффекты, не влияющие на ответ, могут быть устранены
+оптимизацией; не используйте их для обязательной работы. Терминальная
+операция не закрывает файловый ресурс автоматически.

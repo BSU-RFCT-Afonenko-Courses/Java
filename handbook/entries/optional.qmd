@@ -1,0 +1,69 @@
+# Optional {#sec-h-optional}
+
+`Optional<T>` представляет наличие одного ненулевого значения либо его
+отсутствие. Основное назначение — возвращаемый результат, где пустота
+нормальна. Сам объект `Optional` не должен быть `null`.
+Объяснение: @theory:sec-t-streams [@bib-data-optional-api].
+
+## Создание и получение {#sec-h-optional-basic}
+
+Указаны точные выбранные сигнатуры. `Predicate`, `Function`, `Supplier`,
+`Consumer` относятся к `java.util.function`, `Stream` — к
+`java.util.stream`. Только вариант с поставщиком исключения объявляет
+`throws X`: тип проверяемого отказа выводится из поставщика. Остальные
+выбранные операции не объявляют проверяемых исключений; возможные
+непроверяемые отказы описаны условиями.
+
+| Форма | Результат / условие |
+|---|---|
+| `static <T> Optional<T> of(T value)` | Наличие; `null` → `NullPointerException` |
+| `static <T> Optional<T> ofNullable(T value)` | Наличие или пустота при `null` |
+| `static <T> Optional<T> empty()` | Отсутствие |
+| `boolean isPresent()` / `boolean isEmpty()` | Проверить состояние |
+| `T get()` | Значение; пустота → `NoSuchElementException` |
+| `T orElseThrow()` | Значение; пустота → `NoSuchElementException` |
+| `<X extends Throwable> T orElseThrow(Supplier<? extends X> exceptionSupplier) throws X` | Значение или исключение поставщика |
+| `T orElse(T other)` | Значение или уже вычисленный аргумент |
+| `T orElseGet(Supplier<? extends T> supplier)` | Значение или отложенное вычисление |
+
+```java
+var name = java.util.Optional.of("Ada");
+System.out.println(name.orElse("нет участника")); // Ada
+System.out.println(java.util.Optional.empty().orElse("нет")); // нет
+```
+
+`orElse(expensive())` вычисляет `expensive` до вызова, даже при наличии.
+`orElseGet(() -> expensive())` вычисляет его только при отсутствии.
+Поставщик нельзя подменять самим вычисленным результатом. Проверка
+`isPresent` и вызов `get` допустимы, но цепочка преобразований часто
+яснее показывает обе ветви.
+
+## Преобразование и действие {#sec-h-optional-transform}
+
+| Метод | Поведение |
+|---|---|
+| `Optional<T> filter(Predicate<? super T> predicate)` | Сохранить значение, если условие истинно |
+| `<U> Optional<U> map(Function<? super T, ? extends U> mapper)` | Преобразовать наличие; `null` результата → пустота |
+| `<U> Optional<U> flatMap(Function<? super T, ? extends Optional<? extends U>> mapper)` | Функция сама возвращает `Optional`; её `null` недопустим |
+| `Optional<T> or(Supplier<? extends Optional<? extends T>> supplier)` | При пустоте получить запасной `Optional` |
+| `void ifPresent(Consumer<? super T> action)` | Выполнить только при наличии |
+| `void ifPresentOrElse(Consumer<? super T> action, Runnable emptyAction)` | Выбрать действие наличия или пустоты |
+| `Stream<T> stream()` | Поток из нуля или одного элемента |
+
+```java
+String shown = students.stream().findFirst()
+    .map(Student::name).orElse("нет участников");
+```
+
+На пустом входе имя не извлекается. `Optional` не заменяет обработку
+ошибки чтения: отсутствие результата поиска и неудачный ввод-вывод имеют
+разный смысл. Для примитивов существуют `OptionalInt`, `OptionalLong`,
+`OptionalDouble` с `getAsInt/getAsLong/getAsDouble`; их API не полностью
+совпадает с обобщённым `Optional`. Среднее пустого числового потока
+отсутствует, сумма пустого потока может иметь нейтральный ноль.
+
+`Optional` является классом значений в смысле API: сравнивают `equals`
+и состояние, не полагаются на идентичность экземпляров и не используют
+его как монитор синхронизации. Пустое состояние не обещает единственный
+общий экземпляр, поэтому сравнение с `Optional.empty()` через `==`
+не является правильной проверкой.

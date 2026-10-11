@@ -1,0 +1,65 @@
+# List и ArrayList {#sec-h-lists}
+
+`List<E>` — последовательность с индексами, повторяющимися элементами и
+порядком просмотра. В Java 25 наследует `SequencedCollection<E>`.
+Разбор выбора реализации: @theory:sec-t-collections
+[@bib-data-list-api; @bib-data-arraylist-api].
+
+## Основные операции {#sec-h-lists-operations}
+
+| Сигнатура | Результат / изменение |
+|---|---|
+| `int size()` | Количество элементов |
+| `E get(int index)` | Элемент в позиции |
+| `E set(int index, E value)` | Заменить, вернуть прежний элемент |
+| `boolean add(E value)` | Добавить в конец |
+| `void add(int index, E value)` | Вставить перед позицией |
+| `E remove(int index)` | Удалить по позиции, вернуть элемент |
+| `boolean remove(Object value)` | Удалить первое равное вхождение |
+| `boolean contains(Object value)` | Наличие равного элемента |
+| `void sort(Comparator<? super E> order)` | Стабильная сортировка на месте |
+| `List<E> subList(int from, int to)` | Представление диапазона `[from, to)` |
+| `List<E> reversed()` | Обратное представление |
+| `E getFirst()` / `getLast()` | Крайний элемент |
+
+Для чтения, замены и удаления индекс в `[0, size())`; для вставки —
+в `[0, size()]`. Нарушение даёт `IndexOutOfBoundsException`.
+Пустота при `getFirst/getLast` даёт `NoSuchElementException`.
+Мутирующая операция может быть неподдерживаемой и дать
+`UnsupportedOperationException` при допустимом по типам вызове.
+
+```java
+var values = new java.util.ArrayList<>(java.util.List.of(10, 20, 10));
+values.remove(1);                    // удалён элемент 20 по индексу
+values.remove(Integer.valueOf(10)); // удалено первое значение 10
+System.out.println(values);         // [10]
+```
+
+## Конструирование и свойства {#sec-h-lists-factories}
+
+| Выражение | Состав и изменение |
+|---|---|
+| `new ArrayList<E>()` | Пустой изменяемый список |
+| `new ArrayList<E>(capacity)` | Размер 0, задана начальная вместимость |
+| `new ArrayList<>(source)` | Независимая структура; копируются ссылки |
+| `List.of(values...)` | Изменения запрещены; `null` запрещён; повторы разрешены |
+| `List.copyOf(source)` | Снимок состава с запрещёнными изменениями через методы списка; `null` запрещён |
+| `Collections.unmodifiableList(source)` | Неизменяемое представление основы |
+| `Arrays.asList(array)` | Представление массива фиксированного размера; `set` допустим |
+
+У `List.of`, `List.copyOf` и `Collections.unmodifiableList` запрещены
+также неструктурные изменения списка: `set`, `sort`, `replaceAll`.
+`List.copyOf(List.of("Ada")).set(0, "Ann")` выбрасывает
+`UnsupportedOperationException`. `copyOf` не обещает новый объект
+при каждом вызове. Изменяемые элементы
+не замораживаются ни фабрикой, ни копией списка. `subList` связан с
+основой; структурное изменение основы вне представления может сделать
+его дальнейшее поведение неопределённым.
+
+`ArrayList.get/set` имеют постоянную стоимость; добавление в конец —
+амортизированно постоянную; изменение середины сдвигает хвост.
+У `LinkedList.get(i)` поиск линейный. Для общего обхода используют
+`for-each` или итератор. `Iterator.remove` требует предшествующего `next`
+и поддержки удаления; нарушение порядка вызовов — `IllegalStateException`.
+Fail-fast обнаружение неправильных изменений выполняется по возможности,
+не служит синхронизацией.

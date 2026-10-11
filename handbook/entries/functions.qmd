@@ -1,0 +1,79 @@
+# Функциональные интерфейсы и лямбда-выражения {#sec-h-functions}
+
+Java 25. Полное объяснение передачи действий: @theory:sec-t-functions.
+Основания — JLS §15.27 и пакет `java.util.function`
+[@bib-data-jls-lambdas; @bib-data-function-api].
+
+## Формы интерфейсов {#sec-h-functions-interfaces}
+
+| Тип | Основной абстрактный метод |
+|---|---|
+| `Predicate<T>` | `boolean test(T value)` |
+| `Function<T,R>` | `R apply(T value)` |
+| `Consumer<T>` | `void accept(T value)` |
+| `Supplier<T>` | `T get()` |
+| `UnaryOperator<T>` | `T apply(T value)`; частный `Function<T,T>` |
+| `BinaryOperator<T>` | `T apply(T a, T b)`; частный `BiFunction<T,T,T>` |
+| `BiPredicate<T,U>` | `boolean test(T a, U b)` |
+| `BiFunction<T,U,R>` | `R apply(T a, U b)` |
+| `BiConsumer<T,U>` | `void accept(T a, U b)` |
+| `ToIntFunction<T>` | `int applyAsInt(T value)` |
+| `IntPredicate` | `boolean test(int value)` |
+| `IntUnaryOperator` | `int applyAsInt(int value)` |
+
+Статические, `default`- и приватные методы не создают дополнительных
+абстрактных действий. Публичные методы, совпадающие с методами `Object`,
+учитываются специальными правилами функциональности. Аннотация
+`@FunctionalInterface` проверяет свойство, а не создаёт его.
+
+## Запись лямбды {#sec-h-functions-syntax}
+
+```java
+Predicate<String> nonempty = s -> !s.isEmpty();
+BiFunction<Integer, Integer, Integer> sum = (a, b) -> a + b;
+Supplier<String> title = () -> "каталог";
+Function<String, Integer> length = (String s) -> {
+    return s.length();
+};
+```
+
+Целевой тип обязателен: он определяется присваиванием, аргументом,
+возвращаемым типом, приведением или другим допускаемым контекстом.
+`var f = s -> s.length();` недопустимо. В теле-блоке для возвращаемого
+значения нужны соответствующие `return`. Нельзя смешивать явно
+типизированные и нетипизированные параметры одной лямбды.
+Захватываемые локальные переменные окончательные или фактически
+окончательные; захват ссылки не запрещает изменение её объекта.
+`this` имеет смысл окружающего контекста. Идентичность объекта лямбды
+не является обещанием создания нового экземпляра при каждом вычислении.
+
+## Ссылки на методы {#sec-h-functions-references}
+
+| Форма | Пример и смысл |
+|---|---|
+| Статический метод | `Integer::parseInt`, будущая строка — аргумент |
+| Метод конкретного объекта | `System.out::println`, объект уже выбран |
+| Метод объекта из аргумента | `String::length`, будущая строка — получатель |
+| Конструктор | `ArrayList::new`, подходящий вызов создаёт список |
+
+Выбор перегрузки зависит от целевого типа. Ссылка обозначает действие,
+а запись с круглыми скобками вызывает метод сейчас. Проверяемое исключение
+должно допускаться сигнатурой абстрактного метода: `Function.apply`
+не разрешает непосредственный `IOException` без обработки.
+
+## Композиция {#sec-h-functions-compose}
+
+`Predicate.and/or` используют короткое замыкание; `negate` отрицает
+результат. `Function.andThen(after)` сначала выполняет текущую функцию,
+затем `after`. `Function.compose(before)` сначала выполняет `before`.
+
+```java
+Function<String, Integer> length = String::length;
+System.out.println(length.andThen(n -> n * 2).apply("Java")); // 8
+```
+
+Несовместимые типы последовательных действий отклоняются компилятором.
+Передача `null` вместо необходимого действия обычно приводит к
+`NullPointerException`; исключения из самого действия передаются вызывающей
+стороне согласно интерфейсу. Эти формы не обещают чистоту, отсутствие
+эффектов или безопасность совместного выполнения.

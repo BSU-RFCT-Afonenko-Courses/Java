@@ -1,0 +1,92 @@
+# Set, Map, Queue и Deque {#sec-h-sets-maps}
+
+Java 25. Объяснение выбора структуры и равенства:
+@theory:sec-t-collections, @theory:sec-t-equality.
+Карты входят в Collections Framework, но не наследуют `Collection`
+[@bib-data-set-api; @bib-data-map-api].
+
+## Множества {#sec-h-sets-maps-set}
+
+| Операция Set | Назначение |
+|---|---|
+| `boolean add(E e)` | Обеспечить наличие; `true`, если состав изменился |
+| `boolean contains(Object e)` | Проверить наличие |
+| `boolean remove(Object e)` | Удалить; `true`, если был элемент |
+
+`HashSet` использует хеширование, порядок просмотра не обещан;
+`LinkedHashSet` сохраняет порядок вставки; `TreeSet` поддерживает
+порядок сравнения. У последнего ноль сравнения определяет совпадение.
+У ключей и элементов хеш-структур сведения равенства и хеша должны
+оставаться устойчивыми во время хранения. Ожидаемая постоянная цена
+хеш-операций предполагает хорошее распределение хешей
+[@bib-data-hashset-api].
+
+`Set.of` запрещает изменения и `null`, отвергает повторы через
+`IllegalArgumentException`. `Set.copyOf` не отвергает все повторы
+входной коллекции: для равных повторных элементов сохраняется один
+произвольно выбранный представитель. Порядок этих фабрик не обещан.
+
+## Карты {#sec-h-sets-maps-map}
+
+| Сигнатура Map | Значение |
+|---|---|
+| `V put(K key, V value)` | Записать; вернуть прежнее значение или `null` |
+| `V get(Object key)` | Значение или `null` при отсутствии |
+| `boolean containsKey(Object key)` | Проверить наличие ключа |
+| `V getOrDefault(Object key, V fallback)` | Запасное только при отсутствии отображения |
+| `V remove(Object key)` | Удалить отображение и вернуть прежнее значение |
+| `Set<K> keySet()` | Представление ключей |
+| `Collection<V> values()` | Представление значений, повторы допустимы |
+| `Set<Map.Entry<K,V>> entrySet()` | Представление пар |
+
+При разрешённых `null`-значениях `get`/`put`/`remove` с результатом
+`null` не различают все случаи; проверяют `containsKey` по необходимости.
+Изменяемые представления отражают и изменяют основу, но не поддерживают
+вставку новых соответствий через простой `add`.
+
+```java
+var counts = new java.util.HashMap<String, Integer>();
+counts.merge("java", 1, Integer::sum);
+counts.merge("java", 1, Integer::sum);
+System.out.println(counts.get("java")); // 2
+```
+
+`merge(key, nonNullValue, function)` записывает значение при отсутствии
+или прежнем `null`, иначе объединяет старое и новое. `null` результата
+функции удаляет отображение. `computeIfAbsent` вычисляет значение для
+отсутствующего или `null`-отображения; `null` результата ничего не добавляет.
+Функция не должна произвольно изменять ту же карту во время вычисления;
+базовые методы обычной `Map` не обещают атомарность для нескольких потоков.
+
+`HashMap` не обещает порядок, обычный `LinkedHashMap` сохраняет порядок
+вставки ключей, `TreeMap` — порядок сравнения. `Map.of`/`copyOf`
+запрещают изменения и `null`. Фабрика `Map.of` отвергает повторные ключи;
+порядок обхода не обещан.
+
+## Очереди {#sec-h-sets-maps-queue}
+
+| Действие Queue | Исключение при пустоте/недоступности | Специальный результат |
+|---|---|---|
+| Добавить | `add(e)` | `offer(e)` → `false` |
+| Удалить голову | `remove()` | `poll()` → `null` |
+| Посмотреть голову | `element()` | `peek()` → `null` |
+
+Исключение удаления/просмотра пустой очереди — `NoSuchElementException`;
+невозможность добавления из-за вместимости при `add` —
+`IllegalStateException`. Другие ограничения элемента могут дать исключение
+в обеих формах. У `Deque` есть пары операций обоих концов:
+`addFirst/addLast`, `offerFirst/offerLast`, `removeFirst/removeLast`,
+`pollFirst/pollLast`, `getFirst/getLast`, `peekFirst/peekLast`
+[@bib-data-deque-api].
+
+```java
+java.util.Deque<String> queue = new java.util.ArrayDeque<>();
+queue.addLast("Ada");
+queue.addLast("Lin");
+System.out.println(queue.pollFirst()); // Ada: FIFO
+```
+
+`push/pop` работают с головой как стек LIFO. `ArrayDeque` запрещает `null`.
+`PriorityQueue` выдаёт наименьший по выбранному порядку элемент, но её
+итератор не обещает сортировку всего содержимого. Обычные реализации
+здесь не гарантируют безопасность конкурентного изменения.
