@@ -1,0 +1,53 @@
+---
+pagetitle: Обобщённые методы
+---
+
+# Обобщённые методы {#sec-h-generic-methods}
+
+Обобщённый метод объявляет собственные параметры перед возвращаемым типом. Он может находиться в обычном или обобщённом классе и быть статическим либо методом экземпляра. Метод, лишь использующий параметр своего класса, не является обобщённым методом в этом точном смысле. [@bib-objects-schildt-generics]
+
+## Собственный параметр метода {#sec-h-generic-methods-method}
+
+```java
+final class Values {
+    static <T> T identity(T value) {
+        return value;
+    }
+}
+```
+
+```java
+String word = Values.identity("Java");
+Number number = Values.<Number>identity(25);
+```
+
+Параметр объявляется перед возвращаемым типом; явный аргумент при вызове — перед именем метода. Параметры класса нельзя использовать в его статических полях и методах. Статический метод может объявить собственные параметры, как `identity` выше. Имена, совпадающие с параметрами класса, лучше не использовать: они обозначали бы другие параметры. [@bib-jls-generic-classes-methods]
+
+Для `Pair<A, B>` два параметра позволяют сохранить разные типы частей. В заголовке метода `static <A, B> Pair<B, A> reversed(Pair<A, B> pair)` перестановка аргументов результата выражает перестановку ролей. Это часть контракта; сама запись не выполняет обмен и не определяет отношение к `null`.
+
+## Связи и границы {#sec-h-generic-methods-bounds}
+
+```java
+static <T extends Comparable<? super T>> T max(
+        java.util.List<? extends T> values) {
+    if (values.isEmpty()) throw new IllegalArgumentException("empty list");
+    T best = values.get(0);
+    for (T value : values) {
+        if (value.compareTo(best) > 0) best = value;
+    }
+    return best;
+}
+```
+
+Предполагаются ненулевые список и элементы; порядок задаёт `compareTo`. Пустой список явно отвергается. `Comparable<? super T>` допускает сравнение, объявленное для супертипа; `List<? extends T>` разрешает чтение элементов как `T`. Возвращаемый тип связан с элементами. Краткие формы wildcard: @sec-h-wildcards; причины такого ограничения: @theory:sec-t-type-relations.
+
+## Выведение аргумента {#sec-h-generic-methods-inference}
+
+```java
+var ints = java.util.List.of(1, 4, 2);
+Integer best = max(ints); // 4
+String text = Values.identity("Java");
+Number value = Values.<Number>identity(3);
+```
+
+Выведение учитывает аргументы, границы и целевой тип. Оно не проверяет длины коллекций или ненулевость. Несколько появлений `T` требуют согласованного типа, но он может быть общим супертипом выражений. Явный аргумент типа ограничивает вывод и иногда делает намерение яснее. Сравнение с ромбом и `var`: @theory:sec-t-type-parameters-checking.
