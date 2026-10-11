@@ -1,3 +1,4 @@
+import { diagnostic } from "../domain/diagnostics.ts";
 import { isAbsolute, join, relative, resolve } from "stdlib/path";
 import type {
   Adapter,
@@ -18,6 +19,7 @@ export interface NativeRunPointer {
   outputDirectory: string;
   initialInputFiles?: string[];
   renderAll: boolean;
+  configurationHashes: Record<string,string|false>;
 }
 export interface NativeRun {
   schema: "course-native-run-v1";
@@ -44,13 +46,29 @@ async function contained(root: string, path: string) {
   if (real !== root) child(root, real);
   return real;
 }
+async function configurationHashes(root:string,activeProfiles:string[]):Promise<Record<string,string|false>>{
+  const names=["_quarto.yml","_quarto.yaml",...activeProfiles.flatMap(profile=>["_quarto-"+profile+".yml","_quarto-"+profile+".yaml"])];
+  const hashes:Record<string,string|false>={};
+  for(const name of names){
+    try{
+      const bytes=await Deno.readFile(child(root,name));
+      const digest=await crypto.subtle.digest("SHA-1",bytes);
+      hashes[name]=Array.from(new Uint8Array(digest)).map(byte=>byte.toString(16).padStart(2,"0")).join("");
+    }catch(error){if(error instanceof Deno.errors.NotFound)hashes[name]=false;else throw error;}
+  }
+  return hashes;
+}
 async function pointer(root: string): Promise<NativeRunPointer> {
   const p = await read(join(base(root), "active-native-run.json"));
   if (p.schema !== "course-native-run-pointer-v1" || p.projectRoot !== root) {
-    throw Error("NATIVE.RUN_POINTER_INVALID");
+    throw diagnostic("NATIVE.RUN_POINTER_INVALID", "Указатель текущей native-сборки некорректен", {source: root, field: "native-run"});
   }
   child(join(base(root), "native-runs"), p.directory);
   await contained(root, p.directory);
+  const current=Array.isArray(p.profiles)?await configurationHashes(root,p.profiles):{};
+  if(!Array.isArray(p.profiles) || !p.configurationHashes || Object.keys(current).length!==Object.keys(p.configurationHashes).length || Object.entries(current).some(([name,hash])=>p.configurationHashes[name]!==hash)) {
+    throw diagnostic("NATIVE.RUN_NOT_CURRENT","Нативная конфигурация изменилась после начала запуска",{source:root,field:"native-run"});
+  }
   return p;
 }
 async function list(root: string, key: string) {
@@ -100,6 +118,7 @@ export async function beginNativeRun(
     outputDirectory,
     initialInputFiles: await list(root, "QUARTO_PROJECT_INPUT_FILES"),
     renderAll: Deno.env.get("QUARTO_PROJECT_RENDER_ALL") === "1",
+    configurationHashes:await configurationHashes(root,profiles()),
   };
   await Deno.writeTextFile(
     join(base(root), "active-native-run.json"),
@@ -112,15 +131,15 @@ export async function finishNativeRun(projectRoot: string): Promise<NativeRun> {
   const complete = join(base(root), "native-run.json");
   if (await exists(complete)) await Deno.remove(complete);
   if (JSON.stringify(p.profiles) !== JSON.stringify(profiles())) {
-    throw Error("NATIVE.PROFILES_CHANGED");
+    throw diagnostic("NATIVE.PROFILES_CHANGED", "Профили изменились во время сборки", {source: root, field: "native-run"});
   }
   const outputFiles = await currentNativeOutputs(root);
-  if (!outputFiles.length) throw Error("NATIVE.NO_CURRENT_OUTPUTS");
+  if (!outputFiles.length) throw diagnostic("NATIVE.NO_CURRENT_OUTPUTS", "У сборки нет текущих выходных файлов", {source: root, field: "native-run"});
   for (const path of outputFiles) {
     if (path !== p.outputDirectory) child(p.outputDirectory, path);
     await contained(root, path);
     if (!(await Deno.stat(path)).isFile) {
-      throw Error("NATIVE.OUTPUT_NOT_FILE: " + path);
+      throw diagnostic("NATIVE.OUTPUT_NOT_FILE", "Выходной путь не является файлом: " + path, {source: root, field: "native-run"});
     }
   }
   const documents: DocumentResult[] = [];
@@ -133,7 +152,7 @@ export async function finishNativeRun(projectRoot: string): Promise<NativeRun> {
     if (
       d.scope !== "document" || d.source !== d.document?.source ||
       JSON.stringify(d.document.profiles) !== JSON.stringify(p.profiles)
-    ) throw Error("NATIVE.DOCUMENT_INVALID");
+    ) throw diagnostic("NATIVE.DOCUMENT_INVALID", "Контекст входного документа не соответствует текущей сборке", {source: d.source, field: "document"});
     const input = child(root, d.source);
     let out = child(p.outputDirectory, d.document.output);
     await contained(root, input);
@@ -157,20 +176,20 @@ export async function finishNativeRun(projectRoot: string): Promise<NativeRun> {
       }
     }
     if (!outputFiles.includes(out)) {
-      throw Error("NATIVE.DOCUMENT_NOT_CURRENT: " + d.source);
+      throw diagnostic("NATIVE.DOCUMENT_NOT_CURRENT", "Документ не связан с текущим выходным файлом: " + d.source, {source: d.source, field: "document"});
     }
     if (
       documents.some((x) =>
         x.source === d.source && x.document.format === d.document.format
       )
-    ) throw Error("NATIVE.DUPLICATE_DOCUMENT");
+    ) throw diagnostic("NATIVE.DUPLICATE_DOCUMENT", "Повторный документ одного формата", {source: d.source, field: "document"});
     if (d.resources) {
       d.resources = normalizeResourceFacts(d.resources);
       if (
         d.resources.source !== d.source ||
         resolve(d.resources.outputDirectory) !== p.outputDirectory
       ) {
-        throw Error("NATIVE.RESOURCE_CONTEXT_INVALID");
+        throw diagnostic("NATIVE.RESOURCE_CONTEXT_INVALID", "Ресурс относится к другому документу или выходному каталогу", {source: d.source, field: "document"});
       }
       for (const file of d.resources.capturedFiles || []) {
         if (file.capture) {
@@ -188,7 +207,7 @@ export async function finishNativeRun(projectRoot: string): Promise<NativeRun> {
         !documents.some((d) =>
           resolve(p.outputDirectory, d.document.output) === output
         )
-      ) throw Error("NATIVE.MISSING_DOCUMENT: " + output);
+      ) throw diagnostic("NATIVE.MISSING_DOCUMENT", "Для текущего HTML не найден результат Core: " + output, {source: root, field: "native-run"});
     }
   }
   await cleanHiddenResourceOutputs(
@@ -206,7 +225,7 @@ export async function finishNativeRun(projectRoot: string): Promise<NativeRun> {
     if (
       c.name !== e.name || typeof c.rules !== "string" ||
       typeof c.directory !== "string"
-    ) throw Error("NATIVE.ADAPTER_CONTRACT_INVALID");
+    ) throw diagnostic("NATIVE.ADAPTER_CONTRACT_INVALID", "Некорректный контракт установленного адаптера", {source: root, field: "native-run"});
     child(c.directory, c.rules);
     await contained(root, c.directory);
     const fragments = new Map<string, AdapterFragment>();
@@ -231,7 +250,7 @@ export async function finishNativeRun(projectRoot: string): Promise<NativeRun> {
           JSON.stringify(d.document.profiles) ||
         v.course?.id !== d.course.id || v.course?.view !== d.course.view ||
         v.adapter !== c.name || fragments.has(v.source)
-      ) throw Error("NATIVE.ADAPTER_NOT_CURRENT");
+      ) throw diagnostic("NATIVE.ADAPTER_NOT_CURRENT", "Фрагмент адаптера не относится к текущему документу", {source: v.source, id: c.name, field: "adapter"});
       fragments.set(v.source, v);
     }
     adapters.push({
@@ -251,17 +270,39 @@ export async function finishNativeRun(projectRoot: string): Promise<NativeRun> {
     outputFiles,
     inputFiles,
   };
-  const serialized = JSON.stringify({
-    ...run,
-    directory: p.directory,
-    adapters: adapters.map((a) => ({
-      ...a,
-      fragments: [...a.fragments.values()],
-    })),
-  });
-  await Deno.writeTextFile(join(p.directory, "native-run.json"), serialized);
-  await Deno.writeTextFile(join(base(root), "native-run.json"), serialized);
+  await saveNativeRun(run);
   return run;
+}
+export async function saveNativeRun(run:NativeRun,persistDocuments=false){
+  const root=await Deno.realPath(run.projectRoot),p=await pointer(root);
+  for(const doc of persistDocuments?run.documents:[]){
+    const digest=await crypto.subtle.digest("SHA-1",new TextEncoder().encode(doc.source+"\0"+doc.document.format));
+    const filename=Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,"0")).join("")+".json";
+    const encoded=JSON.stringify(doc);
+    for await(const entry of Deno.readDir(join(p.directory,"documents"))){
+      if(!entry.isFile||!entry.name.endsWith(".json"))continue;
+      const current=await read(join(p.directory,"documents",entry.name));
+      if(current.source===doc.source&&current.document?.format===doc.document.format)await Deno.writeTextFile(join(p.directory,"documents",entry.name),encoded);
+    }
+    const directory=join(base(root),"documents",doc.course.view??"default");
+    await Deno.mkdir(directory,{recursive:true});
+    await Deno.writeTextFile(join(directory,filename),encoded);
+  }
+  const serialized=JSON.stringify({...run,directory:p.directory,adapters:run.adapters.map(a=>({...a,fragments:[...a.fragments.values()]}))});
+  await Deno.writeTextFile(join(p.directory,"native-run.json"),serialized);
+  await Deno.writeTextFile(join(base(root),"native-run.json"),serialized);
+}
+/** Rebind only the exporter-owned temporary profile's planned removal. */
+export async function prepareNativeExportCleanup(projectRoot:string,profile:string){
+  const root=await Deno.realPath(projectRoot),p=await pointer(root);
+  const run=await read(join(p.directory,"native-run.json"));
+  if(run.directory!==p.directory || !run.documents?.length || !run.documents.every((doc:DocumentResult)=>doc.document.exportContext===true) || !p.profiles.includes(profile)) {
+    throw diagnostic("NATIVE.RUN_NOT_CURRENT","Нельзя завершить временную конфигурацию чужого запуска",{source:root,field:"native-run"});
+  }
+  const name="_quarto-"+profile+".yml";
+  if(!(name in p.configurationHashes))throw diagnostic("NATIVE.RUN_NOT_CURRENT","Временный профиль отсутствует в текущем запуске",{source:root,field:"native-run"});
+  p.configurationHashes[name]=false;
+  await Deno.writeTextFile(join(base(root),"active-native-run.json"),JSON.stringify(p));
 }
 export async function loadNativeRun(
   projectRoot: string,
@@ -273,7 +314,7 @@ export async function loadNativeRun(
   if (
     run.schema !== "course-native-run-v1" || run.directory !== p.directory ||
     run.projectRoot !== root
-  ) throw Error("NATIVE.RUN_NOT_CURRENT");
+  ) throw diagnostic("NATIVE.RUN_NOT_CURRENT", "Сохранённая native-сборка не является текущей", {source: root, field: "native-run"});
   if (
     expectation.profiles &&
       JSON.stringify(expectation.profiles) !== JSON.stringify(run.profiles) ||
@@ -283,7 +324,7 @@ export async function loadNativeRun(
       ) ||
     expectation.outputDirectory &&
       resolve(root, expectation.outputDirectory) !== run.outputDirectory
-  ) throw Error("NATIVE.EXPECTATION_MISMATCH");
+  ) throw diagnostic("NATIVE.EXPECTATION_MISMATCH", "Native-сборка не соответствует выбранному профилю, представлению или каталогу", {source: root, field: "native-run"});
   run.adapters = run.adapters.map((a: any) => ({
     ...a,
     fragments: new Map(a.fragments.map((f: AdapterFragment) => [f.source, f])),

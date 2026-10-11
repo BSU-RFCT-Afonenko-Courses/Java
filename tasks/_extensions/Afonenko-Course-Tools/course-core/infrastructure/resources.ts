@@ -1,3 +1,4 @@
+import { diagnostic } from "../domain/diagnostics.ts";
 import { dirname, relative, resolve } from "stdlib/path";
 import { child } from "./files.ts";
 export interface ResourceFacts {
@@ -33,6 +34,24 @@ export function normalizeResourceFacts(fact: ResourceFacts): ResourceFacts {
       ...(file.capture ? { capture: resolve(file.capture) } : {}),
     })),
   };
+}
+/** Same native Link/Image/raw HTML uses as the Lua observation, after existing
+ * Pandoc JSON projection. Whole-page AST retains other public/shared uses. */
+export function projectedResourceUses(ast:unknown):string[]{
+  const uses=new Set<string>();
+  const add=(uri:unknown)=>{
+    if(typeof uri!=="string"||!uri||/^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i.test(uri))return;
+    const path=uri.split(/[?#]/)[0];if(path)uses.add(path);
+  };
+  const walk=(value:any)=>{
+    if(Array.isArray(value)){value.forEach(walk);return;}
+    if(!value||typeof value!=="object")return;
+    if(value.t==="Link"||value.t==="Image")add(value.c?.[2]?.[0]);
+    if((value.t==="RawBlock"||value.t==="RawInline")&&value.c?.[0]==="html"){
+      for(const match of value.c[1].matchAll(/(?:src|href)\s*=\s*["']([^"']+)["']/gi))add(match[1]);
+    }
+    Object.values(value).forEach(walk);
+  };walk(ast);return [...uses];
 }
 export interface ResourceFile {
   source: string;
@@ -70,7 +89,7 @@ async function capturedPath(root: string, fact: ResourceFacts, source: string) {
       !/^(?:native-runs|document-resources)\//.test(
         captured.capture.slice(offset + marker.length),
       )
-    ) throw Error("RESOURCE.CAPTURE_PATH_INVALID");
+    ) throw diagnostic("RESOURCE.CAPTURE_PATH_INVALID", "Недопустимый путь сохранённых байтов ресурса", {source: fact.source, field: "resource"});
     captureRoot = captured.capture.slice(0, offset) + "/_generated/course-spec";
     child(captureRoot, captured.capture);
     candidates.push(captured.capture);
@@ -85,7 +104,7 @@ async function capturedPath(root: string, fact: ResourceFacts, source: string) {
       if (!(error instanceof Deno.errors.NotFound)) throw error;
     }
   }
-  throw Error("RESOURCE.CURRENT_BYTES_MISSING: " + source);
+  throw diagnostic("RESOURCE.CURRENT_BYTES_MISSING", "Текущие байты ресурса не найдены: " + source, {source: fact.source, field: "resource"});
 }
 const usePath = (root: string, fact: ResourceFacts, use: string) =>
   use.startsWith("/")
@@ -169,7 +188,7 @@ export async function cleanHiddenResourceOutputs(
         child(root, real);
         if (visible.has(real) || real === file.source) continue;
         if (await digest(real) !== file.sha1) {
-          throw Error("RESOURCE.CURRENT_BYTES_MISMATCH: " + file.output);
+          throw diagnostic("RESOURCE.CURRENT_BYTES_MISMATCH", "Байты ресурса изменились после текущего рендера: " + file.output, {source: fact.source, field: "resource"});
         }
         await Deno.remove(file.output);
       } catch (e) {
@@ -275,7 +294,7 @@ export async function evaluateResources(
       authored.has(path) ||
       raw.has(path) && !visible.has(path)
     ) {
-      throw Error("RESOURCE.PRIVATE_OR_SOURCE: " + selected);
+      throw diagnostic("RESOURCE.PRIVATE_OR_SOURCE", "Закрытый, служебный или исходный файл нельзя включать в публичный ресурс: " + selected, {source: selected, field: "resource"});
     }
     const fact = facts.find((f) =>
       f.projectedUses.some((u) => local(u) && resolveUse(f, u) === path)
@@ -294,14 +313,14 @@ export async function evaluateResources(
         ) ||
       protectedProjectPath(real) || authoredPhysical.has(real) ||
       rawPhysical.has(real) && !visiblePhysical.has(real)
-    ) throw Error("RESOURCE.PRIVATE_OR_SOURCE: " + selected);
+    ) throw diagnostic("RESOURCE.PRIVATE_OR_SOURCE", "Закрытый, служебный или исходный файл нельзя включать в публичный ресурс: " + selected, {source: selected, field: "resource"});
     if (!(await Deno.stat(real)).isFile) {
-      throw Error("RESOURCE.NOT_FILE: " + selected);
+      throw diagnostic("RESOURCE.NOT_FILE", "Выбранный ресурс не является файлом: " + selected, {source: selected, field: "resource"});
     }
     if (
       options.availableFiles &&
       !options.availableFiles.map((x) => resolve(root, x)).includes(path)
-    ) throw Error("RESOURCE.NOT_AVAILABLE: " + selected);
+    ) throw diagnostic("RESOURCE.NOT_AVAILABLE", "Ресурс отсутствует среди доступных файлов текущей сборки: " + selected, {source: selected, field: "resource"});
     files.push({
       source: fact?.source || name,
       path: real,

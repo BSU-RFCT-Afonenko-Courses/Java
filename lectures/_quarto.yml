@@ -19,6 +19,13 @@ project:
   - '!_freeze/**'
   - '!.quarto/**'
   - '!_extensions/**'
+  - '!**/*.rmd'
+  - '!**/*.ipynb'
+  - '!**/_output/**'
+  - '!**/_site*/**'
+  - '!**/_generated/**'
+  - '!**/projects/**'
+  - '!**/.superpowers/**'
   pre-render:
   - _extensions/Afonenko-Course-Tools/course-core/entrypoints/pre.ts
   post-render:
@@ -30,8 +37,6 @@ profile:
   group:
   - - student
     - full
-course:
-  id: java-lectures
 filters:
 - course-core
 - course-presentation
@@ -42,12 +47,11 @@ format:
     slide-level: 2
     navigation-mode: linear
     theme: default
-    show-notes: false
     slide-number: true
+    pdf-separate-fragments: false
     revealjs-plugins:
     - course-navigation
 lang: ru
 reference-catalog:
   namespace: lectures
-course-presentation:
-  mode: lecture
+fail-if-warnings: true
