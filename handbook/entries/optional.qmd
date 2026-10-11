@@ -59,7 +59,10 @@ String shown = students.stream().findFirst()
 
 На пустом входе имя не извлекается. `Optional` не заменяет обработку
 ошибки чтения: отсутствие результата поиска и неудачный ввод-вывод имеют
-разный смысл. Для примитивов существуют `OptionalInt`, `OptionalLong`,
+разный смысл. `Optional.empty()` не хранит причину отказа проверки
+данных; вариант результата с диагностикой рассмотрен в
+@theory:sec-t-exceptions-typed-result, выбор исхода — в
+@theory:sec-t-streams-outcomes. Для примитивов существуют `OptionalInt`, `OptionalLong`,
 `OptionalDouble` с `getAsInt/getAsLong/getAsDouble`; их API не полностью
 совпадает с обобщённым `Optional`. Среднее пустого числового потока
 отсутствует, сумма пустого потока может иметь нейтральный ноль.

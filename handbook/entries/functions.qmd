@@ -77,3 +77,17 @@ System.out.println(length.andThen(n -> n * 2).apply("Java")); // 8
 `NullPointerException`; исключения из самого действия передаются вызывающей
 стороне согласно интерфейсу. Эти формы не обещают чистоту, отсутствие
 эффектов или безопасность совместного выполнения.
+
+
+## Возвращаемое действие {#sec-h-functions-returned}
+
+```java
+static java.util.function.IntPredicate atLeast(int threshold) {
+    return n -> n >= threshold;
+}
+```
+
+`atLeast(5)` возвращает действие; `atLeast(5).test(4)` вызывает его и даёт
+`false`. Захватываемый параметр не переприсваивается. Захват ссылки на
+изменяемый объект сохраняет доступ к его последующему состоянию, а не
+снимок полей. Развивающийся пример: @theory:sec-t-functions-returned.
