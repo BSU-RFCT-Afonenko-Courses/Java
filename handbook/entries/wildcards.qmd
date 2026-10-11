@@ -1,0 +1,83 @@
+---
+pagetitle: Wildcards и границы типов
+---
+
+# Wildcards и границы типов {#sec-h-wildcards}
+
+В `List<?>` знак `?` обозначает неизвестный аргумент типа. Границы уточняют операции, разрешённые через эту ссылку. Они не меняют фактический объект списка. [@bib-jls-wildcards-capture]
+
+## Чтение и запись {#sec-h-wildcards-access}
+
+| Тип ссылки | Гарантированный тип прочитанного элемента | Что можно передать в `add` по правилам типов |
+|---|---|---|
+| `List<T>` | `T` | Значение `T` или его подтипа |
+| `List<?>` | `Object` | Только `null` |
+| `List<? extends T>` | `T` | Только `null` |
+| `List<? super T>` | `Object` | Значение `T` или его подтипа; также `null` |
+
+Допустимость по типам не обещает успешного изменения: список может запрещать добавление или `null`. Верхняя граница не означает неизменяемость: например, вызов `clear()` проходит проверку типов. [@bib-jls-capture-conversion; @bib-java-api-25]
+
+В следующем фрагменте нужны `import java.util.List;` и `import java.util.ArrayList;`:
+
+```java
+List<Integer> integers = new ArrayList<>();
+integers.add(7);
+List<? extends Number> source = integers;
+Number number = source.get(0);
+// source.add(8);              // ошибка компиляции
+// List<Number> all = integers; // ошибка компиляции
+
+List<? super Integer> target = new ArrayList<Number>();
+target.add(8);
+Object item = target.get(0);
+```
+
+`List<Integer>` не является подтипом `List<Number>`. Вариант `? extends Number` позволяет читать числа, а `? super Integer` — передавать целые числа приёмнику. [@bib-jls-class-interface-subtyping]
+
+## Связь источника и приёмника {#sec-h-wildcards-copy}
+
+Заголовок метода дописывания элементов:
+
+```java
+static <T> void copy(List<? extends T> source,
+                     List<? super T> target)
+```
+
+`source` предоставляет значения, совместимые с `T`; `target` принимает их. Если источник имеет тип `List<Integer>`, приёмник может иметь тип `List<Number>` или `List<Object>`. Направление `List<Number>` → `List<Integer>` не проходит проверку: среди исходных значений может оказаться `Double`.
+
+Сигнатура не устанавливает поведение для пустого источника, `null`, совпадающих списков и их общих представлений. Не устанавливает она и гарантию «при ошибке приёмник не меняется». Пример переноса и дополнительные условия его применения разобраны в @theory:sec-t-type-relations-copy.
+
+Не следует путать этот учебный метод с `Collections.copy`: библиотечный метод принимает сначала приёмник, затем источник, заменяет уже существующие элементы и требует достаточной длины приёмника. [@bib-java-api-25]
+
+## Минимальный API списка {#sec-h-wildcards-list-api}
+
+`List<E>` — интерфейс последовательности; `ArrayList<E>` — её изменяемая реализация. Для следующих объявлений нужны типы из `java.util`. Таблица содержит только операции, необходимые для работы с небольшими входными списками. [@bib-java-api-25]
+
+| Сигнатура | Результат и условия | API Java 25 |
+|---|---|---|
+| `int size()` | Число элементов | [List](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html#size()) |
+| `boolean isEmpty()` | `true`, если элементов нет | [List](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html#isEmpty()) |
+| `E get(int index)` | Элемент; требуется `0 <= index < size()` | [List](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html#get(int)) |
+| `boolean add(E value)` | Добавляет в конец; при успешном возврате для списка — `true` | [List](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html#add(E)) |
+| `boolean addAll(Collection<? extends E> values)` | Дописывает элементы; `true`, если список изменился | [List](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html#addAll(java.util.Collection)) |
+| `E set(int index, E value)` | Заменяет элемент; возвращает прежнее значение | [List](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html#set(int,E)) |
+| `ArrayList()` | Создаёт пустой изменяемый список | [ArrayList](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayList.html#%3Cinit%3E()) |
+| `ArrayList(Collection<? extends E> values)` | Новый список с теми же ссылками на элементы, в порядке обхода | [ArrayList](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayList.html#%3Cinit%3E(java.util.Collection)) |
+| `static <E> List<E> of()` | Пустой список без возможности изменения | [List.of](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html#of()) |
+| `static <E> List<E> of(E... elements)` | Список без возможности изменения; `null` запрещён | [List.of](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html#of(E...)) |
+
+Для `List.of` существуют также перегрузки с фиксированным числом аргументов от одного до десяти. Недопустимый индекс у `get` и `set` приводит к `IndexOutOfBoundsException`. Операции изменения, которые реализация не поддерживает, могут завершиться `UnsupportedOperationException`. [@bib-java-api-25]
+
+## Входные данные и изменяемость {#sec-h-wildcards-input}
+
+```java
+List<Integer> source = List.of(3, 8);
+List<Number> target = new ArrayList<>(source);
+boolean added = target.add(5);             // true
+boolean changed = target.addAll(List.of()); // false
+int originalSize = source.size();           // 2
+```
+
+`ArrayList` допускает `null`; `List.of` отвергает его с `NullPointerException`. Поэтому отсутствие `null` в списке — отдельное условие алгоритма, даже если его элементы имеют тип `Integer`. Копирующий конструктор создаёт другой список, но не копирует сами объекты элементов. [@bib-java-api-25]
+
+Пустой список и `null` — разные значения входа: у пустого списка можно запросить размер и выполнить обход. Вызов метода через `null` вызывает `NullPointerException`. Проверка списка не проверяет каждый его элемент. Если контракт требует проверить все элементы до первого изменения приёмника, проверка только текущего элемента в процессе добавления этого требования не выполняет.

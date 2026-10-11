@@ -1,0 +1,593 @@
+---
+title: "Функции и конвейеры Stream"
+lang: ru
+format:
+  revealjs:
+    fontsize: 32px
+    width: 1280
+    height: 800
+    incremental: false
+    show-notes: false
+    css: assets/lesson.css
+---
+
+## Функции и конвейеры Stream {#sec-l-07-functions}
+
+Java 25, без preview. Меняющееся условие отбора превращается в аргумент алгоритма, затем в стадию конвейера.
+
+::: {.notes}
+80 минут: 75 на группы, 5 на начало и переходы. Основные пояснения и ответы остаются на слайдах; notes добавляют
+паузы для прогноза и пояснения преподавателя. Титул, разделители и источники
+не входят в число содержательных экранов.
+:::
+
+## Передача условия отбора {#sec-l-07-functions-group-1}
+
+::: {.notes}
+16 минут. Сначала определить меняющуюся часть двух циклов. Предсказать результаты теста для границы 80.
+:::
+
+### Изменяемое условие отбора {#sec-l-07-functions-step-01}
+
+```java
+record Student(String id, String name, int score) {}
+for (Student s : source) {
+    if (s.score() >= 80) result.add(s);
+}
+```
+**При отборе по имени обход и накопление остаются прежними.**
+Меняется условие. Его можно передать как самостоятельное действие,
+сохранив один алгоритм. Мотивация: @theory:sec-t-functions.
+
+### Функциональный интерфейс {#sec-l-07-functions-step-02}
+
+```java
+@FunctionalInterface
+interface StudentTest {
+    boolean test(Student student);
+}
+```
+**Вызывающий метод знает аргумент `Student` и результат `boolean`.**
+Конкретное условие ещё не выбрано. Аннотация просит компилятор проверить
+единственное абстрактное действие [@bib-data-epam-functions].
+
+### Вызов переданного правила {#sec-l-07-functions-step-03}
+
+```java
+static List<Student> select(List<Student> source, StudentTest rule) {
+    var result = new ArrayList<Student>();
+    for (Student s : source) {
+        if (rule.test(s)) result.add(s);
+    }
+    return List.copyOf(result);
+}
+```
+**Проверка не встроена в обход.** Каждый участник становится аргументом `test`.
+
+### Лямбда условия отбора {#sec-l-07-functions-step-04}
+
+```java
+var selected = select(students, s -> s.score() >= 80);
+```
+**Для баллов 90, 70, 80 результат содержит первую и третью записи.**
+`->` отделяет параметры от тела. Отбор сохраняет порядок подходящих
+участников; исходный список остаётся прежним.
+
+### Замена условия {#sec-l-07-functions-step-05 .continuation}
+
+```java
+var selected = select(students, s -> s.name().startsWith("A"));
+```
+**Для имён Ada, Lin, Ann снова отобраны первая и третья записи,
+но теперь основание другое.** Код обхода не изменился. Если балл Ann
+снизить до 50, отбор по имени всё ещё её сохранит.
+
+### Создание действия и вызов {#sec-l-07-functions-step-06}
+
+```java
+StudentTest passed = s -> s.score() >= 80;
+System.out.println(passed.test(new Student("s1", "Ada", 90))); // true
+```
+**Инициализация задаёт действие.** Тело выполняется при `test` с конкретным
+участником. Сохранённое действие можно вызвать неоднократно с разными данными.
+
+### Целевой тип лямбды {#sec-l-07-functions-step-07}
+
+```java
+StudentTest a = (Student s) -> s.score() >= 80;
+StudentTest b = s -> s.score() >= 80;
+// var c = s -> s.score() >= 80; // ошибка компиляции
+```
+**В первых строках сигнатура `test` даёт тип `s`.**
+Для `var` такого контекста нет: лямбда не выбирает интерфейс самостоятельно.
+
+### Тело выражения и тело блока {#sec-l-07-functions-step-08}
+
+```java
+StudentTest valid = s -> {
+    int score = s.score();
+    return score >= 0 && score <= 100;
+};
+```
+**В теле-выражении результат задаёт выражение; в блоке нужен `return`.**
+Все пути нормального завершения должны дать требуемый `boolean`.
+
+### Абстрактные операции интерфейса {#sec-l-07-functions-step-09}
+
+**`default`- и статические методы не увеличивают число абстрактных действий.**
+Публичные методы `Object` не создают второе действие для определения
+функциональности.
+
+Поэтому `Comparator` функционален, хотя объявляет `compare` и `equals`.
+Аннотация проверяет это свойство, а её отсутствие не запрещает лямбды.
+
+### Лямбда и анонимный класс {#sec-l-07-functions-step-10}
+
+```java
+StudentTest test = new StudentTest() {
+    public boolean test(Student s) { return s.score() >= 80; }
+};
+```
+**Обе формы дают реализацию интерфейса.** У лямбды `this` — из окружающего
+контекста; у анонимного класса — его объект. Лямбда не обещает создание
+нового экземпляра определённого анонимного класса при каждом вычислении.
+
+## Форма действия и его эффект {#sec-l-07-functions-group-2}
+
+::: {.notes}
+9 минут. Сопоставить вход и выход действий, внешний эффект и исторический выбор интерфейсов.
+:::
+
+### Стандартные формы действий {#sec-l-07-functions-step-11}
+
+| Вход → результат | Форма |
+|---|---|
+| участник → boolean | `Predicate<Student>` |
+| участник → текст | `Function<Student, String>` |
+| текст → внешний эффект | `Consumer<String>` |
+| без аргумента → значение | `Supplier<T>` |
+
+**Сигнатура описывает вызов, но ещё не обещает чистоту действия.**
+Примитивные формы и операторы: @handbook:sec-h-functions.
+
+### Получение предметного значения {#sec-l-07-functions-step-12}
+
+```java
+Function<Student, String> name = s -> s.name();
+System.out.println(name.apply(new Student("s1", "Ada", 90))); // Ada
+```
+**Аргумент и результат могут иметь разные типы.** Имя `apply` задано
+интерфейсом; пользовательская лямбда определяет конкретное преобразование.
+
+### Вычисление и внешний эффект {#sec-l-07-functions-step-13}
+
+```java
+Consumer<String> print = text -> System.out.println(text);
+print.accept("готово"); // готово
+```
+**Возвращаемого значения нет, но есть эффект вывода.** Отсутствие результата
+не означает чистоту функции. Такой интерфейс может также изменять объект,
+если это допускает его соглашение.
+
+### Отложенное получение значения {#sec-l-07-functions-step-14}
+
+```java
+Supplier<List<Student>> empty = () -> List.of();
+System.out.println(empty.get().size()); // 0
+```
+**Аргументов нет.** Поставщик не обязан каждый раз создавать новый объект:
+это зависит от переданного действия. Форма полезна для отложенного
+вычисления запасного значения.
+
+### Развитие представления поведения {#sec-l-07-functions-step-15}
+
+В Java обработчики и компараторы передавались объектами интерфейсов
+ещё до лямбд. Project Lambda сделала представление кода данными
+короче, сохраняя применение существующих интерфейсов
+[@bib-context-lambda-design].
+
+**Лямбда реализует операцию известного интерфейса.**
+Совместимость с существующим API объясняет выбор целевого типа;
+это не просто сокращение текста анонимного класса.
+
+### Передача отбора в Python {#sec-l-07-functions-step-16}
+
+```python
+def select(source, rule):
+    return [s for s in source if rule(s)]
+passed = select(students, lambda s: s.score >= 80)
+```
+Для Ada:90, Lin:70, Ann:80 отобраны Ada и Ann, как в Java.
+
+**Обход вызывает переданное действие в обоих вариантах.**
+Java проверяет допустимый вызов по интерфейсу; Python выполняет
+вызов объекта: @theory:sec-t-functions-context.
+
+## Ссылки, захват и композиция {#sec-l-07-functions-group-3}
+
+::: {.notes}
+16 минут. Различить вызов, возвращаемое правило и состояние замыкания. Составить два условия.
+:::
+
+### Ссылка на метод {#sec-l-07-functions-step-17}
+
+```java
+Function<Student, String> name = Student::name;
+Function<String, Integer> parse = Integer::parseInt;
+```
+**Первая ссылка получает объект и вызывает его метод; вторая обозначает
+статический метод.** Круглых скобок вызова нет: аргумент появится позже.
+
+### Связанный метод и конструктор {#sec-l-07-functions-step-18}
+
+```java
+Consumer<String> print = System.out::println;
+Supplier<ArrayList<String>> create = ArrayList::new;
+print.accept("Ada");
+System.out.println(create.get().size()); // 0
+```
+**`println` связан с выбранным объектом вывода.** Конструкторная ссылка
+создаёт новый список при вызове поставщика.
+
+### Захват локального значения {#sec-l-07-functions-step-19}
+
+```java
+int threshold = 80;
+Predicate<Student> passed = s -> s.score() >= threshold;
+// threshold = 90; // сделало бы захват недопустимым
+```
+**Локальная переменная должна быть `final` или фактически окончательной.**
+Правило относится к её значению; переприсваивание запрещено
+[@bib-data-jls-lambdas].
+
+### Захват ссылки на изменяемый объект {#sec-l-07-functions-step-20}
+
+```java
+var log = new ArrayList<String>();
+Consumer<Student> remember = s -> log.add(s.id());
+remember.accept(student);
+```
+**Ссылка `log` не переприсваивается, поэтому захват допустим.**
+Список изменился. Общая изменяемая память создаёт зависимость между
+вызовами и требует отдельного внимания при параллельной работе.
+
+### Возвращаемое правило {#sec-l-07-functions-returned-rule}
+
+```java
+static Predicate<Student> atLeast(int threshold) {
+    return s -> s.score() >= threshold;
+}
+var passed = atLeast(80);
+System.out.println(passed.test(new Student("s3", "Ann", 80))); // true
+```
+**Создание правила ещё не проверяет участника.**
+Значение порога доступно позднему вызову после возврата `atLeast`.
+
+### Изменяемая настройка замыкания {#sec-l-07-functions-live-setting}
+
+```java
+class Settings { int threshold = 80; }
+var config = new Settings();
+Predicate<Student> rule = s -> s.score() >= config.threshold;
+config.threshold = 90;
+```
+Для Ann:80 прежнее правило теперь даёт `false`.
+
+**Захваченная ссылка не является снимком состояния объекта.**
+Стабильный отчёт получает число-порог: @theory:sec-t-functions-returned.
+
+
+
+### Композиция предикатов {#sec-l-07-functions-step-21}
+
+```java
+Predicate<Student> passed = s -> s.score() >= 80;
+Predicate<Student> named = s -> s.name().startsWith("A");
+var both = passed.and(named);
+```
+**Если первый предикат ложен, второй не вызывается.** Поэтому функции с
+побочными эффектами могут вести себя иначе после перестановки условий.
+
+### Композиция преобразований {#sec-l-07-functions-step-22}
+
+```java
+Function<String, Integer> length = String::length;
+Function<Integer, Integer> twice = n -> n * 2;
+System.out.println(length.andThen(twice).apply("Java")); // 8
+```
+**`andThen` сначала вычисляет длину, затем удваивает.**
+`compose` сначала применяет переданную функцию, затем текущую.
+Тип результата первого шага должен подходить второму.
+
+### Проверяемые исключения действия {#sec-l-07-functions-step-23}
+
+```java
+// Function<Path, String> read = Files::readString;
+// ошибка: apply не разрешает проверяемый IOException
+```
+**Лямбда не отменяет проверку исключений.** Можно выбрать собственный интерфейс
+с `throws`, обработать ошибку на подходящем уровне или вынести ввод-вывод
+из преобразования. Нельзя скрывать любой отказ случайным `null`.
+
+## Композиция конвейера {#sec-l-07-functions-group-4}
+
+::: {.notes}
+34 минуты. Проследить тип элементов по стадиям. Проверить пустоту, одноразовость, порядок стадий и сборку результата.
+:::
+
+### Отбор и сортировка циклом {#sec-l-07-functions-step-24}
+
+```java
+var names = new ArrayList<String>();
+for (Student s : students) {
+    if (s.score() >= 80) names.add(s.name());
+}
+names.sort(Comparator.naturalOrder());
+```
+**Видны три действия: отбор, извлечение имён, сортировка.**
+Stream позволит связать именно эту последовательность, а не изменит задачу.
+
+### Отбор и сортировка конвейером {#sec-l-07-functions-step-25}
+
+```java
+var names = students.stream()
+    .filter(s -> s.score() >= 80)
+    .map(Student::name)
+    .sorted()
+    .toList();
+```
+**Для Ada:90, Lin:70, Ann:80 результат `[Ada, Ann]`.**
+Исходный состав не меняется. Объяснение: @theory:sec-t-streams.
+
+### Типы стадий конвейера {#sec-l-07-functions-step-26}
+
+```text
+List<Student> → Stream<Student>
+filter        → Stream<Student>
+map(name)     → Stream<String>
+sorted        → Stream<String>
+toList        → List<String>
+```
+**Предикат решает, пропустить ли элемент; функция даёт новое значение.**
+Типизация не позволяет сортировать извлечённые строки компаратором участников.
+
+### Сведения до форматирования {#sec-l-07-functions-report-type}
+
+```java
+var report = students.stream()
+    .filter(s -> s.score() >= 80)
+    .sorted(Comparator.comparingInt(Student::score).reversed()
+        .thenComparing(Student::id))
+    .map(s -> s.id() + ";" + s.name() + ";" + s.score())
+    .toList();
+```
+Результат: `[s1;Ada;90, s3;Ann;80]`.
+**Сортировка использует запись до превращения в текст.**
+
+
+
+### Коллекция и Stream {#sec-l-07-functions-step-27}
+
+**Коллекция хранит данные для повторного обращения.** Stream описывает один
+проход через действия; у него нет `get(index)` и возврата в начало.
+
+После завершения прохода создают новый `students.stream()` либо хранят
+полученный результат. Сходство с Python-генератором помогает понять
+исчерпание, но API и типы здесь другие.
+
+### Ленивость промежуточных операций {#sec-l-07-functions-step-28}
+
+```java
+var pipeline = students.stream()
+    .filter(s -> s.score() >= 80)
+    .map(Student::name);
+var result = pipeline.toList();
+```
+**До `toList` построено описание действий.** Терминальная операция запускает
+обход. Обычно нет отдельного промежуточного списка для каждой стадии.
+
+### Состояние сортировки {#sec-l-07-functions-step-29}
+
+**`filter` и `map` могут провести один элемент через обе стадии прежде,
+чем взять следующий.** Для общего `sorted` нужно накопить данные,
+чтобы определить порядок.
+
+Ленивость не означает отсутствие памяти: разные промежуточные операции
+имеют разное устройство. Бесконечный источник нельзя целиком отсортировать.
+
+### Одноразовость Stream {#sec-l-07-functions-step-30}
+
+```java
+var stream = students.stream();
+System.out.println(stream.count()); // 3
+// stream.toList(); // недопустимое повторное использование
+```
+**Обнаруженный повтор обычно даёт `IllegalStateException`.**
+Правило одноразовости важнее конкретного обнаружения. Новое вычисление
+начинают с нового потока источника.
+
+### Короткое замыкание поиска {#sec-l-07-functions-step-31}
+
+```java
+boolean low = students.stream().anyMatch(s -> s.score() < 80);
+System.out.println(low); // true
+```
+**После Lin:70 ответ уже известен.** Нельзя требовать обязательного вызова
+предиката для каждого элемента. `allMatch` прекращается при первом
+нарушении условия.
+
+### Логические проверки пустого потока {#sec-l-07-functions-step-32}
+
+```java
+System.out.println(Stream.<Student>empty().anyMatch(s -> true)); // false
+System.out.println(Stream.<Student>empty().allMatch(s -> false));// true
+```
+**На пустом наборе не найдено совпадение и не найдено нарушение.**
+Если задача требует хотя бы одного участника, непустота — отдельное условие.
+
+### Ограничение бесконечного источника {#sec-l-07-functions-step-33}
+
+```java
+var first = Stream.iterate(0, n -> n + 1).limit(3).toList();
+System.out.println(first); // [0, 1, 2]
+```
+**`limit` допускает завершение после трёх элементов.**
+`sorted().limit(3)` для бесконечного источника не эквивалентно:
+сортировка не получит полного набора.
+
+### Порядок отбора и ограничения {#sec-l-07-functions-stage-order}
+
+```java
+var a = Stream.of(1, 2, 3).filter(n -> n % 2 == 0).limit(1).toList();
+var b = Stream.of(1, 2, 3).limit(1).filter(n -> n % 2 == 0).toList();
+System.out.println(a); // [2]
+System.out.println(b); // []
+```
+**«Первый подходящий» отличается от «подходящего среди первого».**
+Перестановка стадий меняет задачу, даже когда типы совпадают.
+
+
+
+### Разворачивание вложенных групп {#sec-l-07-functions-step-34}
+
+```java
+var topics = List.of(List.of("java", "git"), List.of("java", "io"));
+var unique = topics.stream().flatMap(List::stream)
+    .distinct().sorted().toList();
+System.out.println(unique); // [git, io, java]
+```
+**Каждая группа раскрывается в элементы.** `map(List::stream)` оставил бы
+поток потоков. `distinct` сравнивает значения по равенству.
+
+### Примитивная числовая агрегация {#sec-l-07-functions-step-35}
+
+```java
+long total = students.stream().mapToLong(Student::score).sum();
+System.out.println(total); // 240
+```
+**Числовая форма поддерживает агрегацию без упаковки каждого результата.**
+`long` выбран для более широкого диапазона; сама операция всё ещё
+подчиняется арифметике Java.
+
+### Отсутствие среднего на пустом наборе {#sec-l-07-functions-step-36}
+
+```java
+System.out.println(IntStream.empty().sum()); // 0
+System.out.println(IntStream.empty().average().isEmpty()); // true
+```
+**Ноль нейтрален для суммы, но не является средним без данных.**
+`OptionalDouble` сохраняет отсутствие. Молчаливое превращение его в ноль
+может изменить смысл отчёта.
+
+### Ассоциативность свёртки {#sec-l-07-functions-step-37}
+
+```java
+int sum = Stream.of(10, 3, 2).reduce(0, Integer::sum); // 15
+```
+**Нулевой элемент нейтрален, сумма ассоциативна.**
+Вычитание не ассоциативно: `(10-3)-2 = 5`, `10-(3-2) = 9`.
+`reduce` не следует считать произвольным циклом с аккумулятором.
+
+### Изменяемость результата {#sec-l-07-functions-step-38}
+
+```java
+var fixed = students.stream().toList();
+var mutable = students.stream()
+    .collect(Collectors.toCollection(ArrayList::new));
+```
+**У первого запрещены и `add`, и `set`, и `sort`:
+`fixed.set(0, student)` даёт `UnsupportedOperationException`.**
+Второй явно выбирает изменяемый `ArrayList`. Объекты элементов сами
+не замораживаются. `Collectors.toList()` не обещает ни класс,
+ни изменяемость [@bib-data-stream-api].
+
+### Группировка участников {#sec-l-07-functions-step-39}
+
+```java
+var groups = students.stream()
+    .collect(Collectors.groupingBy(Student::score));
+System.out.println(groups.get(90).get(0).name()); // Ada
+```
+**Ключ связывается с группой участников.** Порядок ключей стандартной формы
+не обещан; для воспроизводимого отчёта его нужно задать.
+
+### Политика повторных ключей {#sec-l-07-functions-step-40}
+
+```java
+var scores = students.stream().collect(
+    Collectors.toMap(Student::id, Student::score));
+```
+**При повторе кода стандартная форма выдаёт `IllegalStateException`.**
+Функция объединения может выбрать первое, последнее или сумму, но это
+решение приложения. Наш каталог будет отвергать повтор как ошибку данных.
+
+### Optional результата поиска {#sec-l-07-functions-step-41}
+
+```java
+String best = students.stream()
+    .max(Comparator.comparingInt(Student::score))
+    .map(Student::name).orElse("нет участников");
+```
+**`map` выполняется лишь при наличии результата.** На пустом входе используется
+запасной текст, а не выдуманный участник.
+
+### Отсутствие результата и ошибка данных {#sec-l-07-functions-absence-error}
+
+```text
+никто не прошёл порог     → пустой List, успешный отбор
+нет максимума            → Optional.empty(), пустой каталог
+неверный балл            → отказ проверки формата
+не удалось прочитать     → отказ внешней операции
+```
+**Optional не хранит причину ошибки и не заменяет типизированный отказ.**
+Политика исходов: @theory:sec-t-streams-outcomes.
+
+
+
+### Аргумент и поставщик запасного значения {#sec-l-07-functions-step-42}
+
+```java
+String eager = optional.orElse(expensive());
+String lazy = optional.orElseGet(() -> expensive());
+```
+**В первой форме аргумент вычисляется до вызова.** Во второй поставщик
+вызывается только при отсутствии. Различие заметно для дорогого действия
+и побочного эффекта. Формы: @handbook:sec-h-optional.
+
+### Невмешательство и параллельность {#sec-l-07-functions-step-43}
+
+**Не меняйте источник из переданных действий; не стройте результат общим
+`ArrayList.add` внутри параллельного `forEach`.**
+
+`parallel()` меняет разбиение и порядок работы, но не обещает ускорения.
+`forEach` не гарантирует порядок, `forEachOrdered` учитывает его при наличии.
+Для результатов используйте агрегацию и сборку.
+
+### Необязательные эффекты peek {#sec-l-07-functions-step-44}
+
+```java
+long count = students.stream().peek(System.out::println).count();
+```
+**Если число известно по размеру источника, реализация может не выполнить
+печать.** Побочный эффект, не влияющий на результат, не гарантирован.
+Когда цель — действие по каждому элементу, выбирайте соответствующую
+терминальную операцию или явный цикл.
+
+### Вычисление и публикация отчёта {#sec-l-07-functions-publication-effect}
+
+```text
+готовые участники → List<String> отчёта → печать
+```
+Ошибка вычисления случается до печати, если эффект вынесен за конвейер.
+Ошибка поздней печати не отменяет уже выведенные строки.
+
+**Композиция операций не создаёт откат внешних эффектов.**
+Чистая обработка и ответственность внешнего слоя:
+@theory:sec-t-streams-report.
+
+
+
+## Источники {.unnumbered .scrollable}
+
+::: {#refs}
+:::

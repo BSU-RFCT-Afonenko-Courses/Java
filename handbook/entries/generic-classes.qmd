@@ -1,0 +1,74 @@
+---
+pagetitle: Обобщённые классы
+---
+
+# Обобщённые классы {#sec-h-generic-classes}
+
+Обобщённый класс объявляет параметры типов, связывающие типы полей, входов и результатов. Все параметризации разделяют один класс при выполнении. Объяснение: @theory:sec-t-type-parameters. [@bib-objects-schildt-generics]
+
+## Формы объявления {#sec-h-generic-classes-forms}
+
+| Форма | Значение |
+|---|---|
+| `class Cell<T>` | Класс с одним параметром типа |
+| `class Pair<A, B>` | Класс с двумя независимыми параметрами |
+| `interface Source<T>` | Интерфейс с параметром типа |
+| `<T> T identity(T value)` | Метод со своим параметром типа |
+| `<T extends Number>` | Верхняя граница параметра |
+| `<T extends Number & Comparable<T>>` | Класс и дополнительный интерфейс в границе |
+
+Это заголовки объявлений; тела в таблице опущены. Класс, если он указан в составной границе, стоит первым; последующие границы — интерфейсы. Для границы-интерфейса также используется слово `extends`. Запись `<T super Number>` недопустима: нижняя граница применяется к wildcard, см. @sec-h-wildcards. [@bib-jls-type-variables]
+
+Небольшой класс целиком:
+
+```java
+final class Cell<T> {
+    private final T value;
+
+    Cell(T value) { this.value = value; }
+    T get() { return value; }
+}
+```
+
+Фрагмент внутри метода:
+
+```java
+Cell<String> name = new Cell<>("Java");
+String text = name.get();
+
+Cell<Integer> count = new Cell<>(25);
+int value = count.get();
+```
+
+`T` — параметр, `String` и `Integer` — аргументы. В `new Cell<>(...)` компилятор выводит аргумент типа из аргументов конструктора и контекста. `Cell<int>` недопустим: аргументом типа не может быть примитив. Преобразование `Integer` в `int` — распаковка; для `null` она вызывает `NullPointerException`. [@bib-jls-type-arguments-unboxing-inference]
+
+## Доступные операции {#sec-h-generic-classes-bounds}
+
+Тело обобщённого метода проверяется по объявленным границам, а не отдельно для каждого вызова:
+
+```java
+static <T extends Number> double asDouble(T value) {
+    return value.doubleValue();
+}
+```
+
+Здесь разрешён `doubleValue()`, но выражение `value + value` не задаёт общую операцию сложения для `T`. Граница, необходимая для сравнения, разобрана в @sec-h-comparison. Возможность использовать конкретный метод не гарантирует ненулевой аргумент.
+
+`final` у поля запрещает заменить сохранённую ссылку после её инициализации. Он не запрещает менять объект, на который она указывает: `Cell<List<String>>` может хранить изменяемый список. При проектировании пары следует различать неизменность её полей и неизменность содержимого. [@bib-jls-final-fields]
+
+## Наследование и ограничения {#sec-h-generic-classes-inheritance}
+
+```java
+class Box<T> {
+    private final T value;
+    Box(T value) { this.value = value; }
+    T get() { return value; }
+}
+class StringBox extends Box<String> {
+    StringBox(String value) { super(value); }
+}
+```
+
+Подкласс может фиксировать аргумент (`extends Box<String>`) или вводить собственный параметр (`class NamedBox<T> extends Box<T>`). `Box<Integer>` не подтип `Box<Number>`. Неограниченный `T` имеет верхнюю границу `Object`; для составной границы класс, если есть, стоит первым.
+
+`T value` и `T[] values` объявлять можно; `new T()`, `new T[10]` и `T.class` запрещены. `Box<int>` недопустим; оболочка `Integer` подходит. Параметр класса недоступен в его статическом контексте; статический метод объявляет собственный параметр. Подробности исполнения: @sec-h-erasure.

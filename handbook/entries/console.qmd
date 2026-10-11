@@ -1,0 +1,122 @@
+# Стандартный ввод {#sec-h-console}
+
+`System.in` — уже открытый стандартный поток ввода типа `InputStream`.
+Источник задаёт окружение: клавиатура, перенаправленный файл или другая
+программа. Аргументы `main(String[] args)` поступают отдельно при запуске;
+чтение `System.in` получает новые данные во время выполнения.
+[@bib-console-system-in]
+
+## Байты, текст и конец ввода {#sec-h-console-text}
+
+`System.in.read()` имеет форму `int read() throws IOException`: следующий
+**байт** возвращается как число от `0` до `255`, конец потока (EOF) — как `-1`.
+Для входа, состоящего только из ASCII, байт совпадает с кодом символа.
+Но в UTF-8 буква `Я` занимает два байта: `208`, `175`. Приведение каждого
+байта к `char` не декодирует текст. [@bib-console-input-stream]
+
+Для текстового ввода используйте `InputStreamReader(InputStream in, Charset cs)`:
+он декодирует байты в выбранной кодировке. Его `int read() throws IOException`
+возвращает одну единицу UTF-16 от `0` до `65535` либо `-1` при EOF. Сначала
+проверьте `-1`, затем при необходимости преобразуйте результат в `char`.
+`char` не может хранить отрицательный признак EOF.
+[@bib-console-input-stream-reader; @bib-console-reader]
+
+Пример одного чтения; файл `ReadOne.java`:
+
+```java
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+
+public class ReadOne {
+    public static void main(String[] args) throws IOException {
+        InputStreamReader input = new InputStreamReader(
+            System.in, StandardCharsets.UTF_8);
+        int value = input.read();
+        if (value == -1) {
+            System.out.println("Конец ввода");
+        } else {
+            System.out.println("Код UTF-16: " + value);
+        }
+    }
+}
+```
+
+Вход `A` даёт `Код UTF-16: 65`; вход `Я` в UTF-8 — `Код UTF-16: 1071`;
+пустой завершённый поток — `Конец ввода`. Чтение может ждать появления данных.
+Нажатие Enter передаёт окончание строки, а не EOF. Точка в лабораторном
+условии — обычный прочитанный символ; её роль задаёт сама программа.
+
+UTF-8 в примере — договорённость о входных данных. Кодировка источника должна
+ей соответствовать. Для кодировки стандартного ввода, настроенной окружением
+Java 25 используйте строковую перегрузку конструктора:
+`new InputStreamReader(System.in, System.getProperty("stdin.encoding"))`.
+Не считайте кодировку по умолчанию гарантированно равной кодировке терминала.
+[@bib-console-system-in]
+
+Декодирование корректного текстового входа позволяет сохранить остальные символы:
+неизменённые единицы UTF-16 должны сохранять порядок. Символ вне основной
+плоскости Unicode занимает две единицы; одиночное чтение не обещает целую
+кодовую точку. Подробнее: @handbook:sec-h-strings-unicode. Ограничение
+преобразуемых букв ASCII не означает, что весь остальной вход обязан быть ASCII.
+
+`IOException` означает отказ ввода-вывода и отличается от нормального EOF.
+Здесь запись `throws IOException` после параметров `main` разрешает передать
+такой отказ наружу: при отказе программа завершается с диагностикой. Она
+не устраняет ошибку и не подменяет проверку `-1`. Пока достаточно этой формы;
+разбор механизма и обработчиков: @theory:sec-t-exceptions-hierarchy.
+
+## Целое число: Scanner {#sec-h-console-integers}
+
+`Scanner` разбивает ввод на токены; по умолчанию разделители — пробельные
+символы `Character.isWhitespace`. Основные формы Java 25:
+
+| Форма | Результат |
+|---|---|
+| `Scanner(InputStream source, Charset charset)` | Читатель с заданной кодировкой |
+| `boolean hasNext()` | Есть следующий токен; не потребляет его |
+| `boolean hasNextInt()` | Следующий токен допустим как `int`; не потребляет его |
+| `int nextInt()` | Читает и потребляет целое число |
+| `String next()` | Читает и потребляет токен как текст |
+| `IOException ioException()` | Последний отказ источника либо `null` |
+
+Начальное основание — `10`; обычные формы `17`, `-3`, `+8` допустимы.
+Дополнительные числовые формы зависят от локали читателя. Для строгого разбора
+уже имеющейся строки: @handbook:sec-h-strings-parse-int.
+
+Пример одного числа; файл `ReadNumber.java`:
+
+```java
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
+
+public class ReadNumber {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in, StandardCharsets.UTF_8);
+        if (input.hasNextInt()) {
+            int count = input.nextInt();
+            System.out.println(count);
+        } else if (input.hasNext()) {
+            System.out.println("Не целое число: " + input.next());
+        } else if (input.ioException() != null) {
+            System.out.println("Ошибка ввода");
+        } else {
+            System.out.println("Конец ввода");
+        }
+    }
+}
+```
+
+Вход `+17` даёт `17`; `abc` — `Не целое число: abc`; пустой завершённый
+вход — `Конец ввода`. Проверки могут ждать ввода. Без проверки `nextInt()`
+выбрасывает `InputMismatchException` для неверного токена или переполнения
+`int`, `NoSuchElementException` при EOF. Неверный токен остаётся непрочитанным.
+Закрытый читатель вызывает `IllegalStateException`. Отказ источника Scanner
+считает завершением; отличить его позволяет `ioException()`.
+[@bib-console-scanner]
+
+Выберите один читатель для одного входа. Обёртка может читать байты вперёд;
+не смешивайте её с прямым чтением `System.in` или другой обёрткой. Закрытие
+читателя закрывает и источник: не закрывайте заимствованный `System.in`,
+если его дальнейшим использованием управляет другой код.
+[@bib-console-system-in; @bib-console-scanner]
