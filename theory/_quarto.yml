@@ -26,70 +26,48 @@ project:
   - '!**/.superpowers/**'
 book:
   title: Теория Java
-  subtitle: Язык, инструменты и разработка приложений
+  subtitle: Язык, модели программирования и устройство приложений
   search: true
   page-navigation: true
   sidebar:
     collapse-level: 1
   chapters:
   - index.qmd
-  - part: Основы языка и платформы Java (Core Java)
+  - part: Языки программирования и платформа Java
     chapters:
-    - java/platform.qmd
-    - java/runtime/execution.qmd
-    - java/basics.qmd
-    - java/types/numbers.qmd
-    - java/references.qmd
-    - java/types/arrays.qmd
-    - java/types/text.qmd
-    - java/runtime/memory.qmd
-    - java/classes.qmd
-    - java/inheritance.qmd
-    - java/interfaces.qmd
-    - java/types/contracts.qmd
-    - java/generics.qmd
-    - java/lambdas.qmd
-    - java/exceptions.qmd
-  - part: Коллекции, ввод-вывод и представление данных
+    - outline/languages.qmd
+    - outline/platform.qmd
+  - part: Значения и вычисления
     chapters:
-    - data/collections.qmd
-    - data/io.qmd
-    - data/formats.qmd
-  - part: Инструменты и процесс разработки
+    - outline/types.qmd
+    - outline/expressions.qmd
+    - outline/control.qmd
+    - outline/methods.qmd
+    - outline/arrays.qmd
+    - outline/text.qmd
+  - part: Объектная модель
     chapters:
-    - development/git/basics.qmd
-    - development/git/branches.qmd
-    - development/build.qmd
-    - development/testing.qmd
-  - part: Объектно ориентированное проектирование
+    - outline/memory.qmd
+    - outline/classes.qmd
+    - outline/dispatch.qmd
+    - outline/interfaces.qmd
+    - outline/data-models.qmd
+  - part: Обобщённые типы и коллекции
     chapters:
-    - design/principles.qmd
-    - design/patterns/creation.qmd
-    - design/patterns/structure.qmd
-    - design/patterns/behavior.qmd
-    - design/events.qmd
-  - part: Многопоточное и асинхронное программирование
+    - generics.qmd
+    - outline/equality.qmd
+    - outline/collections.qmd
+  - part: Функции и обработка данных
     chapters:
-    - concurrency/threads.qmd
-    - concurrency/synchronization.qmd
-    - concurrency/tasks.qmd
-  - part: Сетевое программирование, веб и базы данных
+    - outline/functions.qmd
+    - outline/pipelines.qmd
+  - part: Ошибки, ресурсы и приложение
     chapters:
-    - web/http.qmd
-    - web/servlets.qmd
-    - web/presentation.qmd
-    - persistence/database.qmd
-  - part: Архитектура Java-приложений
-    chapters:
-    - architecture/modules.qmd
-    - architecture/dependencies.qmd
-    - architecture/frameworks.qmd
-  - part: Качество, безопасность и разработка приложения
-    chapters:
-    - quality/diagnostics.qmd
-    - quality/security.qmd
-    - quality/reliability.qmd
-    - integration/application.qmd
+    - outline/exceptions.qmd
+    - outline/resources.qmd
+    - outline/io.qmd
+    - outline/application.qmd
+  - references.qmd
 lang: ru
 number-sections: false
 format:
@@ -109,3 +87,14 @@ filters:
 reference-catalog:
   namespace: theory
 fail-if-warnings: true
+bibliography:
+- ../bibliography/books.bib
+- ../bibliography/java.bib
+- ../bibliography/languages.bib
+- ../bibliography/history.bib
+csl: ../bibliography/numeric.csl
+link-citations: true
+
+# Общий набор обеспечивает одинаковую числовую нумерацию во всех главах книги.
+nocite: |
+  @cpp-template-constraints, @csharp-generics-runtime, @dotnet-generic-math, @epam-generic-classes, @epam-generic-methods, @epam-java-2021, @gj1998, @goetz-erasure-2020, @java-api-25, @jls-25, @jls-array-store-checks, @jls-boxing-unboxing, @jls-capture-conversion, @jls-class-interface-subtyping, @jls-generic-methods, @jls-heap-pollution, @jls-raw-types, @jls-type-arguments, @jls-type-erasure, @jls1-vector, @jsr14, @jvms-25, @jvms-generic-signatures, @schildt-bounded-types, @schildt-generic-class-example, @schildt-generic-pairs, @schildt-generics-containers, @schildt-generics-definition, @schildt-java-2023, @schildt-wildcards-methods

@@ -1,0 +1,78 @@
+---
+pagetitle: Comparable, Comparator и выбор порядка
+---
+
+# Comparable, Comparator и выбор порядка {#sec-handbook-comparison}
+
+`Comparable<T>` задаёт естественный порядок объектов, а `Comparator<T>` — порядок, передаваемый отдельным объектом. Оба сравнения возвращают `int`; смысл имеет знак результата. [@java-api-25]
+
+## Сигнатуры сравнения {#sec-handbook-comparison-signatures}
+
+| Контракт | Метод | Значение |
+|---|---|---|
+| [`Comparable<T>`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Comparable.html) | `int compareTo(T other)` | Сравнивает `this` с `other` |
+| [`Comparator<T>`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Comparator.html) | `int compare(T left, T right)` | Сравнивает два переданных значения |
+| [`Integer`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html#compare(int,int)) | `static int compare(int x, int y)` | Сравнивает два значения `int` без вычитания |
+
+Отрицательный результат означает «меньше», ноль — равенство в данном порядке, положительный результат — «больше». Проверка `result == 1` неверна для общего контракта; нужна `result > 0`.
+
+```java
+record Level(int value) implements Comparable<Level> {
+    @Override
+    public int compareTo(Level other) {
+        return Integer.compare(value, other.value);
+    }
+}
+```
+
+Метод `return value - other.value;` был бы ошибочен для крайних значений `int`: переполнение способно изменить знак. `Integer.compare` выражает требуемую операцию непосредственно. [@java-api-25]
+
+## Законы порядка {#sec-handbook-comparison-contract}
+
+Для допустимых ненулевых `x`, `y`, `z` контракт `Comparable` требует:
+
+- Знак `x.compareTo(y)` противоположен знаку `y.compareTo(x)`; если одно сравнение выбрасывает исключение, обратное также должно его выбрасывать.
+- Из `x > y` и `y > z` следует `x > z`.
+- Если `x.compareTo(y) == 0`, то сравнения `x` и `y` с любым допустимым `z` дают одинаковый знак.
+
+Согласованность нулевого сравнения с `equals` настоятельно рекомендуется, но не обязательна. Равенство по порядку не следует подменять равенством ссылок `==`. Вызов `x.compareTo(null)` должен приводить к `NullPointerException`. Компилятор не доказывает соблюдение этих законов. [@java-api-25]
+
+## Граница для общего алгоритма {#sec-handbook-comparison-bound}
+
+```java
+static <T extends Comparable<? super T>>
+boolean precedes(T left, T right) {
+    return left.compareTo(right) < 0;
+}
+```
+
+`precedes` требует ненулевые аргументы. Граница означает, что `T` можно сравнивать с самим `T` или с его супертипом. Например, если `A implements Comparable<A>`, а `B extends A`, то `B` удовлетворяет этой границе, хотя не реализует `Comparable<B>`.
+
+Заголовок метода поиска максимума в лабораторной:
+
+```java
+static <T extends Comparable<? super T>>
+T max(List<? extends T> values)
+```
+
+Для `List` нужен импорт `java.util.List`. Верхняя граница списка разрешает читать элементы как `T`, а граница самого `T` разрешает их сравнивать. `List<Number>` недостаточен: `Number` не объявляет `Comparable<Number>`. Реализации полного алгоритма эта сигнатура не задаёт.
+
+Выбор результата при равных максимумах и поведение для пустого списка определяет контракт алгоритма. В @tasks:sec-lab-generics требуется сохранить первый максимальный элемент; нулевой результат сравнения означает равенство в порядке, а не обязательное совпадение объектов. Проверка `null`-элементов до сравнения нужна, если контракт требует собственного типа исключения.
+
+## Внешний порядок {#sec-handbook-comparison-comparator}
+
+Один тип может использовать несколько порядков. Например, для строк можно сравнивать длины, не меняя естественный порядок `String`:
+
+```java
+import java.util.Comparator;
+
+final class LengthOrder implements Comparator<String> {
+    @Override
+    public int compare(String left, String right) {
+        return Integer.compare(left.length(), right.length());
+    }
+}
+```
+
+Здесь строки одинаковой длины равны по выбранному порядку. Этот компаратор требует ненулевые аргументы. Другой компаратор может специально поддерживать `null`, но это должно входить в его контракт. Для алгоритма, который только принимает значения `T` на сравнение, подходит параметр `Comparator<? super T>`. [@java-api-25]
+
