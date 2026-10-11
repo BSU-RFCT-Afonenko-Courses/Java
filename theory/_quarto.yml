@@ -33,40 +33,42 @@ book:
     collapse-level: 1
   chapters:
   - index.qmd
-  - part: Языки программирования и платформа Java
+  - part: Язык и платформа
     chapters:
-    - outline/languages.qmd
-    - outline/platform.qmd
+    - chapters/languages.qmd
+    - chapters/platform.qmd
   - part: Значения и вычисления
     chapters:
-    - outline/types.qmd
-    - outline/expressions.qmd
-    - outline/control.qmd
-    - outline/methods.qmd
-    - outline/arrays.qmd
-    - outline/text.qmd
+    - chapters/types.qmd
+    - chapters/expressions.qmd
+    - chapters/control.qmd
+    - chapters/methods.qmd
+    - chapters/arrays.qmd
+    - chapters/text.qmd
   - part: Объектная модель
     chapters:
-    - outline/memory.qmd
-    - outline/classes.qmd
-    - outline/dispatch.qmd
-    - outline/interfaces.qmd
-    - outline/data-models.qmd
+    - chapters/objects.qmd
+    - chapters/classes.qmd
+    - chapters/inheritance.qmd
+    - chapters/interfaces.qmd
+    - chapters/data-classes.qmd
   - part: Обобщённые типы и коллекции
     chapters:
-    - generics.qmd
-    - outline/equality.qmd
-    - outline/collections.qmd
-  - part: Функции и обработка данных
+    - chapters/type-parameters.qmd
+    - chapters/type-relations.qmd
+    - chapters/equality.qmd
+    - chapters/collections.qmd
+  - part: Функции и последовательности
     chapters:
-    - outline/functions.qmd
-    - outline/pipelines.qmd
+    - chapters/functions.qmd
+    - chapters/streams.qmd
   - part: Ошибки, ресурсы и приложение
     chapters:
-    - outline/exceptions.qmd
-    - outline/resources.qmd
-    - outline/io.qmd
-    - outline/application.qmd
+    - chapters/exceptions.qmd
+    - chapters/resources.qmd
+    - chapters/io.qmd
+    - chapters/application.qmd
+  - system-practice.qmd
   - references.qmd
 lang: ru
 number-sections: false
@@ -89,12 +91,14 @@ reference-catalog:
 fail-if-warnings: true
 bibliography:
 - ../bibliography/books.bib
+- ../bibliography/data.bib
+- ../bibliography/foundations.bib
+- ../bibliography/history.bib
 - ../bibliography/java.bib
 - ../bibliography/languages.bib
-- ../bibliography/history.bib
+- ../bibliography/objects.bib
 csl: ../bibliography/numeric.csl
 link-citations: true
-
-# Общий набор обеспечивает одинаковую числовую нумерацию во всех главах книги.
-nocite: |
-  @cpp-template-constraints, @csharp-generics-runtime, @dotnet-generic-math, @epam-generic-classes, @epam-generic-methods, @epam-java-2021, @gj1998, @goetz-erasure-2020, @java-api-25, @jls-25, @jls-array-store-checks, @jls-boxing-unboxing, @jls-capture-conversion, @jls-class-interface-subtyping, @jls-generic-methods, @jls-heap-pollution, @jls-raw-types, @jls-type-arguments, @jls-type-erasure, @jls1-vector, @jsr14, @jvms-25, @jvms-generic-signatures, @schildt-bounded-types, @schildt-generic-class-example, @schildt-generic-pairs, @schildt-generics-containers, @schildt-generics-definition, @schildt-java-2023, @schildt-wildcards-methods
+nocite: '@bib-cpp-template-constraints, @bib-csharp-generics-runtime, @bib-data-autocloseable-api, @bib-data-comparator-api, @bib-data-deque-api, @bib-data-eckel-collections, @bib-data-eckel-exceptions, @bib-data-epam-equality, @bib-data-epam-functions, @bib-data-epam-io, @bib-data-epam-streams, @bib-data-files-api, @bib-data-jls-exceptions, @bib-data-jls-lambdas, @bib-data-jls-resources, @bib-data-list-api, @bib-data-map-api, @bib-data-object-api, @bib-data-schildt-collections, @bib-data-schildt-comparators, @bib-data-schildt-exceptions, @bib-data-schildt-lambdas, @bib-data-schildt-resources, @bib-data-stream-api, @bib-dotnet-generic-math, @bib-epam-generic-classes, @bib-epam-generic-methods, @bib-fnd-arrays-api, @bib-fnd-builder-api, @bib-fnd-character-api, @bib-fnd-cpp-arithmetic, @bib-fnd-epam-arrays, @bib-fnd-epam-builders, @bib-fnd-epam-control, @bib-fnd-epam-strings, @bib-fnd-epam-values, @bib-fnd-java-launcher, @bib-fnd-java-whitepaper-introduction, @bib-fnd-javac, @bib-fnd-jls-arithmetic,
+  @bib-fnd-jls-arrays, @bib-fnd-jls-conversions, @bib-fnd-jls-evaluation, @bib-fnd-jls-launch, @bib-fnd-jls-methods, @bib-fnd-jls-statements, @bib-fnd-jvms-loading, @bib-fnd-jvms-structure, @bib-fnd-math-api, @bib-fnd-normalizer-api, @bib-fnd-python-binding, @bib-fnd-python-numbers, @bib-fnd-schildt-argument-passing, @bib-fnd-schildt-arithmetic, @bib-fnd-schildt-arrays, @bib-fnd-schildt-control, @bib-fnd-schildt-first-program, @bib-fnd-schildt-method-parameters, @bib-fnd-schildt-origins, @bib-fnd-schildt-platform, @bib-fnd-schildt-promotion, @bib-fnd-schildt-short-circuit, @bib-fnd-schildt-strings, @bib-fnd-schildt-types, @bib-fnd-string-api, @bib-gj1998, @bib-goetz-erasure-2020, @bib-java-api-25, @bib-jls-array-store-checks, @bib-jls-boxing-unboxing, @bib-jls-capture-conversion, @bib-jls-class-interface-subtyping, @bib-jls-generic-methods, @bib-jls-heap-pollution, @bib-jls-instanceof, @bib-jls-raw-types, @bib-jls-reifiable-types-restrictions, @bib-jls-type-arguments, @bib-jls-type-erasure,
+  @bib-jls-types-values-variables, @bib-jls1-vector, @bib-jsr14, @bib-jvms-generic-signatures, @bib-objects-eckel-access, @bib-objects-eckel-constructor-polymorphism, @bib-objects-eckel-generics, @bib-objects-eckel-interfaces, @bib-objects-eckel-polymorphism, @bib-objects-eckel-references, @bib-objects-eckel-reuse, @bib-objects-epam-classes, @bib-objects-epam-method-design, @bib-objects-jep395, @bib-objects-jep513, @bib-objects-jls-data-classes, @bib-objects-jls-overriding, @bib-objects-object-api, @bib-objects-schildt-classes, @bib-objects-schildt-generics, @bib-objects-schildt-inheritance, @bib-objects-schildt-interfaces, @bib-objects-schildt-records, @bib-schildt-bounded-types, @bib-schildt-generic-class-example, @bib-schildt-generic-pairs, @bib-schildt-generics-definition, @bib-schildt-wildcards-methods'
