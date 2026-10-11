@@ -1,0 +1,125 @@
+# String, StringBuilder и Unicode {#sec-h-strings}
+
+`String` неизменяем; `StringBuilder` изменяем. Индексы базовых строковых операций измеряются в единицах UTF-16. Полное объяснение: @theory:sec-t-text. [@bib-fnd-string-api; @bib-fnd-builder-api; @bib-fnd-character-api]
+
+## Методы String {#sec-h-strings-string}
+
+| Сигнатура | Результат и границы |
+|---|---|
+| `int length()` | Количество единиц UTF-16 |
+| `boolean isEmpty()` | `length() == 0` |
+| `boolean isBlank()` | Пустая строка или только точки, признаваемые `Character.isWhitespace` |
+| `char charAt(int index)` | Одна единица UTF-16; `0 <= index < length()` |
+| `int codePointAt(int index)` | Кодовая точка, если начинается корректная пара, иначе значение единицы |
+| `int codePointCount(int begin, int end)` | Число кодовых точек в `[begin, end)`; непарные суррогаты считаются отдельно |
+| `int offsetByCodePoints(int index, int offset)` | Индекс UTF-16 после перемещения по кодовым точкам |
+| `String substring(int begin, int end)` | Подстрока `[begin, end)`; `0 <= begin <= end <= length()` |
+| `int indexOf(String s)` | Индекс первого совпадения или `-1`; есть перегрузки |
+| `boolean equals(Object other)` | Одинаковая последовательность единиц; `null` даёт `false` |
+| `boolean equalsIgnoreCase(String s)` | Сравнение без учёта регистра по правилам API, без полноценного языкового порядка |
+| `String strip()` | Убирает по краям точки `Character.isWhitespace` |
+| `String trim()` | Убирает по краям единицы с кодом не выше U+0020 |
+| `String replace(CharSequence a, CharSequence b)` | Буквальная замена |
+| `String replaceAll(String regex, String replacement)` | Регулярное выражение и специальные правила замены |
+| `String[] split(String regex, int limit)` | Разбиение по регулярному выражению |
+| `String toLowerCase(Locale locale)` | Регистр по выбранной локали; длина может меняться |
+
+Неверный индекс или диапазон порождает `IndexOutOfBoundsException` согласно методу. Вызов экземплярного метода через `null` порождает `NullPointerException`. Регулярные выражения могут давать `PatternSyntaxException`. `split(regex)` равен `split(regex, 0)` и отбрасывает хвостовые пустые поля; отрицательный `limit` сохраняет их. Для точки как разделителя: `split("\\.", -1)`.
+
+`==` сравнивает ссылки. Для произвольного текста используйте `equals`; для допускающих отсутствие строк — `Objects.equals(a, b)`. Интернирование литералов не делает `==` проверкой содержимого.
+
+## Unicode и кодировки {#sec-h-strings-unicode}
+
+`char` содержит одну единицу UTF-16, `int` может представлять кодовую точку. `Character.charCount(codePoint)` возвращает `1` или `2`. Число кодовых точек не равно автоматически числу воспринимаемых текстовых элементов. Классификация букв, цифр и пробелов зависит от конкретного метода `Character`, а не от общего бытового смысла слова.
+
+```java
+String normalized = java.text.Normalizer.normalize(
+    text, java.text.Normalizer.Form.NFC);
+byte[] encoded = text.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+String restored = new String(encoded,
+    java.nio.charset.StandardCharsets.UTF_8);
+```
+
+Нормализация выполняется только по требованиям задачи. Для технического изменения регистра можно явно выбрать `Locale.ROOT`. Преобразование строк в байты требует кодировки; удобные методы могут заменять некорректный ввод, поэтому для строгого отказа нужен `CharsetDecoder`/`CharsetEncoder` с заданной политикой. [@bib-fnd-normalizer-api]
+
+## Разбор целого числа: Integer.parseInt {#sec-h-strings-parse-int}
+
+Метод класса `Integer`: `public static int parseInt(String s) throws NumberFormatException`.
+
+Метод возвращает знаковое десятичное значение типа `int`: от −2147483648 до 2147483647 включительно. Строка содержит одну или несколько десятичных цифр; первая позиция может быть ASCII-знаком `+` или `-`. Цифры распознаются по правилам `Character.digit(char, 10)`. Ведущие нули допустимы и не означают восьмеричную запись: `parseInt("0016")` даёт `16`.
+
+Пробелы автоматически не удаляются. Десятичная точка, разделители групп и подчёркивания литералов Java в этой форме не принимаются. `NumberFormatException` возникает при `null`, пустой строке, одном знаке без цифр, неподходящих символах или выходе значения за диапазон `int`.
+
+```java
+int pages = Integer.parseInt("+16"); // 16
+// Integer.parseInt(" 16 "); // NumberFormatException
+// Integer.parseInt("2147483648"); // NumberFormatException
+```
+
+Если требования допускают внешние пробелы, их удаляют отдельным действием до разбора. Формат метода не зависит от пользовательской локали. Объяснение перехода от текста к числу: @theory:sec-t-text-parsing. [@bib-fnd-integer-parse-int]
+
+## Регулярные выражения: полное совпадение и поиск {#sec-h-strings-regex}
+
+`String.matches` проверяет всю строку. Для поиска фрагментов создайте
+`Pattern`, затем `Matcher` для конкретного текста. Следующие формы приведены
+без модификатора `public`; `compile` — статический метод:
+
+| Класс | Сигнатура | Результат |
+|---|---|---|
+| `String` | `boolean matches(String regex)` | Вся строка соответствует шаблону |
+| `Pattern` | `static Pattern compile(String regex)` | Скомпилированный шаблон |
+| `Pattern` | `Matcher matcher(CharSequence input)` | Новый matcher для входа |
+| `Matcher` | `boolean matches()` | Весь текущий регион соответствует шаблону; исходно регион — весь вход |
+| `Matcher` | `boolean find()` | Найден следующий соответствующий фрагмент |
+| `Matcher` | `String group()` | Текст последнего успешного совпадения |
+| `Matcher` | `Matcher reset()` | Тот же matcher, сброшенный для поиска с начала всего входа |
+
+`find()` изменяет состояние поиска: повторный вызов ищет следующее
+совпадение. `group()` используют после успешной операции; до неё или после
+неуспеха он выбрасывает `IllegalStateException`. Сброс удаляет сведения о
+совпадении. Неверный синтаксис шаблона вызывает `PatternSyntaxException`
+при `compile` или `String.matches`; результат `false` означает корректный
+шаблон, который не подошёл. [@bib-text-string-matches; @bib-text-pattern; @bib-text-matcher]
+
+```java
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+// Фрагмент внутри main:
+String text = "ab12 cd3";
+System.out.println(text.matches("[0-9]+")); // false
+Matcher numbers = Pattern.compile("[0-9]+").matcher(text);
+if (numbers.find()) {
+    System.out.println(numbers.group()); // 12
+}
+if (numbers.find()) {
+    System.out.println(numbers.group()); // 3
+}
+System.out.println(numbers.find());       // false
+numbers.reset();
+System.out.println(numbers.find());       // true
+```
+
+Здесь `[0-9]+` означает одну или более ASCII-цифр. Если шаблону нужен
+обратный слеш, в строковом литерале Java его удваивают: regex `\d+`
+записывается как `"\\d+"`. Правила шаблона и правила строкового литерала
+действуют последовательно. Шаблон должен выражать именно ограничения условия.
+
+## Методы StringBuilder {#sec-h-strings-builder}
+
+| Сигнатура | Действие |
+|---|---|
+| `StringBuilder()` | Пустое содержимое, начальная ёмкость 16 |
+| `StringBuilder(int capacity)` | Пустое содержимое с заданным неотрицательным запасом |
+| `StringBuilder(String text)` | Копирует содержимое строки |
+| `StringBuilder append(String s)` | Дописывает текст, `null` представляется `"null"`; есть другие перегрузки |
+| `StringBuilder append(int n)` | Дописывает десятичное представление |
+| `StringBuilder insert(int offset, String s)` | Вставляет при `0 <= offset <= length()`; при `s == null` вставляет `"null"` |
+| `StringBuilder delete(int start, int end)` | Удаляет `[start, min(end, length()))`; требует `0 <= start <= length()` и `start <= end` |
+| `void setLength(int n)` | Требует `n >= 0`; сокращает содержимое или добавляет U+0000 |
+| `int length()`, `int capacity()` | Длина содержимого и ёмкость |
+| `String toString()` | Получает независимое строковое значение |
+
+Для `insert(int, String)` недопустимый `offset` вызывает `StringIndexOutOfBoundsException`. Для `delete` отрицательный `start`, `start > length()` или `start > end` вызывает `StringIndexOutOfBoundsException`; конец выше длины допустим и ограничивается текущей длиной. Для `setLength` отрицательная длина вызывает `IndexOutOfBoundsException`.
+
+`append` возвращает тот же builder и позволяет последовательные вызовы. Builder не предоставляет синхронизации для общего доступа потоков. `StringBuffer` синхронизирует свои методы, но составная последовательность вызовов всё равно может требовать внешней организации. `StringBuilder.equals` не определяет равенство содержимого как `String.equals`.
