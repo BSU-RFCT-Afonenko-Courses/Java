@@ -44,6 +44,11 @@ public class PublicExamplesTest {
                 assertTrue(System.nanoTime() < deadline,
                     "Программа не завершилась в пределах времени проверки");
             }
+            // A zero divisor must be handled without an uncaught exception. Ordinary stderr
+            // messages and an explicit exit code remain outside the exercise's output protocol.
+            String diagnostics = stderr.toString(java.nio.charset.StandardCharsets.UTF_8);
+            assertFalse(java.util.regex.Pattern.compile("(?m)^Exception in thread \"[^\"]*\" ")
+                .matcher(diagnostics).find(), "Неперехваченное исключение: " + diagnostics);
             // The exercise specifies stdout, not a required numeric exit code.
             return stdout.toString(java.nio.charset.StandardCharsets.UTF_8);
         } finally {
