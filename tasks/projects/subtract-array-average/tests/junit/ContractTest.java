@@ -17,6 +17,11 @@ public class ContractTest {
         assertMatrix(new double[][]{{1.0/3,7.0/3,-8.0/3},{-3,0,3},{5.0/3,-4.0/3,-1.0/3}}, run("1 3 -2 -3 0 3 2 -1 0"));
     }
 
+    @Test
+    void mandatoryDefaultMatrix() throws Exception {
+        assertMatrix(new double[][]{{-3,0,3},{5.0/3,-4.0/3,-1.0/3},{1.0/3,7.0/3,-8.0/3}}, run(""));
+    }
+
     private static String run(String input, String... args) throws Exception {
         var previousIn = System.in;
         var previousOut = System.out;

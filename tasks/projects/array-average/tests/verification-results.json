@@ -5,57 +5,136 @@
   "preview": false,
   "junitConsoleVersion": "1.14.1",
   "junitSha256": "a09c656d60ada792cf12ed1e8dc7ead3edc98dde034332e97dfcb5b4268b9072",
+  "scoringTests": "ContractTest (private); public examples are checked separately and do not establish scoring coverage",
   "scenarios": [
     {
       "project": "array-average",
       "scenario": "starter",
+      "sourceSha256": {
+        "Main.java": "f38d5ef3b77af9b238b9bc60936db74862e71d03cf729538db5dae823c4719d1"
+      },
+      "testSha256": {
+        "ContractTest.java": "011854622de74378387d5d9ed5699ea99272c8fb597f8c292b11c274d70f5282",
+        "PublicExamplesTest.java": "47cbb582a901f84f08e35cff1d83e52866edcd1cf69f2ef2dd3cf1f96f93a8d1"
+      },
       "compile": true,
-      "exitCode": 1,
-      "found": 4,
-      "started": 4,
-      "successful": 0,
-      "failed": 4
+      "private": {
+        "found": 3,
+        "started": 3,
+        "successful": 0,
+        "failed": 3,
+        "exitCode": 1,
+        "failedTestIds": [
+          "ContractTest#negativeMean",
+          "ContractTest#zeroMean",
+          "ContractTest#fractionalValues"
+        ]
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 0,
+        "failed": 1,
+        "exitCode": 1,
+        "failedTestIds": [
+          "PublicExamplesTest#tenValuesHaveFractionalMean"
+        ]
+      }
     },
     {
       "project": "array-average",
       "scenario": "reference",
+      "sourceSha256": {
+        "Main.java": "7e6bb2eb986cf28242f97a9d59d19eca73f9d86733ced8da0db722f350733e8e"
+      },
+      "testSha256": {
+        "ContractTest.java": "011854622de74378387d5d9ed5699ea99272c8fb597f8c292b11c274d70f5282",
+        "PublicExamplesTest.java": "47cbb582a901f84f08e35cff1d83e52866edcd1cf69f2ef2dd3cf1f96f93a8d1"
+      },
       "compile": true,
-      "exitCode": 0,
-      "found": 4,
-      "started": 4,
-      "successful": 4,
-      "failed": 0
+      "private": {
+        "found": 3,
+        "started": 3,
+        "successful": 3,
+        "failed": 0,
+        "exitCode": 0,
+        "failedTestIds": []
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 1,
+        "failed": 0,
+        "exitCode": 0,
+        "failedTestIds": []
+      }
     },
     {
       "project": "array-average",
       "scenario": "mutant:integer-division",
+      "sourceSha256": {
+        "Main.java": "25233ff780de2a415b014f5997843e49ab3ea4c41f51bb6da9b459b6df975c90"
+      },
+      "testSha256": {
+        "ContractTest.java": "011854622de74378387d5d9ed5699ea99272c8fb597f8c292b11c274d70f5282",
+        "PublicExamplesTest.java": "47cbb582a901f84f08e35cff1d83e52866edcd1cf69f2ef2dd3cf1f96f93a8d1"
+      },
       "compile": true,
-      "exitCode": 1,
-      "found": 4,
-      "started": 4,
-      "successful": 1,
-      "failed": 3,
-      "failedTestIds": [
-        "ContractTest#negativeMean",
-        "ContractTest#fractionalValues",
-        "PublicExamplesTest#tenValuesHaveFractionalMean"
-      ]
+      "private": {
+        "found": 3,
+        "started": 3,
+        "successful": 1,
+        "failed": 2,
+        "exitCode": 1,
+        "failedTestIds": [
+          "ContractTest#negativeMean",
+          "ContractTest#fractionalValues"
+        ]
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 0,
+        "failed": 1,
+        "exitCode": 1,
+        "failedTestIds": [
+          "PublicExamplesTest#tenValuesHaveFractionalMean"
+        ]
+      }
     },
     {
       "project": "array-average",
       "scenario": "mutant:skips-last-value",
+      "sourceSha256": {
+        "Main.java": "4948c4af1ee99fa7f7c23b96bd4f9c589c6e538e1bd6ace4f4994f5c96003a25"
+      },
+      "testSha256": {
+        "ContractTest.java": "011854622de74378387d5d9ed5699ea99272c8fb597f8c292b11c274d70f5282",
+        "PublicExamplesTest.java": "47cbb582a901f84f08e35cff1d83e52866edcd1cf69f2ef2dd3cf1f96f93a8d1"
+      },
       "compile": true,
-      "exitCode": 1,
-      "found": 4,
-      "started": 4,
-      "successful": 0,
-      "failed": 4,
-      "failedTestIds": [
-        "ContractTest#negativeMean",
-        "ContractTest#zeroMean",
-        "ContractTest#fractionalValues",
-        "PublicExamplesTest#tenValuesHaveFractionalMean"
-      ]
+      "private": {
+        "found": 3,
+        "started": 3,
+        "successful": 0,
+        "failed": 3,
+        "exitCode": 1,
+        "failedTestIds": [
+          "ContractTest#negativeMean",
+          "ContractTest#zeroMean",
+          "ContractTest#fractionalValues"
+        ]
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 0,
+        "failed": 1,
+        "exitCode": 1,
+        "failedTestIds": [
+          "PublicExamplesTest#tenValuesHaveFractionalMean"
+        ]
+      }
     }
   ]
 }

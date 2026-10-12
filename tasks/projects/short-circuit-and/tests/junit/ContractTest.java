@@ -12,6 +12,16 @@ public class ContractTest {
         assertTokens("true", run("-8 -2")); assertTokens("false", run("8 -2"));
     }
 
+    @Test
+    void zeroDivisorFromStdin() throws Exception {
+        assertTokens("false", run("7 0"));
+    }
+
+    @Test
+    void defaultDemonstratesZeroDivisor() throws Exception {
+        assertTokens("false", run(""));
+    }
+
     private static String run(String input, String... args) throws Exception {
         var previousIn = System.in;
         var previousOut = System.out;

@@ -5,53 +5,165 @@
   "preview": false,
   "junitConsoleVersion": "1.14.1",
   "junitSha256": "a09c656d60ada792cf12ed1e8dc7ead3edc98dde034332e97dfcb5b4268b9072",
+  "scoringTests": "ContractTest (private); public examples are checked separately and do not establish scoring coverage",
   "scenarios": [
     {
       "project": "month-name",
       "scenario": "starter",
+      "sourceSha256": {
+        "Main.java": "8ad04749b7249ee054fa00e9d62e726188eb891ce08dd36aac13f395f4fa6d58"
+      },
+      "testSha256": {
+        "ContractTest.java": "c8ef99e3ffde5b7d183028b50f32d4f69791e8b30ee52a7435182324d440a5d3",
+        "PublicExamplesTest.java": "1c48a34d9dc372e078626d63e6a8c0427028def8d464330516786585d97b8da1"
+      },
       "compile": true,
-      "exitCode": 1,
-      "found": 4,
-      "started": 4,
-      "successful": 0,
-      "failed": 4
+      "private": {
+        "found": 4,
+        "started": 4,
+        "successful": 0,
+        "failed": 4,
+        "exitCode": 1,
+        "failedTestIds": [
+          "ContractTest#rejectsMissingOrNoninteger",
+          "ContractTest#rejectsOutOfRange",
+          "ContractTest#allOtherMonths",
+          "ContractTest#firstAndLastMonth"
+        ]
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 0,
+        "failed": 1,
+        "exitCode": 1,
+        "failedTestIds": [
+          "PublicExamplesTest#firstAndLastMonth"
+        ]
+      }
     },
     {
       "project": "month-name",
       "scenario": "reference",
+      "sourceSha256": {
+        "Main.java": "d3124893b2cdd088988bbe49f99fdc3d02a95c0ebe07cadaaf8489428d08e916"
+      },
+      "testSha256": {
+        "ContractTest.java": "c8ef99e3ffde5b7d183028b50f32d4f69791e8b30ee52a7435182324d440a5d3",
+        "PublicExamplesTest.java": "1c48a34d9dc372e078626d63e6a8c0427028def8d464330516786585d97b8da1"
+      },
       "compile": true,
-      "exitCode": 0,
-      "found": 4,
-      "started": 4,
-      "successful": 4,
-      "failed": 0
+      "private": {
+        "found": 4,
+        "started": 4,
+        "successful": 4,
+        "failed": 0,
+        "exitCode": 0,
+        "failedTestIds": []
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 1,
+        "failed": 0,
+        "exitCode": 0,
+        "failedTestIds": []
+      }
     },
     {
       "project": "month-name",
       "scenario": "mutant:clamps-invalid-month",
+      "sourceSha256": {
+        "Main.java": "797b15ec93d481b12aa348a0baafa2054cd8fbd04f0f35ba6c4bd0bc2600d1a9"
+      },
+      "testSha256": {
+        "ContractTest.java": "c8ef99e3ffde5b7d183028b50f32d4f69791e8b30ee52a7435182324d440a5d3",
+        "PublicExamplesTest.java": "1c48a34d9dc372e078626d63e6a8c0427028def8d464330516786585d97b8da1"
+      },
       "compile": true,
-      "exitCode": 1,
-      "found": 4,
-      "started": 4,
-      "successful": 3,
-      "failed": 1,
-      "failedTestIds": [
-        "ContractTest#rejectsOutOfRange"
-      ]
+      "private": {
+        "found": 4,
+        "started": 4,
+        "successful": 3,
+        "failed": 1,
+        "exitCode": 1,
+        "failedTestIds": [
+          "ContractTest#rejectsOutOfRange"
+        ]
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 1,
+        "failed": 0,
+        "exitCode": 0,
+        "failedTestIds": []
+      }
+    },
+    {
+      "project": "month-name",
+      "scenario": "mutant:rejects-boundary-months",
+      "sourceSha256": {
+        "Main.java": "0ab96f3c02fdb230ee7b0ecb0178e70e2168b1240ef2157364c5fbad86f13a86"
+      },
+      "testSha256": {
+        "ContractTest.java": "c8ef99e3ffde5b7d183028b50f32d4f69791e8b30ee52a7435182324d440a5d3",
+        "PublicExamplesTest.java": "1c48a34d9dc372e078626d63e6a8c0427028def8d464330516786585d97b8da1"
+      },
+      "compile": true,
+      "private": {
+        "found": 4,
+        "started": 4,
+        "successful": 3,
+        "failed": 1,
+        "exitCode": 1,
+        "failedTestIds": [
+          "ContractTest#firstAndLastMonth"
+        ]
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 0,
+        "failed": 1,
+        "exitCode": 1,
+        "failedTestIds": [
+          "PublicExamplesTest#firstAndLastMonth"
+        ]
+      }
     },
     {
       "project": "month-name",
       "scenario": "mutant:shifted-months",
+      "sourceSha256": {
+        "Main.java": "e8c8ab6b940d6418302971b8dcfb2487e06e085a40ec136958d7da7f884566ea"
+      },
+      "testSha256": {
+        "ContractTest.java": "c8ef99e3ffde5b7d183028b50f32d4f69791e8b30ee52a7435182324d440a5d3",
+        "PublicExamplesTest.java": "1c48a34d9dc372e078626d63e6a8c0427028def8d464330516786585d97b8da1"
+      },
       "compile": true,
-      "exitCode": 1,
-      "found": 4,
-      "started": 4,
-      "successful": 2,
-      "failed": 2,
-      "failedTestIds": [
-        "ContractTest#allOtherMonths",
-        "PublicExamplesTest#firstAndLastMonth"
-      ]
+      "private": {
+        "found": 4,
+        "started": 4,
+        "successful": 2,
+        "failed": 2,
+        "exitCode": 1,
+        "failedTestIds": [
+          "ContractTest#allOtherMonths",
+          "ContractTest#firstAndLastMonth"
+        ]
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 0,
+        "failed": 1,
+        "exitCode": 1,
+        "failedTestIds": [
+          "PublicExamplesTest#firstAndLastMonth"
+        ]
+      }
     }
   ]
 }

@@ -5,57 +5,136 @@
   "preview": false,
   "junitConsoleVersion": "1.14.1",
   "junitSha256": "a09c656d60ada792cf12ed1e8dc7ead3edc98dde034332e97dfcb5b4268b9072",
+  "scoringTests": "ContractTest (private); public examples are checked separately and do not establish scoring coverage",
   "scenarios": [
     {
       "project": "lunar-weight",
       "scenario": "starter",
+      "sourceSha256": {
+        "Main.java": "252edb8ad94db77ef5b70868c9c4fef0ab1fc655d3a4497b5f1bddf7bb296c88"
+      },
+      "testSha256": {
+        "ContractTest.java": "0948de1cb58d75456359ae900b5e17459784f49513e9ca58317a458c3576b243",
+        "PublicExamplesTest.java": "bbbf900bd361e92d5d70f15403d12bd5df4026d32ea41cd75310825fd3a33ede"
+      },
       "compile": true,
-      "exitCode": 1,
-      "found": 5,
-      "started": 5,
-      "successful": 0,
-      "failed": 5
+      "private": {
+        "found": 4,
+        "started": 4,
+        "successful": 0,
+        "failed": 4,
+        "exitCode": 1,
+        "failedTestIds": [
+          "ContractTest#zeroWeight",
+          "ContractTest#coefficientIsSeventeenPercent",
+          "ContractTest#fractionalWeight",
+          "ContractTest#defaultShowsZeroAndPositiveExample"
+        ]
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 0,
+        "failed": 1,
+        "exitCode": 1,
+        "failedTestIds": [
+          "PublicExamplesTest#positiveWeight"
+        ]
+      }
     },
     {
       "project": "lunar-weight",
       "scenario": "reference",
+      "sourceSha256": {
+        "Main.java": "e6473e227d167d4e1ed0ab3202c1b80b27d2ec695f2ed2870040babc9afd1193"
+      },
+      "testSha256": {
+        "ContractTest.java": "0948de1cb58d75456359ae900b5e17459784f49513e9ca58317a458c3576b243",
+        "PublicExamplesTest.java": "bbbf900bd361e92d5d70f15403d12bd5df4026d32ea41cd75310825fd3a33ede"
+      },
       "compile": true,
-      "exitCode": 0,
-      "found": 5,
-      "started": 5,
-      "successful": 5,
-      "failed": 0
+      "private": {
+        "found": 4,
+        "started": 4,
+        "successful": 4,
+        "failed": 0,
+        "exitCode": 0,
+        "failedTestIds": []
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 1,
+        "failed": 0,
+        "exitCode": 0,
+        "failedTestIds": []
+      }
     },
     {
       "project": "lunar-weight",
       "scenario": "mutant:fixed-answer",
+      "sourceSha256": {
+        "Main.java": "7ab956d7b6a6b915d0523fbb5d16cb8b77f0048299632a0466f61757763bdcf5"
+      },
+      "testSha256": {
+        "ContractTest.java": "0948de1cb58d75456359ae900b5e17459784f49513e9ca58317a458c3576b243",
+        "PublicExamplesTest.java": "bbbf900bd361e92d5d70f15403d12bd5df4026d32ea41cd75310825fd3a33ede"
+      },
       "compile": true,
-      "exitCode": 1,
-      "found": 5,
-      "started": 5,
-      "successful": 1,
-      "failed": 4,
-      "failedTestIds": [
-        "ContractTest#zeroWeight",
-        "ContractTest#coefficientIsSeventeenPercent",
-        "ContractTest#fractionalWeight",
-        "ContractTest#defaultShowsZeroAndPositiveExample"
-      ]
+      "private": {
+        "found": 4,
+        "started": 4,
+        "successful": 0,
+        "failed": 4,
+        "exitCode": 1,
+        "failedTestIds": [
+          "ContractTest#zeroWeight",
+          "ContractTest#coefficientIsSeventeenPercent",
+          "ContractTest#fractionalWeight",
+          "ContractTest#defaultShowsZeroAndPositiveExample"
+        ]
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 1,
+        "failed": 0,
+        "exitCode": 0,
+        "failedTestIds": []
+      }
     },
     {
       "project": "lunar-weight",
       "scenario": "mutant:seventeen-instead-of-percent",
+      "sourceSha256": {
+        "Main.java": "c9ab015a48114447302e01f68f452383117ee79d7a0500d48f4137f4340481cb"
+      },
+      "testSha256": {
+        "ContractTest.java": "0948de1cb58d75456359ae900b5e17459784f49513e9ca58317a458c3576b243",
+        "PublicExamplesTest.java": "bbbf900bd361e92d5d70f15403d12bd5df4026d32ea41cd75310825fd3a33ede"
+      },
       "compile": true,
-      "exitCode": 1,
-      "found": 5,
-      "started": 5,
-      "successful": 2,
-      "failed": 3,
-      "failedTestIds": [
-        "ContractTest#coefficientIsSeventeenPercent",
-        "ContractTest#fractionalWeight",
-        "PublicExamplesTest#positiveWeight"
-      ]
+      "private": {
+        "found": 4,
+        "started": 4,
+        "successful": 2,
+        "failed": 2,
+        "exitCode": 1,
+        "failedTestIds": [
+          "ContractTest#coefficientIsSeventeenPercent",
+          "ContractTest#fractionalWeight"
+        ]
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 0,
+        "failed": 1,
+        "exitCode": 1,
+        "failedTestIds": [
+          "PublicExamplesTest#positiveWeight"
+        ]
+      }
     }
   ]
 }

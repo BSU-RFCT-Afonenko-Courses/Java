@@ -17,6 +17,11 @@ public class ContractTest {
         assertTokens("Некорректный месяц", run("")); assertTokens("Некорректный месяц", run("abc")); assertTokens("Некорректный месяц", run("1.5"));
     }
 
+    @Test
+    void firstAndLastMonth() throws Exception {
+        assertTokens("январь", run("1")); assertTokens("декабрь", run("12"));
+    }
+
     private static String run(String input, String... args) throws Exception {
         var previousIn = System.in;
         var previousOut = System.out;

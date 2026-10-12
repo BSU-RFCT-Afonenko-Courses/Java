@@ -5,52 +5,131 @@
   "preview": false,
   "junitConsoleVersion": "1.14.1",
   "junitSha256": "a09c656d60ada792cf12ed1e8dc7ead3edc98dde034332e97dfcb5b4268b9072",
+  "scoringTests": "ContractTest (private); public examples are checked separately and do not establish scoring coverage",
   "scenarios": [
     {
       "project": "toggle-console-case",
       "scenario": "starter",
+      "sourceSha256": {
+        "Main.java": "4103308588a9eec2b0a92606b2bfee3f27dc65cd47b0430f54bd84a5395d7c60"
+      },
+      "testSha256": {
+        "ContractTest.java": "3c060fc30e7c1f692d3649afe18ed069d77b9c9c464d366d076c02e2a8619c32",
+        "PublicExamplesTest.java": "bced7d48aa28b8c55b814b2e4cd1b0dfee66c348e1aa57cc3c235d6d2a029d7d"
+      },
       "compile": true,
-      "exitCode": 1,
-      "found": 6,
-      "started": 6,
-      "successful": 0,
-      "failed": 6
+      "private": {
+        "found": 5,
+        "started": 5,
+        "successful": 0,
+        "failed": 5,
+        "exitCode": 1,
+        "failedTestIds": [
+          "ContractTest#preservesUtf8AndEmoji",
+          "ContractTest#emptyInput",
+          "ContractTest#countsEveryAsciiLetter",
+          "ContractTest#eofAndOtherCharacters",
+          "ContractTest#stopsAtFirstDot"
+        ]
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 0,
+        "failed": 1,
+        "exitCode": 1,
+        "failedTestIds": [
+          "PublicExamplesTest#togglesAsciiAndCounts"
+        ]
+      }
     },
     {
       "project": "toggle-console-case",
       "scenario": "reference",
+      "sourceSha256": {
+        "Main.java": "c44c401c87c92109fe6ccfc983abfc868f925643ffd6c4f1ac25958e03ae7b59"
+      },
+      "testSha256": {
+        "ContractTest.java": "3c060fc30e7c1f692d3649afe18ed069d77b9c9c464d366d076c02e2a8619c32",
+        "PublicExamplesTest.java": "bced7d48aa28b8c55b814b2e4cd1b0dfee66c348e1aa57cc3c235d6d2a029d7d"
+      },
       "compile": true,
-      "exitCode": 0,
-      "found": 6,
-      "started": 6,
-      "successful": 6,
-      "failed": 0
+      "private": {
+        "found": 5,
+        "started": 5,
+        "successful": 5,
+        "failed": 0,
+        "exitCode": 0,
+        "failedTestIds": []
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 1,
+        "failed": 0,
+        "exitCode": 0,
+        "failedTestIds": []
+      }
     },
     {
       "project": "toggle-console-case",
       "scenario": "mutant:reads-utf8-as-bytes",
+      "sourceSha256": {
+        "Main.java": "c4997f4665c5edc1f3bc092ee93d5d628e5e10ccfd0097f04e7b415df6429d5f"
+      },
+      "testSha256": {
+        "ContractTest.java": "3c060fc30e7c1f692d3649afe18ed069d77b9c9c464d366d076c02e2a8619c32",
+        "PublicExamplesTest.java": "bced7d48aa28b8c55b814b2e4cd1b0dfee66c348e1aa57cc3c235d6d2a029d7d"
+      },
       "compile": true,
-      "exitCode": 1,
-      "found": 6,
-      "started": 6,
-      "successful": 5,
-      "failed": 1,
-      "failedTestIds": [
-        "ContractTest#preservesUtf8AndEmoji"
-      ]
+      "private": {
+        "found": 5,
+        "started": 5,
+        "successful": 4,
+        "failed": 1,
+        "exitCode": 1,
+        "failedTestIds": [
+          "ContractTest#preservesUtf8AndEmoji"
+        ]
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 1,
+        "failed": 0,
+        "exitCode": 0,
+        "failedTestIds": []
+      }
     },
     {
       "project": "toggle-console-case",
       "scenario": "mutant:toggles-unicode",
+      "sourceSha256": {
+        "Main.java": "56bec36ea1f43dc9e1af0eda4806b15a68380f98528f48f5baa0a678634bd7d6"
+      },
+      "testSha256": {
+        "ContractTest.java": "3c060fc30e7c1f692d3649afe18ed069d77b9c9c464d366d076c02e2a8619c32",
+        "PublicExamplesTest.java": "bced7d48aa28b8c55b814b2e4cd1b0dfee66c348e1aa57cc3c235d6d2a029d7d"
+      },
       "compile": true,
-      "exitCode": 1,
-      "found": 6,
-      "started": 6,
-      "successful": 5,
-      "failed": 1,
-      "failedTestIds": [
-        "ContractTest#preservesUtf8AndEmoji"
-      ]
+      "private": {
+        "found": 5,
+        "started": 5,
+        "successful": 4,
+        "failed": 1,
+        "exitCode": 1,
+        "failedTestIds": [
+          "ContractTest#preservesUtf8AndEmoji"
+        ]
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 1,
+        "failed": 0,
+        "exitCode": 0,
+        "failedTestIds": []
+      }
     }
   ]
 }

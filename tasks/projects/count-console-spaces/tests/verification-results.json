@@ -5,52 +5,130 @@
   "preview": false,
   "junitConsoleVersion": "1.14.1",
   "junitSha256": "a09c656d60ada792cf12ed1e8dc7ead3edc98dde034332e97dfcb5b4268b9072",
+  "scoringTests": "ContractTest (private); public examples are checked separately and do not establish scoring coverage",
   "scenarios": [
     {
       "project": "count-console-spaces",
       "scenario": "starter",
+      "sourceSha256": {
+        "Main.java": "9eb45d3661c15602229c3dde66205ebde64a664a71e539b7fde9da2fc5fb0af7"
+      },
+      "testSha256": {
+        "ContractTest.java": "a3aba34a148692bb411fef93e5993760605c6d196179f58d94fcb1827e21aa73",
+        "PublicExamplesTest.java": "662f751385667f2a39c21e9fabd7c5fdfcb325ebc694b41f42eb42fcecc2a692"
+      },
       "compile": true,
-      "exitCode": 1,
-      "found": 5,
-      "started": 5,
-      "successful": 0,
-      "failed": 5
+      "private": {
+        "found": 4,
+        "started": 4,
+        "successful": 0,
+        "failed": 4,
+        "exitCode": 1,
+        "failedTestIds": [
+          "ContractTest#eofAlsoStops",
+          "ContractTest#consecutiveSpaces",
+          "ContractTest#countsOnlyOrdinarySpace",
+          "ContractTest#emptyPrefix"
+        ]
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 0,
+        "failed": 1,
+        "exitCode": 1,
+        "failedTestIds": [
+          "PublicExamplesTest#countsSpacesBeforeDot"
+        ]
+      }
     },
     {
       "project": "count-console-spaces",
       "scenario": "reference",
+      "sourceSha256": {
+        "Main.java": "0d99d89a9f75cfdecfda4f45092a635add84b184107803492972cfd0c61b96a1"
+      },
+      "testSha256": {
+        "ContractTest.java": "a3aba34a148692bb411fef93e5993760605c6d196179f58d94fcb1827e21aa73",
+        "PublicExamplesTest.java": "662f751385667f2a39c21e9fabd7c5fdfcb325ebc694b41f42eb42fcecc2a692"
+      },
       "compile": true,
-      "exitCode": 0,
-      "found": 5,
-      "started": 5,
-      "successful": 5,
-      "failed": 0
+      "private": {
+        "found": 4,
+        "started": 4,
+        "successful": 4,
+        "failed": 0,
+        "exitCode": 0,
+        "failedTestIds": []
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 1,
+        "failed": 0,
+        "exitCode": 0,
+        "failedTestIds": []
+      }
     },
     {
       "project": "count-console-spaces",
       "scenario": "mutant:counts-all-whitespace",
+      "sourceSha256": {
+        "Main.java": "bc5f6049fb77a4b01d516cc180c0e98155d71d4a28e26751aeb94753a1a6a3f8"
+      },
+      "testSha256": {
+        "ContractTest.java": "a3aba34a148692bb411fef93e5993760605c6d196179f58d94fcb1827e21aa73",
+        "PublicExamplesTest.java": "662f751385667f2a39c21e9fabd7c5fdfcb325ebc694b41f42eb42fcecc2a692"
+      },
       "compile": true,
-      "exitCode": 1,
-      "found": 5,
-      "started": 5,
-      "successful": 4,
-      "failed": 1,
-      "failedTestIds": [
-        "ContractTest#countsOnlyOrdinarySpace"
-      ]
+      "private": {
+        "found": 4,
+        "started": 4,
+        "successful": 3,
+        "failed": 1,
+        "exitCode": 1,
+        "failedTestIds": [
+          "ContractTest#countsOnlyOrdinarySpace"
+        ]
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 1,
+        "failed": 0,
+        "exitCode": 0,
+        "failedTestIds": []
+      }
     },
     {
       "project": "count-console-spaces",
       "scenario": "mutant:stops-at-newline",
+      "sourceSha256": {
+        "Main.java": "d00f3680050e6c67b0f76ea5346696f5f9104219a058db91d96253751ee35b2c"
+      },
+      "testSha256": {
+        "ContractTest.java": "a3aba34a148692bb411fef93e5993760605c6d196179f58d94fcb1827e21aa73",
+        "PublicExamplesTest.java": "662f751385667f2a39c21e9fabd7c5fdfcb325ebc694b41f42eb42fcecc2a692"
+      },
       "compile": true,
-      "exitCode": 1,
-      "found": 5,
-      "started": 5,
-      "successful": 4,
-      "failed": 1,
-      "failedTestIds": [
-        "ContractTest#countsOnlyOrdinarySpace"
-      ]
+      "private": {
+        "found": 4,
+        "started": 4,
+        "successful": 3,
+        "failed": 1,
+        "exitCode": 1,
+        "failedTestIds": [
+          "ContractTest#countsOnlyOrdinarySpace"
+        ]
+      },
+      "public": {
+        "found": 1,
+        "started": 1,
+        "successful": 1,
+        "failed": 0,
+        "exitCode": 0,
+        "failedTestIds": []
+      }
     }
   ]
 }
