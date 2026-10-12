@@ -1,0 +1,57 @@
+{
+  "verification": "direct JUnit characterization; Platform delivery receipt is produced separately",
+  "javaVersion": "25.0.4.1",
+  "javaRelease": 25,
+  "preview": false,
+  "junitConsoleVersion": "1.14.1",
+  "junitSha256": "a09c656d60ada792cf12ed1e8dc7ead3edc98dde034332e97dfcb5b4268b9072",
+  "scenarios": [
+    {
+      "project": "month-name",
+      "scenario": "starter",
+      "compile": true,
+      "exitCode": 1,
+      "found": 4,
+      "started": 4,
+      "successful": 0,
+      "failed": 4
+    },
+    {
+      "project": "month-name",
+      "scenario": "reference",
+      "compile": true,
+      "exitCode": 0,
+      "found": 4,
+      "started": 4,
+      "successful": 4,
+      "failed": 0
+    },
+    {
+      "project": "month-name",
+      "scenario": "mutant:clamps-invalid-month",
+      "compile": true,
+      "exitCode": 1,
+      "found": 4,
+      "started": 4,
+      "successful": 3,
+      "failed": 1,
+      "failedTestIds": [
+        "ContractTest#rejectsOutOfRange"
+      ]
+    },
+    {
+      "project": "month-name",
+      "scenario": "mutant:shifted-months",
+      "compile": true,
+      "exitCode": 1,
+      "found": 4,
+      "started": 4,
+      "successful": 2,
+      "failed": 2,
+      "failedTestIds": [
+        "ContractTest#allOtherMonths",
+        "PublicExamplesTest#firstAndLastMonth"
+      ]
+    }
+  ]
+}

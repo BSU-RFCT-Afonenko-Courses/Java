@@ -1,0 +1,56 @@
+{
+  "verification": "direct JUnit characterization; Platform delivery receipt is produced separately",
+  "javaVersion": "25.0.4.1",
+  "javaRelease": 25,
+  "preview": false,
+  "junitConsoleVersion": "1.14.1",
+  "junitSha256": "a09c656d60ada792cf12ed1e8dc7ead3edc98dde034332e97dfcb5b4268b9072",
+  "scenarios": [
+    {
+      "project": "toggle-console-case",
+      "scenario": "starter",
+      "compile": true,
+      "exitCode": 1,
+      "found": 6,
+      "started": 6,
+      "successful": 0,
+      "failed": 6
+    },
+    {
+      "project": "toggle-console-case",
+      "scenario": "reference",
+      "compile": true,
+      "exitCode": 0,
+      "found": 6,
+      "started": 6,
+      "successful": 6,
+      "failed": 0
+    },
+    {
+      "project": "toggle-console-case",
+      "scenario": "mutant:reads-utf8-as-bytes",
+      "compile": true,
+      "exitCode": 1,
+      "found": 6,
+      "started": 6,
+      "successful": 5,
+      "failed": 1,
+      "failedTestIds": [
+        "ContractTest#preservesUtf8AndEmoji"
+      ]
+    },
+    {
+      "project": "toggle-console-case",
+      "scenario": "mutant:toggles-unicode",
+      "compile": true,
+      "exitCode": 1,
+      "found": 6,
+      "started": 6,
+      "successful": 5,
+      "failed": 1,
+      "failedTestIds": [
+        "ContractTest#preservesUtf8AndEmoji"
+      ]
+    }
+  ]
+}
