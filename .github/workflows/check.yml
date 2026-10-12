@@ -30,6 +30,9 @@ jobs:
         run: bash CI/render.sh
   projects:
     name: Явно подключённые проекты и полная выбранная поставка
+    permissions:
+      contents: read
+      packages: read
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -46,6 +49,12 @@ jobs:
         with:
           distribution: temurin
           java-version: '25'
+      - name: Доступ к опубликованным GHCR runtime
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Exact released Platform и проверяемые runtime pins
         run: |
           python3 - <<'PY'
