@@ -1,10 +1,14 @@
-# Значения, типы и переменные {#sec-h-values}
+---
+categories: [j25, j25-core, j25-values]
+---
 
-Точные правила задают тип значения, допустимые преобразования и возможность чтения переменной. Связное объяснение: @theory:sec-t-types.
+# Значения, типы и переменные {#sec-j25-api-values}
+
+Точные правила задают тип значения, допустимые преобразования и возможность чтения переменной. Связное объяснение: @theory:sec-j25-theory-types.
 
 [@bib-jls-types-values-variables; @bib-fnd-jls-conversions]
 
-## Примитивные типы {#sec-h-values-primitives}
+## Примитивные типы {#sec-j25-api-values-primitives}
 
 | Тип | Представление значения | Границы или свойства |
 |---|---|---|
@@ -19,7 +23,7 @@
 
 Размер представления значения не равен гарантированному объёму памяти объекта или переменной в конкретной JVM. `boolean` не преобразуется в числовые типы и обратно обычным приведением. Целочисленный диапазон не зависит от разрядности ОС.
 
-## Объявление и инициализация {#sec-h-values-declarations}
+## Объявление и инициализация {#sec-j25-api-values-declarations}
 
 ```java
 int count = 3;
@@ -29,13 +33,13 @@ final int limit = 10;
 var name = "Java"; // String, локальная переменная
 ```
 
-Локальное значение должно быть определённо присвоено перед чтением. Поля и компоненты массива получают начальные значения: числовой ноль, `false`, `null`. Параметр получает значение при вызове.
+Локальное значение должно быть определённо присвоено перед чтением. Перед примерами с массивом достаточно @theory:sec-j25-theory-types-array-minimum: `int[] a = {5, 7}` хранит ссылку на два компонента, `a.length` равна `2`, `a[0]` выбирает первый компонент. Поля и компоненты массива получают начальные значения: числовой ноль, `false`, `null`. Параметр получает значение при вызове.
 
 `final` запрещает повторное присваивание данной переменной. `final int[] a` не запрещает `a[0] = 1`. Не всякая `final` переменная является константной переменной по JLS: нужна переменная примитивного типа или `String`, инициализированная константным выражением.
 
 `var` применим к допустимым объявлениям локальных переменных с инициализатором, в том числе в циклах; здесь не обозначает динамический тип. Нельзя использовать `var` как тип поля, результата или обычного параметра метода; `var x = null`, `var x;` и `var a = {1, 2};` не задают допустимый инициализатор для выведения типа.
 
-## Числовые преобразования {#sec-h-values-conversions}
+## Числовые преобразования {#sec-j25-api-values-conversions}
 
 | Действие | Правило и пример |
 |---|---|
@@ -48,13 +52,13 @@ var name = "Java"; // String, локальная переменная
 
 Сужение не является проверкой диапазона. `(byte) 130 == -126`. Для плавающего значения в целый тип NaN преобразуется в ноль, слишком большие значения — к границе `int` или `long` на соответствующем шаге преобразования; последующее сужение может снова изменить значение. На практике проверяйте диапазон до приведения.
 
-## Ссылки и оболочки {#sec-h-values-references}
+## Ссылки и оболочки {#sec-j25-api-values-references}
 
 Ссылочный тип допускает ссылку на совместимый объект или `null`. Литерал `null` не создаёт объект. `String`, массив и `Integer` — разные ссылочные типы. Оболочки примитивов: `Byte`, `Short`, `Integer`, `Long`, `Character`, `Float`, `Double`, `Boolean`.
 
 Упаковка получает оболочку из примитива, распаковка — примитив из оболочки. Распаковка `null` порождает `NullPointerException`. Сравнение двух оболочек через `==` обычно сравнивает ссылки; кэширование некоторых значений не задаёт общее равенство чисел. Для содержимого выбирайте `equals` с учётом допустимости `null` либо осознанно распаковывайте значения. [@bib-jls-boxing-unboxing]
 
-## Тип переменной, выражения и объекта {#sec-h-values-type-levels}
+## Тип переменной, выражения и объекта {#sec-j25-api-values-type-levels}
 
 - Объявление `int pages = 5;` закрепляет тип переменной `int`.
 - `var pages = 5;` выводит тот же тип из инициализатора; следующие присваивания
@@ -68,7 +72,7 @@ var name = "Java"; // String, локальная переменная
 `String x = null;` допускает сравнение `x == null`; вызов экземплярного метода
 через `x` вызывает `NullPointerException`. `int x = null;` запрещено.
 
-## Копирование значений {#sec-h-values-copying}
+## Копирование значений {#sec-j25-api-values-copying}
 
 | Запись | Что скопировано | Последствие |
 |---|---|---|
@@ -76,9 +80,63 @@ var name = "Java"; // String, локальная переменная
 | `int[] view = journal;` | Ссылка | Изменение компонента общего массива видно через обе ссылки |
 | `int[] copy = journal.clone();` | Создан новый внешний массив | Для `int[]` компоненты независимы |
 
-Присваивание ссылки не копирует объект. Для вложенных массивов `clone()`
+Присваивание ссылки не копирует объект. `clone()` введён в @theory:sec-j25-theory-arrays-copying; таблица описывает отдельную операцию, а не эффект обычного присваивания. Для вложенных массивов `clone()`
 внешнего массива сохраняет ссылки на прежние внутренние массивы. Семантика
 копирования не определяет физическое размещение локального значения, поля
 или компонента массива в конкретной JVM.
 
-Объяснение и сравнение языковых моделей: @theory:sec-t-types-copying.
+Объяснение и сравнение языковых моделей: @theory:sec-j25-theory-types-copying.
+
+## Python-аннотация и отдельный checker {#sec-j25-api-values-python-checker}
+
+Для `pages.py` из @theory:sec-j25-theory-languages-typing используется Python **3.14.7**, Pyright **1.1.412**. Конфигурация рядом с файлом — `pyrightconfig.json`:
+
+```json
+{
+  "include": ["pages.py"],
+  "pythonVersion": "3.14",
+  "typeCheckingMode": "strict"
+}
+```
+
+```bash
+python --version
+pyright --version
+python pages.py
+pyright --project pyrightconfig.json
+```
+
+Запуск печатает `7`, затем `seven` и завершается нормально. Checker получает ошибку `reportAssignmentType`: строка не соответствует аннотированному `int`. Удаление строкового присваивания и последней печати даёт `0 errors`. Это две команды с разными задачами; наличие аннотации само не запускает checker. Среда демонстрации не является требованием установить Python для Java-лабораторных. [typing](https://docs.python.org/3.14/library/typing.html), [конфигурация Pyright 1.1.412](https://github.com/microsoft/pyright/blob/1.1.412/docs/configuration.md).
+
+## Java nullness: выбранная аннотация и анализатор {#sec-j25-api-values-nullness}
+
+Пример `NullnessDemo.java` целиком приведён в @theory:sec-j25-theory-types-nullness-comparison. Аннотация принадлежит `org.checkerframework.checker.nullness.qual.Nullable`. Нужны **Checker Framework 4.3.1**: `checker-qual-4.3.1.jar` для типа аннотации и `checker-4.3.1.jar` для процессора. Они находятся в каталоге демонстрации, без глобальной установки. Во всех командах `javac` и `java` относятся к одному JDK **25**; сначала проверьте обе версии.
+
+Обычная компиляция без анализатора и запуск:
+
+```bash
+javac --release 25 -proc:none -cp checker-qual-4.3.1.jar -d out NullnessDemo.java
+java -cp out NullnessDemo
+```
+
+Исходный метод с `return text.length()` компилируется, затем при `length(null)` получает `NullPointerException`. Анализ включают отдельно. Для прямого вызова `javac` ему нужны доступы к внутреннему API компилятора; полный воспроизводимый вызов:
+
+```bash
+javac \
+  -J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \
+  -J--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED \
+  -J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED \
+  -J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED \
+  -J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED \
+  -J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED \
+  -J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED \
+  -J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
+  -J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED \
+  -J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED \
+  --release 25 -cp checker-qual-4.3.1.jar \
+  -processorpath checker-4.3.1.jar \
+  -processor org.checkerframework.checker.nullness.NullnessChecker \
+  -d checked NullnessDemo.java
+```
+
+Без `-Awarns` опасное обращение даёт ошибку `dereference.of.nullable` и ненулевой статус компиляции. С охранным `if (text == null) return 0;` из теории анализ проходит, а запуск печатает `0`. Ошибка анализатора отличается от обычной ошибки типов `javac` и от runtime-исключения. Команды обслуживают одно наблюдение; изучение внутренних пакетов компилятора не входит в ядро курса. [CF 4.3.1, запуск checker](https://checkerframework.org/manual/#javac).

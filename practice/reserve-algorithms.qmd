@@ -1,4 +1,5 @@
 ---
+categories: [j25, j25-optional, j25-reserve-algorithms]
 title: "Резервные алгоритмические задачи"
 format:
   revealjs:
@@ -8,47 +9,49 @@ format:
     css: assets/lesson.css
 ---
 
-## Резервные алгоритмические задачи {#sec-p-reserve-algorithms}
+## Резервные алгоритмические задачи {#sec-j25-practice-reserve-algorithms}
 
-Введение в @tasks:sec-lab-reserve-algorithms. Закрепить обход, числовые преобразования, матричные преобразования и обработку строк.
+Введение в @tasks:sec-j25-lab-reserve-algorithms. Закрепить обход, числовые преобразования, матричные преобразования и обработку строк.
 
-Теория: @theory:sec-t-arrays.
+Теория: @theory:sec-j25-theory-arrays.
 
-За 30 минут разберём техническую основу и выберем проверки для лабораторной.
+Это добровольное продолжение после основных работ, вне обязательных 300 минут вводных занятий. Предпосылки выбранной темы: @theory:sec-j25-theory-arrays-bounds и @theory:sec-j25-theory-arrays-nested для матриц; @theory:sec-j25-theory-text-early-lab и @handbook:sec-j25-api-strings-parse-int для текстового маршрута. Проходятся только нужные выбранной задаче предпосылки.
+
+Ориентир выбранной вводной встречи — 30 минут, без новой обязательной работы.
 
 ::: {.notes}
 30 минут: выбор одного контракта — 6; индексы и преобразования — 8; неизменённые данные и текст — 6; диагностические примеры — 6; результат — 4.
 :::
 
-## Базовые понятия {#sec-p-reserve-algorithms-recap}
+## Базовые понятия {#sec-j25-practice-reserve-algorithms-recap}
 
-### Ограничения входных данных {#sec-p-reserve-algorithms-s1}
+### Ограничения входных данных {#sec-j25-practice-reserve-algorithms-s1}
 
 Резерв предлагает выбрать тему для дополнительной самостоятельной работы.
 
 Для алгоритма сначала выпишите форму входа: непустая последовательность, прямоугольная или квадратная матрица, допустимый алфавит. От этого зависит, какие случаи вообще нужно поддержать.
 
-### Диагностический пример поворота {#sec-p-reserve-algorithms-s2 .continuation}
+### Диагностический пример поворота {#sec-j25-practice-reserve-algorithms-s2 .continuation}
 
-Для поворота матрицы возьмите разные элементы: `[[1, 2], [3, 4]]`. Поворот на 90° против часовой стрелки, как в @tasks:exr-rotate-matrix, даст `[[2, 4], [1, 3]]`.
+Для поворота матрицы возьмите разные элементы: `[[1, 2], [3, 4]]`. Поворот на 90° против часовой стрелки, как в @tasks:exr-j25-arrays-rotate-matrix, даст `[[2, 4], [1, 3]]`.
 
 Матрица из одинаковых значений не выявит неверного направления.
 
-### Сдвиг, поворот и удаление {#sec-p-reserve-algorithms-s3 .continuation}
+### Сдвиг, поворот и удаление {#sec-j25-practice-reserve-algorithms-s3 .continuation}
 
 Сдвиг сохраняет расположение строк и столбцов с циклическим переносом. Поворот меняет направления осей. Удаление меняет размер.
 
 Эти операции требуют разных контрактов, даже если во всех используется `int[][]`.
 
-## Технические приёмы и справочные правила {#sec-p-reserve-algorithms-reference}
+## Технические приёмы и справочные правила {#sec-j25-practice-reserve-algorithms-reference}
 
-### Массивы и числа {#sec-p-reserve-algorithms-s4}
+### Массивы и числа {#sec-j25-practice-reserve-algorithms-s4}
 
-@handbook:sec-h-arrays, @handbook:sec-h-values, @handbook:sec-h-operators — формы операций.
+@handbook:sec-j25-api-arrays, @handbook:sec-j25-api-values, @handbook:sec-j25-api-operators — формы операций.
 
-@tasks:exr-sort-array требует объяснить выбранную сортировку; вызов готового метода допустим только в пределах условия.
+@tasks:exr-j25-arrays-sort-array требует объяснить выбранную сортировку; вызов готового метода допустим только в пределах условия.
 
-### Циклический индекс {#sec-p-reserve-algorithms-cyclic-index}
+### Циклический индекс {#sec-j25-practice-reserve-algorithms-cyclic-index}
 
 ```java
 int size = 3;
@@ -58,23 +61,23 @@ System.out.println(Math.floorMod(-1, size)); // 2
 
 При положительной длине `floorMod` возвращает индекс в диапазоне `[0, size)`. Это помогает выразить циклический переход; направление сдвига и координаты назначения берутся из условия.
 
-Нулевая длина не даёт допустимого циклического индекса. @theory:sec-t-expressions-division
+Нулевая длина не даёт допустимого циклического индекса. @theory:sec-j25-theory-expressions-division
 
-### Текст {#sec-p-reserve-algorithms-s5 .continuation}
+### Текст {#sec-j25-practice-reserve-algorithms-s5 .continuation}
 
-@handbook:sec-h-strings: поиск границ, выделение подстроки и построение результата.
+@handbook:sec-j25-api-strings: поиск границ, выделение подстроки и построение результата.
 
-Для @tasks:exr-decompress-character-runs важно различить символ серии и число повторений; формат заранее задан условием.
+Для @tasks:exr-j25-text-decompress-character-runs важно различить символ серии и число повторений; формат заранее задан условием.
 
-### Исходные координаты и изменённая матрица {#sec-p-reserve-algorithms-snapshot}
+### Исходные координаты и изменённая матрица {#sec-j25-practice-reserve-algorithms-snapshot}
 
 Для удаления строк и столбцов сначала фиксируются все нужные индексы в исходной матрице.
 
 Удаление во время поиска меняет координаты следующих элементов. Это может пропустить повторный максимум или удалить другую строку.
 
-Поиск признаков и построение нового результата — два этапа. Размер результата определяют после завершения поиска. @theory:sec-t-arrays-algorithm-design
+Поиск признаков и построение нового результата — два этапа. Размер результата определяют после завершения поиска. @theory:sec-j25-theory-arrays-algorithm-design
 
-### Числовой фрагмент текста {.continuation #sec-p-reserve-algorithms-number-fragment}
+### Числовой фрагмент текста {.continuation #sec-j25-practice-reserve-algorithms-number-fragment}
 
 ```java
 String token = "a12";
@@ -84,27 +87,29 @@ System.out.println(Integer.parseInt(digits)); // 12
 
 Граница цифрового фрагмента найдена до разбора. Один символ цифры и многозначное число — разные данные.
 
-Для распаковки серия без числа означает одно вхождение; точный формат: @tasks:exr-decompress-character-runs.
+Для распаковки серия без числа означает одно вхождение; точный формат: @tasks:exr-j25-text-decompress-character-runs.
 
-## Связь с лабораторной работой {#sec-p-reserve-algorithms-assignments}
+## Связь с лабораторной работой {#sec-j25-practice-reserve-algorithms-assignments}
 
-### Матричный маршрут {#sec-p-reserve-algorithms-s6}
+### Матричный маршрут {#sec-j25-practice-reserve-algorithms-s6}
 
-Матричная линия: @tasks:exr-cyclic-matrix-shift, @tasks:exr-rotate-matrix, @tasks:exr-remove-max-rows-columns.
+Матричная линия: @tasks:exr-j25-arrays-cyclic-matrix-shift, @tasks:exr-j25-arrays-rotate-matrix, @tasks:exr-j25-arrays-remove-max-rows-columns.
 
 Начните с одного задания. До удаления найдите все максимумы исходной матрицы; последовательное изменение во время поиска может менять саму задачу.
 
-### Текстовый и числовой маршруты {#sec-p-reserve-algorithms-s7 .continuation}
+### Текстовый и числовой маршруты {#sec-j25-practice-reserve-algorithms-s7 .continuation}
 
-Текстовая линия: @tasks:exr-count-normalized-word, @tasks:exr-left-align-text. Числовая: @tasks:exr-radix-conversion, @tasks:exr-quadratic-roots.
+Текстовая линия: @tasks:exr-j25-text-count-normalized-word, @tasks:exr-j25-text-left-align-text. Числовая: @tasks:exr-j25-numbers-radix-conversion, @tasks:exr-j25-numbers-quadratic-roots.
 
 В предъявляемом решении назовите выбранную задачу и продемонстрируйте именно её существенные границы.
 
-### Результат работы {#sec-p-reserve-algorithms-result}
+### Результат работы {#sec-j25-practice-reserve-algorithms-result}
+
+Перенос выбранной темы: назовите, берутся ли координаты из исходной или уже изменённой структуры, и покажите один вход, на котором смешение этих состояний даёт другую операцию. Для матрицы из одинаковых значений направление поворота не видно; разные значения позволяют его проверить.
 
 Исходные Java-файлы, короткую демонстрацию и объяснение существенной границы. Сначала покажите обычный результат, затем случай, отличающий правильную реализацию от правдоподобной ошибки.
 
-Точный состав и альтернативы: @tasks:sec-lab-reserve-algorithms. Условия задач находятся в банке; эти слайды их не заменяют.
+Точный состав и альтернативы: @tasks:sec-j25-lab-reserve-algorithms. Условия задач находятся в банке; эти слайды их не заменяют.
 
 ## Источники {.unnumbered .scrollable}
 
