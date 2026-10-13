@@ -1,4 +1,5 @@
 ---
+categories: [j25, j25-core, j25-generics]
 title: "Практика: Обобщённые контейнеры"
 format:
   revealjs:
@@ -8,59 +9,91 @@ format:
     css: assets/lesson.css
 ---
 
-## Обобщённые контейнеры {#sec-p-generics}
+## Обобщённые контейнеры {#sec-j25-practice-generics}
 
-Подготовка к @tasks:sec-lab-generics: два варианта `FlightSched`, метод `MyGen`,
-обмен в массиве, максимум диапазона и очередь **либо** стек.
+Подготовка к @tasks:sec-j25-lab-generics: два варианта `FlightSched`, метод `MyGen`,
+дописывание совместимых списков, максимум диапазона и очередь **либо** стек.
 30 минут разбора; 180 минут самостоятельной работы.
 
 ::: {.notes}
-30 минут: объявления и метод — 6; массив и диапазон — 8;
-тип хранилища — 7; проверяемый отказ и сценарий контейнера — 7;
+30 минут: объявления и метод — 5; список/PECS — 7; диапазон — 4;
+тип хранилища — 5; проверяемый отказ и сценарий контейнера — 7;
 начало работы — 2.
 :::
 
-## Параметр класса и параметр метода {#sec-p-generics-recap}
+## Параметр класса и параметр метода {#sec-j25-practice-generics-recap}
 
 У класса параметр объявляется после имени, у обобщённого метода — перед
 возвращаемым типом. Это разные области действия.
 
-Для @tasks:exr-two-type-container сохраните независимые и связанные параметры
+Для @tasks:exr-j25-generics-two-type-container сохраните независимые и связанные параметры
 в отдельных вариантах. При связи «второй — подтип первого» пара
 `Number, Integer` допустима, `Integer, Number` — нет.
 
-Для @tasks:exr-generic-method проверьте вызовы со строкой и целым числом,
+Для @tasks:exr-j25-generics-generic-method проверьте вызовы со строкой и целым числом,
 а также возвращение **того же объекта**, а не преобразованной копии.
-@handbook:sec-h-generic-classes; @handbook:sec-h-generic-methods.
+@handbook:sec-j25-api-generic-classes; @handbook:sec-j25-api-generic-methods.
 
-### Индексы и ссылка на элемент {#sec-p-generics-s6 .continuation}
+### Список: читать источник, дописывать приёмник {#sec-j25-practice-generics-s6 .continuation}
 
-В @tasks:exr-swap-generic-array общая операция работает с `T[]`.
-Переменная для временного элемента имеет тип `T`; создавать `new T()` не нужно.
+`List<E>` — упорядоченная последовательность; `ArrayList<E>` разрешает
+изменять её состав. Внутри `main`, с импортами `java.util.List` и
+`java.util.ArrayList`:
 
-Массивы `Integer[]{3,8}` и `String[]{"A","B"}` после обмена позиций `0,1`
-должны стать `[8,3]` и `[B,A]`. Сначала сохраните перезаписываемый элемент.
-Проверка строк только на печати не обнаружит неверный обмен одинаковых значений.
+```java
+List<Integer> labels = List.of(3, 8);
+List<Number> tray = new ArrayList<>();
+tray.add(0.5);
+Number first = labels.get(0);
+tray.add(first);
+System.out.println(labels.size()); // 2
+System.out.println(tray);          // [0.5, 3]
+```
 
-## Непустой полуинтервал {#sec-p-generics-reference}
+`size/get/add` дают размер, чтение по индексу, добавление в конец.
+У `get` требуется `0 <= index < size()`. `List.of` не разрешает менять
+состав; приёмником служит изменяемый `ArrayList`. Полный API:
+@handbook:sec-j25-api-lists-basics.
 
-Для @tasks:exr-range-maximum диапазон `[begin,end)` содержит `begin`,
+### Две роли одного переносимого значения
+
+В @tasks:exr-j25-generics-append-compatible-lists объявление метода —
+`<T> void copy(List<? extends T> source, List<? super T> target)`.
+Из источника читается `T`; приёмник принимает `T`.
+`List<Integer>` → `List<Number>` допустим, обратное направление может
+потребовать записать `Double` в список целых и отвергается.
+
+Сохраняются порядок, прежний префикс target и source. Пустой source
+ничего не добавляет. Для опыта списки независимы, ненулевые, без общих
+представлений; target поддерживает добавление, элементы ненулевые и
+допустимы. Откат частичных изменений не обещан. Покажите одну разрешённую
+и одну запрещённую операцию из собственного решения.
+@theory:sec-j25-theory-type-relations-copy;
+@handbook:sec-j25-api-wildcards-copy.
+
+## Непустой полуинтервал {#sec-j25-practice-generics-reference}
+
+Для @tasks:exr-j25-generics-range-maximum диапазон `[begin,end)` содержит `begin`,
 но не `end`. В `[4,9,2,7]` диапазон `[1,3)` имеет максимум `9`; `7` не участвует.
 
 Проверьте `0 ≤ begin < end ≤ array.length` до чтения первого кандидата.
 Диапазоны `[2,2)`, `[-1,2)`, `[0,5)` отклоняются через `IllegalArgumentException`.
 Затем первый кандидат берётся из разрешённого диапазона.
 
-### Сравнение задаётся границей {#sec-p-generics-s3 .continuation}
+### Сравнение задаётся границей {#sec-j25-practice-generics-s3 .continuation}
 
 Граница `T extends Comparable<? super T>` позволяет сравнивать элементы,
 в том числе когда сравнение унаследовано от более общего класса.
 Знак `compareTo` определяет порядок; результат не обязан быть только `-1,0,1`.
 
-@theory:sec-t-type-relations; @handbook:sec-h-wildcards.
+Сначала сравните знак строкового `compareTo` в
+@theory:sec-j25-theory-type-parameters-comparison-sign; гибкая граница и
+Student-target — @theory:sec-j25-theory-type-relations-comparison-target.
 Элементы по условию ненулевые: наличие `Comparable` не устраняет `null`.
 
-## Хранилище имеет фактический тип массива {#sec-p-generics-assignments}
+## Хранилище имеет фактический тип массива {#sec-j25-practice-generics-assignments}
+
+Внутри `main`:
 
 ```java
 Number[] safe = new Number[2];
@@ -73,26 +106,65 @@ safe[0] = 2.5;    // допустимо
 узкий массив присвоить широкой ссылке, но не делает его подходящим хранилищем.
 После передачи клиент не меняет массив напрямую — это условие задачи.
 
-@handbook:sec-h-erasure объясняет запрет `new T[n]`.
+@handbook:sec-j25-api-erasure объясняет запрет `new T[n]`.
 
-### Проверяемый отказ объявляется и обрабатывается {#sec-p-generics-s5 .continuation}
+### Проверяемый отказ объявляется и обрабатывается {#sec-j25-practice-generics-s5 .continuation}
 
-Отдельный пример формы, а не реализация очереди:
+Checked-исключение — возможный необычный выход, который нужно объявить
+через `throws` и обработать либо передать дальше. Подробный ранний минимум:
+@theory:sec-j25-theory-exceptions-early-checked. Контейнерная практика ниже
+показывает оба пути непосредственно, без предварительного чтения всей
+главы ресурсов и файлов.
+
+### Соседний контейнерный отказ {#sec-j25-practice-generics-checked .continuation}
+
+Это одно место для билета, отдельное от очереди и стека. Следующие вложенные
+классы помещаются в `TicketDemo`:
 
 ```java
-class StorageFullException extends Exception {
-    StorageFullException(String message) { super(message); }
+static class OccupiedException extends Exception {
+    OccupiedException(String message) { super(message); }
 }
-static void requireRoom(boolean full) throws StorageFullException {
-    if (full) throw new StorageFullException("No room");
+static final class TicketSlot<T> {
+    private T ticket;
+    void place(T value) throws OccupiedException {
+        if (ticket != null) throw new OccupiedException("occupied");
+        ticket = java.util.Objects.requireNonNull(value);
+    }
+    T current() { return ticket; }
 }
 ```
 
-Вызов требует `try/catch` либо передачи исключения через `throws`.
-В задаче о стеке объявления отказов нужны также в `IGenStack<T>`.
-@theory:sec-t-exceptions; @handbook:sec-h-exceptions.
+### Обработка и передача отказа {#sec-j25-practice-generics-checked-client .continuation}
 
-### Порядок и состояние после отказа {#sec-p-generics-s7 .continuation}
+В том же классе клиент ловит отказ, а помощник объявляет передачу отказа:
+
+```java
+static <T> void forward(TicketSlot<T> slot, T value)
+        throws OccupiedException {
+    slot.place(value);
+}
+public static void main(String[] args) throws OccupiedException {
+    TicketSlot<String> slot = new TicketSlot<>();
+    slot.place("A");
+    try {
+        forward(slot, "B");
+    } catch (OccupiedException failure) {
+        System.out.println(failure.getMessage()); // occupied
+    }
+    System.out.println(slot.current()); // A
+}
+```
+
+### Проверка до записи и обязанность клиента {#sec-j25-practice-generics-checked-result .continuation}
+
+Проверка занятого места предшествует записи, поэтому после отказа хранится
+`A`. Если удалить `catch` и не объявить соответствующий `throws`, клиент
+не скомпилируется даже для сценария, который случайно не заполнит место.
+Обязанность checked задаётся объявлением; конкретный отказ — выполнением.
+В лабораторном стеке объявления отказов требуются также в `IGenStack<T>`.
+
+### Порядок и состояние после отказа {#sec-j25-practice-generics-s7 .continuation}
 
 При ёмкости `2` поместите `A`, `B`, затем попытайтесь поместить `C`.
 Обработайте отказ и извлеките два элемента: очередь даст `A,B`, стек — `B,A`.
@@ -102,13 +174,16 @@ static void requireRoom(boolean full) throws StorageFullException {
 `null` не добавляется. Контракт этой лабораторной отличается от символьного
 стека с сообщением и `'\0'`.
 
-## Начало самостоятельной работы {#sec-p-generics-result}
+## Начало самостоятельной работы {#sec-j25-practice-generics-result}
 
 Сначала добейтесь типовой проверки коротких заданий. Отдельно сохраните
 недопустимую пару параметров для демонстрации ошибки компиляции.
 Затем реализуйте выбранный контейнер и покажите два типа элементов.
 
-Точный маршрут: @tasks:sec-lab-generics.
+Точный маршрут: @tasks:sec-j25-lab-generics. Состав —
+20 + 20 + 30 + 40 + 70 = 180 минут; вводный разбор30 учитывается отдельно.
+Обмен массива остаётся дополнительным упражнением банка и не прибавляется
+к обязательному составу.
 
 ## Источники {.unnumbered .scrollable}
 
