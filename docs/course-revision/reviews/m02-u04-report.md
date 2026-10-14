@@ -1,0 +1,13 @@
+# M02-u04-01 execution report
+
+**DONE_SUBSET**, accepted input9c151dc6a3a0350024b5e8e353198375c67a80b3; PR13baselinea0d1bdb9d8343809560e3ce7f9a2141d4473ee3f. Agent/root/m02, requestedSol6.1/medium; effective profile not_reported. Full packet: docs/course-revision/packets/M02-u04.md.
+
+Read full dispatch prompt, Task11/current-user constraints, accepted operative common/canonical contracts, corrected U04 packet/AppendixA/B and fix1 author/reviewer material. Used current fix1 manifest/source paths/oracle labels, not original old traces. Verified14accepted paths,77literal fences and all77primary programs against accepted AppendixB; exact canonical Student/Book retained. Controller archive-only4d1d5de did not change frozen subject inputs or require any rerun. No unfinished U05 consumed.
+
+Fresh execution83contexts:71Java fence contexts compile (11compile-only,57normal/3diagnostic runs),2Python checker/runtime,10approvedcontract programs (8normal runs,2intended compiler refusals).4API/text fragments documentary/unrun.157fresh commands including4version probes; actualjava/javac25.0.4.1 release25/nopreview, Python3.14.7/Pyright1.1.412. No failures/perf warnings/retries; no expectation/source changes. Source/command/fullwrapper/stdout/stderr/status/version provenance and generated classes/cache only in NEW M02/U04.
+
+Portable puremap/forEachOrdered output matches built/take2/take4/take6/done, with no mapper-effect order/count/interleaving promise. anyMatch observedtest1/test2/true/Ada retained as diagnostic, supplied portabletrue/Ada suffix checked; no exactcalls/no-test3 claim. MutableKey stored/null/1 and peek/count2 recorded as pinned-runtime observations, not universal grading oracles. Python incompatible callable rejected by reportAssignmentType yet direct runtime truthystr selects all3names; positive selects Ada/Ann.8contracts verify refusal/state/iterator/null/queue/map/effects/order/Set strategies/report boundaries;2negative causes lambda-target/effectively-final.
+
+Post-run integrity audit confirms all14accepted inputs/77fences/fullsource hashes/AppendixB/canonical units unchanged. All561original U04 evidence files and690/609/6priorM02archives unchanged; both SVGs match accepted9c151dc6. No broad accepted U01–U03 repeat, source/otherpacket/SVG edits, Git/journal/shared/bib/config/vendor/conditions/global installation/settings, agents/chats/publication. Only own packet/report andNEWU04evidence written.
+
+Evidence freeze and deliverable hashes under /tmp/java-course-revision-checks/M02/U04. FullTask11 remains pending U05/U06/U07/build/actual lecture insertion checks/finalreview; no render/PL/privacy/host-container/pilot claim. Complete subset frozen for controller review; no later writes without returned window.
