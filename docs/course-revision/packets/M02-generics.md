@@ -69,3 +69,18 @@ Changed only `erasure-getter-bridge.svg`: one native SVG rectangle at x692,y550,
 Rendered **only the affected SVG once**, into NEW `/tmp/java-course-revision-checks/M02/U03/fix-1/erasure-getter-bridge.png`, and inspected it with view_image at1280×800: the client frame is visibly distinct below the bridge, with no overlap/clipping/font reduction. `fix-1/{asset-fix.diff,render-command.json,verification.json}` records direct diff, exact render argv/exit0 and current SVG/PNG hashes. Text/path/title/desc invariants, all raw source/javap hashes, eight accepted inputs, client SVG and all609earlier frozen U03 evidence files remain unchanged. Original missing-frame SVG is saved in fix-1; original PNG/108checks remain unchanged in the earlier freeze. Current getter metadata/PNG is supplied by fix-1, superseding its earlier presentation hash.
 
 The Minor scaling concern remains a specific U07 insertion check: inspect green24px code/caption text at actual deck size, particularly reduction below the large-text threshold. Approved colours were retained for this returned scope. No frame-existence mirror test, global environment change or broad verification added. This narrow fix does not complete Task11/M02 or authorize U07 consumption before root's same-reviewer gate.
+
+## Bounded SVG contrast closure — actual U07 scaled display
+
+**DONE / FROZEN**, input `a7c3e2f7349848a1d1ac2447f02f5272b3d75f89`; same requested Sol6.1/medium, actual profile not_reported. Root opened this explicit color-only window after actual U07 scaled-preview evidence confirmed the earlier Minor scaling concern. Both specified old Reveal PNGs were inspected with view_image, and selected rows from U07/display-metrics.json were recorded in NEW M02/U07-contrast. Natural SVG1280×800 displayed1036.7999×648: effective image scale0.81, so24px regular green text becomes19.44px normal text. The old #059669 contrast3.77:1/3.60:1 did not meet4.5:1 at that size.
+
+Changed only #059669→#047857 fill/stroke occurrences, consistently in both SVGs:11client-cast and13getter-bridge. New contrast is **5.4839:1 against white**, **5.2414:1 against #f8fafc**, meeting normal-text4.5:1. Exact raw-byte comparison masking only the approved color substitution and normalized XML comparison are identical. All source/JVM text, flags/instructions, geometry/fonts, other colors, correspondence labels and explicit separate SourceClient frame remain unchanged. All42raw source/javap selection hashes remain unchanged; no compilation or prior suite rerun.
+
+Both current SVGs were freshly rendered with installed rsvg at1280×800 and inspected with view_image: darker B labels remain clear, with no lost labels/overlap/clipping. Native PNG/hash/contrast proof and three render/version commands are in `/tmp/java-course-revision-checks/M02/U07-contrast/{actual-deck-input.json,asset-change-manifest.json,contrast-verification.json,commands.json}`. All previous protected M02 archives690/609/6/876/2685/126files remain unchanged. Original approved/native/fix1/old-contrast evidence stays historical; none was overwritten.
+
+Current exact SVG SHA256 for root's same-reviewer gate and U07 fresh actual-deck renders:
+
+- erasure-client-cast.svg: `b91f29e88d9cbf5ea29b92260113d491a150c27ad3eeb568516dca0740f6c3d5`.
+- erasure-getter-bridge.svg: `a9ba1bdff311dfb183d73ece1dbd80d834039a1fa3ccc0bd85c7ca7e50c42bfb`.
+
+No lectureQMD/preview stage, Java/provenance source, Git/journal/vendor/config/global settings or other source edits. This is the bounded asset correction; **fresh scaled-deck verification remains with U07 after root reviewer approval**. Full M02/M05 final integration remains open. This closure is append-only; write window ends at freeze.
