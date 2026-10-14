@@ -1,8 +1,10 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PublicExamplesTest {
     @Test
+    @DisplayName("Проверяются внутреннее значение и левая граница")
     void interiorAndLeftBoundary() throws Exception {
         assertTokens("true true true true", run("-2 4 0")); assertTokens("false true false true", run("-2 4 -2"));
     }
@@ -65,6 +67,6 @@ public class PublicExamplesTest {
         }
     }
     private static void assertTokens(String expected, String actual) {
-        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "));
+        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "), "Принадлежность значения закрытому интервалу определена неверно");
     }
 }

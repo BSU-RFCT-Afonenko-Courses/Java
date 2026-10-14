@@ -1,8 +1,10 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PublicExamplesTest {
     @Test
+    @DisplayName("Выполняется опубликованный пример матрицы")
     void mandatoryMatrix() throws Exception {
         assertMatrix(new double[][]{{-3,3,0},{2,-1,0},{1,3,-2}}, run(""));
     }
@@ -75,7 +77,7 @@ public class PublicExamplesTest {
     private static void assertNumbers(double[] expected, String output) {
         double[] actual = numbers(output);
         assertEquals(expected.length, actual.length, "Количество чисел");
-        assertArrayEquals(expected, actual, 1e-8);
+        assertArrayEquals(expected, actual, 1e-8, "Нули должны быть перенесены в начало строки без перестановки остальных элементов");
     }
     private static void assertMatrix(double[][] expected, String output) {
         String[] rows = output.trim().split("\\R");

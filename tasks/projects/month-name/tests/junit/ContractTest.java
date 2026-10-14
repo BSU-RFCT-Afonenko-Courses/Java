@@ -1,23 +1,28 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContractTest {
     @Test
+    @DisplayName("Название месяца соответствует номеру")
     void allOtherMonths() throws Exception {
         String[] expected = {"февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь"}; for (int i = 0; i < expected.length; i++) assertTokens(expected[i], run(Integer.toString(i + 2)));
     }
 
     @Test
+    @DisplayName("Номер месяца вне диапазона отклоняется")
     void rejectsOutOfRange() throws Exception {
         assertTokens("Некорректный месяц", run("0")); assertTokens("Некорректный месяц", run("13")); assertTokens("Некорректный месяц", run("-1"));
     }
 
     @Test
+    @DisplayName("Отсутствующий или нецелый номер месяца отклоняется")
     void rejectsMissingOrNoninteger() throws Exception {
         assertTokens("Некорректный месяц", run("")); assertTokens("Некорректный месяц", run("abc")); assertTokens("Некорректный месяц", run("1.5"));
     }
 
     @Test
+    @DisplayName("Первый и последний месяц называются корректно")
     void firstAndLastMonth() throws Exception {
         assertTokens("январь", run("1")); assertTokens("декабрь", run("12"));
     }
@@ -80,6 +85,6 @@ public class ContractTest {
         }
     }
     private static void assertTokens(String expected, String actual) {
-        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "));
+        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "), "Название месяца или сообщение об ошибке не соответствует условию");
     }
 }

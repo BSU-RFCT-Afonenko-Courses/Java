@@ -1,23 +1,28 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContractTest {
     @Test
+    @DisplayName("Неположительное частное распознаётся")
     void nonpositiveQuotients() throws Exception {
         assertTokens("false", run("-7 2")); assertTokens("false", run("0 3")); assertTokens("false", run("1 2"));
     }
 
     @Test
+    @DisplayName("Отрицательный делитель обрабатывается корректно")
     void negativeDivisor() throws Exception {
         assertTokens("true", run("-8 -2")); assertTokens("false", run("8 -2"));
     }
 
     @Test
+    @DisplayName("Нулевой делитель из ввода не вызывает исключения")
     void zeroDivisorFromStdin() throws Exception {
         assertTokens("false", run("7 0"));
     }
 
     @Test
+    @DisplayName("Без ввода выполняется безопасный пример деления")
     void defaultDemonstratesZeroDivisor() throws Exception {
         assertTokens("false", run(""));
     }
@@ -85,6 +90,6 @@ public class ContractTest {
         }
     }
     private static void assertTokens(String expected, String actual) {
-        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "));
+        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "), "Результат безопасной проверки целочисленного частного неверен");
     }
 }

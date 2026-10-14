@@ -1,23 +1,28 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContractTest {
     @Test
+    @DisplayName("Из элементов вычитается дробное среднее строки")
     void fractionalRowMeans() throws Exception {
         assertMatrix(new double[][]{{2.0/3,-1.0/3,-1.0/3},{-2.0/3,1.0/3,1.0/3},{0,0,0}}, run("1 0 0 -1 0 0 3 3 3"));
     }
 
     @Test
+    @DisplayName("Вычитание отрицательного среднего корректно")
     void negativeRowMean() throws Exception {
         assertMatrix(new double[][]{{-1,0,1},{0,0,0},{-2,1,1}}, run("-3 -2 -1 0 0 0 -3 0 0"));
     }
 
     @Test
+    @DisplayName("Среднее вычисляется отдельно для каждой строки")
     void permutedMandatoryRows() throws Exception {
         assertMatrix(new double[][]{{1.0/3,7.0/3,-8.0/3},{-3,0,3},{5.0/3,-4.0/3,-1.0/3}}, run("1 3 -2 -3 0 3 2 -1 0"));
     }
 
     @Test
+    @DisplayName("Без ввода выполняется опубликованный пример матрицы")
     void mandatoryDefaultMatrix() throws Exception {
         assertMatrix(new double[][]{{-3,0,3},{5.0/3,-4.0/3,-1.0/3},{1.0/3,7.0/3,-8.0/3}}, run(""));
     }
@@ -90,7 +95,7 @@ public class ContractTest {
     private static void assertNumbers(double[] expected, String output) {
         double[] actual = numbers(output);
         assertEquals(expected.length, actual.length, "Количество чисел");
-        assertArrayEquals(expected, actual, 1e-8);
+        assertArrayEquals(expected, actual, 1e-8, "Среднее должно вычитаться из каждого элемента своей строки");
     }
     private static void assertMatrix(double[][] expected, String output) {
         String[] rows = output.trim().split("\\R");

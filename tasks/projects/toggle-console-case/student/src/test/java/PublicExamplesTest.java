@@ -1,10 +1,12 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PublicExamplesTest {
     @Test
+    @DisplayName("Регистр ASCII изменяется и буквы подсчитываются")
     void togglesAsciiAndCounts() throws Exception {
-        assertEquals("aB1!\n2\n", run("Ab1!.ignore"));
+        assertEquals("aB1!\n2\n", run("Ab1!.ignore"), "Изменение ASCII-регистра, сохранение остальных символов или количество букв неверно");
     }
 
     /** Each example runs as an ordinary, fresh Java program; student static state is never reused. */

@@ -1,10 +1,12 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PublicExamplesTest {
     @Test
+    @DisplayName("Приветствие сохраняет переданное имя")
     void greetsNamedUser() throws Exception {
-        assertEquals("Здравствуйте, Анна!\n", run("", "Анна"));
+        assertEquals("Здравствуйте, Анна!\n", run("", "Анна"), "Приветствие должно сохранять имя и перевод строки");
     }
 
     /** Each example runs as an ordinary, fresh Java program; student static state is never reused. */

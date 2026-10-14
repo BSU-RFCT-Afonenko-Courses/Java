@@ -1,13 +1,16 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContractTest {
     @Test
+    @DisplayName("Таблица содержит граничные множители")
     void includesTenthRowAndColumn() throws Exception {
         assertMultiplicationTable(run(""));
     }
 
     @Test
+    @DisplayName("Таблица начинается с первого множителя")
     void startsAtOne() throws Exception {
         assertMultiplicationTable(run(""));
     }
@@ -81,8 +84,8 @@ public class ContractTest {
         };
         for (int i = 0; i < 10; i++) {
             String[] cells = rows[i].trim().split("\\s+");
-            assertEquals(10, cells.length);
-            for (int j = 0; j < 10; j++) assertEquals(expected[i][j], Integer.parseInt(cells[j]));
+            assertEquals(10, cells.length, "Значения таблицы умножения не соответствуют множителям");
+            for (int j = 0; j < 10; j++) assertEquals(expected[i][j], Integer.parseInt(cells[j]), "Значения таблицы умножения не соответствуют множителям");
         }
     }
 }

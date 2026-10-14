@@ -1,8 +1,10 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PublicExamplesTest {
     @Test
+    @DisplayName("Среднее десяти значений сохраняет дробную часть")
     void tenValuesHaveFractionalMean() throws Exception {
         assertNumbers(new double[]{5.5}, run("1 2 3 4 5 6 7 8 9 10"));
     }
@@ -75,6 +77,6 @@ public class PublicExamplesTest {
     private static void assertNumbers(double[] expected, String output) {
         double[] actual = numbers(output);
         assertEquals(expected.length, actual.length, "Количество чисел");
-        assertArrayEquals(expected, actual, 1e-8);
+        assertArrayEquals(expected, actual, 1e-8, "Среднее десяти чисел не соответствует условию");
     }
 }

@@ -1,15 +1,18 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContractTest {
     @Test
+    @DisplayName("Столбец NOT отрицает значение P")
     void notColumnNegatesP() throws Exception {
         assertTruthTable(run(""));
     }
 
     @Test
+    @DisplayName("Столбцы таблицы разделены табуляцией")
     void usesTabSeparatedColumns() throws Exception {
-        String out = run(""); assertTruthTable(out); assertTrue(out.lines().allMatch(line -> line.split("\t", -1).length == 6));
+        String out = run(""); assertTruthTable(out); assertTrue(out.lines().allMatch(line -> line.split("\t", -1).length == 6), "Каждая строка должна содержать требуемое количество столбцов с табуляцией");
     }
 
     /** Each example runs as an ordinary, fresh Java program; student static state is never reused. */
@@ -70,15 +73,15 @@ public class ContractTest {
         }
     }
     private static void assertTokens(String expected, String actual) {
-        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "));
+        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "), "Значения таблицы истинности не соответствуют указанным операциям");
     }
     private static void assertTruthTable(String output) {
         String[] lines = output.trim().split("\\R");
-        assertEquals(5, lines.length);
+        assertEquals(5, lines.length, "Количество строк вывода должно соответствовать протоколу задания");
         assertTokens("P Q AND OR XOR NOT", lines[0]);
         var expected = java.util.Set.of("false false false false false true", "false true false true true true", "true false false true true false", "true true true true false false");
         var actual = new java.util.HashSet<String>();
         for (int i = 1; i < lines.length; i++) actual.add(lines[i].trim().replaceAll("\\s+", " "));
-        assertEquals(expected, actual);
+        assertEquals(expected, actual, "Значения таблицы истинности не соответствуют указанным операциям");
     }
 }

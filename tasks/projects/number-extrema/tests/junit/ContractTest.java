@@ -1,28 +1,34 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContractTest {
     @Test
+    @DisplayName("Экстремумы найдены среди отрицательных значений")
     void allNegative() throws Exception {
         assertTokens("Максимум: -1 Минимум: -9", run("3 -5 -9 -1"));
     }
 
     @Test
+    @DisplayName("Единственное значение является обоими экстремумами")
     void singleValue() throws Exception {
         assertTokens("Максимум: 42 Минимум: 42", run("1 42"));
     }
 
     @Test
+    @DisplayName("Неположительное количество значений отклоняется")
     void rejectsNonpositiveCount() throws Exception {
         assertTokens("Количество должно быть положительным", run("0")); assertTokens("Количество должно быть положительным", run("-2"));
     }
 
     @Test
+    @DisplayName("Экстремумы корректны на границах int")
     void intLimits() throws Exception {
         assertTokens("Максимум: 2147483647 Минимум: -2147483648", run("3 -2147483648 0 2147483647"));
     }
 
     @Test
+    @DisplayName("Экстремумы найдены среди положительных значений")
     void allPositive() throws Exception {
         assertTokens("Максимум: 9 Минимум: 2", run("3 4 2 9"));
     }
@@ -85,6 +91,6 @@ public class ContractTest {
         }
     }
     private static void assertTokens(String expected, String actual) {
-        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "));
+        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "), "Выведенные экстремумы или сообщение о количестве неверны");
     }
 }

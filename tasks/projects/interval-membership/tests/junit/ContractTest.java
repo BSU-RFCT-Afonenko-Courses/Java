@@ -1,23 +1,28 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContractTest {
     @Test
+    @DisplayName("Правая граница входит в интервал")
     void rightBoundary() throws Exception {
         assertTokens("true false false true", run("-2 4 4"));
     }
 
     @Test
+    @DisplayName("Значения вне интервала отклоняются")
     void outsideBothSides() throws Exception {
         assertTokens("false false false false", run("-2 4 -3")); assertTokens("false false false false", run("-2 4 5"));
     }
 
     @Test
+    @DisplayName("Соседние границы обрабатываются корректно")
     void adjacentBounds() throws Exception {
         assertTokens("false true false true", run("8 9 8")); assertTokens("true false false true", run("8 9 9"));
     }
 
     @Test
+    @DisplayName("Границы int обрабатываются без переполнения")
     void intBoundsWithoutOverflow() throws Exception {
         assertTokens("true true true true", run("-2147483648 2147483647 0"));
     }
@@ -80,6 +85,6 @@ public class ContractTest {
         }
     }
     private static void assertTokens(String expected, String actual) {
-        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "));
+        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "), "Принадлежность значения закрытому интервалу определена неверно");
     }
 }

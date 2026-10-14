@@ -1,18 +1,22 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContractTest {
     @Test
+    @DisplayName("Среднее корректно для отрицательных значений")
     void negativeMean() throws Exception {
         assertNumbers(new double[]{-5.5}, run("-1 -2 -3 -4 -5 -6 -7 -8 -9 -10"));
     }
 
     @Test
+    @DisplayName("Среднее корректно для дробных значений")
     void fractionalValues() throws Exception {
         assertNumbers(new double[]{0.55}, run("0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0"));
     }
 
     @Test
+    @DisplayName("Среднее может быть равно нулю")
     void zeroMean() throws Exception {
         assertNumbers(new double[]{0.0}, run("-5 -4 -3 -2 -1 1 2 3 4 5"));
     }
@@ -85,6 +89,6 @@ public class ContractTest {
     private static void assertNumbers(double[] expected, String output) {
         double[] actual = numbers(output);
         assertEquals(expected.length, actual.length, "Количество чисел");
-        assertArrayEquals(expected, actual, 1e-8);
+        assertArrayEquals(expected, actual, 1e-8, "Среднее десяти чисел не соответствует условию");
     }
 }
