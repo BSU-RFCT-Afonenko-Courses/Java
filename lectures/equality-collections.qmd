@@ -23,7 +23,7 @@ format:
 
 ### Контекст и определения участников {#sec-j25-lecture-equality-collections-context}
 
-Файл CollectionsDemo.java без package, импорты java.util.* и grade.Student. Student — полный нормализующий record занятия 5; ключ StudentId ниже — отдельный класс. Короткие блоки — самостоятельные main; списки students/input в опытах создаются локально. Канонические данные: s1/Ada/90, s2/Lin/70, s3/Ann/90.
+Файл CollectionsDemo.java без package, импорты java.util.* и grade.Student. Student — полный нормализующий record занятия 5; ключ StudentId ниже — отдельный класс. Независимые опыты начинайте в отдельных `main`; явно названные продолжения выполняйте в том же `main`, сохраняя локальные переменные. Списки students/input в опытах создаются локально. Канонические данные: s1/Ada/90, s2/Lin/70, s3/Ann/90.
 
 Для опытов Book импортирован course.examples.objects.Book; название задаётся конструктору, выдача — только borrow. Изменение структуры и изменение элемента наблюдаем отдельно.
 
@@ -39,6 +39,8 @@ System.out.println(a.equals(b)); // true
 поэтому результаты различаются. Объяснение: @theory:sec-j25-theory-equality.
 
 ### Копирование ссылки {#sec-j25-lecture-equality-collections-step-02 .continuation}
+
+Продолжение опыта «Идентичность и содержимое строк»: используем прежнюю `a`.
 
 ```java
 String alias = a;
@@ -324,6 +326,8 @@ System.out.println(names.get(2)); // Ada
 
 ### Замена и вставка {#sec-j25-lecture-equality-collections-step-19}
 
+Продолжение «Позиции и повторения»: изменяем тот же `names`.
+
 ```java
 names.set(1, "Max");  // [Ada, Max, Ada]
 names.add(1, "Lin");  // [Ada, Lin, Max, Ada]
@@ -433,6 +437,8 @@ System.out.println(scores.get("s1")); // 90
 
 ### Замена по существующему ключу {#sec-j25-lecture-equality-collections-step-30 .continuation}
 
+Продолжение карты `scores` из опыта «Соответствие ключа и значения».
+
 ```java
 System.out.println(scores.put("s1", 95)); // 90
 System.out.println(scores.size());        // 2
@@ -442,6 +448,8 @@ System.out.println(scores.size());        // 2
 и сообщить ошибку вместо молчаливой замены.
 
 ### Отсутствие ключа и значение null {#sec-j25-lecture-equality-collections-step-31}
+
+Далее в том же опыте используем `scores` после замены оценки s1 на 95.
 
 ```java
 scores.put("s3", null);
@@ -478,6 +486,8 @@ C++:    byId[id] = student
 различаются: @theory:sec-j25-theory-collections-catalog.
 
 ### Представления карты {#sec-j25-lecture-equality-collections-step-34}
+
+Продолжаем тот же `scores` после добавления `s3 → null`.
 
 ```java
 scores.keySet().remove("s2");
@@ -593,6 +603,8 @@ System.out.println(queue.pollFirst()); // Ada
 стека при работе с одним концом; `null`-элементы запрещены.
 
 ### Пустая очередь {#sec-j25-lecture-equality-collections-step-42}
+
+Продолжение FIFO: прежний `queue` уже выдал Ada; в нём остаётся Lin.
 
 ```java
 System.out.println(queue.pollFirst()); // Lin

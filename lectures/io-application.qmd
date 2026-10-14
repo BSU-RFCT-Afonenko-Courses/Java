@@ -410,7 +410,7 @@ sh ./build.sh test package
 
 Из распакованного starter с pom.xml; заранее JDK25, unzip и sha256sum либо shasum. Полностью готовый build.sh определяет свой корень, создаёт локальный.mvn из публичного wrapper/maven-wrapper.properties и вызывает stock Wrapper3.3.4 / Maven3.9.16 через sh. Исполняемый bit и ручной chmod не нужны.
 
-Windows counterpart: `.\build.cmd test package`; предоставлен и проверен статически, здесь не запускался. Полный воспроизводимый маршрут: @handbook:sec-j25-api-project-wrapper.
+В Windows запускайте `.\build.cmd test package` из каталога распакованного starter с pom.xml; нужен JDK25. Полный воспроизводимый маршрут: @handbook:sec-j25-api-project-wrapper.
 
 ### От исходников к запускаемому артефакту {#sec-j25-lecture-io-application-artifact-run}
 
@@ -420,7 +420,7 @@ java -jar /absolute/path/target/gradeapp.jar /absolute/path/input.txt 80
 
 После реализации TODO и успешного test/package запускаем из другого чистого каталога. pom задаёт release25, UTF-8, Main-Class grade.Main и имя gradeapp.jar. Compile создаёт классы, test проверяет поведение, package собирает архив; успешная компиляция заготовки не доказывает готовность TODO.
 
-17 публичных файлов не включают generated.mvn, reference или закрытые тесты. Native ZIP и чистый POSIX маршрут проверены в принятом U05/M02; это ссылка на отдельное доказательство, не новый запуск этой лекции.
+17 публичных файлов не включают generated.mvn, reference или закрытые тесты.
 
 ## Границы результата и проверка {#sec-j25-lecture-io-application-group-5}
 

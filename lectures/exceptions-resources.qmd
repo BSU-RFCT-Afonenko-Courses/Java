@@ -72,6 +72,9 @@ if (score < 0 || score > 100) {
 
 ### Оператор throw {#sec-j25-lecture-exceptions-resources-step-03}
 
+В отдельном `main` перед этим оператором объявлено `int score = 120;`.
+Сообщение исключения: `неверный балл: 120`.
+
 ```java
 throw new IllegalArgumentException("неверный балл: " + score);
 ```
@@ -189,6 +192,10 @@ static ScoreResult parseScoreResult(String text) {
 `null` и дефекты реализации не превращены в обычную ошибку данных.
 
 ### Полнота разбора вариантов {#sec-j25-lecture-exceptions-resources-results-switch}
+
+Шаблон типа связывает весь объект. Здесь **шаблон записи** проверяет вариант
+результата и связывает его компонент: `Score(var value)` вводит `value` типа `int`,
+а `ScoreFailure(var problem)` — `problem` типа `ScoreProblem`.
 
 ```java
 String message = switch (parseScoreResult("120")) {

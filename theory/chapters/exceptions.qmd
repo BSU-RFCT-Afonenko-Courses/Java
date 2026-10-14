@@ -200,6 +200,14 @@ static ScoreResult parseScoreResult(String text) {
 Ожидаемый отказ можно преобразовать между двумя способами представления
 на границе, сохранив смысл операции.
 
+Следующий `switch` использует *образцы записей* (record patterns).
+`Score(var value)` проверяет, что результат является вариантом `Score`,
+и связывает компонент записи с переменной `value`. Её тип — `int`,
+как у компонента в объявлении `Score`. Аналогично
+`ScoreFailure(var problem)` связывает компонент с переменной `problem`
+типа `ScoreProblem`. Связанные переменные доступны в выражении
+соответствующей ветви.
+
 ```java
 String message = switch (parseScoreResult("120")) {
     case Score(var value) -> "балл: " + value;
