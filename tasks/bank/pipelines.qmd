@@ -1,29 +1,30 @@
 ---
+categories: [j25, j25-core, j25-pipelines]
 exercise-bank: true
 default-exercise-target: manual
 default-exercise-statement-visibility: open
 ---
 
-# Функциональная обработка {#sec-bank-pipelines}
+# Функциональная обработка {#sec-j25-bank-pipelines}
 
-Теория: @theory:sec-t-streams. Условия используются в лабораторных по ссылке;
+Теория: @theory:sec-j25-theory-streams. Условия используются в лабораторных по ссылке;
 время в карточках — ориентир чтения, решения и самостоятельной проверки.
 
-:::: {#exr-divisibility-function difficulty="introductory" time="25"}
+:::: {#exr-j25-pipelines-divisibility-function difficulty="introductory" time="25"}
 ## Функциональный интерфейс: делимость на 31
 
-Написать функциональный интерфейс с методом, который принимает число и возвращает булево значение. Написать реализацию интерфейса в виде лямбда-выражения, которое возвращает true, если переданное число делится без остатка на 31. [@bib-task-divisibility-function]
+Написать функциональный интерфейс с методом, который принимает число и возвращает булево значение. Написать реализацию интерфейса в виде лямбда-выражения, которое возвращает true, если переданное число делится без остатка на 31. Для демонстрации используйте целые 0, 31, -31 и 32: первые три дают true, последнее false; реализация именно лямбдой обязательна. [@bib-task-divisibility-function]
 
 ::::
 
-:::: {#exr-filter-string-array difficulty="introductory" time="30"}
+:::: {#exr-j25-pipelines-filter-string-array difficulty="introductory" time="30"}
 ## Фильтрация массива строк
 
-Используя фильтр, создать новый массив из строк с числом символов больше заданного. Выполнить отбор через Stream API. [@bib-task-filter-string-array]
+Используя фильтр, создать новый массив из строк с числом символов больше заданного. Выполнить отбор через Stream API. Массив и его строки ненулевые; порог длины неотрицателен, единица длины — char. Сохраните порядок и повторы, исходный массив не меняйте. Для `{"a", "bb", "bb", "ccc"}` и порога 2 результат `{"ccc"}`, при пороге 1 — `{"bb", "bb", "ccc"}`; пустой вход или отсутствие совпадений дают пустой новый массив. [@bib-task-filter-string-array]
 
 ::::
 
-:::: {#exr-order-points difficulty="intermediate" time="50"}
+:::: {#exr-j25-pipelines-order-points difficulty="intermediate" time="50"}
 ## Точки по удаленности от начала координат
 
 Создать N пар значений x, y, представляющих координаты точки на плоскости. Выстроить все точки по увеличению их удаленности от начала координат и вывести отсортированный список на экран в формате (X:Y). Использовать Stream API и лямбда-компаратор.
@@ -32,7 +33,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-count-selected-words difficulty="intermediate" time="45"}
+:::: {#exr-j25-pipelines-count-selected-words difficulty="intermediate" time="45"}
 ## Количество вхождений заданных слов
 
 Вывести количество вхождений заданных слов в тексте в виде [слово1-2, слово2-3, слово3-0]. Текст передается готовой строкой. Использовать Stream API.
@@ -41,32 +42,32 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-conditional-function difficulty="advanced" time="30"}
+:::: {#exr-j25-pipelines-conditional-function difficulty="advanced" time="30"}
 ## Построение функции ternaryOperator
 
 Дан предикат condition и две функции ifTrue и ifFalse. Написать метод ternaryOperator, который из них построит новую функцию, возвращающую значение функции ifTrue, если предикат выполнен, и значение ifFalse иначе.
 
-Метод имеет параметры `Predicate<? super T> condition`, `Function<? super T, ? extends R> ifTrue` и `Function<? super T, ? extends R> ifFalse`, возвращает `Function<T, R>`. Пример применения: для строки проверить пустоту, вернуть 0 для пустой и длину для остальных. Проверяются обе ветви; вычисляется только выбранная функция. [@bib-task-conditional-function]
+Метод имеет параметры `Predicate<? super T> condition`, `Function<? super T, ? extends R> ifTrue` и `Function<? super T, ? extends R> ifFalse`, возвращает `Function<T, R>`. Пример применения: для строки проверить пустоту, вернуть 0 для пустой и длину для остальных. Все три участника и входная строка примера ненулевые. Создание результирующей функции не вызывает condition/ifTrue/ifFalse; при каждом apply предикат проверяется и вызывается только выбранная функция. Покажите обе ветви и вызов, где невыбранная функция выбрасывала бы исключение: оно не возникает. Вспомогательные методы свободны. [@bib-task-conditional-function]
 
 ::::
 
-:::: {#exr-count-characters difficulty="intermediate" time="45"}
+:::: {#exr-j25-pipelines-count-characters difficulty="intermediate" time="45"}
 ## Количество вхождений символов
 
 Вывести коллекцию количества вхождений символов в тексте. Текст передается готовой строкой. Использовать Stream API.
 
-Вход для демонстрации: «ab a». Считать каждую кодовую единицу `char`, включая пробел; работа с суррогатными парами в этот фиксированный ASCII-пример не входит. [@bib-task-count-characters]
+Вход для демонстрации: «ab a». Считать каждую кодовую единицу `char`, включая пробел; работа с суррогатными парами в этот фиксированный ASCII-пример не входит. Частоты: a=2, b=1, пробел=1; пустой текст даёт пустую коллекцию, порядок перечисления свободен. Подготовка: @handbook:sec-j25-api-streams-char-units и @practice:sec-j25-practice-pipelines-char-units. [@bib-task-count-characters]
 
 ::::
 
-:::: {#exr-discriminant-function difficulty="introductory" time="25"}
+:::: {#exr-j25-pipelines-discriminant-function difficulty="introductory" time="25"}
 ## Функциональный интерфейс: дискриминант
 
-Написать функциональный интерфейс с методом, который принимает три дробных числа a, b, c и возвращает дробное число. Написать реализацию интерфейса в виде лямбда-выражения, возвращающего дискриминант квадратного уравнения с коэффициентами a, b, c. [@bib-task-discriminant-function]
+Написать функциональный интерфейс с методом, который принимает три дробных числа a, b, c и возвращает дробное число. Написать реализацию интерфейса в виде лямбда-выражения, возвращающего дискриминант квадратного уравнения с коэффициентами a, b, c. Для конечных коэффициентов (1, -3, 2), (1, 2, 1), (1, 0, 1) результаты соответственно 1, 0, -4; лямбда возвращает дискриминант, а не сами корни. [@bib-task-discriminant-function]
 
 ::::
 
-:::: {#exr-longer-string difficulty="introductory" time="20"}
+:::: {#exr-j25-pipelines-longer-string difficulty="introductory" time="20"}
 ## Выбор более длинной строки
 
 Написать функциональный интерфейс с методом, который принимает две строки и возвращает строку. Реализовать его лямбда-выражением, возвращающим ту строку, которая длиннее.
@@ -75,14 +76,14 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-remove-even-values difficulty="intermediate" time="40"}
+:::: {#exr-j25-pipelines-remove-even-values difficulty="intermediate" time="40"}
 ## Удаление четных элементов массива
 
-Создать массив целых чисел. Убрать все четные элементы из массива и заполнить в конце нулями до прежнего размера массива. Отбор выполнить через Stream API. [@bib-task-remove-even-values]
+Создать массив целых чисел. Убрать все четные элементы из массива и заполнить в конце нулями до прежнего размера массива. Отбор выполнить через Stream API. Изменяется тот же переданный массив: нечётные значения остаются в исходном порядке, хвост заполняется нулями. `{2, 3, 4, 3}` → `{3, 3, 0, 0}`; пустой массив остаётся пустым. Создание временного результата допускается, итог записывается в исходный массив. [@bib-task-remove-even-values]
 
 ::::
 
-:::: {#exr-descending-array difficulty="introductory" time="30"}
+:::: {#exr-j25-pipelines-descending-array difficulty="introductory" time="30"}
 ## Сортировка массива по убыванию
 
 Создать массив целых чисел. Используя лямбда-выражение, отсортировать массив по убыванию.
@@ -91,7 +92,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-vowels-before-consonants difficulty="intermediate" time="45"}
+:::: {#exr-j25-pipelines-vowels-before-consonants difficulty="intermediate" time="45"}
 ## Сначала гласные, затем согласные
 
 Дана строка. Вернуть строку, где сначала идут гласные, а потом согласные из заданной строки. Гласные и согласные должны быть в отсортированном порядке. Использовать Stream API.
@@ -100,14 +101,14 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-first-primes difficulty="advanced" time="60"}
+:::: {#exr-j25-pipelines-first-primes difficulty="advanced" time="60"}
 ## Первые N простых чисел
 
 С помощью генераторов вывести первые N простых чисел. Использовать последовательный поток Stream API. [@bib-task-first-primes]
 
 ::::
 
-:::: {#exr-price-transformation difficulty="introductory" time="30"}
+:::: {#exr-j25-pipelines-price-transformation difficulty="introductory" time="30"}
 ## Преобразование списка цен
 
 Преобразовать каждый элемент списка — цену без налога на добавленную стоимость — в цену с этим налогом. Использовать Stream API.
@@ -116,16 +117,16 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-distinct-object-array difficulty="intermediate" time="45"}
+:::: {#exr-j25-pipelines-distinct-object-array difficulty="intermediate" time="45"}
 ## Массив объектов без дубликатов
 
 С помощью лямбда-выражений разработать метод, который на вход получает массив объектов, а возвращает его уже без дубликатов. Использовать Stream API.
 
-Минимальные предметные данные: объект с полями целочисленный `id` и строковый `name`; два объекта считаются равными, если совпадают оба поля. Определите согласованные `equals/hashCode`. Используйте массив из отдельных объектов (1, «A»), (2, «B»), (1, «A»); сохраняйте порядок первого появления. [@bib-task-distinct-object-array]
+Минимальные предметные данные: объект с полями целочисленный `id` и строковый `name`; два объекта считаются равными, если совпадают оба поля. Определите согласованные `equals/hashCode`. Используйте массив из отдельных объектов (1, «A»), (2, «B»), (1, «A»); сохраняйте порядок первого появления. Возвращается новый массив, исходный массив и объекты не меняются; пустой массив даёт пустой новый массив. Массив и его элементы ненулевые; это отдельная учебная модель, а не grade.Student. [@bib-task-distinct-object-array]
 
 ::::
 
-:::: {#exr-select-initial-length difficulty="introductory" time="25"}
+:::: {#exr-j25-pipelines-select-initial-length difficulty="introductory" time="25"}
 ## Строки на заданную букву длины N
 
 В массиве строк найти все строки, начинающиеся на заданный символ и состоящие из N букв. Использовать Stream API.
@@ -134,7 +135,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-curried-functions difficulty="advanced" time="60"}
+:::: {#exr-j25-pipelines-curried-functions difficulty="advanced" time="60"}
 ## Каррирование функций
 
 С помощью каррирования реализовать функцию сложения двух чисел, функцию проверки строки на регулярное выражение и функцию разбиения строки по регулярному выражению. [@bib-task-curried-functions]

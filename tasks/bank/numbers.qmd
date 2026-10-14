@@ -1,12 +1,13 @@
 ---
+categories: [j25, j25-core, j25-numbers]
 exercise-bank: true
 default-exercise-target: false
 default-exercise-statement-visibility: open
 ---
 
-# Числовые вычисления {#sec-bank-numbers}
+# Числовые вычисления {#sec-j25-bank-numbers}
 
-Теория: @theory:sec-t-types. Условия используются в лабораторных по ссылке;
+Теория: @theory:sec-j25-theory-types. Условия используются в лабораторных по ссылке;
 время в карточках — ориентир чтения, решения и самостоятельной проверки.
 Для подключённых проектов используйте Java 25 без preview и точку входа
 `Main.main(String[] args)`. Алгоритм, вспомогательные методы и организацию
@@ -14,21 +15,23 @@ default-exercise-statement-visibility: open
 и наблюдаемый вывод: приглашения к вводу не требуются. Числа можно разделять
 пробельными символами; десятичный разделитель — точка. Вещественные результаты
 сравниваются с абсолютным допуском `1e-8`; количество знаков не фиксируется.
+Адресная подготовка: @handbook:sec-j25-api-console-decimals (конечный `double` и точка),
+@handbook:sec-j25-api-console-output (числа, табуляция и переводы строки).
 
-:::: {#exr-console-greeting difficulty="introductory" time="25" target="prairielearn" project="/projects/console-greeting" project-check="java-labs"}
+:::: {#exr-j25-numbers-console-greeting difficulty="introductory" time="25" target="prairielearn" project="/projects/console-greeting" project-check="java-labs"}
 ## Приветствие пользователя
 
 Приветствуйте пользователя, чьё имя передано первым аргументом `main(String[] args)`. Имя сохраните без изменения; последующие аргументы не учитывайте. Без аргументов сообщите, что имя требуется.
 
 Протокол проверки: `java Main "Анна"` выводит одну строку `Здравствуйте, Анна!`; запуск без аргументов — `Укажите имя.`. Имя может содержать кириллицу, пробелы и emoji. Стандартный ввод не используется.
 
-{{< project-download exr-console-greeting kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-j25-numbers-console-greeting kind="starter" text="Скачать стартовый проект" >}}
 
 [@bib-task-console-greeting]
 
 ::::
 
-:::: {#exr-lunar-weight difficulty="introductory" time="20" target="prairielearn" project="/projects/lunar-weight" project-check="java-labs"}
+:::: {#exr-j25-numbers-lunar-weight difficulty="introductory" time="20" target="prairielearn" project="/projects/lunar-weight" project-check="java-labs"}
 ## Вес на Луне
 
 Напишите программу, вычисляющую силу тяжести на Луне как 17% силы тяжести на Земле. Исходное значение — неотрицательное конечное `double` в ньютонах; результат также выражается в ньютонах. Масса тела при перемещении на Луну не меняется. В исходнике задайте положительный пример и покажите также нулевое значение.
@@ -37,13 +40,13 @@ default-exercise-statement-visibility: open
 
 Вещественные результаты можно выводить в десятичной или экспоненциальной форме с точкой. Автоматическая проверка допускает абсолютную погрешность `1e-8`; количество знаков после точки не фиксируется.
 
-{{< project-download exr-lunar-weight kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-j25-numbers-lunar-weight kind="starter" text="Скачать стартовый проект" >}}
 
 [@bib-task-lunar-weight]
 
 ::::
 
-:::: {#exr-lightning-distance difficulty="introductory" time="35" target="prairielearn" project="/projects/lightning-distance" project-check="java-labs"}
+:::: {#exr-j25-numbers-lightning-distance difficulty="introductory" time="35" target="prairielearn" project="/projects/lightning-distance" project-check="java-labs"}
 ## Далеко ли до места вспышки молнии?
 
 Вычислите расстояние в метрах между наблюдателем и местом вспышки молнии. Скорость звука в воздухе — 335 метров в секунду; интервал между вспышкой и звуком — 7,2 секунды. Задайте эти константы в программе и используйте значения с плавающей точкой.
@@ -54,39 +57,39 @@ default-exercise-statement-visibility: open
 
 Вещественные результаты можно выводить в десятичной или экспоненциальной форме с точкой. Автоматическая проверка допускает абсолютную погрешность `1e-8`; количество знаков после точки не фиксируется.
 
-{{< project-download exr-lightning-distance kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-j25-numbers-lightning-distance kind="starter" text="Скачать стартовый проект" >}}
 
 [@bib-task-lightning-distance]
 
 ::::
 
-:::: {#exr-boolean-truth-table difficulty="intermediate" time="45" target="prairielearn" project="/projects/boolean-truth-table" project-check="java-labs"}
+:::: {#exr-j25-numbers-boolean-truth-table difficulty="intermediate" time="45" target="prairielearn" project="/projects/boolean-truth-table" project-check="java-labs"}
 ## Таблица истинности для логических операций
 
 Отобразите таблицу истинности для логических операций Java. Колонки: P, Q, AND, OR, XOR, NOT; NOT означает отрицание P. Используйте табуляцию между колонками и включите все четыре сочетания P и Q.
 
 Протокол проверки: первая строка — `P	Q	AND	OR	XOR	NOT` (между именами настоящая табуляция). Далее четыре строки по шесть значений `true` или `false`, также разделённых табуляцией. Порядок строк выберите самостоятельно. Например, для P = `true`, Q = `false` строка содержит `true false false true true false`. Ввод не требуется.
 
-{{< project-download exr-boolean-truth-table kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-j25-numbers-boolean-truth-table kind="starter" text="Скачать стартовый проект" >}}
 
 [@bib-task-boolean-truth-table]
 
 ::::
 
-:::: {#exr-interval-membership difficulty="intermediate" time="35" target="prairielearn" project="/projects/interval-membership" project-check="java-labs"}
+:::: {#exr-j25-numbers-interval-membership difficulty="intermediate" time="35" target="prairielearn" project="/projects/interval-membership" project-check="java-labs"}
 ## Принадлежность интервалам
 
 Для целых `n`, `m`, `k`, где `n < m`, определите принадлежность `k` каждому из интервалов `(n, m]`, `[n, m)`, `(n, m)`, `[n, m]`. Проверьте обе границы, внутреннюю точку и значения снаружи.
 
 Протокол проверки: стандартный ввод содержит `n m k` типа `int`, разделённые пробельными символами. Выведите четыре значения `true` или `false` в указанном порядке. Например, `-2 4 -2` даёт `false true false true`; `-2 4 4` — `true false false true`. Некорректный ввод и случай `n >= m` не проверяются.
 
-{{< project-download exr-interval-membership kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-j25-numbers-interval-membership kind="starter" text="Скачать стартовый проект" >}}
 
 [@bib-task-interval-membership]
 
 ::::
 
-:::: {#exr-short-circuit-and difficulty="intermediate" time="20" target="prairielearn" project="/projects/short-circuit-and" project-check="java-labs"}
+:::: {#exr-j25-numbers-short-circuit-and difficulty="intermediate" time="20" target="prairielearn" project="/projects/short-circuit-and" project-check="java-labs"}
 ## Короткозамкнутая операция И
 
 Покажите в работающей Java-программе, как короткозамкнутая операция И предотвращает ошибку целочисленного деления на ноль.
@@ -95,13 +98,13 @@ default-exercise-statement-visibility: open
 
 Критерий преподавательской проверки: защиту реализуйте именно оператором `&&` и объясните, почему правая часть не вычисляется при нулевом делителе. Автотесты проверяют результат и отсутствие стандартной JVM-диагностики неперехваченного исключения. Они не доказывают использование `&&` и отсутствие скрытых или перехваченных исключений в программе.
 
-{{< project-download exr-short-circuit-and kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-j25-numbers-short-circuit-and kind="starter" text="Скачать стартовый проект" >}}
 
 [@bib-task-short-circuit-and]
 
 ::::
 
-:::: {#exr-gallon-conversion difficulty="introductory" time="20" target="prairielearn" project="/projects/gallon-conversion" project-check="java-labs"}
+:::: {#exr-j25-numbers-gallon-conversion difficulty="introductory" time="20" target="prairielearn" project="/projects/gallon-conversion" project-check="java-labs"}
 ## Преобразование галлонов в литры
 
 Преобразуйте 10 галлонов в литры, используя коэффициент 3,7854 литра на галлон. Начальное количество и коэффициент задайте в программе.
@@ -112,13 +115,13 @@ default-exercise-statement-visibility: open
 
 Вещественные результаты можно выводить в десятичной или экспоненциальной форме с точкой. Автоматическая проверка допускает абсолютную погрешность `1e-8`; количество знаков после точки не фиксируется.
 
-{{< project-download exr-gallon-conversion kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-j25-numbers-gallon-conversion kind="starter" text="Скачать стартовый проект" >}}
 
 [@bib-task-gallon-conversion]
 
 ::::
 
-:::: {#exr-random-console-values difficulty="introductory" time="30"}
+:::: {#exr-j25-numbers-random-console-values difficulty="introductory" time="30"}
 ## Случайные числа в консоли
 
 Вывести заданное количество случайных чисел с переходом и без перехода на новую строку.
@@ -127,14 +130,14 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-argument-sum-product difficulty="intermediate" time="35"}
+:::: {#exr-j25-numbers-argument-sum-product difficulty="intermediate" time="35"}
 ## Сумма и произведение аргументов
 
 Примите целые числа через аргументы командной строки и вычислите их сумму и произведение. Разбирайте аргументы как `long`; исходные данные выбираются так, чтобы все промежуточные результаты помещались в `long`. Для пустого набора сумма равна 0, произведение — 1. Неверную запись числа сопровождайте понятным сообщением без вычисления частичного результата. [@bib-task-argument-sum-product]
 
 ::::
 
-:::: {#exr-quadratic-roots difficulty="intermediate" time="45"}
+:::: {#exr-j25-numbers-quadratic-roots difficulty="intermediate" time="45"}
 ## Корни квадратного уравнения
 
 Найти корни квадратного уравнения. Параметры уравнения передавать с командной строкой.
@@ -143,7 +146,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-radix-conversion difficulty="advanced" time="60"}
+:::: {#exr-j25-numbers-radix-conversion difficulty="advanced" time="60"}
 ## Из десятичной системы в другую
 
 Написать код программы, которая переводит числа из десятичной системы счисления в любую другую.
@@ -152,7 +155,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-binary-truth-table difficulty="advanced" time="45"}
+:::: {#exr-j25-numbers-binary-truth-table difficulty="advanced" time="45"}
 ## Таблица истинности со значениями 1 и 0
 
 Модифицируйте программу отображения таблицы истинности для логических операций Java так, чтобы в ней использовались и отображались значения 1 и 0, а не true и false. Таблица содержит колонки P, Q, AND, OR, XOR, NOT для всех сочетаний P и Q; NOT относится к P. [@bib-task-binary-truth-table]

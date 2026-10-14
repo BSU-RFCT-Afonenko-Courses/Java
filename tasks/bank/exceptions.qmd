@@ -1,15 +1,16 @@
 ---
+categories: [j25, j25-core, j25-exceptions]
 exercise-bank: true
 default-exercise-target: manual
 default-exercise-statement-visibility: open
 ---
 
-# Исключения {#sec-bank-exceptions}
+# Исключения {#sec-j25-bank-exceptions}
 
-Теория: @theory:sec-t-exceptions. Условия используются в лабораторных по ссылке;
+Теория: @theory:sec-j25-theory-exceptions. Условия используются в лабораторных по ссылке;
 время в карточках — ориентир чтения, решения и самостоятельной проверки.
 
-:::: {#exr-exception-flow-errors difficulty="introductory" time="30"}
+:::: {#exr-j25-exceptions-exception-flow-errors difficulty="introductory" time="30"}
 ## Ошибки в обработке и генерации исключений
 
 Исправьте три независимых фрагмента из вопросов для самопроверки так, чтобы они стали корректными фрагментами Java. Недостающий контекст разместите в небольших классах; варианты ответов в программу переносить не нужно.
@@ -20,10 +21,12 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-queue-exceptions difficulty="intermediate" time="60"}
+:::: {#exr-j25-exceptions-queue-exceptions difficulty="intermediate" time="60"}
 ## Добавление исключений в класс очереди
 
-Создайте `FixedQueue` и `ICharQ` по @tasks:sec-bank-character-queues, но вместо сообщений и нулевого символа используйте проверяемые исключения `QueueFullException` и `QueueEmptyException`.
+Дополнительная тренировка: эта карточка сохранена в банке и не входит в обязательный состав ЛР10.
+
+Создайте `FixedQueue` и `ICharQ` по @tasks:sec-j25-bank-character-queues, но вместо сообщений и нулевого символа используйте проверяемые исключения `QueueFullException` и `QueueEmptyException`.
 
 Объявите их в `put(char)` и `char get()` интерфейса и реализации. Ёмкость положительна, недопустимая ёмкость отклоняется через `IllegalArgumentException`. Неудачная операция сохраняет состояние очереди.
 
@@ -31,7 +34,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-locale-number-errors difficulty="advanced" time="110"}
+:::: {#exr-j25-exceptions-locale-number-errors difficulty="advanced" time="110"}
 ## Числа с разными локалями и собственное исключение
 
 Прочитайте UTF-8-файл, содержащий по одной записи на строку: текст числа, табуляцию и тег локали BCP 47. Например, строки `1,5` + табуляция + `ru-BY` и `2.5` + табуляция + `en-US` дают сумму `4.0` и среднее `2.0`. Дополнительных пробелов вокруг полей нет.
@@ -42,8 +45,10 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-stack-exceptions difficulty="intermediate" time="60"}
+:::: {#exr-j25-exceptions-stack-exceptions difficulty="intermediate" time="60"}
 ## Исключения для полного и пустого стека
+
+Дополнительная тренировка: эта карточка сохранена в банке и не входит в обязательный состав ЛР10.
 
 Создайте стек символов в закрытом массиве фиксированной положительной ёмкости. Метод `push(char)` помещает символ на вершину, `char pop()` возвращает и удаляет последний помещённый символ.
 
@@ -51,14 +56,14 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-constructor-checked-exception difficulty="intermediate" time="20"}
+:::: {#exr-j25-exceptions-constructor-checked-exception difficulty="intermediate" time="20"}
 ## Конструктор подкласса и проверяемое исключение
 
 Даны классы `A` и `B`: конструктор `A()` объявлен с `throws IOException`, а класс `B extends A` пока не содержит собственного конструктора. Добавьте в `B` конструктор, при котором оба класса компилируются. Покажите два допустимых варианта объявления в двух независимых версиях программы и добавьте вызывающий код, обрабатывающий объявленное проверяемое исключение. [@bib-task-constructor-checked-exception]
 
 ::::
 
-:::: {#exr-override-exceptions difficulty="intermediate" time="20"}
+:::: {#exr-j25-exceptions-override-exceptions difficulty="intermediate" time="20"}
 ## Переопределение метода и исключения
 
 В классе A объявлен метод void f() throws FileNotFoundException, а класс B extends A пока пуст. Переопределите f() в классе B тремя допустимыми способами, не вызывающими ошибку компиляции. Каждый вариант оформите как отдельную небольшую программу. [@bib-task-override-exceptions]
