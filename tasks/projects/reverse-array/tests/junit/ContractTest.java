@@ -1,18 +1,22 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContractTest {
     @Test
+    @DisplayName("Пустой массив даёт пустой вывод")
     void emptyArray() throws Exception {
         assertTokens("", run("0"));
     }
 
     @Test
+    @DisplayName("Одноэлементный массив сохраняет значение")
     void singleElement() throws Exception {
         assertTokens("-9", run("1 -9"));
     }
 
     @Test
+    @DisplayName("Обратный вывод корректен для разной длины массива")
     void evenAndOddLengths() throws Exception {
         assertTokens("3 2 1", run("3 1 2 3")); assertTokens("4 3 2 1", run("4 1 2 3 4"));
     }
@@ -75,6 +79,6 @@ public class ContractTest {
         }
     }
     private static void assertTokens(String expected, String actual) {
-        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "));
+        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "), "Элементы должны выводиться в порядке, обратном входному");
     }
 }

@@ -1,23 +1,28 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContractTest {
     @Test
+    @DisplayName("Подсчитываются только обычные пробелы")
     void countsOnlyOrdinarySpace() throws Exception {
         assertTokens("3", run(" a\tb\nc  . "));
     }
 
     @Test
+    @DisplayName("Пустой префикс не содержит пробелов")
     void emptyPrefix() throws Exception {
         assertTokens("0", run(".  ")); assertTokens("0", run(""));
     }
 
     @Test
+    @DisplayName("Конец ввода завершает подсчёт")
     void eofAlsoStops() throws Exception {
         assertTokens("2", run("А 👋 Б"));
     }
 
     @Test
+    @DisplayName("Каждый последовательный пробел учитывается")
     void consecutiveSpaces() throws Exception {
         assertTokens("5", run("     ."));
     }
@@ -80,6 +85,6 @@ public class ContractTest {
         }
     }
     private static void assertTokens(String expected, String actual) {
-        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "));
+        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "), "Количество обычных пробелов до завершения ввода неверно");
     }
 }

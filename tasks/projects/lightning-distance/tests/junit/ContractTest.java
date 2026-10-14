@@ -1,10 +1,12 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContractTest {
     @Test
+    @DisplayName("Расстояние вычисляется по времени до грома")
     void doesNotHalveLightningDistance() throws Exception {
-        assertEquals(2412.0, firstNumber(run("")), 1e-8);
+        assertEquals(2412.0, firstNumber(run("")), 1e-8, "Расстояние до молнии не соответствует времени до грома");
     }
 
     /** Each example runs as an ordinary, fresh Java program; student static state is never reused. */

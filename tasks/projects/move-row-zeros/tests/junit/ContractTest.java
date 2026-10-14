@@ -1,23 +1,28 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContractTest {
     @Test
+    @DisplayName("Нули переносятся с сохранением порядка остальных элементов")
     void leadingZerosAndAllZeroRow() throws Exception {
         assertMatrix(new double[][]{{2,0,0},{0,0,0},{-3,1,0}}, run("0 0 2 0 0 0 0 -3 1"));
     }
 
     @Test
+    @DisplayName("Строка без нулей сохраняет порядок")
     void noZerosPreservesOrder() throws Exception {
         assertMatrix(new double[][]{{3,-2,1},{-1,2,-3},{2,2,1}}, run("3 -2 1 -1 2 -3 2 2 1"));
     }
 
     @Test
+    @DisplayName("Порядок ненулевых элементов сохраняется")
     void preservesOrderAroundZeros() throws Exception {
         assertMatrix(new double[][]{{3,-3,0},{-2,2,0},{1,0,0}}, run("3 0 -3 0 -2 2 0 1 0"));
     }
 
     @Test
+    @DisplayName("Без ввода выполняется опубликованный пример матрицы")
     void mandatoryDefaultMatrix() throws Exception {
         assertMatrix(new double[][]{{-3,3,0},{2,-1,0},{1,3,-2}}, run(""));
     }
@@ -90,7 +95,7 @@ public class ContractTest {
     private static void assertNumbers(double[] expected, String output) {
         double[] actual = numbers(output);
         assertEquals(expected.length, actual.length, "Количество чисел");
-        assertArrayEquals(expected, actual, 1e-8);
+        assertArrayEquals(expected, actual, 1e-8, "Нули должны быть перенесены в начало строки без перестановки остальных элементов");
     }
     private static void assertMatrix(double[][] expected, String output) {
         String[] rows = output.trim().split("\\R");

@@ -1,28 +1,33 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContractTest {
     @Test
+    @DisplayName("Нулевой вес обрабатывается корректно")
     void zeroWeight() throws Exception {
         assertNumbers(new double[]{0.0}, run("0"));
     }
 
     @Test
+    @DisplayName("Дробный вес обрабатывается корректно")
     void fractionalWeight() throws Exception {
         assertNumbers(new double[]{1.275}, run("7.5"));
     }
 
     @Test
+    @DisplayName("Коэффициент веса соответствует условию")
     void coefficientIsSeventeenPercent() throws Exception {
         assertNumbers(new double[]{42.5}, run("250"));
     }
 
     @Test
+    @DisplayName("Без ввода выполняется опубликованный пример")
     void defaultShowsZeroAndPositiveExample() throws Exception {
         double[] values = numbers(run(""));
-        assertEquals(2, values.length);
-        assertEquals(0.0, values[0], 1e-8);
-        assertTrue(values[1] > 0.0 && Double.isFinite(values[1]));
+        assertEquals(2, values.length, "Результат вычисления веса на Луне неверен");
+        assertEquals(0.0, values[0], 1e-8, "Результат вычисления веса на Луне неверен");
+        assertTrue(values[1] > 0.0 && Double.isFinite(values[1]), "Результат вычисления веса на Луне неверен");
     }
 
     /** Each example runs as an ordinary, fresh Java program; student static state is never reused. */
@@ -93,6 +98,6 @@ public class ContractTest {
     private static void assertNumbers(double[] expected, String output) {
         double[] actual = numbers(output);
         assertEquals(expected.length, actual.length, "Количество чисел");
-        assertArrayEquals(expected, actual, 1e-8);
+        assertArrayEquals(expected, actual, 1e-8, "Результат вычисления веса на Луне неверен");
     }
 }

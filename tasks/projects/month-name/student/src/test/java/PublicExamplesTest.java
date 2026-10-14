@@ -1,8 +1,10 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PublicExamplesTest {
     @Test
+    @DisplayName("Первый и последний месяц называются корректно")
     void firstAndLastMonth() throws Exception {
         assertTokens("январь", run("1")); assertTokens("декабрь", run("12"));
     }
@@ -65,6 +67,6 @@ public class PublicExamplesTest {
         }
     }
     private static void assertTokens(String expected, String actual) {
-        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "));
+        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "), "Название месяца или сообщение об ошибке не соответствует условию");
     }
 }

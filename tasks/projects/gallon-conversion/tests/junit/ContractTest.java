@@ -1,8 +1,10 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContractTest {
     @Test
+    @DisplayName("Перевод выполняется из галлонов в литры")
     void doesNotReverseConversion() throws Exception {
         assertNumbers(new double[]{10.0, 37.854}, run(""));
     }
@@ -75,6 +77,6 @@ public class ContractTest {
     private static void assertNumbers(double[] expected, String output) {
         double[] actual = numbers(output);
         assertEquals(expected.length, actual.length, "Количество чисел");
-        assertArrayEquals(expected, actual, 1e-8);
+        assertArrayEquals(expected, actual, 1e-8, "Результат перевода галлонов в литры неверен");
     }
 }

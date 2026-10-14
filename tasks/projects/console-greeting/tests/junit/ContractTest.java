@@ -1,20 +1,24 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContractTest {
     @Test
+    @DisplayName("Отсутствие имени сопровождается подсказкой")
     void reportsMissingName() throws Exception {
-        assertEquals("Укажите имя.\n", run(""));
+        assertEquals("Укажите имя.\n", run(""), "Приветствие должно сохранять имя и перевод строки");
     }
 
     @Test
+    @DisplayName("Для приветствия используется первый аргумент")
     void usesFirstArgument() throws Exception {
-        assertEquals("Здравствуйте, Ли 👋!\n", run("", "Ли 👋", "ignored"));
+        assertEquals("Здравствуйте, Ли 👋!\n", run("", "Ли 👋", "ignored"), "Приветствие должно сохранять имя и перевод строки");
     }
 
     @Test
+    @DisplayName("Написание имени сохраняется")
     void preservesNameSpelling() throws Exception {
-        assertEquals("Здравствуйте, Ada-Lovelace!\n", run("", "Ada-Lovelace"));
+        assertEquals("Здравствуйте, Ada-Lovelace!\n", run("", "Ada-Lovelace"), "Приветствие должно сохранять имя и перевод строки");
     }
 
     /** Each example runs as an ordinary, fresh Java program; student static state is never reused. */

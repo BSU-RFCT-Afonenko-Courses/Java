@@ -4,7 +4,7 @@
 
 Протокол проверки: стандартный ввод содержит `n m k` типа `int`, разделённые пробельными символами. Выведите четыре значения `true` или `false` в указанном порядке. Например, `-2 4 -2` даёт `false true false true`; `-2 4 4` — `true false false true`. Некорректный ввод и случай `n >= m` не проверяются.
 
-Соберите `student/src/main/java/Main.java` командой `javac --release 25 -encoding UTF-8 -d out student/src/main/java/*.java`, затем запустите `java -cp out Main`. Для дополнительного входа передайте текст через stdin; без входа закройте stdin (EOF). Java 25 без preview. Вспомогательные методы и классы разрешены.
+Соберите `student/src/main/java/Main.java` командой `javac --release 25 -encoding UTF-8 -d out student/src/main/java/*.java`, затем запустите `java -cp out Main`. Для дополнительного входа передайте текст через stdin; без входа закройте stdin (EOF). Вспомогательные методы и классы разрешены.
 
 Публичные примеры: `student/src/test/java/PublicExamplesTest.java`. Их можно запускать JUnit 5 вместе с вашей программой; они показывают часть контракта и не заменяют все требования условия.
 

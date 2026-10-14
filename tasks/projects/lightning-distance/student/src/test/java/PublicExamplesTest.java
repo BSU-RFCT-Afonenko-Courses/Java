@@ -1,10 +1,12 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PublicExamplesTest {
     @Test
+    @DisplayName("Расстояние до молнии выводится в метрах")
     void distanceInMetres() throws Exception {
-        assertEquals(2412.0, firstNumber(run("")), 1e-8);
+        assertEquals(2412.0, firstNumber(run("")), 1e-8, "Расстояние до молнии не соответствует времени до грома");
     }
 
     /** Each example runs as an ordinary, fresh Java program; student static state is never reused. */

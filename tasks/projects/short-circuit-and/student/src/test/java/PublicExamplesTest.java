@@ -1,13 +1,16 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PublicExamplesTest {
     @Test
+    @DisplayName("Нулевой делитель обрабатывается безопасно")
     void zeroDivisorIsSafe() throws Exception {
         assertTokens("false", run("7 0"));
     }
 
     @Test
+    @DisplayName("Положительное целочисленное частное распознаётся")
     void positiveQuotient() throws Exception {
         assertTokens("true", run("7 2"));
     }
@@ -75,6 +78,6 @@ public class PublicExamplesTest {
         }
     }
     private static void assertTokens(String expected, String actual) {
-        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "));
+        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "), "Результат безопасной проверки целочисленного частного неверен");
     }
 }

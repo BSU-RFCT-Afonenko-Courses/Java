@@ -16,7 +16,7 @@ python3 "$PL_PLATFORM_ROOT/tools/check-course.py" inventory \
 # Все подключённые проекты первых трёх лабораторных входят в выбранную поставку.
 # Inventory показывает полноту объявлений; исполняем каждую выбранную задачу ниже.
 python3 "$PL_PLATFORM_ROOT/tools/build-course.py" --source "$TASK_COURSE_ROOT" \
-  --book tasks --instance pilot --output "$TASK_CHECK_OUTPUT/native"
+  --book tasks --instance 2026-2027-s1 --output "$TASK_CHECK_OUTPUT/native"
 # Selected delivery is verified in full: no ready-only or scenario subset.
 for TASK_BACKEND in host container; do
   python3 "$PL_PLATFORM_ROOT/tools/check-course.py" verify \

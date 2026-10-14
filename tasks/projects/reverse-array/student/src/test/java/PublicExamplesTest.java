@@ -1,8 +1,10 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PublicExamplesTest {
     @Test
+    @DisplayName("Элементы выводятся в обратном порядке")
     void ordinaryArray() throws Exception {
         assertTokens("0 7 -2 7", run("4 7 -2 7 0"));
     }
@@ -65,6 +67,6 @@ public class PublicExamplesTest {
         }
     }
     private static void assertTokens(String expected, String actual) {
-        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "));
+        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "), "Элементы должны выводиться в порядке, обратном входному");
     }
 }

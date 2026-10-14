@@ -1,30 +1,36 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContractTest {
     @Test
+    @DisplayName("Символы вне ASCII сохраняются")
     void preservesUtf8AndEmoji() throws Exception {
-        assertEquals("aБяZ 👋🙂\n2\n", run("AБяz 👋🙂."));
+        assertEquals("aБяZ 👋🙂\n2\n", run("AБяz 👋🙂."), "Изменение ASCII-регистра, сохранение остальных символов или количество букв неверно");
     }
 
     @Test
+    @DisplayName("Обработка завершается перед первой точкой")
     void stopsAtFirstDot() throws Exception {
-        assertEquals("\n0\n", run(".Ab"));
+        assertEquals("\n0\n", run(".Ab"), "Изменение ASCII-регистра, сохранение остальных символов или количество букв неверно");
     }
 
     @Test
+    @DisplayName("Конец ввода завершает обработку и прочие символы сохраняются")
     void eofAndOtherCharacters() throws Exception {
-        assertEquals("aZ09\t_\n!?\n2\n", run("Az09\t_\n!?"));
+        assertEquals("aZ09\t_\n!?\n2\n", run("Az09\t_\n!?"), "Изменение ASCII-регистра, сохранение остальных символов или количество букв неверно");
     }
 
     @Test
+    @DisplayName("Пустой ввод обрабатывается корректно")
     void emptyInput() throws Exception {
-        assertEquals("\n0\n", run(""));
+        assertEquals("\n0\n", run(""), "Изменение ASCII-регистра, сохранение остальных символов или количество букв неверно");
     }
 
     @Test
+    @DisplayName("Все обработанные ASCII-буквы учитываются")
     void countsEveryAsciiLetter() throws Exception {
-        assertEquals("azAZ\n4\n", run("AZaz."));
+        assertEquals("azAZ\n4\n", run("AZaz."), "Изменение ASCII-регистра, сохранение остальных символов или количество букв неверно");
     }
 
     /** Each example runs as an ordinary, fresh Java program; student static state is never reused. */

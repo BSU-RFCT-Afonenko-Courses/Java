@@ -1,8 +1,10 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PublicExamplesTest {
     @Test
+    @DisplayName("Максимум и минимум найдены среди значений разных знаков")
     void mixedSigns() throws Exception {
         assertTokens("Максимум: 7 Минимум: -3", run("4 7 -3 0 7"));
     }
@@ -65,6 +67,6 @@ public class PublicExamplesTest {
         }
     }
     private static void assertTokens(String expected, String actual) {
-        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "));
+        assertEquals(expected.trim().replaceAll("\\s+", " "), actual.trim().replaceAll("\\s+", " "), "Выведенные экстремумы или сообщение о количестве неверны");
     }
 }

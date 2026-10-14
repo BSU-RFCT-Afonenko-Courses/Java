@@ -1,8 +1,10 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PublicExamplesTest {
     @Test
+    @DisplayName("Вес на Луне вычисляется для положительного значения")
     void positiveWeight() throws Exception {
         assertNumbers(new double[]{17.0}, run("100"));
     }
@@ -75,6 +77,6 @@ public class PublicExamplesTest {
     private static void assertNumbers(double[] expected, String output) {
         double[] actual = numbers(output);
         assertEquals(expected.length, actual.length, "Количество чисел");
-        assertArrayEquals(expected, actual, 1e-8);
+        assertArrayEquals(expected, actual, 1e-8, "Результат вычисления веса на Луне неверен");
     }
 }
