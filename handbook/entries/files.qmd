@@ -1,10 +1,14 @@
-# Path, Files и текстовый ввод-вывод {#sec-h-files}
+---
+categories: [j25, j25-core, j25-files]
+---
+
+# Path, Files и текстовый ввод-вывод {#sec-j25-api-files}
 
 Java 25. Полное объяснение уровней файла и формата:
-@theory:sec-t-io. Современные файловые операции —
+@theory:sec-j25-theory-io. Современные файловые операции —
 `java.nio.file.Files` [@bib-data-files-api; @bib-data-path-api; @bib-data-bufferedreader-api].
 
-## Путь {#sec-h-files-path}
+## Путь {#sec-j25-api-files-path}
 
 | Операция Path | Назначение |
 |---|---|
@@ -22,7 +26,7 @@ Java 25. Полное объяснение уровней файла и форм
 есть `Files.isSameFile`. Предварительный `Files.exists` не гарантирует
 успех следующего действия: внешнее состояние может измениться.
 
-## Чтение и запись {#sec-h-files-operations}
+## Чтение и запись {#sec-j25-api-files-operations}
 
 В таблице даны выбранные перегрузки, без расширения на весь API.
 `Path`, `OpenOption`, `CopyOption`, `LinkOption` находятся в
@@ -64,16 +68,22 @@ try (var reader = java.nio.file.Files.newBufferedReader(path,
 }
 ```
 
+Это тело метода `static void show(java.nio.file.Path path)
+throws java.io.IOException`. Вход `alpha`, пустая строка, `beta`
+печатается тремя строками, включая пустую. Если загрузчик пропускает blank,
+его физический счётчик всё равно увеличивается до `continue`:
+@theory:sec-j25-theory-application-loader. Пустой вход не является отказом.
+
 Открытие и чтение могут дать `IOException`. Повреждённая последовательность
 UTF-8 при `Files.readString(path, UTF_8)` приводит к `IOException`;
 у читателя из `newBufferedReader(path, UTF_8)` такое исключение возникает
 при чтении. У `Files.lines(path, UTF_8)` повреждение, обнаруженное в позднем
 обходе, передаётся как `UncheckedIOException`. В приложении из
-@theory:sec-t-application отказ декодирования через BufferedReader даёт
+@theory:sec-j25-theory-application отказ декодирования через BufferedReader даёт
 код завершения 4, а не ошибку предметного формата с кодом 3. Память операций
 «прочитать всё» определяется размером входа, а не краткостью записи.
 
-## Параметры открытия и публикация {#sec-h-files-options}
+## Параметры открытия и публикация {#sec-j25-api-files-options}
 
 | `StandardOpenOption` | Смысл |
 |---|---|
@@ -90,6 +100,11 @@ UTF-8 при `Files.readString(path, UTF_8)` приводит к `IOException`;
 Files.writeString(target, "s3;Ann;80\n", StandardCharsets.UTF_8,
     StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 ```
+
+В этом теле метода `throws IOException` переменная `Path target`
+передана аргументом, нужны импорты `Files`, `StandardCharsets` и
+`StandardOpenOption`. При прежнем тексте `s2;Lin;70\n` получится
+`s2;Lin;70\ns3;Ann;80\n`; повтор запуска добавит ещё одну строку.
 
 Наличие разделителя в конце прежнего текста проверяет приложение.
 Операция не обещает откат при сбое: частичный результат возможен.
