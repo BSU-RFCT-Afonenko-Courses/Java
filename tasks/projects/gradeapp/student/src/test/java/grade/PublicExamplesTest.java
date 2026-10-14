@@ -25,7 +25,7 @@ class PublicExamplesTest {
         var source = StudentFiles.read(Path.of("samples", "students.txt"));
         var result = Reports.selected(source, 80);
         assertEquals(List.of("s10;Ada;90", "s3;Ann;90"),
-            result.stream().map(Reports::line).toList(), "Предоставленный вывод не должен закрывать системные потоки");
+            result.stream().map(Reports::line).toList(), "Строки отчёта должны соответствовать порогу, порядку записей и формату id;name;score");
         assertEquals(List.of("s2", "s3", "s10"),
             source.stream().map(Student::id).toList(), "Формирование отчёта не должно менять исходные записи или их порядок");
     }

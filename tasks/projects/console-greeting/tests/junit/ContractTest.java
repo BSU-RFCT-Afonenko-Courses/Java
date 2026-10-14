@@ -6,7 +6,7 @@ public class ContractTest {
     @Test
     @DisplayName("Отсутствие имени сопровождается подсказкой")
     void reportsMissingName() throws Exception {
-        assertEquals("Укажите имя.\n", run(""), "Приветствие должно сохранять имя и перевод строки");
+        assertEquals("Укажите имя.\n", run(""), "Без имени должна выводиться предусмотренная подсказка с переводом строки");
     }
 
     @Test
