@@ -1,0 +1,391 @@
+---
+title: "Управление, методы, массивы и текст"
+subtitle: "Java 25 · первый семестр · 80 минут"
+lang: ru
+categories: [j25, j25-core, j25-control-methods-data]
+format:
+  revealjs:
+    fontsize: 32px
+    width: 1280
+    height: 800
+    css: assets/lesson.css
+    incremental: false
+    show-notes: false
+---
+
+## Управление, методы, массивы и текст {#sec-j25-lecture-control-methods-data}
+
+Массив — объект фиксированной длины; присваивание копирует ссылку. null отличается от пустого массива; int-деление не сохраняет дробь.
+
+**Ведущий вопрос:** Как пройти по данным и сохранить понятные границы изменения?
+
+### Оболочка и первый вход {#sec-j25-lecture-control-methods-data-context}
+
+Файл `Reading.java`: public class Reading, внутри `main(String[] args)` независимые scalar-опыты с `int pages=5; int days=2;`. Объявления static-методов ниже размещаются в классе рядом с main, вызовы — внутри main. Импорты не нужны, если тип записан полным именем.
+
+`if (условие)` выполняет ветвь только при true; `else` выбирается при false. Для нуля дней обычный расчёт нужно пропустить.
+
+### Ветвление по условию {#sec-j25-lecture-control-methods-data-if}
+
+```java
+if (days > 0) {
+    System.out.println((double) pages / days);
+} else {
+    System.out.println("Invalid days");
+}
+```
+
+При нуле деление не выполняется. Обе ветви проверяются компилятором, но конкретный запуск выбирает одну.
+
+@theory:sec-j25-theory-control-if
+
+### Определённое присваивание после ветвления {.continuation #sec-j25-lecture-control-methods-data-branch-assignment}
+
+```java
+int result;
+if (pages > 0) {
+    result = pages;
+} else {
+    result = 0;
+}
+System.out.println(result);
+```
+
+Чтение допустимо: значение присвоено на каждом пути. Если убрать `else`, формальная проверка больше не гарантирует присваивание.
+
+### Охранная ветвь в знакомом main {#sec-j25-lecture-control-methods-data-guard}
+
+```java
+int pages = 5, days = 0;
+if (pages < 0 || days <= 0) {
+    System.out.println("Invalid input");
+    return;
+}
+System.out.println((double) pages / days);
+```
+
+Вывод — Invalid input. `return` заканчивает main; до деления выполнение не доходит. Позже отдельный метод сможет сообщить этот отказ вызывающему коду.
+
+### Выражение switch {#sec-j25-lecture-control-methods-data-switch}
+
+```java
+String mode = "brief";
+int limit = switch (mode) {
+    case "brief" -> 10;
+    case "full" -> 30;
+    default -> throw new IllegalArgumentException();
+};
+```
+
+Каждый путь даёт результат либо отказывает. Стрелочные правила не продолжаются в соседний случай; это синтаксис `switch`, а не лямбда.
+
+### Условие завершения цикла while {#sec-j25-lecture-control-methods-data-while}
+
+```java
+int remaining = 3;
+while (remaining > 0) {
+    System.out.println(remaining);
+    remaining--;
+}
+```
+
+Вывод: `3`, `2`, `1`. Проверка перед телом допускает ноль итераций. Без уменьшения цикл в этом примере не завершится.
+
+### Перебор индексов циклом for {#sec-j25-lecture-control-methods-data-for}
+
+```java
+int[] pagesByDay = {5, 7, 4};
+long total = 0;
+for (int i = 0; i < pagesByDay.length; i++) {
+    total += pagesByDay[i];
+}
+System.out.println(total); // 16
+```
+
+Индексы идут по `[0, length)`. При `i == length` тело не выполняется; `<=` нарушило бы границу.
+
+### Обоснование суммирования элементов {.continuation #sec-j25-lecture-control-methods-data-invariant}
+
+Перед итерацией с индексом `i` накопитель содержит сумму диапазона `[0, i)`.
+
+Сначала диапазон пуст и сумма `0`. Тело добавляет `pagesByDay[i]`. После завершения `i == length`, значит охвачен весь массив.
+
+Пустой массив даёт сумму `0`; для среднего требуется отдельное условие непустоты.
+
+### Переменная расширенного for {#sec-j25-lecture-control-methods-data-enhanced-for}
+
+```java
+int[] pagesByDay = {5, 7, 4};
+for (int value : pagesByDay) {
+    value = 0;
+}
+```
+
+Массив остаётся `[5, 7, 4]`. Менялась локальная переменная цикла.
+
+Чтобы заменить компоненты, нужны индекс и `pagesByDay[i] = 0`. Для чтения значений индекс часто не нужен.
+
+### Завершение и продолжение цикла {#sec-j25-lecture-control-methods-data-transfers}
+
+```java
+int[] pagesByDay = {5, 7, 4};
+for (int value : pagesByDay) {
+    if (value == 7) break;
+    if (value == 0) continue;
+    System.out.println(value);
+}
+```
+
+Для `[5, 7, 4]` печатается только `5`. `break` завершает цикл, `continue` пропускает оставшееся тело текущего прохода.
+
+## Передача значений в методы {#sec-j25-lecture-control-methods-data-methods}
+
+### Объявление расчёта {#sec-j25-lecture-control-methods-data-method}
+
+```java
+static double average(int pages, int days) {
+    if (pages < 0 || days <= 0) {
+        throw new IllegalArgumentException();
+    }
+    return (double) pages / days;
+}
+```
+
+Типы задают параметры и результат, проверка — предметные границы. `static` обозначает операцию класса.
+
+@theory:sec-j25-theory-methods-declaration
+
+### Вычисление аргумента {.continuation #sec-j25-lecture-control-methods-data-argument}
+
+```java
+int totalPages = 5;
+double result = average(totalPages + 2, 2);
+System.out.println(result);     // 3.5
+System.out.println(totalPages); // 5
+```
+
+Сначала получается `7`. Это значение инициализирует параметр `pages`. Результат метода присваивается `result`.
+
+Исходная переменная не была увеличена.
+
+### Изменение параметра int {.continuation #sec-j25-lecture-control-methods-data-primitive-parameter}
+
+```java
+static void addPage(int value) {
+    value++;
+}
+```
+
+После `int pages = 5; addPage(pages);` у вызывающего всё ещё `5`.
+
+Если нужно следующее число, возвращаем значение и явно присваиваем его: `pages = nextPageCount(pages)`, где `static int nextPageCount(int value) { return value + 1; }`.
+
+### Метод вызывает себя на меньшей задаче {#sec-j25-lecture-control-methods-data-recursion}
+
+```java
+static void countDown(int n) {
+    if (n == 0) return;
+    System.out.println(n);
+    countDown(n - 1);
+}
+```
+
+Член Reading; вызов из main `countDown(3)` печатает 3,2,1. Условие: n>=0. Вызов с 0 возвращается сразу; затем по очереди завершаются вызовы для 1,2,3. Без базового случая цепочка не имеет предусмотренного конца. @theory:sec-j25-theory-methods-recursion
+
+### Передача ссылки на массив {#sec-j25-lecture-control-methods-data-shared-array}
+
+```java
+static void changeFirst(int[] values) {
+    values[0] = 9;
+}
+```
+
+После `int[] pages = {5, 7}; changeFirst(pages);` массив равен `[9, 7]`.
+
+Две переменные содержат ссылки на один объект. Мутация компонента видна через обе.
+
+### Переприсваивание параметра {.continuation #sec-j25-lecture-control-methods-data-rebinding}
+
+```java
+static void replace(int[] values) {
+    values = new int[]{100};
+}
+```
+
+После `replace(pages)` вызывающий всё ещё видит свой `[9, 7]`.
+
+Java копирует ссылочное значение. Метод не получает возможность заменить саму переменную вызывающего кода. Передача всегда по значению.
+
+## Массивы как объекты {#sec-j25-lecture-control-methods-data-arrays}
+
+### Создание массива и начальные значения {#sec-j25-lecture-control-methods-data-array-creation}
+
+```java
+int[] counts = new int[3]; // [0, 0, 0]
+String[] notes = new String[2]; // [null, null]
+notes[0] = "Java";
+```
+
+Длина фиксирована. Массив строк первоначально хранит отсутствующие ссылки; создание массива не создаёт строки.
+
+@theory:sec-j25-theory-arrays-creation
+
+### Пустой массив и отсутствие {.continuation #sec-j25-lecture-control-methods-data-array-empty}
+
+```java
+int[] empty = new int[0];
+System.out.println(empty.length); // 0
+// empty[0] // индекс недопустим
+int[] missing = null;
+// missing.length // NullPointerException
+```
+
+Пустая последовательность существует и имеет длину. Отсутствующая ссылка не обозначает массив вообще.
+
+### Ссылка и независимая копия {#sec-j25-lecture-control-methods-data-array-copy}
+
+```java
+int[] a = {5, 7};
+int[] b = a;
+int[] c = a.clone();
+b[0] = 9;
+c[0] = 100;
+```
+
+`a` и `b` видят `[9, 7]`; `c` видит `[100, 7]`. Клонирование создаёт новый внешний массив; присваивание копирует ссылку.
+
+### Структура массива массивов {#sec-j25-lecture-control-methods-data-array-rows}
+
+```java
+int[][] weeks = {{5, 7}, {4}, {}};
+System.out.println(weeks.length); // 3
+System.out.println(weeks[0].length); // 2
+System.out.println(weeks[1][0]); // 4
+```
+
+Длины строк различаются. Клон внешнего массива сохраняет ссылки на те же строки; для независимых строк нужно отдельное копирование.
+
+@theory:sec-j25-theory-arrays-nested
+
+### Клон внешнего массива не клонирует строки {#sec-j25-lecture-control-methods-data-row-change}
+
+```java
+int[][] weeks = {{5, 7}, {4}};
+int[][] copy = weeks.clone();
+copy[0][0] = 9;
+copy[1] = new int[]{100};
+System.out.println(weeks[0][0]); // 9
+System.out.println(weeks[1][0]); // 4
+```
+
+Первая запись меняет общую строку; вторая — только ссылку компонента нового внешнего массива. Для независимых строк копируют каждую строку отдельно. Перенос: равные суммы строк не требуют переставлять равные строки; строгая соседняя перестановка сохраняет их исходный порядок.
+
+## Строки и представление текста {#sec-j25-lecture-control-methods-data-text}
+
+### Неизменяемость String и присваивание ссылки {#sec-j25-lecture-control-methods-data-string-immutability}
+
+```java
+String title = "Java";
+String saved = title;
+title += " course";
+```
+
+`title` показывает `Java course`, `saved` — `Java`.
+
+Изменена ссылка переменной. Исходное строковое значение не изменилось. Результат `strip()` тоже нужно сохранить, если он нужен дальше.
+
+@theory:sec-j25-theory-text-immutability
+
+### Равенство текста {#sec-j25-lecture-control-methods-data-string-equality}
+
+```java
+String a = "Java";
+String b = new String("Java");
+System.out.println(a == b);      // false
+System.out.println(a.equals(b)); // true
+```
+
+`==` сравнивает ссылки. `equals` сравнивает текст. Интернирование литералов не превращает `==` в проверку произвольного ввода.
+
+
+### Равенство и лексикографический порядок {#sec-j25-lecture-control-methods-data-string-order}
+
+```java
+System.out.println("s10".compareTo("s3") < 0); // true
+System.out.println("Ada".equals("Ada"));      // true
+```
+
+Отдельный main Reading. equals отвечает о совпадении текста; compareTo — о порядке UTF-16 единиц, возвращает знак. Это не числовая сортировка суффикса и не locale-алфавит. Такой порядок пригодится ключам каталога.
+
+### Длина UTF-16 и кодовые точки {#sec-j25-lecture-control-methods-data-unicode}
+
+```java
+String text = "A\uD83D\uDE00B"; // A😀B
+System.out.println(text.length()); // 4
+System.out.println(text.codePointCount(0, text.length())); // 3
+```
+
+Улыбающийся знак занимает две единицы UTF-16. `charAt(1)` даст первую половину пары.
+
+Кодовые точки также не всегда равны воспринимаемым текстовым элементам.
+
+### Преобразование текста в байты {#sec-j25-lecture-control-methods-data-encoding}
+
+```java
+byte[] bytes = "Я".getBytes(
+    java.nio.charset.StandardCharsets.UTF_8);
+System.out.println(bytes.length); // 2
+```
+
+Одна кодовая точка, одна единица UTF-16, два байта UTF-8.
+
+Файл хранит байты; кодировка определяет преобразование между ними и строкой. @theory:sec-j25-theory-text-encoding
+
+### Как накапливается изменяемый текст {#sec-j25-lecture-control-methods-data-builder}
+
+```java
+StringBuilder text = new StringBuilder();
+text.append("Return: ");
+text.append("Java");
+text.append('\n');
+System.out.print(text.toString());
+```
+
+Вывод — Return: Java и перевод строки. `append` меняет builder, `toString` возвращает строковое наблюдение. Этот буфер пригодится записывающему отправителю.
+
+### Текст числа и число {#sec-j25-lecture-control-methods-data-parsing}
+
+```java
+String input = "16";
+int pages = Integer.parseInt(input);
+System.out.println(pages + 1); // 17
+System.out.println(input + 1); // 161
+```
+
+Разбор выбирает числовой формат; конкатенация продолжает текст. `"16.5"` не подходит для `parseInt` и вызывает `NumberFormatException`.
+
+@theory:sec-j25-theory-text
+
+### Сначала границы исходного слова {#sec-j25-lecture-control-methods-data-word-boundary}
+
+Для алфавита Latin + Cyrillic + Ё/ё текст `Java2	код!` содержит слова Java на [0,4) и код на [6,9). Цифра, tab и ! — разделители. Универсальное regex `\b` не задаёт этот алфавит.
+
+При изменении слова находят его исходные границы и сохраняют окружающие разделители. String-индексы здесь — UTF-16; для данного алфавита буква помещается в char. @theory:sec-j25-theory-text-early-lab
+
+### Изменение условий и перенос правил {#sec-j25-lecture-control-methods-data-transfer-check}
+
+Увеличили диапазон результата слева — переполнение произведения не исчезло.
+
+Заменили компонент массива — общий объект изменился. Переприсвоили параметр — внешняя переменная сохранилась.
+
+Поменяли единицу длины — число изменилось с `4` на `3`.
+
+Каждый результат выводится из точного правила и конкретного действия. Для журнала выбираем тип, проверяем предметные границы, определяем копирование и решаем, допустимо ли отсутствие.
+
+### Проверка переноса {#sec-j25-lecture-control-methods-data-exit}
+
+**Прогноз:** Клон int[][]: изменили copy[0][0], затем copy[1]. Что видит оригинал?
+
+**Разбор:** Общий первый компонент изменился; замена строки второго внешнего массива не изменила оригинал. Вы объясняете передачу scalar/reference, строгую границу цикла и сохранение разделителей исходного текста.
+
+Точное объяснение: @theory:sec-j25-theory-control, @theory:sec-j25-theory-methods, @theory:sec-j25-theory-arrays, @theory:sec-j25-theory-text.

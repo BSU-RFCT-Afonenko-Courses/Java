@@ -1,0 +1,698 @@
+---
+title: "Интерфейсы, композиция и записи"
+subtitle: "Java 25 · первый семестр · 80 минут"
+lang: ru
+categories: [j25, j25-core, j25-interfaces-records]
+format:
+  revealjs:
+    fontsize: 32px
+    width: 1280
+    height: 800
+    css: assets/lesson.css
+    incremental: false
+    show-notes: false
+---
+
+## Интерфейсы, композиция и записи {#sec-j25-lecture-interfaces-records}
+
+Конструктор устанавливает инвариант, закрытые поля ограничивают переходы. Book.borrow меняет одну общую книгу и отвергает повтор.
+
+**Ведущий вопрос:** Как менять участника программы, сохраняя договор общего клиента?
+
+## Наследование и отношение подтипов {#sec-j25-lecture-interfaces-records-subtype}
+
+Если текстовый документ является документом, общий код может работать с ним через тип `Document`. При этом он ожидает доступные операции и согласованный смысл результата.
+
+Повторное использование нескольких методов само по себе не доказывает такое отношение. Наследование предоставляет поведение и одновременно делает обещание клиенту базового типа. @theory:sec-j25-theory-inheritance. [@bib-objects-eckel-reuse]
+
+### Как собран опыт Document {#sec-j25-lecture-interfaces-records-context}
+
+Файл DispatchDemo.java без package/imports: Document.java и TextDocument.java — соседние классы без package, print и перегрузки — static-методы внешнего класса, вызовы — main. Полное тело summary ниже вставляется в TextDocument вместо комментария. Это последовательное развитие одного класса.
+
+Клиент требует ненулевой summary. Перед выводом назовите статический тип ссылки и runtime-класс объекта.
+
+### Базовое состояние и действие {#sec-j25-lecture-interfaces-records-base}
+
+```java
+class Document {
+    private final String title;
+    Document(String title) {
+        this.title = java.util.Objects.requireNonNull(title);
+    }
+    String summary() { return title; }
+}
+```
+
+Конструктор устанавливает обязательный заголовок. Клиент получает операцию описания; внутреннее поле закрыто.
+
+### Дополнительное состояние подкласса {#sec-j25-lecture-interfaces-records-child .continuation}
+
+```java
+class TextDocument extends Document {
+    private final int characters;
+    TextDocument(String title, int characters) {
+        super(title);
+        if (characters < 0) throw new IllegalArgumentException();
+        this.characters = characters;
+    }
+    // summary — далее
+}
+```
+
+Один экземпляр содержит заголовок и длину. Конструктор базового класса отвечает за заголовок, подкласса — за длину.
+
+### Переопределение операции {#sec-j25-lecture-interfaces-records-override .continuation}
+
+```java
+@Override
+String summary() {
+    return super.summary() + ": " + characters + " chars";
+}
+```
+
+`super.summary()` выбирает базовое тело. Доступ к закрытому `title` не открывается подклассу; используем доступную операцию. `@Override` проверяет намерение автора. [@bib-objects-schildt-inheritance]
+
+### Конструкторы не наследуются {#sec-j25-lecture-interfaces-records-constructors}
+
+```java
+Document plain = new Document("Guide");
+TextDocument text = new TextDocument("Notes", 120);
+// new TextDocument("Notes"); // такого конструктора нет
+```
+
+Если явного вызова другого конструктора нет, подразумевается `super()`, который должен быть доступен. Java не подбирает базовый конструктор автоматически по одноимённым параметрам.
+
+## Тип выражения и класс получателя {#sec-j25-lecture-interfaces-records-dispatch}
+
+```java
+Document value = new TextDocument("Notes", 120);
+System.out.println(value.summary()); // Notes: 120 chars
+```
+
+Компилятор разрешает вызов по типу `Document`. При выполнении переопределяемого метода выбирается тело по фактическому классу объекта. Ссылка базового типа не срезает состояние. [@bib-objects-eckel-polymorphism]
+
+### Общий алгоритм обработки документа {#sec-j25-lecture-interfaces-records-general-method .continuation}
+
+```java
+static void print(Document document) {
+    System.out.println(document.summary());
+}
+print(new Document("Guide"));       // Guide
+print(new TextDocument("Notes", 120)); // Notes: 120 chars
+```
+
+В `print` нет проверки конкретного класса. Новый согласованный подтип может участвовать в том же действии без добавления ветви.
+
+### Перегрузка и динамический вызов {#sec-j25-lecture-interfaces-records-overload}
+
+```java
+static String kind(Document d) { return "Document"; }
+static String kind(TextDocument d) { return "Text"; }
+Document value = new TextDocument("Notes", 120);
+System.out.println(kind(value));     // Document
+System.out.println(value.summary()); // Notes: 120 chars
+```
+
+`kind` выбирается по статическому типу аргумента. `summary` — по классу получателя после выбора сигнатуры.
+
+### Сокрытие поля {#sec-j25-lecture-interfaces-records-field-hiding}
+
+```java
+class Base { String label = "base"; }
+class Child extends Base { String label = "child"; }
+Base value = new Child();
+System.out.println(value.label); // base
+```
+
+В объекте есть два поля. Выражение выбирает поле по статическому типу. Повторять имя поля в подклассе обычно неудобно: оно скрывает различие состояний. [@bib-objects-eckel-polymorphism]
+
+### Сокрытие статического метода {#sec-j25-lecture-interfaces-records-static-hiding}
+
+```java
+class Base { static String kind() { return "base"; } }
+class Child extends Base { static String kind() { return "child"; } }
+System.out.println(Base.kind());  // base
+System.out.println(Child.kind()); // child
+```
+
+У статического метода нет получателя для динамического выбора. Вызов через переменную объекта вводит в заблуждение, поэтому используем имя класса.
+
+## Сигнатура переопределяемого метода {#sec-j25-lecture-interfaces-records-override-rules}
+
+Нельзя уменьшить доступность метода или расширить разрешённые проверяемые исключения. Ссылочный результат можно уточнить до подтипа.
+
+`private`-метод не переопределяется. `final`-метод закрыт для переопределения. Метод с другим списком типов параметров может стать перегрузкой; `@Override` помогает увидеть случайную замену сигнатуры. [@bib-objects-jls-overriding]
+
+### Сигнатура и поведенческий контракт {#sec-j25-lecture-interfaces-records-behavior}
+
+Базовое бронирование принимает любое положительное число в пределах остатка. Подкласс, запрещающий нечётные размеры, может сохранить ту же сигнатуру, но нарушить ожидание клиента.
+
+Компилятор проверяет форму. Автор сохраняет обещанные условия входа, результата и изменения состояния. Именно по этим действиям проверяется пригодность подтипа.
+
+### Нарушение контракта документа {#sec-j25-lecture-interfaces-records-broken-contract}
+
+```java
+class SilentDocument extends Document {
+    SilentDocument(String title) { super(title); }
+    @Override String summary() { return null; }
+}
+static int summaryLength(Document d) { return d.summary().length(); }
+```
+
+Типы согласованы. Но для `new SilentDocument("Notes")` клиент получает
+`NullPointerException`. Номинальный подтип нарушил обещание ненулевого описания.
+Пустая строка была бы другим, явным результатом.
+
+@theory:sec-j25-theory-inheritance-substitution.
+
+## Абстрактная операция площади {#sec-j25-lecture-interfaces-records-abstract}
+
+```java
+abstract class Shape {
+    abstract double area();
+    String report() { return "area=" + area(); }
+}
+```
+
+`new Shape()` запрещён. У класса могут быть поля, конструкторы и готовые методы. Неабстрактный подкласс должен предоставить отсутствующую реализацию. [@bib-objects-schildt-inheritance]
+
+### Реализация площади в конкретной фигуре {#sec-j25-lecture-interfaces-records-square .continuation}
+
+```java
+final class Square extends Shape {
+    private final double side;
+    Square(double side) { this.side = side; }
+    @Override double area() { return side * side; }
+}
+Shape shape = new Square(3);
+System.out.println(shape.report()); // area=9.0
+```
+
+В этом коротком опыте вход `3` допустим. Для общего API нужны проверки конечности, неотрицательности и требований к результату.
+
+### Отправка в исходном классе напоминания {#sec-j25-lecture-interfaces-records-changing-requirements}
+
+```java
+class ConsoleReminder {
+    void remind(String title) { send("Return: " + title); }
+    protected void send(String message) {
+        System.out.println(message);
+    }
+}
+```
+
+Сначала нужен только вывод. Затем требуются запись сообщений и независимый
+префикс. Подклассы для каждой комбинации связывают две причины изменения.
+Выделим отправку в отдельную роль, затем составим участников:
+текст → префикс → запись.
+[@bib-ctx-objects-eckel-composition]
+
+### Роль отправителя {#sec-j25-lecture-interfaces-records-interface}
+
+```java
+package course.examples.dispatch;
+public interface Sender {
+    void send(String message);
+}
+```
+
+Полный Sender.java в каталоге пакета. Контракт: ненулевая строка; отправить одно сообщение. Ошибка аргумента отвергается до эффекта этого вызова. @theory:sec-j25-theory-interfaces
+
+### Реализация роли {#sec-j25-lecture-interfaces-records-implementation}
+
+```java
+package course.examples.dispatch;
+public final class ConsoleSender implements Sender {
+    public void send(String message) {
+        java.util.Objects.requireNonNull(message, "message");
+        System.out.println(message);
+    }
+}
+```
+
+Полный ConsoleSender.java. public сохраняет доступность операции интерфейса. Клиенту нужна роль Sender, stdout — выбор этой реализации.
+
+### Напоминание получает участника {#sec-j25-lecture-interfaces-records-composition}
+
+```java
+package course.examples.dispatch;
+public final class Reminder {
+    private final Sender sender;
+    public Reminder(Sender sender) {
+        this.sender = java.util.Objects.requireNonNull(sender);
+    }
+    public void remind(String title) {
+        sender.send("Return: " + java.util.Objects.requireNonNull(title));
+    }
+}
+```
+
+Полный Reminder.java. Внешний класс владеет ссылкой на роль и делегирует действие; наследоваться от ConsoleSender ему не требуется.
+
+### Клиент запускает действие {#sec-j25-lecture-interfaces-records-reminder-output}
+
+```java
+Sender sender = new ConsoleSender();
+Reminder reminder = new Reminder(sender);
+reminder.remind("Java");
+```
+
+main класса SenderDemo того же пакета печатает Return: Java. Тип поля — Sender; выбранное тело send принадлежит ConsoleSender.
+
+### Наблюдаем отправку без консоли {#sec-j25-lecture-interfaces-records-recording}
+
+```java
+package course.examples.dispatch;
+public final class RecordingSender implements Sender {
+    private final StringBuilder text = new StringBuilder();
+    public void send(String message) {
+        java.util.Objects.requireNonNull(message, "message");
+        text.append(message).append('\n');
+    }
+    public String text() { return text.toString(); }
+}
+```
+
+Полный RecordingSender.java. StringBuilder уже знаком: append накапливает сообщение и перевод строки; toString даёт наблюдаемое содержимое.
+
+### Тот же клиент, другой участник {#sec-j25-lecture-interfaces-records-recording-result}
+
+```java
+RecordingSender sender = new RecordingSender();
+new Reminder(sender).remind("Java");
+System.out.print(sender.text()); // Return: Java
+```
+
+В отдельном main SenderDemo исходное напоминание не изменилось. Изменили только объект, переданный конструктору. Никаких проверок конкретного класса внутри Reminder.
+
+### Обёртка сохраняет роль {#sec-j25-lecture-interfaces-records-decorator}
+
+```java
+package course.examples.dispatch;
+public final class PrefixSender implements Sender {
+    private final Sender target;
+    private final String prefix;
+    public PrefixSender(Sender target, String prefix) {
+        this.target = java.util.Objects.requireNonNull(target);
+        this.prefix = java.util.Objects.requireNonNull(prefix);
+    }
+    public void send(String message) {
+        target.send(prefix + java.util.Objects.requireNonNull(message));
+    }
+}
+```
+
+Полный PrefixSender.java. Цель и префикс — разные зависимости; send добавляет текст и передаёт действие цели.
+
+### Два объекта выполняют одно действие {#sec-j25-lecture-interfaces-records-decorator-output}
+
+```java
+RecordingSender log = new RecordingSender();
+Sender sender = new PrefixSender(log, "[library] ");
+new Reminder(sender).remind("Java");
+System.out.print(log.text());
+```
+
+main SenderDemo: [library] Return: Java и перевод строки. Сначала Reminder формирует сообщение, затем PrefixSender добавляет префикс, затем RecordingSender сохраняет.
+
+### Изменение требования без нового Reminder {#sec-j25-lecture-interfaces-records-changing-output}
+
+Замена ConsoleSender на RecordingSender меняет наблюдение. Замена prefix меняет оформление. Reminder продолжает вызывать одну операцию Sender.
+
+Перенос: у Vehicle другой предметный контракт, но общий клиент также вызывает роль через базовый тип. Для очереди общий клиент допускает успешные put/get; он не обещает отказ заполнения растущей DynQueue. Fixed не переиспользует освобождённые позиции; Circular переиспользует; Dyn растёт.
+
+## Реализация нескольких интерфейсов {#sec-j25-lecture-interfaces-records-multiple-roles}
+
+```java
+interface Counted { int count(); }
+final class CountingSender implements Sender, Counted {
+    private int count;
+    public void send(String message) {
+        java.util.Objects.requireNonNull(message);
+        count++;
+    }
+    public int count() { return count; }
+}
+```
+
+Один объект доступен через разные типы. Интерфейсы не добавляют отдельных полей экземпляра или конструкторов.
+
+### Общий обход вызывает операцию роли {#sec-j25-lecture-interfaces-records-default}
+
+```java
+default void sendAll(String[] messages) {
+    java.util.Objects.requireNonNull(messages);
+    for (String message : messages) send(message);
+}
+```
+
+Добавляем член в прежний Sender; другие файлы не меняются. Массив знаком, send выбирается динамически. Сама общая реализация не обещает откат.
+
+### Частичный эффект до отказа {#sec-j25-lecture-interfaces-records-default-failure}
+
+```java
+RecordingSender log = new RecordingSender();
+try { log.sendAll(new String[]{"A", null, "B"}); }
+catch (NullPointerException e) { System.out.println("rejected"); }
+System.out.print(log.text());
+```
+
+main SenderDemo с расширенным Sender: rejected, затем A на новой строке. A уже сохранена, null отвергнут, B не достигнута. Предварительная проверка аргументов исключает этот дефект, но не отменяет возможный внешний отказ отправки.
+
+### Виды членов интерфейса {#sec-j25-lecture-interfaces-records-interface-members}
+
+Поля интерфейса неявно `public static final`; полей экземпляра нет. Ссылка в таком поле всё ещё может вести к изменяемому объекту.
+
+Статические методы вызываются через имя интерфейса. Закрытые методы с телом разделяют внутренний код. Эти возможности не делают интерфейс полноценным базовым классом со своим состоянием.
+
+### Выбор формы повторного использования {#sec-j25-lecture-interfaces-records-choice}
+
+Базовый класс подходит для согласованного общего состояния и алгоритма. Интерфейс выделяет общую роль независимых типов. Композиция хранит участника и делегирует действие.
+
+Проверяем выбор новым сценарием: другой отправитель заменяет аргумент конструктора или требует нового подкласса всей службы? Конкретное изменение объясняет цену выбранной связи.
+
+## Объект как значение {#sec-j25-lecture-interfaces-records-data-values}
+
+Координата `(2, 3)` нужна как совокупность компонентов. Обычно её не бронируют и не переводят через последовательность состояний.
+
+Для значения нужны создание, чтение и сравнение по содержимому. Обычный класс позволяет написать это вручную; запись объявляет такую модель непосредственно. @theory:sec-j25-theory-data-classes. [@bib-objects-schildt-records]
+
+### Стандартные члены записи {#sec-j25-lecture-interfaces-records-record}
+
+```java
+record Point(int x, int y) {}
+Point a = new Point(2, 3);
+Point b = new Point(2, 3);
+System.out.println(a.x());       // 2
+System.out.println(a.equals(b)); // true
+System.out.println(a == b);      // false
+```
+
+Предоставляются поля, методы чтения и канонический конструктор, а также стандартные методы значения. Объекты остаются ссылочными.
+
+### Представление для наблюдения {#sec-j25-lecture-interfaces-records-record-output .continuation}
+
+```java
+System.out.println(new Point(2, 3)); // Point[x=2, y=3]
+```
+
+`toString` отражает компоненты. Равенство требует того же типа записи и равных соответствующих значений. Другая запись с двумя такими же числами не обязана быть равна `Point`.
+
+### Ограничения объявления записи {#sec-j25-lecture-interfaces-records-record-constraints}
+
+Запись неявно финальна и расширяет `Record`. Она может реализовать интерфейсы, но не выбирать иной суперкласс или добавлять поля экземпляра.
+
+Компоненты делают форму данных явной. Для службы с изменяемым внутренним устройством обычный класс часто подходит лучше. Краткость объявления сама по себе не задаёт модель.
+
+### Представление записи и её API {#sec-j25-lecture-interfaces-records-record-model .continuation}
+
+`record Point(int x, int y)` объявляет эти компоненты
+как часть API: конструктор, методы чтения, равенство и хеш зависят от них.
+Это именованный тип, а не произвольная пара чисел.
+
+Обычный класс может менять внутреннее хранение, сохраняя публичные методы.
+Запись выбирает прозрачное представление данных.
+
+Поэтому изменяемое бронирование остаётся классом; его состояние в момент
+отчёта может быть записью-снимком. [@bib-ctx-objects-record-model]
+
+### Проверка компонентов {#sec-j25-lecture-interfaces-records-compact-constructor}
+
+```java
+record Interval(int start, int end) {
+    Interval {
+        if (start > end) throw new IllegalArgumentException();
+    }
+    boolean contains(int x) { return start <= x && x <= end; }
+}
+```
+
+`new Interval(2, 5).contains(4)` даёт `true`. Обратные границы отвергаются. После нормального конца компактного тела параметры присваиваются полям автоматически.
+
+### Нормализация параметра {#sec-j25-lecture-interfaces-records-normalization}
+
+```java
+record Code(String value) {
+    Code {
+        value = java.util.Objects.requireNonNull(value).strip();
+        if (value.isEmpty()) throw new IllegalArgumentException();
+    }
+}
+System.out.println(new Code(" A-17 ").value()); // A-17
+```
+
+В поле попадёт нормализованный параметр. Прямое присваивание компонентному полю в компактном конструкторе запрещено.
+
+### Значение для дальнейшего отчёта {#sec-j25-lecture-interfaces-records-student-definition}
+
+Файл продолжается на следующих экранах; части соединяются по порядку.
+
+```java
+package grade;
+
+import java.util.Objects;
+
+public record Student(String id, String name, int score) {
+    public Student {
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(name);
+        id = id.strip();
+        name = name.strip();
+        if (id.isEmpty() || name.isEmpty()
+                || hasSeparator(id) || hasSeparator(name)) {
+            throw new IllegalArgumentException("неверный код или имя");
+        }
+```
+
+### Продолжение того же файла {#sec-j25-lecture-interfaces-records-student-definition-part-1}
+
+```java
+        if (score < 0 || score > 100) {
+            throw new IllegalArgumentException("балл вне диапазона 0..100");
+        }
+    }
+
+    private static boolean hasSeparator(String value) {
+        return value.indexOf(';') >= 0 || value.indexOf('\n') >= 0
+            || value.indexOf('\r') >= 0;
+    }
+}
+```
+
+Полный grade/Student.java. Это единое определение используется дальше через import grade.Student. Конструктор проверяет одну запись; повтор id в каталоге проверяет загрузчик, а equals записи сравнивает все три компонента.
+
+### Проверяем нормализацию и границу {#sec-j25-lecture-interfaces-records-student-client}
+
+```java
+Student a = new Student(" s1 ", " Ada ", 90);
+Student b = new Student("s1", "Ada", 80);
+System.out.println(a.id());      // s1
+System.out.println(a.name());    // Ada
+System.out.println(a.equals(b)); // false
+```
+
+main StudentDemo с import grade.Student. Пустые после strip id/name, разделитель или score вне 0..100 отвергаются. Ненулевые поля — договор конструктора; два разных балла дают разные значения даже при одном id.
+
+### final-компонент и общий массив {#sec-j25-lecture-interfaces-records-shallow}
+
+```java
+record Draft(int[] scores) {}
+int[] scores = {80};
+Draft draft = new Draft(scores);
+scores[0] = 90;
+System.out.println(draft.scores()[0]); // 90
+```
+
+Самостоятельный main RecordDemo; локальная запись допустима. Компонент хранит ссылку, и готовый record разделяет изменяемый массив. Поверхностная неизменность не означает глубокую.
+
+### Копирование на обеих границах {#sec-j25-lecture-interfaces-records-snapshot}
+
+```java
+record Scores(int[] values) {
+    Scores { values = values.clone(); }
+    public int[] values() { return values.clone(); }
+}
+```
+
+Вложенная запись в RecordDemo. В main: вход {80}, создаём Scores, меняем вход и полученную values() копию. Следующее values()[0] по-прежнему 80. Первый clone защищает от входной ссылки, второй — от выдачи внутренней. Для массива объектов это всё ещё поверхностные копии.
+
+### Объект Class описывает тип {#sec-j25-lecture-interfaces-records-reflection}
+
+```java
+Class<?> type = Student.class;
+System.out.println(type.getName());    // grade.Student
+System.out.println(type.isRecord());   // true
+System.out.println(int.class.isPrimitive()); // true
+System.out.println(Integer.class.isPrimitive()); // false
+```
+
+main StudentDemo, import grade.Student. Class описывает тип; локальная запись <?> означает пока неизвестный аргумент типа. Полные wildcard-операции появятся позже. Record — ссылочный тип, int — primitive; Class-объект можно получить для обоих.
+
+### Метаданные объявленных компонентов {#sec-j25-lecture-interfaces-records-reflection-components}
+
+```java
+for (var component : Student.class.getRecordComponents()) {
+    System.out.println(component.getName() + ":" +
+                       component.getType().getSimpleName());
+}
+```
+
+В том же main: id:String, name:String, score:int. var выводит тип переменной из элемента массива, не из будущего значения. Reflection читает метаданные, не доказывает предметный инвариант и не заменяет обычные вызовы. @theory:sec-j25-theory-data-classes-reflection
+
+### Массивный компонент и равенство записи {#sec-j25-lecture-interfaces-records-array-record}
+
+```java
+record Vector(int[] values) {}
+Vector a = new Vector(new int[]{1, 2});
+Vector b = new Vector(new int[]{1, 2});
+System.out.println(a.equals(b)); // false
+```
+
+Самостоятельный main RecordDemo. Массивы — разные объекты; generated equals записи использует их обычное равенство. Для математического вектора отдельно выбирают сравнение элементов и защиту изменяемого массива на входе и выходе.
+
+## Фиксированные именованные варианты {#sec-j25-lecture-interfaces-records-enum}
+
+```java
+enum LoanStatus { AVAILABLE, BORROWED, LOST }
+LoanStatus state = LoanStatus.BORROWED;
+System.out.println(state == LoanStatus.BORROWED); // true
+```
+
+Константы — именованные экземпляры типа. Нельзя создать произвольный `new LoanStatus()`. Строка с похожим именем имеет другой тип. Переменная всё ещё может содержать `null`.
+
+## Ограниченная семья разных вариантов {#sec-j25-lecture-interfaces-records-sealed}
+
+```java
+sealed interface SearchResult permits Found, Missing {}
+record Found(String title) implements SearchResult {}
+record Missing(String reason) implements SearchResult {}
+```
+
+Непосредственные реализации известны. Обычный подтип выбирает `final`, `sealed` или `non-sealed`; записи уже финальны. Это модель различных данных, а не список однородных меток. [@bib-objects-jls-data-classes]
+
+### Покрытие вариантов в switch {#sec-j25-lecture-interfaces-records-exhaustive .continuation}
+
+```java
+static String describe(SearchResult value) {
+    return switch (value) {
+        case Found f -> "Found: " + f.title();
+        case Missing m -> "Missing: " + m.reason();
+    };
+}
+```
+
+Обе разрешённые ветви покрыты. Новый вариант потребует учёта при повторной компиляции. Аргумент здесь ненулевой: без `case null` значение `null` вызывает `NullPointerException`.
+
+### От модели объектов к обобщению {#sec-j25-lecture-interfaces-records-design-route}
+
+Сначала определяем действия и условия. Затем выбираем роль, общий базовый алгоритм или компонент. Для данных выбираем именованный вариант, запись компонентов или ограниченную семью типов.
+
+Следующий шаг — один контейнер для разных типов с сохранением связи входа и результата. Для этого потребуется параметр типа. Связи типов: @theory:sec-j25-theory-type-parameters; роль и композиция: @theory:sec-j25-theory-interfaces.
+
+### Проверка переноса {#sec-j25-lecture-interfaces-records-exit}
+
+**Прогноз:** Клиент получает новый подтип. Где менять вызов?
+
+**Разбор:** В общем клиенте согласованной роли ветвь по concrete-классу не нужна. У DynQueue рост не нарушает контракт successful put/get; фиксированная ёмкость — отдельное свойство. У record общий массив остаётся изменяемым, Class описывает тип.
+
+Точное объяснение: @theory:sec-j25-theory-inheritance, @theory:sec-j25-theory-interfaces, @theory:sec-j25-theory-data-classes.
+
+## Дополнительно — за пределами 80 минут {#sec-j25-lecture-interfaces-records-additional}
+
+Эти продолжения не требуются для основного маршрута.
+
+### Подстановка через базовый тип в C++ и Java {#sec-j25-lecture-interfaces-records-cpp}
+
+Java-присваивание `Document value = new TextDocument(...)` копирует ссылку. Оно не создаёт отдельный базовый объект и не срезает дополнительные поля.
+
+В C++ сходный полиморфный сценарий использует указатель или ссылку на базовый тип и виртуальный метод. Обычный переопределяемый метод Java не требует отдельного слова `virtual`.
+
+### Изменяемый квадрат и прямоугольник {#sec-j25-lecture-interfaces-records-rectangle}
+
+Клиент прямоугольника меняет ширину, ожидая сохранения высоты. Квадрат должен менять обе стороны вместе.
+
+Математическое включение не делает эти изменяемые API взаимозаменяемыми. Возможные решения: независимые классы с общей операцией площади или неизменяемые значения с другим способом создания.
+
+## Динамический вызов при конструировании {#sec-j25-lecture-interfaces-records-construction-risk}
+
+```java
+class Parent {
+    Parent() { show(); }
+    void show() { System.out.println("parent"); }
+}
+class ChildState extends Parent {
+    int value = 7;
+    @Override void show() { System.out.println(value); }
+}
+```
+
+`new ChildState()` печатает `0`. Класс объекта уже определён, поле подкласса ещё не получило `7`. [@bib-objects-eckel-constructor-polymorphism]
+
+### Порядок инициализации и нулевое поле {#sec-j25-lecture-interfaces-records-construction-order .continuation}
+
+В показанной форме сначала выполняется базовый конструктор. Он вызывает переопределённое тело подкласса, которое видит значение по умолчанию.
+
+После возврата из базового конструктора обычный инициализатор присваивает `7`. Конструкторы обычно не вызывают переопределяемые методы и не публикуют незавершённый `this`. Java 25 допускает ограниченный пролог, но не отменяет этот риск.
+
+### Ссылочное поле и владение ресурсом {#sec-j25-lecture-interfaces-records-ownership}
+
+Клиент может передать один отправитель нескольким объектам. `final`-поле фиксирует ссылку, но не запрещает другим участникам использовать тот же объект.
+
+Поэтому закрытие ресурса и срок его использования определяются отдельно. Поле Java само по себе не выражает исключительное владение из модели C++.
+
+### Конфликт методов по умолчанию {#sec-j25-lecture-interfaces-records-default-conflict}
+
+```java
+interface A { default String label() { return "A"; } }
+interface B { default String label() { return "B"; } }
+class Both implements A, B {
+    public String label() { return A.super.label() + B.super.label(); }
+}
+```
+
+Результат `AB`. Без собственного тела конфликт независимых `default`-методов отвергается компилятором. Метод класса имеет приоритет перед интерфейсным телом.
+
+### Устойчивый внешний код перечисления {#sec-j25-lecture-interfaces-records-enum-code}
+
+```java
+enum Priority {
+    LOW(1), HIGH(10);
+    private final int weight;
+    Priority(int weight) { this.weight = weight; }
+    int weight() { return weight; }
+}
+```
+
+`HIGH.weight()` возвращает `10`. `ordinal()` означает положение константы в объявлении и не подходит как устойчивый внешний код после изменения порядка.
+
+### Поиск с несколькими совпадениями {#sec-j25-lecture-interfaces-records-search-evolution}
+
+По номеру находилась одна книга. По названию находятся несколько экземпляров.
+`null` уже не различает отсутствие и неоднозначный выбор.
+
+```java
+sealed interface SearchResult permits Found, Missing, Ambiguous {}
+record Found(String title) implements SearchResult {}
+record Missing(String reason) implements SearchResult {}
+record Ambiguous(int count) implements SearchResult {}
+```
+
+Это форма семьи; проверенные конструкторы: @theory:sec-j25-theory-data-classes-result-evolution.
+`Found` содержит название, `Missing` — причину отсутствия, `Ambiguous` — число совпадений.
+
+### Проверка switch при расширении семьи {#sec-j25-lecture-interfaces-records-search-coverage .continuation}
+
+```java
+return switch (result) {
+    case Found found -> "Found: " + found.title();
+    case Missing missing -> "Missing: " + missing.reason();
+    case Ambiguous many -> "Matches: " + many.count();
+};
+```
+
+При добавлении `Ambiguous` прежние две ветви без `default` перестают
+компилироваться. Клиент должен решить, что означает новый результат.
+Для `Ambiguous(3)` здесь получится `Matches: 3`.
+
+Покрытие вариантов не доказывает ненулевость их полей и `result`.
+[@bib-ctx-objects-sealed-model]
