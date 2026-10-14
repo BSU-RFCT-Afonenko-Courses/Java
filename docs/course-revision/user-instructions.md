@@ -7,3 +7,6 @@ Use books selectively and honestly report pages actually read; use primary docum
 
 ## 2026-10-14 clarification
 The user confirmed there are no concrete new exporter or exercise patches yet: discussion with another chat will follow fixation of this stage’s source. Complete the adopted M00–U08 stage and preserve its checkpoint; do not invent or include deployment-driven changes. Questions about progress, ETA and check mechanisms do not cancel the authorized stage.
+
+## Final GitHub upload authorization — 2026-10-14
+The user explicitly requested: «В финале залей все изменения на github». After final acceptance, upload all accepted source and audit changes to the existing PR13 head branch. This overrides the earlier no-push instruction for this final upload only. No site deployment, merge or live grading change is authorized. Root confirmed PR13 is open in BSU-RFCT-Afonenko-Courses/Java, head codex/labs-1-3-prairielearn still at the original a0d1bdb baseline; use a normal fast-forward push and preserve any newly arriving remote changes.
