@@ -1,12 +1,21 @@
-# AutoCloseable и try с ресурсами {#sec-h-resources}
+---
+categories: [j25, j25-core, j25-resources]
+---
+
+# AutoCloseable и try с ресурсами {#sec-j25-api-resources}
 
 Java 25. Try с ресурсами устанавливает время автоматического вызова
 `close`. Сборка мусора не заменяет это действие
 [@bib-data-autocloseable-api; @bib-data-jls-resources].
 
-Объяснение владения и ошибок: @theory:sec-t-resources.
+Объяснение владения и ошибок: @theory:sec-j25-theory-resources.
 
-## Допустимые формы {#sec-h-resources-syntax}
+Ни GC, ни выход локальной переменной из области видимости не обещают
+своевременного `close`. Следующие фрагменты помещаются в метод с аргументом
+`Path path`; импорты: `java.nio.file.Path`, `java.nio.file.Files`,
+`java.nio.charset.StandardCharsets`, `java.io.IOException`.
+
+## Допустимые формы {#sec-j25-api-resources-syntax}
 
 ```java
 try (var reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
@@ -25,7 +34,8 @@ try (var reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 Объявленная в заголовке переменная не переприсваивается; область действия
 включает последующие инициализаторы и тело, но не последующий `catch`.
 Ранее объявленная `final` или фактически окончательная локальная
-переменная тоже допустима:
+переменная тоже допустима. Следующий фрагмент — тело метода
+`static void showExisting(Path path) throws IOException`:
 
 ```java
 var reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);
@@ -35,7 +45,11 @@ try (reader) {
 // ссылка видима, но ресурс уже закрыт
 ```
 
-## Порядок и исключения {#sec-h-resources-order}
+## Порядок и исключения {#sec-j25-api-resources-order}
+
+Это справочное продолжение основного опыта, а не список для заучивания.
+Наблюдаемые `primary`, `cause`, `suppressed` в полном `CauseCloseDemo`:
+@theory:sec-j25-theory-resources-suppressed.
 
 | Ситуация | Результат |
 |---|---|
@@ -52,7 +66,7 @@ try (reader) {
 `getSuppressed()` у основной; причина `getCause()` выражает другое
 отношение. Специальный `Throwable` может отключать подавление.
 
-## Владение и ленивые результаты {#sec-h-resources-ownership}
+## Владение и ленивые результаты {#sec-j25-api-resources-ownership}
 
 Метод, открывший ресурс для себя, обычно сам закрывает его. При передаче
 готового ресурса соглашение о закрытии должно быть явным: интерфейс
@@ -64,6 +78,12 @@ try (var lines = Files.lines(path, StandardCharsets.UTF_8)) {
     return lines.filter(s -> !s.isBlank()).toList();
 }
 ```
+
+Фрагмент — тело метода `static List<String> nonblank(Path path)
+throws IOException`; дополнительно нужен `java.util.List`. Вход
+`alpha`, blank, `beta` на отдельных строках даёт `[alpha, beta]`.
+Ошибка позднего обхода `Files.lines` может быть `UncheckedIOException`;
+объявление `throws IOException` покрывает проверяемое открытие.
 
 Готовый список можно использовать снаружи. Вернуть только ленивый
 конвейер из уже закрывающего его блока нельзя. Терминальная операция
@@ -77,4 +97,4 @@ try (var lines = Files.lines(path, StandardCharsets.UTF_8)) {
 конструкции определяется ошибкой закрытия по правилам таблицы.
 Типизированный результат ошибки данных можно сочетать с `IOException`
 в сигнатуре файлового метода; границы каждого вида отказа должны быть явными:
-@theory:sec-t-resources-results.
+@theory:sec-j25-theory-resources-results.

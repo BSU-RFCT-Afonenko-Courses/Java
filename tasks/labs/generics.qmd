@@ -1,34 +1,37 @@
 ---
+categories: [j25, j25-core, j25-generics]
 assessment:
   kind: lab
   theory-time: 30
 ---
 
-# Обобщённые контейнеры {#sec-lab-generics}
+# Обобщённые контейнеры {#sec-j25-lab-generics}
 
-Выразить типовой параметр и создать контейнер с безопасным интерфейсом операций.
+Выразить параметры типов, wildcard-роли и безопасный интерфейс контейнера.
 
-Теория: @theory:sec-t-type-parameters. Справочник: @handbook:sec-h-generic-classes. Вводное занятие: @practice:sec-p-generics.
+Основная подготовка: @theory:sec-j25-theory-type-parameters, затем @theory:sec-j25-theory-type-relations-copy. List минимум: @theory:sec-j25-theory-type-parameters-list-basics и @handbook:sec-j25-api-lists-basics. До контейнера достаточно @theory:sec-j25-theory-exceptions-early-checked и соседнего @practice:sec-j25-practice-generics-checked; предварительная сдача ЛР10 не требуется. API: @handbook:sec-j25-api-generic-classes. Введение: @practice:sec-j25-practice-generics.
 
-Перед задачей о контейнере изучите `throws`, `try/catch` и проверяемые исключения: @theory:sec-t-exceptions. Предварительная сдача работы о файлах не требуется.
+Самостоятельная работа: 180 минут; вводный разбор: 30 минут отдельно. Это ориентир чтения, реализации и проверки, не измеренный срок и не обещание завершить всё на занятии.
 
-Ориентир выбранного маршрута: 5 заданий, 180 минут самостоятельной работы и 30 минут вводного разбора. При необходимости работа продолжается вне занятия; альтернативы не суммируются.
+Two-type-container 20 + identity MyGen 20 + PECS 30 + максимум диапазона 40 + очередь либо стек 70 = 180. Новые 30 минут — гипотеза для проверки на учебной группе. Swap массива остаётся дополнительной карточкой банка.
 
-## Выбор заданий
+## Состав работы
 
-Задания, не входящие в перечисленные ниже пары, обязательны. Из каждой пары выполните одно задание:
+Все задания вне пары обязательны; из каждой пары выполните одно:
 
-- @tasks:exr-generic-queue **либо** @tasks:exr-generic-stack.
+- @tasks:exr-j25-generics-generic-queue **либо** @tasks:exr-j25-generics-generic-stack.
 
 ::: {.task-items stage="homework"}
-1. @exr-two-type-container
-1. @exr-generic-method
-1. @exr-swap-generic-array
-1. @exr-range-maximum
-1. [@exr-generic-queue]{requirement="optional"}
-1. [@exr-generic-stack]{requirement="optional"}
+1. @exr-j25-generics-two-type-container
+1. @exr-j25-generics-generic-method
+1. @exr-j25-generics-append-compatible-lists
+1. @exr-j25-generics-range-maximum
+1. [@exr-j25-generics-generic-queue]{requirement="optional"}
+1. [@exr-j25-generics-generic-stack]{requirement="optional"}
 :::
 
-## Результат работы
+## Предъявление и объяснение
 
-Представьте исходные Java-файлы и короткую демонстрацию обычных и существенных граничных случаев. Для файловых задач приложите использованные входные данные. Объясните выбранные типы, порядок операций и причины ожидаемых отказов. Java 25 без preview; отдельный большой отчёт и инфраструктура автоматической проверки не требуются.
+Покажите identity на String/Integer, разрешённые Integer→Number/Object и отдельный compile-fail Number→Integer, границы диапазона, FIFO либо LIFO и оба отказа контейнера с прежним состоянием. Для copy допустимы индексный и enhanced-for обходы; для GenericQueue — перемещение оставшихся элементов или кольцевое переиспользование мест. Ёмкость ограничивает одновременный состав, get освобождает put. Wildcard-сигнатура, переданный массив и проверяемые исключения обязательны; внутренние индексы и helpers свободны. На защите назовите одну разрешённую и одну запрещённую операцию через extends/super и объясните причину.
+
+Представьте исходные Java-файлы и короткую демонстрацию обычных и существенных граничных случаев; для файлов приложите входные данные. Java 25 без preview. Обязательная техника проверяется по исходнику, объяснение — в беседе с преподавателем. Отдельный большой отчёт не требуется.

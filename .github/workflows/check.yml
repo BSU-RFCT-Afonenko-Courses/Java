@@ -30,6 +30,9 @@ jobs:
         run: bash CI/render.sh
   projects:
     name: Явно подключённые проекты и полная выбранная поставка
+    permissions:
+      contents: read
+      packages: read
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -46,6 +49,12 @@ jobs:
         with:
           distribution: temurin
           java-version: '25'
+      - name: Доступ к опубликованным GHCR runtime
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Exact released Platform и проверяемые runtime pins
         run: |
           python3 - <<'PY'
@@ -79,11 +88,11 @@ jobs:
           from pathlib import Path
           expected = json.loads(Path('CI/toolchain.json').read_text())['platform']['javaImage']
           registry = json.loads((Path(os.environ['TASK_PLATFORM_DIR'])/'runtime-profiles.json').read_text())
-          if not registry['profiles'] or any(p['image'] != expected for p in registry['profiles'].values()):
+          if any(registry.get('profiles', {}).get(name, {}).get('image') != expected for name in ('java25-junit-v1', 'java25-mutation-v1')):
               raise SystemExit('Released runtime registry differs from recorded digest')
           PY
           docker pull "$TASK_PLATFORM_JAVA_IMAGE"
           python3 -m pip install --requirement "$TASK_PLATFORM_DIR/requirements.txt"
           echo "PL_PLATFORM_ROOT=$TASK_PLATFORM_DIR" >> "$GITHUB_ENV"
-      - name: Owner inventory, diagnostic ready corpus и authoritative delivery
+      - name: Owner inventory и полная выбранная поставка
         run: bash CI/check-projects.sh

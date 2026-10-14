@@ -1,12 +1,13 @@
 ---
+categories: [j25, j25-core, j25-generic-methods]
 pagetitle: Обобщённые методы
 ---
 
-# Обобщённые методы {#sec-h-generic-methods}
+# Обобщённые методы {#sec-j25-api-generic-methods}
 
 Обобщённый метод объявляет собственные параметры перед возвращаемым типом. Он может находиться в обычном или обобщённом классе и быть статическим либо методом экземпляра. Метод, лишь использующий параметр своего класса, не является обобщённым методом в этом точном смысле. [@bib-objects-schildt-generics]
 
-## Собственный параметр метода {#sec-h-generic-methods-method}
+## Собственный параметр метода {#sec-j25-api-generic-methods-method}
 
 ```java
 final class Values {
@@ -16,6 +17,8 @@ final class Values {
 }
 ```
 
+Внутри `main` класса с объявленным выше `Values`:
+
 ```java
 String word = Values.identity("Java");
 Number number = Values.<Number>identity(25);
@@ -23,9 +26,11 @@ Number number = Values.<Number>identity(25);
 
 Параметр объявляется перед возвращаемым типом; явный аргумент при вызове — перед именем метода. Параметры класса нельзя использовать в его статических полях и методах. Статический метод может объявить собственные параметры, как `identity` выше. Имена, совпадающие с параметрами класса, лучше не использовать: они обозначали бы другие параметры. [@bib-jls-generic-classes-methods]
 
-Для `Pair<A, B>` два параметра позволяют сохранить разные типы частей. В заголовке метода `static <A, B> Pair<B, A> reversed(Pair<A, B> pair)` перестановка аргументов результата выражает перестановку ролей. Это часть контракта; сама запись не выполняет обмен и не определяет отношение к `null`.
+Для полного `record Pair<A, B>(A first, B second) {}` два параметра позволяют сохранить разные типы частей. В заголовке метода `static <A, B> Pair<B, A> reversed(Pair<A, B> pair)` перестановка аргументов результата выражает перестановку ролей. Это часть контракта; сама запись не выполняет обмен и не определяет отношение к `null`.
 
-## Связи и границы {#sec-h-generic-methods-bounds}
+## Связи и границы {#sec-j25-api-generic-methods-bounds}
+
+Следующий метод помещается в класс `MaximumDemo` и использует полные имена `java.util.List`. Wildcard здесь применяется после объяснения @theory:sec-j25-theory-type-relations-copy:
 
 ```java
 static <T extends Comparable<? super T>> T max(
@@ -39,9 +44,11 @@ static <T extends Comparable<? super T>> T max(
 }
 ```
 
-Предполагаются ненулевые список и элементы; порядок задаёт `compareTo`. Пустой список явно отвергается. `Comparable<? super T>` допускает сравнение, объявленное для супертипа; `List<? extends T>` разрешает чтение элементов как `T`. Возвращаемый тип связан с элементами. Краткие формы wildcard: @sec-h-wildcards; причины такого ограничения: @theory:sec-t-type-relations.
+Предполагаются ненулевые список и элементы; порядок задаёт `compareTo`. Пустой список явно отвергается. `Comparable<? super T>` допускает сравнение, объявленное для супертипа; `List<? extends T>` разрешает чтение элементов как `T`. Возвращаемый тип связан с элементами. Краткие формы wildcard: @sec-j25-api-wildcards; причины такого ограничения: @theory:sec-j25-theory-type-relations.
 
-## Выведение аргумента {#sec-h-generic-methods-inference}
+## Выведение аргумента {#sec-j25-api-generic-methods-inference}
+
+Внутри `main` того же класса, с `Values` выше:
 
 ```java
 var ints = java.util.List.of(1, 4, 2);
@@ -50,4 +57,192 @@ String text = Values.identity("Java");
 Number value = Values.<Number>identity(3);
 ```
 
-Выведение учитывает аргументы, границы и целевой тип. Оно не проверяет длины коллекций или ненулевость. Несколько появлений `T` требуют согласованного типа, но он может быть общим супертипом выражений. Явный аргумент типа ограничивает вывод и иногда делает намерение яснее. Сравнение с ромбом и `var`: @theory:sec-t-type-parameters-checking.
+Выведение учитывает аргументы, границы и целевой тип. Оно не проверяет длины коллекций или ненулевость. Несколько появлений `T` требуют согласованного типа, но он может быть общим супертипом выражений. Явный аргумент типа ограничивает вывод и иногда делает намерение яснее. Сравнение с ромбом и `var`: @theory:sec-j25-theory-type-parameters-checking.
+
+## C++20: полный контекст и запуск {#sec-j25-api-generic-methods-cpp-setup}
+
+Файл `dot.cpp` ниже содержит headers, ограничения выражений, два варианта
+представления длины и один набор данных. `T{}` должен быть нейтральным
+элементом выбранного сложения; concept проверяет допустимость выражений,
+а не этот закон. Источник и приёмник в коротком переносе независимы.
+Объяснение: @theory:sec-j25-theory-type-parameters-templates.
+
+```cpp
+#include <array>
+#include <complex>
+#include <concepts>
+#include <cstddef>
+#include <iostream>
+#include <stdexcept>
+#include <vector>
+
+template<class T>
+concept DotElement = std::semiregular<T> && requires(const T a, const T b) {
+    T{};
+    { a + b } -> std::same_as<T>;
+    { a * b } -> std::same_as<T>;
+};
+
+template<DotElement T>
+T dot(const std::vector<T>& left, const std::vector<T>& right) {
+    if (left.size() != right.size()) {
+        throw std::invalid_argument("Different vector lengths");
+    }
+    T result{};
+    for (std::size_t i = 0; i < left.size(); ++i) {
+        result = result + left[i] * right[i];
+    }
+    return result;
+}
+
+template<DotElement T, std::size_t N>
+T dot(const std::array<T, N>& left, const std::array<T, N>& right) {
+    T result{};
+    for (std::size_t i = 0; i < N; ++i) {
+        result = result + left[i] * right[i];
+    }
+    return result;
+}
+
+int main() {
+    std::cout << dot(std::vector<double>{1, 2},
+                     std::vector<double>{3, 4}) << '\n';
+    using C = std::complex<double>;
+    std::cout << dot(std::vector<C>{{1, 1}, {2, 0}},
+                     std::vector<C>{{3, 0}, {4, -1}}) << '\n';
+    std::cout << dot(std::array<double, 2>{1, 2},
+                     std::array<double, 2>{3, 4}) << '\n';
+    std::cout << dot(std::vector<double>{},
+                     std::vector<double>{}) << '\n';
+    const std::vector<int> source{1, 2};
+    std::vector<double> target{0.5};
+    for (int value : source) {
+        target.push_back(value);
+    }
+    for (double value : target) std::cout << value << ' ';
+    std::cout << '\n';
+}
+```
+
+```bash
+g++ --version
+g++ -std=c++20 -Wall -Wextra -pedantic dot.cpp -o dot
+./dot
+```
+
+Вывод: `11`, `(11,1)`, `11`, `0`, затем `0.5 1 2 ` (каждое наблюдение
+на отдельной строке). Последний пробел создаёт цикл печати. Комплексная
+сумма вычисляется без сопряжения. Здесь использован GCC 16.2.1 в режиме
+C++20; версия инструмента и языковой режим — разные сведения.
+
+Для **отдельного** `dimensions_bad.cpp` сохраните headers и объявления,
+но замените всё тело `main` на следующий вызов:
+
+```cpp
+int main() {
+    auto result = dot(std::array<double, 2>{1, 2},
+                      std::array<double, 3>{3, 4, 5});
+    (void) result;
+}
+```
+
+`g++ -std=c++20 -fsyntax-only dimensions_bad.cpp` отвергает разные `N`.
+С `vector<double>` разные длины проходят компиляцию и вызывают
+`std::invalid_argument` при выполнении. С `vector<std::string>` применение
+этого `dot` отвергается по отсутствию умножения; для отдельного такого
+файла нужен ещё header `<string>`. Требования выражений и размерность —
+две самостоятельные проверки.
+[Requires C++](https://eel.is/c++draft/expr.prim.req),
+[параметры шаблона](https://eel.is/c++draft/temp.param).
+
+## Python: Protocol и отдельный checker {#sec-j25-api-generic-methods-python-checker}
+
+Первое введение структуры `HasScore` находится в
+@theory:sec-j25-theory-type-parameters-model-comparison. Здесь тот же способ
+описывает операции `dot`. Полный файл `protocol_dot.py`, Python 3.14:
+
+```python
+from typing import Protocol
+
+class Arithmetic[T](Protocol):
+    def zero(self) -> T: ...
+    def add(self, left: T, right: T) -> T: ...
+    def multiply(self, left: T, right: T) -> T: ...
+
+class FloatArithmetic:
+    def zero(self) -> float:
+        return 0.0
+    def add(self, left: float, right: float) -> float:
+        return left + right
+    def multiply(self, left: float, right: float) -> float:
+        return left * right
+
+class ComplexArithmetic:
+    def zero(self) -> complex:
+        return 0j
+    def add(self, left: complex, right: complex) -> complex:
+        return left + right
+    def multiply(self, left: complex, right: complex) -> complex:
+        return left * right
+
+def dot[T](left: list[T], right: list[T], arithmetic: Arithmetic[T]) -> T:
+    if len(left) != len(right):
+        raise ValueError("Different vector lengths")
+    result = arithmetic.zero()
+    for i in range(len(left)):
+        term = arithmetic.multiply(left[i], right[i])
+        result = arithmetic.add(result, term)
+    return result
+
+print(dot([1.0, 2.0], [3.0, 4.0], FloatArithmetic()))
+print(dot([1+1j, 2+0j], [3+0j, 4-1j], ComplexArithmetic()))
+print(dot([], [], FloatArithmetic()))
+```
+
+Ни один concrete-класс не наследует `Arithmetic`. Статический checker
+принимает нужные методы по структуре; обычный Python вызывает реальные
+методы переданного объекта. Предполагаются ненулевые допустимые элементы,
+операции не меняют вход и возвращают допустимые значения. Длины остаются
+runtime-условием. Вывод — `11.0`, `(11+1j)`, `0.0`.
+
+В рабочем каталоге с этим файлом создайте локальный `pyrightconfig.json`:
+
+```json
+{
+  "include": ["protocol_dot.py"],
+  "pythonVersion": "3.14",
+  "typeCheckingMode": "strict"
+}
+```
+
+```bash
+python3 --version
+pyright --version
+pyright --project pyrightconfig.json
+python3 protocol_dot.py
+```
+
+Опорный checker — Pyright 1.1.412. Проверка и исполнение — разные команды;
+без checker аннотации не становятся runtime-проверками. Положительный
+файл даёт ноль ошибок checker. Для отрицательного `protocol_bad.py`
+сохраните `Arithmetic`, `FloatArithmetic`, `dot`, затем добавьте:
+
+```python
+class BadArithmetic:
+    def zero(self) -> float:
+        return 0.0
+    def add(self, left: float, right: float) -> float:
+        return left + right
+    def multiply(self, left: float, right: float) -> str:
+        return "wrong"
+
+print(dot([1.0, 2.0], [3.0, 4.0], BadArithmetic()))
+```
+
+В отдельном checker-конфиге `include` должен указывать этот отрицательный
+файл. Checker отвергает `multiply` с результатом `str`; прямой запуск
+доходит до сложения `float + str` и завершается `TypeError`.
+Протокол проверяет сигнатуры, но реализацию с `zero()=1.0` он примет:
+математический контрпример `12.0` остаётся таким же, как в Java.
+[Спецификация Protocol](https://typing.python.org/en/latest/spec/protocol.html),
+[настройки Pyright](https://github.com/microsoft/pyright/blob/main/docs/configuration.md).

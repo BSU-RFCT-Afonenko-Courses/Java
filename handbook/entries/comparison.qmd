@@ -1,10 +1,14 @@
-# Равенство, Comparable и Comparator {#sec-h-comparison}
+---
+categories: [j25, j25-core, j25-comparison]
+---
+
+# Равенство, Comparable и Comparator {#sec-j25-api-comparison}
 
 Java 25, без preview. Развёрнутое объяснение и ошибки проектирования:
-@theory:sec-t-equality. Основание правил — `Object` и `Comparator` API
+@theory:sec-j25-theory-equality. Основание правил — `Object` и `Comparator` API
 [@bib-data-object-api; @bib-data-comparator-api].
 
-## Идентичность и равенство {#sec-h-comparison-equals}
+## Идентичность и равенство {#sec-j25-api-comparison-equals}
 
 | Форма | Назначение |
 |---|---|
@@ -20,6 +24,8 @@ Java 25, без preview. Развёрнутое объяснение и ошиб
 одинаковый хеш, совпадение хешей не доказывает равенства. При
 переопределении `equals` переопределяют согласованный `hashCode`.
 
+Фрагмент — `main` отдельного `EqualityApiDemo.java`.
+
 ```java
 String a = new String("Ada"), b = new String("Ada");
 System.out.println(a == b);                    // false
@@ -31,7 +37,7 @@ System.out.println(java.util.Objects.equals(a, b)); // true
 операции. Не считайте запись с компонентом-массивом автоматически
 равной другой записи по содержимому массива.
 
-## Порядок {#sec-h-comparison-order}
+## Порядок {#sec-j25-api-comparison-order}
 
 ```java
 interface Comparable<T> { int compareTo(T other); }
@@ -55,10 +61,21 @@ interface Comparator<T> { int compare(T first, T second); }
 | `order.thenComparing(other)` | Второе правило при нуле первого |
 | `Comparator.nullsFirst(order)` / `nullsLast` | Явная политика `null` |
 
+Клиент `OrderDemo.java` подключает `import grade.Student;` из
+@theory:sec-j25-theory-data-classes-record и `import java.util.Comparator;`.
+Student имеет `Student(String,String,int)`, `id()/name()/score()`; id/name
+нормализуются и проверяются, score0..100. В `main`:
+
 ```java
 Comparator<Student> order = Comparator.comparingInt(Student::score)
     .reversed().thenComparing(Student::id);
+System.out.println(order.compare(new Student("s10", "Ada", 90),
+    new Student("s2", "Lin", 90)) < 0); // true
 ```
+
+При равных баллах `s10` идёт раньше `s2` по естественному порядку строк.
+Смысл/сигнатура: @handbook:sec-j25-api-strings-compare-to. Запись через ссылки
+на методы применяется после @theory:sec-j25-theory-functions-method-reference.
 
 `List.sort` меняет список; `stream().sorted(order)` строит стадию нового
 конвейера. `TreeSet`/`TreeMap` используют ноль сравнения как совпадение
@@ -66,3 +83,13 @@ Comparator<Student> order = Comparator.comparingInt(Student::score)
 согласуют с `equals`. Сравнение целых вычитанием опасно переполнением;
 используют `Integer.compare`. Для `null` возможен
 `NullPointerException`, если сравнение его не поддерживает.
+
+
+Гибкая граница алгоритма сравнения — `<T extends Comparable<? super T>>`:
+операция получает T и может сравнивать его с суперклассом. Простая граница
+`<T extends Comparable<T>>` уже введена раньше. Для иерархии Person/Student
+вызов strict с двумя Student может вывести T=Person и вернуть Person;
+требуемый Student-результат и явное T=Student отвергаются. Flexible сохраняет
+Student-результат. Полные отдельные объявления/пять случаев:
+@theory:sec-j25-theory-type-relations-comparison-target. Эти Student принадлежат
+`course.examples.generics.ComparisonDemo`, отдельно от `grade.Student`.

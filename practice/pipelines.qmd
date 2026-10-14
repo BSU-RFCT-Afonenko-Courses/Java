@@ -1,4 +1,5 @@
 ---
+categories: [j25, j25-core, j25-pipelines]
 title: "Практика: Функциональная обработка"
 format:
   revealjs:
@@ -8,19 +9,22 @@ format:
     css: assets/lesson.css
 ---
 
-## Функциональная обработка {#sec-p-pipelines}
+## Функциональная обработка {#sec-j25-practice-pipelines}
 
-Введение в @tasks:sec-lab-pipelines. Передать поведение как значение, построить фильтрацию и сортировку, объяснить момент выполнения.
+Введение в @tasks:sec-j25-lab-pipelines. Передать поведение как значение, построить фильтрацию и сортировку, объяснить момент выполнения.
 
-Теория: @theory:sec-t-streams.
+Теория: @theory:sec-j25-theory-functions, @theory:sec-j25-theory-streams.
+
+Java-фрагменты — отдельные `main`; импорты `java.util.*`,
+`java.util.function.*`, `java.util.stream.*`. ЛР9 отдельно180; здесь вводные30.
 
 ::: {.notes}
 30 минут: 5 на модель результата, 12 на технические приёмы, 8 на границы конкретных заданий, 5 на переход к условиям. Полные алгоритмы выполняются самостоятельно.
 :::
 
-## Перед началом {#sec-p-pipelines-recap}
+## Перед началом {#sec-j25-practice-pipelines-recap}
 
-### Целевой тип лямбды {#sec-p-pipelines-s1}
+### Целевой тип лямбды {#sec-j25-practice-pipelines-s1}
 
 ```java
 Predicate<Integer> positive = n -> n > 0;
@@ -29,22 +33,28 @@ System.out.println(positive.test(-2)); // false
 
 Целевой интерфейс задаёт вход и результат. Короткая запись не отменяет сигнатуру метода.
 
-### Промежуточная и терминальная операции {#sec-p-pipelines-s2 .continuation}
+### Промежуточная и терминальная операции {#sec-j25-practice-pipelines-s2 .continuation}
 
 ```java
-var stream = Stream.of(1, 2, 3).filter(n -> n > 1);
-System.out.println(stream.count()); // 2
+var stream = Stream.of(1, 2, 3).map(n -> n * 2);
+System.out.println("built");
+stream.forEachOrdered(n -> System.out.println("take " + n));
+System.out.println("done"); // built, take 2, take 4, take 6, done
 ```
 
-Обработку запускает терминальная операция. После неё этот поток нельзя использовать для второго обхода.
+Каждая запись комментария — отдельная строка. `map` только вычисляет
+значение; `forEachOrdered` печатает результаты в порядке встречи, заданном
+источником. До терминальной операции напечатано только built, после неё — done.
+Этот опыт не обещает чередования вызовов mapper с печатью. Поток нельзя
+использовать повторно; `peek(...).count()` не даёт гарантированной трассы эффекта.
 
-### Источник и результат фильтрации {#sec-p-pipelines-s3 .continuation}
+### Источник и результат фильтрации {#sec-j25-practice-pipelines-s3 .continuation}
 
 `filter` отбирает элементы результирующего потока, а не удаляет их из исходного списка.
 
 Если условие требует изменить массив, новый список из потока сам по себе этого не делает. Сверьте ожидаемый вид результата.
 
-### Создание и вызов действия {#sec-p-pipelines-target-call}
+### Создание и вызов действия {#sec-j25-practice-pipelines-target-call}
 
 ```java
 Function<Integer, String> label = n -> "n=" + n;
@@ -52,9 +62,9 @@ System.out.println(label.apply(3)); // n=3
 ```
 **Инициализация переменной задаёт действие; apply выполняет его для аргумента.**
 Для собственной сигнатуры сначала объявляют абстрактный метод,
-затем проверяют совместимость лямбды. Формы: @handbook:sec-h-functions.
+затем проверяют совместимость лямбды. Формы: @handbook:sec-j25-api-functions.
 
-### Тип массива результата {#sec-p-pipelines-array-result}
+### Тип массива результата {#sec-j25-practice-pipelines-array-result}
 
 ```java
 Integer[] source = {1, 2, 3};
@@ -64,10 +74,11 @@ String[] result = Arrays.stream(source)
 System.out.println(Arrays.toString(result)); // [n=1, n=2, n=3]
 ```
 **Конструкторная ссылка задаёт тип нового массива.**
-В @tasks:exr-filter-string-array ожидается новый массив,
+Сигнатура `toArray(IntFunction<A[]>)`: @handbook:sec-j25-api-streams-operations.
+В @tasks:exr-j25-pipelines-filter-string-array ожидается новый массив,
 поэтому одного результата `toList()` недостаточно.
 
-### Устойчивая сортировка списка {#sec-p-pipelines-ordered-sort}
+### Устойчивая сортировка списка {#sec-j25-practice-pipelines-ordered-sort}
 
 ```java
 var words = List.of("bb", "a", "cc").stream()
@@ -75,34 +86,34 @@ var words = List.of("bb", "a", "cc").stream()
 System.out.println(words); // [a, bb, cc]
 ```
 **Для упорядоченного потока равные по компаратору элементы сохраняют взаимный порядок.**
-В @tasks:exr-order-points это требование относится к равноудалённым
+В @tasks:exr-j25-pipelines-order-points это требование относится к равноудалённым
 точкам; ключ расстояния выбирается по условию самостоятельно.
 
 
 
-## Где найти точное правило {#sec-p-pipelines-reference}
+## Где найти точное правило {#sec-j25-practice-pipelines-reference}
 
-### Функциональный интерфейс {#sec-p-pipelines-s4}
+### Функциональный интерфейс {#sec-j25-practice-pipelines-s4}
 
-@handbook:sec-h-functions: `Predicate`, `Function`, `Consumer`, `Supplier` и примитивные специализации.
+@handbook:sec-j25-api-functions: `Predicate`, `Function`, `Consumer`, `Supplier` и примитивные специализации.
 
 Выберите интерфейс по входу и результату, затем проверьте форму лямбды. Не добавляйте упаковку чисел без причины.
 
-### Поток и порядок {#sec-p-pipelines-s5 .continuation}
+### Поток и порядок {#sec-j25-practice-pipelines-s5 .continuation}
 
-@handbook:sec-h-streams и @handbook:sec-h-comparison: фильтрация, сортировка, сбор результата.
+@handbook:sec-j25-api-streams и @handbook:sec-j25-api-comparison: фильтрация, сортировка, сбор результата.
 
 Для равных ключей порядок может быть существенной частью условия. Компаратор должен сравнивать все нужные признаки.
 
-## Переходим к работе {#sec-p-pipelines-assignments}
+## Переходим к работе {#sec-j25-practice-pipelines-assignments}
 
-### Отбор и сортировка {#sec-p-pipelines-s6}
+### Отбор и сортировка {#sec-j25-practice-pipelines-s6}
 
-@tasks:exr-filter-string-array задаёт условие отбора; @tasks:exr-order-points — порядок точек.
+@tasks:exr-j25-pipelines-filter-string-array задаёт условие отбора; @tasks:exr-j25-pipelines-order-points — порядок точек.
 
 Проверьте отсутствие подходящих строк. Для точек `(1:10)` и `(2:0)` сначала выводится `(2:0)`: сравнивается расстояние до начала координат. Для равноудалённых точек сохраняется исходный порядок.
 
-### Границы результата отбора {#sec-p-pipelines-boundaries}
+### Границы результата отбора {#sec-j25-practice-pipelines-boundaries}
 
 Проверьте массив без подходящих строк и строку с длиной ровно
 пороговой: условие карточки задаёт строгое «больше».
@@ -110,43 +121,55 @@ System.out.println(words); // [a, bb, cc]
 
 Для точек сравните не только первую координату, но заданную удалённость.
 При ничьей сохраните исходный порядок; повторные точки не удаляются.
-Полная работа: @tasks:sec-lab-pipelines.
+Полная работа: @tasks:sec-j25-lab-pipelines.
 
 
 
-### Передача поведения {#sec-p-pipelines-s7 .continuation}
+### Передача поведения {#sec-j25-practice-pipelines-s7 .continuation}
 
-@tasks:exr-conditional-function требует выбрать функцию по условию.
+@tasks:exr-j25-pipelines-conditional-function требует выбрать функцию по условию.
 
 Из каждой пары в лабораторной выбирается один вариант: подсчёт слов либо символов; делимость либо дискриминант. Объясните, где функция создаётся, передаётся и вызывается.
 
-### Выбранная ветвь функции {#sec-p-pipelines-conditional-execution}
+### Выбранная ветвь функции {#sec-j25-practice-pipelines-conditional-execution}
 
-Для @tasks:exr-conditional-function сначала создаётся новая функция.
+Для @tasks:exr-j25-pipelines-conditional-function сначала создаётся новая функция.
 Участие предиката и двух функций в создании не означает вызова всех трёх.
 
 **При применении результата к аргументу вычисляется только выбранная ветвь.**
 В самостоятельной проверке пусть невыбранная функция бросает исключение:
 успешный результат покажет, что она не была вызвана. Устройство возвращаемого
-действия: @theory:sec-t-functions-returned.
+действия: @theory:sec-j25-theory-functions-returned.
 
-### Счётчик и форма входа {#sec-p-pipelines-count-model}
+### Источник кодовых единиц {#sec-j25-practice-pipelines-char-units}
 
-@tasks:exr-count-selected-words включает запрошенное слово с частотой 0,
-если его нет в тексте. @tasks:exr-count-characters считает `char`,
+```java
+var codes = "a a".chars().boxed().toList();
+System.out.println(codes); // [97, 32, 97]
+```
+
+**chars даёт int-значения UTF-16 единиц, boxed — Integer для общего Stream.**
+В ASCII пробел — отдельная единица32. Это не правило «один Unicode-знак —
+один char». Сигнатуры и граница: @handbook:sec-j25-api-streams-char-units.
+Способ накопления частот в задании выбирается самостоятельно.
+
+### Счётчик и форма входа {#sec-j25-practice-pipelines-count-model}
+
+@tasks:exr-j25-pipelines-count-selected-words включает запрошенное слово с частотой 0,
+если его нет в тексте. @tasks:exr-j25-pipelines-count-characters считает `char`,
 включая пробел, для заданного ASCII-примера.
 
 **Множество различных значений не является таблицей частот.**
-Группировка и сбор результатов: @theory:sec-t-streams-collect.
+Группировка и сбор результатов: @theory:sec-j25-theory-streams-collect.
 Выбирается одна задача из этой пары, а не обе.
 
 
 
-### Что предъявить {#sec-p-pipelines-result}
+### Что предъявить {#sec-j25-practice-pipelines-result}
 
-Исходные Java-файлы, короткую демонстрацию и объяснение существенной границы. Сначала покажите обычный результат, затем случай, отличающий правильную реализацию от правдоподобной ошибки.
+Исходные Java-файлы, короткую демонстрацию и объяснение выбранной ветви либо момента необходимого обхода. Это вопрос прежней защиты, не дополнительная задача. Сначала покажите обычный результат, затем случай, отличающий правильную реализацию от правдоподобной ошибки.
 
-Точный состав и альтернативы: @tasks:sec-lab-pipelines. Условия задач находятся в банке; эти слайды их не заменяют.
+Точный состав и альтернативы: @tasks:sec-j25-lab-pipelines. Условия задач находятся в банке; эти слайды их не заменяют.
 
 ## Источники {.unnumbered .scrollable}
 

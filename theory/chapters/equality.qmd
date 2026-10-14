@@ -1,4 +1,8 @@
-# Равенство объектов и порядок {#sec-t-equality}
+---
+categories: [j25, j25-core, j25-equality]
+---
+
+# Равенство объектов и порядок {#sec-j25-theory-equality}
 
 Программа с группами объектов должна уметь ответить на два разных вопроса:
 «представляют ли эти значения одно и то же?» и «какое из них должно идти
@@ -8,7 +12,20 @@
 коллекция использует именно ту связь, которую обещает соответствующая
 операция [@bib-data-epam-equality; @bib-data-eckel-collections].
 
-## Идентичность и равенство содержимого {#sec-t-equality-identity}
+Во всех Java-примерах с участниками используется уже введённый
+`grade.Student` из @theory:sec-j25-theory-data-classes-record: конструктор
+`Student(String id, String name, int score)`, чтение через `id()`, `name()`,
+`score()`. Конструктор применяет `strip()` к коду и имени, отвергает пустые
+поля, `;`, CR/LF и балл вне 0..100 через `IllegalArgumentException`;
+`null` даёт `NullPointerException`.
+Полное объявление остаётся в `grade/Student.java`; клиенты подключают
+`import grade.Student;`, а не объявляют другую запись с тем же именем.
+
+Операторы в коротких фрагментах выполняются внутри `main` отдельного
+`EqualityDemo.java`; классы ключей ниже — соседние объявления. Библиотечные
+имена записаны полностью. Каждый опыт запускается со своим исходным состоянием.
+
+## Идентичность и равенство содержимого {#sec-j25-theory-equality-identity}
 
 Для ссылочных значений `==` проверяет, указывают ли операнды на один объект,
 либо оба ли равны `null`. Содержание объекта при этом не сравнивается.
@@ -40,18 +57,25 @@ System.out.println(alias == first);       // true
 область, а не похожий вывод `toString`. Точные условия методов `Object`
 зафиксированы в API [@bib-data-object-api].
 
-## Равенство записи и уникальность кода {#sec-t-equality-domain}
+## Равенство записи и уникальность кода {#sec-j25-theory-equality-domain}
 
 Равенство выбирается для определённого типа значений. Правило уникальности
 каталога выбирается для группы записей. Эти решения могут использовать разные
 данные. Пусть запись хранит все сведения, нужные для отчёта:
 
 ```java
-record Student(String id, String name, int score) {}
 var before = new Student("s1", "Ada", 90);
 var after = new Student("s1", "Ada", 95);
 System.out.println(before.equals(after));        // false
 System.out.println(before.id().equals(after.id())); // true
+var versions = new java.util.HashSet<Student>();
+versions.add(before);
+versions.add(after);
+versions.add(new Student("s1", "Ada", 90));
+System.out.println(versions.size()); // 2
+var codes = new java.util.HashSet<String>();
+System.out.println(codes.add(before.id())); // true
+System.out.println(codes.add(after.id()));  // false
 ```
 
 Балл изменился: это два разных значения записи. Однако загрузчик нашего
@@ -80,7 +104,7 @@ System.out.println(before.id().equals(after.id())); // true
 разберут соглашения Java, которые позволяют коллекциям использовать ответы
 без знания устройства `Student`.
 
-## Соглашение equals {#sec-t-equality-contract}
+## Соглашение equals {#sec-j25-theory-equality-contract}
 
 Для ненулевых ссылок корректный `equals` рефлексивен, симметричен и
 транзитивен. Рефлексивность означает `x.equals(x)`. Симметрия требует одинакового
@@ -89,9 +113,11 @@ System.out.println(before.id().equals(after.id())); // true
 равна. Повторная проверка даёт прежний ответ, пока данные, участвующие в
 сравнении, не изменились. Сравнение с `null` возвращает `false`.
 
-Рассмотрим идентификатор участника. В качестве идентичности записи выберем
-код, а имя оставим изменяемой характеристикой. Два прочтения одного кода из
-разных файлов должны находить одну запись:
+Отделим идентификатор от полных сведений участника. `StudentId` хранит только
+ненулевую строку `value`; равенство этого небольшого типа определяется всей
+этой строкой. Правила нормализации каталога остаются у `grade.Student` и
+загрузчика. Два независимо созданных `StudentId("s17")` должны находить один
+ключ, хотя это разные объекты:
 
 ```java
 final class StudentId {
@@ -129,7 +155,7 @@ final class StudentId {
 наследование часто яснее попытки распространить одно равенство на всю
 иерархию. Это решение нашего типа, а не запрет наследования в языке.
 
-## Равенство и хеш {#sec-t-equality-hash}
+## Равенство и хеш {#sec-j25-theory-equality-hash}
 
 Если `a.equals(b)` истинно, `a.hashCode()` и `b.hashCode()` обязаны совпадать.
 Обратное неверно: разные объекты могут иметь одинаковый хеш. Значений `int`
@@ -147,20 +173,52 @@ final class StudentId {
 var first = new StudentId("s17");
 var second = new StudentId("s17");
 var ids = new java.util.HashSet<StudentId>();
+System.out.println(first == second);     // false
+System.out.println(first.equals(second)); // true
+System.out.println(first.hashCode() == second.hashCode()); // true
 System.out.println(ids.add(first));      // true
 System.out.println(ids.add(second));     // false
 System.out.println(ids.contains(second));// true
 System.out.println(ids.size());          // 1
+var counts = new java.util.HashMap<StudentId, Integer>();
+for (StudentId id : java.util.List.of(first, second, new StudentId("s18"))) {
+    counts.put(id, counts.getOrDefault(id, 0) + 1);
+}
+System.out.println(counts.get(new StudentId("s17"))); // 2
+System.out.println(counts.size());                    // 2
 ```
 
-При втором добавлении множество распознаёт уже представленный идентификатор.
-Это не обязательно тот же объект: проверяется выбранное классом равенство.
+В первом опыте с двумя `StudentId("s17")` множество `ids` при добавлении
+`second` распознаёт уже представленный идентификатор. `first` и `second` —
+разные объекты, но выбранное классом равенство считает их равными.
+
+У карты два ключа: два равных `s17` обновляют один счётчик до 2, а `s18`
+начинает другой с 1. Поиск новым равным ключом тоже находит число 2.
+Ни порядок `HashSet`, ни порядок `HashMap` в этом опыте не используется.
+
+Коллизия не мешает хранить разные значения. У строк `"Aa"` и `"BB"` одинаковый
+хеш 2112, но `equals` различает их:
+
+```java
+var aa = new StudentId("Aa");
+var bb = new StudentId("BB");
+System.out.println(aa.hashCode() == bb.hashCode()); // true
+System.out.println(aa.equals(bb));                  // false
+var collisions = new java.util.HashSet<StudentId>();
+collisions.add(aa);
+collisions.add(bb);
+System.out.println(collisions.size()); // 2
+```
+
+После выбора области по хешу коллекция проверяет равенство и сохраняет обе
+строки.
+
 Общая формула `Objects.hash(a, b)` удобна для нескольких полей, если те же поля
 участвуют в `equals`. Для единственного поля можно непосредственно вернуть
 его хеш, как сделано выше. Равенство не требует конкретной формулы и не
 разрешает сравнивать исключительно хеши.
 
-## Изменяемые ключи {#sec-t-equality-mutable}
+## Изменяемые ключи {#sec-j25-theory-equality-mutable}
 
 Поля, определяющие равенство и хеш ключа, не должны меняться, пока ключ
 находится в хеш-коллекции. Иначе таблица хранит запись согласно прежним данным,
@@ -168,6 +226,35 @@ System.out.println(ids.size());          // 1
 влияющем на `equals`, не определено её общим соглашением
 [@bib-data-map-api]. Поэтому нельзя учить определённому «исчезновению» записи
 как гарантированному результату любой реализации.
+
+Посмотрим на намеренно плохой ключ. `MutableKey` — отдельный диагностический
+тип, не вариант `StudentId` или `grade.Student`:
+
+```java
+final class MutableKey {
+    int code;
+    MutableKey(int code) { this.code = code; }
+    @Override public boolean equals(Object other) {
+        return other instanceof MutableKey key && code == key.code;
+    }
+    @Override public int hashCode() { return code; }
+}
+```
+
+```java
+var key = new MutableKey(1);
+var broken = new java.util.HashMap<MutableKey, String>();
+broken.put(key, "stored");
+System.out.println(broken.get(new MutableKey(1))); // stored
+key.code = 2; // нарушена предпосылка хранения ключа
+System.out.println(broken.get(key)); // наблюдение OpenJDK 25: null
+System.out.println(broken.size());   // наблюдение OpenJDK 25: 1
+```
+
+В этом запуске запись осталась в таблице, но поиск новым хешем не нашёл её.
+Это диагностика конкретного эксперимента: общий контракт не обещает именно
+`null` для всякого изменения поля, хеша и реализации. Изменение могло оставить
+хеш прежним, а совпадения расположения могут скрыть ошибку.
 
 Представим изменяемого участника с кодом и баллом. Если балл включить в
 равенство, исправление оценки изменит ключ. Дело не исправляет помещение
@@ -182,7 +269,7 @@ System.out.println(ids.size());          // 1
 обеспечивают конструктор, отсутствие изменяющих методов и выбранные типы
 компонентов.
 
-## Естественный порядок и порядок отчёта {#sec-t-equality-order}
+## Естественный порядок и порядок отчёта {#sec-j25-theory-equality-order}
 
 `Comparable<T>` задаёт порядок внутри типа методом `compareTo`. Отрицательный
 результат означает «раньше», ноль — эквивалентность по порядку, положительный —
@@ -192,23 +279,31 @@ System.out.println(ids.size());          // 1
 
 Для ведомости одного естественного порядка мало. Её можно сортировать по
 коду, по имени или по убыванию балла. `Comparator<T>` передаёт отдельное
-правило, не меняя сам класс [@bib-data-schildt-comparators]. Пусть после темы
-записей нам доступен тип:
+правило, не меняя сам класс [@bib-data-schildt-comparators]. Для уже известного
+Student реализуем compare методом объекта. Запись `new Comparator<>() { ... }`
+создаёт объект анонимного класса, реализующего интерфейс: тело содержит
+обычный переопределённый метод `compare`. Алгоритм сортировки вызывает этот
+метод, передавая пары участников:
 
 ```java
-record Student(String id, String name, int score) {}
-
-java.util.Comparator<Student> byScore =
-    java.util.Comparator.comparingInt(Student::score).reversed()
-        .thenComparing(Student::id);
+java.util.Comparator<Student> byScore = new java.util.Comparator<>() {
+    @Override public int compare(Student a, Student b) {
+        int scoreOrder = Integer.compare(b.score(), a.score());
+        return scoreOrder != 0 ? scoreOrder : a.id().compareTo(b.id());
+    }
+};
+var ordered = new java.util.ArrayList<>(java.util.List.of(
+    new Student("s2", "Lin", 70), new Student("s3", "Ann", 90),
+    new Student("s1", "Ada", 90)));
+ordered.sort(byScore);
+for (Student student : ordered) System.out.println(student.id());
 ```
 
-Здесь `Student::score` обозначает действие «получить `Student` и
-вызвать у него `score()`». Метод `comparingInt` использует это действие,
-чтобы извлекать целый ключ сравнения. Аналогично `Student::id` извлекает
-код для второй ступени. Это ссылки на методы, а не немедленные вызовы;
-подробные правила их целевого типа рассматриваются в
-@theory:sec-t-functions-method-reference.
+Объект реализует операцию `compare(a,b)`: сначала сравнивает баллы в обратном
+порядке, а при нуле — коды в прямом. Вывод `s1`, `s3`, `s2` показывает обе
+ступени. Сигнатуру строкового сравнения и его порядок см.
+@handbook:sec-j25-api-strings-compare-to. В главе о функциях тот же объект
+правила получит короткую запись через ссылки на методы.
 
 Участники с баллами 90, 70, 90 сначала распределяются по оценке, а две записи
 с 90 — по коду. Вторая ступень обеспечивает однозначный порядок отчёта при
@@ -222,7 +317,7 @@ java.util.Comparator<Student> byScore =
 0–100 переполнение не проявится, но общий компаратор не следует строить на
 случайной узости текущих данных.
 
-## Уникальность в упорядоченных множествах {#sec-t-equality-tree}
+## Уникальность в упорядоченных множествах {#sec-j25-theory-equality-tree}
 
 `TreeSet` и `TreeMap` используют сравнение по порядку для нахождения
 эквивалентного элемента или ключа. Если компаратор сравнивает только баллы,
@@ -235,7 +330,11 @@ java.util.Comparator<Student> byScore =
 var a = new Student("s1", "Ada", 90);
 var b = new Student("s2", "Lin", 90);
 var tree = new java.util.TreeSet<Student>(
-    java.util.Comparator.comparingInt(Student::score));
+    new java.util.Comparator<Student>() {
+        @Override public int compare(Student left, Student right) {
+            return Integer.compare(left.score(), right.score());
+        }
+    });
 tree.add(a);
 System.out.println(tree.add(b)); // false
 System.out.println(tree.size()); // 1
@@ -252,11 +351,11 @@ System.out.println(tree.size()); // 1
 При выборе структуры последовательно отвечают на три вопроса: какие сведения
 задают равенство, какие сведения задают порядок и останутся ли они стабильны
 во время хранения. Сигнатуры и краткие условия сведены в
-@handbook:sec-h-comparison. В @theory:sec-t-collections эти решения станут
+@handbook:sec-j25-api-comparison. В @theory:sec-j25-theory-collections эти решения станут
 наблюдаемыми операциями над списками, множествами и картами.
 
 
-## Равенство составных значений и отсутствие {#sec-t-equality-composite}
+## Равенство составных значений и отсутствие {#sec-j25-theory-equality-composite}
 
 Операцию сравнения нужно выбирать также для компонентов объекта. Если
 поле может быть `null`, выражение `field.equals(other.field)` не подходит

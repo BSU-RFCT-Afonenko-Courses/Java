@@ -1,4 +1,5 @@
 ---
+categories: [j25, j25-core, j25-collections]
 title: "Практика: Коллекции"
 format:
   revealjs:
@@ -8,37 +9,41 @@ format:
     css: assets/lesson.css
 ---
 
-## Коллекции {#sec-p-collections}
+## Коллекции {#sec-j25-practice-collections}
 
-Введение в @tasks:sec-lab-collections. Выбрать List/Set/Map/Deque по смыслу операции и использовать равенство, порядок и частотное отображение.
+Введение в @tasks:sec-j25-lab-collections. Выбрать List/Set/Map/Deque по смыслу операции и использовать равенство, порядок и частотное отображение.
 
-Теория: @theory:sec-t-collections.
+Теория: @theory:sec-j25-theory-collections.
 
 ::: {.notes}
-30 минут: 5 на модель результата, 12 на технические приёмы, 8 на границы конкретных заданий, 5 на переход к условиям. Полные алгоритмы выполняются самостоятельно.
+30 минут: 5 на равенство/ключ, 12 на соседние опыты структуры, 8 на границы множеств/выбранной альтернативы, 5 на переход к условиям. Лабораторная отдельно180 (35+45+40+60). Полные алгоритмы выполняются самостоятельно.
 :::
 
-## Перед началом {#sec-p-collections-recap}
+Все короткие Java-фрагменты — отдельные `main` в демонстрационных классах;
+для коротких имён `Deque/ArrayDeque/Set/HashSet/Map/HashMap` нужен
+`import java.util.*;`. Они показывают операцию, не полный алгоритм карточки.
 
-### Выбор коллекции по операции {#sec-p-collections-s1}
+## Перед началом {#sec-j25-practice-collections-recap}
+
+### Выбор коллекции по операции {#sec-j25-practice-collections-s1}
 
 `List` сохраняет последовательность, `Set` представляет множество, `Map` связывает ключ со значением, `Deque` поддерживает работу с концами последовательности.
 
 Сначала назовите нужную операцию; затем выбирайте конкретный класс.
 
-### Повторы и модель результата {#sec-p-collections-s2 .continuation}
+### Повторы и модель результата {#sec-j25-practice-collections-s2 .continuation}
 
 Для последовательности `["a", "b", "a"]` множество содержит два различных слова, а таблица частот — пары `a → 2`, `b → 1`.
 
 Удаление повторений и подсчёт повторений дают разные результаты.
 
-### Равенство и порядок {#sec-p-collections-s3 .continuation}
+### Равенство и порядок {#sec-j25-practice-collections-s3 .continuation}
 
 Хеш-коллекции используют `equals` и `hashCode`. Упорядоченное множество сравнивает элементы по своему порядку.
 
-Изменение признака ключа после помещения в коллекцию может разрушить ожидания поиска: @theory:sec-t-equality.
+Изменение признака ключа после помещения в коллекцию может разрушить ожидания поиска: @theory:sec-j25-theory-equality.
 
-### Операции одного конца {#sec-p-collections-deque-methods}
+### Операции одного конца {#sec-j25-practice-collections-deque-methods}
 
 ```java
 Deque<String> work = new ArrayDeque<>();
@@ -48,10 +53,10 @@ System.out.println(work.pop()); // second
 System.out.println(work.peek()); // first
 ```
 **push/pop работают с одним концом: последним помещён — первым извлечён.**
-Перед `pop` учитывайте пустоту. Само разделение числа на цифры остаётся
-частью @tasks:exr-digit-stack.
+Перед `pop` учитывайте пустоту. Этот стек нужен выбранной скобочной альтернативе; он не навязывается
+полиному. @tasks:exr-j25-collections-digit-stack — дополнительная тренировка.
 
-### Самостоятельное множество результата {#sec-p-collections-set-copy}
+### Самостоятельное множество результата {#sec-j25-practice-collections-set-copy}
 
 ```java
 Set<Integer> original = new HashSet<>(Set.of(1, 2));
@@ -61,10 +66,10 @@ System.out.println(original.size()); // 2
 System.out.println(result.size());   // 3
 ```
 **Копия состава позволяет получать результат без изменения входа.**
-Условия @tasks:exr-set-union-intersection требуют отдельные методы.
-Операции `addAll` и `retainAll`: @handbook:sec-h-sets-maps-bulk.
+Условия @tasks:exr-j25-collections-set-union-intersection требуют отдельные методы.
+Операции `addAll` и `retainAll`: @handbook:sec-j25-api-sets-maps-bulk.
 
-### Обновление значения по ключу {#sec-p-collections-map-update}
+### Обновление значения по ключу {#sec-j25-practice-collections-map-update}
 
 ```java
 Map<String, Integer> values = new HashMap<>();
@@ -73,44 +78,72 @@ System.out.println(values.put("s1", 95)); // 90
 System.out.println(values.size());       // 1
 ```
 **put заменяет значение, а не считает появления ключа.**
-Для @tasks:exr-word-frequency нужен переход от прежнего счётчика
-к следующему; форма `merge`: @handbook:sec-h-sets-maps.
+Для частоты собственных равных ключей нужен переход от прежнего счётчика
+к следующему: @handbook:sec-j25-api-sets-maps-map.
+@tasks:exr-j25-collections-word-frequency — дополнительная тренировка.
 
 
 
-## Где найти точное правило {#sec-p-collections-reference}
+## Где найти точное правило {#sec-j25-practice-collections-reference}
 
-### Последовательность и стек {#sec-p-collections-s4}
+### Последовательность и стек {#sec-j25-practice-collections-s4}
 
-@handbook:sec-h-lists-operations: операции списка.
-@handbook:sec-h-sets-maps-queue: операции двусторонней очереди и стека.
+@handbook:sec-j25-api-lists-basics: операции списка.
+@handbook:sec-j25-api-sets-maps-queue: операции двусторонней очереди и стека.
 
-Для @tasks:exr-digit-stack нужны помещения и извлечения с согласованного конца. Названия методов должны отражать выбранный порядок.
+Для выбранных скобок помещения и извлечения с одного конца сохраняют вложенность; полином адресует коэффициенты по степени.
 
-### Множество и отображение {#sec-p-collections-s5 .continuation}
+### Множество и отображение {#sec-j25-practice-collections-s5 .continuation}
 
-@handbook:sec-h-sets-maps, @handbook:sec-h-comparison: различие отсутствующего ключа, значения и порядка.
+@handbook:sec-j25-api-sets-maps, @handbook:sec-j25-api-comparison: различие отсутствующего ключа, значения и порядка.
 
 Для частот полезна операция изменения значения по ключу; для объединения множеств — операция добавления элементов.
 
-## Переходим к работе {#sec-p-collections-assignments}
+## Переходим к работе {#sec-j25-practice-collections-assignments}
 
-### Множества и частоты {#sec-p-collections-s6}
+### Множества и частоты {#sec-j25-practice-collections-s6}
 
-@tasks:exr-set-union-intersection: проверьте непересекающиеся и одинаковые множества.
+@tasks:exr-j25-collections-set-union-intersection: проверьте непересекающиеся и одинаковые множества.
 
-@tasks:exr-word-frequency учитывает регистр: `Java` и `java` — разные ключи. Для текста `Java java code Code code` частота `code` равна двум, а у остальных слов — одному.
+@tasks:exr-j25-collections-object-hash (35): два независимых равных ключа
+должны дать один элемент множества и частоту2 в карте.
+@tasks:exr-j25-collections-views-snapshots (45): сначала меняется состав,
+затем состояние общего элемента. Полные опыты выполняются самостоятельно.
 
-### Регистр ключа и контроль частот {#sec-p-collections-case-policy}
+### Коллизия и равенство — разные проверки {#sec-j25-practice-collections-case-policy}
 
-Для текста `Java java code Code code` ожидаются четыре ключа:
-`Java → 1`, `java → 1`, `code → 2`, `Code → 1`.
+Соседний опыт, `main` в `CollisionDemo.java`:
 
-**Приведение всех слов к нижнему регистру изменит условие этой задачи.**
-Сумма частот равна пяти, числу исходных слов. Этот контроль обнаруживает
-потерю повторов, но не заменяет проверку частоты каждого ключа.
+```java
+String a = new String("Aa"), b = new String("BB");
+System.out.println(a.hashCode() == b.hashCode()); // true
+System.out.println(a.equals(b));                 // false
+System.out.println(java.util.Set.of(a, b).size()); // 2
+```
 
-### Границы операций над множествами {#sec-p-collections-set-borders}
+**Совпадение хеша не объединяет неравные значения.**
+Для своего класса выберите стабильные сведения равенства и согласованный
+хеш. Равенство grade.Student по всем полям и уникальность id различаются:
+@theory:sec-j25-theory-equality-domain.
+
+### Представление и прежний состав {#sec-j25-practice-collections-view-preparation}
+
+`ViewDemo.java/main`, соседний строковый пример:
+
+```java
+var source = new java.util.ArrayList<>(java.util.List.of("Ann"));
+var view = java.util.Collections.unmodifiableList(source);
+var snapshot = java.util.List.copyOf(source);
+source.add("Bob");
+System.out.println(view);     // [Ann, Bob]
+System.out.println(snapshot); // [Ann]
+```
+
+**Видимый состав view следует основе, снимок сохраняет прежний.**
+С общей изменяемой Book нужен отдельный прогноз её поля:
+@theory:sec-j25-theory-collections-snapshots. Новая книга этим кодом не создаётся.
+
+### Границы операций над множествами {#sec-j25-practice-collections-set-borders}
 
 Проверьте пустое и непустое множество, два одинаковых множества
 и два непересекающихся. Сравнивайте состав через равенство множеств,
@@ -122,29 +155,29 @@ System.out.println(values.size());       // 1
 
 
 
-### Две альтернативы {#sec-p-collections-s7 .continuation}
+### Две альтернативы {#sec-j25-practice-collections-s7 .continuation}
 
-Выберите @tasks:exr-balanced-brackets либо @tasks:exr-polynomial-map-addition.
+Выберите @tasks:exr-j25-collections-balanced-brackets либо @tasks:exr-j25-collections-polynomial-map-addition.
 
-Для скобок важен порядок закрытия, для полинома — совпадение степеней. Нужные коллекции различаются, хотя обе задачи объединяют повторяющиеся элементы.
+Для скобок важен порядок вложения: стек хранит ещё не закрытые скобки. Для полинома совпадение степеней определяет ключ карты, по которому складываются коэффициенты.
 
-### Граница выбранной альтернативы {#sec-p-collections-alternative-border}
+### Граница выбранной альтернативы {#sec-j25-practice-collections-alternative-border}
 
-Для @tasks:exr-balanced-brackets строки `([)]` и `([])` имеют одинаковое
+Для @tasks:exr-j25-collections-balanced-brackets строки `([)]` и `([])` имеют одинаковое
 количество открывающих и закрывающих скобок, но различный результат.
 Проверка одного количества не учитывает порядок вложения.
 
-Для @tasks:exr-polynomial-map-addition одинаковая степень означает
+Для @tasks:exr-j25-collections-polynomial-map-addition одинаковая степень означает
 общий ключ; складываются коэффициенты, а не номера степеней.
 Вариант нулевого коэффициента поясните согласно условию.
 
 
 
-### Что предъявить {#sec-p-collections-result}
+### Что предъявить {#sec-j25-practice-collections-result}
 
-Исходные Java-файлы, короткую демонстрацию и объяснение существенной границы. Сначала покажите обычный результат, затем случай, отличающий правильную реализацию от правдоподобной ошибки.
+Исходные Java-файлы, короткую демонстрацию и объяснение выбранного решения. Для ЛР8 отдельно прогнозируйте состав четырёх списков и поле общего элемента; реализация глубокой копии не требуется. Сначала покажите обычный результат, затем случай, отличающий правильную реализацию от правдоподобной ошибки.
 
-Точный состав и альтернативы: @tasks:sec-lab-collections. Условия задач находятся в банке; эти слайды их не заменяют.
+Точный состав и альтернативы: @tasks:sec-j25-lab-collections. Условия задач находятся в банке; эти слайды их не заменяют.
 
 ## Источники {.unnumbered .scrollable}
 

@@ -13,13 +13,8 @@ quarto run tasks/_extensions/Afonenko-Course-Tools/course-core/entrypoints/proje
 python3 "$PL_PLATFORM_ROOT/tools/check-course.py" inventory \
   --manifest "$TASK_CHECK_OUTPUT/declared-checks.json" --scope declared \
   --output "$TASK_CHECK_OUTPUT/inventory.json"
-# These receipts cover the opted-in ready subset; incomplete declarations remain visible.
-for TASK_BACKEND in host container; do
-  python3 "$PL_PLATFORM_ROOT/tools/check-course.py" verify \
-    --manifest "$TASK_CHECK_OUTPUT/declared-checks.json" --snapshot "$TASK_COURSE_ROOT" \
-    --scope declared --ready-only --backend "$TASK_BACKEND" \
-    --output "$TASK_CHECK_OUTPUT/ready-${TASK_BACKEND}.json"
-done
+# Все подключённые проекты первых трёх лабораторных входят в выбранную поставку.
+# Inventory показывает полноту объявлений; исполняем каждую выбранную задачу ниже.
 python3 "$PL_PLATFORM_ROOT/tools/build-course.py" --source "$TASK_COURSE_ROOT" \
   --book tasks --instance pilot --output "$TASK_CHECK_OUTPUT/native"
 # Selected delivery is verified in full: no ready-only or scenario subset.

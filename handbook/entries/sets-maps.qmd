@@ -1,11 +1,15 @@
-# Set, Map, Queue и Deque {#sec-h-sets-maps}
+---
+categories: [j25, j25-core, j25-sets-maps]
+---
+
+# Set, Map, Queue и Deque {#sec-j25-api-sets-maps}
 
 Java 25. Объяснение выбора структуры и равенства:
-@theory:sec-t-collections, @theory:sec-t-equality.
+@theory:sec-j25-theory-collections, @theory:sec-j25-theory-equality.
 Карты входят в Collections Framework, но не наследуют `Collection`
 [@bib-data-set-api; @bib-data-map-api].
 
-## Множества {#sec-h-sets-maps-set}
+## Множества {#sec-j25-api-sets-maps-set}
 
 | Операция Set | Назначение |
 |---|---|
@@ -21,12 +25,18 @@ Java 25. Объяснение выбора структуры и равенст�
 хеш-операций предполагает хорошее распределение хешей
 [@bib-data-hashset-api].
 
+`HashSet`/`LinkedHashSet` допускают один `null`. Естественный порядок
+`TreeSet` его не принимает; отдельный comparator может задать политику `null`.
+`HashMap`/`LinkedHashMap` допускают `null`-ключ и значения; `TreeMap` с
+естественным порядком не принимает `null`-ключ. У `LinkedHashSet` повторный
+`add` не переносит элемент в конец; явные sequenced-операции — другое действие.
+
 `Set.of` запрещает изменения и `null`, отвергает повторы через
 `IllegalArgumentException`. `Set.copyOf` не отвергает все повторы
 входной коллекции: для равных повторных элементов сохраняется один
 произвольно выбранный представитель. Порядок этих фабрик не обещан.
 
-## Групповые операции множеств {#sec-h-sets-maps-bulk}
+## Групповые операции множеств {#sec-j25-api-sets-maps-bulk}
 
 Операции унаследованы от `Collection`. Для множества они изменяют состав
 объекта-получателя, а не возвращают новое множество
@@ -49,7 +59,7 @@ Java 25. Объяснение выбора структуры и равенст�
 результата сначала создают изменяемую копию; копирование состава не копирует
 сами объекты элементов. Аргумент `c` не должен быть `null`.
 
-## Карты {#sec-h-sets-maps-map}
+## Карты {#sec-j25-api-sets-maps-map}
 
 | Сигнатура Map | Значение |
 |---|---|
@@ -58,6 +68,8 @@ Java 25. Объяснение выбора структуры и равенст�
 | `boolean containsKey(Object key)` | Проверить наличие ключа |
 | `V getOrDefault(Object key, V fallback)` | Запасное только при отсутствии отображения |
 | `V remove(Object key)` | Удалить отображение и вернуть прежнее значение |
+| `V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> function)` | Добавить ненулевое значение либо объединить с прежним; вернуть новое значение, `null` при удалении |
+| `V computeIfAbsent(K key, Function<? super K, ? extends V> function)` | Вычислить для отсутствующего/`null`-отображения |
 | `Set<K> keySet()` | Представление ключей |
 | `Collection<V> values()` | Представление значений, повторы допустимы |
 | `Set<Map.Entry<K,V>> entrySet()` | Представление пар |
@@ -67,6 +79,9 @@ Java 25. Объяснение выбора структуры и равенст�
 Изменяемые представления отражают и изменяют основу, но не поддерживают
 вставку новых соответствий через простой `add`.
 
+`BiFunction` и `Function` находятся в `java.util.function`. Следующий код —
+`main` отдельного `MapDemo.java`, библиотечные имена полные.
+
 ```java
 var counts = new java.util.HashMap<String, Integer>();
 counts.merge("java", 1, Integer::sum);
@@ -74,6 +89,8 @@ counts.merge("java", 1, Integer::sum);
 System.out.println(counts.get("java")); // 2
 ```
 
+Точная выбранная сигнатура `merge`:
+[Map.merge](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html#merge(K,V,java.util.function.BiFunction)).
 `merge(key, nonNullValue, function)` записывает значение при отсутствии
 или прежнем `null`, иначе объединяет старое и новое. `null` результата
 функции удаляет отображение. `computeIfAbsent` вычисляет значение для
@@ -86,7 +103,7 @@ System.out.println(counts.get("java")); // 2
 запрещают изменения и `null`. Фабрика `Map.of` отвергает повторные ключи;
 порядок обхода не обещан.
 
-## Очереди {#sec-h-sets-maps-queue}
+## Очереди {#sec-j25-api-sets-maps-queue}
 
 | Действие Queue | Исключение при пустоте/недоступности | Специальный результат |
 |---|---|---|
@@ -101,6 +118,22 @@ System.out.println(counts.get("java")); // 2
 `addFirst/addLast`, `offerFirst/offerLast`, `removeFirst/removeLast`,
 `pollFirst/pollLast`, `getFirst/getLast`, `peekFirst/peekLast`
 [@bib-data-deque-api].
+
+В `main` отдельного `QueueDemo.java`:
+
+| Точная форма Deque | Поведение |
+|---|---|
+| `void addFirst(E e)` / `void addLast(E e)` | Добавить с указанного конца; отказ вместимости — исключение |
+| `boolean offerFirst(E e)` / `boolean offerLast(E e)` | `false` при ограничении вместимости |
+| `E removeFirst()` / `E removeLast()` | Извлечь; пустота — исключение |
+| `E pollFirst()` / `E pollLast()` | Извлечь; пустота — `null` |
+| `E getFirst()` / `E getLast()` | Прочитать; пустота — исключение |
+| `E peekFirst()` / `E peekLast()` | Прочитать; пустота — `null` |
+| `void push(E e)` / `E pop()` | `addFirst` / `removeFirst` для LIFO |
+
+[Deque API](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Deque.html)
+различает отказ вместимости и недопустимость элемента: `offer` не превращает
+запрещённый `null` в обычный `false`.
 
 ```java
 java.util.Deque<String> queue = new java.util.ArrayDeque<>();

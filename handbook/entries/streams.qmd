@@ -1,11 +1,15 @@
-# Stream и Collectors {#sec-h-streams}
+---
+categories: [j25, j25-core, j25-streams]
+---
+
+# Stream и Collectors {#sec-j25-api-streams}
 
 Java 25. `Stream<T>` — одноразовый конвейер элементов; он не является
 хранилищем с индексным доступом [@bib-data-stream-api].
 
-Объяснение вычисления: @theory:sec-t-streams.
+Объяснение вычисления: @theory:sec-j25-theory-streams.
 
-## Источники и операции {#sec-h-streams-operations}
+## Источники и операции {#sec-j25-api-streams-operations}
 
 Источники: `collection.stream()`, `Arrays.stream(array)`,
 `Stream.of(values...)`, `Stream.empty()`, `Stream.iterate(seed, next)`,
@@ -29,6 +33,12 @@ Java 25. `Stream<T>` — одноразовый конвейер элемент�
 | `Stream<T> limit(long maxSize)` / `Stream<T> skip(long n)` | Ограничить / пропустить; параметр неотрицателен |
 | `Stream<T> peek(Consumer<? super T> action)` | Наблюдение проходящих элементов |
 
+`IntFunction` — `java.util.function`. Для ordered потока `sorted` устойчив:
+при нуле сравнения взаимный порядок сохраняется; unordered поток такого
+обещания не имеет. `toArray(String[]::new)` задаёт runtime String[].
+Фабрика может вызываться для промежуточных массивов, поэтому её число вызовов
+не является протоколом приложения.
+
 Промежуточные действия ленивы. Сортировка и другие операции с состоянием
 могут требовать накопления. Отрицательное значение у `limit/skip`
 даёт `IllegalArgumentException`. Естественная сортировка требует
@@ -37,6 +47,8 @@ Java 25. `Stream<T>` — одноразовый конвейер элемент�
 | Терминальная сигнатура | Результат |
 |---|---|
 | `List<T> toList()` | Список с запрещёнными изменениями через его методы |
+| `Object[] toArray()` | Новый массив элементов |
+| `<A> A[] toArray(IntFunction<A[]> generator)` | Массив runtime-типа, заданного фабрикой; несовместимый элемент → `ArrayStoreException` |
 | `long count()` | `long` |
 | `Optional<T> findFirst()` / `Optional<T> findAny()` | `Optional<T>` |
 | `Optional<T> min(Comparator<? super T> comparator)` / `Optional<T> max(Comparator<? super T> comparator)` | `Optional<T>` |
@@ -52,11 +64,14 @@ Java 25. `Stream<T>` — одноразовый конвейер элемент�
 При выборе `null` через `findFirst/findAny/min/max` результат может
 дать `NullPointerException`: `Optional` не представляет присутствующий `null`.
 
-## Сборка {#sec-h-streams-collectors}
+## Сборка {#sec-j25-api-streams-collectors}
+
+Самодостаточный соседний пример `StreamApiDemo.java`, `main`:
 
 ```java
-var names = students.stream().filter(s -> s.score() >= 80)
-    .map(Student::name).sorted().toList();
+String[] labels = java.util.stream.Stream.of(1, 2)
+    .map(n -> "n=" + n).toArray(String[]::new);
+System.out.println(java.util.Arrays.toString(labels)); // [n=1, n=2]
 ```
 
 | Коллектор | Назначение и условие |
@@ -105,7 +120,7 @@ static <T> Collector<T, ?, Long> counting();
 `Collection` и `Map` находятся в `java.util`, `Supplier` —
 в `java.util.function`.
 
-## Требования к функциям {#sec-h-streams-behavior}
+## Требования к функциям {#sec-j25-api-streams-behavior}
 
 Действия не вмешиваются в источник и обычно не зависят от меняющегося
 внешнего состояния. Операция `reduce` требует ассоциативного объединения
@@ -115,3 +130,21 @@ static <T> Collector<T, ?, Long> counting();
 `peek` и другие эффекты, не влияющие на ответ, могут быть устранены
 оптимизацией; не используйте их для обязательной работы. Терминальная
 операция не закрывает файловый ресурс автоматически.
+
+
+## Кодовые единицы строки как источник {#sec-j25-api-streams-char-units}
+
+`IntStream chars()` у `String` возвращает поток: каждое значение — беззнаково
+расширенная до int кодовая единица UTF-16. `Stream<Integer> boxed()` у `IntStream` даёт обобщённый поток, если нужна обобщённая операция. В `CharUnitsDemo.java/main`:
+
+```java
+var units = "a a".chars().boxed().toList();
+System.out.println(units); // [97, 32, 97]
+```
+
+Для этого ASCII-входа одному знаку соответствует одна единица, пробел имеет
+значение32 и сохраняется. Произвольный Unicode-знак может занимать две char;
+`chars()` не обещает поток кодовых точек. Для них существует отдельный
+`codePoints()`. Частоты можно собирать по выбранной форме ключа, но переход
+к `Character` требует явного преобразования. Основание:
+[String.chars](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#chars()).

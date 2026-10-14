@@ -1,0 +1,22 @@
+# M02 — native preparation source provenance overlay
+
+Status: **DONE / FROZEN — technical source-provenance overlay.** Requested `gpt-6.1-sol / medium`; effective `not_reported`. Accepted `input_revision`: **ab82a90744320c3b9ffbaa4de0555d01c290ccde**. The observed launch HEAD is `9f28162c77cccbb2d651a569bce5ed88bd4d67df`; the candidate comparison below preceded source acceptance and is retained as history.
+
+## Candidate proof — historical preapproval record
+
+Read-only comparison of the frozen candidate `tasks/bank/arrays.qmd` proves exact whole-file relocation: before `311a8f7627c4d29bdd5e1e9d5d9398b99f5a13c89b30bab95651129145f86b9e`, candidate after `777763b2ec4f86768954098ba106af6fbc2038edb111b66f536ff35017da3d0d`. One named reading-only preparation sentence leaves the exercise condition, and its two exact reading QRCs appear immediately before it in a paragraph associated by one new self-exercise QRC. All other bytes—including required input/output, examples, algorithm freedom, IDs/attributes, points and routes—are identical. This established candidate provenance before the independent U06/root acceptance recorded in Accepted lineage and freeze below.
+
+`100-source-candidate-lineage.json` independently rehashes the exact accepted100 M02 paths:99 unchanged, only arrays bank whole-file hash changed. `arrays-location-overlay.json` maps before/after line ranges; this file has zero literal fences and zero native Pandoc CodeBlocks, including indented blocks. All44 inline Code nodes are identical. These AST nodes are independently compared from the author's frozen native raw AST, matched to exact before/after sources; no new Pandoc/Java/gradeapp/HTML run is claimed. There is no runnable context or expected outcome relocation to re-execute.
+
+All original2412 final evidence files and154 fix1 files rehash unchanged, with their seals/indexes and old M02 packet/report protected. Accepted249 unique contexts /251 authentic case records /491 processes carry exact immutable execution provenance. Rehashing is an integrity check, not a new test. The whole-file overlay does not rewrite their old source snapshots or associations.
+
+Focused candidate comparison passed **114/114** checks. Commands and proof live in `/tmp/java-course-revision-checks/M02/native-prep-source-overlay`. The U06 author native selected-work export/one-page HTML/check evidence is read-only input, explicitly not a repeated independent suite or final backend acceptance. Its initial citation-counter comparator failure remains author evidence; this overlay does not normalize away literal Code/CodeBlock content.
+
+The new self-reference adds exactly one QRC consumer; M03/M05 own catalogue/link/export reconciliation. This overlay does not edit their packets. No source/Git/journal/old packets/evidence/prototype/assets/global/agent/chat changes or broad runs. Own writes are only this new packet, new report and evidence. At this preapproval stage, final lineage/seal awaited root approval and independent U06 review; `input_revision` was unset. Those steps subsequently completed as recorded in Accepted lineage and freeze below.
+
+
+## Accepted lineage and freeze
+
+Root accepted revision `ab82a90744320c3b9ffbaa4de0555d01c290ccde` after independent U06 native preparation review **Approved0/0/0**. Full review was read; its exact SHA is recorded in `accepted-source-lineage.json`. Current HEAD and all100 accepted source hashes were independently reconciled against the candidate proof;99 unchanged and the one arrays after-hash exactly frozen/approved. `accepted-source-sha256.json` is the new whole-source overlay; old M02 source manifests remain immutable historical inputs. Candidate `input_revision:null` files remain preapproval history, not final lineage.
+
+Final protection rehash confirmed2412+154 prior evidence files and old packet/report unchanged. All249contexts/251cases/491processes remain exact carry. No compilation, runtime, native export, HTML render, gradeapp or broad suite was repeated; metadata/integrity reads are not new tests. The final seal freezes only new overlay evidence/packet/report. Accepted array line map has no runnable-context relocation;44 inline documentary Code nodes and zero native CodeBlocks remain exact. The one new self-QRC consumer is handed to M03/M05. This closes technical source provenance only, not downstream M04/M05 delivery/whole-course acceptance. No writes after freeze without a returned root window.
