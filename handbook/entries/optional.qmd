@@ -1,13 +1,17 @@
-# Optional {#sec-h-optional}
+---
+categories: [j25, j25-core, j25-optional]
+---
+
+# Optional {#sec-j25-api-optional}
 
 `Optional<T>` представляет наличие одного ненулевого значения либо его
 отсутствие. Основное назначение — возвращаемый результат, где пустота
 нормальна. Сам объект `Optional` не должен быть `null`
 [@bib-data-optional-api].
 
-Объяснение: @theory:sec-t-streams.
+Объяснение: @theory:sec-j25-theory-streams.
 
-## Создание и получение {#sec-h-optional-basic}
+## Создание и получение {#sec-j25-api-optional-basic}
 
 Указаны точные выбранные сигнатуры. `Predicate`, `Function`, `Supplier`,
 `Consumer` относятся к `java.util.function`, `Stream` — к
@@ -28,19 +32,37 @@
 | `T orElse(T other)` | Значение или уже вычисленный аргумент |
 | `T orElseGet(Supplier<? extends T> supplier)` | Значение или отложенное вычисление |
 
+Операторы — `main` отдельного `OptionalDemo.java`, имена полные.
+
 ```java
 var name = java.util.Optional.of("Ada");
 System.out.println(name.orElse("нет участника")); // Ada
 System.out.println(java.util.Optional.empty().orElse("нет")); // нет
 ```
 
+В отдельном `OptionalFallbackDemo.java` метод
+`static String fallback() { System.out.println("fallback"); return "none"; }`
+делает вызов видимым. В `main`:
+
+```java
+var present = java.util.Optional.of("Ada");
+System.out.println(present.orElse(fallback()));    // fallback, Ada
+System.out.println(present.orElseGet(OptionalFallbackDemo::fallback)); // Ada
+System.out.println(java.util.Optional.<String>empty()
+    .orElseGet(OptionalFallbackDemo::fallback)); // fallback, none
+```
+
+Каждое слово комментария здесь печатается на отдельной строке. Уже вычисляемый
+аргумент первого вызова создаёт эффект даже при наличии. Поставщик во втором
+не вызван; в третьем нужен и выполняется. Правило:
+[Optional.orElseGet](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html#orElseGet(java.util.function.Supplier)).
 `orElse(expensive())` вычисляет `expensive` до вызова, даже при наличии.
 `orElseGet(() -> expensive())` вычисляет его только при отсутствии.
 Поставщик нельзя подменять самим вычисленным результатом. Проверка
 `isPresent` и вызов `get` допустимы, но цепочка преобразований часто
 яснее показывает обе ветви.
 
-## Преобразование и действие {#sec-h-optional-transform}
+## Преобразование и действие {#sec-j25-api-optional-transform}
 
 | Метод | Поведение |
 |---|---|
@@ -52,17 +74,21 @@ System.out.println(java.util.Optional.empty().orElse("нет")); // нет
 | `void ifPresentOrElse(Consumer<? super T> action, Runnable emptyAction)` | Выбрать действие наличия или пустоты |
 | `Stream<T> stream()` | Поток из нуля или одного элемента |
 
+Короткий полный вход без зависимости от предметной записи:
+
 ```java
-String shown = students.stream().findFirst()
-    .map(Student::name).orElse("нет участников");
+var names = java.util.List.of("Ada", "Lin");
+String shown = names.stream().findFirst()
+    .map(String::toUpperCase).orElse("нет участников");
+System.out.println(shown); // ADA
 ```
 
 На пустом входе имя не извлекается. `Optional` не заменяет обработку
 ошибки чтения: отсутствие результата поиска и неудачный ввод-вывод имеют
 разный смысл. `Optional.empty()` не хранит причину отказа проверки
 данных; вариант результата с диагностикой рассмотрен в
-@theory:sec-t-exceptions-typed-result, выбор исхода — в
-@theory:sec-t-streams-outcomes. Для примитивов существуют `OptionalInt`, `OptionalLong`,
+@theory:sec-j25-theory-exceptions-typed-result, выбор исхода — в
+@theory:sec-j25-theory-streams-outcomes. Для примитивов существуют `OptionalInt`, `OptionalLong`,
 `OptionalDouble` с `getAsInt/getAsLong/getAsDouble`; их API не полностью
 совпадает с обобщённым `Optional`. Среднее пустого числового потока
 отсутствует, сумма пустого потока может иметь нейтральный ноль.

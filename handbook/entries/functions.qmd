@@ -1,10 +1,14 @@
-# Функциональные интерфейсы и лямбда-выражения {#sec-h-functions}
+---
+categories: [j25, j25-core, j25-functions]
+---
 
-Java 25. Полное объяснение передачи действий: @theory:sec-t-functions.
+# Функциональные интерфейсы и лямбда-выражения {#sec-j25-api-functions}
+
+Java 25. Полное объяснение передачи действий: @theory:sec-j25-theory-functions.
 Основания — JLS §15.27 и пакет `java.util.function`
 [@bib-data-jls-lambdas; @bib-data-function-api].
 
-## Формы интерфейсов {#sec-h-functions-interfaces}
+## Формы интерфейсов {#sec-j25-api-functions-interfaces}
 
 | Тип | Основной абстрактный метод |
 |---|---|
@@ -26,7 +30,11 @@ Java 25. Полное объяснение передачи действий: @t
 учитываются специальными правилами функциональности. Аннотация
 `@FunctionalInterface` проверяет свойство, а не создаёт его.
 
-## Запись лямбды {#sec-h-functions-syntax}
+Во фрагментах `FunctionApiDemo.java` используют `import java.util.function.*;`.
+Операторы — внутри `main`; метод `atLeast` — static член отдельного клиента.
+Повторяющиеся имена в примерах означают отдельные опыты.
+
+## Запись лямбды {#sec-j25-api-functions-syntax}
 
 ```java
 Predicate<String> nonempty = s -> !s.isEmpty();
@@ -47,7 +55,7 @@ Function<String, Integer> length = (String s) -> {
 `this` имеет смысл окружающего контекста. Идентичность объекта лямбды
 не является обещанием создания нового экземпляра при каждом вычислении.
 
-## Ссылки на методы {#sec-h-functions-references}
+## Ссылки на методы {#sec-j25-api-functions-references}
 
 | Форма | Пример и смысл |
 |---|---|
@@ -61,7 +69,7 @@ Function<String, Integer> length = (String s) -> {
 должно допускаться сигнатурой абстрактного метода: `Function.apply`
 не разрешает непосредственный `IOException` без обработки.
 
-## Композиция {#sec-h-functions-compose}
+## Композиция {#sec-j25-api-functions-compose}
 
 `Predicate.and/or` используют короткое замыкание; `negate` отрицает
 результат. `Function.andThen(after)` сначала выполняет текущую функцию,
@@ -79,7 +87,13 @@ System.out.println(length.andThen(n -> n * 2).apply("Java")); // 8
 эффектов или безопасность совместного выполнения.
 
 
-## Возвращаемое действие {#sec-h-functions-returned}
+Прогноз короткого замыкания можно проверить без реализации лабораторного
+ternaryOperator: при `Predicate<Integer> positive = n -> n > 0;` вызов
+`positive.and(n -> { System.out.println("second"); return true; }).test(-1)`
+даёт `false`, не печатая `second`. Правило второго вызова зависит от ответа
+первого. Создание композиции само по себе условия не проверяет.
+
+## Возвращаемое действие {#sec-j25-api-functions-returned}
 
 ```java
 static java.util.function.IntPredicate atLeast(int threshold) {
@@ -90,4 +104,4 @@ static java.util.function.IntPredicate atLeast(int threshold) {
 `atLeast(5)` возвращает действие; `atLeast(5).test(4)` вызывает его и даёт
 `false`. Захватываемый параметр не переприсваивается. Захват ссылки на
 изменяемый объект сохраняет доступ к его последующему состоянию, а не
-снимок полей. Развивающийся пример: @theory:sec-t-functions-returned.
+снимок полей. Развивающийся пример: @theory:sec-j25-theory-functions-returned.

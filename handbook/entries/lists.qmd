@@ -1,16 +1,21 @@
-# List и ArrayList {#sec-h-lists}
+---
+categories: [j25, j25-core, j25-lists]
+---
+
+# List и ArrayList {#sec-j25-api-lists}
 
 `List<E>` — последовательность с индексами, повторяющимися элементами и
 порядком просмотра. В Java 25 наследует `SequencedCollection<E>`
 [@bib-data-list-api; @bib-data-arraylist-api].
 
-Разбор выбора реализации: @theory:sec-t-collections.
+Разбор выбора реализации: @theory:sec-j25-theory-collections.
 
-## Основные операции {#sec-h-lists-operations}
+## Основные операции {#sec-j25-api-lists-basics}
 
 | Сигнатура | Результат / изменение |
 |---|---|
 | `int size()` | Количество элементов |
+| `boolean isEmpty()` | `true`, если размер равен 0 |
 | `E get(int index)` | Элемент в позиции |
 | `E set(int index, E value)` | Заменить, вернуть прежний элемент |
 | `boolean add(E value)` | Добавить в конец |
@@ -29,6 +34,15 @@
 Мутирующая операция может быть неподдерживаемой и дать
 `UnsupportedOperationException` при допустимом по типам вызове.
 
+Основной mutable выбор — `new ArrayList<E>()`; `List.of(...)` даёт список
+с запрещёнными изменениями. `ArrayList` допускает `null`; фабрики `of/copyOf`
+его отвергают. Ни тип `List<E>`, ни допустимый индекс не обещают поддержку
+`add/set/remove`. Простые значения `get/add/set/size/isEmpty` собраны именно
+здесь; wildcard-глава использует лишь местный минимум.
+
+Фрагмент — `main` отдельного `ListDemo.java`; импорты не нужны, библиотечные
+имена полные.
+
 ```java
 var values = new java.util.ArrayList<>(java.util.List.of(10, 20, 10));
 values.remove(1);                    // удалён элемент 20 по индексу
@@ -36,7 +50,7 @@ values.remove(Integer.valueOf(10)); // удалено первое значен�
 System.out.println(values);         // [10]
 ```
 
-## Конструирование и свойства {#sec-h-lists-factories}
+## Конструирование и свойства {#sec-j25-api-lists-factories}
 
 | Выражение | Состав и изменение |
 |---|---|
@@ -64,3 +78,12 @@ System.out.println(values);         // [10]
 и поддержки удаления; нарушение порядка вызовов — `IllegalStateException`.
 Fail-fast обнаружение неправильных изменений выполняется по возможности,
 не служит синхронизацией.
+
+
+Для отдельного итератора: `Iterator<E> iterator()` у списка;
+`boolean hasNext()`, `E next()`, `void remove()` у `java.util.Iterator<E>`.
+`next()` при исчерпании — `NoSuchElementException`; `remove()` до первого
+`next` или повторно без нового `next` — `IllegalStateException`, при запрете
+операции — `UnsupportedOperationException`. Эти отказы относятся к разным
+условиям. Адресное основание:
+[Iterator API](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Iterator.html).
