@@ -2,15 +2,31 @@
 
 Пакеты устанавливаются целиком штатным `quarto add`; `providers.json` закрепляет точные исходные commit и области установки, а `installed-packages.json` — полный состав, SHA256, размеры и Git modes. Реализация установленных `_extensions` вручную не меняется.
 
-| Пакеты | Фактический опубликованный выпуск | Точный исходный commit |
+| Пакеты | Установленная редакция | Точный исходный commit |
 | --- | --- | --- |
-| Core / Presentation / Navigation | Core v6.0.0 | 9db360beec417b3798693026768262be2f7d3b18 |
+| Core / Presentation / Navigation | Core v6.0.0 с локальной поправкой | 3d6015880b7327b11b6abc10af913d71c1b01236 |
 | Download | v3.0.0 | 6fb3945020cd74fda40cc4d333389864e06609b5 |
 | PrairieLearn exporter | v6.0.0 | d2831a6e0a2411ea9743bf950475f9e5819f49a9 |
 | Course Site | v5.0.0 | 215309b5c41669e56a857a1bc3e4f7f2ce782c5f |
 | Reference Catalog | v3.0.0 | 559583805a514ae8a244b6ea4cb5124867064024 |
 
-Core, Presentation и QRC устанавливаются в корне и пяти учебных частях. Course Site находится в корне; Download и exporter — в tasks; Navigation — в lectures, practice и tasks. Полные пакеты обновляются существующим интерфейсом providers:
+Для Core исходной базой служит commit
+`9db360beec417b3798693026768262be2f7d3b18` выпуска Core v6.0.0.
+В пилоте поверх него применяется
+[локальная поправка необязательной оценки времени](tools/provider-patches/core-optional-time/README.md).
+Она воспроизводит указанный в таблице commit и Git tree
+`1bd2b3d51044c5582caf90f3ed03eaae7a541541` всего исходного репозитория.
+База, SHA256 поправки, commit и tree записаны в
+[манифесте восстановления](tools/provider-patches/core-optional-time/manifest.json).
+Это локальная адаптация для пилота, а не новый опубликованный выпуск.
+Исходники Presentation и Navigation в ней не изменены.
+
+Core, Presentation и QRC устанавливаются в корне и пяти учебных частях.
+Course Site находится в корне; Download и exporter — в tasks;
+Navigation — в lectures, practice и tasks. Для провайдера `core`
+сначала восстановите локальный commit по инструкции поправки:
+получение SHA только с удалённого сервера не заменяет этот шаг.
+Полные пакеты обновляются существующим интерфейсом providers:
 
 ```sh
 python3 tools/sync-providers.py --providers-root /absolute/provider/repositories
