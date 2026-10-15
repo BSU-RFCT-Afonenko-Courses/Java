@@ -85,11 +85,12 @@ System.out.println(order.compare(new Student("s10", "Ada", 90),
 `NullPointerException`, если сравнение его не поддерживает.
 
 
-Гибкая граница алгоритма сравнения — `<T extends Comparable<? super T>>`:
-операция получает T и может сравнивать его с суперклассом. Простая граница
-`<T extends Comparable<T>>` уже введена раньше. Для иерархии Person/Student
-вызов strict с двумя Student может вывести T=Person и вернуть Person;
-требуемый Student-результат и явное T=Student отвергаются. Flexible сохраняет
-Student-результат. Полные отдельные объявления/пять случаев:
-@theory:sec-t-type-relations-comparison-target. Эти Student принадлежат
-`course.examples.generics.ComparisonDemo`, отдельно от `grade.Student`.
+## Граница обобщённого алгоритма сравнения {#sec-h-comparison-bound}
+
+Граница `<T extends Comparable<T>>` требует сравнения с тем же `T`.
+Гибкая форма `<T extends Comparable<? super T>>` допускает также сравнение
+с супертипом. Например, наследник может использовать унаследованный
+`compareTo` и сохранять собственный тип в результате общего алгоритма.
+Сигнатуры, допустимые вызовы и полный запускаемый пример:
+@sec-h-generic-methods-inference. Причина выбора границы разобрана
+в @theory:sec-t-type-relations-comparison-target.

@@ -1,131 +1,144 @@
 ---
-categories: [j25, j25-core, j25-erasure]
+categories: [java, generics, erasure]
 pagetitle: Стирание типов
 ---
 
-# Стирание типов {#sec-j25-api-erasure}
+# Стирание типов {#sec-h-erasure}
 
-При стирании параметризованный тип превращается в тип без аргументов, а параметр типа — в стирание его первой границы. Неограниченный параметр имеет границу `Object`. [@bib-jls-type-erasure]
+Стирание убирает аргументы параметризованного типа, а параметр типа
+заменяет стиранием его первой границы. Без явной границы используется
+`Object`. Обобщённый исходник проверяется до этого преобразования.
+[@bib-jls-type-erasure]
 
-## Типы и представление методов {#sec-j25-api-erasure-mapping}
+## Соответствие типов {#sec-h-erasure-mapping}
 
 | Исходный тип | Стирание |
 |---|---|
 | `List<String>` | `List` |
-| `T`, объявленный как `<T>` | `Object` |
-| `T`, объявленный как `<T extends Number>` | `Number` |
-| `T[]`, объявленный как `<T>` | `Object[]` |
+| `T` в `<T>` | `Object` |
+| `T` в `<T extends Number>` | `Number` |
+| `T` в `<T extends Number & Comparable<T>>` | `Number` |
+| `T[]` в `<T>` | `Object[]` |
 
-Для класса `Box<T>` из @sec-j25-api-generic-classes метод `T get()` имеет дескриптор `()Ljava/lang/Object;`. Атрибут `Signature` может сохранять обобщённую форму `()TT;`. Дескриптор нужен JVM для представления метода; `Signature` описывает дополнительные сведения об объявлении. [@bib-jvms-method-descriptors-signatures]
+У `Box<T>` из @sec-h-generic-classes метод `T get()` имеет JVM-дескриптор
+`()Ljava/lang/Object;`. Атрибут `Signature` описывает обобщённую форму
+`()TT;`. Дескриптор задаёт представление метода для JVM, `Signature`
+хранит дополнительные сведения об объявлении. Это не отдельный аргумент
+`T` каждого экземпляра: `Box<String>` и `Box<Integer>` имеют один класс
+времени выполнения. [@bib-jvms-method-descriptors-signatures]
 
-Внутри `main` класса пакета `course.examples.generics`, с полным `Box` из @sec-j25-api-generic-classes:
+## Ограничения и замены {#sec-h-erasure-limits}
 
-```java
-Box<String> cell = new Box<>("Java");
-String name = cell.get();
-```
-
-При чтении в этом примере компилятор вставляет приведение результата к `String`. Его можно увидеть как инструкцию `checkcast` в выводе `javap`; команды приведены в @sec-j25-api-java-tools. Существование `Signature` не означает, что каждый объект `Box` хранит доступный при выполнении аргумент `T`.
-
-## Ограничения {#sec-j25-api-erasure-limits}
-
-| Запись | Причина ограничения и замена |
+| Недопустимая запись | Существенное условие и возможная замена |
 |---|---|
-| `new T()` | Параметр не задаёт создаваемый класс и его конструктор; передать готовый объект или фабрику |
-| `new T[n]` | Нельзя непосредственно создать массив с компонентом-параметром; использовать `List<T>` или переданный массив |
-| `new List<String>[n]` | Компонент массива не является reifiable-типом; для этой задачи подходит `List<List<String>>` |
-| `Box<String>.class` | Литерал класса не принимает аргументы типа; доступно `Box.class` |
-| `f(List<String>)` и `f(List<Integer>)` | Одинаковое стирание параметров мешает такой перегрузке; выбрать разные имена методов |
+| `new T()` | Параметр не задаёт создаваемый класс и доступный конструктор; передать готовое значение или способ создания |
+| `new T[n]` | Компонент-параметр недоступен массивной проверке при выполнении; принять готовый массив или использовать `List<T>` |
+| `new List<String>[n]` | Компонент не является reifiable-типом; часто подходит `List<List<String>>` |
+| `T.class`, `Box<String>.class` | Литерал класса не восстанавливает аргумент типа; для коробки доступен `Box.class` |
+| `f(List<String>)` и `f(List<Integer>)` в одном классе | Одинаковое стирание параметров не допускает такие перегрузки; дать методам разные имена |
 
-*Reifiable* — тип, сведения о котором полностью доступны при выполнении; к нему относятся, например, `String`, `List<?>` и массивы таких типов. Правила создания объектов, массивов, литералов класса и перегрузки применяются независимо. [@bib-jls-reifiable-types-restrictions]
+*Reifiable* называют тип, сведения о котором полностью доступны при
+выполнении. Примеры: `String`, `List<?>`, `String[]`. Поэтому
+`new List<?>[n]` допустим, но не обещает строковых элементов внутри списков.
+Объявление переменной `List<String>[]` само по себе допустимо; запрет
+непосредственного создания такого массива — отдельное правило.
+[@bib-jls-reifiable-types-restrictions]
 
-## Проверка `instanceof` {#sec-j25-api-erasure-instanceof}
+Переданный массив сохраняет фактический тип компонента и проверяет запись.
+Поэтому `Number[] values = new Integer[2]` не позволяет затем сохранить
+`Double`. Это отличается от стирания параметра контейнера:
+@sec-h-generic-classes-array.
 
-Внутри `main`, с тем же полным `Box`, для переменной типа `Object` нельзя проверить неизвестный аргумент `String`:
+## Проверка instanceof {#sec-h-erasure-instanceof}
+
+Для произвольного `Object` можно проверить класс коробки, но не её
+неизвестный аргумент типа:
 
 ```java
 Object value = new Box<>("Java");
-boolean isBox = value instanceof Box<?>; // допустимо
-// boolean isText = value instanceof Box<String>; // ошибка
+boolean isBox = value instanceof Box<?>; // true
+// boolean isText = value instanceof Box<String>; // ошибка компиляции
 ```
 
-Однако в Java 25 допустима проверка более конкретной реализации, если аргумент типа уже согласован статическим типом выражения:
+Начиная с Java 16 допустимы также некоторые проверки параметризованных
+типов, согласованные с уже известным статическим типом. С импортами
+`java.util.List` и `java.util.ArrayList`:
 
 ```java
 List<Integer> values = new ArrayList<Integer>();
-boolean arrayList = values instanceof ArrayList<Integer>;
+boolean arrayList = values instanceof ArrayList<Integer>; // true
 ```
 
-Второй фрагмент выполняется в отдельном `main` и требует импортов `java.util.List` и `java.util.ArrayList`. Проверка устанавливает класс реализации, а не исследует тип каждого элемента списка. Общий запрет любого параметризованного типа после `instanceof` был бы неточным. [@bib-jls-instanceof]
+Здесь проверяется класс реализации. Тип элемента `Integer` уже согласован
+исходным типом `List<Integer>`; содержимое списка не обследуется.
+Общий запрет всех параметризованных типов после `instanceof` неверен.
+[@bib-jls-instanceof]
 
-## Raw type и unchecked {#sec-j25-api-erasure-unchecked}
+## Raw type и unchecked {#sec-h-erasure-unchecked}
 
-Внутри метода с импортами `List` и `ArrayList`:
+Raw type — использование обобщённого класса или интерфейса без аргументов
+типа. Он ослабляет проверку связей между значениями:
 
 ```java
 List<String> words = new ArrayList<>();
 List raw = words;
-raw.add(25);                  // unchecked-предупреждение
-String word = words.get(0);   // ClassCastException
+raw.add(25);                // unchecked-предупреждение
+String word = words.get(0); // ClassCastException
 ```
 
-Raw type `List` позволяет выполнить запись без обычной проверки аргумента типа. `List<?>` сохраняет проверку и такую запись запрещает. Предупреждение отмечает утрату гарантии; исключение возникает позднее, при приведении прочитанного значения. [@bib-jls-raw-types-heap-pollution]
+Запись выполняется через ссылку, которая не сохраняет обещание `String`.
+Сбой возникает позднее: при чтении компилятор добавляет приведение
+полученного `Integer` к `String`. `List<?>` такого добавления не разрешает.
+Unchecked-приведение из `Object` к `List<String>` также не проверяет тип
+каждого элемента. [@bib-jls-raw-types-heap-pollution]
 
-Unchecked-приведение, например из `Object` в `List<String>`, также не проверяет все элементы. Добавление `@SuppressWarnings("unchecked")` скрывает сообщение, но не выполняет проверку и не исправляет контракт. В проверяемых решениях следует устранить причину предупреждения.
+`@SuppressWarnings("unchecked")` только скрывает диагностику.
+При работе со старым API основание безопасного использования должно быть
+доказано отдельно. Для просмотра предупреждений используется
+`javac -Xlint:unchecked`; новый код обычно может сохранить связь типов
+без raw-ссылок.
 
+## Клиентское приведение и мостовой метод в javap {#sec-h-erasure-javap}
 
-## Клиентский cast и getter bridge в javap {#sec-j25-api-erasure-javap}
+Скачайте [комплект исходников](../examples/generics-examples.zip) и перейдите
+в распакованный каталог `generics/java/erasure`. В нём пять файлов:
 
-Сохраните полный `Box.java` из @sec-j25-api-generic-classes и следующий
-файл `course/examples/generics/BoxClient.java`:
+| Файл | Назначение |
+|---|---|
+| [Box.java](../examples/generics/java/erasure/Box.java) | `Box<T>` с методом `T get()` |
+| [BoxClient.java](../examples/generics/java/erasure/BoxClient.java) | Чтение `Box<String>` как строки |
+| [Source.java](../examples/generics/java/erasure/Source.java) | Интерфейс `Source<T>` |
+| [TextSource.java](../examples/generics/java/erasure/TextSource.java) | Реализация `String get()` |
+| [SourceClient.java](../examples/generics/java/erasure/SourceClient.java) | Чтение через `Source<String>` |
 
-```java
-package course.examples.generics;
-
-public class BoxClient {
-    public static void main(String[] args) {
-        Box<String> box = new Box<>("Java");
-        String text = box.get();
-        System.out.println(text.length()); // 4
-    }
-}
-```
-
-Все исходники лежат под `src`, пакет начинается с `course/examples/generics`.
-Второй опыт использует полные `Source.java`, `TextSource.java`,
-`SourceClient.java` из @theory:sec-t-type-relations-bridge.
-Из рабочего каталога, с `javac/java/javap` одного JDK25:
+Из этого каталога, с JDK 25 без preview:
 
 ```bash
-javac --release 25 -Xlint:unchecked -d out src/course/examples/generics/Box.java src/course/examples/generics/BoxClient.java src/course/examples/generics/Source.java src/course/examples/generics/TextSource.java src/course/examples/generics/SourceClient.java
-java -cp out course.examples.generics.BoxClient
-java -cp out course.examples.generics.SourceClient
-javap -classpath out -p -c -v course.examples.generics.Box
-javap -classpath out -p -c -v course.examples.generics.BoxClient
-javap -classpath out -p -c -v course.examples.generics.TextSource
-javap -classpath out -p -c -v course.examples.generics.SourceClient
+javac --release 25 -Xlint:unchecked -d out Box.java BoxClient.java Source.java TextSource.java SourceClient.java
+java -cp out BoxClient
+java -cp out SourceClient
+javap -classpath out -p -c -v Box
+javap -classpath out -p -c -v BoxClient
+javap -classpath out -p -c -v TextSource
+javap -classpath out -p -c -v SourceClient
 ```
 
-Обычный вывод — `4`, затем `Java`. В подробном выводе найдите пять
-раздельных соответствий:
+Оба клиента выводят `Java`. В подробном выводе ищите следующие соответствия:
 
-| Где искать | Наблюдение | Причина |
-|---|---|---|
-| `Box.get` | descriptor `()Ljava/lang/Object;`, Signature `()TT;` | JVM-форма результата и generic-метаданные объявления различны |
-| `BoxClient.main` | вызов `Box.get` с Object-результатом, затем `checkcast java/lang/String` | клиентское присваивание требует String |
-| `TextSource` | написанный `String get()` и добавленный `Object get()` с `ACC_BRIDGE, ACC_SYNTHETIC` | мост сохраняет вызов через стёртый интерфейс |
-| bridge `TextSource.get` | вызов String-returning `get`, затем `areturn`; без `checkcast` | строка уже может возвращаться как Object |
-| `SourceClient.main` | интерфейсный вызов Object-returning `get`, затем `checkcast java/lang/String` | cast принадлежит клиенту и здесь тоже |
+| Место | Что видно в class-файле |
+|---|---|
+| `Box.get` | Дескриптор `()Ljava/lang/Object;` и `Signature: ()TT;` |
+| `BoxClient.read` | Вызов `Box.get(): Object`, затем `checkcast java/lang/String` |
+| `TextSource` | Авторский `String get()` и добавленный `Object get()` |
+| Добавленный `TextSource.get` | `ACC_BRIDGE, ACC_SYNTHETIC`; вызов строкового `get`, затем `areturn` |
+| `SourceClient.read` | Интерфейсный вызов `Source.get(): Object`, затем `checkcast java/lang/String` |
 
-Для первого опыта текстовая трасса:
-`Box<String> → get:Object → клиентский checkcast:String → text.length():4`.
-Для второго:
-`Source.get:Object → TextSource bridge:Object → TextSource.get:String → return`;
-после интерфейсного вызова **у клиента** стоит отдельный `checkcast:String`.
-Ни цвет, ни схема не нужны, чтобы проследить эти две связи.
+Мостовой `Object get()` вызывает авторский `String get()` и возвращает
+ту же строку как `Object`; внутри этого моста `checkcast` не нужен.
+Приведение к `String` находится у клиента после возврата из вызова.
+Именно поэтому мост и клиентское приведение следует искать в разных
+классах. Номера ссылок в таблице констант могут меняться; существенны
+инструкции и дескрипторы. [@bib-jvms-methods; @bib-jvms-method-descriptors-signatures]
 
-`Signature` описывает объявление; JVM descriptor задаёт форму метода;
-`getClass()` наблюдает класс объекта. Эти сведения не позволяют определить
-аргумент `T` каждого обычного экземпляра Box. Точные правила:
-[Signature JVMS25](https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html#jvms-4.7.9),
-[checkcast JVMS25](https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-6.html#jvms-6.5.checkcast).
+Полное объяснение двух трасс:
+@theory:sec-t-type-relations-erasure и @theory:sec-t-type-relations-bridge.

@@ -1,65 +1,94 @@
 ---
-categories: [j25, j25-core, j25-generic-classes]
+categories: [java, generics, generic-classes]
 pagetitle: Обобщённые классы
 ---
 
-# Обобщённые классы {#sec-j25-api-generic-classes}
+# Обобщённые классы {#sec-h-generic-classes}
 
-Обобщённый класс объявляет параметры типов, связывающие типы полей, входов и результатов. Все параметризации разделяют один класс при выполнении. Объяснение: @theory:sec-t-type-parameters. [@bib-objects-schildt-generics]
+Параметры типов объявляются после имени класса или интерфейса:
+`class Box<T>`, `interface Source<T>`. Внутри объявления одно имя параметра
+связывает типы полей, аргументов и результатов. При использовании вместо
+него выбирают ссылочный тип: например, `Box<String>`.
+[@bib-jls-generic-classes-methods]
 
-## Формы объявления {#sec-j25-api-generic-classes-forms}
+## Формы объявления {#sec-h-generic-classes-forms}
 
-| Форма | Значение |
+| Объявление без тела | Связь типов |
 |---|---|
-| `class Box<T>` | Класс с одним параметром типа |
-| `class Pair<A, B>` | Класс с двумя независимыми параметрами |
-| `interface Source<T>` | Интерфейс с параметром типа |
-| `<T> T identity(T value)` | Метод со своим параметром типа |
-| `<T extends Number>` | Верхняя граница параметра |
-| `<T extends Number & Comparable<T>>` | Класс и дополнительный интерфейс в границе |
+| `class Box<T>` | Один параметр; без явной границы доступен контракт `Object` |
+| `record Entry<K, V>(K key, V value)` | Независимые типы ключа и значения |
+| `class Related<A, B extends A>` | Второй аргумент — первый тип или его подтип |
+| `interface Source<T>` | Параметризованный интерфейс |
+| `class Numeric<T extends Number>` | Аргумент — `Number` или его подтип |
+| `class Ordered<T extends Number & Comparable<T>>` | Числовой тип с указанным способом сравнения |
 
-Это заголовки объявлений; тела в таблице опущены. Класс, если он указан в составной границе, стоит первым; последующие границы — интерфейсы. Для границы-интерфейса также используется слово `extends`. Запись `<T super Number>` недопустима: нижняя граница применяется к wildcard, см. @sec-j25-api-wildcards. [@bib-jls-type-variables]
+Для границы-интерфейса тоже пишется `extends`. Если в составной границе
+есть класс, он стоит первым; далее идут интерфейсы. Для двух параметров
+можно выбрать один тип: `Entry<String, String>` допустим. Связь `B extends A`
+разрешает `Related<Number, Integer>`, но запрещает `Related<Integer, Number>`.
+Нижней границы параметра `<T super Number>` нет; `super` применяется
+к неизвестному аргументу типа в @sec-h-wildcards. [@bib-jls-type-variables]
 
-Канонический полный файл `course/examples/generics/Box.java` (тот же тип, что в теории):
+## Создание и чтение {#sec-h-generic-classes-use}
+
+Полное объявление коробки из теории:
 
 ```java
-package course.examples.generics;
-
-public final class Box<T> {
+final class Box<T> {
     private final T value;
 
-    public Box(T value) { this.value = value; }
-    public T get() { return value; }
+    Box(T value) { this.value = value; }
+    T get() { return value; }
 }
 ```
 
-Фрагмент внутри `main` класса пакета `course.examples.generics`:
+Использование в методе:
 
 ```java
-Box<String> name = new Box<>("Java");
-String text = name.get();
-
+Box<String> title = new Box<>("Java");
+String text = title.get();
 Box<Integer> count = new Box<>(25);
-int value = count.get();
+int number = count.get();
 ```
 
-`T` — параметр, `String` и `Integer` — аргументы. В `new Box<>(...)` компилятор выводит аргумент типа из аргументов конструктора и контекста. `Box<int>` недопустим: аргументом типа не может быть примитив. Преобразование `Integer` в `int` — распаковка; для `null` она вызывает `NullPointerException`. [@bib-jls-type-arguments-unboxing-inference]
+`T` — параметр объявления, `String` и `Integer` — аргументы типа.
+Ромб `<>` поручает компилятору вывести аргумент создаваемого класса.
+`Box<String> title = new Box<>(25)` отвергается: требования конструктора
+и целевого типа не согласуются. При `var box = new Box<>(null)` целевого
+`Box<String>` нет, поэтому тип переменной — `Box<Object>`.
+[@bib-jls-type-arguments-unboxing-inference]
 
-## Доступные операции {#sec-j25-api-generic-classes-bounds}
+`Box<int>` недопустим; `Box<Integer>` использует ссылочный тип-оболочку.
+При чтении в `int` выполняется распаковка. Коробка выше допускает `null`,
+поэтому распаковка содержимого `null` вызовет `NullPointerException`.
+Параметр типа не заменяет условия ненулевости.
 
-Тело обобщённого метода проверяется по объявленным границам, а не отдельно для каждого вызова:
+Полные файлы [Box.java](../examples/generics/java/erasure/Box.java) и
+[BoxClient.java](../examples/generics/java/erasure/BoxClient.java) можно
+скомпилировать вместе; команды — @sec-h-erasure-javap. Причины такого
+устройства: @theory:sec-t-type-parameters-type-parameter.
 
-```java
-static <T extends Number> double asDouble(T value) {
-    return value.doubleValue();
-}
-```
+## Область действия и доступные операции {#sec-h-generic-classes-bounds}
 
-Здесь разрешён `doubleValue()`, но выражение `value + value` не задаёт общую операцию сложения для `T`. Граница, необходимая для сравнения, разобрана в @sec-j25-api-comparison. Возможность использовать конкретный метод не гарантирует ненулевой аргумент.
+Тело класса проверяется по объявленным границам. У неограниченного `T`
+нет гарантированного `length()` или `doubleValue()`. Граница
+`T extends Number` разрешает `doubleValue()`, но не задаёт сложение
+с результатом `T`. Нужные операции можно передать отдельным обобщённым
+интерфейсом: @theory:sec-t-type-parameters-operations.
 
-`final` у поля запрещает заменить сохранённую ссылку после её инициализации. Он не запрещает менять объект, на который она указывает: `Box<course.examples.objects.Book>` хранит ту же изменяемую книгу. Полный тип, import и наблюдение `true/true`: @theory:sec-t-type-parameters-sharing. При проектировании пары следует различать неизменность её полей и неизменность содержимого. [@bib-jls-final-fields]
+Параметр класса недоступен в статическом контексте. Поэтому
+`static T value;` в `Box<T>` недопустимо. Статический метод может объявить
+собственный параметр перед результатом: `static <U> U identity(U value)`.
+Точная форма и вывод аргументов — @sec-h-generic-methods.
 
-## Наследование и ограничения {#sec-j25-api-generic-classes-inheritance}
+`final` у поля фиксирует сохранённую ссылку, а не состояние объекта.
+Если `Book` — изменяемая книга, `Box<Book>` возвращает ту же книгу:
+параметризация не копирует и не замораживает содержимое. Полный опыт:
+@theory:sec-t-type-parameters-sharing. [@bib-jls-final-fields]
+
+## Наследование {#sec-h-generic-classes-inheritance}
+
+Подкласс может сохранить параметр или зафиксировать аргумент:
 
 ```java
 class Container<T> {
@@ -70,14 +99,33 @@ class Container<T> {
 class TextContainer extends Container<String> {
     TextContainer(String value) { super(value); }
 }
+class NamedContainer<T> extends Container<T> {
+    NamedContainer(T value) { super(value); }
+}
 ```
 
-Два пакетных класса выше помещаются в `Container.java`; они демонстрируют наследование отдельно от канонического **final** `Box`. Подкласс может фиксировать аргумент (`extends Container<String>`) или вводить собственный параметр (`class NamedContainer<T> extends Container<T>`). `Box<Integer>` не подтип `Box<Number>`. Неограниченный `T` имеет верхнюю границу `Object`; для составной границы класс, если есть, стоит первым.
+Здесь `Container` допускает наследование. У `TextContainer.get()` результат
+имеет тип `String`; у `NamedContainer<T>` связь с `T` сохраняется.
+При реализации интерфейса действует тот же принцип: если `Source<T>`
+объявляет `T get()`, то `class TextSource implements Source<String>`
+фиксирует результат `String`.
 
-`T value` и `T[] values` объявлять можно; `new T()`, `new T[10]` и `T.class` запрещены. `Box<int>` недопустим; оболочка `Integer` подходит. Параметр класса недоступен в его статическом контексте; статический метод объявляет собственный параметр. Подробности исполнения: @sec-j25-api-erasure.
+Само отношение `Integer` → `Number` не делает `Container<Integer>`
+подтипом `Container<Number>`. Подтипизация контейнеров и неизвестный
+аргумент: @sec-h-wildcards. [@bib-jls-class-interface-subtyping]
 
-Для увеличения переданного `T[]` подходит `Arrays.copyOf(T[], int)`;
-он сохраняет фактический класс массива и дополняет новые ссылочные позиции
-`null`. Новый внешний массив не копирует объекты элементов. Точная
-сигнатура и два полных коротких опыта:
-@sec-j25-api-arrays-copy-of. Это не разрешение создать `new T[n]`.
+## Массив как хранилище {#sec-h-generic-classes-array}
+
+Объявление поля `T[] values` допустимо, создание `new T[n]` — нет.
+Один из способов получить хранилище — принять уже созданный массив.
+Для контейнера с аргументом `Number` массив `Number[]` допускает запись
+разных числовых подтипов. Массив `Integer[]`, хотя его можно передать
+через ссылку `Number[]`, отвергнет запись `Double` при выполнении.
+[@bib-jls-array-store-checks]
+
+Передача массива не передаёт исключительное владение автоматически:
+если клиент сохранил ссылку, он всё ещё может менять его элементы.
+Договорённость о дальнейшем использовании массива задаётся отдельно.
+Для увеличения массива `Arrays.copyOf(T[], int)` сохраняет его фактический
+класс; точная форма — @sec-j25-api-arrays-copy-of. Другие ограничения
+создания объектов и массивов — @sec-h-erasure-limits.

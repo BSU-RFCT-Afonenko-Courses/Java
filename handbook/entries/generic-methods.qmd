@@ -1,248 +1,229 @@
 ---
-categories: [j25, j25-core, j25-generic-methods]
+categories: [java, generics, generic-methods]
 pagetitle: Обобщённые методы
 ---
 
-# Обобщённые методы {#sec-j25-api-generic-methods}
+# Обобщённые методы {#sec-h-generic-methods}
 
-Обобщённый метод объявляет собственные параметры перед возвращаемым типом. Он может находиться в обычном или обобщённом классе и быть статическим либо методом экземпляра. Метод, лишь использующий параметр своего класса, не является обобщённым методом в этом точном смысле. [@bib-objects-schildt-generics]
+Собственные параметры метода записываются **перед возвращаемым типом**:
+`static <T> T identity(T value)`. Метод может быть статическим или методом
+экземпляра, находиться в обычном либо обобщённом классе. Метод `T get()`
+в `Box<T>` использует параметр класса и не объявляет собственного.
+[@bib-jls-generic-methods]
 
-## Собственный параметр метода {#sec-j25-api-generic-methods-method}
+## Объявление и вызов {#sec-h-generic-methods-method}
 
 ```java
 final class Values {
-    static <T> T identity(T value) {
-        return value;
-    }
+    static <T> T identity(T value) { return value; }
 }
 ```
 
-Внутри `main` класса с объявленным выше `Values`:
+В методе клиента:
 
 ```java
-String word = Values.identity("Java");
+String text = Values.identity("Java");
 Number number = Values.<Number>identity(25);
 ```
 
-Параметр объявляется перед возвращаемым типом; явный аргумент при вызове — перед именем метода. Параметры класса нельзя использовать в его статических полях и методах. Статический метод может объявить собственные параметры, как `identity` выше. Имена, совпадающие с параметрами класса, лучше не использовать: они обозначали бы другие параметры. [@bib-jls-generic-classes-methods]
+Явный аргумент типа при вызове стоит перед именем метода. Он выбирает
+`T = Number`, хотя переданное значение после упаковки имеет класс `Integer`.
+`identity` возвращает то же значение ссылки, не создавая копию объекта.
+Параметр метода действует независимо от параметров окружающего класса;
+совпадающие имена обозначали бы разные параметры.
 
-Для полного `record Pair<A, B>(A first, B second) {}` два параметра позволяют сохранить разные типы частей. В заголовке метода `static <A, B> Pair<B, A> reversed(Pair<A, B> pair)` перестановка аргументов результата выражает перестановку ролей. Это часть контракта; сама запись не выполняет обмен и не определяет отношение к `null`.
+Обобщённый метод не обязан возвращать `T`: у
+`static <T> void swap(T[] values, int i, int j)` параметр связывает элементы
+массива и временную переменную. Разбор тела —
+@theory:sec-t-type-parameters-swap.
 
-## Связи и границы {#sec-j25-api-generic-methods-bounds}
+## Граница для сравнения {#sec-h-generic-methods-bounds}
 
-Следующий метод помещается в класс `MaximumDemo` и использует полные имена `java.util.List`. Wildcard здесь применяется после объяснения @theory:sec-t-type-relations-copy:
+| Объявление границы | Требование к аргументу типа |
+|---|---|
+| `<T extends Comparable<T>>` | Сравнение с тем же `T` |
+| `<T extends Comparable<? super T>>` | Сравнение с `T` или его супертипом |
 
-```java
-static <T extends Comparable<? super T>> T max(
-        java.util.List<? extends T> values) {
-    if (values.isEmpty()) throw new IllegalArgumentException("empty list");
-    T best = values.get(0);
-    for (T value : values) {
-        if (value.compareTo(best) > 0) best = value;
-    }
-    return best;
-}
-```
-
-Предполагаются ненулевые список и элементы; порядок задаёт `compareTo`. Пустой список явно отвергается. `Comparable<? super T>` допускает сравнение, объявленное для супертипа; `List<? extends T>` разрешает чтение элементов как `T`. Возвращаемый тип связан с элементами. Краткие формы wildcard: @sec-j25-api-wildcards; причины такого ограничения: @theory:sec-t-type-relations.
-
-## Выведение аргумента {#sec-j25-api-generic-methods-inference}
-
-Внутри `main` того же класса, с `Values` выше:
+Метод `compareTo` возвращает отрицательное число, ноль или положительное
+число; нужен знак, а не конкретное значение `-1` или `1`.
+Обе границы позволяют написать тело выбора большего:
 
 ```java
-var ints = java.util.List.of(1, 4, 2);
-Integer best = max(ints); // 4
-String text = Values.identity("Java");
-Number value = Values.<Number>identity(3);
-```
-
-Выведение учитывает аргументы, границы и целевой тип. Оно не проверяет длины коллекций или ненулевость. Несколько появлений `T` требуют согласованного типа, но он может быть общим супертипом выражений. Явный аргумент типа ограничивает вывод и иногда делает намерение яснее. Сравнение с ромбом и `var`: @theory:sec-t-type-parameters-checking.
-
-## C++20: полный контекст и запуск {#sec-j25-api-generic-methods-cpp-setup}
-
-Файл `dot.cpp` ниже содержит headers, ограничения выражений, два варианта
-представления длины и один набор данных. `T{}` должен быть нейтральным
-элементом выбранного сложения; concept проверяет допустимость выражений,
-а не этот закон. Источник и приёмник в коротком переносе независимы.
-Объяснение: @theory:sec-t-type-parameters-templates.
-
-```cpp
-#include <array>
-#include <complex>
-#include <concepts>
-#include <cstddef>
-#include <iostream>
-#include <stdexcept>
-#include <vector>
-
-template<class T>
-concept DotElement = std::semiregular<T> && requires(const T a, const T b) {
-    T{};
-    { a + b } -> std::same_as<T>;
-    { a * b } -> std::same_as<T>;
-};
-
-template<DotElement T>
-T dot(const std::vector<T>& left, const std::vector<T>& right) {
-    if (left.size() != right.size()) {
-        throw std::invalid_argument("Different vector lengths");
-    }
-    T result{};
-    for (std::size_t i = 0; i < left.size(); ++i) {
-        result = result + left[i] * right[i];
-    }
-    return result;
-}
-
-template<DotElement T, std::size_t N>
-T dot(const std::array<T, N>& left, const std::array<T, N>& right) {
-    T result{};
-    for (std::size_t i = 0; i < N; ++i) {
-        result = result + left[i] * right[i];
-    }
-    return result;
-}
-
-int main() {
-    std::cout << dot(std::vector<double>{1, 2},
-                     std::vector<double>{3, 4}) << '\n';
-    using C = std::complex<double>;
-    std::cout << dot(std::vector<C>{{1, 1}, {2, 0}},
-                     std::vector<C>{{3, 0}, {4, -1}}) << '\n';
-    std::cout << dot(std::array<double, 2>{1, 2},
-                     std::array<double, 2>{3, 4}) << '\n';
-    std::cout << dot(std::vector<double>{},
-                     std::vector<double>{}) << '\n';
-    const std::vector<int> source{1, 2};
-    std::vector<double> target{0.5};
-    for (int value : source) {
-        target.push_back(value);
-    }
-    for (double value : target) std::cout << value << ' ';
-    std::cout << '\n';
+static <T extends Comparable<? super T>> T larger(T left, T right) {
+    return left.compareTo(right) >= 0 ? left : right;
 }
 ```
+
+Возвращается один из аргументов, при равенстве — левый. Ненулевые значения
+и согласованный порядок остаются условиями вызова. Полные правила порядка:
+@sec-j25-api-comparison-order. [@bib-java-comparable]
+
+## Вывод аргумента и тип результата {#sec-h-generic-methods-inference}
+
+Вывод учитывает аргументы вызова, границы и целевой тип. Несколько появлений
+`T` требуют согласованного типа, но он может быть общим супертипом аргументов.
+Он не обязан совпадать с фактическим классом возвращённого объекта.
+
+Пусть `Person implements Comparable<Person>`, а `Student extends Person`
+наследует этот способ сравнения. Методы `strict` и `flexible` ниже различаются
+только границей, тело у них совпадает с `larger`:
+
+| Вызов с двумя `Student` | Результат проверки |
+|---|---|
+| `Person p = strict(a, b)` | Допустим с `T = Person` |
+| `var p = strict(a, b)` | Статический тип `p` — `Person` |
+| `Student s = strict(a, b)` | Недопустим: `Student` не реализует `Comparable<Student>` |
+| `Demo.<Student>strict(a, b)` | Явный аргумент нарушает ту же границу |
+| `Student s = flexible(a, b)` | Допустим с `T = Student` |
+
+У `strict` граница `Comparable<T>`, у `flexible` — `Comparable<? super T>`.
+Гибкая форма принимает унаследованный `compareTo(Person)` и сохраняет
+`Student` в результате. Причины вывода подробно разобраны в
+@theory:sec-t-type-relations-comparison-target.
+[@bib-jls-invocation-inference]
+
+Полная программа: [Demo.java](../examples/generics/java/comparison/Demo.java).
+Из каталога `java/comparison` распакованного комплекта:
 
 ```bash
-g++ --version
-g++ -std=c++20 -Wall -Wextra -pedantic dot.cpp -o dot
+javac --release 25 -Xlint:unchecked -d out Demo.java
+java -cp out Demo
+```
+
+Три строки `true` показывают возвращение второго объекта для результата
+`Person`, результата `Student` гибкой версии и результата с `var`.
+В каталогах `java/comparison-target-error` и `java/comparison-explicit-error`
+лежат отдельные варианты для двух отвергаемых вызовов. Их компилируют
+той же командой в соответствующем каталоге; выполнять программу с ошибкой
+компиляции нельзя.
+
+## Полные примеры и запуск {#sec-h-generic-methods-examples}
+
+[Скачать исходники примеров](../examples/generics-examples.zip).
+Комплект содержит самостоятельные программы из теории: коробку и мостовой
+метод, сравнение `Person`/`Student`, операции над массивом и списками,
+проверяемое исключение, сумму произведений в четырёх языках.
+Названия каталогов отделяют успешные программы от примеров намеренной ошибки.
+После распаковки все перечисленные ниже каталоги находятся внутри `generics`.
+Java-примеры рассчитаны на JDK 25 без preview; `javac`, `java` и `javap`
+должны относиться к одному JDK.
+
+| Каталог | Что запускается |
+|---|---|
+| `java/erasure` | `BoxClient` и `SourceClient`; команды @sec-h-erasure-javap |
+| `java/comparison` | Простая и гибкая границы сравнения |
+| `java/swap` | Обмен элементов массива |
+| `java/maximum` | Максимум всего непустого списка |
+| `java/copy` | Дописывание элементов совместимого списка |
+| `java/checked` | Передача и обработка проверяемого исключения |
+| `java/dot` | Переданные операции `Arithmetic<T>` |
+| `cpp` | `vector<T>` и `array<T, N>` |
+| `csharp` | Статические операции через ограничения `where T` |
+| `python` | `Protocol` и отдельная статическая проверка |
+
+В каталогах `java/swap`, `java/maximum`, `java/copy` находится отдельный
+`Demo.java`; используются те же команды `javac` и `java`, что для примера
+сравнения выше. В `java/checked` имя файла и запускаемого класса —
+`EarlyCheckedDemo`:
+
+```bash
+javac --release 25 -d out EarlyCheckedDemo.java
+java -cp out EarlyCheckedDemo
+```
+
+Этот пример выводит `7`, `empty`, `дальше`; отказ пропускает оставшуюся
+часть `try`, а `catch` позволяет продолжить выполнение.
+
+Для [Java-версии dot](../examples/generics/java/dot/Demo.java) из `java/dot`:
+
+```bash
+javac --release 25 -Xlint:unchecked -d out Demo.java
+java -cp out Demo
+```
+
+Получаются `11.0`, `12.0`, `1.0`, `Complex[re=11.0, im=1.0]`.
+Вторая и третья строки относятся к реализации с `zero() = 1.0`:
+она проходит проверку типов, но меняет результат суммы и пустого входа.
+Во всех версиях используется сумма произведений **без комплексного
+сопряжения**; объяснение — @theory:sec-t-type-parameters-operations.
+
+## C++20: требования к выражениям и длине {#sec-h-generic-methods-cpp-setup}
+
+Файл [main.cpp](../examples/generics/cpp/main.cpp) включает необходимые
+заголовки, concept `DotElement`, варианты `dot` для `std::vector<T>`
+и `std::array<T, N>`, действительные и комплексные данные.
+Из каталога `cpp`:
+
+```bash
+g++ -std=c++20 -Wall -Wextra -pedantic main.cpp -o dot
 ./dot
 ```
 
-Вывод: `11`, `(11,1)`, `11`, `0`, затем `0.5 1 2 ` (каждое наблюдение
-на отдельной строке). Последний пробел создаёт цикл печати. Комплексная
-сумма вычисляется без сопряжения. Здесь использован GCC 16.2.1 в режиме
-C++20; версия инструмента и языковой режим — разные сведения.
+Вывод: `11`, `(11,1)`, `11`. Первые две строки — динамические векторы,
+третья — массивы с размером в типе. `T{}` должен быть нейтральным элементом
+сложения; concept проверяет допустимость выражений, а не этот закон.
+[@bib-cpp-requires]
 
-Для **отдельного** `dimensions_bad.cpp` сохраните headers и объявления,
-но замените всё тело `main` на следующий вызов:
-
-```cpp
-int main() {
-    auto result = dot(std::array<double, 2>{1, 2},
-                      std::array<double, 3>{3, 4, 5});
-    (void) result;
-}
-```
-
-`g++ -std=c++20 -fsyntax-only dimensions_bad.cpp` отвергает разные `N`.
-С `vector<double>` разные длины проходят компиляцию и вызывают
-`std::invalid_argument` при выполнении. С `vector<std::string>` применение
-этого `dot` отвергается по отсутствию умножения; для отдельного такого
-файла нужен ещё header `<string>`. Требования выражений и размерность —
-две самостоятельные проверки.
-[Requires C++](https://eel.is/c++draft/expr.prim.req),
-[параметры шаблона](https://eel.is/c++draft/temp.param).
-
-## Python: Protocol и отдельный checker {#sec-j25-api-generic-methods-python-checker}
-
-Первое введение структуры `HasScore` находится в
-@theory:sec-t-type-parameters-model-comparison. Здесь тот же способ
-описывает операции `dot`. Полный файл `protocol_dot.py`, Python 3.14:
-
-```python
-from typing import Protocol
-
-class Arithmetic[T](Protocol):
-    def zero(self) -> T: ...
-    def add(self, left: T, right: T) -> T: ...
-    def multiply(self, left: T, right: T) -> T: ...
-
-class FloatArithmetic:
-    def zero(self) -> float:
-        return 0.0
-    def add(self, left: float, right: float) -> float:
-        return left + right
-    def multiply(self, left: float, right: float) -> float:
-        return left * right
-
-class ComplexArithmetic:
-    def zero(self) -> complex:
-        return 0j
-    def add(self, left: complex, right: complex) -> complex:
-        return left + right
-    def multiply(self, left: complex, right: complex) -> complex:
-        return left * right
-
-def dot[T](left: list[T], right: list[T], arithmetic: Arithmetic[T]) -> T:
-    if len(left) != len(right):
-        raise ValueError("Different vector lengths")
-    result = arithmetic.zero()
-    for i in range(len(left)):
-        term = arithmetic.multiply(left[i], right[i])
-        result = arithmetic.add(result, term)
-    return result
-
-print(dot([1.0, 2.0], [3.0, 4.0], FloatArithmetic()))
-print(dot([1+1j, 2+0j], [3+0j, 4-1j], ComplexArithmetic()))
-print(dot([], [], FloatArithmetic()))
-```
-
-Ни один concrete-класс не наследует `Arithmetic`. Статический checker
-принимает нужные методы по структуре; обычный Python вызывает реальные
-методы переданного объекта. Предполагаются ненулевые допустимые элементы,
-операции не меняют вход и возвращают допустимые значения. Длины остаются
-runtime-условием. Вывод — `11.0`, `(11+1j)`, `0.0`.
-
-В рабочем каталоге с этим файлом создайте локальный `pyrightconfig.json`:
-
-```json
-{
-  "include": ["protocol_dot.py"],
-  "pythonVersion": "3.14",
-  "typeCheckingMode": "strict"
-}
-```
+Отдельный [negative.cpp](../examples/generics/cpp/negative.cpp) вызывает
+вариант для массивов длины 2 и 3:
 
 ```bash
-python3 --version
-pyright --version
+g++ -std=c++20 -fsyntax-only negative.cpp
+```
+
+Компилятор не может вывести единый `N`. У варианта для `vector` длина
+проверяется при выполнении; для него разные размеры не являются ошибкой
+подстановки типа. [@bib-cpp-template-parameters]
+
+## C#: статические операции интерфейса {#sec-h-generic-methods-csharp-setup}
+
+[Program.cs](../examples/generics/csharp/Program.cs) использует
+`IAdditionOperators`, `IMultiplyOperators`, `IAdditiveIdentity` из
+`System.Numerics`. Эта форма требует C# 11 и .NET 7 или новее;
+поставляемый [Dot.csproj](../examples/generics/csharp/Dot.csproj) выбирает
+C# 11 и .NET 10. Конфигурация комплекта использует установленный SDK
+10.0.x и его библиотеки: внешних пакетов у этого примера нет.
+Из каталога `csharp`:
+
+```bash
+dotnet run --project Dot.csproj
+```
+
+Программа печатает `11`, `<11; 1>` и отдельно компоненты `11 1`.
+Для `Complex` не нужен порядок «больше»: ограничения требуют только
+операции, используемые вычислением. Объяснение модели:
+@theory:sec-t-type-parameters-clr. [@bib-dotnet-generic-math]
+
+## Python: Protocol и статическая проверка {#sec-h-generic-methods-python-checker}
+
+Файл [python_dot.py](../examples/generics/python/python_dot.py) использует
+`Sequence[T]`, `Arithmetic[T](Protocol)` и отдельные реализации операций
+для `float` и `complex`. Параметры типов в такой форме требуют Python 3.12
+или новее. Реализации не наследуют `Arithmetic`: анализатор проверяет
+структуру методов. Объяснение: @theory:sec-t-type-parameters-python.
+[@bib-python-protocols]
+
+Из каталога `python`, с установленными Python и Pyright:
+
+```bash
 pyright --project pyrightconfig.json
-python3 protocol_dot.py
+python3 python_dot.py
 ```
 
-Опорный checker — Pyright 1.1.412. Проверка и исполнение — разные команды;
-без checker аннотации не становятся runtime-проверками. Положительный
-файл даёт ноль ошибок checker. Для отрицательного `protocol_bad.py`
-сохраните `Arithmetic`, `FloatArithmetic`, `dot`, затем добавьте:
+Конфигурация задаёт строгую проверку и включает положительный файл.
+Его запуск печатает `11.0` и `(11+1j)`. Проверка и запуск — разные действия:
+интерпретатор не выполняет проверки Pyright. [@bib-python-typing]
 
-```python
-class BadArithmetic:
-    def zero(self) -> float:
-        return 0.0
-    def add(self, left: float, right: float) -> float:
-        return left + right
-    def multiply(self, left: float, right: float) -> str:
-        return "wrong"
+В [python_negative.py](../examples/generics/python/python_negative.py)
+метод `WrongArithmetic.zero()` возвращает `str` вместо `float`.
+Для отдельной проверки и затем независимого запуска:
 
-print(dot([1.0, 2.0], [3.0, 4.0], BadArithmetic()))
+```bash
+pyright --pythonversion 3.12 python_negative.py
+python3 python_negative.py
 ```
 
-В отдельном checker-конфиге `include` должен указывать этот отрицательный
-файл. Checker отвергает `multiply` с результатом `str`; прямой запуск
-доходит до сложения `float + str` и завершается `TypeError`.
-Протокол проверяет сигнатуры, но реализацию с `zero()=1.0` он примет:
-математический контрпример `12.0` остаётся таким же, как в Java.
-[Спецификация Protocol](https://typing.python.org/en/latest/spec/protocol.html),
-[настройки Pyright](https://github.com/microsoft/pyright/blob/main/docs/configuration.md).
+Анализатор отвергает присваивание `WrongArithmetic` переменной
+`Arithmetic[float]`. При запуске без этой проверки попытка сложить строку
+с числом даёт `TypeError`. Возврат числа `1.0` вместо `0.0` сохранил бы
+типовую совместимость, но не правильный результат суммы.
