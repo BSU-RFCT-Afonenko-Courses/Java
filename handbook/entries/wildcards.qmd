@@ -68,7 +68,9 @@ static <T> void copy(List<? extends T> source,
 не клонируются. Сигнатура не проверяет независимость списков и не обещает
 отката уже выполненных добавлений при отказе приёмника.
 
-У библиотечного `Collections.copy` другой контракт:
+### Замена существующих позиций {#sec-h-wildcards-library-copy}
+
+Библиотечный `Collections.copy` заменяет элементы приёмника:
 
 ```java
 static <T> void copy(List<? super T> dest,
@@ -117,3 +119,18 @@ private static <T> void repeat(List<T> values) {
 `add`, вызов завершится `UnsupportedOperationException`; у пустого списка
 добавление не вызывается. Объяснение захвата:
 @theory:sec-t-type-relations-capture. [@bib-jls-capture-conversion]
+
+В теории тот же приём используется для перестановки двух элементов через
+`set`. Полная программа: [Demo.java](../examples/generics/java/capture/Demo.java).
+Из каталога `java/capture` распакованного комплекта:
+
+```bash
+javac --release 25 -Xlint:unchecked -d out Demo.java
+java -cp out Demo
+```
+
+Результат — `[Lin, Ada]`. В отдельном
+[неверном варианте](../examples/generics/java/capture-error/Demo.java)
+прочитанное сохраняется как `Object`, после чего обратная запись
+отвергается компилятором. Его компилируют той же командой в каталоге
+`java/capture-error`; успешного запуска у этого варианта нет.

@@ -126,9 +126,10 @@ callback: алгоритм вызывает его метод в нужном м
 и совместимость: короткое выражение реализует известную операцию известного
 интерфейса, а не вводит новый вид значения вне объектной модели.
 
-Сравним тот же вызов правила в Python. Структурный `Protocol` уже введён в
-@theory:sec-t-type-parameters-model-comparison. Теперь знакомое
-требование относится к операции вызова `__call__`. Полный файл `selection.py`:
+Сравним тот же вызов правила в Python. `Protocol` описывает для анализатора
+структуру подходящего объекта; при необходимости к этому приёму можно
+обратиться в @theory:sec-t-type-parameters-python-protocol. Здесь требование
+относится к операции вызова `__call__`. Полный файл `selection.py`:
 
 ```python
 from dataclasses import dataclass
@@ -181,7 +182,7 @@ print([s.name for s in select(students, bad)])
 имя истинно в условии списка, поэтому runtime выведет все три имени
 `['Ada', 'Lin', 'Ann']`. Наличие callable подтверждает возможность вызова,
 а не нужный предметный результат. Команды и выбор checker:
-@handbook:sec-h-generic-methods-python-checker. Точное основание
+@handbook:sec-h-generic-methods-python-protocol. Точное основание
 [callback Protocol](https://typing.python.org/en/latest/spec/callables.html#callback-protocols).
 В Java объект условия реализует номинальный `StudentTest`, checker Python
 принимает `AtLeast` по структуре, runtime Python вызывает доступную операцию.

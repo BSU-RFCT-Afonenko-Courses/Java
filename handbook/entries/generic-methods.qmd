@@ -65,8 +65,13 @@ static <T extends Comparable<? super T>> T larger(T left, T right) {
 Он не обязан совпадать с фактическим классом возвращённого объекта.
 
 Пусть `Person implements Comparable<Person>`, а `Student extends Person`
-наследует этот способ сравнения. Методы `strict` и `flexible` ниже различаются
-только границей, тело у них совпадает с `larger`:
+наследует этот способ сравнения. У методов совпадает тело `larger`;
+существенные объявления различаются границей:
+
+```java
+static <T extends Comparable<T>> T strict(T a, T b)
+static <T extends Comparable<? super T>> T flexible(T a, T b)
+```
 
 | Вызов с двумя `Student` | Результат проверки |
 |---|---|
@@ -76,7 +81,6 @@ static <T extends Comparable<? super T>> T larger(T left, T right) {
 | `Demo.<Student>strict(a, b)` | Явный аргумент нарушает ту же границу |
 | `Student s = flexible(a, b)` | Допустим с `T = Student` |
 
-У `strict` граница `Comparable<T>`, у `flexible` — `Comparable<? super T>`.
 Гибкая форма принимает унаследованный `compareTo(Person)` и сохраняет
 `Student` в результате. Причины вывода подробно разобраны в
 @theory:sec-t-type-relations-comparison-target.
@@ -115,13 +119,14 @@ Java-примеры рассчитаны на JDK 25 без preview; `javac`, `j
 | `java/swap` | Обмен элементов массива |
 | `java/maximum` | Максимум всего непустого списка |
 | `java/copy` | Дописывание элементов совместимого списка |
+| `java/capture` | Перестановка через захват неизвестного типа |
 | `java/checked` | Передача и обработка проверяемого исключения |
 | `java/dot` | Переданные операции `Arithmetic<T>` |
 | `cpp` | `vector<T>` и `array<T, N>` |
 | `csharp` | Статические операции через ограничения `where T` |
-| `python` | `Protocol` и отдельная статическая проверка |
+| `python` | Обычная функция, аннотации и вариант с `Protocol` |
 
-В каталогах `java/swap`, `java/maximum`, `java/copy` находится отдельный
+В каталогах `java/swap`, `java/maximum`, `java/copy`, `java/capture` находится отдельный
 `Demo.java`; используются те же команды `javac` и `java`, что для примера
 сравнения выше. В `java/checked` имя файла и запускаемого класса —
 `EarlyCheckedDemo`:
@@ -194,36 +199,76 @@ dotnet run --project Dot.csproj
 операции, используемые вычислением. Объяснение модели:
 @theory:sec-t-type-parameters-clr. [@bib-dotnet-generic-math]
 
-## Python: Protocol и статическая проверка {#sec-h-generic-methods-python-checker}
+## Python: запуск и проверка аннотаций {#sec-h-generic-methods-python-checker}
 
-Файл [python_dot.py](../examples/generics/python/python_dot.py) использует
-`Sequence[T]`, `Arithmetic[T](Protocol)` и отдельные реализации операций
-для `float` и `complex`. Параметры типов в такой форме требуют Python 3.12
-или новее. Реализации не наследуют `Arithmetic`: анализатор проверяет
-структуру методов. Объяснение: @theory:sec-t-type-parameters-python.
-[@bib-python-protocols]
+В каталоге `python` находятся последовательные варианты одного вычисления:
 
-Из каталога `python`, с установленными Python и Pyright:
+| Файл | Назначение |
+|---|---|
+| [python_dot.py](../examples/generics/python/python_dot.py) | Обычный `dot` без аннотаций, с числовыми `+` и `*` |
+| [python_typed.py](../examples/generics/python/python_typed.py) | Тот же цикл с аннотациями `Sequence[float | complex]` |
+| [python_negative.py](../examples/generics/python/python_negative.py) | Передача строки аннотированной числовой функции |
+
+Из каталога `python`:
+
+```bash
+python3 python_dot.py
+python3 python_typed.py
+```
+
+Каждый положительный файл печатает `11.0`, `(11+1j)`, `0`.
+У пустых последовательностей результат — начальный целый ноль.
+Аннотированный вариант требует Python 3.10 или новее для формы `X | Y`.
+Его описание допускает действительные, комплексные и смешанные входы;
+оно не связывает конкретный тип каждого вызова с точным типом ответа.
+Полный разбор: @theory:sec-t-type-parameters-python. [@bib-python-typing]
+
+Для статической проверки нужен отдельно установленный Pyright:
 
 ```bash
 pyright --project pyrightconfig.json
-python3 python_dot.py
 ```
 
-Конфигурация задаёт строгую проверку и включает положительный файл.
-Его запуск печатает `11.0` и `(11+1j)`. Проверка и запуск — разные действия:
-интерпретатор не выполняет проверки Pyright. [@bib-python-typing]
+Конфигурация использует строгий режим, целевую версию Python 3.12
+и включает `python_typed.py` вместе с вариантом Protocol ниже.
+Обычная функция без аннотаций и намеренные ошибки в этот набор не входят.
 
-В [python_negative.py](../examples/generics/python/python_negative.py)
-метод `WrongArithmetic.zero()` возвращает `str` вместо `float`.
-Для отдельной проверки и затем независимого запуска:
+Отрицательную программу проверяют и запускают независимо:
 
 ```bash
 pyright --pythonversion 3.12 python_negative.py
 python3 python_negative.py
 ```
 
+Анализатор отвергает строковый элемент вместо числа. При обычном запуске
+аннотации не останавливают вызов: умножение строки на `float` приводит
+к `TypeError`. Исполнение программы и статическая проверка — отдельные
+действия; интерпретатор не запускает Pyright автоматически.
+
+### Переданные операции и Protocol {#sec-h-generic-methods-python-protocol}
+
+[python_protocol.py](../examples/generics/python/python_protocol.py) передаёт
+операции отдельным объектом. `Arithmetic[T](Protocol)` связывает типы
+элементов, входов и результатов операций; реализации для `float`
+и `complex` подходят по структуре, без наследования от `Arithmetic`.
+Объявления параметров типов в квадратных скобках требуют Python 3.12
+или новее. Основание этой формы:
+@theory:sec-t-type-parameters-python-protocol. [@bib-python-protocols]
+
+```bash
+python3 python_protocol.py
+```
+
+Результаты — `11.0` и `(11+1j)`. В отдельном
+[python_protocol_negative.py](../examples/generics/python/python_protocol_negative.py)
+метод `WrongArithmetic.zero()` возвращает `str` вместо `float`:
+
+```bash
+pyright --pythonversion 3.12 python_protocol_negative.py
+python3 python_protocol_negative.py
+```
+
 Анализатор отвергает присваивание `WrongArithmetic` переменной
-`Arithmetic[float]`. При запуске без этой проверки попытка сложить строку
-с числом даёт `TypeError`. Возврат числа `1.0` вместо `0.0` сохранил бы
-типовую совместимость, но не правильный результат суммы.
+`Arithmetic[float]`. Прямой запуск доходит до сложения строки с числом
+и получает `TypeError`. Это проверка структуры выбранного объекта операций;
+математическую правильность начального значения его сигнатуры не доказывают.
