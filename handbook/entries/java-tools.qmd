@@ -4,7 +4,24 @@ categories: [java, core, java-tools]
 
 # Инструменты JDK и запуск программы {#sec-api-java-tools}
 
-Команды ниже описаны для JDK 25. Их общий исходник — `src/course/reading/Reading.java` из @theory:sec-theory-platform-first-program: `package course.reading`, публичный класс `Reading`, традиционный `main`, массив `pages = {5, 7}`, сумма первых двух компонентов и среднее. Каталог исходника должен существовать в выбранном окружении. Системные навыки запуска команды, текущего каталога и работы с путями относятся к отдельному занятию System Practice. Java-цепочка объясняется в @theory:sec-theory-platform. [@bib-fnd-javac; @bib-fnd-java-launcher; @bib-java-tools-25]
+Команды описаны для одного выбранного JDK 25. Компактный
+[Reading.java](../examples/runtime/Reading.java) соответствует
+@theory:sec-theory-platform-first-program: он складывает первые два компонента
+массива `{5, 7}` и печатает `12`, затем `6.0`.
+
+```bash
+java Reading.java
+```
+
+Для исследования сохранённого класса используется отдельная компиляция:
+@sec-api-java-tools-bytecode. Таблицы `javac`, classpath и JAR ниже используют
+другой, явно объявленный вариант
+[course.reading.Reading](../examples/runtime/src/course/reading/Reading.java).
+Поместите его в `src/course/reading/Reading.java`; каталог должен существовать.
+Эти варианты решают одну задачу, но имеют разные полные имена классов.
+Системные навыки команд и путей относятся к занятию System Practice,
+Java-цепочка объясняется в @theory:sec-theory-platform.
+[@bib-fnd-javac; @bib-fnd-java-launcher; @bib-java-tools-25]
 
 ## javac {#sec-api-java-tools-javac}
 
@@ -22,7 +39,7 @@ javac --release 25 -encoding UTF-8 -d out src/course/reading/Reading.java
 | `-g` | Сохранить отладочные сведения, в том числе имена локальных переменных |
 | `-Xlint` | Дополнительные предупреждения; доступные категории зависят от версии |
 
-`--release` не преобразует внешние библиотеки в совместимые. Указание только `-source` и `-target` не заменяет ограничение доступного API целевой версии. Для обычных примеров preview не требуется; использование preview — отдельная согласованная настройка компиляции и выполнения.
+`--release` не преобразует внешние библиотеки в совместимые. Указание только `-source` и `-target` не заменяет ограничение доступного API целевой версии.
 
 Публичный верхнеуровневый класс `Reading` при обычной компиляции `javac` хранится в `Reading.java`. Несколько классов в одной единице компиляции могут дать несколько `.class`. Предупреждение компилятора не всегда означает отказ; ошибка препятствует созданию корректного результата соответствующей компиляции. После изменения первого компонента `pages` с `5` на `9` сохраните исходник и повторите компиляцию: один повтор `java -cp out course.reading.Reading` продолжает выполнять прежний `.class`. Получаются `12` и `6.0` до компиляции, `16` и `8.0` после неё.
 
@@ -43,7 +60,11 @@ java -cp out course.reading.Reading 5 2
 public static void main(String[] args) { /* действия */ }
 ```
 
-В Java 25 допустимые формы шире, включая некоторые методы без аргументов и экземплярные методы. Базовый курс использует явную форму, чтобы видеть класс и параметры. Выбор кандидата, доступ и создание экземпляра описаны в JLS. [@bib-fnd-jls-launch]
+В Java 25 допустимые формы шире, включая методы без аргументов и
+нестатические методы. Первый запуск курса использует компактный файл
+с `void main()`; явный класс вводится для именованного пакета.
+Выбор кандидата, доступ и создание экземпляра описаны в JLS.
+[@bib-fnd-jls-launch; @bib-fnd-compact-source]
 
 Другие режимы: `java src/course/reading/Reading.java 5 2` — запуск исходного файла; `java -jar app.jar 5 2` — запуск JAR с подходящим манифестом. В режиме `-jar` пользовательский classpath из обычного `-cp` не действует как в запуске класса; зависимости задаются способом развёртывания приложения. Запуск исходника использует сохранённый текст для текущего выполнения; он не обновляет вручную созданный `out/course/reading/Reading.class`. В запуске класса требуется полное имя, в source launch — путь к `.java`, в JAR launch — путь к архиву с точкой входа.
 
@@ -76,16 +97,16 @@ public static void main(String[] args) { /* действия */ }
 Исходная, бинарная и поведенческая совместимость: @theory:sec-theory-platform-compatibility.
 [@bib-ctx-jls-binary]
 
-## Прочитать байткод учебного примера {#sec-api-java-tools-bytecode}
+## Байткод учебного примера {#sec-api-java-tools-bytecode}
 
-[Reading.java](../examples/runtime/src/course/reading/Reading.java) содержит
-полный пример главы о JVM. Поместите его в `src/course/reading/Reading.java`
-и выполните из каталога с `src`:
+[Reading.java](../examples/runtime/Reading.java) содержит полный компактный
+пример главы о JVM. Сохраните файл под этим именем и выполните из его каталога
+инструментами JDK 25:
 
 ```bash
-javac --release 25 -encoding UTF-8 -g -d out src/course/reading/Reading.java
-javap -classpath out -c -p -l course.reading.Reading
-java -cp out course.reading.Reading
+javac -encoding UTF-8 -g Reading.java
+javap -c -p -l Reading
+java Reading
 ```
 
 `-c` показывает инструкции, `-p` — в том числе непубличные методы,

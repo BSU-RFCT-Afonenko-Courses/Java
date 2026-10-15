@@ -1,5 +1,5 @@
 /**
- * Учебный проект: interval-membership. Java 25 без preview.
+ * Учебный проект: interval-membership. Java 25.
  * Вход и вывод описаны в README.md и карточке задания.
  * Сохраните Main.main; алгоритм и вспомогательные методы выбирайте сами.
  */

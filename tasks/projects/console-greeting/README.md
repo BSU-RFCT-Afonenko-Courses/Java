@@ -4,7 +4,7 @@
 
 Протокол проверки: `java Main "Анна"` выводит одну строку `Здравствуйте, Анна!`; запуск без аргументов — `Укажите имя.`. Имя может содержать кириллицу, пробелы и emoji. Стандартный ввод не используется.
 
-Соберите `student/src/main/java/Main.java` командой `javac --release 25 -encoding UTF-8 -d out student/src/main/java/*.java`, затем запустите `java -cp out Main`. Для дополнительного входа передайте текст через stdin; без входа закройте stdin (EOF). Java 25 без preview. Вспомогательные методы и классы разрешены.
+Соберите `student/src/main/java/Main.java` командой `javac --release 25 -encoding UTF-8 -d out student/src/main/java/*.java`, затем запустите `java -cp out Main`. Для дополнительного входа передайте текст через stdin; без входа закройте stdin (EOF). Java 25. Вспомогательные методы и классы разрешены.
 
 Публичные примеры: `student/src/test/java/PublicExamplesTest.java`. Их можно запускать JUnit 5 вместе с вашей программой; они показывают часть контракта и не заменяют все требования условия.
 

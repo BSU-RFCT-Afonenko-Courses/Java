@@ -49,7 +49,7 @@ export async function selectSources(root:string,sourceRoot:string,patterns:strin
 /** Explicit opted-in inventory; generation executes native Quarto, never Java. */
 export async function collectProjectChecks(root:string,options:{book:string;profiles?:string[]},current?:Awaited<ReturnType<typeof collectNativeModel>>):Promise<ChecksManifest>{
  const collected=current??await collectNativeModel(root,options);
- if(relative(root,collected.projectRoot).replaceAll("\\","/")!==options.book && resolve(root,options.book)!==collected.projectRoot)throw diagnostic("CHECKS.OWNER_MISMATCH","Текущий collected owner не совпадает с выбранной книгой");
+ if(relative(root,collected.projectRoot).replaceAll("\\","/")!==options.book && resolve(root,options.book)!==collected.projectRoot)throw diagnostic("CHECKS.OWNER_MISMATCH","Текущий collected owner не совпадает с выбранным проектом");
  const projects:CheckProject[]=[];
  for(const fact of collected.result.model.projects??[]){
   if(!fact.check)continue;
