@@ -1,8 +1,8 @@
 ---
-title: "Значения, преобразования и отсутствие"
-subtitle: "Java 25 · первый семестр · 80 минут"
+title: "Ссылочные значения"
+subtitle: "Переменная, общий объект и результат операции"
+categories: [java, java-core, java-references]
 lang: ru
-categories: [j25, j25-core, j25-values-absence]
 format:
   revealjs:
     fontsize: 32px
@@ -13,370 +13,336 @@ format:
     show-notes: false
 ---
 
-## Значения, преобразования и отсутствие {#sec-j25-lecture-values-absence}
+## Что сохраняет присваивание {#sec-lecture-values-absence}
 
-Компилятор проверяет исходник, JVM выполняет class. В расчёте 5/2 тип операции выбирается до присваивания результата.
+### Один журнал, два имени
 
-**Ведущий вопрос:** Что именно хранит переменная и какое действие изменяет результат?
+```java
+int[] pages = {5, 7};
+int[] saved = pages;
+saved[0] = 9;
+System.out.println(pages[0]); // 9
+```
 
-## Типы переменных и выражений {#sec-j25-lecture-values-absence-types}
+Мы не присваивали ничего переменной `pages` после её объявления.
+Почему изменилось наблюдаемое число?
 
-### Данные журнала чтения {#sec-j25-lecture-values-absence-data-model}
-
-За два дня прочитано пять страниц.
-
-Количество — целое. Среднее может быть дробным. Подпись — текст.
-
-Тип задаёт допустимые значения и операции. Предметный смысл добавляет
-ограничения: отрицательное число допустимо для `int`, но не для количества
-прочитанных страниц.
-
-@theory:sec-j25-theory-types-model
-
-### Как повторить короткий опыт {#sec-j25-lecture-values-absence-context}
-
-Каждый короткий Java-блок — самостоятельный фрагмент main класса `ValuesDemo` в `ValuesDemo.java`, без package и imports. Повторяющиеся имена начинают новый опыт. Для связанных арифметических строк заданы `pages=5`, `days=2`, `a=50_000`, `b=50_000`; типы всех четырёх — int. Неверные строки с комментарием проверяются отдельно от успешного запуска.
-
-### Числовое значение и текстовая запись {.continuation #sec-j25-lecture-values-absence-number-text}
+### Вспомним число
 
 ```java
 int pages = 5;
-String label = "5";
-System.out.println(pages + 1); // 6
-System.out.println(label + 1); // 51
-// label - 1 // ошибка компиляции
+int saved = pages;
+saved = 9;
+System.out.println(pages); // 5
 ```
 
-Тип выбирает смысл операции. Печать `5` не говорит, было ли исходное значение
-числом или текстом. Разбор строки — отдельное действие.
+Присваивание копирует значение. Две переменные после копирования
+остаются разными переменными.
 
-### Статическая проверка и предметные ограничения {#sec-j25-lecture-values-absence-type-contract}
+### Ссылка тоже является значением {#sec-lecture-values-absence-copy-model}
+
+```text
+pages ──┐
+        ├──→ int[2] {9, 7}
+saved ──┘
+```
+
+У `int[]` значением переменной является ссылка на массив или `null`.
+`pages` и `saved` содержат ссылки на один объект.
+`saved[0] = 9` меняет компонент этого объекта.
+
+### Заменить ссылку — другое действие
 
 ```java
-int pages = 5;
-// pages = "five"; // несовместимый тип
-pages = -5;       // допустимый int
+saved = new int[]{1, 2};
+System.out.println(saved[0]); // 1
+System.out.println(pages[0]); // 9
 ```
 
-Компилятор проверяет правила языка. Программа проверяет требования задачи.
-
-Имена и единицы измерения нужны: тип `int` не различает страницы и дни.
-
-### Аннотированное имя Python {#sec-j25-lecture-values-absence-python-binding}
-
-```python
-pages: int = 5
-pages = 7
-print(pages)
+```text
+pages ─────→ int[2] {9, 7}
+saved ─────→ int[2] {1, 2}
 ```
 
-Полный pages.py печатает 7 и принят strict Pyright. Замена второго присваивания на `pages = "seven"` отвергается checker, но обычный Python продолжает связывать имя со строкой. Аннотация из системы typing и выполнение — разные этапы. @theory:sec-j25-theory-types-static-dynamic
+Ссылку заменили в одной переменной; прежний объект сохранился.
 
-### Тип выражения деления {#sec-j25-lecture-values-absence-average-type}
+### Сравнение с C++
+
+```cpp
+std::array<int, 2> pages{5, 7};
+auto copy = pages;   // копия контейнера
+copy[0] = 9;        // pages[0] остаётся 5
+```
+
+Java `int[] saved = pages` не копирует контейнер.
+C++ ссылка `T&` — другое имя выбранного объекта; Java-переменной
+можно присвоить другую ссылку. Сходство слов не задаёт одинаковые правила.
+[@bib-fnd-cpp-references; @bib-fnd-cpp-array]
+
+## Вызов метода продолжает ту же модель {#sec-lecture-values-absence-methods}
+
+### Параметр получает число
 
 ```java
-int pages = 5;
-int days = 2;
-double wrong = pages / days;
-double correct = (double) pages / days;
+static void addPage(int count) {
+    count++;
+}
+
+// В main:
+int count = 5;
+addPage(count);
+System.out.println(count); // 5
 ```
 
-Получается `2.0` и `2.5`. Тип деления определяется операндами, а присваивание происходит после вычисления правой части.
+У вызова своя переменная `count`. Как получить новое число в `main`?
 
-@theory:sec-j25-theory-types-expression-type
+### Возвращаемое значение
 
-### Примитивные типы {#sec-j25-lecture-values-absence-primitive-types}
+```java
+static int nextCount(int count) {
+    return count + 1;
+}
 
-| Назначение | Типы |
+// В main, для count < Integer.MAX_VALUE:
+count = nextCount(count);
+System.out.println(count); // 6
+```
+
+`return` даёт результат вызова; присваивание в `main` меняет его переменную.
+Сигнатуры методов и правила возврата: @theory:sec-theory-methods.
+
+### Параметр получает ссылку
+
+```java
+static void correctFirst(int[] data) {
+    data[0] = 9;
+}
+
+// В main:
+int[] pages = {5, 7};
+correctFirst(pages);
+System.out.println(pages[0]); // 9
+```
+
+Метод предполагает существующий непустой массив.
+Копия ссылки даёт доступ к тому же объекту.
+
+### Переназначение параметра
+
+```java
+static void replace(int[] data) {
+    data = new int[]{1, 2};
+}
+
+// После correctFirst:
+replace(pages);
+System.out.println(pages[0]); // 9
+```
+
+`data` — локальная переменная вызова. Присваивание не меняет `pages`.
+Java передаёт значение и для примитива, и для ссылки.
+
+### Что доступно вызывающему коду
+
+| Действие метода | После возврата |
 |---|---|
-| Знаковые целые | `byte`, `short`, `int`, `long` |
-| Единица UTF-16 | `char` |
-| Двоичные приближённые числа | `float`, `double` |
-| Логическое значение | `boolean` |
+| Присвоить число параметру | Переменная вызывающего кода прежняя |
+| Присвоить ссылку параметру | Переменная вызывающего кода прежняя |
+| Изменить общий массив | Изменение видно через прежнюю ссылку |
+| Вернуть значение | Вызывающий код решает, где его сохранить |
 
-`int` всегда представляет 32-битное знаковое целое. Размер представления значения не является размером любого объекта в памяти.
+Модель фрейма из первой лекции объясняет отдельные переменные вызовов.
 
-### Переносимость числовых типов {.continuation #sec-j25-lecture-values-absence-portable-numbers}
+## Массив и его компоненты {#sec-lecture-values-absence-arrays}
 
-`int` сохраняет диапазон при переносе между совместимыми JVM.
-
-В документе разработчиков Java 1996 года фиксированные размеры базовых типов
-и поведение операций названы частью переносимости.
-[@bib-fnd-java-whitepaper-introduction]
-
-64-битный компьютер не расширяет `int`. Большему результату нужен другой тип
-операции, а не другой компьютер.
-
-### Типы boolean и char {.continuation #sec-j25-lecture-values-absence-boolean-char}
+### Создание и начальные значения {#sec-lecture-values-absence-array-defaults}
 
 ```java
-int count = 3;
-// if (count) { ... } // число не является условием
-boolean hasPages = count > 0;
+int[] pages = new int[2];
+String[] notes = new String[2];
+System.out.println(pages[0]); // 0
+System.out.println(notes[0]); // null
 ```
 
-У `boolean` два значения. Обычное приведение числа в него запрещено.
+Массив — объект фиксированной длины. Его компоненты получают начальные значения.
+Массив ссылок создан, но строковых объектов в нём пока нет.
+`null` обозначает отсутствие ссылки на объект.
 
-`char` хранит одну единицу UTF-16. Один воспринимаемый знак не обязан помещаться в один `char`.
-
-### Типы литералов {#sec-j25-lecture-values-absence-literals}
-
-```java
-long total = 3_000_000_000L;
-float ratio = 0.5F;
-char letter = 'J';
-String name = "J";
-```
-
-`L` нужен для большого десятичного `long`. `F` задаёт `float`; без него дробный литерал имеет тип `double`.
-
-Одинарные и двойные кавычки обозначают разные типы.
-
-### Массив: переменная, объект, компонент {#sec-j25-lecture-values-absence-array-minimum}
+### Длина и граница обращения
 
 ```java
 int[] pages = {5, 7};
 System.out.println(pages.length); // 2
-System.out.println(pages[0]);     // 5
-pages[0] = 9;
-System.out.println(pages[0]);     // 9
-pages = new int[]{1, 2};
-System.out.println(pages[0]);     // 1
+System.out.println(pages[1]);     // 7
+// pages[2] → ArrayIndexOutOfBoundsException
 ```
 
-`int[]` — ссылочный тип. Скобки выбирают компонент: индексы от 0 до length−1. `length` — поле без скобок; длина созданного массива фиксирована. Последнее присваивание меняет ссылку переменной, предыдущее — компонент объекта. @theory:sec-j25-theory-types-array-minimum
+Допустимы индексы `0 <= i && i < pages.length`.
+`new int[0]` существует, но допустимых индексов у него нет.
 
-### Создание не заполняет ссылки объектами {#sec-j25-lecture-values-absence-array-defaults}
+### Что копирует расширенный for
 
 ```java
-int[] zeros = new int[2];
-String[] comments = new String[2];
-int[] empty = new int[0];
-System.out.println(zeros[0]);      // 0
-System.out.println(comments[0]);   // null
-System.out.println(empty.length); // 0
+int[] pages = {5, 7};
+for (int count : pages) {
+    count = 0;
+}
+System.out.println(pages[0]); // 5
 ```
 
-Созданы два нуля, две null-ссылки и пустой массив. Строковые объекты за comments не созданы. У empty нет допустимого индекса: отдельное чтение `empty[0]` даёт ArrayIndexOutOfBoundsException.
+`count` получает значение компонента. Для изменения компонента
+нужна запись `pages[i] = 0` в индексном обходе.
 
-### Инициализация локальной переменной {#sec-j25-lecture-values-absence-definite-assignment}
+### Независимый массив
 
 ```java
-int pages;
-// System.out.println(pages); // ошибка
-pages = 5;
-System.out.println(pages); // 5
+int[] pages = {5, 7};
+int[] copy = pages.clone();
+copy[0] = 9;
+System.out.println(pages[0]); // 5
+System.out.println(copy == pages); // false
 ```
 
-Локальная переменная не получает автоматический ноль. Поля и компоненты массивов получают начальные значения по отдельным правилам.
+`clone()` создаёт новый массив и копирует значения компонентов.
+Для `int[]` эти значения — числа. [@bib-fnd-jls-arrays]
 
-@theory:sec-j25-theory-types-initialization
+### Если компонент тоже ссылка
 
-### Переменные final и изменяемые объекты {#sec-j25-lecture-values-absence-final}
+```java
+int[][] weeks = {{5, 7}, {4}};
+int[][] copy = weeks.clone();
+copy[0][0] = 9;
+System.out.println(weeks[0][0]); // 9
+```
+
+| Ссылка на компонент | Объект |
+|---|---|
+| `weeks[0]` и `copy[0]` | Один массив `{9, 7}` |
+| `weeks[1]` и `copy[1]` | Один массив `{4}` |
+
+Внешние массивы разные, их компоненты ведут к прежним строкам-массивам.
+
+### final относится к переменной {#sec-lecture-values-absence-final}
 
 ```java
 final int[] pages = {5, 7};
-pages[0] = 9; // допустимо
-// pages = new int[]{1}; // запрещено
+pages[0] = 9;                 // допустимо
+// pages = new int[]{1, 2};   // повторное присваивание запрещено
 ```
 
-`pages` хранит ссылку. Запрет повторного присваивания относится к ней; компонент массива хранит отдельное целое значение.
+Фиксированная ссылка не делает объект неизменяемым.
+Неизменяемость должна следовать из устройства самого объекта.
 
-Неизменяемость объекта — самостоятельное свойство.
+## Строковый объект сохраняет значение {#sec-lecture-values-absence-text}
 
-### Выведение локального типа {#sec-j25-lecture-values-absence-inference}
+### String не изменяет свой текст
 
 ```java
-var count = 5; // int
-count = 7;
-// count = "seven"; // ошибка
-// var missing = null; // нет подходящего типа
+String title = "Java";
+String saved = title;
+title = title + " course";
+System.out.println(title); // Java course
+System.out.println(saved); // Java
 ```
 
-Тип выводится из допустимого инициализатора. `var` не задаёт динамическую переменную и не служит обычным типом поля.
+Конкатенация дала другое строковое значение; `title` получил его ссылку.
+Через `saved` доступна прежняя строка.
 
-@theory:sec-j25-theory-expressions
-
-### Цели выведения локального типа {.continuation #sec-j25-lecture-values-absence-inference-design}
-
-JEP 286 сохраняет статическую проверку и разрешает опустить очевидный локальный
-тип. Инициализатор определяет его сразу. [@bib-ctx-jep286]
+### Результат нужно использовать
 
 ```java
-var pages = 5;       // int
-var days = 2;        // int
-var mean = pages / days; // int, результат 2
+String title = "  Java  ";
+title.strip();
+System.out.println("[" + title + "]"); // [  Java  ]
+title = title.strip();
+System.out.println("[" + title + "]"); // [Java]
 ```
 
-Краткая запись не исправляет выбор операции. `var` требует понимать правую
-часть так же точно, как явное объявление.
+Метод возвращает строку. Сам по себе вызов не заменяет переменную.
+Новое значение не всегда требует нового объекта: это определяет API.
 
-## Числовые преобразования и арифметика {#sec-j25-lecture-values-absence-conversions}
-
-### Расширение и точность {#sec-j25-lecture-values-absence-widening}
+### Ссылка и содержимое отвечают на разные вопросы
 
 ```java
-int original = 16_777_217;
-float rounded = original;
-System.out.println((int) rounded); // 16777216
+String a = "Java";
+String b = new String("Java");
+System.out.println(a == b);      // false
+System.out.println(a.equals(b)); // true
 ```
 
-Расширение диапазона не означает точного представления каждого целого. `int → long` точно; `int → float` может терять младшие значимые разряды.
+`==`: один ли объект? `String.equals`: одинаковый ли текст?
+Для сравнения пользовательского текста выбираем `equals`.
 
-@theory:sec-j25-theory-types-conversions
-
-### Сужение числовых значений {.continuation #sec-j25-lecture-values-absence-narrowing}
+### Длина задаёт единицу измерения
 
 ```java
-System.out.println((byte) 130); // -126
-System.out.println((int) 2.9);  // 2
+String text = "A😀B";
+System.out.println(text.length()); // 4
+System.out.println(text.codePointCount(0, text.length())); // 3
 ```
 
-В первом случае остаются младшие восемь бит, во втором отбрасывается дробная часть к нулю.
+`length()` и индексы `String` измерены в единицах UTF-16.
+`char` хранит одну единицу. Emoji здесь занимает две.
+Это не число байтов файла и не универсальный счётчик видимых знаков.
 
-Если выход за диапазон считается ошибкой данных, проверка должна быть отдельной.
-
-### Числовое повышение малых целых {#sec-j25-lecture-values-absence-promotion}
+### Полуоткрытый диапазон
 
 ```java
-byte pages = 40;
-byte days = 2;
-int total = pages * days; // 80
-// byte b = pages * days; // ошибка
+String text = "Java";
+System.out.println(text.substring(1, 3)); // av
+System.out.println(text.substring(4));    // пустая строка
 ```
 
-Обычное умножение повышает оба значения до `int`. Результат имеет `int`, хотя конкретное `80` помещается в `byte`.
+Диапазон `[begin, end)` включает начало и исключает конец.
+Для `substring(begin, end)` допустимо `0 <= begin <= end <= length()`.
+Индексы относятся к исходному тексту.
 
-[@bib-fnd-schildt-promotion]
-
-### Переполнение промежуточного результата {#sec-j25-lecture-values-absence-overflow}
+### Изменяемый накопитель
 
 ```java
-int a = 50_000;
-int b = 50_000;
-long wrong = a * b;
-System.out.println(wrong); // -1794967296
+StringBuilder line = new StringBuilder();
+line.append("Прочитано: ");
+line.append(12);
+String report = line.toString();
+System.out.println(report); // Прочитано: 12
 ```
 
-Произведение вычислено в `int`. Переполнение обычной целой арифметики не даёт исключения; затем отрицательный результат расширен в `long`.
+`append` изменяет накопитель; `toString` получает строковое значение.
+Различие определяется контрактом класса, а не видом переменной.
+[@bib-fnd-string-api]
 
-### Расширение операнда перед умножением {.continuation #sec-j25-lecture-values-absence-early-long}
+## Отсутствие как часть договора {#sec-lecture-values-absence-absence}
 
-```java
-long correct = (long) a * b;
-System.out.println(correct); // 2500000000
-```
-
-Теперь умножение выполняется в `long`. Больший тип отодвигает границу, но не отменяет её.
-
-В Python целые имеют произвольную точность в пределах ресурсов; перенос расчёта требует проверить промежуточные значения Java.
-
-### Проверяемая арифметика {#sec-j25-lecture-values-absence-exact}
-
-```java
-int count = Integer.MAX_VALUE;
-// Math.addExact(count, 1); // ArithmeticException
-long product = Math.multiplyExact(50_000L, 50_000L);
-```
-
-Обычная операция и `Exact` имеют разные обещания. Выбор определяется требованием к ошибке.
-
-Если `long` недостаточен, нужен иной числовой тип, например `BigInteger`. [@bib-fnd-math-api]
-
-### Частное и остаток {#sec-j25-lecture-values-absence-division}
-
-```java
-System.out.println(-5 / 2); // -2
-System.out.println(-5 % 2); // -1
-System.out.println(Math.floorMod(-5, 2)); // 1
-```
-
-Целое `/` округляет к нулю; `%` сохраняет знак делимого.
-
-Для положительного размера циклического диапазона `floorMod` даёт допустимое неотрицательное смещение.
-
-### Двоичное приближение {#sec-j25-lecture-values-absence-floating}
-
-```java
-System.out.println(0.1 + 0.2); // 0.30000000000000004
-System.out.println(0.1 + 0.2 == 0.3); // false
-```
-
-Конечная десятичная запись не обязана быть конечной двоичной. Сравнение приближённых результатов требует обоснованной погрешности; один универсальный допуск не подходит всем масштабам.
-
-### Точность и требования к числовой модели {.continuation #sec-j25-lecture-values-absence-numeric-choice}
-
-`double` подходит для среднего и многих измерений, если допустимо приближение.
-
-Для точных денежных сумм выбирают целые минимальные единицы или `BigDecimal`
-с правилом округления. Дополнительные знаки печати не делают 0.1 точным.
-
-В Python `int` расширяет представление больших целых в пределах ресурсов;
-это другая числовая модель, чем Java `int`. [@bib-ctx-python-numbers]
-
-@theory:sec-j25-theory-types-representation
-
-### Особые плавающие значения {.continuation #sec-j25-lecture-values-absence-special-floating}
-
-```java
-System.out.println(1.0 / 0.0); // Infinity
-System.out.println(0.0 / 0.0); // NaN
-System.out.println(Double.NaN == Double.NaN); // false
-```
-
-Это другие правила, чем у целого деления. Для NaN есть `Double.isNaN`, для конечного значения — `Double.isFinite`.
-
-## Порядок действий и выбор ветви {#sec-j25-lecture-values-absence-expressions-control}
-
-### Группировка и порядок вычисления {#sec-j25-lecture-values-absence-precedence}
-
-`2 + 3 * 4` даёт `14`; `(2 + 3) * 4` даёт `20`.
-
-Скобки и приоритет определяют группировку. В Java операнды и аргументы вычисляются в заданном порядке слева направо.
-
-Чтобы понять побочный эффект, нужно знать именно последовательность вычисления. @theory:sec-j25-theory-expressions-order
-
-### Постфиксное увеличение {.continuation #sec-j25-lecture-values-absence-increment}
-
-```java
-int i = 2;
-int result = i++ + i;
-System.out.println(result); // 5
-System.out.println(i);      // 3
-```
-
-Слева получено старое `2`, переменная увеличена до `3`, справа прочитано `3`.
-
-Для большого алгоритма изменение лучше делать отдельным понятным действием.
-
-### Отсутствующая и пустая строка {#sec-j25-lecture-values-absence-null-model}
+### Три разных состояния {#sec-lecture-values-absence-null-model}
 
 ```java
 String missing = null;
 String empty = "";
+String pending;
 System.out.println(empty.length()); // 0
-// missing.length() // NullPointerException
+// missing.length() → NullPointerException
+// чтение pending → ошибка определённого присваивания
 ```
 
-Пустая подпись существует. `null` не обозначает объект. Договор журнала должен
-решить, различаются ли «не ввели» и «сохранили пустую подпись».
+`null` — допустимое ссылочное значение без объекта.
+Пустая строка существует. Локальная `pending` ещё не имеет значения,
+разрешённого для чтения.
 
-@theory:sec-j25-theory-types-references
-
-### Присвоенное отсутствие и неприсвоенное значение {.continuation #sec-j25-lecture-values-absence-null-assignment}
+### Выбрать смысл отсутствия
 
 ```java
-String comment = null;
-System.out.println(comment == null); // true
-// int pages = null; // ошибка
+static int commentLength(String text) {
+    if (text == null) {
+        return 0;
+    }
+    return text.length();
+}
 ```
 
-`comment` инициализирована конкретным ссылочным значением. Сравнение разрешено;
-обращение к объекту требует отдельной проверки.
+Здесь договор объединяет отсутствие и пустую строку в результат `0`.
+Другой метод может запрещать отсутствие. Универсального правила нет.
 
-Числовой ноль означает значение количества. Он не обязан означать отсутствие.
-
-### Короткое замыкание и проверка ссылки {#sec-j25-lecture-values-absence-short-circuit}
+### Порядок проверки существенен
 
 ```java
 String text = null;
@@ -384,115 +350,102 @@ boolean hasText = text != null && !text.isEmpty();
 System.out.println(hasText); // false
 ```
 
-Слева `false`, правая часть не выполняется. Замена `&&` на `&` потребует обе части и здесь приведёт к `NullPointerException`.
+После ложной левой части `&&` правая не вычисляется.
+Перестановка частей либо замена `&&` на `&` снова допускает опасный вызов.
 
-Порядок условий является частью корректности.
+### Аннотация сообщает намерение инструменту {#sec-lecture-values-absence-nullness-comparison}
 
-### Тип выбирается для всего выражения {#sec-j25-lecture-values-absence-conditional-type}
-
-```java
-System.out.println(true ? 1 : 2.5); // 1.0
-```
-
-`условие ? значение 1 : значение 2` выбирает одну из двух ветвей. Здесь общий числовой тип — double; выбранная единица преобразована в 1.0. Неисполненная ветвь всё равно участвует в проверке типов. @theory:sec-j25-theory-expressions-conditional
-
-## Модели копирования значений {#sec-j25-lecture-values-absence-copying}
-
-### Копирование примитивных и ссылочных значений {#sec-j25-lecture-values-absence-copy-model}
+**Аннотация** — пометка исходника для компилятора или другого инструмента.
+В Checker Framework `@Nullable` означает, что значение может быть `null`.
 
 ```java
-int pages = 5;
-int saved = pages;
-pages = 9; // saved остаётся 5
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-int[] journal = {5, 7};
-int[] view = journal;
-view[0] = 9; // journal[0] теперь 9
+static int length(@Nullable String text) {
+    return text.length(); // анализатор: возможно отсутствие
+}
 ```
 
-Оба присваивания копируют значение. Во втором случае значение — ссылка на
-общий изменяемый массив. @theory:sec-j25-theory-types-copying
+Метод находится внутри класса. Аннотация не выполняет проверку `if`.
 
-### Value types в CLR {.continuation #sec-j25-lecture-values-absence-clr-model}
+### Три разных события
 
-CTS разделяет value types и reference types. В C# `int` — имя `System.Int32`;
-пользовательская структура тоже может копироваться как значение.
-[@bib-ctx-clr-cts; @bib-ctx-csharp-types]
+| Действие | Результат для предыдущего метода |
+|---|---|
+| Обычный javac, аннотация доступна, обработка выключена | Компиляция допустима |
+| Подключён Nullness Checker | Диагностика возможного разыменования `null` |
+| Выполнен `length(null)` без исправления | `NullPointerException` |
 
-Поля и методы не требуют ссылочной семантики. Java 25 оставляет экземпляры
-пользовательских классов объектами, доступными по ссылкам.
+После ветви `if (text == null) return 0;` оставшийся путь безопасен.
+Смысл проверки — до запуска найти нарушение объявленного договора.
+Настройка инструмента: @handbook:sec-api-values-nullness.
+[@bib-fnd-nullness-checker]
 
-@theory:sec-j25-theory-types-clr
-
-### Примитивы и классы-оболочки {.continuation #sec-j25-lecture-values-absence-boxing-model}
+### Проверяем объяснение на новом случае
 
 ```java
-Integer boxed = 5; // упаковка
-int pages = boxed; // распаковка
-Object value = boxed;
+String[] notes = {"Java"};
+String[] saved = notes.clone();
+notes[0] = notes[0] + " course";
 ```
 
-`int` и `Integer` остаются разными типами. Примитив не имеет экземплярных
-методов; оболочка позволяет использовать число в объектном контексте.
-[@bib-jls-boxing-unboxing]
+Какой текст доступен через `saved[0]`? Какие объекты общие?
+Почему `final String[] notes` не изменит ответ?
 
-### Распаковка и отсутствие {.continuation #sec-j25-lecture-values-absence-unboxing-null}
+## Дополнительные разборы {#sec-lecture-values-absence-extra}
+
+### Глубина копирования выбирается по данным
 
 ```java
-Integer missing = null;
-// int pages = missing; // NullPointerException
+int[][] copy = new int[weeks.length][];
+for (int i = 0; i < weeks.length; i++) {
+    copy[i] = weeks[i].clone();
+}
 ```
 
-Отсутствующая оболочка не превращается в ноль. Для журнала нужно определить:
-известно нулевое количество или количество ещё не получено.
+Для существующих строк-массивов скопированы и внешний уровень, и числа.
+Если две исходные строки были одним объектом, этот алгоритм создаст
+две разные копии. Сохранение связей — отдельное требование.
+@theory:sec-theory-arrays
 
-До распаковки проверяют отсутствие. Позднее API сможет выразить этот договор
-другими средствами. @theory:sec-j25-theory-types-wrappers
+### Числовая оболочка допускает отсутствие
 
-### Ссылочные поля внутри копируемого значения {.continuation #sec-j25-lecture-values-absence-shallow-value}
-
-Если поле структуры C# содержит ссылку на список, копия структуры сохраняет
-ссылку на тот же список.
-
-В Java копия ссылки на массив сохраняет тот же массив.
-
-Нужно спросить: **что находится внутри копируемого значения?** Термины «value type» и «объект» не задают сами по себе глубокую копию или место в памяти. [@bib-ctx-ecma335]
-
-### Неизменяемое число в Python {.continuation #sec-j25-lecture-values-absence-python-copy}
-
-```python
-pages = 5
-saved = pages
-pages += 1
-# pages == 6, saved == 5
+```java
+Integer pages = null;
+// int count = pages; // NullPointerException при распаковке
 ```
 
-Числа — объекты, но неизменяемые. Имя получает другой результат; прежнее
-число сохраняется. У изменяемого списка общая ссылка даёт общие изменения.
-[@bib-ctx-python-model]
+`Integer` хранится как ссылка; получение `int` требует числового значения.
+`null` не превращается в ноль. Сравнение оболочек через `==`
+может сравнивать ссылки; правила разбираются в @theory:sec-theory-types-wrappers.
 
-### Аннотация не вызывает runtime-проверку {#sec-j25-lecture-values-absence-nullness-comparison}
+### Интернирование не меняет задачу сравнения
 
-У Checker Framework 4.3.1 аннотация `@Nullable` из `org.checkerframework.checker.nullness.qual` допускает null. Для операции длины обычный `javac -proc:none` с annotation JAR принимает разыменование; NullnessChecker отвергает `dereference.of.nullable`; запуск с null даёт NPE.
+```java
+System.out.println("Ja" + "va" == "Java"); // true
+```
 
-Проверка `text != null` перед доступом устраняет опасный путь; выбор нуля вместо отсутствующей длины — отдельный договор. Аннотация, выбранный анализатор и runtime имеют разные обязанности. @theory:sec-j25-theory-types-nullness-comparison
+Константные строковые выражения интернируются.
+Произвольный текст из файла не обязан иметь ту же ссылку.
+Предметный вопрос «одинаковые буквы?» остаётся вопросом `equals`.
 
-### Сходные слова, разные состояния {#sec-j25-lecture-values-absence-absence-languages}
+### Кодовая точка тоже не всегда видимый знак
 
-C# nullable context: `string?` и обращение без проверки дают CS8602; предупреждение не предотвращает NullReferenceException, если запуск разрешён.
+```java
+String a = "\u00E9";
+String b = "e\u0301";
+System.out.println(a.equals(b)); // false
+```
 
-JavaScript: после `let text;` значение — undefined. Чтение до `let` даёт ReferenceError (TDZ). Явный null — другое значение.
+Одинаково выглядящие формы могут иметь разные последовательности.
+Нормализация и границы воспринимаемых знаков требуют отдельного договора.
+@theory:sec-theory-text-normalization
 
-Zig 0.15.2: undefined — неопределённое содержимое, не признак отсутствия; `?i32` с null выражает отсутствие. Это документированное сравнение, не выполненный Zig-опыт. @theory:sec-j25-theory-types-nullness-comparison
+### Источники {.unnumbered .scrollable}
 
-### Проверка переноса {#sec-j25-lecture-values-absence-exit}
+Правила значений, вызовов и массивов: [@bib-jls-25; @bib-fnd-jls-arrays].
+Контракты строк: [@bib-fnd-string-api]. Другие модели копирования:
+[@bib-fnd-cpp-references; @bib-fnd-cpp-array].
 
-**Прогноз:** Новая строка[2], неприсвоенная локальная ссылка и пустой массив — одинаковая пустота?
-
-**Разбор:** Нет: два null-компонента, compile-fail чтения локальной и объект длины 0. У пустого массива нет допустимого индекса; распаковка null даёт NPE. Вы отличаете мутацию компонента от переназначения ссылки.
-
-Точное объяснение: @theory:sec-j25-theory-types, @theory:sec-j25-theory-expressions.
-
-## Источники {.unnumbered.scrollable}
-
-[@bib-ctx-java-simple-familiar]
+::: {#refs}
+:::

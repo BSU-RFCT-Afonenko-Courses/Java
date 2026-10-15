@@ -1,18 +1,18 @@
 ---
-categories: [j25, j25-core, j25-text]
+categories: [java, java-core, java-text]
 exercise-bank: true
 default-exercise-target: manual
 default-exercise-statement-visibility: open
 ---
 
-# Обработка текста {#sec-j25-bank-text}
+# Обработка текста {#sec-bank-text}
 
-Теория: @theory:sec-j25-theory-text. Условия используются в лабораторных по ссылке;
-время в карточках — ориентир чтения, решения и самостоятельной проверки.
+Теория: @theory:sec-theory-text. Условия используются в лабораторных по ссылке. Дополнительные карточки
+не становятся обязательными от присутствия в банке.
 
-Подготовка: @theory:sec-j25-theory-text-early-lab и @handbook:sec-j25-api-strings-word-boundaries. Границы слов можно найти ручным обходом или регулярным выражением для указанного алфавита.
+Подготовка: @theory:sec-theory-text-positions и @handbook:sec-api-strings-word-boundaries. Границы слов можно найти ручным обходом или регулярным выражением для указанного алфавита.
 
-## Данные и границы текста {#sec-j25-bank-text-input}
+## Данные и границы текста {#sec-bank-text-input}
 
 Если карточка не задаёт более узкий алфавит, входные строки состоят из
 латинских букв A–Z/a–z, русских букв А–Я/а–я с Ё/ё, цифр 0–9,
@@ -27,10 +27,10 @@ default-exercise-statement-visibility: open
 В отсутствие слов преобразование слов оставляет текст прежним, поиск слов
 по длине выводит сообщение «Слов нет», подсчёт вхождений слова возвращает ноль.
 
-:::: {#exr-j25-text-insert-substring difficulty="introductory" time="20"}
+:::: {#exr-j25-text-insert-substring difficulty="introductory"}
 ## Вставка подстроки
 
-Алфавит и единица счёта: @tasks:sec-j25-bank-text-input.
+Алфавит и единица счёта: @tasks:sec-bank-text-input.
 
 В тексте после k-го символа вставить заданную подстроку. Вход: исходный текст,
 подстрока и целое `k` от `0` до длины текста включительно. `k = 0` означает
@@ -42,10 +42,10 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-text-replace-word-letter difficulty="intermediate" time="40"}
+:::: {#exr-j25-text-replace-word-letter difficulty="intermediate"}
 ## Замена k-й буквы слова
 
-Границы слов, алфавит и единица счёта: @tasks:sec-j25-bank-text-input.
+Границы слов, алфавит и единица счёта: @tasks:sec-bank-text-input.
 
 В каждом слове текста k-ю букву заменить заданным символом. Вход: текст,
 положительное целое `k` и один символ допустимого алфавита. Буквы внутри
@@ -56,10 +56,10 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-text-word-length-extrema difficulty="intermediate" time="45"}
+:::: {#exr-j25-text-word-length-extrema difficulty="intermediate"}
 ## Самые длинные и короткие слова
 
-Границы слов, алфавит и единица длины: @tasks:sec-j25-bank-text-input.
+Границы слов, алфавит и единица длины: @tasks:sec-bank-text-input.
 
 В тексте найти и напечатать все слова максимальной и все слова минимальной
 длины. Выведите два подписанных списка: сначала максимумы, затем минимумы;
@@ -70,16 +70,16 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-text-strong-password difficulty="intermediate" time="35"}
-## Проверка сильного пароля
+:::: {#exr-j25-text-strong-password difficulty="intermediate"}
+## Проверка формата строки
 
-Проверить, является ли строка сильным паролем. Пароль считается сильным, если его длина больше либо равна 10 символам, он содержит как минимум одну цифру, одну букву в верхнем и одну букву в нижнем регистре. Пароль может содержать только латинские буквы и/или цифры, а также символ «_».
+Проверить строку по учебному правилу формата пароля. Строка подходит, если его длина больше либо равна 10 символам, он содержит как минимум одну цифру, одну букву в верхнем и одну букву в нижнем регистре. Пароль может содержать только латинские буквы и/или цифры, а также символ «_».
 
 Возвращайте или показывайте булев результат. `"Abcdefghi1"` подходит; строка длины 9, `"abcdefghij1"`, `"ABCDEFGHIJ1"`, строка без цифры, пустая строка и строка с пробелом не подходят. Проверки символов циклом и проверка шаблоном допустимы. [@bib-task-strong-password]
 
 ::::
 
-:::: {#exr-j25-text-compress-character-runs difficulty="advanced" time="40"}
+:::: {#exr-j25-text-compress-character-runs difficulty="advanced"}
 ## Сжатие повторяющихся символов
 
 Сожмите строку, состоящую только из латинских букв A–Z/a–z. Каждую
@@ -93,10 +93,10 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-text-insert-after-word-ending difficulty="intermediate" time="40"}
+:::: {#exr-j25-text-insert-after-word-ending difficulty="intermediate"}
 ## Вставка слова после заданного окончания
 
-Границы слов и алфавит: @tasks:sec-j25-bank-text-input.
+Границы слов и алфавит: @tasks:sec-bank-text-input.
 
 После каждого слова текста, заканчивающегося заданной подстрокой, вставить
 указанное слово. Вход: текст, непустое окончание из букв и непустое слово
@@ -108,41 +108,41 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-text-remove-nonletters difficulty="intermediate" time="45"}
+:::: {#exr-j25-text-remove-nonletters difficulty="intermediate"}
 ## Удаление небуквенных символов
 
 Из текста удалить все символы, кроме пробелов, не являющиеся буквами. Между последовательностями подряд идущих букв оставить хотя бы один пробел. [@bib-task-remove-nonletters]
 
 ::::
 
-:::: {#exr-j25-text-longest-nonletter-substring difficulty="advanced" time="45"}
+:::: {#exr-j25-text-longest-nonletter-substring difficulty="advanced"}
 ## Самая длинная подстрока без букв
 
 В тексте найти первую подстроку максимальной длины, не содержащую букв. [@bib-task-longest-nonletter-substring]
 
 ::::
 
-:::: {#exr-j25-text-sum-text-digits difficulty="introductory" time="20"}
+:::: {#exr-j25-text-sum-text-digits difficulty="introductory"}
 ## Сумма цифр в тексте
 
 В заданном тексте найти сумму всех встречающихся цифр. [@bib-task-sum-text-digits]
 
 ::::
 
-:::: {#exr-j25-text-count-normalized-word difficulty="intermediate" time="50"}
+:::: {#exr-j25-text-count-normalized-word difficulty="intermediate"}
 ## Вхождения слова без учета регистра и вариантов букв
 
 Определить количество вхождений заданного слова в текст, игнорируя регистр
 символов и считая буквы «е», «ё» и «и», «й» одинаковыми. Искомое слово
 непустое и состоит только из букв. Сравнивайте целые слова по границам из
-@tasks:sec-j25-bank-text-input, а не подстроки: для поиска `"елка"` текст
+@tasks:sec-bank-text-input, а не подстроки: для поиска `"елка"` текст
 `"Ёлка, елка; елками"` даёт `2`. Приведение регистра и замены букв
 выполняются только для сравнения, исходный текст не меняется. Без слов
 результат равен нулю. [@bib-task-count-normalized-word]
 
 ::::
 
-:::: {#exr-j25-text-decompress-character-runs difficulty="advanced" time="45"}
+:::: {#exr-j25-text-decompress-character-runs difficulty="advanced"}
 ## Распаковка сжатого текста
 
 Распакуйте строку, полученную по правилу @tasks:exr-j25-text-compress-character-runs.
@@ -156,7 +156,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-text-left-align-text difficulty="advanced" time="60"}
+:::: {#exr-j25-text-left-align-text difficulty="advanced"}
 ## Выравнивание текста по левому краю
 
 Осуществите форматирование заданного текста по левому краю. Вход: текст
@@ -176,7 +176,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-text-bubble-sort-strings difficulty="intermediate" time="60"}
+:::: {#exr-j25-text-bubble-sort-strings difficulty="intermediate"}
 ## Пузырьковая сортировка строк
 
 Реализуйте пузырьковую сортировку массива строк: последовательно сравнивайте соседние элементы и переставляйте их, пока массив не упорядочен. Используйте естественный порядок `String.compareTo`. Массив изменяется на месте; элементы ненулевые. Покажите вход `{"beta", "alpha", "beta", "Gamma"}`, пустой массив и уже отсортированный массив. [@bib-task-bubble-sort-strings]

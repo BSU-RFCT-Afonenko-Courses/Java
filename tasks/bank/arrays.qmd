@@ -1,33 +1,33 @@
 ---
-categories: [j25, j25-core, j25-arrays]
+categories: [java, java-core, java-arrays]
 exercise-bank: true
 default-exercise-target: false
 default-exercise-statement-visibility: open
 ---
 
-# Массивы {#sec-j25-bank-arrays}
+# Массивы {#sec-bank-arrays}
 
-Теория: @theory:sec-j25-theory-arrays. Условия используются в лабораторных по ссылке;
-время в карточках — ориентир чтения, решения и самостоятельной проверки.
+Теория: @theory:sec-theory-arrays. Условия используются в лабораторных по ссылке. Дополнительные карточки
+не становятся обязательными от присутствия в банке.
 Для подключённых проектов используйте Java 25 без preview и точку входа
 `Main.main(String[] args)`. Алгоритм, вспомогательные методы и организацию
 программы выбирайте самостоятельно. Протокол ниже описывает только вход
 и наблюдаемый вывод: приглашения к вводу не требуются. Числа можно разделять
 пробельными символами; десятичный разделитель — точка. Вещественные результаты
 сравниваются с абсолютным допуском `1e-8`; количество знаков не фиксируется.
-Адресная подготовка: @handbook:sec-j25-api-console-decimals (конечный `double` и точка),
-@handbook:sec-j25-api-console-output (числа, табуляция и переводы строки).
+Адресная подготовка: @handbook:sec-api-console-decimals (конечный `double` и точка),
+@handbook:sec-api-console-output (числа, табуляция и переводы строки).
 
-:::: {#exr-j25-arrays-array-average difficulty="introductory" time="25" target="prairielearn" project="/projects/array-average" project-check="java-labs"}
+:::: {#exr-j25-arrays-array-average difficulty="introductory" target="prairielearn" project="/projects/array-average" project-check="java-labs"}
 ## Среднее для десяти значений
 
 Используйте массив для нахождения среднего десяти значений типа `double`. В исходнике выберите десять значений для демонстрационного запуска.
 
-Протокол проверки: если стандартный ввод содержит данные, это ровно десять значений `double`, разделённых пробельными символами; найдите их среднее. При пустом вводе используйте демонстрационный массив. Выведите только среднее. Например, `1 2 3 4 5 6 7 8 9 10` даёт `5.5`. Пустой массив, другое количество значений и некорректные токены не проверяются.
+Вход и результат: если стандартный ввод содержит данные, это ровно десять значений `double`, разделённых пробельными символами; найдите их среднее. При пустом вводе используйте демонстрационный массив. Выведите только среднее. Например, `1 2 3 4 5 6 7 8 9 10` даёт `5.5`. Допустимый вход содержит ровно десять корректных чисел.
 
-Критерий преподавательской проверки: вычисление должно использовать массив. Автотесты проверяют среднее, но не доказывают использование массива в исходнике.
+Вычисление использует массив; покажите его участие в алгоритме.
 
-Вещественные результаты можно выводить в десятичной или экспоненциальной форме с точкой. Автоматическая проверка допускает абсолютную погрешность `1e-8`; количество знаков после точки не фиксируется.
+Вещественные результаты можно выводить в десятичной или экспоненциальной форме с точкой. Допустимая абсолютная погрешность — `1e-8`; количество знаков после точки не фиксируется.
 
 {{< project-download exr-j25-arrays-array-average kind="starter" text="Скачать стартовый проект" >}}
 
@@ -35,12 +35,12 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-arrays-reverse-array difficulty="introductory" time="25" target="prairielearn" project="/projects/reverse-array" project-check="java-labs"}
+:::: {#exr-j25-arrays-reverse-array difficulty="introductory" target="prairielearn" project="/projects/reverse-array" project-check="java-labs"}
 ## Элементы массива в обратном порядке
 
 Выведите элементы заданного `int[]` от последнего к первому, не изменяя сам массив. Покажите обычный массив, пустой массив и массив из одного элемента. Обратный вывод и перестановка элементов массива — разные операции.
 
-Протокол проверки: стандартный ввод содержит неотрицательную длину `n`, затем ровно `n` значений `int`. Выведите только элементы в обратном порядке через пробельные символы. Для `4 7 -2 7 0` вывод — `0 7 -2 7`, для `0` вывод не содержит чисел. При пустом стандартном вводе используйте демонстрационный массив из исходника.
+Вход и результат: стандартный ввод содержит неотрицательную длину `n`, затем ровно `n` значений `int`. Выведите только элементы в обратном порядке через пробельные символы. Для `4 7 -2 7 0` вывод — `0 7 -2 7`, для `0` вывод не содержит чисел. При пустом стандартном вводе используйте демонстрационный массив из исходника.
 
 Сохранение исходного массива и его использование проверяет преподаватель: по одному выводу нельзя доказать, что исходные данные не переставлялись.
 
@@ -50,7 +50,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-arrays-subtract-array-average difficulty="intermediate" time="55" target="prairielearn" project="/projects/subtract-array-average" project-check="java-labs"}
+:::: {#exr-j25-arrays-subtract-array-average difficulty="intermediate" target="prairielearn" project="/projects/subtract-array-average" project-check="java-labs"}
 ## Вычитание среднего арифметического
 
 Для матрицы 3×3 вычтите из каждого элемента среднее арифметическое его строки. Результат храните как `double[][]`; исходную матрицу не изменяйте.
@@ -59,9 +59,9 @@ default-exercise-statement-visibility: open
 
 Выведите результат тремя строками по три числа, без подписей. Для обязательного примера строки результата: `(−3, 0, 3)`, `(5/3, −4/3, −1/3)`, `(1/3, 7/3, −8/3)`; дроби выводятся десятичными числами.
 
-Критерий преподавательской проверки: новый массив `double[][]` и сохранение исходного массива; автотесты по стандартному выводу не доказывают эти свойства.
+Покажите новый массив `double[][]` и состояние исходной матрицы после расчёта.
 
-Вещественные результаты можно выводить в десятичной или экспоненциальной форме с точкой. Автоматическая проверка допускает абсолютную погрешность `1e-8`; количество знаков после точки не фиксируется.
+Вещественные результаты можно выводить в десятичной или экспоненциальной форме с точкой. Допустимая абсолютная погрешность — `1e-8`; количество знаков после точки не фиксируется.
 
 {{< project-download exr-j25-arrays-subtract-array-average kind="starter" text="Скачать стартовый проект" >}}
 
@@ -69,9 +69,9 @@ default-exercise-statement-visibility: open
 
 ::::
 
-Подготовка к заданию @tasks:exr-j25-arrays-sort-matrix-rows: @practice:sec-j25-practice-arrays-row-key и @handbook:sec-j25-api-arrays-sort-stability.
+Подготовка к заданию @tasks:exr-j25-arrays-sort-matrix-rows: @practice:sec-practice-arrays-row-key и @handbook:sec-api-arrays-sort-stability.
 
-:::: {#exr-j25-arrays-sort-matrix-rows difficulty="advanced" time="75" target="prairielearn" project="/projects/sort-matrix-rows" project-check="java-labs"}
+:::: {#exr-j25-arrays-sort-matrix-rows difficulty="advanced" target="prairielearn" project="/projects/sort-matrix-rows" project-check="java-labs"}
 ## Строки матрицы по возрастанию суммы
 
 Перестройте матрицу 3×3, переставляя целые строки по неубыванию суммы их элементов. При одинаковых суммах сохраняйте исходный взаимный порядок строк. Порядок элементов внутри строки не изменяется.
@@ -88,7 +88,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-arrays-move-row-zeros difficulty="intermediate" time="55" target="prairielearn" project="/projects/move-row-zeros" project-check="java-labs"}
+:::: {#exr-j25-arrays-move-row-zeros difficulty="intermediate" target="prairielearn" project="/projects/move-row-zeros" project-check="java-labs"}
 ## Нули после остальных элементов строки
 
 Преобразуйте каждую строку матрицы 3×3 так, чтобы нули располагались после всех ненулевых элементов. Взаимный порядок ненулевых элементов сохраняется. Допустимы преобразование на месте и создание нового массива.
@@ -103,7 +103,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-arrays-cyclic-matrix-shift difficulty="advanced" time="75"}
+:::: {#exr-j25-arrays-cyclic-matrix-shift difficulty="advanced"}
 ## Циклический сдвиг матрицы
 
 Даны n — размерность матрицы a[n][n] — и фиксированный набор значений ее элементов в интервале от −n до n.
@@ -114,7 +114,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-arrays-rotate-matrix difficulty="advanced" time="75"}
+:::: {#exr-j25-arrays-rotate-matrix difficulty="advanced"}
 ## Поворот матрицы
 
 Даны n — размерность матрицы a[n][n] — и фиксированный набор значений ее элементов в интервале от −n до n.
@@ -125,7 +125,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-arrays-remove-max-rows-columns difficulty="advanced" time="75"}
+:::: {#exr-j25-arrays-remove-max-rows-columns difficulty="advanced"}
 ## Удаление строк и столбцов с максимумом
 
 Даны n — размерность матрицы a[n][n] — и фиксированный набор значений ее элементов в интервале от −n до n.
@@ -136,7 +136,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-arrays-saddle-points difficulty="intermediate" time="45"}
+:::: {#exr-j25-arrays-saddle-points difficulty="intermediate"}
 ## Седловые точки матрицы
 
 Даны n — размерность матрицы a[n][n] — и фиксированный набор значений ее элементов в интервале от −n до n.
@@ -147,7 +147,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-arrays-matrix-local-minima difficulty="intermediate" time="45"}
+:::: {#exr-j25-arrays-matrix-local-minima difficulty="intermediate"}
 ## Локальные минимумы матрицы
 
 Даны n — размерность матрицы a[n][n] — и фиксированный набор значений ее элементов в интервале от −n до n.
@@ -158,7 +158,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-arrays-sort-array difficulty="intermediate" time="45"}
+:::: {#exr-j25-arrays-sort-array difficulty="intermediate"}
 ## Сортировка массива
 
 Создайте программу пузырьковой сортировки массива целых чисел. В сортировке используется многократное сравнение и при необходимости обмен соседними элементами массива. Отобразите исходный и отсортированный массив.
