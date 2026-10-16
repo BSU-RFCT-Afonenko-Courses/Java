@@ -1,0 +1,218 @@
+---
+categories: [j25, j25-core, j25-files]
+title: "Ресурсы и файлы"
+format:
+  revealjs:
+    fontsize: 32px
+    width: 1280
+    height: 800
+    css: assets/lesson.css
+---
+
+## Ресурсы и файлы {#sec-j25-practice-files}
+
+За 30 минут восстановим исключения и потоки, предскажем очистку после
+отказа и проверим старт подготовленного проекта. Канонический состав:
+@tasks:sec-j25-lab-files.
+
+::: {.notes}
+30 минут: 4 — аргументы/пути, 5 — byte/char/EOF, 8 — ресурс и политика,
+9 — starter/build/границы проверки, 4 — начать самостоятельную работу.
+Новые 120 минут — оценка реализации после готовой среды, не pilot.
+:::
+
+## Аргументы и вход {#sec-j25-practice-files-recap}
+
+### Сначала число аргументов {#sec-j25-practice-files-s1}
+
+В копировании передают пути входа и выхода. У gradeapp другая команда:
+**путь входа и порог**, ровно два аргумента. Готовая внешняя граница
+проверяет число аргументов, порог 0–100 и синтаксис пути до чтения.
+Шаблон обращения к массиву:
+
+```java
+if (args.length != 2) {
+    System.err.println("нужны два аргумента");
+    return;
+}
+```
+
+Это тело `main(String[] args)`. Нельзя читать `args[1]` до проверки длины.
+Тип ошибки компиляции, недопустимый вход и runtime-отказ различаются:
+@theory:sec-j25-theory-exceptions-contract.
+
+### Рабочий каталог {#sec-j25-practice-files-s2 .continuation}
+
+```java
+var source = java.nio.file.Path.of("samples", "students.txt");
+System.out.println(source.toAbsolutePath());
+```
+
+Фрагмент помещается в `main`. Абсолютный адрес зависит от рабочего
+каталога процесса; `Path.of` не открывает файл, `toAbsolutePath` не
+доказывает его существования. API: @handbook:sec-j25-api-files-path.
+
+### Подготовка входа {#sec-j25-practice-files-input .continuation}
+
+Для копирования подготовьте UTF-8 с кириллицей, ASCII-пробелом и
+переводом строки; сохраните вход для сравнения. Входной и выходной
+файлы выбирайте разными. Правило одинакового файла и состояние выхода
+после отказа определяет условие @tasks:exr-j25-files-byte-file-copy.
+
+Для gradeapp уже есть `samples/students.txt`, `blank.txt`, `duplicate.txt`.
+Пустой файл можно создать отдельно. Выходного пути у этой команды нет.
+
+## Уже известные потоки {#sec-j25-practice-files-reading}
+
+### Байты и конец {#sec-j25-practice-files-byte}
+
+`InputStream.read()` возвращает `int`: 0–255 либо `-1` конца.
+`0xFF` даёт 255, а не `-1`; IOException обозначает отказ, а не EOF.
+Байтовое копирование заменяет ASCII-пробел `0x20` и сохраняет прочие байты.
+
+### Строки и конец {#sec-j25-practice-files-text .continuation}
+
+`BufferedReader.readLine()` даёт текст без разделителя, `""` пустой
+строки и `null` конца. `Files.newBufferedReader(path, UTF_8)` задаёт
+декодирование. Номер физической строки увеличивается и для пропущенной
+blank; пустая строка не является концом файла.
+
+### Кодировка и сохранение текста {#sec-j25-practice-files-s3 .continuation}
+
+Кириллическая буква кодируется несколькими байтами UTF-8. Приведение
+одного байта к `char` её не декодирует. Чтение строк удаляет разделители;
+печать через `println` может заменить их. Для точного копирования не
+теряйте эти данные. В двух версиях нужны byte/char потоки по условию,
+а схема обхода свободна. @handbook:sec-j25-api-files-operations.
+
+## Закрытие и реакция {#sec-j25-practice-files-reference}
+
+### Почему close в конце недостаточно {#sec-j25-practice-files-manual}
+
+```java
+var input = java.nio.file.Files.newInputStream(source);
+try {
+    System.out.println(input.read());
+} finally {
+    input.close();
+}
+```
+
+Это тело метода `static void first(java.nio.file.Path source)
+throws java.io.IOException`. При байтах `0x00,0xFF` печатается 0;
+при пустом входе −1. Если чтение откажет, finally всё равно вызывает
+close. Если откажет также close, в этой форме ошибка закрытия вытеснит
+ошибку чтения.
+
+### Несколько ресурсов {#sec-j25-practice-files-manual-many .continuation}
+
+Защита первого начинается **до** открытия второго. Два close подряд
+в одном finally не обеспечивают второй вызов после отказа первого.
+Вложенные try/finally обеспечивают попытку закрыть каждый успешно
+открытый ресурс. Сохранение обеих ошибок требует дополнительного кода.
+Полный соседний опыт: @theory:sec-j25-theory-resources-manual-two.
+
+### Try с ресурсами {#sec-j25-practice-files-s4 .continuation}
+
+Try с ресурсами открывает слева направо и закрывает справа налево.
+Ошибка тела остаётся primary, отказ close присоединяется как suppressed;
+cause объясняет происхождение primary. Полный `CauseCloseDemo` с выводом:
+@theory:sec-j25-theory-resources-suppressed.
+
+### Кто выбирает дальнейший шаг {#sec-j25-practice-files-catch}
+
+Соседний опыт не разбирает каталог и не выдаёт алгоритм лабораторной.
+Он показывает выбор реакции на один checked-отказ. Полный файл
+`ResourcePolicyDemo.java`:
+
+```java
+public class ResourcePolicyDemo {
+    static final class Resource implements AutoCloseable {
+        void read() throws java.io.IOException {
+            throw new java.io.IOException("read failed");
+        }
+        @Override public void close() {
+            System.out.println("closed");
+        }
+    }
+    public static void main(String[] args) {
+        try (var resource = new Resource()) {
+            resource.read();
+            System.out.println("use result");
+        } catch (java.io.IOException failure) {
+            System.err.println("operation failed: " + failure.getMessage());
+        }
+    }
+}
+```
+
+### Предсказание и состояние {#sec-j25-practice-files-s5 .continuation}
+
+Stdout: `closed`; stderr: `operation failed: read failed`; процесс
+завершается обычно. `use result` не печатается. Закрытие происходит до
+catch. Во внешнем обработчике есть политика сообщения; внутри ресурса
+фиктивный успешный результат не создаётся. Порядок объединённого
+отображения stdout/stderr терминалом здесь не обещается.
+
+**Catch и close не откатывают изменения.** Частично записанный выход
+копирования возможен по условию; gradeapp проверяет весь вход до stdout,
+но не может забрать уже переданные байты при отказе stdout.
+
+## Старт самостоятельной работы {#sec-j25-practice-files-assignments}
+
+### Фрагменты с исключениями {#sec-j25-practice-files-exceptions}
+
+В @tasks:exr-j25-exceptions-exception-flow-errors исправьте независимые
+ошибки try, порядка обработчиков и throws. Отказ компиляции отличайте
+от исключения запуска. Старые queue/stack и poem-frequency карточки
+остаются дополнительной тренировкой в банке.
+
+### Две версии копирования {#sec-j25-practice-files-s6 .continuation}
+
+@tasks:exr-j25-files-byte-file-copy — byte streams и явное закрытие;
+@tasks:exr-j25-files-character-file-copy — UTF-8 char streams и try
+с ресурсами. Обе версии должны учитывать пустой вход. Проверяйте байты
+и символы по соответствующему условию, не только строку в терминале.
+
+### Заготовка интеграции {#sec-j25-practice-files-s7}
+
+@tasks:exr-j25-files-gradeapp-report использует готовые модель, исключение,
+сборку и внешнюю CLI-границу. Из корня скачанного `student` проверьте
+`sh ./build.sh --version`, затем `sh ./build.sh -DskipTests package`.
+Версия Java должна быть 25; точные команды и состав:
+@handbook:sec-j25-api-project-wrapper.
+
+TODO в parser, loader, Reports и `Main.run(Path,int)` компилируются, но
+явно отказывают. Команда с неверным числом аргументов уже даёт status2;
+правильный запуск до реализации не является готовым успешным отчётом.
+После реализации `sh ./build.sh test package` выполняет открытые примеры.
+
+### Какие проверки различаются {#sec-j25-practice-files-checks .continuation}
+
+| Наблюдение | Что проверяем |
+|---|---|
+| Normal/empty/blank | Допустимый результат, EOF и физические строки |
+| Повтор после strip | Уникальность id каталога, а не equals всей записи |
+| Плохая строка после хорошей | Полная проверка до полезного stdout |
+| Порог и ничья | Включённая граница и естественный String id-порядок |
+| Исходный список | Сортировка отчёта его не переставляет |
+| Missing file | Отказ чтения отличается от пустого успеха |
+
+### Начало решения {#sec-j25-practice-files-result .continuation}
+
+За последние четыре минуты откройте TODO и запустите предоставленную
+сборку. Затем реализуйте части и покажите обычный и граничный запуск.
+Цикл и Stream отчёта допустимы при одинаковом поведении. Объясните,
+почему дубли проверяет загрузчик и когда начинается полезный вывод.
+
+Состав ЛР10 — exception-flow30 + byte-copy45 + char-copy30 +
+integration120 = **225 минут**, вводные30 отдельно. Integration заменяет
+две прежние выбранные позиции по60. Это плановые ориентиры; каноническое
+условие и обязательность закрепляет @tasks:sec-j25-lab-files.
+
+## Источники {.unnumbered .scrollable}
+
+Контракты: [@bib-data-jls-exceptions; @bib-data-jls-resources; @bib-data-files-api; @bib-data-bufferedreader-api].
+
+::: {#refs}
+:::

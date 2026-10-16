@@ -1,0 +1,36 @@
+---
+categories: [j25, j25-core, j25-collections]
+assessment:
+  kind: lab
+  theory-time: 30
+---
+
+# Коллекции {#sec-j25-lab-collections}
+
+Сопоставить собственное равенство ключа, хеш-частоты и независимость состава списка.
+
+Теория: @theory:sec-j25-theory-equality-domain, @theory:sec-j25-theory-equality-hash, @theory:sec-j25-theory-collections-snapshots. API по операции: @handbook:sec-j25-api-sets-maps-set, @handbook:sec-j25-api-sets-maps-bulk, @handbook:sec-j25-api-sets-maps-map, @handbook:sec-j25-api-lists-basics. Для выбранных скобок: @handbook:sec-j25-api-sets-maps-queue. Введение: @practice:sec-j25-practice-collections.
+
+Самостоятельная работа: 180 минут; вводный разбор: 30 минут отдельно. Это ориентир чтения, реализации и проверки, не измеренный срок и не обещание завершить всё на занятии.
+
+Собственный ключ/hash 35 + view/copy/snapshot 45 + union/intersection 40 + скобки либо polynomial Map 60 = 180. Общая часть 120, выбранная альтернатива 60; выполнение обеих — добровольные дополнительные 60. Оценки 35/45 — гипотезы для проверки на учебной группе. Digit-stack и word-frequency сохранены как дополнительные карточки.
+
+## Состав работы
+
+Все задания вне пары обязательны; из каждой пары выполните одно:
+
+- @tasks:exr-j25-collections-balanced-brackets **либо** @tasks:exr-j25-collections-polynomial-map-addition.
+
+::: {.task-items stage="homework"}
+1. @exr-j25-collections-object-hash
+1. @exr-j25-collections-views-snapshots
+1. @exr-j25-collections-set-union-intersection
+1. [@exr-j25-collections-balanced-brackets]{requirement="optional"}
+1. [@exr-j25-collections-polynomial-map-addition]{requirement="optional"}
+:::
+
+## Предъявление и объяснение
+
+Покажите два независимо созданных равных ключа и третий неравный, частоты 2/1, пустые/непересекающиеся множества, два разных изменения списка. Для множеств допустимы копия с addAll/retainAll и явный contains/add; для частот — merge и getOrDefault+put. У скобок обязателен стек, у многочленов HashMap; Deque не обязателен для всех маршрутов. На защите объясните размеры 2/2/1/1 после source.add и borrowed=true через все четыре списка после book.borrow: самостоятельный состав не создаёт отдельный элемент. Новая identity copyOf и глубокая копия не требуются.
+
+Представьте исходные Java-файлы и короткую демонстрацию обычных и существенных граничных случаев; для файлов приложите входные данные. Java 25. Обязательная техника проверяется по исходнику, объяснение — в беседе с преподавателем. Отдельный большой отчёт не требуется.

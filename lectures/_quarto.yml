@@ -1,14 +1,16 @@
 project:
-  type: default
+  type: website
   render:
-  - 01-intro.qmd
-  - 02-language.qmd
-  - 03-data.qmd
-  - 04-development.qmd
-  - 05-design.qmd
-  - 06-concurrency.qmd
-  - 07-applications.qmd
-  - 08-quality.qmd
+  - index.qmd
+  - platform-runtime.qmd
+  - values-absence.qmd
+  - objects-invariants.qmd
+  - interfaces-records.qmd
+  - generics.qmd
+  - equality-collections.qmd
+  - functions-streams.qmd
+  - exceptions-resources.qmd
+  - io-application.qmd
   output-dir: _output
   resources:
   - ./assets/**
@@ -19,6 +21,13 @@ project:
   - '!_freeze/**'
   - '!.quarto/**'
   - '!_extensions/**'
+  - '!**/*.rmd'
+  - '!**/*.ipynb'
+  - '!**/_output/**'
+  - '!**/_site*/**'
+  - '!**/_generated/**'
+  - '!**/projects/**'
+  - '!**/.superpowers/**'
   pre-render:
   - _extensions/Afonenko-Course-Tools/course-core/entrypoints/pre.ts
   post-render:
@@ -30,9 +39,8 @@ profile:
   group:
   - - student
     - full
-course:
-  id: java-lectures
 filters:
+- course-navigation
 - course-core
 - course-presentation
 - reference-catalog
@@ -42,12 +50,65 @@ format:
     slide-level: 2
     navigation-mode: linear
     theme: default
-    show-notes: false
     slide-number: true
+    pdf-separate-fragments: false
     revealjs-plugins:
     - course-navigation
 lang: ru
 reference-catalog:
   namespace: lectures
-course-presentation:
-  mode: lecture
+fail-if-warnings: true
+bibliography:
+- ../bibliography/context-data.bib
+- ../bibliography/context-objects.bib
+- ../bibliography/context-foundations.bib
+- ../bibliography/books.bib
+- ../bibliography/data.bib
+- ../bibliography/foundations.bib
+- ../bibliography/history.bib
+- ../bibliography/java.bib
+- ../bibliography/languages.bib
+- ../bibliography/objects.bib
+csl: ../bibliography/numeric.csl
+link-citations: true
+
+website:
+  title: Лекции Java
+  repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
+  repo-branch: codex/java-course-full-revision-20261015
+  repo-subdir: lectures
+  repo-actions:
+  - source
+  - issue
+  navbar:
+    title: Программирование на Java
+    logo-href: https://bsu-rfct-afonenko-courses.github.io/Java/index.html
+    left:
+    - text: Все лекции
+      href: index.html
+    - text: Теория
+      href: https://bsu-rfct-afonenko-courses.github.io/Java/theory/index.html
+    - text: Задания
+      href: https://bsu-rfct-afonenko-courses.github.io/Java/tasks/index.html
+    - text: Справочник
+      href: https://bsu-rfct-afonenko-courses.github.io/Java/handbook/index.html
+
+repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
+repo-branch: codex/java-course-full-revision-20261015
+repo-subdir: lectures
+repo-actions:
+- source
+- issue
+issue-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java/issues/new
+course-navigation:
+  course-url: https://bsu-rfct-afonenko-courses.github.io/Java/
+  links:
+  - text: Курс Java
+    href: /index.html
+    scope: course
+  - text: Все лекции
+    href: /index.html
+    scope: project
+  - text: Теория
+    href: /theory/index.html
+    scope: course

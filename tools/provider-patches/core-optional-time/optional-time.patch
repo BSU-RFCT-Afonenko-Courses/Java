@@ -1,0 +1,163 @@
+diff --git a/_extensions/course-core/domain/model.ts b/_extensions/course-core/domain/model.ts
+index 36c9b78..5079a9a 100644
+--- a/_extensions/course-core/domain/model.ts
++++ b/_extensions/course-core/domain/model.ts
+@@ -2,7 +2,7 @@ export type Json = null | boolean | number | string | Json[] | { [key: string]:
+ export interface Body { "pandoc-api-version": number[]; meta: Record<string, Json>; blocks: Json[] }
+ export interface Exercise {
+   id: string; target?: string; authoredTarget?: string; project: string;
+-  purpose?: ExercisePurpose; difficulty: Difficulty; time: number; statementVisibility: StatementVisibility; hasSolution: boolean; hasPublicSolution: boolean;
++  purpose?: ExercisePurpose; difficulty: Difficulty; time?: number; statementVisibility: StatementVisibility; hasSolution: boolean; hasPublicSolution: boolean;
+   sourceTopic?: { id: string; owner?: string; rootQmd: string };
+   head: { kind: string; level: number; title: string };
+   nested: number; unknownAttributes: string[];
+@@ -18,7 +18,7 @@ import type { AssessmentKind, ExercisePurpose, PedagogicalKind, Difficulty, Work
+ export type { PedagogicalKind, ExercisePurpose } from "./vocabulary.ts";
+ export interface AssessmentSlot { id: string; selection: "fixed" | "random"; candidates: string[]; assignment: Assignment }
+ export interface Assignment { stage?: Stage; requirement: "required" | "optional"; workMode: WorkMode }
+-export interface ExerciseDeclaration { id: string; source: string; difficulty: Difficulty; time: number; statementVisibility: StatementVisibility; purpose?: ExercisePurpose; hasSolution: boolean; hasPublicSolution: boolean }
++export interface ExerciseDeclaration { id: string; source: string; difficulty: Difficulty; time?: number; statementVisibility: StatementVisibility; purpose?: ExercisePurpose; hasSolution: boolean; hasPublicSolution: boolean }
+ export type AssessmentComposition = Omit<Assessment, "body" | "source" | "extensions">;
+ export interface PedagogicalMetadata {
+   difficulty?: Difficulty; time?: number; workMode?: WorkMode; requirement?: Requirement;
+diff --git a/_extensions/course-core/domain/release.ts b/_extensions/course-core/domain/release.ts
+index 45aacc9..284683c 100644
+--- a/_extensions/course-core/domain/release.ts
++++ b/_extensions/course-core/domain/release.ts
+@@ -84,8 +84,8 @@ export function assembleRelease(
+   const facts=new Map<string,typeof declarations[number]>();
+   for(const exercise of declarations){
+     if(facts.has(exercise.id))fail("CORE.DUPLICATE_EXERCISE","Повторный идентификатор упражнения",{source:exercise.source,id:exercise.id,field:"id",related:[{source:facts.get(exercise.id)!.source,id:exercise.id}]});
+-    if(!["introductory","intermediate","advanced"].includes(exercise.difficulty) || !Number.isInteger(exercise.time) || !Number.isFinite(exercise.time) || exercise.time<=0 || !["open","restricted"].includes(exercise.statementVisibility) || typeof exercise.hasSolution!=="boolean" || typeof exercise.hasPublicSolution!=="boolean") {
+-      fail("CORE.METADATA_INVALID","Декларация требует собственные difficulty/time и явную политику условия",{source:exercise.source,id:exercise.id,field:"declarations"});
++    if(!["introductory","intermediate","advanced"].includes(exercise.difficulty) || exercise.time!==undefined && (!Number.isInteger(exercise.time) || !Number.isFinite(exercise.time) || exercise.time<=0) || !["open","restricted"].includes(exercise.statementVisibility) || typeof exercise.hasSolution!=="boolean" || typeof exercise.hasPublicSolution!=="boolean") {
++      fail("CORE.METADATA_INVALID","Декларация требует difficulty, положительное целое time при наличии и явную политику условия",{source:exercise.source,id:exercise.id,field:"declarations"});
+     }
+     facts.set(exercise.id,exercise);
+   }
+diff --git a/_extensions/course-core/entrypoints/preview.ts b/_extensions/course-core/entrypoints/preview.ts
+index 01f3272..037ecb5 100644
+--- a/_extensions/course-core/entrypoints/preview.ts
++++ b/_extensions/course-core/entrypoints/preview.ts
+@@ -3,9 +3,9 @@ import type { NativeRun } from "../infrastructure/native-run.ts";
+ import { resolve } from "stdlib/path";
+ import { projectedResourceUses, cleanHiddenResourceOutputs } from "../infrastructure/resources.ts";
+ export function assessmentTime(work:AssessmentComposition,facts:Map<string,ExerciseDeclaration>) {
+-  if(work.slots.some(slot=>slot.candidates.some(id=>!facts.has(id))))return undefined;
++  if(work.slots.some(slot=>slot.candidates.some(id=>facts.get(id)?.time===undefined)))return undefined;
+   const required={min:0,max:0},all={min:0,max:0};
+-  for(const slot of work.slots){const values=slot.candidates.map(id=>facts.get(id)!.time);const min=Math.min(...values),max=Math.max(...values);all.min+=min;all.max+=max;if(slot.assignment.requirement==="required"){required.min+=min;required.max+=max;}}
++  for(const slot of work.slots){const values=slot.candidates.map(id=>facts.get(id)!.time!);const min=Math.min(...values),max=Math.max(...values);all.min+=min;all.max+=max;if(slot.assignment.requirement==="required"){required.min+=min;required.max+=max;}}
+   const theory=work.theoryTime??0;
+   return {required,all,theory,sessionRequired:{min:required.min+theory,max:required.max+theory},sessionAll:{min:all.min+theory,max:all.max+theory}};
+ }
+diff --git a/_extensions/course-core/native-document.lua b/_extensions/course-core/native-document.lua
+index 23aa5df..87c2b67 100644
+--- a/_extensions/course-core/native-document.lua
++++ b/_extensions/course-core/native-document.lua
+@@ -124,7 +124,7 @@ function M.validate(doc, effective)
+           end
+         end
+         local metadata=normalized
+-        check(metadata.difficulty~=nil and metadata.time~=nil,'CORE.METADATA_INVALID','Банковская задача требует собственные difficulty и time', {id=id,field=metadata.difficulty==nil and 'difficulty' or 'time'})
++        check(metadata.difficulty~=nil,'CORE.METADATA_INVALID','Банковская задача требует собственную difficulty', {id=id,field='difficulty'})
+         check(normalized.statementVisibility=='open' or normalized.statementVisibility=='restricted','CORE.METADATA_INVALID','Банковская задача требует statement-visibility open или restricted',{id=id,field='statement-visibility'})
+         facts:insert({id=id,source=source,difficulty=metadata.difficulty,time=metadata.time,statementVisibility=normalized.statementVisibility,purpose=normalized.purpose,hasSolution=false,project=node.attributes.project,target=normalized.target,authoredTarget=normalized.authoredTarget,projectCheck=normalized.projectCheck,sourceTopic=nearest and {id=nearest,owner=owner~='' and owner or nil,rootQmd=source} or nil})
+       end
+diff --git a/_extensions/course-core/spec/core.cue b/_extensions/course-core/spec/core.cue
+index f46d5c2..2d23f2c 100644
+--- a/_extensions/course-core/spec/core.cue
++++ b/_extensions/course-core/spec/core.cue
+@@ -26,7 +26,7 @@ import "list"
+   if selection == "fixed" {id: candidates[0], candidates: list.MinItems(1) & list.MaxItems(1)}
+   if selection == "random" {id: =~"^alt-[a-z0-9][a-z0-9-]*$", candidates: list.MinItems(2)}
+ }
+-#Declaration: {id: string & =~"^exr-[a-z0-9][a-z0-9-]*$", source: string & !="", difficulty: #Difficulty, time: int & >0, statementVisibility: #StatementVisibility, purpose?: #ExercisePurpose, hasSolution: bool, hasPublicSolution: bool}
++#Declaration: {id: string & =~"^exr-[a-z0-9][a-z0-9-]*$", source: string & !="", difficulty: #Difficulty, time?: int & >0, statementVisibility: #StatementVisibility, purpose?: #ExercisePurpose, hasSolution: bool, hasPublicSolution: bool}
+ #Composition: {
+   id: string & =~"^[a-z][a-z0-9-]*$", source: string, kind: #AssessmentKind, title: string & !=""
+   slots: [...#Slot] & list.MinItems(1)
+@@ -48,7 +48,7 @@ import "list"
+ 	if authoredTarget != _|_ {target: authoredTarget}
+ 	purpose?:   #ExercisePurpose
+ 	difficulty: #Difficulty
+-	time:       int & >0
++	time?:      int & >0
+ 	statementVisibility: #StatementVisibility
+ 	hasSolution: bool, hasPublicSolution: bool
+ 	sourceTopic?: {id: string & !="", owner?: string & !="", rootQmd: string & !=""}
+@@ -145,7 +145,7 @@ import "list"
+ 	_facts: [...]
+ 	_works: [...]
+ 	if declarations != _|_ {_facts: declarations}
+-	if declarations == _|_ {_facts: [for e in exercises {{id:e.id, source:e.source, difficulty:e.difficulty,time:e.time,statementVisibility:e.statementVisibility,purpose?:e.purpose,hasSolution:e.hasSolution,hasPublicSolution:e.hasPublicSolution}}]}
++	if declarations == _|_ {_facts: [for e in exercises {{id:e.id, source:e.source, difficulty:e.difficulty,if e.time != _|_ {time:e.time},statementVisibility:e.statementVisibility,purpose?:e.purpose,hasSolution:e.hasSolution,hasPublicSolution:e.hasPublicSolution}}]}
+ 	if assessmentCompositions != _|_ {_works: assessmentCompositions}
+ 	if assessmentCompositions == _|_ {_works: assessments}
+ 	_rawIds: [for e in _facts {e.id}] & list.UniqueItems
+diff --git a/tests/authoring-model.lua b/tests/authoring-model.lua
+index 4170077..186233b 100644
+--- a/tests/authoring-model.lua
++++ b/tests/authoring-model.lua
+@@ -18,7 +18,8 @@ return {{Pandoc=function(doc)
+  native.validate(outside)
+  assert(#exercises.collect(outside)==0,'native exercises collected outside bank')
+  rejects('own difficulty required',task('time=10'),'CORE.METADATA_INVALID')
+- rejects('own time required',task('difficulty=introductory'),'CORE.METADATA_INVALID')
++ local untimed=native.validate(document(task('difficulty=introductory'),true))
++ assert(untimed[1].time==nil,'Отсутствующая оценка времени должна сохраняться')
+  rejects('integer time required',task('difficulty=introductory time=1.5'),'CORE.METADATA_INVALID')
+  rejects('hidden invalid raw', '::::: {.content-visible when-profile=hidden}\n'..task('difficulty=bad time=10')..':::::\n','CORE.METADATA_INVALID')
+  rejects('solution for rejected',task('difficulty=introductory time=10','::: {.solution for=exr-one}\nAnswer\n:::'),'CORE.SOLUTION_PAIRING_INVALID')
+diff --git a/tests/canonical-model.mjs b/tests/canonical-model.mjs
+index fb870c0..ae95e15 100644
+--- a/tests/canonical-model.mjs
++++ b/tests/canonical-model.mjs
+@@ -10,9 +10,10 @@ const model={course:{id:'proof',view:'student'},registeredTargets:['manual'],exe
+ function vet(value){const path=join(dir,'input.json');writeFileSync(path,JSON.stringify(value));return spawnSync(cue,['vet','_extensions/course-core/spec/core.cue',path,'-d','#Course','-c'],{encoding:'utf8'});}
+ assert.equal(vet(model).status,0,vet(model).stderr);
+ for(const [label,mutate] of [
+- ['missing own difficulty',q=>delete q.difficulty],['missing own time',q=>delete q.time],['fractional task time',q=>q.time=1.5],['missing statement visibility',q=>delete q.statementVisibility],['invalid purpose',q=>q.purpose='unknown'],['invalid difficulty',q=>q.difficulty='hard'],
++ ['missing own difficulty',q=>delete q.difficulty],['fractional task time',q=>q.time=1.5],['missing statement visibility',q=>delete q.statementVisibility],['invalid purpose',q=>q.purpose='unknown'],['invalid difficulty',q=>q.difficulty='hard'],
+  ['effective adapter title',q=>q.head={kind:'Para',level:0,title:'Condition'}],
+  ['source path',q=>q.sourceTopic.rootQmd='other.qmd']
+ ]){const m=structuredClone(model);mutate(m.exercises[0]);assert.notEqual(vet(m).status,0,label+' accepted');}
++const untimed=structuredClone(model);delete untimed.exercises[0].time;assert.equal(vet(untimed).status,0,vet(untimed).stderr);
+ const native=structuredClone(model);delete native.course.id;for(const k of ['purpose','sourceTopic','target'])delete native.exercises[0][k];assert.equal(vet(native).status,0,vet(native).stderr);
+ console.log('PASS native optional identity/metadata, explicit invalid values and source provenance');
+diff --git a/tests/optional-time.ts b/tests/optional-time.ts
+new file mode 100644
+index 0000000..239e7b5
+--- /dev/null
++++ b/tests/optional-time.ts
+@@ -0,0 +1,30 @@
++import { assembleRelease } from "../_extensions/course-core/domain/release.ts";
++import { assessmentTime } from "../_extensions/course-core/entrypoints/preview.ts";
++import { validateRelease } from "../_extensions/course-core/infrastructure/validate.ts";
++import type { DocumentResult } from "../_extensions/course-core/domain/model.ts";
++const assert=(value:unknown,message:string)=>{if(!value)throw Error(message)};
++const body=JSON.stringify({"pandoc-api-version":[1,23,1],meta:{},blocks:[]});
++function document(time:unknown):DocumentResult {
++ const exercise:any={id:"exr-first",target:"manual",project:"",difficulty:"introductory",statementVisibility:"open",hasSolution:false,hasPublicSolution:false,head:{kind:"Header",level:2,title:"Условие"},nested:0,unknownAttributes:[],bodyJson:body};
++ if(time!==undefined)exercise.time=time;
++ return {scope:"document",source:"bank.qmd",course:{id:"optional-time",view:"student"},document:{source:"bank.qmd",format:"html",output:"bank.html",profiles:["student"]},exercises:[exercise]};
++}
++const release=(time:unknown)=>assembleRelease(["bank.qmd"],[document(time)],[],{view:"student",profiles:["student"]});
++const temp=await Deno.makeTempDir();
++let failures=0;
++async function test(name:string,fn:()=>unknown){try{await fn();console.log("PASS "+name)}catch(e){failures++;console.error("FAIL "+name+": "+e)}}
++await test("Отсутствующая difficulty по-прежнему отвергается",()=>{const doc=document(undefined);delete (doc.exercises[0] as any).difficulty;let error;try{assembleRelease(["bank.qmd"],[doc],[],{view:"student",profiles:["student"]})}catch(e){error=e}assert(String(error).includes("CORE.METADATA_INVALID"),"Принято отсутствие difficulty")});
++await test("Отсутствующая оценка сохраняется отсутствующей в release и CUE",async()=>{
++ const result=release(undefined);assert(result.model.exercises[0].time===undefined,"Возникла вымышленная оценка");
++ await validateRelease(result,temp);
++ const fallback=structuredClone(result);delete fallback.model.declarations;await validateRelease(fallback,temp);
++});
++await test("Положительная оценка проходит без изменения",async()=>{const result=release(15);assert(result.model.exercises[0].time===15,"Оценка изменена");await validateRelease(result,temp)});
++await test("Некорректные заданные оценки отвергаются release",()=>{for(const time of [0,-1,1.5,"15",null,Infinity,NaN]){let error;try{release(time)}catch(e){error=e}assert(String(error).includes("CORE.METADATA_INVALID"),"Принято time="+String(time))}});
++await test("Некорректные заданные оценки отвергаются CUE",async()=>{for(const time of [0,-1,1.5,"15",null]){const result=release(15);(result.model.exercises[0] as any).time=time;let error;try{await validateRelease(result,temp)}catch(e){error=e}assert(error,"CUE принял time="+String(time))}});
++const work:any={slots:[{candidates:["a","b"],assignment:{requirement:"required"}},{candidates:["c"],assignment:{requirement:"optional"}}],theoryTime:5};
++const facts=(a:unknown,b:unknown,c:unknown)=>new Map([["a",{time:a}],["b",{time:b}],["c",{time:c}]]) as any;
++await test("Полностью оценённые позиции сохраняют min/max и теорию",()=>{assert(JSON.stringify(assessmentTime(work,facts(10,20,7)))===JSON.stringify({required:{min:10,max:20},all:{min:17,max:27},theory:5,sessionRequired:{min:15,max:25},sessionAll:{min:22,max:32}}),"Изменён прежний расчёт")});
++await test("Пропуск кандидата или оценки в том числе optional отменяет сводку",()=>{for(const f of [facts(undefined,20,7),facts(10,undefined,7),facts(10,20,undefined),new Map()])assert(assessmentTime(work,f)===undefined,"Показана неполная сводка")});
++await Deno.remove(temp,{recursive:true});
++if(failures)throw Error(`Не пройдено: ${failures}`);

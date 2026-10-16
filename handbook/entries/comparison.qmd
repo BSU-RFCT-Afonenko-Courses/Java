@@ -1,0 +1,95 @@
+---
+categories: [j25, j25-core, j25-comparison]
+---
+
+# Равенство, Comparable и Comparator {#sec-j25-api-comparison}
+
+Java 25. Развёрнутое объяснение и ошибки проектирования:
+@theory:sec-j25-theory-equality. Основание правил — `Object` и `Comparator` API
+[@bib-data-object-api; @bib-data-comparator-api].
+
+## Идентичность и равенство {#sec-j25-api-comparison-equals}
+
+| Форма | Назначение |
+|---|---|
+| `a == b` для ссылок | Один объект или обе ссылки `null` |
+| `a.equals(b)` | Равенство, заданное классом `a`; `a` не должен быть `null` |
+| `Objects.equals(a, b)` | Сравнение с учётом `null` |
+| `a.hashCode()` | Хеш, согласованный с равенством |
+
+Переопределяемая сигнатура — `public boolean equals(Object other)`.
+Условия: рефлексивность, симметрия, транзитивность, устойчивость при
+неизменных существенных данных и `false` для `null`. У `Object`
+реализация соответствует идентичности. Равные объекты обязаны иметь
+одинаковый хеш, совпадение хешей не доказывает равенства. При
+переопределении `equals` переопределяют согласованный `hashCode`.
+
+Фрагмент — `main` отдельного `EqualityApiDemo.java`.
+
+```java
+String a = new String("Ada"), b = new String("Ada");
+System.out.println(a == b);                    // false
+System.out.println(java.util.Objects.equals(a, b)); // true
+```
+
+Массивы наследуют идентичностное `equals`; для элементов нужны
+`Arrays.equals`, для вложенных массивов — соответствующие глубокие
+операции. Не считайте запись с компонентом-массивом автоматически
+равной другой записи по содержимому массива.
+
+## Порядок {#sec-j25-api-comparison-order}
+
+```java
+interface Comparable<T> { int compareTo(T other); }
+interface Comparator<T> { int compare(T first, T second); }
+```
+
+Отрицательное значение означает «раньше», ноль — эквивалентность по
+порядку, положительное — «позже». Для выбора порядка используют знак результата; его модуль может различаться.
+Порядок транзитивен; перестановка аргументов меняет знак; элементы с
+нулём сравнения должны одинаково сравниваться с третьим.
+
+| Построение | Назначение |
+|---|---|
+| `Comparator.naturalOrder()` | Естественный порядок `Comparable` |
+| `Comparator.reverseOrder()` | Обратный естественный порядок |
+| `Comparator.comparing(key)` | Извлечь сравнимый ключ |
+| `Comparator.comparing(key, order)` | Извлечь ключ и сравнить заданным способом |
+| `Comparator.comparingInt(key)` | Сравнить примитивные `int`-ключи |
+| `order.reversed()` | Обратить данный порядок |
+| `order.thenComparing(other)` | Второе правило при нуле первого |
+| `Comparator.nullsFirst(order)` / `nullsLast` | Явная политика `null` |
+
+Клиент `OrderDemo.java` подключает `import grade.Student;` из
+@theory:sec-j25-theory-data-classes-record и `import java.util.Comparator;`.
+Student имеет `Student(String,String,int)`, `id()/name()/score()`; id/name
+нормализуются и проверяются, score0..100. В `main`:
+
+```java
+Comparator<Student> order = Comparator.comparingInt(Student::score)
+    .reversed().thenComparing(Student::id);
+System.out.println(order.compare(new Student("s10", "Ada", 90),
+    new Student("s2", "Lin", 90)) < 0); // true
+```
+
+При равных баллах `s10` идёт раньше `s2` по естественному порядку строк.
+Смысл и сигнатура: @handbook:sec-api-strings-compare-to.
+Ссылки на методы: @theory:sec-j25-theory-functions-method-reference.
+
+`List.sort` меняет список; `stream().sorted(order)` строит стадию нового
+конвейера. `TreeSet`/`TreeMap` используют ноль сравнения как совпадение
+элемента/ключа. Для соблюдения общего соглашения множеств/карт порядок
+согласуют с `equals`. Сравнение целых вычитанием опасно переполнением;
+используют `Integer.compare`. Для `null` возможен
+`NullPointerException`, если сравнение его не поддерживает.
+
+
+## Граница обобщённого алгоритма сравнения {#sec-h-comparison-bound}
+
+Граница `<T extends Comparable<T>>` требует сравнения с тем же `T`.
+Гибкая форма `<T extends Comparable<? super T>>` допускает также сравнение
+с супертипом. Например, наследник может использовать унаследованный
+`compareTo` и сохранять собственный тип в результате общего алгоритма.
+Сигнатуры, допустимые вызовы и полный запускаемый пример:
+@sec-h-generic-methods-inference. Причина выбора границы разобрана
+в @theory:sec-t-type-relations-comparison-target.

@@ -1,0 +1,626 @@
+---
+title: "Объекты, состояние и инварианты"
+subtitle: "Java 25 · первый семестр · 80 минут"
+lang: ru
+categories: [j25, j25-core, j25-objects-invariants]
+format:
+  revealjs:
+    fontsize: 32px
+    width: 1280
+    height: 800
+    css: assets/lesson.css
+    incremental: false
+    show-notes: false
+---
+
+## Объекты, состояние и инварианты {#sec-j25-lecture-objects-invariants}
+
+Аргументы передаются по значению: мутация общего массива видна, переназначение параметра снаружи не видно. String неизменяем.
+
+**Ведущий вопрос:** Как разрешить полезное изменение объекта и запретить недопустимое состояние?
+
+### Две стадии, два отдельных файла {#sec-j25-lecture-objects-invariants-context}
+
+Plain Book — отдельный package-private класс в Book.java без пакета, показанный целиком дальше. Короткие вызовы — main класса PlainBookDemo; static-методы — члены PlainBookDemo. Объявления first/same/other продолжаются до переназначения, опыты с повторным именем запускаются отдельно.
+
+Позже вводится public course.examples.objects.Book в отдельном каталоге. Его не смешивают с plain Book. Reservation и Box строятся последовательно: показанные члены вставляются вместо комментария в исходный класс.
+
+## Класс и состояние экземпляров {#sec-j25-lecture-objects-invariants-objects}
+
+Каталог хранит несколько книг. У каждой собственные название и признак выдачи. Класс описывает общую форму, а экземпляры имеют самостоятельное состояние.
+
+```java
+class Book {
+    String title;
+    boolean borrowed;
+}
+```
+
+Объявление ещё не создало ни одной книги. Полное объяснение: @theory:sec-j25-theory-objects. [@bib-objects-schildt-classes]
+
+### Состояние двух экземпляров {#sec-j25-lecture-objects-invariants-new .continuation}
+
+```java
+Book first = new Book();
+first.title = "Java";
+Book second = new Book();
+second.title = "Algorithms";
+System.out.println(first.title); // Java
+```
+
+Каждый `new` создаёт экземпляр. Изменение поля первой книги не меняет вторую. Поля экземпляра принадлежат отдельным объектам.
+
+### Объявление ссылки и создание объекта {#sec-j25-lecture-objects-invariants-declaration .continuation}
+
+```java
+Book book;
+// System.out.println(book.title); // ошибка компиляции
+book = new Book();
+System.out.println(book.title);    // null
+```
+
+Локальную переменную нужно определённо присвоить перед чтением. Поле нового объекта получает значение по умолчанию. Это два разных правила.
+
+### Ссылочное значение {#sec-j25-lecture-objects-invariants-references}
+
+В Java переменная `Book` содержит ссылочное значение. Через него выполняются действия над объектом. Программист не прибавляет к ссылке смещение и не освобождает объект оператором `delete`.
+
+В C++ `Book book;` может создать объект с автоматическим временем хранения. Ближайшая аналогия для Java-присваивания — копирование ссылки или указателя, с ограничениями Java на работу с адресами. [@bib-objects-eckel-references]
+
+### Две ссылки на одну книгу {#sec-j25-lecture-objects-invariants-aliases}
+
+```java
+Book first = new Book();
+first.title = "Java";
+Book same = first;
+same.borrowed = true;
+System.out.println(first.borrowed); // true
+```
+
+Присваивание копирует ссылку. `first` и `same` обозначают одну книгу; новое состояние видно через обе переменные.
+
+### Тождество и одинаковое содержимое {#sec-j25-lecture-objects-invariants-identity .continuation}
+
+```java
+Book other = new Book();
+other.title = "Java";
+System.out.println(first == same);  // true
+System.out.println(first == other); // false
+```
+
+`==` для ссылок проверяет тождество объекта. Одинаковое название не делает две книги одним экземпляром. Равенство данных потребует собственного правила.
+
+### Тождество экземпляра и номер книги {#sec-j25-lecture-objects-invariants-domain-identity .continuation}
+
+Два экземпляра одного издания имеют одинаковое название, но один может
+быть выдан, а другой — доступен. Название не определяет тождество книги.
+
+`==` для ссылок отвечает: **это один объект?** Номер экземпляра в каталоге
+отвечает: **это одна предметная сущность?** Два загрузчика могут создать
+разные объекты для одного номера. Правило предметного равенства выбирает модель.
+
+@theory:sec-j25-theory-objects-identity.
+
+### Переназначение переменной {#sec-j25-lecture-objects-invariants-reassignment .continuation}
+
+```java
+same = new Book();
+same.title = "Databases";
+System.out.println(first.title); // Java
+System.out.println(first == same); // false
+```
+
+Изменилась переменная `same`, а не исходная книга. Присваивание поля и присваивание ссылочной переменной меняют разных участников.
+
+### Отсутствие объекта {#sec-j25-lecture-objects-invariants-null}
+
+```java
+Book missing = null;
+System.out.println(missing == null); // true
+// missing.title = "Java";           // NullPointerException
+```
+
+`null` не обозначает пустую книгу. Тип `Book` разрешает такое ссылочное значение, но обращение к полю требует объекта. Обязательность данных проверяется отдельно.
+
+### Отсутствие и неверный аргумент {#sec-j25-lecture-objects-invariants-null-contract .continuation}
+
+Поиск может не найти книгу. Выдача, напротив, требует выбранный экземпляр.
+Один `null` не объясняет, почему объекта нет: смысл задаёт операция.
+
+```java
+static String titleOf(Book book) {
+    java.util.Objects.requireNonNull(book, "book");
+    return java.util.Objects.requireNonNull(book.title, "title");
+}
+```
+
+`titleOf(null)` завершается `NullPointerException` на границе вызова.
+Первая проверка требует книгу, вторая — её название. Ненулевой объект
+сам по себе не доказывает ненулевое поле.
+
+## Передача значений аргументов {#sec-j25-lecture-objects-invariants-arguments}
+
+```java
+static void borrow(Book book) {
+    book.borrowed = true;
+}
+```
+
+Параметр получает копию ссылки на книгу. Вызов `borrow(first)` меняет объект, доступный вызывающему коду. Это передача по значению, применённая к ссылочному значению. @theory:sec-j25-theory-objects-arguments.
+
+### Параметр как локальная переменная {#sec-j25-lecture-objects-invariants-replace .continuation}
+
+```java
+static void replace(Book book) {
+    book = new Book();
+    book.title = "Replacement";
+}
+replace(first);
+System.out.println(first.title); // Java
+```
+
+Метод переназначил свой параметр. Переменная `first` продолжает содержать исходную ссылку; её значение метод не получил для переназначения.
+
+### Возвращение нового объекта {#sec-j25-lecture-objects-invariants-return}
+
+```java
+static Book create(String title) {
+    Book result = new Book();
+    result.title = title;
+    return result;
+}
+Book book = create("Java");
+```
+
+Область действия `result` закончилась, объект доступен через `book`. Возврат ссылки не копирует весь объект, а передаёт способ обратиться к нему.
+
+### Копия объекта и копия вложенной ссылки {#sec-j25-lecture-objects-invariants-copy}
+
+```java
+Book copy = new Book();
+copy.title = first.title;
+copy.borrowed = first.borrowed;
+```
+
+Теперь книг две, но строка названия может быть общей. Для неизменяемой строки это безопасно. Если поле хранит изменяемый список тегов, копирование ссылки оставит общий список.
+
+### Время жизни объекта и области имён {#sec-j25-lecture-objects-invariants-lifetime}
+
+```java
+Book kept = create("Java");
+Book alias = kept;
+kept = null;
+System.out.println(alias.title); // Java
+```
+
+Книга достижима через `alias`. Исчезновение одного имени не освобождает объект. Недостижимая группа, даже с внутренними циклами, может быть собрана сборщиком мусора. [@bib-objects-eckel-references]
+
+### Память и внешний ресурс {#sec-j25-lecture-objects-invariants-resources .continuation}
+
+Сборщик мусора управляет памятью недостижимых объектов. Он не обещает немедленного запуска после `null` и своевременного закрытия файла.
+
+Обязанность закрыть ресурс программа выразит отдельно: `AutoCloseable` и `try` с ресурсами. Завершение области локальной переменной не является деструктором C++.
+
+## Инвариант состояния класса {#sec-j25-lecture-objects-invariants-invariant}
+
+Инвариант состояния бронирования:
+
+- `capacity > 0`;
+- `0 <= occupied <= capacity`.
+
+Он сохраняется после создания и каждого доступного действия.
+Предусловие успешного `reserve(count)`: `0 < count <= available()`
+**до изменения состояния**. Допустимость запроса проверяется отдельно
+от допустимости состояния. @theory:sec-j25-theory-classes-invariant. [@bib-objects-epam-classes]
+
+### Прямое изменение полей и инвариант {#sec-j25-lecture-objects-invariants-bad-fields}
+
+```java
+class OpenReservation {
+    int capacity;
+    int occupied;
+}
+OpenReservation room = new OpenReservation();
+room.capacity = 30;
+room.occupied = 100;
+```
+
+Типы полей правильные, состояние бессмысленно. Просто поместить числа в объект недостаточно: нужно ограничить способы изменения.
+
+### Закрытое представление {#sec-j25-lecture-objects-invariants-private-fields}
+
+```java
+final class Reservation {
+    private final int capacity;
+    private int occupied;
+    // конструктор и операции — далее
+}
+```
+
+Клиент не может прямо записать `occupied = 100`. Класс получает контроль над переходами состояния. `private` ограничивает доступ из программного текста, а не выделяет отдельные секреты каждому объекту.
+
+### Проверка перед сохранением {#sec-j25-lecture-objects-invariants-construct .continuation}
+
+```java
+Reservation(int capacity) {
+    if (capacity <= 0) {
+        throw new IllegalArgumentException("positive capacity required");
+    }
+    this.capacity = capacity;
+}
+```
+
+`occupied` первоначально равен нулю. `new Reservation(30)` даёт допустимую пустую комнату; `new Reservation(0)` отвергается до получения готового объекта.
+
+### Вычисляемое значение {#sec-j25-lecture-objects-invariants-available .continuation}
+
+```java
+int available() {
+    return capacity - occupied;
+}
+```
+
+Не храним свободные места третьим изменяемым полем: их можно вычислить. Иначе каждое действие должно было бы поддерживать ещё одну связь между тремя числами.
+
+### Проверка инварианта при бронировании {#sec-j25-lecture-objects-invariants-reserve .continuation}
+
+```java
+void reserve(int count) {
+    if (count <= 0 || count > available()) {
+        throw new IllegalArgumentException("invalid size");
+    }
+    occupied += count;
+}
+```
+
+Проверка выполнена до присваивания. При отказе прежнее состояние сохраняется; при успехе занятое количество остаётся в допустимом диапазоне.
+
+### Результат принятого и отклонённого вызова {#sec-j25-lecture-objects-invariants-reservation-result .continuation}
+
+```java
+Reservation room = new Reservation(30);
+room.reserve(8);
+System.out.println(room.available()); // 22
+// room.reserve(25); // IllegalArgumentException
+```
+
+После отклонённой попытки свободно по-прежнему `22`. Ошибка не оставила объект наполовину изменённым. Проверка относится к операции, а не к произвольному клиенту.
+
+### Предметное действие и setter {#sec-j25-lecture-objects-invariants-setter}
+
+`setOccupied(8)` сообщает новое число; `reserve(8)` сообщает переход — занять ещё восемь мест. Эти операции имеют разный смысл.
+
+Универсальный setter уместен не всегда. Объект, управляющий процессом, должен выразить разрешённые действия и их условия. Закрытые поля без такого API ещё не завершают инкапсуляцию.
+
+## Конструктор и обычный метод {#sec-j25-lecture-objects-invariants-constructors}
+
+```java
+class Box {
+    Box(int width, int height) { /* инициализация */ }
+    // void Box(int width, int height) { } // это метод
+}
+```
+
+У конструктора нет возвращаемого типа. Если объявлен собственный конструктор, автоматический без параметров не предоставляется. Поэтому `new Box()` здесь не компилируется. [@bib-objects-schildt-classes]
+
+### Поле и одноимённый параметр {#sec-j25-lecture-objects-invariants-this}
+
+```java
+class Box {
+    private final int width;
+    private final int height;
+    Box(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+}
+```
+
+`this.width` — поле получателя, `width` — параметр. Запись `width = width` не инициализирует поле. `final` помогает обнаружить пропущенное присваивание.
+
+### Делегирование между конструкторами {#sec-j25-lecture-objects-invariants-delegation .continuation}
+
+```java
+Box(int side) {
+    this(side, side);
+}
+```
+
+Квадратная коробка делегирует основному конструктору. Общие проверки остаются в одном месте. Вызов другого конструктора не создаёт второй объект: он участвует в инициализации текущего.
+
+### Проверка размеров и результата {#sec-j25-lecture-objects-invariants-validation}
+
+```java
+int area() {
+    return Math.multiplyExact(width, height);
+}
+```
+
+Даже положительные размеры могут дать произведение вне диапазона `int`. Условие допустимого входа и требование к результату проверяются вместе. `multiplyExact` обнаруживает переполнение вместо тихого получения другого числа.
+
+### Конструкторы в Java 25 {#sec-j25-lecture-objects-invariants-java25}
+
+```java
+class Parent {
+    final int value;
+    Parent(int value) { this.value = value; }
+}
+class Child extends Parent {
+    Child(int value) {
+        if (value < 0) throw new IllegalArgumentException();
+        super(value);
+    }
+}
+```
+
+Соседние классы Parent.java и Child.java без package. Java25 допускает проверку параметра до super. В main ConstructorDemo: new Child(3).value →3; new Child(-1) отвергнут до вызова Parent. До super нельзя произвольно обращаться к ещё не инициализированному экземпляру.
+
+## Параметры и результат метода {#sec-j25-lecture-objects-invariants-methods}
+
+```java
+static int max(int a, int b) {
+    return a >= b ? a : b;
+}
+```
+
+Временные входы остаются параметрами. Поля нужны для состояния, которое относится к объекту или классу. Не требуется сначала заполнять два поля сеттерами, чтобы вычислить максимум. [@bib-objects-epam-method-design]
+
+### Выбор перегруженного метода {#sec-j25-lecture-objects-invariants-overload}
+
+```java
+static String describe(int value) { return "int"; }
+static String describe(String value) { return "String"; }
+System.out.println(describe(3));   // int
+System.out.println(describe("3")); // String
+```
+
+Одинаковое имя, разные типы параметров. Возвращаемый тип сам по себе не различает перегрузки. Компилятор выбирает применимое объявление до выполнения.
+
+### Неоднозначный аргумент {#sec-j25-lecture-objects-invariants-null-overload .continuation}
+
+```java
+static void show(String value) { }
+static void show(Integer value) { }
+// show(null);          // неоднозначно
+show((String) null);    // выбирается String
+```
+
+`null` подходит обоим ссылочным типам, и ни один не конкретнее другого. Приведение уточняет выбор сигнатуры, но не создаёт строку.
+
+## Член класса и член экземпляра {#sec-j25-lecture-objects-invariants-static}
+
+```java
+final class Ticket {
+    private static long nextId = 1;
+    private final long id = nextId++;
+    long id() { return id; }
+}
+```
+
+Общий счётчик создаваемых билетов — состояние класса. Номер уже созданного билета — поле экземпляра. `static` означает общность, а не неизменяемость.
+
+### Поля экземпляров и общий счётчик {#sec-j25-lecture-objects-invariants-static-result .continuation}
+
+```java
+Ticket first = new Ticket();
+Ticket second = new Ticket();
+System.out.println(first.id());  // 1
+System.out.println(second.id()); // 2
+```
+
+Оба создания увеличили один `nextId`. Этот пример однопоточный: обычное `++` не обеспечивает согласованность между потоками. Вызовы инициализатора действительно выполняют код.
+
+### Статический метод без текущего экземпляра {#sec-j25-lecture-objects-invariants-static-this}
+
+```java
+static int add(int a, int b) { return a + b; }
+```
+
+Такому действию достаточно аргументов. В статическом методе нет `this`; нестатическое поле требует отдельной ссылки на объект. Для ясности статический метод вызывается через имя класса.
+
+### final фиксирует ссылку {#sec-j25-lecture-objects-invariants-final}
+
+```java
+final int[] values = {1, 2};
+values[0] = 9;
+System.out.println(values[0]); // 9
+// values = new int[]{3};     // ошибка компиляции
+```
+
+Самостоятельный main FinalDemo. Ограничено присваивание переменной, не запись компонента массива. Чтобы объявить объект неизменяемым, проверяют все доступные пути изменения.
+
+### Неизменяемость и совместное использование {#sec-j25-lecture-objects-invariants-immutable}
+
+Неизменяемый объект после создания не предоставляет способов менять его наблюдаемое значение. Закрытые `final`-поля помогают, но входные и выходные ссылки тоже нужно проверить.
+
+Общий `String` безопасен: текст не меняется. Общий `ArrayList` может меняться через другого владельца. Снимок состояния и неизменяемое представление решают разные задачи.
+
+### Модификаторы доступа и API {#sec-j25-lecture-objects-invariants-access}
+
+| Уровень | Основное назначение |
+|---|---|
+| `private` | Внутренняя реализация |
+| Без модификатора | Взаимодействие внутри пакета |
+| `protected` | Пакет и специальный доступ подкласса |
+| `public` | Внешний API доступного типа |
+
+Для `protected` из другого пакета действуют ограничения получателя. Публичный метод недоступного класса не делает сам класс доступным. @theory:sec-j25-theory-classes.
+
+## Выполнение инициализаторов {#sec-j25-lecture-objects-invariants-initialization}
+
+```java
+class Trace {
+    private int value = init();
+    private int init() {
+        System.out.println("field");
+        return 7;
+    }
+    Trace() { System.out.println("constructor: " + value); }
+}
+```
+
+`new Trace()` печатает `field`, затем `constructor: 7`. Инициализаторы экземпляра в одном классе выполняются в текстовом порядке.
+
+### Публикация ссылки при конструировании {#sec-j25-lecture-objects-invariants-escape}
+
+Пока конструктор устанавливает поля, инвариант может быть ещё не выполнен. Если передать `this` внешнему коду, тот получит доступ к незавершённому состоянию.
+
+Следующая лекция покажет особенно тонкий случай: базовый конструктор вызывает метод, который переопределён в подклассе. Динамический вызов не ждёт конца создания.
+
+### Имена и статические ограничения {#sec-j25-lecture-objects-invariants-python}
+
+В Python присваивание имени тоже может оставить два имени одного изменяемого объекта. Java дополнительно проверяет, подходит ли ссылка статическому типу переменной.
+
+Сходство помогает предсказать совместное изменение. Граница аналогии: динамическая доступность метода в Python не заменяет проверку объявленных типов и модификаторов доступа Java.
+
+### Изменение через общие ссылки {#sec-j25-lecture-objects-invariants-prediction}
+
+```java
+Book a = create("Java");
+Book b = a;
+borrow(b);
+b = create("Algorithms");
+System.out.println(a.title + ": " + a.borrowed);
+```
+
+Ответ: `Java: true`. Первый вызов изменил общую книгу; последнее присваивание заменило только значение `b`. Старый объект остался доступен через `a`.
+
+### Проверка контракта класса {#sec-j25-lecture-objects-invariants-design-check}
+
+Клиент должен создать комнату на 30 мест, занять 8 и узнать остаток. Конструктор и `reserve` выражают эти шаги без обязательной последовательности сеттеров.
+
+Отрицательная вместимость отвергается при создании; превышение остатка — при бронировании. Правила доступны клиенту по операциям, а поддерживаются внутри объекта.
+
+### Book для следующих опытов {#sec-j25-lecture-objects-invariants-book-contract}
+
+Файл продолжается на следующих экранах; части соединяются по порядку.
+
+```java
+package course.examples.objects;
+public final class Book {
+    private final String title;
+    private boolean borrowed;
+    public Book(String title) {
+        if (title == null || title.isBlank())
+            throw new IllegalArgumentException("nonblank title required");
+        this.title = title;
+    }
+    public String title() { return title; }
+    public boolean borrowed() { return borrowed; }
+    public void borrow() {
+        if (borrowed) throw new IllegalStateException("already borrowed");
+        borrowed = true;
+```
+
+### Продолжение того же файла {#sec-j25-lecture-objects-invariants-book-contract-part-1}
+
+```java
+    }
+}
+```
+
+Полный `course/examples/objects/Book.java`. За проверкой следуют запись состояния и доступ через методы. В следующем клиенте нужен `import course.examples.objects.Book;`. Повторная выдача отвергнута до записи.
+
+### Прогноз общего состояния {#sec-j25-lecture-objects-invariants-book-client}
+
+```java
+Book first = new Book("Java");
+Book same = first;
+same.borrow();
+System.out.println(first == same);   // true
+System.out.println(first.borrowed()); // true
+try { first.borrow(); }
+catch (IllegalStateException e) {
+    System.out.println(e.getMessage()); // already borrowed
+}
+System.out.println(first.borrowed()); // true
+```
+
+Тело main класса BookClient, тот же импорт. Отказ не откатил успешную первую выдачу. Перенос к ограниченному стеку: при заполненном B/A отказ push C оставляет B/A; проверка ёмкости должна предшествовать изменению.
+
+### Переход к наследованию и обобщениям {#sec-j25-lecture-objects-invariants-route}
+
+Для любого примера сначала считаем объекты и устанавливаем, какие ссылки совпадают. Затем отделяем состояние от разрешённых действий и проверяем условия создания.
+
+Наследование добавит отношение типов и выбор реализации. Запись сократит класс значения. Обобщение сохранит связь конкретного типа в общем контейнере. Теория: @theory:sec-j25-theory-objects, @theory:sec-j25-theory-classes.
+
+### Проверка переноса {#sec-j25-lecture-objects-invariants-exit}
+
+**Прогноз:** Заполненный стек B/A отверг push C. Что должен увидеть pop?
+
+**Разбор:** B, затем A: отказ до изменения. У одной Book две ссылки, успешный borrow виден обеим; повтор отвергнут без нового состояния. Переназначение параметра не меняет ссылку caller.
+
+Для стека push добавляет элемент сверху, pop снимает верхний. При ёмкости 2 после push A/B отклонённый push C сохраняет состояние: следующие pop дают B, затем A. Проверка до записи защищает прежние элементы так же, как отказ reserve сохраняет occupied.
+
+Точное объяснение: @theory:sec-j25-theory-objects, @theory:sec-j25-theory-classes.
+
+## Дополнительно — за пределами 80 минут {#sec-j25-lecture-objects-invariants-additional}
+
+Эти продолжения не требуются для основного маршрута.
+
+### Обязательная и nullable-строка в Kotlin {#sec-j25-lecture-objects-invariants-nullable-comparison .continuation}
+
+В Kotlin различаются `String` и `String?`:
+
+```kotlin
+fun titleLength(title: String): Int = title.length
+fun possibleLength(title: String?): Int? = title?.length
+```
+
+Первому методу требуется строка; второй явно допускает отсутствие.
+`!!` вновь требует значение и при `null` приводит к исключению.
+Взаимодействие с Java оставляет дополнительные границы проверки.
+
+Для обычного ссылочного типа Java ненулевость приходится задавать контрактом.
+Ретроспективная критика null у Хоара помогает увидеть цену неявного условия.
+[@bib-ctx-objects-kotlin-null; @bib-ctx-objects-hoare-null]
+
+### Выбор глубины копирования {#sec-j25-lecture-objects-invariants-deep-copy .continuation}
+
+Новый список копирует структуру коллекции, но не обязательно сами элементы. Две книги могут намеренно ссылаться на одного автора: копия автора разрушила бы нужное отношение.
+
+Сначала устанавливаем, какое состояние должно быть независимым. Затем выбираем копирование. Формула «всегда глубокая копия» не определяет правильную модель.
+
+### Разделяемая коллекция в копии объекта {#sec-j25-lecture-objects-invariants-shared-copy .continuation}
+
+Дополнительный самостоятельный CopyDemo: `class TaggedBook { String title; java.util.List<String> tags = new java.util.ArrayList<>(); }`. В main создаются два разных TaggedBook first и copy.
+
+После first.tags.add("java") присваивание copy.tags=first.tags копирует ссылку. copy.tags.add("oop") меняет общий список: first.tags печатается [java, oop]. Копия ссылки не выбирает глубину копирования; это отдельный тип, а не несуществующее поле канонического Book.
+
+### Разделяемая входная коллекция {#sec-j25-lecture-objects-invariants-input-alias .continuation}
+
+Дополнительный опыт после введения коллекций: constructor, который просто сохраняет переданный ArrayList, разделяет его структуру с вызывающим кодом. Внешний clear способен удалить сохранённые имена. Следующий опыт явно создаёт собственную структуру прежде выдачи view и snapshot; это другая версия класса.
+
+### Снимок и текущее состояние {#sec-j25-lecture-objects-invariants-snapshot .continuation}
+
+```java
+final class GuestList {
+    private final java.util.List<String> names;
+    GuestList(java.util.List<String> initial) {
+        names = new java.util.ArrayList<>(initial);
+    }
+    void add(String name) { names.add(name); }
+    java.util.List<String> snapshot() {
+        return java.util.List.copyOf(names);
+    }
+    java.util.List<String> view() {
+        return java.util.Collections.unmodifiableList(names);
+    }
+}
+```
+
+GuestList.java без package. Полностью показана версия для следующего клиента; нет скрытого параметра ёмкости.
+
+
+### Снимок и view одного владельца {#sec-j25-lecture-objects-invariants-guest-client}
+
+```java
+var guests = new GuestList(java.util.List.of("Ann"));
+var snapshot = guests.snapshot();
+var view = guests.view();
+guests.add("Bob");
+System.out.println(snapshot); // [Ann]
+System.out.println(view);     // [Ann, Bob]
+```
+
+main GuestDemo.java рядом с GuestList.java. Snapshot сохранил прежний состав, view показывает текущий состав собственной коллекции guests. Это дополнительный возврат после коллекций, не prerequisite раннего объекта.

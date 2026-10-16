@@ -1,0 +1,116 @@
+---
+categories: [j25, j25-core, j25-files]
+---
+
+# Path, Files и текстовый ввод-вывод {#sec-j25-api-files}
+
+Java 25. Полное объяснение уровней файла и формата:
+@theory:sec-j25-theory-io. Современные файловые операции —
+`java.nio.file.Files` [@bib-data-files-api; @bib-data-path-api; @bib-data-bufferedreader-api].
+
+## Путь {#sec-j25-api-files-path}
+
+| Операция Path | Назначение |
+|---|---|
+| `static Path of(String first, String... more)` | Создать описание пути |
+| `Path resolve(Path other)` | Присоединить относительный путь; абсолютный задаёт свой путь |
+| `Path normalize()` | Лексически устранить избыточности, без доступа к файлу |
+| `Path toAbsolutePath()` | Разрешить относительно рабочего каталога |
+| `Path toRealPath(LinkOption... options) throws IOException` | Получить действительный путь существующего файла |
+| `Path getFileName()` / `Path getParent()` | Компоненты; отсутствие возможно как `null` |
+
+`Path.of` не открывает файл и не проверяет существование; неправильный
+синтаксис может дать `InvalidPathException`. Относительный путь зависит
+от рабочего каталога процесса. `normalize` не следует по символическим
+ссылкам и не доказывает существования. Для сравнения существующих файлов
+есть `Files.isSameFile`. Предварительный `Files.exists` не гарантирует
+успех следующего действия: внешнее состояние может измениться.
+
+## Чтение и запись {#sec-j25-api-files-operations}
+
+В таблице даны выбранные перегрузки, без расширения на весь API.
+`Path`, `OpenOption`, `CopyOption`, `LinkOption` находятся в
+`java.nio.file`, `FileAttribute` — в `java.nio.file.attribute`,
+`Charset` — в `java.nio.charset`; возвращаемые читатели и потоки —
+в `java.io`, `List` — в `java.util`, `Stream` — в `java.util.stream`.
+`throws IOException` означает проверяемый отказ; возможные непроверяемые
+исключения дополнительно определяются условиями конкретной операции.
+
+| Выбранная сигнатура Files | Результат / условие |
+|---|---|
+| `static byte[] readAllBytes(Path path) throws IOException` | Все байты в памяти |
+| `static String readString(Path path, Charset cs) throws IOException` | Весь текст в памяти |
+| `static List<String> readAllLines(Path path, Charset cs) throws IOException` | Все строки в списке, разделители удалены |
+| `static InputStream newInputStream(Path path, OpenOption... options) throws IOException` | Байтовый вход, требуется закрытие |
+| `static BufferedReader newBufferedReader(Path path, Charset cs) throws IOException` | Символьный буферизованный вход, требуется закрытие |
+| `static Stream<String> lines(Path path, Charset cs) throws IOException` | Ленивый `Stream<String>`, требуется закрытие |
+| `static Path writeString(Path path, CharSequence text, Charset cs, OpenOption... options) throws IOException` | Запись текста; вернуть путь |
+| `static BufferedWriter newBufferedWriter(Path path, Charset cs, OpenOption... options) throws IOException` | Символьный буферизованный вывод |
+| `static Path copy(Path source, Path target, CopyOption... options) throws IOException` | Копирование файла |
+| `static Path move(Path source, Path target, CopyOption... options) throws IOException` | Перемещение |
+| `static Path createDirectories(Path dir, FileAttribute<?>... attrs) throws IOException` | Создать недостающую цепочку каталогов |
+| `static void delete(Path path) throws IOException` / `static boolean deleteIfExists(Path path) throws IOException` | Удаление; во втором случае `false` при отсутствии |
+
+Для учебного UTF-8-формата передают `StandardCharsets.UTF_8`.
+Байты не преобразуют в символы отдельным приведением `(char)`.
+`InputStream.read()` даёт 0–255 либо `-1` конца входа; `read(buffer)`
+возвращает фактическое количество, которое может быть меньше буфера.
+`BufferedReader.readLine()` возвращает строку без разделителя либо
+`null` конца входа; пустая строка — самостоятельное значение `""`.
+
+```java
+try (var reader = java.nio.file.Files.newBufferedReader(path,
+        java.nio.charset.StandardCharsets.UTF_8)) {
+    String line;
+    while ((line = reader.readLine()) != null) {
+        System.out.println(line);
+    }
+}
+```
+
+Это тело метода `static void show(java.nio.file.Path path)
+throws java.io.IOException`. Вход `alpha`, пустая строка, `beta`
+печатается тремя строками, включая пустую. Если загрузчик пропускает blank,
+его физический счётчик всё равно увеличивается до `continue`:
+@theory:sec-j25-theory-application-loader. Пустой вход не является отказом.
+
+Открытие и чтение могут дать `IOException`. Повреждённая последовательность
+UTF-8 при `Files.readString(path, UTF_8)` приводит к `IOException`;
+у читателя из `newBufferedReader(path, UTF_8)` такое исключение возникает
+при чтении. У `Files.lines(path, UTF_8)` повреждение, обнаруженное в позднем
+обходе, передаётся как `UncheckedIOException`. В приложении из
+@theory:sec-j25-theory-application отказ декодирования через BufferedReader даёт
+код завершения 4, а не ошибку предметного формата с кодом 3. Память операций
+«прочитать всё» определяется размером входа, а не краткостью записи.
+
+## Параметры открытия и публикация {#sec-j25-api-files-options}
+
+| `StandardOpenOption` | Смысл |
+|---|---|
+| `READ` / `WRITE` | Направление работы |
+| `CREATE` | Создать при отсутствии |
+| `CREATE_NEW` | Создать только новый; существование → отказ |
+| `TRUNCATE_EXISTING` | Усечь существующий при записи |
+| `APPEND` | Добавлять в конец |
+
+Без параметров `writeString/newBufferedWriter` используют создание,
+запись и усечение. Для дописывания выбирают нужный режим явно:
+
+```java
+Files.writeString(target, "s3;Ann;80\n", StandardCharsets.UTF_8,
+    StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+```
+
+В этом теле метода `throws IOException` переменная `Path target`
+передана аргументом, нужны импорты `Files`, `StandardCharsets` и
+`StandardOpenOption`. При прежнем тексте `s2;Lin;70\n` получится
+`s2;Lin;70\ns3;Ann;80\n`; повтор запуска добавит ещё одну строку.
+
+Наличие разделителя в конце прежнего текста проверяет приложение.
+Операция не обещает откат при сбое: частичный результат возможен.
+`StandardCopyOption.REPLACE_EXISTING` разрешает замену при соответствующей
+операции; `ATOMIC_MOVE` у `move` требует поддержки файловой системы,
+иначе `AtomicMoveNotSupportedException`. При атомарном перемещении
+другие параметры могут игнорироваться, а обработка существующего
+результата зависит от реализации. Не обещайте универсальную атомарную
+замену без проверки нужных условий.

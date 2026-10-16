@@ -1,0 +1,185 @@
+---
+categories: [java, java-core, java-console]
+---
+
+# Стандартный ввод и вывод {#sec-api-console}
+
+`System.in` — уже открытый стандартный поток ввода типа `InputStream`.
+Источник задаёт окружение: клавиатура, перенаправленный файл или другая
+программа. Аргументы `main(String[] args)` поступают отдельно при запуске;
+чтение `System.in` получает новые данные во время выполнения.
+[@bib-console-system-in]
+
+## Байты, текст и конец ввода {#sec-api-console-text}
+
+`System.in.read()` имеет форму `int read() throws IOException`: следующий
+**байт** возвращается как число от `0` до `255`, конец потока (EOF) — как `-1`.
+Для входа, состоящего только из ASCII, байт совпадает с кодом символа.
+Но в UTF-8 буква `Я` занимает два байта: `208`, `175`. Приведение каждого
+байта к `char` не декодирует текст. [@bib-console-input-stream]
+
+Для текстового ввода используйте `InputStreamReader(InputStream in, Charset cs)`:
+он декодирует байты в выбранной кодировке. Его `int read() throws IOException`
+возвращает одну единицу UTF-16 от `0` до `65535` либо `-1` при EOF. Сначала
+проверьте `-1`, затем при необходимости преобразуйте результат в `char`.
+`char` не может хранить отрицательный признак EOF.
+[@bib-console-input-stream-reader; @bib-console-reader]
+
+Пример одного чтения; файл `ReadOne.java`:
+
+```java
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+
+public class ReadOne {
+    public static void main(String[] args) throws IOException {
+        InputStreamReader input = new InputStreamReader(
+            System.in, StandardCharsets.UTF_8);
+        int value = input.read();
+        if (value == -1) {
+            System.out.println("Конец ввода");
+        } else {
+            System.out.println("Код UTF-16: " + value);
+        }
+    }
+}
+```
+
+Вход `A` даёт `Код UTF-16: 65`; вход `Я` в UTF-8 — `Код UTF-16: 1071`;
+пустой завершённый поток — `Конец ввода`. Чтение может ждать появления данных.
+Нажатие Enter передаёт окончание строки и не завершает поток. Точка в лабораторном
+условии — обычный прочитанный символ; её роль задаёт сама программа.
+
+UTF-8 в примере — договорённость о входных данных. Кодировка источника должна
+ей соответствовать. Для кодировки стандартного ввода, настроенной окружением
+Java 25 используйте строковую перегрузку конструктора:
+`new InputStreamReader(System.in, System.getProperty("stdin.encoding"))`.
+Не считайте кодировку по умолчанию гарантированно равной кодировке терминала.
+[@bib-console-system-in]
+
+Декодирование корректного текстового входа позволяет сохранить остальные символы:
+неизменённые единицы UTF-16 должны сохранять порядок. Символ вне основной
+плоскости Unicode занимает две единицы; одиночное чтение не обещает целую
+кодовую точку. Подробнее: @handbook:sec-api-strings-unicode. Ограничение
+преобразуемых букв ASCII не означает, что весь остальной вход обязан быть ASCII.
+
+`IOException` означает отказ ввода-вывода и отличается от нормального EOF.
+Здесь запись `throws IOException` после параметров `main` разрешает передать
+такой отказ наружу: при отказе программа завершается с диагностикой. Она
+не устраняет ошибку и не подменяет проверку `-1`.
+Разбор механизма и обработчиков: @theory:sec-j25-theory-exceptions-hierarchy.
+
+## Целое число: Scanner {#sec-api-console-integers}
+
+`Scanner` разбивает ввод на токены; по умолчанию разделители — пробельные
+символы `Character.isWhitespace`. Основные формы Java 25:
+
+| Форма | Результат |
+|---|---|
+| `Scanner(InputStream source, Charset charset)` | Читатель с заданной кодировкой |
+| `boolean hasNext()` | Есть следующий токен; не потребляет его |
+| `boolean hasNextInt()` | Следующий токен допустим как `int`; не потребляет его |
+| `int nextInt()` | Читает и потребляет целое число |
+| `boolean hasNextDouble()` | Проверяет следующий токен как `double`, не потребляя его |
+| `double nextDouble()` | Читает и потребляет вещественное число |
+| `Scanner useLocale(Locale locale)` | Задаёт правила числового формата и возвращает тот же читатель |
+| `String next()` | Читает и потребляет токен как текст |
+| `IOException ioException()` | Последний отказ источника либо `null` |
+
+Начальное основание — `10`; обычные формы `17`, `-3`, `+8` допустимы.
+Дополнительные числовые формы зависят от локали читателя. Для строгого разбора
+уже имеющейся строки: @handbook:sec-api-strings-parse-int.
+
+Пример одного числа; файл `ReadNumber.java`:
+
+```java
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
+
+public class ReadNumber {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in, StandardCharsets.UTF_8);
+        if (input.hasNextInt()) {
+            int count = input.nextInt();
+            System.out.println(count);
+        } else if (input.hasNext()) {
+            System.out.println("Не целое число: " + input.next());
+        } else if (input.ioException() != null) {
+            System.out.println("Ошибка ввода");
+        } else {
+            System.out.println("Конец ввода");
+        }
+    }
+}
+```
+
+Вход `+17` даёт `17`; `abc` — `Не целое число: abc`; пустой завершённый
+вход — `Конец ввода`. Проверки могут ждать ввода. Без проверки `nextInt()`
+выбрасывает `InputMismatchException` для неверного токена или переполнения
+`int`, `NoSuchElementException` при EOF. Неверный токен остаётся непрочитанным.
+Закрытый читатель вызывает `IllegalStateException`. Отказ источника Scanner
+считает завершением; отличить его позволяет `ioException()`.
+[@bib-console-scanner]
+
+Выберите один читатель для одного входа. Обёртка может читать байты вперёд;
+не смешивайте её с прямым чтением `System.in` или другой обёрткой. Закрытие
+читателя закрывает и источник: не закрывайте заимствованный `System.in`,
+если его дальнейшим использованием управляет другой код.
+[@bib-console-system-in; @bib-console-scanner]
+
+## Десятичная точка и ввод double {#sec-api-console-decimals}
+
+Для машинного протокола с десятичной точкой настройте именно тот `Scanner`, который читает числа: `input.useLocale(Locale.ROOT)`. Это локальная настройка читателя; менять локаль всей системы не требуется. Файл `ReadDecimal.java`:
+
+```java
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
+import java.util.Scanner;
+
+public class ReadDecimal {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in, StandardCharsets.UTF_8);
+        input.useLocale(Locale.ROOT);
+        if (input.hasNextDouble()) {
+            double value = input.nextDouble();
+            if (Double.isFinite(value)) {
+                System.out.println(value + 1.0);
+            } else {
+                System.out.println("Неконечное число");
+            }
+        } else if (input.hasNext()) {
+            System.out.println("Не число: " + input.next());
+        } else if (input.ioException() != null) {
+            System.out.println("Ошибка ввода");
+        } else {
+            System.out.println("Конец ввода");
+        }
+    }
+}
+```
+
+Для `7.5` вывод — `8.5`, для `-2.5` — `-1.5`, для `NaN` — `Неконечное число`, для `7,5` — `Не число: 7,5`. Пустой завершённый поток даёт `Конец ввода`. Проверка формата и требование конечного числа различаются: распознанный `double` может быть NaN или бесконечностью. `hasNextDouble` не потребляет ошибочный токен; при повторной попытке его нужно прочитать или завершить работу. `nextDouble` без успешной проверки имеет те же группы отказов, что числовой `nextInt`: неподходящий токен, EOF, закрытый читатель. [Scanner Java 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Scanner.html).
+
+## Вывод: PrintStream и числовой протокол {#sec-api-console-output}
+
+`System.out` — стандартный `PrintStream`. Для основного вывода достаточно трёх форм:
+
+| Сигнатура | Действие |
+|---|---|
+| `void print(String s)` | Печатает текст без добавленного окончания строки; есть перегрузки для примитивов |
+| `void println(String s)` | Печатает текст и окончание строки платформы; `println()` печатает только окончание |
+| `PrintStream printf(Locale locale, String format, Object... args)` | Форматирует значения, возвращает тот же поток; само окончание строки задаётся форматом |
+
+Фрагмент внутри `main`; `java.util.Locale` указан полным именем:
+
+```java
+System.out.print("A");
+System.out.println("B");
+System.out.println(2.5);
+System.out.printf(java.util.Locale.ROOT, "%.2f%n", 2.5);
+```
+
+Получаются три строки: `AB`, `2.5`, `2.50`. `%n` добавляет окончание строки платформы; `\t` в строке — табуляцию. В `printf` локаль выбрана для этого вызова, поэтому десятичный разделитель — точка. У `println(double)` строковое представление числа не выбирает разделитель по локали. Формат `%.2f` задаёт два знака и округляет: он подходит лишь когда такой точности достаточно задаче. Протоколы первых лабораторных допускают точку и экспоненциальную форму, имеют свой допуск `1e-8` и не требуют фиксированного числа знаков. [PrintStream Java 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/PrintStream.html).
+
+Проверяющая программа читает значения по условию. Приглашение `Введите число:` стало бы лишним выводом, поэтому в подключённых числовых проектах печатают только требуемый результат. Табуляцию и порядок колонок задаёт протокол вывода. `System.err` служит отдельной диагностике там, где это разрешено условием. Заимствованные `System.in` и `System.out` не закрывают; подробные правила отказа вывода рассматриваются вместе с ресурсами.

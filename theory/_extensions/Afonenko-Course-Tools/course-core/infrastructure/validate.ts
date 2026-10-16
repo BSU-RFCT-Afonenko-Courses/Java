@@ -1,3 +1,6 @@
+import {createMetrics as __createMetrics} from "../observability/bridge.ts";
+const __metrics=__createMetrics("course-core");
+import { diagnostic } from "../domain/diagnostics.ts";
 import { dirname, fromFileUrl, join } from "stdlib/path";
 import type { Adapter, ReleaseResult } from "../domain/model.ts";
 import { checkPaths } from "./files.ts";
@@ -13,7 +16,7 @@ export async function validateRelease(
       const item of [...result.model.exercises, ...result.model.assessments]
     ) {
       if (!sourceRoots[item.source]) {
-        throw Error("CORE.SOURCE_ROOT_MISSING: " + item.source);
+        throw diagnostic("CORE.SOURCE_ROOT_MISSING", "Не найден корень входного документа: " + item.source, {source: item.source, id: item.id, field: "sourceRoots"});
       }
     }
     for (const root of new Set(Object.values(sourceRoots))) {
@@ -28,7 +31,7 @@ export async function validateRelease(
       });
     }
   } else await checkPaths(projectRoot, result.model);
-  const file = await Deno.makeTempFile({ suffix: ".json" });
+  const file = await Deno.makeTempFile({ dir: projectRoot, prefix: ".course-validation-", suffix: ".json" });
   try {
     await Deno.writeTextFile(file, JSON.stringify(result.model));
     await command(Deno.env.get("CUE") || "cue", [
@@ -45,3 +48,6 @@ export async function validateRelease(
     await Deno.remove(file);
   }
 }
+
+// @ts-expect-error JS допускает замену function binding; сигнатура публичного API сохраняется.
+validateRelease=__metrics.wrapAsync({id:"course-core.infrastructure.validate.validateRelease",kind:"io"},validateRelease);

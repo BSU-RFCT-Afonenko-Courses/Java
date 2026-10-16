@@ -1,0 +1,144 @@
+---
+categories: [java, generics, generic-classes]
+pagetitle: Обобщённые классы
+---
+
+# Обобщённые классы {#sec-h-generic-classes}
+
+Параметры типов объявляются после имени класса или интерфейса:
+`class Box<T>`, `interface Source<T>`. Внутри объявления одно имя параметра
+связывает типы полей, аргументов и результатов. При использовании вместо
+него выбирают ссылочный тип: например, `Box<String>`.
+[@bib-jls-generic-classes-methods]
+
+## Формы объявления {#sec-h-generic-classes-forms}
+
+| Объявление без тела | Связь типов |
+|---|---|
+| `class Box<T>` | Один параметр; без явной границы доступен контракт `Object` |
+| `record Entry<K, V>(K key, V value)` | Независимые типы ключа и значения |
+| `class Related<A, B extends A>` | Второй аргумент — первый тип или его подтип |
+| `interface Source<T>` | Параметризованный интерфейс |
+| `class Numeric<T extends Number>` | Аргумент — `Number` или его подтип |
+| `class Ordered<T extends Number & Comparable<T>>` | Числовой тип с указанным способом сравнения |
+
+Для границы-интерфейса тоже пишется `extends`. Если в составной границе
+есть класс, он стоит первым; далее идут интерфейсы. Для двух параметров
+можно выбрать один тип: `Entry<String, String>` допустим. Связь `B extends A`
+разрешает `Related<Number, Integer>`, но запрещает `Related<Integer, Number>`.
+Нижней границы параметра `<T super Number>` нет; `super` применяется
+к неизвестному аргументу типа в @sec-h-wildcards. [@bib-jls-type-variables]
+
+## Создание и чтение {#sec-h-generic-classes-use}
+
+Полное объявление коробки из теории:
+
+```java
+final class Box<T> {
+    private final T value;
+
+    Box(T value) { this.value = value; }
+    T get() { return value; }
+}
+```
+
+Использование в методе:
+
+```java
+Box<String> title = new Box<>("Java");
+String text = title.get();
+Box<Integer> count = new Box<>(25);
+int number = count.get();
+```
+
+`T` — параметр объявления, `String` и `Integer` — аргументы типа.
+Ромб `<>` поручает компилятору вывести аргумент создаваемого класса.
+`Box<String> title = new Box<>(25)` отвергается: требования конструктора
+и целевого типа не согласуются. Сопоставление с выводом локальной переменной:
+
+```java
+Box<String> first = new Box<>(null); // Box<String>
+var second = new Box<>(null);        // Box<Object>
+var third = new Box<String>(null);   // Box<String>
+```
+
+В первой строке создаваемый тип ограничен контекстом слева. Во второй
+`var` получает тип из инициализатора, которому такой контекст не задан.
+В третьей аргумент создаваемого класса указан явно.
+[@bib-jls-type-arguments-unboxing-inference]
+
+`Box<int>` недопустим; `Box<Integer>` использует ссылочный тип-оболочку.
+При чтении в `int` выполняется распаковка. Коробка выше допускает `null`,
+поэтому распаковка содержимого `null` вызовет `NullPointerException`.
+
+Полные файлы [Box.java](../examples/generics/java/erasure/Box.java) и
+[BoxClient.java](../examples/generics/java/erasure/BoxClient.java) можно
+скомпилировать вместе; команды — @sec-h-erasure-javap. Причины такого
+устройства: @theory:sec-t-type-parameters-type-parameter.
+
+## Доступные операции {#sec-h-generic-classes-bounds}
+
+Тело класса проверяется по объявленным границам. У неограниченного `T`
+нет гарантированного `length()` или `doubleValue()`. Граница
+`T extends Number` разрешает вызов `doubleValue()`. Для сложения
+с результатом `T` требуется операция, возвращающая именно `T`. Нужные операции можно передать отдельным обобщённым
+интерфейсом: @theory:sec-t-type-parameters-operations.
+
+## Область действия параметра {#sec-h-generic-classes-scope}
+
+Параметр класса недоступен в статическом контексте. Поэтому
+`static T value;` в `Box<T>` недопустимо. Статический метод может объявить
+собственный параметр перед результатом: `static <U> U identity(U value)`.
+Точная форма и вывод аргументов — @sec-h-generic-methods.
+
+## Разделяемое содержимое {#sec-h-generic-classes-sharing}
+
+Конструктор `Box` сохраняет полученную ссылку, `get()` возвращает её.
+Если клиент передал изменяемую книгу, изменение этой книги видно
+и через чтение коробки. `final` запрещает повторное присваивание полю
+`value`; изменение полей самой книги определяется её объявлением. Полный опыт:
+@theory:sec-t-type-parameters-sharing. [@bib-jls-final-fields]
+
+## Наследование {#sec-h-generic-classes-inheritance}
+
+Подкласс может сохранить параметр или зафиксировать аргумент:
+
+```java
+class Container<T> {
+    private final T value;
+    Container(T value) { this.value = value; }
+    T get() { return value; }
+}
+class TextContainer extends Container<String> {
+    TextContainer(String value) { super(value); }
+}
+class NamedContainer<T> extends Container<T> {
+    NamedContainer(T value) { super(value); }
+}
+```
+
+Здесь `Container` допускает наследование. У `TextContainer.get()` результат
+имеет тип `String`; у `NamedContainer<T>` связь с `T` сохраняется.
+При реализации интерфейса действует тот же принцип: если `Source<T>`
+объявляет `T get()`, то `class TextSource implements Source<String>`
+фиксирует результат `String`.
+
+Само отношение `Integer` → `Number` не делает `Container<Integer>`
+подтипом `Container<Number>`. Подтипизация контейнеров и неизвестный
+аргумент: @sec-h-wildcards. [@bib-jls-class-interface-subtyping]
+
+## Массив как хранилище {#sec-h-generic-classes-array}
+
+Объявление поля `T[] values` допустимо, создание `new T[n]` — нет.
+Один из способов получить хранилище — принять уже созданный массив.
+Для контейнера с аргументом `Number` массив `Number[]` допускает запись
+разных числовых подтипов. Массив `Integer[]`, хотя его можно передать
+через ссылку `Number[]`, отвергнет запись `Double` при выполнении.
+[@bib-jls-array-store-checks]
+
+Передача массива не передаёт исключительное владение автоматически:
+если клиент сохранил ссылку, он всё ещё может менять его элементы.
+Договорённость о дальнейшем использовании массива задаётся отдельно.
+Для увеличения массива `Arrays.copyOf(T[], int)` сохраняет его фактический
+класс; точная форма — @sec-api-arrays-copy-of. Другие ограничения
+создания объектов и массивов — @sec-h-erasure-limits.

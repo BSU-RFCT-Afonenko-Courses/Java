@@ -1,0 +1,73 @@
+---
+categories: [j25, j25-core, j25-interfaces]
+pagetitle: Интерфейсы
+---
+
+# Интерфейсы {#sec-j25-api-interfaces}
+
+Интерфейс вводит номинальный ссылочный тип и роль, которую предоставляют реализации. Класс использует `implements`, интерфейс расширяет другие интерфейсы через `extends`. Объяснение и делегирование: @theory:sec-j25-theory-interfaces. [@bib-objects-schildt-interfaces]
+
+## Формы членов {#sec-j25-api-interfaces-members}
+
+В каждом независимом фрагменте непубличные интерфейсы и записи располагаются
+рядом с публичным `InterfaceApiDemo` в `InterfaceApiDemo.java` без пакета;
+действия — в его `main(String[] args)`. Импорты не нужны. Обобщённый фрагмент
+ниже читается после глав об обобщениях и функциях.
+
+```java
+interface Named {
+    String name();
+    default String display() { return "Name: " + name(); }
+    static Named of(String text) { return new SimpleName(text); }
+}
+record SimpleName(String name) implements Named {}
+System.out.println(Named.of("Java").display()); // Name: Java
+```
+
+| Член | Правило |
+|---|---|
+| `void send(String s);` | Неявно `public abstract` |
+| `default void reset() { ... }` | Открытый метод экземпляра с телом |
+| `static void help() { ... }` | Статический метод интерфейса с телом |
+| `private void part() { ... }` | Вспомогательный метод внутри интерфейса |
+| `private static void part() { ... }` | Статический вспомогательный метод |
+| `int LIMIT = 10;` | Неявно `public static final` |
+
+Поля экземпляра и конструкторы запрещены. `static`-методы интерфейса не наследуются ни реализующим классом, ни подинтерфейсом; вызов указывает имя объявившего их интерфейса. `private`-методы недоступны клиенту и не наследуются. Реализация абстрактного открытого метода должна быть `public`; отсутствие модификатора незаконно уменьшает доступность.
+
+## Несколько интерфейсов {#sec-j25-api-interfaces-multiple}
+
+```java
+interface Readable { String read(); }
+interface Writable { void write(String value); }
+interface Storage extends Readable, Writable {}
+```
+
+Несколько интерфейсных типов не создают несколько базовых частей состояния. Если независимые интерфейсы дают конфликтующие `default`-методы, класс должен разрешить конфликт переопределением. Для конкретного тела непосредственного суперинтерфейса применяется `A.super.method()`. Метод класса имеет приоритет над интерфейсным телом; более конкретное интерфейсное объявление — над менее конкретным. [@bib-objects-schildt-interfaces]
+
+## Обобщённая и функциональная роль {#sec-j25-api-interfaces-generic}
+
+```java
+@FunctionalInterface
+interface Source<T> {
+    T get();
+}
+Source<String> source = () -> "Java";
+System.out.println(source.get()); // Java
+```
+
+Функциональный интерфейс имеет один требуемый абстрактный метод после учёта правил совместимых объявлений и методов `Object`. Статические, закрытые и `default`-методы не увеличивают это число. Аннотация `@FunctionalInterface` проверяет намерение, но не является обязательной для лямбда-выражения. Детали обобщённого объявления: @sec-h-generic-classes.
+
+Тип интерфейса проверяет сигнатуры, но не доказывает смысл операции: допустимость `null`, порядок действий, исключения и изменение аргументов определяются документацией и реализацией.
+
+Каноническая ранняя роль — `Sender.send(String)`: `ConsoleSender` печатает
+текст, `RecordingSender` хранит его в `StringBuilder`, `Reminder` получает
+`Sender` через конструктор и делегирует отправку. Полные отдельные файлы
+пакета `course.examples.dispatch`: @theory:sec-j25-theory-interfaces-role и
+@theory:sec-j25-theory-interfaces-contract.
+
+Для `default sendAll(String[])` порядок вызовов сохраняется, но прежняя
+отправка не откатывается после отказа следующей: @theory:sec-j25-theory-interfaces-default.
+`implements Sender` обещает подтип; поле типа `Sender` обеспечивает связь
+объектов; вызов `sender.send` выполняет делегирование. Эти три действия не
+подменяют друг друга.
