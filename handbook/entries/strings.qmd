@@ -37,6 +37,9 @@ categories: [java, java-core, java-strings]
 
 `char` содержит одну единицу UTF-16, `int` может представлять кодовую точку. `Character.charCount(codePoint)` возвращает `1` или `2`. Число кодовых точек не равно автоматически числу воспринимаемых текстовых элементов. Каждый метод `Character` определяет свою категорию символов; условие обработки текста должно указывать подходящую категорию.
 
+Для существующей строки `String text` нормализация и кодирование
+выполняются отдельно:
+
 ```java
 String normalized = java.text.Normalizer.normalize(
     text, java.text.Normalizer.Form.NFC);
@@ -156,7 +159,7 @@ while (words.find()) {
 
 Вывод — `Java:0:4`, затем `код:6:9`. У `Matcher.start()` и `end()` результат типа `int`: включённое начало и исключённый конец последнего успешного совпадения. Как и `group`, их вызывают после успешного `find` или `matches`; иначе `IllegalStateException`. Индексы измерены в единицах UTF-16. Ручной проход может найти те же диапазоны, явно проверяя принадлежность каждой единицы алфавиту. Цифра `2`, табуляция и `!` не исчезли: найденные диапазоны указывают в исходную строку. Для преобразования границы находят в согласованном состоянии текста, а копируемые промежутки разделителей берут из него же. [Matcher Java 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/Matcher.html#start()).
 
-## Сохранить исходные координаты {#sec-api-strings-source-ranges}
+## Диапазоны исходного текста {#sec-api-strings-source-ranges}
 
 `StringBuilder.append(CharSequence source, int start, int end)` добавляет
 диапазон `[start, end)` в накопитель. При существующей строке `source`
@@ -173,4 +176,4 @@ System.out.println(result); // [Java]2код
 ```
 
 Связный проход с сохранением всех разделителей:
-@theory:sec-theory-text-word-walk. [@bib-fnd-string-api]
+@theory:sec-theory-text-word-walk. [@bib-fnd-builder-api]
