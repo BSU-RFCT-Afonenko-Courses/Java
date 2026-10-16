@@ -174,7 +174,7 @@ final class StudentId {
 Попросите выбрать поле для хеша и объяснить согласованность с equals. Затем измените только тип параметра equals на StudentId и обсудите роль Override.
 :::
 
-### Равные ключи находят одну запись {#sec-j25-lecture-equality-collections-step-06}
+### Поиск по равному ключу {#sec-j25-lecture-equality-collections-step-06}
 
 ```java
 StudentId first = new StudentId("s17");
@@ -243,7 +243,7 @@ System.out.println(before.id().equals(after.id())); // true
 Измените только score и перечислите неизменившиеся компоненты. Попросите выбрать ключ для обновления сведений одного участника.
 :::
 
-### Изменение ключа портит предпосылку поиска {#sec-j25-lecture-equality-collections-step-08}
+### Устойчивость ключа при хранении {#sec-j25-lecture-equality-collections-step-08}
 
 Контрпример MutableKey сравнивает изменяемое поле code и возвращает code как hash. После put при code=1 изменение code=2 меняет ключ без перестройки индекса. Прежняя запись физически хранится, но корректный поиск больше не гарантирован.
 
@@ -253,7 +253,7 @@ System.out.println(before.id().equals(after.id())); // true
 Нарисуйте сохранённый ключ и область поиска до изменения code. Предложите исправление модели, которое сохранит поиск после обновления сведений участника.
 :::
 
-### Диагностический ключ объявлен целиком {#sec-j25-lecture-equality-collections-mutable-definition}
+### Изменяемые данные равенства ключа {#sec-j25-lecture-equality-collections-mutable-definition}
 
 ```java
 final class MutableKey {
@@ -758,7 +758,7 @@ var names = List.of("Ada", "Lin");
 Сначала проверьте типовую допустимость add, затем поддержку изменения объектом. Сопоставьте List.of с ArrayList.
 :::
 
-### Четыре списка: предскажите размеры {#sec-j25-lecture-equality-collections-step-37}
+### Копии и представление списка {#sec-j25-lecture-equality-collections-step-37}
 
 ```java
 Book book = new Book("Java");
@@ -777,10 +777,10 @@ System.out.println(source.size()+" "+view.size()+" "+
 Это один продолжающийся main SnapshotDemo, импорты java.util.* и Book. View наблюдает текущую структуру источника; copy/snapshot сохранили исходный состав. Snapshot и view запрещают add/remove/set/sort; copy изменяется независимо.
 
 ::: {.notes}
-До добавления второй книги заполните строку размеров. После добавления измените только source и view, сохранив ссылки первой книги во всех четырёх списках.
+Предскажите размеры четырёх списков до и после добавления второй книги. После добавления измените только source и view, сохранив ссылки первой книги во всех четырёх списках.
 :::
 
-### Общая книга во всех четырёх {#sec-j25-lecture-equality-collections-step-38}
+### Общие изменяемые элементы {#sec-j25-lecture-equality-collections-step-38}
 
 ```java
 book.borrow();
