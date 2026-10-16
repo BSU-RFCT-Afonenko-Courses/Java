@@ -53,3 +53,13 @@ JVM, `System.exit`, UTF-8, аргументы и рабочий каталог, 
 ```bash
 python3 -m unittest discover -s tasks/test-support -p test_materialize.py -v
 ```
+
+`api/CliPrecheck.java` — отдельный общий API precheck Platform. Материализатор
+поставляет его в `api/` обеих тестовых частей вместе с библиотекой и фиксирует
+в том же hash manifest. Профиль `java-cli` выбирает этот файл отдельным subset:
+он компилируется без student classpath и проверяет только наличие загрузочного
+класса `Main` без инициализации. Модификаторы, конструктор и форма `main`
+не ограничиваются; фактический Java 25 launcher проверяется поведенческими
+тестами. Канонический файл находится вне `src/`, поэтому JDK-only `check.py`
+не требует Platform helper. При самостоятельном JUnit-запуске не включайте
+`api/` в зависимую компиляцию: precheck выполняется отдельной стадией Platform.

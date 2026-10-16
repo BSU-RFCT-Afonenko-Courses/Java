@@ -321,6 +321,20 @@ project-checks:
       - tests/junit/**/*.java
       scoring:
         mode: all-pass
+    java-cli:
+      source-profile: java-main
+      tests:
+      - tests/junit/**/*.java
+      api-precheck:
+        files:
+        - tests/junit/api/CliPrecheck.java
+        entry: CliPrecheck
+      verification-api-precheck:
+        files:
+        - student/src/test/java/api/CliPrecheck.java
+        entry: CliPrecheck
+      scoring:
+        mode: all-pass
 
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: codex/java-course-full-revision-20261015

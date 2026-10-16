@@ -59,6 +59,11 @@ def main():
     sources = sorted(source.rglob('*.java'))
     if not sources:
         raise ValueError('Исходники общей поддержки не найдены')
+    api_source = safe(root, base + 'api/CliPrecheck.java')
+    if not api_source.is_file():
+        raise ValueError('Исходник CLI precheck не найден')
+    deliveries = [(path, 'coursesupport/' + path.relative_to(source).as_posix()) for path in sources]
+    deliveries.append((api_source, 'api/CliPrecheck.java'))
     manifest_path = safe(root, base + 'materialized.json')
     previous = {}
     if manifest_path.exists():
@@ -74,8 +79,8 @@ def main():
             target_base = f'tasks/projects/{project}/{partition}'
             if not safe(root, target_base).is_dir():
                 raise ValueError(f'Раздел проекта не существует: {target_base}')
-            for path in sources:
-                relative = target_base + '/coursesupport/' + path.relative_to(source).as_posix()
+            for path, target_relative in deliveries:
+                relative = target_base + '/' + target_relative
                 target = safe(root, relative)
                 if target.exists() and not target.is_file():
                     raise ValueError(f'Ожидался файл: {relative}')
