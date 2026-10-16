@@ -1,0 +1,90 @@
+{
+  "cases": [
+    {
+      "id": "reference",
+      "sources": "reference",
+      "binding": "tests/bindings/reference",
+      "expected": "success",
+      "apiConfig": "tests/api/reference/config.json"
+    },
+    {
+      "id": "valid-alternate",
+      "sources": "tests/fixtures/valid-alternate",
+      "binding": "tests/bindings/valid-alternate",
+      "expected": "success",
+      "apiConfig": "tests/api/valid-alternate/config.json"
+    },
+    {
+      "id": "wrong",
+      "sources": "tests/fixtures/wrong",
+      "binding": "tests/bindings/reference",
+      "expected": "behavior-failure",
+      "apiConfig": "tests/api/reference/config.json"
+    },
+    {
+      "id": "wrong-wide-push",
+      "sources": "tests/fixtures/wrong-wide-push",
+      "binding": "tests/bindings/reference",
+      "apiConfig": "tests/api/reference/config.json",
+      "expected": "student-api-mismatch"
+    },
+    {
+      "id": "wrong-raw-pop",
+      "sources": "tests/fixtures/wrong-raw-pop",
+      "binding": "tests/bindings/reference",
+      "apiConfig": "tests/api/reference/config.json",
+      "expected": "student-api-mismatch"
+    },
+    {
+      "id": "wrong-unchecked-full",
+      "sources": "tests/fixtures/wrong-unchecked-full",
+      "binding": "tests/bindings/reference",
+      "apiConfig": "tests/api/reference/config.json",
+      "expected": "student-api-mismatch"
+    },
+    {
+      "id": "wrong-extra-checked",
+      "sources": "tests/fixtures/wrong-extra-checked",
+      "binding": "tests/bindings/reference",
+      "apiConfig": "tests/api/reference/config.json",
+      "expected": "student-api-mismatch"
+    },
+    {
+      "id": "valid-extra-overload",
+      "sources": "tests/fixtures/valid-extra-overload",
+      "binding": "tests/bindings/reference",
+      "apiConfig": "tests/api/reference/config.json",
+      "expected": "success"
+    },
+    {
+      "id": "wrong-extra-overload",
+      "sources": "tests/fixtures/wrong-extra-overload",
+      "binding": "tests/bindings/reference",
+      "apiConfig": "tests/api/reference/config.json",
+      "expected": "behavior-failure"
+    },
+    {
+      "id": "valid-generic-push",
+      "sources": "tests/fixtures/valid-generic-push",
+      "binding": "tests/bindings/reference",
+      "apiConfig": "tests/api/reference/config.json",
+      "expected": "success",
+      "reason": "method-owned U→V→T связь; constructor U... связан с T; дополнительные параметры типа не запрещаются буквально"
+    },
+    {
+      "id": "wrong-initial-count",
+      "sources": "tests/fixtures/wrong-initial-count",
+      "binding": "tests/bindings/reference",
+      "apiConfig": "tests/api/reference/config.json",
+      "expected": "behavior-failure",
+      "reason": "Переданный заранее заполненный legal T[] задаёт capacity, но не исходные элементы: стек обязан начинаться пустым."
+    },
+    {
+      "id": "wrong-pop-throws",
+      "sources": "tests/fixtures/wrong-pop-throws",
+      "binding": "tests/bindings/reference",
+      "expected": "student-api-mismatch",
+      "apiConfig": "tests/api/reference/config.json"
+    }
+  ]
+}
