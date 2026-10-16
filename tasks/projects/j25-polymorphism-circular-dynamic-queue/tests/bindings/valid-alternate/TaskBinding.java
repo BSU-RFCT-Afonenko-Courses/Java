@@ -1,0 +1,1 @@
+class TaskBinding{static Object queue(int n){return new alternate.DynQueue(n);}static void put(Object q,char c){((alternate.ICharQ)q).put(c);}static char get(Object q){return ((alternate.ICharQ)q).get();}}

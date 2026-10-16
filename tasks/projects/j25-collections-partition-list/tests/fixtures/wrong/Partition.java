@@ -1,0 +1,1 @@
+public class Partition{public static void partition(java.util.List<Integer>list,int x){int left=0,right=list.size()-1;while(left<=right){if(list.get(left)>x){left++;}else{int t=list.get(left);list.set(left,list.get(right));list.set(right,t);right--;}}}}

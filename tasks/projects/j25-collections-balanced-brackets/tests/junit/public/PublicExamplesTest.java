@@ -1,0 +1,1 @@
+import org.junit.jupiter.api.Test;import static org.junit.jupiter.api.Assertions.*;import java.util.*;import java.math.*;class PublicExamplesTest{@Test void publishedBoundaries(){assertTrue(TaskBinding.valid(""));assertTrue(TaskBinding.valid("([]{})"));assertFalse(TaskBinding.valid("([)]"));assertFalse(TaskBinding.valid(")"));assertFalse(TaskBinding.valid("(("));}}

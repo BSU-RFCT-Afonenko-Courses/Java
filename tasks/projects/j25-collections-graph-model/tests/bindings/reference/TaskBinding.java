@@ -1,0 +1,1 @@
+import java.util.*;class TaskBinding{static Object graph(int n){return new Graph(n);}static void add(Object g,int a,int b){((Graph)g).add(a,b);}static void remove(Object g,int a,int b){((Graph)g).remove(a,b);}static boolean edge(Object g,int a,int b){return ((Graph)g).edge(a,b);}static Set<Integer>neighbors(Object g,int v){return ((Graph)g).neighbors(v);}}

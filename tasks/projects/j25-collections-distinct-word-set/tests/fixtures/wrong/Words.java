@@ -1,0 +1,1 @@
+public class Words{public static java.util.HashSet<String>distinct(String text){var result=new java.util.HashSet<String>();for(String word:text.split("[^A-Za-z]+"))if(!word.isEmpty())result.add(word);return result;}}
