@@ -34,11 +34,9 @@ categories: [j25, j25-core, j25-lists]
 Мутирующая операция может быть неподдерживаемой и дать
 `UnsupportedOperationException` при допустимом по типам вызове.
 
-Основной mutable выбор — `new ArrayList<E>()`; `List.of(...)` даёт список
+`new ArrayList<E>()` создаёт изменяемый список; `List.of(...)` даёт список
 с запрещёнными изменениями. `ArrayList` допускает `null`; фабрики `of/copyOf`
-его отвергают. Ни тип `List<E>`, ни допустимый индекс не обещают поддержку
-`add/set/remove`. Простые значения `get/add/set/size/isEmpty` собраны именно
-здесь; wildcard-глава использует лишь местный минимум.
+его отвергают.
 
 Фрагмент — `main` отдельного `ListDemo.java`; импорты не нужны, библиотечные
 имена полные.
@@ -84,6 +82,5 @@ Fail-fast обнаружение неправильных изменений в�
 `boolean hasNext()`, `E next()`, `void remove()` у `java.util.Iterator<E>`.
 `next()` при исчерпании — `NoSuchElementException`; `remove()` до первого
 `next` или повторно без нового `next` — `IllegalStateException`, при запрете
-операции — `UnsupportedOperationException`. Эти отказы относятся к разным
-условиям. Адресное основание:
+операции — `UnsupportedOperationException`. Адресное основание:
 [Iterator API](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Iterator.html).

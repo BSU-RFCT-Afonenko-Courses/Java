@@ -44,7 +44,6 @@ interface Comparable<T> { int compareTo(T other); }
 interface Comparator<T> { int compare(T first, T second); }
 ```
 
-В таблице приведены сигнатуры методов сравнения.
 Отрицательное значение означает «раньше», ноль — эквивалентность по
 порядку, положительное — «позже». Для выбора порядка используют знак результата; его модуль может различаться.
 Порядок транзитивен; перестановка аргументов меняет знак; элементы с
@@ -74,8 +73,8 @@ System.out.println(order.compare(new Student("s10", "Ada", 90),
 ```
 
 При равных баллах `s10` идёт раньше `s2` по естественному порядку строк.
-Смысл/сигнатура: @handbook:sec-api-strings-compare-to. Запись через ссылки
-на методы применяется после @theory:sec-j25-theory-functions-method-reference.
+Смысл и сигнатура: @handbook:sec-api-strings-compare-to.
+Ссылки на методы: @theory:sec-j25-theory-functions-method-reference.
 
 `List.sort` меняет список; `stream().sorted(order)` строит стадию нового
 конвейера. `TreeSet`/`TreeMap` используют ноль сравнения как совпадение
