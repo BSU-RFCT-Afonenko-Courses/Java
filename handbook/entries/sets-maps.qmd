@@ -1,5 +1,5 @@
 ---
-categories: [j25, j25-core, j25-sets-maps]
+categories: [java, java-core, java-sets-maps]
 ---
 
 # Set, Map, Queue и Deque {#sec-j25-api-sets-maps}
@@ -36,10 +36,37 @@ Java 25. Объяснение выбора структуры и равенст�
 входной коллекции: для равных повторных элементов сохраняется один
 произвольно выбранный представитель. Порядок этих фабрик не обещан.
 
+## Соседи по порядку {#sec-j25-api-sets-maps-neighbors}
+
+`NavigableSet<E>` уточняет операции упорядоченного множества:
+
+| Операция | Результат |
+|---|---|
+| `E lower(E value)` | Наибольший элемент, строго меньший `value` |
+| `E floor(E value)` | Наибольший элемент, не превосходящий `value` |
+| `E ceiling(E value)` | Наименьший элемент, не меньший `value` |
+| `E higher(E value)` | Наименьший элемент, строго больший `value` |
+
+При отсутствии подходящего элемента возвращается `null`. Порядок задаётся
+естественным сравнением или компаратором множества. Пример — тело `main`
+отдельного `NeighborsDemo.java`:
+
+```java
+java.util.NavigableSet<Integer> values = new java.util.TreeSet<>();
+values.addAll(java.util.List.of(10, 20, 40));
+System.out.println(values.floor(25));   // 20
+System.out.println(values.ceiling(25)); // 40
+System.out.println(values.lower(10));  // null
+```
+
+Это поиск соседей по порядку. Выбор по числовому расстоянию дополнительно
+требует своего правила расстояния и обработки ничьей.
+[NavigableSet, Java 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/NavigableSet.html).
+
 ## Групповые операции множеств {#sec-j25-api-sets-maps-bulk}
 
 Операции унаследованы от `Collection`. Для множества они изменяют состав
-объекта-получателя, а не возвращают новое множество
+объекта-получателя; возвращаемый `boolean` сообщает, произошло ли изменение
 [@bib-data-collection-api].
 
 | Сигнатура | Изменение получателя |
@@ -84,12 +111,14 @@ Java 25. Объяснение выбора структуры и равенст�
 
 ```java
 var counts = new java.util.HashMap<String, Integer>();
-counts.merge("java", 1, Integer::sum);
-counts.merge("java", 1, Integer::sum);
+counts.put("java", counts.getOrDefault("java", 0) + 1);
+counts.put("java", counts.getOrDefault("java", 0) + 1);
 System.out.println(counts.get("java")); // 2
 ```
 
-Точная выбранная сигнатура `merge`:
+После введения ссылок на методы (@theory:sec-j25-theory-functions-method-reference)
+то же обновление выражается как `counts.merge("java", 1, Integer::sum)`.
+Точная сигнатура `merge`:
 [Map.merge](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html#merge(K,V,java.util.function.BiFunction)).
 `merge(key, nonNullValue, function)` записывает значение при отсутствии
 или прежнем `null`, иначе объединяет старое и новое. `null` результата
@@ -119,8 +148,6 @@ System.out.println(counts.get("java")); // 2
 `pollFirst/pollLast`, `getFirst/getLast`, `peekFirst/peekLast`
 [@bib-data-deque-api].
 
-В `main` отдельного `QueueDemo.java`:
-
 | Точная форма Deque | Поведение |
 |---|---|
 | `void addFirst(E e)` / `void addLast(E e)` | Добавить с указанного конца; отказ вместимости — исключение |
@@ -134,6 +161,8 @@ System.out.println(counts.get("java")); // 2
 [Deque API](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Deque.html)
 различает отказ вместимости и недопустимость элемента: `offer` не превращает
 запрещённый `null` в обычный `false`.
+
+В `main` отдельного `QueueDemo.java`:
 
 ```java
 java.util.Deque<String> queue = new java.util.ArrayDeque<>();
