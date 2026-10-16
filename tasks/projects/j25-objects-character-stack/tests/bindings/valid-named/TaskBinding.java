@@ -1,0 +1,1 @@
+class TaskBinding {static Object create(int n){return new alternate.Stack(n);}static void push(Object q,char c){((alternate.Stack)q).push(c);}static char pop(Object q){return ((alternate.Stack)q).pop();}}
