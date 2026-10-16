@@ -323,6 +323,12 @@ project-checks:
         mode: all-pass
     java-cli:
       source-profile: java-main
+      additional-java-sources:
+        archive: additional-sources.zip
+        max-files: 128
+        max-file-bytes: 1048576
+        max-total-bytes: 4194304
+        max-archive-bytes: 2097152
       tests:
       - tests/junit/**/*.java
       api-precheck:
@@ -333,6 +339,31 @@ project-checks:
         files:
         - student/src/test/java/api/CliPrecheck.java
         entry: CliPrecheck
+      scoring:
+        mode: all-pass
+    java-queue:
+      source-profile: java-main
+      tests:
+      - tests/junit/**/*.java
+      api-precheck:
+        files:
+        - tests/junit/api/QueueApi.java
+        - tests/junit/queuecheck/QueueAccess.java
+        entry: QueueApi
+      verification-api-precheck:
+        files:
+        - student/src/test/java/api/QueueApi.java
+        - student/src/test/java/queuecheck/QueueAccess.java
+        entry: QueueApi
+      limits:
+        outer-seconds: 45
+        run-seconds: 15
+      additional-java-sources:
+        archive: additional-sources.zip
+        max-files: 128
+        max-file-bytes: 1048576
+        max-total-bytes: 4194304
+        max-archive-bytes: 2097152
       scoring:
         mode: all-pass
 
