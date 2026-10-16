@@ -1,0 +1,8 @@
+# Техническая поставка exr-j25-files-phone-owner-records
+
+Frozen `tasks/bank/files.qmd` / `c9d05aea901fb819a5fcbb44bbf8a117caaeb9b2` / SHA `653141b27e8b13467c8c18be71150f38d13131cd18376857a5a662fb5d65cc91`. Public только student/. Обычные Java source компилируются отдельно от teacher binding/JUnit. Study/Example/TaskBinding и методы process/equal/readOutput — добровольно выбранное API конкретного reference, не новые Student obligations. Ошибка чужой или private/nested привязки — manual/tool без score. API preflight допустим только для буквально опубликованной части, а не для выбранного helper.
+
+UTF8 telephone string (не число), prefix OR без дубля при двойном совпадении, повторы входа и owner text прежние, File creation. Primary+alternate используют иной package/instance; CompFiles alternate возвращает Result/сам обрабатывает IO, adapter лишь нормализует error outcome. Help alternate получает Path и возвращает Optional selection, вместо String primary; это допустимые свободные формы. Matching output у alternate иной формат двух разделов, parsing — только teacher representation normalization. Никаких private-field reflection/access suppression или имитации IO regex.
+
+Данные находятся в реальном @TempDir, including Unicode/spaces, before/after input где это явно требуется. Supported filesystem links проверяются только после реального успешного создания. Output partial приIO разрешён; атомарность/новые каналы/диагностические тексты/status не навязаны. Ручная часть: File create, TWR/ресурсы/самостоятельный IOcatch/меню и совпадение адаптера с заявленным способом. Список actual wrong scenarios в tests/scenarios.json. Регистрации/публикации/commit/Windows execution нет. Shared runner readonly.
+
