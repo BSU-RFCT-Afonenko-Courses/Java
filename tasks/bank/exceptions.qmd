@@ -10,7 +10,7 @@ default-exercise-statement-visibility: open
 Теория: @theory:sec-j25-theory-exceptions. Условия используются в лабораторных по ссылке;
 время в карточках — ориентир чтения, решения и самостоятельной проверки.
 
-:::: {#exr-j25-exceptions-exception-flow-errors difficulty="introductory" time="30"}
+:::: {#exr-j25-exceptions-exception-flow-errors difficulty="introductory" time="30" project="/projects/j25-exceptions-exception-flow-errors"}
 ## Ошибки в обработке и генерации исключений
 
 Подготовьте три независимые небольшие программы, исправив описанные ошибки.
@@ -28,6 +28,8 @@ default-exercise-statement-visibility: open
 Для каждой программы объясните исходную причину ошибки компиляции
 и наблюдаемый путь выполнения после исправления. [@bib-task-exception-flow-errors]
 
+{{< project-download exr-j25-exceptions-exception-flow-errors kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
 :::: {#exr-j25-exceptions-queue-exceptions difficulty="intermediate" time="60"}
@@ -41,7 +43,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-exceptions-locale-number-errors difficulty="advanced" time="110"}
+:::: {#exr-j25-exceptions-locale-number-errors difficulty="advanced" time="110" project="/projects/j25-exceptions-locale-number-errors"}
 ## Числа с разными локалями и собственное исключение
 
 Прочитайте UTF-8-файл, содержащий по одной записи на строку: текст числа, табуляцию и тег локали BCP 47. Например, строки `1,5` + табуляция + `ru-BY` и `2.5` + табуляция + `en-US` дают сумму `4.0` и среднее `2.0`. Дополнительных пробелов вокруг полей нет.
@@ -49,6 +51,8 @@ default-exercise-statement-visibility: open
 Создайте метод чтения с параметром `Path` и `throws IOException`, возвращающий записи с исходным текстом числа и локали. Отдельный этап проверяет формат записи, тег локали и число, разбирает число целиком согласно локали и вычисляет сумму и среднее. Синтаксическую корректность тега проверяйте через `Locale.Builder`; локаль должна поддерживаться `NumberFormat`. NaN, бесконечности и результат за пределами конечного `double` недопустимы.
 
 Определите собственное проверяемое исключение для ошибочной записи с номером строки и причиной. При ошибке прекратите обработку; для пустого файла сообщите об отсутствии данных, среднее не вычисляйте. Проверьте неверное число, пустое поле, неверный тег, слишком большое число и отсутствие файла. Чтение реализуется по этому условию; готовый компонент не предоставляется. [@bib-task-locale-number-errors]
+
+{{< project-download exr-j25-exceptions-locale-number-errors kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
@@ -61,16 +65,20 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-exceptions-constructor-checked-exception difficulty="intermediate" time="20"}
+:::: {#exr-j25-exceptions-constructor-checked-exception difficulty="intermediate" time="20" project="/projects/j25-exceptions-constructor-checked-exception"}
 ## Конструктор подкласса и проверяемое исключение
 
 Даны классы `A` и `B`: конструктор `A()` объявлен с `throws IOException`, а класс `B extends A` пока не содержит собственного конструктора. Добавьте в `B` конструктор, при котором оба класса компилируются. Покажите два допустимых варианта объявления в двух независимых версиях программы и добавьте вызывающий код, обрабатывающий объявленное проверяемое исключение. [@bib-task-constructor-checked-exception]
 
+{{< project-download exr-j25-exceptions-constructor-checked-exception kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-exceptions-override-exceptions difficulty="intermediate" time="20"}
+:::: {#exr-j25-exceptions-override-exceptions difficulty="intermediate" time="20" project="/projects/j25-exceptions-override-exceptions"}
 ## Переопределение метода и исключения
 
 В классе A объявлен метод void f() throws FileNotFoundException, а класс B extends A пока пуст. Переопределите f() в классе B тремя допустимыми способами, не вызывающими ошибку компиляции. Каждый вариант оформите как отдельную небольшую программу. [@bib-task-override-exceptions]
+
+{{< project-download exr-j25-exceptions-override-exceptions kind="starter" text="Скачать стартовый проект" >}}
 
 ::::

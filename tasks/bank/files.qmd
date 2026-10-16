@@ -10,7 +10,7 @@ default-exercise-statement-visibility: open
 Теория: @theory:sec-j25-theory-io. Условия используются в лабораторных по ссылке;
 время в карточках — ориентир чтения, решения и самостоятельной проверки.
 
-:::: {#exr-j25-files-byte-file-copy difficulty="introductory" time="45"}
+:::: {#exr-j25-files-byte-file-copy difficulty="introductory" time="45" project="/projects/byte-file-copy"}
 ## Копирование файла: байтовые потоки
 
 Напишите консольную программу, которая получает два аргумента — пути
@@ -42,9 +42,11 @@ default-exercise-statement-visibility: open
 Подготовка: @handbook:sec-j25-api-files-operations,
 @theory:sec-j25-theory-resources-manual. [@bib-task-byte-file-copy]
 
+{{< project-download exr-j25-files-byte-file-copy kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-files-character-file-copy difficulty="introductory" time="30"}
+:::: {#exr-j25-files-character-file-copy difficulty="introductory" time="30" project="/projects/character-file-copy"}
 ## Копирование файла: символьные потоки
 
 Напишите консольную программу, которая получает два аргумента — пути
@@ -74,15 +76,19 @@ default-exercise-statement-visibility: open
 Подготовка: @handbook:sec-j25-api-files-operations,
 @theory:sec-j25-theory-resources-autocloseable. [@bib-task-character-file-copy]
 
+{{< project-download exr-j25-files-character-file-copy kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-files-transpose-file-matrix difficulty="intermediate" time="45"}
+:::: {#exr-j25-files-transpose-file-matrix difficulty="intermediate" time="45" project="/projects/j25-files-transpose-file-matrix"}
 ## Матрица из файла и транспонирование
 
 Для вывода результатов создайте новую директорию и файл средствами класса File. Входной файл содержит совокупность строк. Строка файла содержит строку квадратной матрицы. Введите матрицу в двумерный массив, самостоятельно определив её размер. Выведите исходную матрицу и результат её транспонирования.
 
 Входной файл UTF-8: три строки «1 2 3», «4 5 6», «7 8 9»; числа разделены пробелами. Для самостоятельной проверки используйте квадратную матрицу, число строк совпадает с числом чисел в каждой строке. Пути входного файла, нового выходного каталога и результата в нём задайте явно в демонстрации и передайте программе аргументами. Создание каталога и файла выполняется средствами File, как требуется выше. Выход отличается от входа: самокопирование отклоните до открытия выхода; отсутствие входа не изменяет прежний результат. Вход сначала полностью прочитайте как допустимую квадратную матрицу, затем сохраните исходную и транспонированную матрицы в выходе с различимыми подписями. Для примера транспонирование даёт строки `1 4 7`, `2 5 8`, `3 6 9`; покажите также квадратную матрицу 1×1. Допустимый вход — непустая квадратная матрица целых `int`;
 прямоугольный и повреждённый файлы находятся вне этого договора. При IO-отказе сообщите причину, при отказе записи возможен частичный выход; атомарность не требуется. [@bib-task-transpose-file-matrix]
+
+{{< project-download exr-j25-files-transpose-file-matrix kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
@@ -116,7 +122,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-files-compare-files difficulty="introductory" time="45"}
+:::: {#exr-j25-files-compare-files difficulty="introductory" time="45" project="/projects/j25-files-compare-files"}
 ## Утилита сравнения файлов
 
 Создайте утилиту `CompFiles`, предназначенную для сравнения двух файлов. При запуске имена файлов передаются в командной строке. Утилита открывает оба файла, затем читает и сравнивает соответствующие байты. При обнаружении несовпадения файлы считаются различными. Если концы файлов достигнуты одновременно и несовпадений не было, файлы считаются совпадающими. Используйте `try` с ресурсами для автоматического закрытия файлов.
@@ -131,9 +137,11 @@ default-exercise-statement-visibility: open
 диагностикой и отдельным исходом: вывод о равенстве в этом случае не делается.
 Покажите также отсутствующий файл. Текст сообщений выберите самостоятельно. [@bib-task-compare-files]
 
+{{< project-download exr-j25-files-compare-files kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-files-sort-file-numbers difficulty="intermediate" time="45"}
+:::: {#exr-j25-files-sort-file-numbers difficulty="intermediate" time="45" project="/projects/j25-files-sort-file-numbers"}
 ## Сортировка чисел в файле
 
 Для вывода результатов создайте новую директорию и файл средствами класса File. В текстовом файле содержатся целые числа. Прочитайте их и запишите содержимое в новый файл, отсортировав по возрастанию.
@@ -147,9 +155,11 @@ ASCII-пробелами, табуляциями либо переводами �
 Пути входа и нового результата задайте явно в демонстрации. Открывайте
 результат после чтения входа; при ошибке чтения новый файл не создаётся. [@bib-task-sort-file-numbers]
 
+{{< project-download exr-j25-files-sort-file-numbers kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-files-final-line-words difficulty="intermediate" time="45"}
+:::: {#exr-j25-files-final-line-words difficulty="intermediate" time="45" project="/projects/j25-files-final-line-words"}
 ## Последние слова последних строк
 
 Для вывода результатов создайте новую директорию и файл средствами класса File. Введите из текстового файла, связанного с входным потоком, последовательность строк. Выберите и сохраните m последних слов в каждой из последних n строк.
@@ -164,9 +174,11 @@ ASCII-пробелами, табуляциями либо переводами �
 выбранная строка пуста; при `n == 0` выход пуст. Для примера результат —
 строки `four five` и `eight nine`. Покажите также пустой файл. [@bib-task-final-line-words]
 
+{{< project-download exr-j25-files-final-line-words kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-files-remove-short-words difficulty="intermediate" time="45"}
+:::: {#exr-j25-files-remove-short-words difficulty="intermediate" time="45" project="/projects/j25-files-remove-short-words"}
 ## Удаление чётного количества коротких слов
 
 Для вывода результатов создайте новую директорию и файл средствами класса File. Из файла удалите все слова, содержащие от трёх до пяти символов, но при этом из каждой строки должно быть удалено только максимальное чётное количество таких слов.
@@ -180,9 +192,11 @@ ASCII-пробелами, табуляциями либо переводами �
 пробел; полностью очищенная строка остаётся пустой. Для примера получатся
 `elephant four` и `a`. Добавьте строку без подходящих слов и пустой файл. [@bib-task-remove-short-words]
 
+{{< project-download exr-j25-files-remove-short-words kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-files-phone-owner-records difficulty="intermediate" time="45"}
+:::: {#exr-j25-files-phone-owner-records difficulty="intermediate" time="45" project="/projects/j25-files-phone-owner-records"}
 ## Телефоны и владельцы
 
 Для вывода результатов создайте новую директорию и файл средствами класса File. Сохраните в файл, связанный с выходным потоком, записи о телефонах и их владельцах. Выведите в файл записи, телефоны в которых начинаются на k и на j.
@@ -197,9 +211,11 @@ ASCII-пробелами, табуляциями либо переводами �
 Покажите совпадающие префиксы, отсутствие результатов и повторную запись:
 повтор входа сохраняется в результате, если проходит отбор. [@bib-task-phone-owner-records]
 
+{{< project-download exr-j25-files-phone-owner-records kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-files-matching-line-numbers difficulty="introductory" time="30"}
+:::: {#exr-j25-files-matching-line-numbers difficulty="introductory" time="30" project="/projects/j25-files-matching-line-numbers"}
 ## Номера совпадающих строк
 
 Для вывода результатов создайте новую директорию и файл средствами класса File. В файле содержится совокупность строк. Найдите номера строк, совпадающих с заданной строкой. Имя файла и строка для поиска — аргументы командной строки. Выведите строки файла и номера строк, совпадающих с заданной.
@@ -216,9 +232,11 @@ ASCII-пробелами, табуляциями либо переводами �
 и укажите при демонстрации. Для POSIX-оболочки пустой аргумент передаётся
 как `''`, строка с пробелом — как `'alpha beta'`. [@bib-task-matching-line-numbers]
 
+{{< project-download exr-j25-files-matching-line-numbers kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-files-disk-help-menu difficulty="advanced" time="75"}
+:::: {#exr-j25-files-disk-help-menu difficulty="advanced" time="75" project="/projects/j25-files-disk-help-menu"}
 ## Справочная система, использующая диск
 
 Создайте справочную систему, которая хранит сведения в обычном текстовом файле `helpfile.txt`, позволяя изменять и расширять справку без изменения кода программы. Пользователь вводит название темы; программа находит эту тему в файле и отображает соответствующую информацию.
@@ -237,9 +255,11 @@ ASCII-пробелами, табуляциями либо переводами �
 и возвращает `true`. Политику завершения интерактивного ввода выберите
 и покажите пользователю. Общий `System.in` остаётся доступным для меню. [@bib-task-disk-help-menu]
 
+{{< project-download exr-j25-files-disk-help-menu kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-files-remove-java-comments difficulty="advanced" time="90"}
+:::: {#exr-j25-files-remove-java-comments difficulty="advanced" time="90" project="/projects/j25-files-remove-java-comments"}
 ## Удаление комментариев из Java-программы
 
 Для вывода результатов создайте новую директорию и файл средствами класса File. Из текста Java-программы удалите все виды комментариев. Результат сохраните в новый текстовый файл.
@@ -256,6 +276,8 @@ ASCII-пробелами, табуляциями либо переводами �
 превращается в `int x;`. Для строкового литерала `"/* text */"` содержимое
 остаётся прежним. Покажите экранированную кавычку и обратную косую черту
 внутри литерала. Пути исходного и нового файла задайте явно; оба используют UTF-8. [@bib-task-remove-java-comments]
+
+{{< project-download exr-j25-files-remove-java-comments kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 

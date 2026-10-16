@@ -15,25 +15,29 @@ default-exercise-statement-visibility: open
 вместе с её условием. Обязательное применение Stream API, лямбды или собственного
 интерфейса проверяется по исходному коду.
 
-:::: {#exr-j25-pipelines-divisibility-function difficulty="introductory"}
+:::: {#exr-j25-pipelines-divisibility-function difficulty="introductory" project="/projects/j25-pipelines-divisibility-function"}
 ## Функциональный интерфейс: делимость на 31
 
 Определите собственный функциональный интерфейс: его единственный абстрактный метод принимает `int` и возвращает `boolean`. Реализуйте интерфейс лямбда-выражением, которое проверяет делимость аргумента на 31 без остатка. Имена интерфейса и метода выберите самостоятельно.
 
 Допустим весь диапазон `int`, включая отрицательные числа и ноль. Для `0`, `31`, `-31` результат `true`, для `32` — `false`. Продемонстрируйте вызов метода через переменную вашего интерфейса. [@bib-task-divisibility-function]
 
+{{< project-download exr-j25-pipelines-divisibility-function kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-pipelines-filter-string-array difficulty="introductory"}
+:::: {#exr-j25-pipelines-filter-string-array difficulty="introductory" project="/projects/j25-pipelines-filter-string-array"}
 ## Фильтрация массива строк
 
 Получите через Stream API новый массив строк, длина которых строго больше переданного порога. Вход — ненулевой `String[]` без элементов `null` и неотрицательный порог `int`. Длина измеряется кодовыми единицами UTF-16 (`char`, результат `String.length()`). Пустые строки и пустой массив допустимы.
 
 Сохраните порядок и все повторы подходящих строк; исходный массив не меняйте. Для `{"a", "bb", "bb", "ccc"}` при пороге `2` результат `{"ccc"}`, при пороге `1` — `{"bb", "bb", "ccc"}`. При пороге `0` из `{"", "x"}` остаётся `{"x"}`. Пустой вход и отсутствие совпадений дают новый пустой `String[]`. [@bib-task-filter-string-array]
 
+{{< project-download exr-j25-pipelines-filter-string-array kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-pipelines-order-points difficulty="intermediate"}
+:::: {#exr-j25-pipelines-order-points difficulty="intermediate" project="/projects/j25-pipelines-order-points"}
 ## Точки по удаленности от начала координат
 
 Отсортируйте упорядоченный список точек плоскости по возрастанию расстояния от начала координат. Примените Stream API и лямбда-компаратор; отсортированный результат выведите, обозначая каждую точку как `(X:Y)`. Между точками допустимы пробелы или переводы строк. Модель точки и способ её создания выберите самостоятельно.
@@ -42,9 +46,11 @@ default-exercise-statement-visibility: open
 
 Сортировка устойчивая: точки с равными геометрическими расстояниями сохраняют исходный взаимный порядок, включая повторяющиеся точки. Исходный список и точки не меняются. Для `(1:10)` и `(2:0)` первой должна быть `(2:0)`; точки `(3:4)` и `(0:5)` остаются в исходном порядке. Пустой список даёт пустой вывод. [@bib-task-order-points]
 
+{{< project-download exr-j25-pipelines-order-points kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-pipelines-count-selected-words difficulty="intermediate"}
+:::: {#exr-j25-pipelines-count-selected-words difficulty="intermediate" project="/projects/j25-pipelines-count-selected-words"}
 ## Количество вхождений заданных слов
 
 Для готового текста и упорядоченного списка искомых слов выведите частоты в формате `[слово1-2, слово2-3, слово3-0]`. Используйте Stream API.
@@ -53,9 +59,11 @@ default-exercise-statement-visibility: open
 
 Записи результата следуют порядку искомых слов и сохраняют их повторы. Отсутствующему слову соответствует `0`. Для текста `"one, two two; One"` и списка `[one, two, absent, one]` результат `[one-1, two-2, absent-0, one-1]`. Пустой текст даёт нулевые частоты всех запросов; пустой список запросов — `[]`. Входные данные не меняются. Можно считать каждое запрошенное слово отдельным конвейером или сначала построить общий частотный словарь. [@bib-task-count-selected-words]
 
+{{< project-download exr-j25-pipelines-count-selected-words kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-pipelines-conditional-function difficulty="advanced"}
+:::: {#exr-j25-pipelines-conditional-function difficulty="advanced" project="/projects/j25-pipelines-conditional-function"}
 ## Построение функции ternaryOperator
 
 Напишите обобщённый метод `ternaryOperator`, который получает условие и две функции и возвращает функцию выбора результата. Его типовые параметры и параметры метода:
@@ -73,9 +81,11 @@ default-exercise-statement-visibility: open
 
 Покажите пример для ненулевых строк: условие проверяет пустоту, истинная ветвь возвращает `0`, ложная — длину. Покажите обе ветви, повторные вызовы и случай, в котором невыбранная ветвь выбросила бы исключение. Проверьте отдельно создание функции и её вызов. Вспомогательные методы свободны. [@bib-task-conditional-function]
 
+{{< project-download exr-j25-pipelines-conditional-function kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-pipelines-count-characters difficulty="intermediate"}
+:::: {#exr-j25-pipelines-count-characters difficulty="intermediate" project="/projects/j25-pipelines-count-characters"}
 ## Количество вхождений символов
 
 Через Stream API постройте коллекцию частот всех кодовых единиц UTF-16 в готовой ненулевой строке. Каждая кодовая единица `char` учитывается отдельно, включая пробелы, переводы строк и суррогаты; дополнительные ограничения на содержимое строки отсутствуют. Пустой текст даёт пустую коллекцию.
@@ -84,9 +94,11 @@ default-exercise-statement-visibility: open
 
 Подготовка: @handbook:sec-j25-api-streams-char-units и @practice:sec-j25-practice-pipelines-char-units. [@bib-task-count-characters]
 
+{{< project-download exr-j25-pipelines-count-characters kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-pipelines-discriminant-function difficulty="introductory"}
+:::: {#exr-j25-pipelines-discriminant-function difficulty="introductory" project="/projects/j25-pipelines-discriminant-function"}
 ## Функциональный интерфейс: дискриминант
 
 Определите собственный функциональный интерфейс: его единственный абстрактный метод принимает три `double` — коэффициенты `a`, `b`, `c` — и возвращает `double`. Реализуйте его лямбдой, вычисляющей дискриминант `b² − 4ac`. Имена интерфейса и метода свободны.
@@ -95,54 +107,66 @@ default-exercise-statement-visibility: open
 
 Для `(1, -3, 2)`, `(1, 2, 1)`, `(1, 0, 1)` результаты соответственно `1`, `0`, `-4`. Покажите вызов через переменную своего интерфейса. [@bib-task-discriminant-function]
 
+{{< project-download exr-j25-pipelines-discriminant-function kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-pipelines-longer-string difficulty="introductory"}
+:::: {#exr-j25-pipelines-longer-string difficulty="introductory" project="/projects/j25-pipelines-longer-string"}
 ## Выбор более длинной строки
 
 Определите собственный функциональный интерфейс с одним абстрактным методом из двух `String` в `String`. Реализуйте его лямбдой, выбирающей более длинную строку; длина измеряется кодовыми единицами `char` через `String.length()`.
 
 Оба аргумента ненулевые, пустые строки допустимы. При равной длине верните значение первой строки. Например, для `"ab"` и `"XYZ"` результат `"XYZ"`, для `"ab"` и `"cd"` — `"ab"`, для двух пустых строк — пустая строка. Имена интерфейса и метода свободны. [@bib-task-longer-string]
 
+{{< project-download exr-j25-pipelines-longer-string kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-pipelines-remove-even-values difficulty="intermediate"}
+:::: {#exr-j25-pipelines-remove-even-values difficulty="intermediate" project="/projects/j25-pipelines-remove-even-values"}
 ## Удаление четных элементов массива
 
 В переданном ненулевом `int[]` оставьте нечётные элементы в исходном порядке, а оставшийся хвост заполните нулями. Отбор выполните через Stream API. Вход может быть пустым и содержать любые значения `int`, включая отрицательные и ноль; все повторы нечётных значений сохраняются.
 
 Измените тот же массив, сохранив его размер. Временный массив или коллекция допустимы. `{2, 3, 4, 3}` превращается в `{3, 3, 0, 0}`, `{-3, 0, -2, -1}` — в `{-3, -1, 0, 0}`. Пустой массив остаётся пустым; массив без нечётных элементов заполняется нулями целиком. [@bib-task-remove-even-values]
 
+{{< project-download exr-j25-pipelines-remove-even-values kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-pipelines-descending-array difficulty="introductory"}
+:::: {#exr-j25-pipelines-descending-array difficulty="introductory" project="/projects/j25-pipelines-descending-array"}
 ## Сортировка массива по убыванию
 
 Отсортируйте переданный `Integer[]` по убыванию числовых значений, используя лямбда-компаратор. Массив и его элементы ненулевые; допустим весь диапазон `int`, пустой массив и повторы.
 
 Результат записывается в исходный массив. Все элементы и число их повторений сохраняются. Для `{2, -1, 2, 0}` результат `{2, 2, 0, -1}`. Проверьте также крайние значения `Integer.MIN_VALUE` и `Integer.MAX_VALUE`. [@bib-task-descending-array]
 
+{{< project-download exr-j25-pipelines-descending-array kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-pipelines-vowels-before-consonants difficulty="intermediate"}
+:::: {#exr-j25-pipelines-vowels-before-consonants difficulty="intermediate" project="/projects/j25-pipelines-vowels-before-consonants"}
 ## Сначала гласные, затем согласные
 
 Через Stream API преобразуйте ненулевую строку из латинских букв нижнего регистра: сначала расположите все её гласные в возрастающем порядке, затем все согласные в возрастающем порядке. Гласные — `a`, `e`, `i`, `o`, `u`; остальные допустимые буквы считаются согласными.
 
 Сохраните каждое вхождение буквы. Для `"java"` результат `"aajv"`; пустая строка даёт пустую. Строка только из одной группы сортируется внутри этой группы. [@bib-task-vowels-before-consonants]
 
+{{< project-download exr-j25-pipelines-vowels-before-consonants kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-pipelines-first-primes difficulty="advanced"}
+:::: {#exr-j25-pipelines-first-primes difficulty="advanced" project="/projects/j25-pipelines-first-primes"}
 ## Первые N простых чисел
 
 Выведите первые `N` простых чисел в возрастающем порядке. Вход `N` — целое число от `0` до `10000` включительно. Простое число — целое больше единицы, имеющее ровно два положительных делителя: единицу и себя.
 
 Используйте последовательный Stream API и генератор последовательности (`iterate`, `generate` или их варианты для примитивных потоков). Способ проверки простоты выберите самостоятельно. Для `N = 5` результат `2 3 5 7 11`, для `N = 0` вывод пуст. Между числами допустимы пробелы или переводы строк. [@bib-task-first-primes]
 
+{{< project-download exr-j25-pipelines-first-primes kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-pipelines-price-transformation difficulty="introductory"}
+:::: {#exr-j25-pipelines-price-transformation difficulty="introductory" project="/projects/j25-pipelines-price-transformation"}
 ## Преобразование списка цен
 
 Через Stream API преобразуйте список цен без налога в новый список цен с налогом. Ставка — отдельный входной параметр от `0` до `1` включительно; `0.20` означает 20%. Цены конечны и находятся в диапазоне от `0` до `1000000`. Список ненулевой, без элементов `null`, может быть пустым.
@@ -151,9 +175,11 @@ default-exercise-statement-visibility: open
 
 Покажите случай точной середины на выбранном представлении чисел и объясните результат. Проверка учитывает опубликованный в решении выбор типа и округления. [@bib-task-price-transformation]
 
+{{< project-download exr-j25-pipelines-price-transformation kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-pipelines-distinct-object-array difficulty="intermediate"}
+:::: {#exr-j25-pipelines-distinct-object-array difficulty="intermediate" project="/projects/j25-pipelines-distinct-object-array"}
 ## Массив объектов без дубликатов
 
 Разработайте метод, который через Stream API получает массив объектов и возвращает новый массив без дубликатов. Используйте лямбду или ссылку на конструктор массива при получении результата.
@@ -162,18 +188,22 @@ default-exercise-statement-visibility: open
 
 Массив и его элементы ненулевые. Сохраните порядок первого появления и ссылку на первый объект из каждой группы равных. Для отдельных объектов `(1, "A")`, `(2, "B")`, `(1, "A")` результат содержит первые два объекта. Исходный массив и объекты не меняются; пустой массив даёт новый пустой массив. [@bib-task-distinct-object-array]
 
+{{< project-download exr-j25-pipelines-distinct-object-array kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-pipelines-select-initial-length difficulty="introductory"}
+:::: {#exr-j25-pipelines-select-initial-length difficulty="introductory" project="/projects/j25-pipelines-select-initial-length"}
 ## Строки на заданную букву длины N
 
 Через Stream API получите новый массив всех строк, которые начинаются на заданную букву и имеют длину `N`. Вход — ненулевой `String[]` без `null`; строки состоят из латинских букв `A`–`Z`, `a`–`z` и могут быть пустыми. Начальная буква принадлежит тому же алфавиту, `N` — неотрицательный `int`, сравнение чувствительно к регистру.
 
 Сохраните исходный порядок и повторы, исходный массив не меняйте. Пустая строка не начинается ни с какой буквы, поэтому при `N = 0` результат пуст. Для `{"Ab", "ac", "Ab", "A", ""}`, буквы `'A'` и `N = 2` результат `{"Ab", "Ab"}`. Пустой вход и отсутствие совпадений дают новый пустой `String[]`. [@bib-task-select-initial-length]
 
+{{< project-download exr-j25-pipelines-select-initial-length kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-j25-pipelines-curried-functions difficulty="advanced"}
+:::: {#exr-j25-pipelines-curried-functions difficulty="advanced" project="/projects/j25-pipelines-curried-functions"}
 ## Каррирование функций
 
 Каррированная функция принимает первый аргумент и возвращает функцию, которая принимает второй. Реализуйте лямбдами три таких операции; выбор имён и вспомогательных методов свободен.
@@ -183,5 +213,7 @@ default-exercise-statement-visibility: open
 3. Разбиение строки: первый аргумент — корректное ненулевое Java-регулярное выражение, второй — ненулевая строка. Результат соответствует `String.split(regex, -1)`, включая сохранение пустых частей в конце. Для `","` и `"a,,b,"` результат `{"a", "", "b", ""}`.
 
 Во всех трёх случаях сохраните полученную после первого аргумента функцию и примените её к нескольким вторым аргументам. Пустые строки допустимы; некорректные регулярные выражения за пределами входного договора. [@bib-task-curried-functions]
+
+{{< project-download exr-j25-pipelines-curried-functions kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
