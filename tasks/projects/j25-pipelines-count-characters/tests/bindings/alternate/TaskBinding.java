@@ -1,0 +1,1 @@
+class TaskBinding { static java.util.Map<Integer,Long> run(String text){var result=new java.util.HashMap<Integer,Long>();new variant.Example().histogram(text).forEach((k,v)->result.put((int)k,v.longValue()));return result;} }
