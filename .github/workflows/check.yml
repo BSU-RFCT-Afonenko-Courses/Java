@@ -50,6 +50,8 @@ jobs:
         with:
           distribution: temurin
           java-version: '25'
+      - name: Проверить границу local candidate перед production grading
+        run: python3 CI/check-production-pins.py
       - name: Exact released Platform и проверяемые runtime pins
         run: |
           python3 - <<'PY'

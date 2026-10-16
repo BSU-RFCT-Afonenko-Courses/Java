@@ -8,6 +8,7 @@ mkdir -p -- "$TASK_CHECK_OUTPUT"
 TASK_CHECK_OUTPUT=$(realpath -- "$TASK_CHECK_OUTPUT")
 case "$TASK_CHECK_OUTPUT/" in "$TASK_COURSE_ROOT/"*) echo 'Checks output must be outside course source' >&2; exit 2;; esac
 cd -- "$TASK_COURSE_ROOT"
+python3 CI/check-production-pins.py
 # Body-ссылки выбранных задач используют каталог текущей публичной сборки.
 # Полный owner render создаёт его из фактических HTML/Reveal, без старого кэша.
 quarto render . --profile student --fail-if-warnings

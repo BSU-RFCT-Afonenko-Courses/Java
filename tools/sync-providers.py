@@ -21,6 +21,8 @@ def verify_release(checkout, provider):
 
 def sync(provider_root, selected=None):
     manifest=json.loads((ROOT/'providers.json').read_text())
+    if any(v.get('candidate') for v in manifest['providers'].values()):
+        raise ValueError('Local candidate: используйте tools/materialize-providers.py; legacy sync заменит local patches')
     provenance=json.loads((ROOT/'installed-packages.json').read_text()) if (ROOT/'installed-packages.json').exists() else {'schema':'course-template-packages-v1','packages':{}}
     for key,provider in manifest['providers'].items():
         if not selected or key in selected:verify_release(provider_root/provider['checkout'],provider)

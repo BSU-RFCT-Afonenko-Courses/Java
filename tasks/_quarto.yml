@@ -11,6 +11,7 @@ project:
   output-dir: _output
   resources:
   - '!**/projects/**'
+  - '!test-support/**'
   - '!assessments/**'
   - '!_generated/**'
   - '!tools/**'
@@ -291,7 +292,7 @@ project-checks:
       root: reference
       optional: false
     verification-tests:
-    - student/src/test/java/**/*Test.java
+    - student/src/test/java/**/*.java
     contract-cases: tests/contract-cases.json
     verification-expectations:
       reference:
