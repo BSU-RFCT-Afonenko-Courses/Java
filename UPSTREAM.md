@@ -15,10 +15,10 @@ baseCommit, tracked patch и SHA256. `installed-packages.json` содержит
 
 | Владелец | Опубликованная база | Локальный candidate |
 | --- | --- | --- |
-| Afonenko-Course-Tools/quarto-course | v7.1.0 / `04a6295569f5dcc0fc1b991dc076bafc050dbd49` | `1597ccd7639e9646c5da06874cad6a7fadcb1955` |
+| Afonenko-Course-Tools/quarto-course | v7.1.0 / `04a6295569f5dcc0fc1b991dc076bafc050dbd49` | `80cdff6d443ea6036f6138a0a3bb95b35779eb34` |
 | Afonenko-Course-Tools/quarto-project-publish | v5.1.0 / `62f8c4a01a5fd9af11f5f66abba2bb48c2ef2631` | Без локальных изменений |
 | Afonenko-Course-Tools/quarto-reference-catalog | v3.1.0 / `3df2110e9f525f03f3ecb4926b5d55718e955c4c` | Без локальных изменений |
-| Afonenko-Course-Tools/quarto-course-prairielearn | v7.0.0 / `a13008aaf23e0616eac4b18f1dabbf77a77b56f3` | `f7a15b582bbe781b6f2d4c5a87006a98e5846ed8` |
+| Afonenko-Course-Tools/quarto-course-prairielearn | v7.0.0 / `a13008aaf23e0616eac4b18f1dabbf77a77b56f3` | `1221c8c073d77d80d825ee906e9c244a75ff4a39` |
 | Afonenko-Course-Tools/quarto-project-download | v3.1.0 / `73797d3807e2433d33751d538746e1e9d82d6d57` | Без локальных изменений |
 
 Полные patches и hashes установленных отличий находятся в
@@ -69,14 +69,14 @@ files теперь также содержат API поля; это дополн
 
 Опубликованные Platform2.1.0 commit/digests в `CI/toolchain.json` сохранены.
 Новый local candidate Platform source —
-`28da64fa25afe920b5e655515e75d711b9798e4d`, config ID —
-`sha256:677b07b82e61fa4818d1445b565a9c779fdfd5d4ff3227ab9e23b2683d0285bd`.
+`d9b2c12cf24f4fa49da1024ad86318a4a6711284`, config ID —
+`sha256:966ca8fb73b8f6ea0a314ac1e2ec04de866adb83bae7118816ba54c08c713e69`.
 Exact source/runtime hashes и требуемое будущее внешнее действие находятся в
 `CI/local-candidate.json`. Этот config ID не выдаётся за published digest.
 
 ```sh
 export PL_PLATFORM_ROOT=/absolute/local/platform
-export PL_LOCAL_IMAGE_ID=sha256:677b07b82e61fa4818d1445b565a9c779fdfd5d4ff3227ab9e23b2683d0285bd
+export PL_LOCAL_IMAGE_ID=sha256:966ca8fb73b8f6ea0a314ac1e2ec04de866adb83bae7118816ba54c08c713e69
 bash CI/check-projects-candidate.sh --preflight-only
 # Полный локальный цикл после отдельной авторской приёмки:
 CI_CHECK_OUTPUT=/absolute/outside-course bash CI/check-projects-candidate.sh
@@ -93,3 +93,5 @@ Production grading CI останавливается до получения о�
 Platform/image и обновление published pins; render CI проверяет tracked vendor
 closure без получения непушенных SHA. Реальные Moodle/Gateway параметры и
 внешние входы сохранены; действующий сервис не изменялся.
+
+Текущий candidate дополнен bounded optional Java source ZIP и compiled type discovery. Публичные version/digests не изменены. Навигация предоставляет вызов штатного Reveal Notes.open на широком экране и в меню узкого экрана; самостоятельная inline-панель не служит доказательством работы отдельного окна. Actual speaker-window verification ведётся в отдельном visual receipt. Прежние результаты render/native остаются историческими до новых проверок точных текущих SHA.
