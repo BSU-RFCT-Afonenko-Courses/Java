@@ -5,9 +5,11 @@ categories: [java, java-core, java-lists]
 # List и ArrayList {#sec-j25-api-lists}
 
 `List<E>` — последовательность с индексами, повторяющимися элементами и
-порядком просмотра. В Java 25 наследует `SequencedCollection<E>`
+порядком просмотра. В Java 25 этот интерфейс наследует `SequencedCollection<E>`
 [@bib-data-list-api; @bib-data-arraylist-api].
 
+Позиция относится к текущему состоянию списка: вставка перед элементом
+меняет его индекс. `set` заменяет одну ссылку, сохраняя размер.
 Разбор выбора реализации: @theory:sec-j25-theory-collections.
 
 ## Основные операции {#sec-j25-api-lists-basics}
@@ -38,15 +40,20 @@ categories: [java, java-core, java-lists]
 с запрещёнными изменениями. `ArrayList` допускает `null`; фабрики `of/copyOf`
 его отвергают.
 
-Фрагмент — `main` отдельного `ListDemo.java`; импорты не нужны, библиотечные
-имена полные.
-
 ```java
 var values = new java.util.ArrayList<>(java.util.List.of(10, 20, 10));
 values.remove(1);                    // удалён элемент 20 по индексу
 values.remove(Integer.valueOf(10)); // удалено первое значение 10
 System.out.println(values);         // [10]
 ```
+
+У списка целых чисел `remove(1)` получает индекс: здесь `1` имеет тип `int`.
+Чтобы удалить первое вхождение значения 1, передают `Integer.valueOf(1)`.
+Перегрузка выбирается по типу выражения до выполнения программы.
+
+`List.equals` сравнивает размер и попарно элементы на одинаковых позициях,
+поэтому `[10, 20]` и `[20, 10]` различаются. Реализации списков могут быть
+разными: `ArrayList` и `LinkedList` с одинаковой последовательностью равны.
 
 ## Конструирование и свойства {#sec-j25-api-lists-factories}
 
@@ -69,18 +76,76 @@ System.out.println(values);         // [10]
 основой; структурное изменение основы вне представления может сделать
 его дальнейшее поведение неопределённым.
 
+### Стоимость доступа и обхода
+
 `ArrayList.get/set` имеют постоянную стоимость; добавление в конец —
 амортизированно постоянную; изменение середины сдвигает хвост.
-У `LinkedList.get(i)` поиск линейный. Для общего обхода используют
+У `LinkedList.get(i)` поиск идёт от ближайшего края и в худшем случае
+линейный. Изменение соседних связей имеет постоянную стоимость, когда
+позиция уже найдена итератором; поиск этой позиции учитывают отдельно.
+Цикл с `get(i)` для каждого индекса такого списка может потребовать
+квадратичное число переходов между узлами. Для общего обхода используют
 `for-each` или итератор. `Iterator.remove` требует предшествующего `next`
 и поддержки удаления; нарушение порядка вызовов — `IllegalStateException`.
-Fail-fast обнаружение неправильных изменений выполняется по возможности,
-не служит синхронизацией.
-
+Проверка на постороннее структурное изменение (fail-fast) выполняется
+по возможности и не служит синхронизацией.
 
 Для отдельного итератора: `Iterator<E> iterator()` у списка;
 `boolean hasNext()`, `E next()`, `void remove()` у `java.util.Iterator<E>`.
 `next()` при исчерпании — `NoSuchElementException`; `remove()` до первого
 `next` или повторно без нового `next` — `IllegalStateException`, при запрете
-операции — `UnsupportedOperationException`. Адресное основание:
+операции — `UnsupportedOperationException`. Операции итератора описаны в
 [Iterator API](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Iterator.html).
+
+
+## Тип элемента и массовое добавление {#sec-j25-api-lists-element-type}
+
+`E` связывает добавляемый элемент с типом результата чтения. В `List<String>`
+`get` возвращает `String`; попытка добавить `Integer` отвергается компилятором.
+Для передачи готовой последовательности есть операция
+`boolean addAll(Collection<? extends E> source)`.
+
+```java
+java.util.List<Number> numbers = new java.util.ArrayList<>();
+java.util.List<Integer> whole = java.util.List.of(2, 3);
+numbers.addAll(whole);
+numbers.add(0.5);
+System.out.println(numbers); // [2, 3, 0.5]
+```
+
+Здесь `? extends Number` позволяет прочитать целые числа из аргумента
+как `Number`. Сам `List<Integer>` подтипом `List<Number>` не становится.
+`addAll` возвращает признак изменения получателя; для пустого аргумента
+обычный `ArrayList` вернёт `false`. Аргумент `null` запрещён. Изменяемые
+элементы остаются общими после добавления ссылок.
+
+## Связанные представления {#sec-j25-api-lists-views}
+
+```java
+var source = new java.util.ArrayList<>(java.util.List.of("a", "b", "c"));
+var middle = source.subList(1, 3);
+middle.set(0, "B");
+System.out.println(source); // [a, B, c]
+middle.clear();
+System.out.println(source); // [a]
+```
+
+Изменение размера через `middle` отражается в основе. После изменения
+размера основы другим путём договор `subList` уже не определяет поведение
+представления. Поэтому прежнее представление нельзя продолжать использовать
+в расчёте на конкретное исключение или результат.
+
+`reversed()` (с Java 21) меняет направление просмотра без создания снимка.
+Изменения, поддерживаемые представлением, отражаются в исходном списке;
+для `ArrayList` вызов `source.reversed().add("z")` добавляет `z` в начало
+основы. `Collections.reverse(source)` действует иначе: переставляет элементы
+в самой основе. У `Arrays.asList(array)` размер фиксирован, но `set` меняет
+ячейку исходного массива.
+
+## Полные опыты {#sec-api-collections-examples}
+
+[Исходники опытов](../examples/collections-examples.zip) и
+[команды с ожидаемыми результатами](../examples/collections/README.md)
+содержат самостоятельные программы для JDK 25. Для списков начните
+с `ListDemo`, `IteratorDemo`, `SnapshotsDemo` и `ViewsDemo`; для равенства,
+множеств, карт и очередей — с остальных программ комплекта.
