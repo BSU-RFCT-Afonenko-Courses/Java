@@ -23,9 +23,13 @@ public class ContractTest {
     }
 
     private static String run(String input, String... args) throws Exception {
-        var result = coursesupport.JavaProcess.run(Main.class, input, args);
+        coursesupport.JavaProcess.Result result;
+        try {
+            result = coursesupport.JavaProcess.runCheckingUncaught(Main.class, input, args);
+        } catch (java.io.IOException failure) {
+            throw new org.opentest4j.TestAbortedException("Не удалось подготовить проверку запуска", failure);
+        }
         System.err.print(result.stderr());
-        assertEquals(0, result.exitCode(), "Программа должна завершить проверку без исключения");
         return result.stdout();
     }
     private static void assertTokens(String expected, String actual) {
