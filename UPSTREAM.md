@@ -15,7 +15,7 @@ baseCommit, tracked patch и SHA256. `installed-packages.json` содержит
 
 | Владелец | Опубликованная база | Локальный candidate |
 | --- | --- | --- |
-| Afonenko-Course-Tools/quarto-course | v7.1.0 / `04a6295569f5dcc0fc1b991dc076bafc050dbd49` | `0ff120b1d5bce80c730f46fe2c413142c23baeba` |
+| Afonenko-Course-Tools/quarto-course | v7.1.0 / `04a6295569f5dcc0fc1b991dc076bafc050dbd49` | `8451c01ec69d3f3893d998a1fa523df296bbc68b` |
 | Afonenko-Course-Tools/quarto-project-publish | v5.1.0 / `62f8c4a01a5fd9af11f5f66abba2bb48c2ef2631` | `66e01b61f9a277fcb45cd1d6fba9923aac55f356` |
 | Afonenko-Course-Tools/quarto-reference-catalog | v3.1.0 / `3df2110e9f525f03f3ecb4926b5d55718e955c4c` | Без локальных изменений |
 | Afonenko-Course-Tools/quarto-course-prairielearn | v7.0.0 / `a13008aaf23e0616eac4b18f1dabbf77a77b56f3` | `1221c8c073d77d80d825ee906e9c244a75ff4a39` |

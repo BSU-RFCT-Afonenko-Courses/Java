@@ -271,6 +271,33 @@ index 8e06350..0300b89 100644
      for (let element = target; element; element = element.parentElement) {
        if (element.tagName === 'DETAILS') element.open = true;
        if (element.classList.contains('collapse') && !element.classList.contains('show')) {
+diff --git a/_extensions/course-presentation/modules/config.lua b/_extensions/course-presentation/modules/config.lua
+index c08cf7f..da394f9 100644
+--- a/_extensions/course-presentation/modules/config.lua
++++ b/_extensions/course-presentation/modules/config.lua
+@@ -30,6 +30,7 @@ function M.read(meta)
+   local pedagogy = meta["course-pedagogy"] or {}
+   if type(pedagogy) ~= "table" then assert(false, message("course-pedagogy должен содержать YAML-словарь параметров", "course-pedagogy")) end
+   return {answers = answers, reveal = reveal, html = html,bank=meta["exercise-bank"]==true,
++    assessmentTime = not (type(meta.course) == "table" and meta.course["assessment-time"] == false),
+     ru = lang:match("^ru") ~= nil,
+     defaults = pedagogy["document-defaults"] == true and {
+       difficulty = string(meta.difficulty), time = string(meta.time),
+diff --git a/_extensions/course-presentation/modules/metadata.lua b/_extensions/course-presentation/modules/metadata.lua
+index e6681ae..09e3673 100644
+--- a/_extensions/course-presentation/modules/metadata.lua
++++ b/_extensions/course-presentation/modules/metadata.lua
+@@ -28,7 +28,9 @@ function M.decorate(div, cfg)
+     badge(roles[role].label, "role")
+   end
+   badge(label(difficulty[values.difficulty], cfg), "difficulty")
+-  badge(values.time and (values.time .. (cfg.ru and " мин" or " min")), "time")
++  if cfg.assessmentTime ~= false then
++    badge(values.time and (values.time .. (cfg.ru and " мин" or " min")), "time")
++  end
+   if values["work-mode"] ~= "individual" then
+     badge(label(modes[values["work-mode"]], cfg), "work-mode")
+   end
 diff --git a/_extensions/course-presentation/presentation.css b/_extensions/course-presentation/presentation.css
 index 0cd92c1..11534d9 100644
 --- a/_extensions/course-presentation/presentation.css
