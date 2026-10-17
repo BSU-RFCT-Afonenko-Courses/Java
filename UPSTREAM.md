@@ -15,7 +15,7 @@ baseCommit, tracked patch и SHA256. `installed-packages.json` содержит
 
 | Владелец | Опубликованная база | Локальный candidate |
 | --- | --- | --- |
-| Afonenko-Course-Tools/quarto-course | v7.1.0 / `04a6295569f5dcc0fc1b991dc076bafc050dbd49` | `80cdff6d443ea6036f6138a0a3bb95b35779eb34` |
+| Afonenko-Course-Tools/quarto-course | v7.1.0 / `04a6295569f5dcc0fc1b991dc076bafc050dbd49` | `c8b2fe868cf805301fb6ebeba6587f8c96197369` |
 | Afonenko-Course-Tools/quarto-project-publish | v5.1.0 / `62f8c4a01a5fd9af11f5f66abba2bb48c2ef2631` | Без локальных изменений |
 | Afonenko-Course-Tools/quarto-reference-catalog | v3.1.0 / `3df2110e9f525f03f3ecb4926b5d55718e955c4c` | Без локальных изменений |
 | Afonenko-Course-Tools/quarto-course-prairielearn | v7.0.0 / `a13008aaf23e0616eac4b18f1dabbf77a77b56f3` | `1221c8c073d77d80d825ee906e9c244a75ff4a39` |
@@ -69,14 +69,14 @@ files теперь также содержат API поля; это дополн
 
 Опубликованные Platform2.1.0 commit/digests в `CI/toolchain.json` сохранены.
 Новый local candidate Platform source —
-`d9b2c12cf24f4fa49da1024ad86318a4a6711284`, config ID —
-`sha256:966ca8fb73b8f6ea0a314ac1e2ec04de866adb83bae7118816ba54c08c713e69`.
+`72f24f2c7fe7f07461b3d348a0dd25465ef95b1c`, config ID —
+`sha256:be79485f363a4b2985116f6326c0cb063be8c50b1f03dfe177ee6df8142a7659`.
 Exact source/runtime hashes и требуемое будущее внешнее действие находятся в
 `CI/local-candidate.json`. Этот config ID не выдаётся за published digest.
 
 ```sh
 export PL_PLATFORM_ROOT=/absolute/local/platform
-export PL_LOCAL_IMAGE_ID=sha256:966ca8fb73b8f6ea0a314ac1e2ec04de866adb83bae7118816ba54c08c713e69
+export PL_LOCAL_IMAGE_ID=sha256:be79485f363a4b2985116f6326c0cb063be8c50b1f03dfe177ee6df8142a7659
 bash CI/check-projects-candidate.sh --preflight-only
 # Полный локальный цикл после отдельной авторской приёмки:
 CI_CHECK_OUTPUT=/absolute/outside-course bash CI/check-projects-candidate.sh
@@ -95,3 +95,5 @@ closure без получения непушенных SHA. Реальные Moo
 внешние входы сохранены; действующий сервис не изменялся.
 
 Текущий candidate дополнен bounded optional Java source ZIP и compiled type discovery. Публичные version/digests не изменены. Навигация предоставляет вызов штатного Reveal Notes.open на широком экране и в меню узкого экрана; самостоятельная inline-панель не служит доказательством работы отдельного окна. Actual speaker-window verification ведётся в отдельном visual receipt. Прежние результаты render/native остаются историческими до новых проверок точных текущих SHA.
+
+Локальная поправка Presentation разрешает перенос длинных URL библиографии Reveal и внутреннюю прокрутку таблиц на экранах до 600px; правило таблиц исключает desktop, print media и Reveal print-pdf. Проверка клавиатурного доступа к прокрутке не заявлена. Исходные таблицы и учебный текст сохранены.
