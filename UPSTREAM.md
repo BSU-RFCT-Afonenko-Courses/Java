@@ -1,99 +1,102 @@
 # Происхождение технической поставки Java
 
-Текущая локальная интеграция 16 октября 2026 года использует проверенную
-candidate-связку. Полная содержательная, визуальная и внешняя приёмка курса
-выполняются отдельными этапами. Предыдущее описание сохранено в
-[истории](docs/provider-history/UPSTREAM-before-20261016.md); его статусы
-относятся к прежней редакции.
+Активная связка использует выпущенные Core 7.2.0, PrairieLearn exporter 7.1.0
+и Platform 2.2.0. `providers.json` задаёт точные published repository/tag/version/
+commit/sourceZip; `installed-packages.json` закрепляет установленные bytes,
+scopes и extension trees. Каждый bundle целиком воспроизводится через Git archive
+того же released tag/commit. Новых локальных patches поверх этих выпусков нет.
 
-`providers.json` сохраняет published repository/tag/version/commit/sourceZip
-как исходную базу. Отдельный `candidate` задаёт точный локальный commit,
-baseCommit, tracked patch и SHA256. `installed-packages.json` содержит
-фактически установленные bytes и scopes; `extensionTree` относится к базовому
-пакету, а `candidate` описывает применённый локальный diff. Descriptor version
-остается номером исходного release, а не объявлением нового выпуска.
-
-| Владелец | Опубликованная база | Локальный candidate |
+| Владелец | Выпуск | Точный commit |
 | --- | --- | --- |
-| Afonenko-Course-Tools/quarto-course | v7.1.0 / `04a6295569f5dcc0fc1b991dc076bafc050dbd49` | `c8b2fe868cf805301fb6ebeba6587f8c96197369` |
-| Afonenko-Course-Tools/quarto-project-publish | v5.1.0 / `62f8c4a01a5fd9af11f5f66abba2bb48c2ef2631` | Без локальных изменений |
-| Afonenko-Course-Tools/quarto-reference-catalog | v3.1.0 / `3df2110e9f525f03f3ecb4926b5d55718e955c4c` | Без локальных изменений |
-| Afonenko-Course-Tools/quarto-course-prairielearn | v7.0.0 / `a13008aaf23e0616eac4b18f1dabbf77a77b56f3` | `1221c8c073d77d80d825ee906e9c244a75ff4a39` |
-| Afonenko-Course-Tools/quarto-project-download | v3.1.0 / `73797d3807e2433d33751d538746e1e9d82d6d57` | Без локальных изменений |
+| Afonenko-Course-Tools/quarto-course | v7.2.0 | `aebf6f4580c0bd5e9468498e840221619fc69e5f` |
+| Afonenko-Course-Tools/quarto-course-prairielearn | v7.1.0 | `69924dbda56ed55fb556f2e0932565eafbdb6448` |
+| Afonenko-Course-Tools/quarto-project-publish | v5.1.0 | `62f8c4a01a5fd9af11f5f66abba2bb48c2ef2631` |
+| Afonenko-Course-Tools/quarto-reference-catalog | v3.1.0 | `3df2110e9f525f03f3ecb4926b5d55718e955c4c` |
+| Afonenko-Course-Tools/quarto-project-download | v3.1.0 | `73797d3807e2433d33751d538746e1e9d82d6d57` |
 
-Полные patches и hashes установленных отличий находятся в
-[манифесте](docs/local-extension-patches.json). Core candidate сохраняет
-опубликованную optional time semantics: отсутствие оценки допустимо;
-заданное значение остаётся положительным целым; неполная оценка скрывает
-общую сводку. Навигация к hash-цели сохраняет начало структурного SECTION;
-диагностика называет владельца проектом. API-precheck — необязательное узкое
-расширение, которое само не создаёт обязательных API задания.
+[Core source release](https://github.com/Afonenko-Course-Tools/quarto-course/releases/tag/v7.2.0)
+и [exporter source release](https://github.com/Afonenko-Course-Tools/quarto-course-prairielearn/releases/tag/v7.1.0)
+сохраняют код и descriptors одного immutable ref. По сравнению с принятой
+локальной связкой vendor code не изменился; актуализированы descriptors версий
+и provenance. Прежние локальные поправки уже входят в выпущенные bytes.
+`docs/local-extension-patches.json`, `tools/provider-patches/` и
+`CI/local-candidate.json` сохраняют историю подготовки и не служат активными
+production pins. Исторические candidate scripts относятся к прежнему снимку.
 
-## Проверка и воспроизведение
+## Воспроизведение providers
 
-Обычный checkout уже содержит vendored packages. Offline проверка ничего
-не переустанавливает и не обращается к GitHub:
+Offline проверка установленного closure не обращается к GitHub:
 
 ```sh
 python3 tools/materialize-providers.py --check
 python3 tools/test-materialize-providers.py
 ```
 
-Для воспроизведения подготовьте repositories с именами `checkout` из
-`providers.json` в одном каталоге. Достаточно published tag objects и blobs;
-непушенный candidate SHA получать из GitHub не требуется. Материализатор
-проверяет tag → exact SHA, descriptor version, tracked patch SHA256 и все
-candidate package bytes. Пример:
+Для переустановки подготовьте Git repositories с именами `checkout` из
+`providers.json` в общем каталоге. В них должны быть точные published tags
+и соответствующие objects. Материализатор проверяет tag → commit, descriptor
+version и полный inventory до записи; неизвестные изменения и symlinks
+останавливают операцию. Повторный запуск сохраняет те же bytes.
 
 ```sh
-python3 tools/materialize-providers.py --providers-root /absolute/release-checkouts --write
+python3 tools/materialize-providers.py --providers-root /absolute/releases --write
 python3 tools/materialize-providers.py --check
 ```
 
-Данные берутся из Git archive точного published commit и tracked patch,
-без использования working-tree правок владельца. Перед первой записью
-проверяется весь target inventory всех scopes. Неизвестная локальная правка,
-extra file или symlink останавливает поставку. Повторный запуск не меняет
-bytes/inventory. Посторонние темы сохраняются. Материализация предполагает
-единоличное владение vendor scopes на время проверки и записи.
+## Выпущенная Platform и runtime
 
-Прежние16 локальных поправок сверены с release/base и фактическими bytes до
-интеграции. Все16 старых diff обратимо применимы поверх нового candidate:
-[receipt](docs/provider-history/local16-carry-verification.json). Шесть collect
-files теперь также содержат API поля; это дополнительный локальный diff,
-не потеря прежней диагностики. Старые providers/installed/local patch manifests
-сохранены в `docs/provider-history/`. Legacy sync-providers.py отказывается
-заменять candidate опубликованной базой.
+[Platform source release v2.2.0](https://github.com/Afonenko-Course-Tools/prairielearn-platform/releases/tag/v2.2.0)
+закреплён на `4579e7151e7107bbd9ef09852663d7771c2599db`.
+Publisher run `39018028757` собирал runtime из
+`b7fd40c42f3bbe03d0bb94111cde392c74c11b32`. Последующий metadata commit
+обновил проверенные pins и документацию без изменения runtime bytes.
+`runtime-image.json` и `published-runtime-profiles.json` опубликованы вместе
+с source release; SHA256 registry:
+`195eafb709cdd57589e0b626861bc8feb44d58a3c78a4520d0da04e620050650`.
 
-## Runtime и внешняя граница
+| Образ | Неизменяемый repository digest |
+| --- | --- |
+| Java | `ghcr.io/afonenko-course-tools/java25-grader@sha256:6052b077f7d5fabaedbd2deb829eed15e9911beafaf78f29c90083ff917b8c17` |
+| Community | `ghcr.io/afonenko-course-tools/prairielearn-community-gateway@sha256:55bdc17dec9ec969968ef0390ae316382b3c03730298d4a9cb1e65bce94eefcd` |
+| fish | `ghcr.io/afonenko-course-tools/fish-git-grader@sha256:021adbbb5bb413f39b3e5e6c575dd989509998d89a8fe0cf470217e311a0c3d4` |
 
-Опубликованные Platform2.1.0 commit/digests в `CI/toolchain.json` сохранены.
-Новый local candidate Platform source —
-`72f24f2c7fe7f07461b3d348a0dd25465ef95b1c`, config ID —
-`sha256:be79485f363a4b2985116f6326c0cb063be8c50b1f03dfe177ee6df8142a7659`.
-Exact source/runtime hashes и требуемое будущее внешнее действие находятся в
-`CI/local-candidate.json`. Этот config ID не выдаётся за published digest.
+Java runner SHA256 —
+`c270cac0932ecce0e01377cc8681a6cd7a6eb5b15f4e1acf9460b8c8c97eb92c`.
+Оба Java profiles используют один опубликованный образ и точные library hashes.
+Локальный config ID `sha256:3692af47c4bee8d371c68fbc98563482704b78fcf4589ea534da0f7a7826c89b`
+фиксирует наблюдение Docker, а repository digest остаётся pin для export/grading.
+Полные значения и publication evidence находятся в `CI/toolchain.json`.
+
+## Проверка текущей поставки
+
+Quarto 1.11.5, CUE 0.17.1, JDK 25 и Docker задаются явно. Внешний clean Platform
+checkout должен иметь HEAD `4579e7151e7107bbd9ef09852663d7771c2599db`.
+Выход checks хранится вне source checkout:
 
 ```sh
-export PL_PLATFORM_ROOT=/absolute/local/platform
-export PL_LOCAL_IMAGE_ID=sha256:be79485f363a4b2985116f6326c0cb063be8c50b1f03dfe177ee6df8142a7659
-bash CI/check-projects-candidate.sh --preflight-only
-# Полный локальный цикл после отдельной авторской приёмки:
-CI_CHECK_OUTPUT=/absolute/outside-course bash CI/check-projects-candidate.sh
+python3 CI/check-production-pins.py
+bash CI/render.sh
+PL_PLATFORM_ROOT=/absolute/released-platform CI_CHECK_OUTPUT=/absolute/fresh-checks bash CI/check-projects.sh
 ```
 
-Flow проверяет exact clean source SHA, runtime hashes и локальный linux/amd64
-image через inspect, без clone/pull/push. Затем строит отдельный runtime
-registry с явным local candidate и выполняет полную выбранную delivery на
-host/container. На этом этапе проверен только preflight; полный текущий
-course render/delivery этим документом не объявляется готовым.
+`CI/render.sh` выполняет student → full → student. Production checks снова
+собирают student, получают owner inventory, экспортируют весь выбранный
+instance `2026-2027-s1` и проверяют его полностью на host и container.
+Этот внутренний instance сохраняет source course ID `java-semester-one`,
+три работы numbers/control/arrays и прежние восемь выбранных задач (3/2/3).
+Смена внутреннего instance не меняет учебные условия, required/scoring semantics
+или внешние Gateway/Moodle входы.
 
-Production grading CI останавливается до получения образов, пока provider
-содержит local candidate. Для возобновления нужен отдельно разрешённый выпуск
-Platform/image и обновление published pins; render CI проверяет tracked vendor
-closure без получения непушенных SHA. Реальные Moodle/Gateway параметры и
-внешние входы сохранены; действующий сервис не изменялся.
+Результаты конкретной operational поставки, exact source/native commits,
+полные 45+45 scenarios и release receipt находятся в управляющем комплекте
+`java-system-practice-work-20261016/operations/20261017-release-deploy/delivery`.
+Для staging нужна именно complete successful container receipt, связанная
+с окончательными delivery/source/inventory hashes и опубликованным registry.
+Native Git commit и deliveryHash — разные pins. Private checks и полные
+отчёты остаются вне native payload.
 
-Текущий candidate дополнен bounded optional Java source ZIP и compiled type discovery. Публичные version/digests не изменены. Навигация предоставляет вызов штатного Reveal Notes.open на широком экране и в меню узкого экрана; самостоятельная inline-панель не служит доказательством работы отдельного окна. Actual speaker-window verification ведётся в отдельном visual receipt. Прежние результаты render/native остаются историческими до новых проверок точных текущих SHA.
-
-Локальная поправка Presentation разрешает перенос длинных URL библиографии Reveal и внутреннюю прокрутку таблиц на экранах до 600px; правило таблиц исключает desktop, print media и Reveal print-pdf. Проверка клавиатурного доступа к прокрутке не заявлена. Исходные таблицы и учебный текст сохранены.
+Восемь native задач не объявляются экспортом всех 103 проектов. Прежняя полная
+regression учитывается отдельно при доказанной неизменности project/checker/
+runtime bytes. Публикация source или image не заменяет текущую qualification,
+hosted CI, server sync и live Moodle acceptance; прежний hosted CI waiver
+не переносится на эту ветку. Действующие внешние URLs, ключи и IDs сохраняются.
