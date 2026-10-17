@@ -1,13 +1,43 @@
-# Техническая поставка GenericQueue
+# Обобщённая очередь
 
-Источник: точная карточка exr-generic-queue, SHA256 e2f5e5a04c7628d5c36e3cb896952ff172347c575579c93f20d276d71ddc1ea6. Public README раскрывает ссылку библиографии; implementation reference и wrong fixtures — только trusted. Пакет/параметр типа/вспомогательные объявления/конструкторы исключений свободны. Null/нулевая ёмкость/несовпадающий компонент массива вне проверяемого домена.
+Обобщённая очередь фиксированной вместимости хранит элементы в переданном массиве, извлекает
+их в порядке FIFO и сообщает о заполнении и опустошении проверяемыми исключениями.
 
-Discovery typeNames и optional ZIP дополнительных .java реализованы в локальном canonical candidate Platform/Core/PrairieLearn, без опубликованного выпуска. Reference содержит четыре public исходника; closed fixtures доказывают дополнительные файлы в default/named package и одноимённые helpers разных пакетов. Восемь обычных JUnit проверяют только опубликованный домен и поведение; API precheck отдельно проверяет metadata и positive/negative typed clients. Несколько полностью compatible очередей дают ручной разбор без score, несовместимый одноимённый helper сам по себе не запрещён. Bank attrs и course configuration не менялись. Подробный план/доказательства — CONTROL/technical/generic-queue.
+Данные, результаты и обязательные средства Java приведены в [условии
+задания](../../bank/generics.qmd#exr-generic-queue). [Инструкция к стартовому
+проекту](student/README.md) содержит порядок работы и требования к предъявлению решения.
 
-Для precheck и обычного JUnit addressing используется один набор positive/negative typed clients. Обязательная precheck выполняется до dependent compilation. После неё trusted BeforeAll только повторяет адресацию теми же клиентами: in-memory javac, только student CodeSource+JDK, без annotation processing/sourcepath/дисковых outputs; результат кэшируется один раз на VM. Ошибка trusted addressing не превращается в оценку отдельного теста. Generic checked throws через унаследованный параметризованный Base разрешаются в конкретные опубликованные exception types.
+## Работа с проектом
 
-Основной массивный конструктор проверяется по опубликованной связи параметра типа: T либо constructor-owned U с цепочкой bounds к T; допускаются varargs. Дополнительные constructors свободны, глобальный запрет вызова GenericQueue<String>(Integer[]) не применяется. Positive обычные compiler clients проверяют String/Integer/Number и собственный тип без Comparable, без лишних checked throws.
+Исходники находятся в `student/src/main/java/`, открытые проверки JUnit 5 — в
+`student/src/test/java/`. Нужен JDK 25. Студенческая инструкция содержит команды рекурсивной
+сборки исходников и требования к демонстрации. Пакет и вспомогательные объявления выбирает
+автор решения.
 
-В JUnit setup после API-stage один trusted compiler-generated bridge создаёт очереди обычными target-typed diamond вызовами. Поэтому overload выбирает javac, а не erased MethodHandle: выбранный для допустимого массива дополнительный constructor тоже обязан соблюдать поведение. Teacher-only public QueueAccess.Payload — данные теста, не student API. Bridge: student+trusted-helper CodeSource/JDK, proc:none/sourcepath empty, memory-only output до1MiB, cache на VM и прежние runtime limits. Ошибка подготовки bridge — container/setup failure с ручной технической диагностикой без score; assertions выполняются после успешной подготовки. Исходник студента при компиляции bridge не исполняется.
+## Проверка преподавателем
 
-Bridge source — default-package внешний клиент, как positive compiler clients. Для named student package сохраняется отдельный child loader; package-private overload из чужого пакета не становится доступным. Для default-package очереди Lookup.defineClass помещает только trusted javac output в тот же loader/runtime package; lookup не читает и не вызывает private members, не создаёт Nestmate. Имя bridge выбирается детерминированно среди незанятых compiled/loadable имён через Class.forName(false), поэтому дополнительные helper names и их неисполненные static initializers не запрещены.
+Студенту выдаётся только `student/`. Реализация для проверки тестов находится в
+`reference/`, закрытые проверки — в `tests/junit/QueueContractTest.java`, перечень вариантов
+с ожидаемыми исходами — в `tests/contract-cases.json`. Вспомогательные проверяющие классы
+находятся в `support/` и в каталогах тестов.
+
+Проверьте пустое начальное состояние независимо от содержимого массива, повторное
+использование освобождённого места и сохранение состояния при отказе. Пакет, вспомогательные
+объявления и конструкторы исключений выбираются в пределах опубликованного API.
+
+После самостоятельной компиляции решения проверьте опубликованный API: открытые
+`GenericQueue<T>`, массивный конструктор, `put`, `get` и два проверяемых исключения.
+Проверка API должна предшествовать компиляции зависимых тестов. Клиенты проверки учитывают
+связь типов массива и очереди, включая допустимые обобщённые конструкторы и унаследованные
+объявления исключений.
+
+Пакет, дополнительные классы и допустимые перегрузки учитываются при подготовке клиента.
+Конструктор выбирается обычными правилами компилятора Java. Если проверяющие средства не
+могут однозначно выбрать подходящие типы, преподаватель разбирает решение вручную;
+техническая неоднозначность не устанавливает ошибку поведения.
+
+Публичный файл `student/src/test/java/api/QueueApi.java` и преподавательский
+`tests/junit/api/QueueApi.java` поддерживают предварительную проверку API. `QueueAccess`
+подготавливает обычные вызовы выбранной очереди. Его внутренние типы относятся к
+проверяющему коду. Порядок работы со средой проверок описан в [документации
+курса](../../../docs/prairielearn-labs.md).

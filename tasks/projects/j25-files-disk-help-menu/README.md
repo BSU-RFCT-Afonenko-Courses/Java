@@ -1,10 +1,58 @@
-# Техническая поставка exr-j25-files-disk-help-menu
+# Справочная система, использующая диск
 
-Frozen `tasks/bank/files.qmd` / `c9d05aea901fb819a5fcbb44bbf8a117caaeb9b2` / SHA `b3f4cd995c1af93a2afec6682bc46183043ecb7a2a3e0a0614397c355936e024`. Public только student/. Обычные Java source компилируются отдельно от teacher binding/JUnit. Study/Example/TaskBinding и методы process/equal/readOutput — добровольно выбранное API конкретного reference, не новые Student obligations. Ошибка чужой или private/nested привязки — manual/tool без score. API preflight допустим только для буквально опубликованной части, а не для выбранного helper.
+Справочная система читает темы из `helpfile.txt` и показывает выбранный раздел через класс
+`Help`.
 
-Help class/constructor filename; helpOn(String) true/false and own IOhandling; getSelection input; FileHelp.java launch unit, menu termination declared to user. Method visibility/static and filename argument type do not become hiddenAPI. Primary+alternate используют иной package/instance; CompFiles alternate возвращает Result/сам обрабатывает IO, adapter лишь нормализует error outcome. Help alternate получает Path и возвращает Optional selection, вместо String primary; это допустимые свободные формы. Matching output у alternate иной формат двух разделов, parsing — только teacher representation normalization. Никаких private-field reflection/access suppression или имитации IO regex.
+Данные, результаты и обязательные средства Java приведены в [условии
+задания](../../bank/files.qmd#exr-j25-files-disk-help-menu). [Инструкция к стартовому
+проекту](student/README.md) содержит порядок работы и требования к предъявлению решения.
 
-Данные находятся в реальном @TempDir, including Unicode/spaces, before/after input где это явно требуется. Supported filesystem links проверяются только после реального успешного создания. Output partial приIO разрешён; атомарность/новые каналы/диагностические тексты/status не навязаны. Ручная часть: File create, TWR/ресурсы/самостоятельный IOcatch/меню и совпадение адаптера с заявленным способом. Список actual wrong scenarios в tests/scenarios.json. Регистрации/публикации/commit/Windows execution нет. Shared runner readonly.
+## Работа с проектом
 
+Исходники находятся в `student/src/`. Команды сборки проекта с помощью JDK 25 и запуска
+демонстрации приведены в студенческой инструкции. Сохраните имена и сигнатуры, прямо
+заданные условием; остальное устройство программы выберите самостоятельно.
 
-Published API preflight выбранного teacher placement: Help, filename через constructor (безфиксированного типа/modifiers), helpOn(String) true/false, callable getSelection() безфиксированного returntype. Metadata безinit/access suppression; ordinary typed client только при доступномpublicplacement, иначе metadata+manual binding. Missingteacherplacement не выдаётся за studentAPI mismatch. Actual private nested Help legal: metadataPASS, чужая binding compilefail manual/no-score; реальное собственное меню проверяется отдельно. Canary staticinitializerthrow +broken trustedbinding доказывает отсутствие init доbehavior.
+В `student/examples/` находятся открытые примеры. Сопоставьте с ними результаты программы и
+продемонстрируйте остальные случаи, перечисленные в условии.
+
+## Проверка преподавателем
+
+Студенту выдаётся только содержимое `student/`. Преподавательские реализации хранятся в
+`reference/`, открытые сценарии проверки — в `tests/junit/public/`, закрытые — в
+`tests/junit/private/`. В `tests/fixtures/` находятся варианты с заданными ошибками для
+проверки самих тестов.
+
+Проверьте заданные операции `helpOn(String)` и `getSelection()`, обработку файловых ошибок и
+сохранение доступности `System.in` для меню. Условие задаёт файл `FileHelp.java`; имя
+запускаемого класса выбирает автор решения.
+
+`tests/bindings/reference/TaskBinding.java` — клиент предоставленной реализации. Если
+решение организовано иначе, преподаватель готовит соответствующую привязку: она вызывает
+операции решения и сопоставляет результаты с условием. Имена методов привязки относятся к
+проверяющему коду. Допустимые классы и методы, недоступные внешнему клиенту, проверяются по
+демонстрации и при ручном разборе.
+
+### Локальный запуск проверок
+
+Нужны Python 3, JDK 25 и репозиторий Platform с настроенной средой `java25-junit-v1`.
+Замените `/checkout/platform` своим путём. Команда выполняется из каталога этого проекта и
+проверяет предоставленную реализацию:
+
+```bash
+python3 ../../test-support/check-java-project.py --project . --sources reference/primary --binding tests/bindings/reference --api-config tests/api/reference/config.json --platform /checkout/platform --work /tmp/новый-каталог
+```
+
+В `--work` укажите новый, ещё не существующий каталог вне проекта, исходников, привязки и
+Platform. Для повторного запуска выберите другой путь. Флаг `--public` оставляет открытые
+сценарии. В `--only` передайте путь файла тестов относительно `tests/junit/`.
+
+Скрипт компилирует решение, проверяет опубликованный API, компилирует клиент и тесты JUnit,
+затем выполняет сценарии. Конфигурация `tests/api/reference/config.json` указывает
+размещение API в предоставленной реализации. Для другого допустимого размещения подготовьте
+соответствующие конфигурацию и клиент.
+
+Результаты этапов и хеши сохраняются в `report.json` рабочего каталога. При техническом
+отказе разберите причину вручную; поведение решения оценивается после успешной подготовки
+проверки. Порядок работы со средой описан в [документации
+курса](../../../docs/prairielearn-labs.md).

@@ -1,16 +1,58 @@
-# Преподавательская поставка exr-generic-stack
+# Обобщённый стек
 
-Публичен только `student/`: условие, раскрытая библиография, открытые сценарии и свободное размещение исходников. `reference`, fixtures, bindings и JUnit закрытые и в download не входят. Конкретные teacher классы/методы reference не являются новым StudentAPI. Иная структура требует другой обычной Java-привязки; private/nested и техника/объяснение остаются manual.
+Обобщённый стек реализует `IGenStack<T>` на переданном массиве, извлекает элементы в порядке
+LIFO и сообщает об отказах проверяемыми исключениями.
 
-```sh
+Данные, результаты и обязательные средства Java приведены в [условии
+задания](../../bank/generics.qmd#exr-generic-stack). [Инструкция к стартовому
+проекту](student/README.md) содержит порядок работы и требования к предъявлению решения.
+
+## Работа с проектом
+
+Исходники находятся в `student/src/`. Команды сборки проекта с помощью JDK 25 и запуска
+демонстрации приведены в студенческой инструкции. Сохраните имена и сигнатуры, прямо
+заданные условием; остальное устройство программы выберите самостоятельно.
+
+В `student/examples/` находятся открытые примеры. Сопоставьте с ними результаты программы и
+продемонстрируйте остальные случаи, перечисленные в условии.
+
+## Проверка преподавателем
+
+Студенту выдаётся только содержимое `student/`. Преподавательские реализации хранятся в
+`reference/`, открытые сценарии проверки — в `tests/junit/public/`, закрытые — в
+`tests/junit/private/`. В `tests/fixtures/` находятся варианты с заданными ошибками для
+проверки самих тестов.
+
+Проверьте пустое начальное состояние независимо от содержимого массива и повторное
+использование всей вместимости. Объявления отказов проверяются также при вызове через
+`IGenStack<T>`; устройство конструкторов исключений свободно.
+
+`tests/bindings/reference/TaskBinding.java` — клиент предоставленной реализации. Если
+решение организовано иначе, преподаватель готовит соответствующую привязку: она вызывает
+операции решения и сопоставляет результаты с условием. Имена методов привязки относятся к
+проверяющему коду. Допустимые классы и методы, недоступные внешнему клиенту, проверяются по
+демонстрации и при ручном разборе.
+
+### Локальный запуск проверок
+
+Нужны Python 3, JDK 25 и репозиторий Platform с настроенной средой `java25-junit-v1`.
+Замените `/checkout/platform` своим путём. Команда выполняется из корня репозитория курса и
+проверяет предоставленную реализацию:
+
+```bash
 python3 tasks/test-support/check-java-project.py --project tasks/projects/generic-stack --sources tasks/projects/generic-stack/reference --binding tasks/projects/generic-stack/tests/bindings/reference --api-config tasks/projects/generic-stack/tests/api/reference/config.json --platform /checkout/platform --work /новый/внешний/work
 ```
 
-`--public` включает открытые примеры; `--backend container` использует существующий local image966c. `valid-alternate` с одноимённой binding проходит; wrong — предметная ошибка behavior. Вариант maximum использует другую разрешённую Comparable bound, hash — постоянный согласованный hash, polynomial удаляет нули, set results неизменяемые. Эти варианты не задают требования другим решениям. У GenericStack альтернативный API унаследован через interface, checked exceptions через промежуточный base и имеют свободные аргументы constructors; generic constructor связан с T.
+В `--work` укажите новый, ещё не существующий каталог вне проекта, исходников, привязки и
+Platform. Для повторного запуска выберите другой путь. Флаг `--public` оставляет открытые
+сценарии. В `--only` передайте путь файла тестов относительно `tests/junit/`.
 
-Для свободных API автоматическая metadata-привязка не обещается. Ошибка компиляции выбранного teacher adapter/типизированных клиентов — manual binding-setup-failure/no-score, не неверное поведение студента. У фиксированного IGenStack отдельно задан published API precheck до dependent compilation. Native Body/manual download и конкретные host/container behavior facts — отдельные scoped доказательства, не production PL/Moodle registration или приёмка любого API.
+Скрипт компилирует решение, проверяет опубликованный API, компилирует клиент и тесты JUnit,
+затем выполняет сценарии. Конфигурация `tests/api/reference/config.json` указывает
+размещение API в предоставленной реализации. Для другого допустимого размещения подготовьте
+соответствующие конфигурацию и клиент.
 
-
-Reference и alternate teacher bindings передают legal заранее заполненные T[]; первое pop проверяет исходный empty независимо от contents массива. Все слоты и последующее reuse проверяются обычными push/pop без чтения private fields или массива после передачи. Wrong initial-count принимает прежние non-null ячейки за содержимое и должен дать behavior-failure, не API failure.
-
-Адресное закрытие P2 Stack: отдельные ordinary interface clients push→catch Full и pop→catch Empty должны компилироваться; unhandledPush и unhandledPop не должны. Это published checked-вызов через IGenStack, не exact throws реализации; inherited/checked exception bases/generic push/constructors/overloads остаются прежними. wrong-pop-throws удаляет throws Empty из interface, сохраняя runtime sneaky refusal; теперь отвергается API до dependent compile.
+Результаты этапов и хеши сохраняются в `report.json` рабочего каталога. При техническом
+отказе разберите причину вручную; поведение решения оценивается после успешной подготовки
+проверки. Порядок работы со средой описан в [документации
+курса](../../../docs/prairielearn-labs.md).
