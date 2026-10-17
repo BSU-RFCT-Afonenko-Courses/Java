@@ -917,7 +917,7 @@ public final class Book {
     private boolean borrowed;
     public Book(String title) {
         if (title == null || title.isBlank())
-            throw new IllegalArgumentException("nonblank title required");
+            throw new IllegalArgumentException("Название должно содержать хотя бы один непробельный символ");
         this.title = title;
     }
 ```
@@ -940,7 +940,7 @@ public final class Book {
     public String title() { return title; }
     public boolean borrowed() { return borrowed; }
     public void borrow() {
-        if (borrowed) throw new IllegalStateException("already borrowed");
+        if (borrowed) throw new IllegalStateException("Книга уже выдана");
         borrowed = true;
     }
 }
@@ -967,7 +967,7 @@ System.out.println(first == same);    // true
 System.out.println(first.borrowed()); // true
 try { first.borrow(); }
 catch (IllegalStateException ex) {
-    System.out.println(ex.getMessage()); // already borrowed
+    System.out.println(ex.getMessage()); // Книга уже выдана
 }
 System.out.println(first.borrowed()); // true
 ```
