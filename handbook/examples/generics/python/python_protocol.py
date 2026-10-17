@@ -18,9 +18,14 @@ def dot[T](left: Sequence[T], right: Sequence[T], arithmetic: Arithmetic[T]) -> 
 
 
 class FloatArithmetic:
+    def __init__(self) -> None:
+        self.multiplications = 0
+
     def zero(self) -> float: return 0.0
     def add(self, a: float, b: float) -> float: return a + b
-    def multiply(self, a: float, b: float) -> float: return a * b
+    def multiply(self, a: float, b: float) -> float:
+        self.multiplications += 1
+        return a * b
 
 
 class ComplexArithmetic:
@@ -30,5 +35,7 @@ class ComplexArithmetic:
 
 
 if __name__ == "__main__":
-    print(dot([1.0, 2.0], [3.0, 4.0], FloatArithmetic()))
+    arithmetic = FloatArithmetic()
+    print(dot([1.0, 2.0], [3.0, 4.0], arithmetic))
     print(dot([1 + 1j, 2 + 0j], [3 + 0j, 4 - 1j], ComplexArithmetic()))
+    print(arithmetic.multiplications)

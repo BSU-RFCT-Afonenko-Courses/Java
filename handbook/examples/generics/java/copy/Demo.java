@@ -1,4 +1,5 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 class Demo {
     static void printAll(List<?> values) {
         for (Object value : values) {
@@ -37,5 +38,28 @@ class Demo {
         System.out.println(sum(ints));
         addSmallIntegers(numbers);
         printAll(numbers);
+    }
+}
+
+// Тип ссылки и поддержка операции проверяются разными средствами.
+class RelationsDemo {
+    public static void main(String[] args) {
+        Integer[] integers = {1, 2};
+        Number[] numbers = integers;
+        try {
+            numbers[0] = 2.5;
+        } catch (ArrayStoreException failure) {
+            System.out.println("ArrayStoreException");
+        }
+        System.out.println(integers[0]);
+
+        List<Integer> source = List.of(1, 2);
+        List<Number> target = List.of(0.5);
+        try {
+            Demo.copy(source, target);
+        } catch (UnsupportedOperationException failure) {
+            System.out.println("UnsupportedOperationException");
+        }
+        System.out.println(target);
     }
 }
