@@ -1,5 +1,5 @@
 ---
-categories: [j25, j25-core, j25-optional]
+categories: [java, java-core, java-optional]
 ---
 
 # Optional {#sec-j25-api-optional}
@@ -9,16 +9,30 @@ categories: [j25, j25-core, j25-optional]
 нормальна. Сам объект `Optional` не должен быть `null`
 [@bib-data-optional-api].
 
+Поиск самого длинного имени в пустом списке ничего не находит. Длина `0`
+при этом была бы свойством существующей пустой строки, поэтому заменять
+отсутствие нулём без условия задачи нельзя. Решение о поведении принимает
+вызывающий код:
+
+```java
+var longest = java.util.List.<String>of().stream()
+    .max(java.util.Comparator.comparingInt(String::length));
+String message = longest.map(name -> "Имя: " + name)
+    .orElse("Нет участников");
+System.out.println(message); // Нет участников
+```
+
+`max` возвращает `Optional<String>`. При наличии `map` создаёт подпись,
+при пустоте пропускает преобразование; `orElse` выбирает текст для этой ветви.
+Если отсутствие нарушает договор вызывающего метода, вместо сообщения
+подходит `orElseThrow` с осмысленным исключением. Ошибку чтения или неверный
+формат входа следует передавать отдельно от нормального отсутствия результата.
 Объяснение: @theory:sec-j25-theory-streams.
 
 ## Создание и получение {#sec-j25-api-optional-basic}
 
-Указаны точные выбранные сигнатуры. `Predicate`, `Function`, `Supplier`,
-`Consumer` относятся к `java.util.function`, `Stream` — к
-`java.util.stream`. Только вариант с поставщиком исключения объявляет
-`throws X`: тип проверяемого отказа выводится из поставщика. Остальные
-выбранные операции не объявляют проверяемых исключений; возможные
-непроверяемые отказы описаны условиями.
+Метод создания определяет, допускается ли исходный `null`. Метод получения
+задаёт поведение при отсутствии значения: запасной результат или исключение.
 
 | Форма | Результат / условие |
 |---|---|
@@ -32,7 +46,11 @@ categories: [j25, j25-core, j25-optional]
 | `T orElse(T other)` | Значение или уже вычисленный аргумент |
 | `T orElseGet(Supplier<? extends T> supplier)` | Значение или отложенное вычисление |
 
-Операторы — `main` отдельного `OptionalDemo.java`, имена полные.
+Перегрузка `orElseThrow` с поставщиком исключения объявляет `throws X`:
+тип проверяемого отказа выводится из поставщика. Остальные операции таблицы
+проверяемых исключений не объявляют.
+
+Пример наличия и пустоты:
 
 ```java
 var name = java.util.Optional.of("Ada");
@@ -40,16 +58,17 @@ System.out.println(name.orElse("нет участника")); // Ada
 System.out.println(java.util.Optional.empty().orElse("нет")); // нет
 ```
 
-В отдельном `OptionalFallbackDemo.java` метод
-`static String fallback() { System.out.println("fallback"); return "none"; }`
-делает вызов видимым. В `main`:
+Момент запасного вычисления можно наблюдать с помощью поставщика
+`java.util.function.Supplier<String> fallback = () -> { System.out.println("fallback"); return "none"; };`.
+Самостоятельный опыт без ответов в коде находится в
+[OptionalDemo.java](../examples/functions-streams/OptionalDemo.java):
 
 ```java
 var present = java.util.Optional.of("Ada");
-System.out.println(present.orElse(fallback()));    // fallback, Ada
-System.out.println(present.orElseGet(OptionalFallbackDemo::fallback)); // Ada
+System.out.println(present.orElse(fallback.get()));    // fallback, Ada
+System.out.println(present.orElseGet(fallback)); // Ada
 System.out.println(java.util.Optional.<String>empty()
-    .orElseGet(OptionalFallbackDemo::fallback)); // fallback, none
+    .orElseGet(fallback)); // fallback, none
 ```
 
 Каждое слово комментария здесь печатается на отдельной строке. Уже вычисляемый
@@ -73,7 +92,7 @@ System.out.println(java.util.Optional.<String>empty()
 | `void ifPresentOrElse(Consumer<? super T> action, Runnable emptyAction)` | Выбрать действие наличия или пустоты |
 | `Stream<T> stream()` | Поток из нуля или одного элемента |
 
-Короткий полный вход без зависимости от предметной записи:
+Поиск и преобразование первого имени:
 
 ```java
 var names = java.util.List.of("Ada", "Lin");
@@ -92,8 +111,13 @@ System.out.println(shown); // ADA
 совпадает с обобщённым `Optional`. Среднее пустого числового потока
 отсутствует, сумма пустого потока может иметь нейтральный ноль.
 
-API определяет `Optional` как value-based class: его сравнивают через
+`Optional` — класс, поведение которого определяется значением
+(value-based class). Его объекты сравнивают через
 `equals` и проверяют состояние. Идентичность экземпляра не является частью
-договора; использование его как монитора синхронизации недопустимо. Пустое состояние не обещает единственный
-общий экземпляр, поэтому сравнение с `Optional.empty()` через `==`
+договора; использование его как монитора синхронизации недопустимо.
+Пустое состояние может представляться разными экземплярами, поэтому
+сравнение с `Optional.empty()` через `==`
 не является правильной проверкой.
+
+`Predicate`, `Function`, `Supplier`, `Consumer` находятся в
+`java.util.function`, `Stream` — в `java.util.stream`.

@@ -4,8 +4,9 @@ categories: [java, java-core, java-streams]
 
 # Stream и Collectors {#sec-j25-api-streams}
 
-Java 25. `Stream<T>` — одноразовый конвейер элементов: источник,
-промежуточные преобразования и терминальное получение результата [@bib-data-stream-api].
+`Stream<T>` — одноразовый конвейер элементов: источник,
+промежуточные преобразования и терминальное получение результата.
+Описанные операции относятся к Java 25 [@bib-data-stream-api].
 
 Объяснение вычисления: @theory:sec-j25-theory-streams.
 
@@ -19,7 +20,7 @@ Java 25. `Stream<T>` — одноразовый конвейер элемент�
 файловый поток требует закрытия.
 
 Выбранные методы `Stream` ниже не объявляют проверяемых исключений.
-`Predicate`, `Function`, `Consumer`, `ToIntFunction`, `BinaryOperator`
+`Predicate`, `Function`, `Consumer`, `ToIntFunction`, `BinaryOperator`, `BiFunction`
 относятся к `java.util.function`, `Comparator`, `List`, `Optional` —
 к `java.util`, `Stream`, `IntStream`, `Collector` — к `java.util.stream`.
 
@@ -34,9 +35,10 @@ Java 25. `Stream<T>` — одноразовый конвейер элемент�
 | `Stream<T> limit(long maxSize)` / `Stream<T> skip(long n)` | Ограничить / пропустить; параметр неотрицателен |
 | `Stream<T> peek(Consumer<? super T> action)` | Наблюдение проходящих элементов |
 
-`IntFunction` — `java.util.function`. Для ordered потока `sorted` устойчив:
-при нуле сравнения взаимный порядок сохраняется; unordered поток такого
-обещания не имеет. `toArray(String[]::new)` задаёт runtime String[].
+`IntFunction` находится в `java.util.function`. Для потока с определённым
+порядком встречи `sorted` устойчив: при нуле сравнения взаимный порядок
+сохраняется. Для потока без порядка встречи такой гарантии нет.
+`toArray(String[]::new)` создаёт массив фактического типа `String[]`.
 Фабрика может вызываться для промежуточных массивов, поэтому её число вызовов
 не является протоколом приложения.
 
@@ -49,13 +51,15 @@ Java 25. `Stream<T>` — одноразовый конвейер элемент�
 |---|---|
 | `List<T> toList()` | Список с запрещёнными изменениями через его методы |
 | `Object[] toArray()` | Новый массив элементов |
-| `<A> A[] toArray(IntFunction<A[]> generator)` | Массив runtime-типа, заданного фабрикой; несовместимый элемент → `ArrayStoreException` |
+| `<A> A[] toArray(IntFunction<A[]> generator)` | Массив фактического типа, заданного фабрикой; несовместимый элемент → `ArrayStoreException` |
 | `long count()` | `long` |
 | `Optional<T> findFirst()` / `Optional<T> findAny()` | `Optional<T>` |
 | `Optional<T> min(Comparator<? super T> comparator)` / `Optional<T> max(Comparator<? super T> comparator)` | `Optional<T>` |
 | `boolean anyMatch(Predicate<? super T> predicate)` / `boolean allMatch(Predicate<? super T> predicate)` / `boolean noneMatch(Predicate<? super T> predicate)` | `boolean`, допускается короткое замыкание |
 | `void forEach(Consumer<? super T> action)` / `void forEachOrdered(Consumer<? super T> action)` | Выполнить действие; `void` |
-| `T reduce(T identity, BinaryOperator<T> accumulator)` | Свёртка значений |
+| `T reduce(T identity, BinaryOperator<T> accumulator)` | Свёртка с нейтральным значением; оно же результат пустого входа |
+| `Optional<T> reduce(BinaryOperator<T> accumulator)` | Свёртка без начального значения; пустой вход → пустой `Optional` |
+| `<U> U reduce(U identity, BiFunction<U, ? super T, U> accumulator, BinaryOperator<U> combiner)` | Накопить элементы в итог типа `U` и объединить частичные итоги |
 | `<R, A> R collect(Collector<? super T, A, R> collector)` | Результат, заданный коллектором |
 
 Повторное использование экземпляра после связи или терминальной операции
@@ -67,7 +71,7 @@ Java 25. `Stream<T>` — одноразовый конвейер элемент�
 
 ## Сборка {#sec-j25-api-streams-collectors}
 
-Пример `StreamApiDemo.java`, `main`:
+Преобразование чисел в массив строк:
 
 ```java
 String[] labels = java.util.stream.Stream.of(1, 2)
@@ -95,8 +99,8 @@ System.out.println(java.util.Arrays.toString(labels)); // [n=1, n=2]
 `groupingBy` стандартной формы не обещает порядок ключей. Для
 изменяемого результата используйте нужную фабрику явно.
 
-Точные сигнатуры выбранных фабрик `Collectors` [@bib-java-api-25] (проверяемых исключений
-они не объявляют; `A` — тип промежуточного накопления):
+Фабрики `Collectors` [@bib-java-api-25] не объявляют проверяемых исключений.
+В их сигнатурах `A` — тип промежуточного накопления:
 
 ```java
 static <T> Collector<T, ?, List<T>> toList();
@@ -121,8 +125,6 @@ static <T, K, U> Collector<T, ?, Map<K, U>>
 static <T> Collector<T, ?, Long> counting();
 ```
 
-Это сигнатуры методов класса `Collectors`, предназначенные для выбора
-перегрузки при вызове.
 `Collection` и `Map` находятся в `java.util`, `Supplier` —
 в `java.util.function`.
 
@@ -130,18 +132,27 @@ static <T> Collector<T, ?, Long> counting();
 
 Действия не вмешиваются в источник и обычно не зависят от меняющегося
 внешнего состояния. Операция `reduce` требует ассоциативного объединения
-и подходящего нейтрального элемента. Параллельность не обещает ускорения.
+и нейтрального элемента: `accumulator(identity, x)` эквивалентно `x`.
+У трёхаргументной формы нейтральность относится к `combiner`, а операции
+согласованы: `combiner(u, accumulator(identity, t))` эквивалентно
+`accumulator(u, t)`. Накопители и объединители удовлетворяют требованиям
+невмешательства и отсутствия зависимости от изменяемого внешнего состояния.
+Пример нарушения: `reduce(10, Integer::sum)` повторно добавляет `10`
+при объединении частей. Скорость параллельной обработки требует измерения.
 `forEach` не гарантирует порядок; `forEachOrdered` учитывает его при наличии.
-Не собирайте параллельный результат обычным внешним `ArrayList.add`.
+Несогласованные параллельные вызовы `add` у общего `ArrayList` могут
+терять элементы; подходящий коллектор управляет накопителями и их объединением.
 `peek` и другие эффекты, не влияющие на ответ, могут быть устранены
-оптимизацией; не используйте их для обязательной работы. Терминальная
+оптимизацией. Обязательные эффекты выполняют в терминальном потребителе. Терминальная
 операция не закрывает файловый ресурс автоматически.
 
 
 ## Кодовые единицы строки как источник {#sec-j25-api-streams-char-units}
 
 `IntStream chars()` у `String` возвращает поток: каждое значение — беззнаково
-расширенная до int кодовая единица UTF-16. `Stream<Integer> boxed()` у `IntStream` даёт обобщённый поток, если нужна обобщённая операция. В `CharUnitsDemo.java/main`:
+расширенная до `int` кодовая единица UTF-16. `Stream<Integer> boxed()`
+у `IntStream` даёт обобщённый поток для операций над ссылочными значениями.
+Для строки из двух букв и пробела получаются три числа:
 
 ```java
 var units = "a a".chars().boxed().toList();
@@ -164,3 +175,30 @@ System.out.println(symbol.codePoints().boxed().toList()); // [128512]
 условием обработки текста. Основания:
 [String.chars](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#chars()) и
 [String.codePoints](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#codePoints()).
+
+## Файловый поток {#sec-j25-api-streams-files}
+
+Сигнатура `Files.lines`:
+
+```java
+static Stream<String> lines(Path path, Charset cs) throws IOException;
+```
+
+`Files` и `Path` находятся в `java.nio.file`, `Charset` — в `java.nio.charset`.
+Открытие может дать `IOException`; последующее чтение, ошибка декодирования
+или закрытия — `UncheckedIOException`. Оба класса исключений находятся
+в `java.io`. Терминальная операция не закрывает файловый поток.
+
+```java
+static long countNonblank(java.nio.file.Path path) throws java.io.IOException {
+    try (var lines = java.nio.file.Files.lines(
+            path, java.nio.charset.StandardCharsets.UTF_8)) {
+        return lines.filter(line -> !line.isBlank()).count();
+    }
+}
+```
+
+Содержимое `Ada\n   \nAnn` даёт `2`. Закрытие происходит до возврата числа;
+выход через исключение тоже закрывает открытый ресурс. Во время обхода файл
+не изменяют. Полный пример, включая обработку обеих форм отказа:
+[FilesLinesDemo.java и команды](../examples/functions-streams/README.md#файловый-источник).

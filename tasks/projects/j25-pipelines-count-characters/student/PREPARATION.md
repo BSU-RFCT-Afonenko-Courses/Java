@@ -1,13 +1,16 @@
-# Подготовка из полного курса
+# Кодовые единицы строки
 
-Выдержки из handbook/entries/streams.qmd и practice/pipelines.qmd, revision c9d05aea901fb819a5fcbb44bbf8a117caaeb9b2.
+В задаче учитывается каждая кодовая единица UTF-16. Сначала определите,
+какие значения выдаёт источник `chars()`, затем выбирайте тип ключа карты.
 
 ## Справочник
 
-## Кодовые единицы строки как источник {#sec-j25-api-streams-char-units}
+### Источник `chars()`
 
 `IntStream chars()` у `String` возвращает поток: каждое значение — беззнаково
-расширенная до int кодовая единица UTF-16. `Stream<Integer> boxed()` у `IntStream` даёт обобщённый поток, если нужна обобщённая операция. В `CharUnitsDemo.java/main`:
+расширенная до `int` кодовая единица UTF-16. `Stream<Integer> boxed()`
+у `IntStream` даёт обобщённый поток для операций над ссылочными значениями.
+Для строки из двух букв и пробела получаются три числа:
 
 ```java
 var units = "a a".chars().boxed().toList();
@@ -34,7 +37,9 @@ System.out.println(symbol.codePoints().boxed().toList()); // [128512]
 
 ## Практика
 
-### Источник кодовых единиц {#sec-j25-practice-pipelines-char-units}
+Сопоставьте число значений для ASCII-текста и суррогатной пары:
+
+### Два входных примера
 
 ```java
 System.out.println("a a".chars().boxed().toList());
