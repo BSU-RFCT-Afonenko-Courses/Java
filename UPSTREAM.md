@@ -15,7 +15,7 @@ baseCommit, tracked patch и SHA256. `installed-packages.json` содержит
 
 | Владелец | Опубликованная база | Локальный candidate |
 | --- | --- | --- |
-| Afonenko-Course-Tools/quarto-course | v7.1.0 / `04a6295569f5dcc0fc1b991dc076bafc050dbd49` | `89b4c3745d31a82f621b98a63aba62cefccb01da` |
+| Afonenko-Course-Tools/quarto-course | v7.1.0 / `04a6295569f5dcc0fc1b991dc076bafc050dbd49` | `0ff120b1d5bce80c730f46fe2c413142c23baeba` |
 | Afonenko-Course-Tools/quarto-project-publish | v5.1.0 / `62f8c4a01a5fd9af11f5f66abba2bb48c2ef2631` | Без локальных изменений |
 | Afonenko-Course-Tools/quarto-reference-catalog | v3.1.0 / `3df2110e9f525f03f3ecb4926b5d55718e955c4c` | Без локальных изменений |
 | Afonenko-Course-Tools/quarto-course-prairielearn | v7.0.0 / `a13008aaf23e0616eac4b18f1dabbf77a77b56f3` | `1221c8c073d77d80d825ee906e9c244a75ff4a39` |
@@ -122,3 +122,7 @@ closure без получения непушенных SHA. Реальные Moo
 настройками локального окружения с адресным повтором затронутых фаз.
 Итоговая сборка, визуальная проверка и проверка поставки изменённого курса выполняются
 после стабильного авторского снимка; внешние Moodle/Gateway не изменялись.
+
+Русские страницы используют штатный `language.skip-to-content`. Presentation
+локализует точные штатные подписи поиска, ссылок на разделы и пустой панели
+заметок; английский интерфейс и заданные автором подписи сохраняются.
