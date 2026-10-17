@@ -1,6 +1,6 @@
 package coursesupport;
 
-/** Только разбор формы ответа; допуск и ожидаемые значения задаёт предметный тест. */
+/** Разбирает числовой вывод; ожидаемые значения и допуск задаются в тесте. */
 public final class OutputNumbers {
     private OutputNumbers() {}
     public static double[] finiteNumbers(String output) {

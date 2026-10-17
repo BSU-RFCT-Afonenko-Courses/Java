@@ -2,7 +2,7 @@ import org.prairielearn.api.PlatformApiPrecheck;
 import queuecheck.QueueAccess;
 import java.util.*;
 
-/** Объявленный API проверяется до зависимого JUnit; student код не исполняется. */
+/** Проверяет параметры типов, конструктор и операции GenericQueue. */
 public class QueueApi {
     public static void check(PlatformApiPrecheck.Api api) throws Exception {
         var compatible=new ArrayList<String>();var rejected=new ArrayList<String>();

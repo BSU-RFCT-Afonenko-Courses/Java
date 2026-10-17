@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-/** Запуск отдельной JVM для проверки опубликованного консольного протокола. */
+/** Запускает программу в отдельной JVM и получает её вывод и код завершения. */
 public final class JavaProcess {
     private JavaProcess() {}
 
@@ -49,7 +49,7 @@ public final class JavaProcess {
                 try (var stdin = process.getOutputStream()) {
                     stdin.write(input.getBytes(StandardCharsets.UTF_8));
                 } catch (IOException ignored) {
-                    // Программа вправе закончить работу, не читая весь stdin.
+                    // Завершение программы может закрыть ввод до передачи всех данных.
                 }
             });
             while (true) {
@@ -64,12 +64,12 @@ public final class JavaProcess {
             throwFailure(failure.get());
             return new Result(out, err, process.exitValue());
         } finally {
-            // Process.destroyForcibly закрывает pipes синхронно и может ждать
-            // writer lock. Хранимый handle останавливает только созданный PID.
+            // Process.destroyForcibly может ждать освобождения блокировки при закрытии каналов.
+            // Здесь для завершения созданного процесса используется ProcessHandle.
             if (process.isAlive()) process.toHandle().destroyForcibly();
             process.waitFor(1, TimeUnit.SECONDS);
-            // Поток принадлежит своему IO worker; унаследованный pipe может
-            // удерживаться потомком до остановки внешним runtime.
+            // Поток ввода-вывода закрывается в задаче, которая с ним работает.
+            // Потомок процесса может удерживать унаследованный канал открытым.
             workers.shutdownNow();
             workers.awaitTermination(1, TimeUnit.SECONDS);
         }

@@ -9,13 +9,13 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.io.*;
 
-/** Только опубликованный API контейнера; приватные поля/конструкторы отказов не читаются. */
+/** Предоставляет доступ к открытому API GenericQueue для проверки операций очереди. */
 public final class QueueAccess {
     public final Class<?> type;
     public final Class<? extends Throwable> full, empty;
     private final MethodHandle put, get;
     private Map<Class<?>,MethodHandle> constructors;
-    /** Независимое от student API значение для проверки произвольного ссылочного типа. */
+    /** Отдельный тип элемента для проверки параметризованной очереди. */
     public record Payload(int value) {}
     private QueueAccess(Class<?> type, Class<? extends Throwable> full,
                         Class<? extends Throwable> empty) throws ReflectiveOperationException {
@@ -99,7 +99,7 @@ public final class QueueAccess {
                 ||!variable.getGenericDeclaration().equals(constructor)||!visited.add(variable))return false;
         return Arrays.stream(variable.getBounds()).anyMatch(bound->storageComponent(bound,target,constructor,visited));
     }
-    /** Согласованная metadata граница; typed compiler clients выполняются precheck отдельно. */
+    /** Сопоставляет параметры типов, конструктор, методы и исключения с договором очереди. */
     public static QueueAccess shape(Class<?> type) {
         try {
             if(!visible(type)||type.isInterface()||Modifier.isAbstract(type.getModifiers())||type.getTypeParameters().length!=1)return null;
@@ -140,7 +140,7 @@ public final class QueueAccess {
         }
         if(matching.size()!=1)throw new IllegalStateException("GenericQueue API не адресован однозначно: "+matching.size());
         QueueAccess candidate=matching.getFirst();
-        // Setup происходит после обязательной API стадии, до выполнения assertions.
+        // Подготовка вызовов конструкторов для массивов с разными типами компонентов.
         candidate.prepareConstructors();
         selected=candidate;return selected;
     }
@@ -151,7 +151,7 @@ public final class QueueAccess {
             catch(ClassNotFoundException free){return name;}
         }
     }
-    /** Обычный javac выбирает overload; student constructors здесь не исполняются. */
+    /** Компилирует вспомогательный класс: javac выбирает конструктор для каждого типа массива. */
     private void prepareConstructors() throws Exception {
         JavaCompiler compiler=ToolProvider.getSystemJavaCompiler();
         if(compiler==null)throw new IllegalStateException("Для trusted constructor bridge нужен JDK25");
@@ -198,13 +198,13 @@ public final class QueueAccess {
         }
         if(outputs.size()!=1||!outputs.containsKey(name))throw new IllegalStateException("Неожиданный compiled output trusted bridge");
         byte[] bytes=outputs.get(name).toByteArray();
-        // Default-package клиент должен сохранить Java runtime package с очередью.
-        // Lookup определяет только наш javac output, без private member access/Nestmate.
+        // В безымянном пакете вспомогательный класс определяется тем же
+        // загрузчиком, что и очередь.
         Class<?> factory=type.getPackageName().isEmpty()
             ?MethodHandles.privateLookupIn(type,MethodHandles.lookup()).defineClass(bytes)
             :new ClassLoader(QueueAccess.class.getClassLoader()) {
             Class<?> define(){return defineClass(name,bytes,0,bytes.length);}
-        }.define(); // Непосредственное define исключает подмену bridge одноимённым parent class.
+        }.define(); // Класс определяется напрямую из полученного байткода.
         var lookup=MethodHandles.publicLookup();
         constructors=Map.of(
             String[].class,lookup.findStatic(factory,"strings",MethodType.methodType(Object.class,String[].class)),
@@ -232,7 +232,7 @@ public final class QueueAccess {
         return List.copyOf(clients);
     }
 
-    /** Повторяется только addressing; обязательная API стадия уже прошла до dependent compile. */
+    /** Проверяет совместимость API, компилируя допустимые и недопустимые вызовы. */
     private static boolean typedCompatible(QueueAccess q) throws Exception {
         JavaCompiler compiler=ToolProvider.getSystemJavaCompiler();
         if(compiler==null)throw new IllegalStateException("Для выбора API нужен JDK25 compiler");

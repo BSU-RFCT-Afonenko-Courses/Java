@@ -1,6 +1,6 @@
 import org.prairielearn.api.PlatformApiPrecheck;
 
-/** Проверяет только опубликованное имя загрузочного класса, не форму main. */
+/** Проверяет наличие класса Main, указанного в команде запуска. */
 public class CliPrecheck {
     public static void check(PlatformApiPrecheck.Api api) throws Exception {
         api.type("Main");

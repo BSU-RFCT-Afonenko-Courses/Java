@@ -19,7 +19,7 @@ public class PublicExamplesTest {
     private static void assertWeightValue(String input, String output) {
         double[] actual = coursesupport.OutputNumbers.finiteNumbers(output);
         assertEquals(1, actual.length, "Количество чисел");
-        // Exact decimal representation of the parsed binary64 input; no intermediate overflow.
+        // Ожидаемое значение точно вычисляется в BigDecimal по прочитанному double.
         var expected = new java.math.BigDecimal(Double.parseDouble(input))
             .multiply(new java.math.BigDecimal("0.17"));
         var tolerance = new java.math.BigDecimal("1e-8").max(

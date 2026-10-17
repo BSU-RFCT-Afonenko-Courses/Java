@@ -1,2 +1,3 @@
-// Программа запуска по условию находится в FileHelp.java. Имя и форма запуска выбраны как пример.
+// Реализуйте меню справочной системы в FileHelp.java.
+// Имя класса и допустимую форму main выберите самостоятельно.
 class HelpMenu {void main(String[] args){throw new UnsupportedOperationException("Реализуйте минимальное меню");}}
