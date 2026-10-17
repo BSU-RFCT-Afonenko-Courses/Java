@@ -25,9 +25,9 @@ public final class QueueAccess {
         get=lookup.findVirtual(type,"get",MethodType.methodType(Object.class));
     }
     public Object create(Object[] storage) throws Throwable {
-        if(constructors==null)throw new IllegalStateException("Trusted constructor bridge не подготовлен");
+        if(constructors==null)throw new IllegalStateException("Вспомогательный класс для вызова конструкторов не подготовлен");
         MethodHandle constructor=constructors.get(storage.getClass());
-        if(constructor==null)throw new IllegalArgumentException("Неизвестный массив trusted сценария: "+storage.getClass());
+        if(constructor==null)throw new IllegalArgumentException("Неизвестный тип массива в проверке: "+storage.getClass());
         return constructor.invoke((Object)storage);
     }
     public void put(Object queue,Object value) throws Throwable {put.invoke(queue,value);}
@@ -138,7 +138,7 @@ public final class QueueAccess {
             QueueAccess candidate=shape(type);
             if(candidate!=null&&typedCompatible(candidate))matching.add(candidate);
         }
-        if(matching.size()!=1)throw new IllegalStateException("GenericQueue API не адресован однозначно: "+matching.size());
+        if(matching.size()!=1)throw new IllegalStateException("Не удалось однозначно выбрать GenericQueue; число подходящих классов: "+matching.size());
         QueueAccess candidate=matching.getFirst();
         // Подготовка вызовов конструкторов для массивов с разными типами компонентов.
         candidate.prepareConstructors();
@@ -154,12 +154,12 @@ public final class QueueAccess {
     /** Компилирует вспомогательный класс: javac выбирает конструктор для каждого типа массива. */
     private void prepareConstructors() throws Exception {
         JavaCompiler compiler=ToolProvider.getSystemJavaCompiler();
-        if(compiler==null)throw new IllegalStateException("Для trusted constructor bridge нужен JDK25");
+        if(compiler==null)throw new IllegalStateException("Для подготовки вызовов конструкторов нужен JDK 25");
         var studentSource=type.getProtectionDomain().getCodeSource();
         var helperSource=QueueAccess.class.getProtectionDomain().getCodeSource();
-        if(studentSource==null||helperSource==null)throw new IllegalStateException("CodeSource bridge отсутствует");
+        if(studentSource==null||helperSource==null)throw new IllegalStateException("Не удалось определить расположение классов очереди или средства проверки");
         Path student=Path.of(studentSource.getLocation().toURI()),helper=Path.of(helperSource.getLocation().toURI());
-        if(!Files.isDirectory(student)||!Files.isDirectory(helper))throw new IllegalStateException("Bridge classpath должен состоять из каталогов compiled classes");
+        if(!Files.isDirectory(student)||!Files.isDirectory(helper))throw new IllegalStateException("Для компиляции вспомогательного класса требуются каталоги классов очереди и средства проверки");
         String name=constructorBridgeName(),queue=type.getCanonicalName();
         StringBuilder source=new StringBuilder("public final class "+name+" {");
         Map<String,String> elements=new LinkedHashMap<>();
@@ -182,11 +182,11 @@ public final class QueueAccess {
             var memory=new ForwardingJavaFileManager<StandardJavaFileManager>(standard) {
                 @Override public JavaFileObject getJavaFileForOutput(Location location,String binary,JavaFileObject.Kind kind,FileObject sibling) {
                     var output=new ByteArrayOutputStream() {
-                        private void reserve(int count){if(count>1048576-total[0])throw new IllegalStateException("Trusted constructor bridge превышает memory output limit");total[0]+=count;}
+                        private void reserve(int count){if(count>1048576-total[0])throw new IllegalStateException("Превышен допустимый объём байткода вспомогательного класса");total[0]+=count;}
                         @Override public synchronized void write(int value){reserve(1);super.write(value);}
                         @Override public synchronized void write(byte[] bytes,int offset,int length){reserve(length);super.write(bytes,offset,length);}
                     };
-                    if(outputs.putIfAbsent(binary,output)!=null)throw new IllegalStateException("Повторный output trusted bridge");
+                    if(outputs.putIfAbsent(binary,output)!=null)throw new IllegalStateException("Компилятор повторно выдал байткод вспомогательного класса");
                     return new SimpleJavaFileObject(URI.create("memory:///"+binary.replace('.','/')+kind.extension),kind) {
                         @Override public OutputStream openOutputStream(){return output;}
                     };
@@ -194,9 +194,9 @@ public final class QueueAccess {
             }) {
             String classpath=helper+File.pathSeparator+student;
             boolean success=compiler.getTask(null,memory,diagnostics,List.of("--release","25","-encoding","UTF-8","-proc:none","-Xmaxerrs","5","-sourcepath","","-classpath",classpath),null,List.of(input)).call();
-            if(!success){String message=diagnostics.getDiagnostics().toString();throw new IllegalStateException("Trusted constructor bridge не компилируется: "+message.substring(0,Math.min(1000,message.length())));}
+            if(!success){String message=diagnostics.getDiagnostics().toString();throw new IllegalStateException("Не удалось скомпилировать вспомогательный класс для вызова конструкторов: "+message.substring(0,Math.min(1000,message.length())));}
         }
-        if(outputs.size()!=1||!outputs.containsKey(name))throw new IllegalStateException("Неожиданный compiled output trusted bridge");
+        if(outputs.size()!=1||!outputs.containsKey(name))throw new IllegalStateException("Получен неожиданный набор скомпилированных вспомогательных классов");
         byte[] bytes=outputs.get(name).toByteArray();
         // В безымянном пакете вспомогательный класс определяется тем же
         // загрузчиком, что и очередь.
@@ -235,11 +235,11 @@ public final class QueueAccess {
     /** Проверяет совместимость API, компилируя допустимые и недопустимые вызовы. */
     private static boolean typedCompatible(QueueAccess q) throws Exception {
         JavaCompiler compiler=ToolProvider.getSystemJavaCompiler();
-        if(compiler==null)throw new IllegalStateException("Для выбора API нужен JDK25 compiler");
+        if(compiler==null)throw new IllegalStateException("Для проверки совместимости API нужен компилятор JDK 25");
         var codeSource=q.type.getProtectionDomain().getCodeSource();
-        if(codeSource==null)throw new IllegalStateException("Compiled student CodeSource отсутствует");
+        if(codeSource==null)throw new IllegalStateException("Не удалось определить расположение классов решения");
         Path classes=Path.of(codeSource.getLocation().toURI());
-        if(!Files.isDirectory(classes))throw new IllegalStateException("Compiled student CodeSource не является каталогом");
+        if(!Files.isDirectory(classes))throw new IllegalStateException("Классы решения должны находиться в каталоге");
         for(Client client:clients(q)) {
             var diagnostics=new DiagnosticCollector<JavaFileObject>();
             JavaFileObject input=new SimpleJavaFileObject(URI.create("string:///"+client.name()+".java"),JavaFileObject.Kind.SOURCE) {

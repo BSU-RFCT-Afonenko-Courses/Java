@@ -6,7 +6,7 @@ public final class Book {
 
     public Book(String title) {
         if (title == null || title.isBlank()) {
-            throw new IllegalArgumentException("nonblank title required");
+            throw new IllegalArgumentException("Название должно содержать хотя бы один непробельный символ");
         }
         this.title = title;
     }
@@ -16,7 +16,7 @@ public final class Book {
 
     public void borrow() {
         if (borrowed) {
-            throw new IllegalStateException("already borrowed");
+            throw new IllegalStateException("Книга уже выдана");
         }
         borrowed = true;
     }

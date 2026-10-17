@@ -7,6 +7,6 @@ public final class StudentParser {
             throws DataFormatException {
         // TODO: разберите строку id;name;score по правилам из README.md.
         // Укажите в ошибке физический номер строки и сохраните причину, как требует условие.
-        throw new UnsupportedOperationException("TODO: parse");
+        throw new UnsupportedOperationException("TODO: разберите строку");
     }
 }

@@ -11,17 +11,17 @@ public class QueueApi {
                 Class<?> type=api.type(name);
                 if(!type.getSimpleName().equals("GenericQueue"))continue;
                 QueueAccess shape=QueueAccess.shape(type);
-                if(shape==null){rejected.add(name+": публичные generic/checked объявления не соответствуют договору");continue;}
+                if(shape==null){rejected.add(name+": параметры типов и объявления проверяемых исключений в открытом API не соответствуют договору");continue;}
                 clients(api,shape);
                 compatible.add(name);
             } catch(PlatformApiPrecheck.Mismatch mismatch) {
                 rejected.add(name+": "+mismatch.getMessage());
             }
         }
-        api.expect(!compatible.isEmpty(),"публичный GenericQueue<T>, GenericQueue(T[]), put(T)/get() с опубликованными checked-отказами",rejected.isEmpty()?"такой compiled type не найден":String.join("; ",rejected));
+        api.expect(!compatible.isEmpty(),"публичный GenericQueue<T>, GenericQueue(T[]), put(T)/get() с проверяемыми исключениями, указанными в условии",rejected.isEmpty()?"такой скомпилированный тип не найден":String.join("; ",rejected));
         if(compatible.size()>1)throw new IllegalStateException(
-            "Нужен ручной разбор: submission неоднозначно адресован, несколько полностью совместимых GenericQueue: "
-            +compatible+". Средство не доказало ошибку студента; score не выставляется.");
+            "Нужна ручная проверка: в решении найдено несколько полностью совместимых классов GenericQueue: "
+            +compatible+". Средство проверки не установило ошибку студента; оценка не выставляется.");
     }
     private static void clients(PlatformApiPrecheck.Api api,QueueAccess q) throws Exception {
         for(var client:QueueAccess.clients(q))api.compiles(client.name(),client.source(),client.expected());

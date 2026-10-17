@@ -46,7 +46,7 @@ public final class Main {
             throws IOException, DataFormatException {
         // TODO: сформируйте отчёт после успешного чтения и проверки всего файла.
         // Верните значение, которое возвращает printReport.
-        throw new UnsupportedOperationException("TODO: run");
+        throw new UnsupportedOperationException("TODO: сформируйте отчёт");
     }
 
     static int printReport(List<Student> result) {

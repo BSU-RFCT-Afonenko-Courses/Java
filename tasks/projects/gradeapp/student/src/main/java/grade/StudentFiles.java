@@ -16,6 +16,6 @@ public final class StudentFiles {
         // TODO: прочитайте файл в UTF-8, проверьте записи и уникальность кодов.
         // Верните список в порядке записей файла.
         // Требования к изменяемости списка приведены в README.md.
-        throw new UnsupportedOperationException("TODO: read");
+        throw new UnsupportedOperationException("TODO: прочитайте и проверьте файл");
     }
 }

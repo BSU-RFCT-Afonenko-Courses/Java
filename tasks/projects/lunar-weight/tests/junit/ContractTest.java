@@ -19,8 +19,8 @@ public class ContractTest {
         assertWeightValue("0", lines[0]);
         assertEquals(1, coursesupport.OutputNumbers.finiteNumbers(lines[1]).length,
             "Собственный пример — одно конечное число во второй строке");
-        // Magnitude and source of the positive input are checked in the submitted source,
-        // not by guessing a hidden constant or rejecting underflow to zero.
+        // Студент выбирает положительное исходное значение и задаёт его в коде решения.
+        // Для очень малого значения результат может округлиться до нуля.
     }
     private static String run(String input) throws Exception {
         return coursesupport.JavaProcess.run(Main.class, input).stdout();
@@ -31,7 +31,7 @@ public class ContractTest {
     private static void assertWeightValue(String input, String output) {
         double[] actual = coursesupport.OutputNumbers.finiteNumbers(output);
         assertEquals(1, actual.length, "Количество чисел");
-        // Exact decimal representation of the parsed binary64 input; no intermediate overflow.
+        // Ожидаемое значение точно вычисляется в BigDecimal по прочитанному double.
         var expected = new java.math.BigDecimal(Double.parseDouble(input))
             .multiply(new java.math.BigDecimal("0.17"));
         var tolerance = new java.math.BigDecimal("1e-8").max(
