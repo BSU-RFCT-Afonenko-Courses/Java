@@ -1,6 +1,6 @@
 # Происхождение технической поставки Java
 
-Текущая локальная интеграция 16 октября 2026 года использует проверенную
+Текущая локальная интеграция 17 октября 2026 года использует проверенную
 candidate-связку. Полная содержательная, визуальная и внешняя приёмка курса
 выполняются отдельными этапами. Предыдущее описание сохранено в
 [истории](docs/provider-history/UPSTREAM-before-20261016.md); его статусы
@@ -15,7 +15,7 @@ baseCommit, tracked patch и SHA256. `installed-packages.json` содержит
 
 | Владелец | Опубликованная база | Локальный candidate |
 | --- | --- | --- |
-| Afonenko-Course-Tools/quarto-course | v7.1.0 / `04a6295569f5dcc0fc1b991dc076bafc050dbd49` | `c8b2fe868cf805301fb6ebeba6587f8c96197369` |
+| Afonenko-Course-Tools/quarto-course | v7.1.0 / `04a6295569f5dcc0fc1b991dc076bafc050dbd49` | `89b4c3745d31a82f621b98a63aba62cefccb01da` |
 | Afonenko-Course-Tools/quarto-project-publish | v5.1.0 / `62f8c4a01a5fd9af11f5f66abba2bb48c2ef2631` | Без локальных изменений |
 | Afonenko-Course-Tools/quarto-reference-catalog | v3.1.0 / `3df2110e9f525f03f3ecb4926b5d55718e955c4c` | Без локальных изменений |
 | Afonenko-Course-Tools/quarto-course-prairielearn | v7.0.0 / `a13008aaf23e0616eac4b18f1dabbf77a77b56f3` | `1221c8c073d77d80d825ee906e9c244a75ff4a39` |
@@ -70,13 +70,13 @@ files теперь также содержат API поля; это дополн
 Опубликованные Platform2.1.0 commit/digests в `CI/toolchain.json` сохранены.
 Новый local candidate Platform source —
 `72f24f2c7fe7f07461b3d348a0dd25465ef95b1c`, config ID —
-`sha256:be79485f363a4b2985116f6326c0cb063be8c50b1f03dfe177ee6df8142a7659`.
+`sha256:130e05e77ab1d7764dd126ed81fac73fc915530a071f73a0944b061a5f84107f`.
 Exact source/runtime hashes и требуемое будущее внешнее действие находятся в
 `CI/local-candidate.json`. Этот config ID не выдаётся за published digest.
 
 ```sh
 export PL_PLATFORM_ROOT=/absolute/local/platform
-export PL_LOCAL_IMAGE_ID=sha256:be79485f363a4b2985116f6326c0cb063be8c50b1f03dfe177ee6df8142a7659
+export PL_LOCAL_IMAGE_ID=sha256:130e05e77ab1d7764dd126ed81fac73fc915530a071f73a0944b061a5f84107f
 bash CI/check-projects-candidate.sh --preflight-only
 # Полный локальный цикл после отдельной авторской приёмки:
 CI_CHECK_OUTPUT=/absolute/outside-course bash CI/check-projects-candidate.sh
@@ -97,3 +97,28 @@ closure без получения непушенных SHA. Реальные Moo
 Текущий candidate дополнен bounded optional Java source ZIP и compiled type discovery. Публичные version/digests не изменены. Навигация предоставляет вызов штатного Reveal Notes.open на широком экране и в меню узкого экрана; самостоятельная inline-панель не служит доказательством работы отдельного окна. Actual speaker-window verification ведётся в отдельном visual receipt. Прежние результаты render/native остаются историческими до новых проверок точных текущих SHA.
 
 Локальная поправка Presentation разрешает перенос длинных URL библиографии Reveal и внутреннюю прокрутку таблиц на экранах до 600px; правило таблиц исключает desktop, print media и Reveal print-pdf. Проверка клавиатурного доступа к прокрутке не заявлена. Исходные таблицы и учебный текст сохранены.
+
+## Локальная техническая поправка 17 октября 2026 года
+
+Исходник Core добавляет `course.assessment-time: false`: настройка отключает
+автоматическую вставку сводки времени в HTML. Она включена в конфигурациях
+корня Java и всех пяти учебных форм для student/full. Отсутствие настройки
+и `true` сохраняют прежнее поведение расширения. Данные `time`, `theory-time`,
+расчёты и транспорт Body сохранены. Суммарная поправка поверх опубликованной
+базы, её SHA256 и точные байты пакетов учтены в `providers.json`,
+`installed-packages.json` и `docs/local-extension-patches.json`.
+Расширения установлены штатным материализатором из поправки исходника.
+
+Локальный образ Java пересобран из точного исходного снимка Platform
+с прежними SHA256 файлов среды исполнения и закреплённым digest базового образа.
+Новый config ID указан выше и в
+`CI/local-candidate.json`; поле `imageRebuild` сохраняет происхождение сборки
+и отсутствующий предыдущий ID. Это новая локальная сборка, а не восстановление
+прежнего образа и не опубликованный digest. Опубликованные привязки сохранены.
+
+Узкий native-тест настройки, независимая техническая рецензия, проверки
+воспроизведения vendor и контейнерные API/grader/nested-JVM тесты выполнены.
+Первоначальные ограничения Jupyter, localhost socket и Ansible RPC устранены
+настройками локального окружения с адресным повтором затронутых фаз.
+Итоговая сборка, визуальная проверка и проверка поставки изменённого курса выполняются
+после стабильного авторского снимка; внешние Moodle/Gateway не изменялись.
