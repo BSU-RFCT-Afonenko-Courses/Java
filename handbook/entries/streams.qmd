@@ -1,11 +1,11 @@
 ---
-categories: [j25, j25-core, j25-streams]
+categories: [java, java-core, java-streams]
 ---
 
 # Stream и Collectors {#sec-j25-api-streams}
 
-Java 25. `Stream<T>` — одноразовый конвейер элементов; он не является
-хранилищем с индексным доступом [@bib-data-stream-api].
+Java 25. `Stream<T>` — одноразовый конвейер элементов: источник,
+промежуточные преобразования и терминальное получение результата [@bib-data-stream-api].
 
 Объяснение вычисления: @theory:sec-j25-theory-streams.
 
@@ -14,7 +14,8 @@ Java 25. `Stream<T>` — одноразовый конвейер элемент�
 Источники: `collection.stream()`, `Arrays.stream(array)`,
 `Stream.of(values...)`, `Stream.empty()`, `Stream.iterate(seed, next)`,
 `Stream.generate(supplier)`, `Files.lines(path, charset)`.
-Последние два общих генератора без ограничения могут быть бесконечными;
+Генераторы `iterate(seed, next)` и `generate(supplier)` без ограничения
+создают бесконечные последовательности;
 файловый поток требует закрытия.
 
 Выбранные методы `Stream` ниже не объявляют проверяемых исключений.
@@ -66,7 +67,7 @@ Java 25. `Stream<T>` — одноразовый конвейер элемент�
 
 ## Сборка {#sec-j25-api-streams-collectors}
 
-Самодостаточный соседний пример `StreamApiDemo.java`, `main`:
+Пример `StreamApiDemo.java`, `main`:
 
 ```java
 String[] labels = java.util.stream.Stream.of(1, 2)
@@ -80,6 +81,7 @@ System.out.println(java.util.Arrays.toString(labels)); // [n=1, n=2]
 | `toCollection(ArrayList::new)` | Явно выбранная коллекция |
 | `joining(delimiter)` | Соединение строковых элементов |
 | `groupingBy(key)` | Карта ключа к группе |
+| `groupingBy(key, downstream)` | Карта ключа к результату сборки каждой группы |
 | `groupingBy(key, factory, downstream)` | Задать карту и способ сборки групп |
 | `toMap(key, value)` | Карта; повтор ключа — `IllegalStateException` |
 | `toMap(key, value, merge)` | Явная политика повторов |
@@ -103,6 +105,9 @@ static <T, C extends Collection<T>> Collector<T, ?, C>
 static Collector<CharSequence, ?, String> joining(CharSequence delimiter);
 static <T, K> Collector<T, ?, Map<K, List<T>>>
     groupingBy(Function<? super T, ? extends K> classifier);
+static <T, K, A, D> Collector<T, ?, Map<K, D>>
+    groupingBy(Function<? super T, ? extends K> classifier,
+               Collector<? super T, A, D> downstream);
 static <T, K, D, A, M extends Map<K, D>> Collector<T, ?, M>
     groupingBy(Function<? super T, ? extends K> classifier,
                Supplier<M> mapFactory, Collector<? super T, A, D> downstream);
@@ -116,7 +121,8 @@ static <T, K, U> Collector<T, ?, Map<K, U>>
 static <T> Collector<T, ?, Long> counting();
 ```
 
-Это справочные объявления методов, а не самостоятельный исходный класс.
+Это сигнатуры методов класса `Collectors`, предназначенные для выбора
+перегрузки при вызове.
 `Collection` и `Map` находятся в `java.util`, `Supplier` —
 в `java.util.function`.
 
@@ -142,9 +148,19 @@ var units = "a a".chars().boxed().toList();
 System.out.println(units); // [97, 32, 97]
 ```
 
-Для этого ASCII-входа одному знаку соответствует одна единица, пробел имеет
-значение32 и сохраняется. Произвольный Unicode-знак может занимать две char;
-`chars()` не обещает поток кодовых точек. Для них существует отдельный
-`codePoints()`. Частоты можно собирать по выбранной форме ключа, но переход
-к `Character` требует явного преобразования. Основание:
-[String.chars](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#chars()).
+В этом ASCII-входе каждой букве и пробелу соответствует одна кодовая
+единица. Суррогатная пара остаётся двумя значениями:
+
+```java
+String symbol = "\uD83D\uDE00";
+System.out.println(symbol.chars().boxed().toList()); // [55357, 56832]
+System.out.println(symbol.codePoints().boxed().toList()); // [128512]
+```
+
+`codePoints()` объединяет корректную суррогатную пару в одну кодовую точку;
+непарный суррогат остаётся отдельным значением. `chars()` всегда считает
+кодовые единицы, включая непарные суррогаты. Для ключа `Character` требуется
+явное преобразование полученного `int` к `char`. Выбор единицы задаётся
+условием обработки текста. Основания:
+[String.chars](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#chars()) и
+[String.codePoints](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#codePoints()).

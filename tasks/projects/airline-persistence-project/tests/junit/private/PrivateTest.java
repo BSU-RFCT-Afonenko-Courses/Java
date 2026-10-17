@@ -1,0 +1,6 @@
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+class PrivateTest {
+@org.junit.jupiter.api.io.TempDir java.nio.file.Path dir;
+@Test void logicalRoundTripDeclaredAuxiliaryPolicyAndPersistedUpdate()throws Exception{Object before=TaskBinding.fixture();var original=PublicTest.byId(TaskBinding.planes(before));TaskBinding.setTransient(before,77);TaskBinding.setGlobal("before");var file=dir.resolve("парк с пробелом").resolve("модель.bin");TaskBinding.save(before,file);assertTrue(java.nio.file.Files.size(file)>0);TaskBinding.setGlobal("after");Object loaded=TaskBinding.load(file);assertEquals(original,PublicTest.byId(TaskBinding.planes(loaded)));assertEquals(TaskBinding.expectedGlobal("before","after"),TaskBinding.global());assertEquals(TaskBinding.expectedTransient(77),TaskBinding.transientValue(loaded));TaskBinding.update(file,100);Object updated=TaskBinding.load(file);assertEquals(252,TaskBinding.capacity(updated));assertEquals(38.0,TaskBinding.payload(updated));var values=PublicTest.byId(TaskBinding.planes(updated));assertEquals(original.get("1"),values.get("1"));assertEquals(original.get("2"),values.get("2"));assertEquals(100,values.get("3").seats());assertEquals(3,values.size());}
+}

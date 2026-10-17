@@ -5,24 +5,24 @@
   "javaRelease": 25,
   "platform": {
     "repository": "Afonenko-Course-Tools/prairielearn-platform",
-    "tag": "v2.1.0",
-    "commit": "e401ee9c6fa9c1725ccbbb7ec5b614ab0988d0e1",
-    "version": "2.1.0",
-    "javaImage": "ghcr.io/afonenko-course-tools/java25-grader@sha256:143e2023d1e6ea1c23950d2a6804becc6225abc1806d1be921b14206e14fa02d",
-    "fishImage": "ghcr.io/afonenko-course-tools/fish-git-grader@sha256:fa4f2bf5c4034e269323d58362dafd26e5b0eaf6796f49a66e68e43fdca0dc94",
-    "communityImage": "ghcr.io/afonenko-course-tools/prairielearn-community-gateway@sha256:70f9202c4e0a4592d221b5bc32fbc18b8265d8a586cbbf4f50ee7211336a2ee2"
+    "tag": "v2.2.0",
+    "commit": "4579e7151e7107bbd9ef09852663d7771c2599db",
+    "version": "2.2.0",
+    "javaImage": "ghcr.io/afonenko-course-tools/java25-grader@sha256:6052b077f7d5fabaedbd2deb829eed15e9911beafaf78f29c90083ff917b8c17",
+    "fishImage": "ghcr.io/afonenko-course-tools/fish-git-grader@sha256:021adbbb5bb413f39b3e5e6c575dd989509998d89a8fe0cf470217e311a0c3d4",
+    "communityImage": "ghcr.io/afonenko-course-tools/prairielearn-community-gateway@sha256:55bdc17dec9ec969968ef0390ae316382b3c03730298d4a9cb1e65bce94eefcd"
   },
-  "status": "Опубликованная база инструментов проверена; редакция лекций 1, 2 и 5 прошла локальный цикл student → full → student и проверку ссылок; локальные поправки расширений учтены в docs/local-extension-patches.json; проверка GitHub Actions не выполнялась",
+  "status": "Активные pins используют выпущенные Core 7.2.0, exporter 7.1.0 и Platform 2.2.0. Свидетельства локальной production qualification, текущего hosted CI и VM/Moodle учитываются отдельно.",
   "imagePublication": {
-    "run": 38721296402,
-    "buildSource": "901cda93ce847e6a29386277b07b71a39215b86d",
-    "runnerSourceHash": "48f29c813ee923d50062774034f2c530da6a49588d2f891d51c4c9d9cc76f63b",
-    "runtimeProfilesSha256": "088b5980fca1da2c5186c83067dff8df61718aec4ee62908646fe9e2b35b7904",
-    "receiptSha256": "34f96b8969af85a111f9a884373f22abbbdad1a3987cce032ad3a8b2ba01dd22"
+    "run": 39018028757,
+    "buildSource": "b7fd40c42f3bbe03d0bb94111cde392c74c11b32",
+    "runnerSourceHash": "c270cac0932ecce0e01377cc8681a6cd7a6eb5b15f4e1acf9460b8c8c97eb92c",
+    "runtimeProfilesSha256": "195eafb709cdd57589e0b626861bc8feb44d58a3c78a4520d0da04e620050650",
+    "receiptSha256": "465d5f9fcc3d9779534db385968d75decc1441c5808de5699c068b515bde585c"
   },
   "githubCi": {
     "status": "pending",
-    "reason": "Текущая редакция Java ещё не проверена в Actions; прежний waiver не применяется."
+    "reason": "Hosted CI текущей operational ветки Java ещё не запускался; прежний waiver не применяется. Локальная production qualification учитывается отдельной receipt."
   },
   "historicalEvidence": [
     {
@@ -50,5 +50,10 @@
         "reason": "Для текущего релиза пользователь разрешил пропустить GitHub CI Java: репозиторий Java недоступен для выдачи доступа к закрытым пакетам другой организации. Полная локальная проверка опубликованной поставки остаётся обязательной."
       }
     }
-  ]
+  ],
+  "localCandidate": {
+    "manifest": "CI/local-candidate.json",
+    "status": "historical-only",
+    "productionGrading": "superseded-by-released-pins"
+  }
 }

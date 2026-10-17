@@ -1,0 +1,5 @@
+import java.nio.file.*;import java.nio.charset.StandardCharsets;import java.io.*;import java.util.*;import java.util.stream.*;
+public class Study {
+private static void create(Path out)throws IOException {File parent=out.toAbsolutePath().getParent().toFile();if(!parent.exists()&&!parent.mkdirs())throw new IOException("Не создан каталог "+parent);File f=out.toFile();if(!f.exists()&&!f.createNewFile())throw new IOException("Не создан файл "+f);}
+static boolean shortWord(String w){int n=w.codePointCount(0,w.length());return n>=3&&n<=5;}public static void process(Path in,Path out)throws IOException{var result=new ArrayList<String>();for(String line:Files.readAllLines(in,StandardCharsets.UTF_8)){var words=Arrays.stream(line.split(" +")).filter(s->!s.isEmpty()).toList();int count=(int)words.stream().filter(Study::shortWord).count();int remove=count;var keep=new ArrayList<String>();for(String word:words)if(shortWord(word)&&remove>0)remove--;else keep.add(word);result.add(String.join(" ",keep));}create(out);Files.write(out,result,StandardCharsets.UTF_8);}
+}

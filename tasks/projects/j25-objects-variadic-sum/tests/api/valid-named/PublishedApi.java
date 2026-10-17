@@ -1,0 +1,1 @@
+import org.prairielearn.api.PlatformApiPrecheck;public class PublishedApi{public static void check(PlatformApiPrecheck.Api api)throws Exception{api.method("alternate.Arithmetic","sum",int.class,0,0,int[].class);api.compiles("alternate.Probe","package alternate;class Probe{int x(){return new Arithmetic().sum(3,-2,4)+new Arithmetic().sum();}}",true);}}

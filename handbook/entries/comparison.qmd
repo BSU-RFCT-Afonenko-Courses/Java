@@ -1,5 +1,5 @@
 ---
-categories: [j25, j25-core, j25-comparison]
+categories: [java, java-core, java-comparison]
 ---
 
 # Равенство, Comparable и Comparator {#sec-j25-api-comparison}
@@ -39,6 +39,9 @@ System.out.println(java.util.Objects.equals(a, b)); // true
 
 ## Порядок {#sec-j25-api-comparison-order}
 
+Сокращённая запись операций стандартных `java.lang.Comparable` и
+`java.util.Comparator`:
+
 ```java
 interface Comparable<T> { int compareTo(T other); }
 interface Comparator<T> { int compare(T first, T second); }
@@ -63,7 +66,10 @@ interface Comparator<T> { int compare(T first, T second); }
 Клиент `OrderDemo.java` подключает `import grade.Student;` из
 @theory:sec-j25-theory-data-classes-record и `import java.util.Comparator;`.
 Student имеет `Student(String,String,int)`, `id()/name()/score()`; id/name
-нормализуются и проверяются, score0..100. В `main`:
+нормализуются и проверяются, score в диапазоне `0..100`. Следующий вариант
+использует ссылки на методы из @theory:sec-j25-theory-functions-method-reference.
+Обычная реализация `Comparator` приведена в @theory:sec-j25-theory-equality-order.
+В `main`:
 
 ```java
 Comparator<Student> order = Comparator.comparingInt(Student::score)

@@ -31,6 +31,7 @@ project:
   - '!AGENTS.md'
   - '!UPSTREAM.md'
   - '!bibliography/**'
+  - '!provenance/**'
   pre-render:
   - _extensions/Afonenko-Course-Tools/course-site/entrypoints/pre.ts
   post-render:
@@ -70,6 +71,12 @@ filters:
 - reference-catalog
 reference-catalog:
   namespace: portal
+  imports:
+    system-practice-theory:
+      source: provenance/system-practice-catalog.json
+      namespace: system-practice-theory
+      base-url: https://bsu-rfct-afonenko-courses.github.io/System-Practice/
+      title: System Practice
   publication:
     title: Программирование на Java
 profile:

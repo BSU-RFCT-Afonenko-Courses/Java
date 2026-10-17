@@ -1,0 +1,1 @@
+class TaskBinding { static Object make(int i,String n){return new Study.Item(i,n);}static Object[] array(Object... a){return java.util.Arrays.copyOf(a,a.length,Study.Item[].class);}static Object[] run(Object[] a){return Study.unique((Study.Item[])a);}static int id(Object a){return ((Study.Item)a).id();}static String name(Object a){return ((Study.Item)a).name();} }

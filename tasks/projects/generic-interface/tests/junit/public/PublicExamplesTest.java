@@ -1,0 +1,1 @@
+import org.junit.jupiter.api.Test;import static org.junit.jupiter.api.Assertions.*;import java.util.*;import java.math.*;import java.io.*;import java.nio.charset.StandardCharsets;class PublicExamplesTest{@Test void ordinaryTypedImplementationCanBeConstructedByChosenTeacherClient(){assertTrue(TaskBinding.witness());}}

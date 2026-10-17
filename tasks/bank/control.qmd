@@ -9,9 +9,22 @@ default-exercise-statement-visibility: open
 
 Теория: @theory:sec-theory-control. Условия используются в лабораторных по ссылке. Дополнительные карточки
 не становятся обязательными от присутствия в банке.
-Для подключённых проектов используйте Java 25 и точку входа
-`Main.main(String[] args)`. Алгоритм, вспомогательные методы и организацию
-программы выбирайте самостоятельно. Протокол ниже описывает только вход
+Java 25. Точка входа `Main.main(String[] args)` относится к консольным
+версиям следующих задач:
+
+- «Название месяца»;
+- «Таблица умножения»;
+- «Подсчёт пробелов»;
+- «Изменение регистра символов»;
+- «Наибольшее и наименьшее число».
+
+Способ запуска остальных задач определяет их условие. Имя класса, пакет
+и форму `main` выбирайте самостоятельно там, где они не зафиксированы.
+Скачиваемая заготовка сама по себе не задаёт эти ограничения и не добавляет
+нового канала ввода.
+
+Алгоритм, вспомогательные методы и организацию программы выбирайте
+самостоятельно. Консольный протокол карточки определяет вход
 и наблюдаемый вывод: приглашения к вводу не требуются. Числа можно разделять
 пробельными символами; десятичный разделитель — точка. Вещественные результаты
 сравниваются с абсолютным допуском `1e-8`; количество знаков не фиксируется.
@@ -19,7 +32,7 @@ default-exercise-statement-visibility: open
 @handbook:sec-api-console-output (числа, табуляция и переводы строки).
 Java API для консольных условий: @handbook:sec-api-console.
 
-:::: {#exr-j25-control-month-name difficulty="introductory" target="prairielearn" project="/projects/month-name" project-check="java-labs"}
+:::: {#exr-j25-control-month-name difficulty="introductory" target="prairielearn" project="/projects/month-name" project-check="java-cli"}
 ## Название месяца
 
 Введите число от 1 до 12 и выведите русское название соответствующего месяца. Проверьте корректность ввода.
@@ -32,7 +45,7 @@ Java API для консольных условий: @handbook:sec-api-console.
 
 ::::
 
-:::: {#exr-j25-control-multiplication-table difficulty="introductory" target="prairielearn" project="/projects/multiplication-table" project-check="java-labs"}
+:::: {#exr-j25-control-multiplication-table difficulty="introductory" target="prairielearn" project="/projects/multiplication-table" project-check="java-cli"}
 ## Таблица умножения
 
 Выведите таблицу умножения для множителей от 1 до 10 включительно.
@@ -45,8 +58,8 @@ Java API для консольных условий: @handbook:sec-api-console.
 
 ::::
 
-:::: {#exr-j25-control-count-console-spaces difficulty="intermediate" target="prairielearn" project="/projects/count-console-spaces" project-check="java-labs"}
-## Подсчет пробелов
+:::: {#exr-j25-control-count-console-spaces difficulty="intermediate" target="prairielearn" project="/projects/count-console-spaces" project-check="java-cli"}
+## Подсчёт пробелов
 
 Читайте символы из стандартного ввода до первой точки или конца ввода и подсчитайте обычные пробелы U+0020. Точка завершает обработку и не учитывается; всё после неё игнорируется. Табуляция и переводы строки не считаются пробелами. Допустимо объявить `throws IOException` в `main`.
 
@@ -58,7 +71,7 @@ Java API для консольных условий: @handbook:sec-api-console.
 
 ::::
 
-:::: {#exr-j25-control-toggle-console-case difficulty="intermediate" target="prairielearn" project="/projects/toggle-console-case" project-check="java-labs"}
+:::: {#exr-j25-control-toggle-console-case difficulty="intermediate" target="prairielearn" project="/projects/toggle-console-case" project-check="java-cli"}
 ## Изменение регистра символов
 
 Читайте текст из стандартного ввода до первой точки или конца ввода. Замените ASCII A–Z на a–z, а a–z на A–Z, используя разницу кодов 32. Остальные символы сохраните без изменения: цифры, знаки, пробелы, переводы строк, кириллицу и emoji. Точка не входит в результат; всё после неё игнорируется. Подсчитайте каждую изменённую ASCII-букву. Допустимо объявить `throws IOException` в `main`.
@@ -71,7 +84,7 @@ Java API для консольных условий: @handbook:sec-api-console.
 
 ::::
 
-:::: {#exr-j25-control-number-extrema difficulty="intermediate" target="prairielearn" project="/projects/number-extrema" project-check="java-labs"}
+:::: {#exr-j25-control-number-extrema difficulty="intermediate" target="prairielearn" project="/projects/number-extrema" project-check="java-cli"}
 ## Наибольшее и наименьшее число
 
 Сначала введите положительное целое `n`, затем ровно `n` значений типа `int`. Найдите наибольшее и наименьшее значение; при `n = 1` они совпадают. Нулевое или отрицательное `n` отклоните, не читая последовательность: пустая последовательность не имеет экстремумов.
@@ -87,16 +100,22 @@ Java API для консольных условий: @handbook:sec-api-console.
 :::: {#exr-j25-control-inch-conversion-table difficulty="introductory"}
 ## Таблица преобразования дюймов в метры
 
-Адаптируйте программу таблицы преобразования величин так, чтобы она выводила таблицу преобразования дюймов в метры. Отображайте преобразования длины до 12 футов через каждый дюйм. Через каждые 12 дюймов выводите пустую строку. Один метр равен примерно 39,37 дюйма.
-
-Для самостоятельной версии исходная таблица не нужна: заведите цикл по целым дюймам от 1 до 144 включительно; результат в метрах вычисляйте по приведённому коэффициенту. Наличие прежнего решения не требуется. [@bib-task-inch-conversion-table]
+Выведите таблицу перевода целого количества дюймов в метры для значений
+от 1 до 144 включительно — до 12 футов. Один фут содержит 12 дюймов,
+один метр — примерно 39,37 дюйма. Каждая строка содержит число дюймов
+и соответствующую длину в метрах; порядок строк — по возрастанию дюймов.
+После каждой группы из 12 строк выведите пустую строку. Точность отображения
+и выравнивание колонок выберите самостоятельно. [@bib-task-inch-conversion-table]
 
 ::::
 
 :::: {#exr-j25-control-primes-to-hundred difficulty="intermediate"}
 ## Простые числа от 2 до 100
 
-Напишите программу, находящую все простые числа от 2 до 100. [@bib-task-primes-to-hundred]
+Выведите по возрастанию все простые числа от 2 до 100 включительно.
+Простое число — целое больше единицы, имеющее только два положительных
+делителя: единицу и себя. Ввод не требуется; каждое найденное число
+выведите один раз. [@bib-task-primes-to-hundred]
 
 ::::
 
@@ -112,7 +131,7 @@ Java API для консольных условий: @handbook:sec-api-console.
 
 ::::
 
-:::: {#exr-j25-control-numeric-palindromes difficulty="advanced"}
+:::: {#exr-j25-control-numeric-palindromes difficulty="advanced" project="/projects/j25-control-numeric-palindromes"}
 ## Числа-палиндромы
 
 Сначала введите неотрицательное целое `n`, затем ровно `n` чисел типа `int`.
@@ -121,6 +140,8 @@ Java API для консольных условий: @handbook:sec-api-console.
 `-121`, `121`, `7` и `0` подходят, `10` — нет. Сохраняйте знак и все
 повторные вхождения. Если подходящих чисел нет, в том числе при `n = 0`,
 выведите «Подходящих чисел нет». [@bib-task-numeric-palindromes]
+
+{{< project-download exr-j25-control-numeric-palindromes kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 

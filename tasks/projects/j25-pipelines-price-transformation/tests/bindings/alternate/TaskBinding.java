@@ -1,0 +1,1 @@
+class TaskBinding { static java.util.List<java.math.BigDecimal> run(java.util.List<java.math.BigDecimal> p,java.math.BigDecimal rate){return new variant.Example().prices(p,rate);} static java.math.RoundingMode rounding(){return java.math.RoundingMode.HALF_EVEN;} }

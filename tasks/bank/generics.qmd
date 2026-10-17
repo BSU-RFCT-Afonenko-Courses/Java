@@ -12,7 +12,7 @@ default-exercise-statement-visibility: open
 Подготовка: @theory:sec-t-type-parameters и @theory:sec-t-type-relations.
 Основная подборка этих заданий — @tasks:sec-lab-generics.
 
-:::: {#exr-range-maximum difficulty="intermediate"}
+:::: {#exr-range-maximum difficulty="intermediate" project="/projects/range-maximum"}
 ## Максимальный элемент диапазона
 
 Напишите обобщённый метод, возвращающий максимальный элемент диапазона
@@ -30,9 +30,11 @@ default-exercise-statement-visibility: open
 покажите часть массива, не содержащую его общего максимума, диапазон
 из одного элемента и несколько равных максимумов. [@bib-task-range-maximum]
 
+{{< project-download exr-range-maximum kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-property-count difficulty="intermediate"}
+:::: {#exr-property-count difficulty="intermediate" project="/projects/property-count"}
 ## Подсчёт элементов с заданным свойством
 
 Напишите обобщённый метод подсчёта элементов массива, удовлетворяющих
@@ -52,13 +54,18 @@ default-exercise-statement-visibility: open
 когда свойству удовлетворяют некоторые элементы, все элементы и ни один.
 [@bib-task-property-count]
 
+{{< project-download exr-property-count kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-generic-queue difficulty="advanced"}
+:::: {#exr-generic-queue difficulty="advanced" project="/projects/generic-queue" project-check="java-queue"}
 ## Обобщённая очередь
 
 Реализуйте `GenericQueue<T>` фиксированной вместимости с операциями
-`void put(T value)` и `T get()`. `get` возвращает и удаляет самый ранний
+`void put(T value) throws QueueFullException` и
+`T get() throws QueueEmptyException`. Класс, конструктор `GenericQueue(T[])`
+и обе операции объявите `public`: контейнер предоставляет API клиенту.
+Имя пакета, если он используется, выберите самостоятельно. `get` возвращает и удаляет самый ранний
 из ещё хранимых элементов — порядок FIFO. Вместимость ограничивает число
 элементов, хранимых одновременно: извлечение освобождает место для нового
 добавления. Способ размещения элементов в массиве выберите самостоятельно.
@@ -72,20 +79,28 @@ default-exercise-statement-visibility: open
 
 При полном состоянии `put` выбрасывает проверяемое `QueueFullException`,
 при пустом `get` — проверяемое `QueueEmptyException`. Определите эти классы
-исключений. Отказ не меняет состояние очереди.
+исключений как открытые проверяемые наследники `Exception`.
+Конструктор не объявляет проверяемых исключений; каждая операция объявляет
+только указанный для неё checked-отказ. Отказ не меняет состояние очереди.
+Способ формирования и текст сообщения исключения свободны.
+Новые операции сверх конструктора, `put` и `get` не требуются.
 
 Покажите работу со строками и целыми числами, обработку обоих отказов
 и повторное добавление после извлечения из заполненной очереди.
 Подготовка к объявлениям и обработке отказов:
 @theory:sec-j25-theory-exceptions-early-checked. [@bib-task-generic-queue]
 
+{{< project-download exr-generic-queue kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-generic-stack difficulty="advanced"}
+:::: {#exr-generic-stack difficulty="advanced" project="/projects/generic-stack"}
 ## Обобщённый стек
 
-Определите интерфейс `IGenStack<T>` с операциями `void push(T value)`
-и `T pop()`, затем реализуйте его для стека фиксированной вместимости.
+Определите интерфейс `IGenStack<T>` с операциями
+`void push(T value) throws StackFullException` и
+`T pop() throws StackEmptyException`, затем реализуйте его для стека
+фиксированной вместимости.
 `pop` возвращает и удаляет последний помещённый элемент — порядок LIFO.
 После извлечения место доступно для нового добавления.
 
@@ -97,13 +112,16 @@ default-exercise-statement-visibility: open
 
 При полном состоянии `push` выбрасывает проверяемое `StackFullException`,
 при пустом `pop` — проверяемое `StackEmptyException`. Определите эти классы
-и объявите возможные исключения в интерфейсе. Отказ не меняет состояние
+как наследников `Exception`. Дополнительные проверяемые отказы операций
+не вводятся; их объявления в реализации должны соответствовать интерфейсу. Отказ не меняет состояние
 стека. Внутренние поля и вспомогательные методы выберите самостоятельно.
 
 Покажите работу со строками и целыми числами, обработку обоих отказов
 и повторное добавление после извлечения из заполненного стека.
 Подготовка к объявлениям и обработке отказов:
 @theory:sec-j25-theory-exceptions-early-checked. [@bib-task-generic-stack]
+
+{{< project-download exr-generic-stack kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
@@ -112,7 +130,7 @@ default-exercise-statement-visibility: open
 Следующие задания доступны для отдельной тренировки и не входят
 в основной состав работы по обобщениям.
 
-:::: {#exr-generic-circular-queue difficulty="advanced"}
+:::: {#exr-generic-circular-queue difficulty="advanced" project="/projects/generic-circular-queue"}
 ## Обобщённая кольцевая очередь
 
 Реализуйте `CircularQueue<T>` с операциями `void put(T value)` и `T get()`
@@ -124,14 +142,17 @@ default-exercise-statement-visibility: open
 
 Добавляемые элементы отличны от `null`. При полном состоянии `put` выводит
 сообщение и не меняет очередь; при пустом `get` выводит сообщение
-и возвращает `null`. Покажите переход индексов через конец массива,
+и возвращает `null`, сохраняя состояние. Текст сообщения об отказе свободен.
+Покажите переход индексов через конец массива,
 повторное использование места и работу с двумя типами элементов.
 Готовая символьная очередь для выполнения не требуется.
 [@bib-task-generic-circular-queue]
 
+{{< project-download exr-generic-circular-queue kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-generic-dynamic-queue difficulty="advanced"}
+:::: {#exr-generic-dynamic-queue difficulty="advanced" project="/projects/generic-dynamic-queue"}
 ## Обобщённая растущая очередь
 
 Реализуйте `DynQueue<T>` с методами `void put(T value)` и `T get()`
@@ -143,18 +164,25 @@ default-exercise-statement-visibility: open
 можно использовать `Arrays.copyOf`: @handbook:sec-api-arrays-copy-of.
 
 Входные элементы отличны от `null`. При пустой очереди `get` выводит сообщение
-и возвращает `null`, сохраняя состояние. Продемонстрируйте несколько
+и возвращает `null`, сохраняя состояние. Текст сообщения об отказе свободен;
+коэффициент увеличения массива выберите самостоятельно. Продемонстрируйте несколько
 увеличений вместимости, чередование добавления и извлечения и два типа
 элементов. Готовая символьная реализация не требуется.
 [@bib-task-generic-dynamic-queue]
 
+{{< project-download exr-generic-dynamic-queue kind="starter" text="Скачать стартовый проект" >}}
+
 ::::
 
-:::: {#exr-generic-interface difficulty="introductory"}
+:::: {#exr-generic-interface difficulty="introductory" project="/projects/generic-interface"}
 ## Реализация обобщённого интерфейса
 
 Дан интерфейс `IGenIF<T, V extends T>` без методов. Объявите обобщённый
 класс `MyClass`, реализующий этот интерфейс и сохраняющий указанное
-отношение между параметрами типов. [@bib-task-generic-interface]
+отношение между параметрами типов. Покажите допустимую параметризацию
+`Number, Integer` и объясните отказ компилятора для `Integer, Number`.
+[@bib-task-generic-interface]
+
+{{< project-download exr-generic-interface kind="starter" text="Скачать стартовый проект" >}}
 
 ::::

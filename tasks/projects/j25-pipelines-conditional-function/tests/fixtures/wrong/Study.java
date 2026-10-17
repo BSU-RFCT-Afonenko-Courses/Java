@@ -1,0 +1,1 @@
+public class Study { public static <T,R> java.util.function.Function<T,R> ternaryOperator(java.util.function.Predicate<? super T> c,java.util.function.Function<? super T,? extends R> y,java.util.function.Function<? super T,? extends R> n) { return v->y.apply(v); } }

@@ -1,0 +1,1 @@
+import org.junit.jupiter.api.Test;import static org.junit.jupiter.api.Assertions.*;import java.util.*;import java.math.*;class ContractTest{@Test void adjacentAndMismatchedKinds(){String s="()[]{}([])";assertTrue(TaskBinding.valid(s));assertEquals("()[]{}([])",s);assertFalse(TaskBinding.valid("{]"));assertFalse(TaskBinding.valid("(()"));assertFalse(TaskBinding.valid("())"));}}

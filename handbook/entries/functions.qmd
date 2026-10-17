@@ -1,5 +1,5 @@
 ---
-categories: [j25, j25-core, j25-functions]
+categories: [java, java-core, java-functions]
 ---
 
 # Функциональные интерфейсы и лямбда-выражения {#sec-j25-api-functions}
@@ -28,7 +28,8 @@ Java 25. Полное объяснение передачи действий: @t
 Статические, `default`- и приватные методы не создают дополнительных
 абстрактных действий. Публичные методы, совпадающие с методами `Object`,
 учитываются специальными правилами функциональности. Аннотация
-`@FunctionalInterface` проверяет свойство, а не создаёт его.
+`@FunctionalInterface` требует проверки функциональности компилятором.
+Подходящий интерфейс функционален и без аннотации.
 
 Во фрагментах `FunctionApiDemo.java` используют `import java.util.function.*;`.
 Операторы — внутри `main`; метод `atLeast` — static член отдельного клиента.
@@ -51,7 +52,8 @@ Function<String, Integer> length = (String s) -> {
 значения нужны соответствующие `return`. Нельзя смешивать явно
 типизированные и нетипизированные параметры одной лямбды.
 Захватываемые локальные переменные окончательные или фактически
-окончательные; захват ссылки не запрещает изменение её объекта.
+окончательные и определённо инициализированные до создания лямбды.
+Захват ссылки допускает изменение доступного объекта.
 `this` имеет смысл окружающего контекста. Идентичность объекта лямбды
 не является обещанием создания нового экземпляра при каждом вычислении.
 
@@ -71,27 +73,53 @@ Function<String, Integer> length = (String s) -> {
 
 ## Композиция {#sec-j25-api-functions-compose}
 
-`Predicate.and/or` используют короткое замыкание; `negate` отрицает
-результат. `Function.andThen(after)` сначала выполняет текущую функцию,
-затем `after`. `Function.compose(before)` сначала выполняет `before`.
+Сигнатуры методов `Predicate<T>`:
+
+```java
+default Predicate<T> and(Predicate<? super T> other);
+default Predicate<T> or(Predicate<? super T> other);
+default Predicate<T> negate();
+```
+
+`and` вызывает второе условие только при истинности первого, `or` — только
+при ложности первого. `negate` меняет булев ответ на противоположный.
+Создание композиции не вызывает предикаты. `other` должен быть ненулевым;
+иначе `and`/`or` выбрасывает `NullPointerException`. Исключение
+вызванного предиката передаётся вызывающему коду и прекращает проверку.
+
+```java
+Predicate<Integer> positive = n -> n > 0;
+var condition = positive.and(n -> {
+    System.out.println("second");
+    return n < 10;
+});
+System.out.println(condition.test(-1)); // false, second не печатается
+```
+
+Сигнатуры методов `Function<T, R>`:
+
+```java
+default <V> Function<T, V> andThen(
+    Function<? super R, ? extends V> after);
+default <V> Function<V, R> compose(
+    Function<? super V, ? extends T> before);
+```
+
+`andThen` применяет текущую функцию, затем `after`; `compose` применяет
+`before`, затем текущую. Компилятор проверяет совместимость промежуточного
+результата. Переданный участник должен быть ненулевым, иначе возникает
+`NullPointerException`. При применении составленной функции исключение
+любого шага передаётся вызывающему коду; оставшиеся шаги прекращаются.
 
 ```java
 Function<String, Integer> length = String::length;
-System.out.println(length.andThen(n -> n * 2).apply("Java")); // 8
+Function<Integer, Integer> twice = n -> n * 2;
+System.out.println(length.andThen(twice).apply("Java")); // 8
+System.out.println(twice.compose(length).apply("Java")); // 8
 ```
 
-Несовместимые типы последовательных действий отклоняются компилятором.
-Передача `null` вместо необходимого действия обычно приводит к
-`NullPointerException`; исключения из самого действия передаются вызывающей
-стороне согласно интерфейсу. Эти формы не обещают чистоту, отсутствие
-эффектов или безопасность совместного выполнения.
-
-
-Прогноз короткого замыкания можно проверить без реализации лабораторного
-ternaryOperator: при `Predicate<Integer> positive = n -> n > 0;` вызов
-`positive.and(n -> { System.out.println("second"); return true; }).test(-1)`
-даёт `false`, не печатая `second`. Правило второго вызова зависит от ответа
-первого. Создание композиции само по себе условия не проверяет.
+Функциональный интерфейс допускает побочные эффекты. Их наличие и работа
+с изменяемым состоянием зависят от переданного действия.
 
 ## Возвращаемое действие {#sec-j25-api-functions-returned}
 
@@ -103,5 +131,5 @@ static java.util.function.IntPredicate atLeast(int threshold) {
 
 `atLeast(5)` возвращает действие; `atLeast(5).test(4)` вызывает его и даёт
 `false`. Захватываемый параметр не переприсваивается. Захват ссылки на
-изменяемый объект сохраняет доступ к его последующему состоянию, а не
-снимок полей. Развивающийся пример: @theory:sec-j25-theory-functions-returned.
+изменяемый объект сохраняет доступ к его последующему состоянию. Поле
+читается при каждом обращении из тела действия. Развивающийся пример: @theory:sec-j25-theory-functions-returned.

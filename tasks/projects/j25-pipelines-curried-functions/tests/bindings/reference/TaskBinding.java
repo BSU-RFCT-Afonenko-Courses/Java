@@ -1,0 +1,1 @@
+class TaskBinding { static java.util.function.IntUnaryOperator addition(int n){return Study.addition(n);}static java.util.function.Predicate<String> matcher(String r){return Study.matcher(r);}static java.util.function.Function<String,String[]> splitter(String r){return Study.splitter(r);} }

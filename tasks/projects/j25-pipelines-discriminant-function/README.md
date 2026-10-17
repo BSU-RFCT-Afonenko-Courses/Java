@@ -1,0 +1,12 @@
+# Техническая поставка: exr-j25-pipelines-discriminant-function
+
+Условие взято из `tasks/bank/pipelines.qmd` в `c9d05aea901fb819a5fcbb44bbf8a117caaeb9b2`; card SHA256 `2fed1ded3994982a63fbb31b8431ce5ac0d7df9b4fc7f4926e1feb0a590b9740`. Публичная часть — только student/. reference/ и tests/ закрыты, в student ZIP их нет.
+
+Свободное решение сначала компилируется само. Затем преподаватель подготавливает tests/bindings/<вариант>/TaskBinding.java; это имя и методы адаптера не являются API студента. Ошибка привязки — manual/tool boundary без оценки поведения. Private/nested размещение без доступной внешней привязки проверяется по исходнику/демонстрации. Привязка не должна заново реализовывать алгоритм.
+
+reference/primary и reference/alternate имеют разные пакет/форму вызова; alternate count-characters использует Character keys. tests/junit/public содержит открытые сценарии, tests/junit/private — границы. tests/fixtures/wrong — Знак плюс вместо минуса перед 4ac.
+
+Ручная часть: Собственный функциональный интерфейс (double,double,double)→double; лямбда и вызов через переменную.
+
+Запуск после готовности shared runner: `python3 ../../test-support/check-java-project.py --project . --sources reference/primary --binding tests/bindings/reference --work /tmp/новый-каталог --platform <platform>`; alternate выбирает свой sources/binding. До точного receipt команда не считается доказательством. Регистрация Moodle/PL и Windows не выполнялись.
+
