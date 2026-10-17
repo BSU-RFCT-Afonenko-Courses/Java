@@ -1,16 +1,18 @@
 ---
-categories: [j25, j25-core, j25-files]
+categories: [java, java-core, java-files]
 ---
 
 # Path, Files и текстовый ввод-вывод {#sec-j25-api-files}
 
-Java 25. Полное объяснение уровней файла и формата:
-@theory:sec-j25-theory-io. Современные файловые операции —
-`java.nio.file.Files` [@bib-data-files-api; @bib-data-path-api; @bib-data-bufferedreader-api].
+`Path` описывает путь, `Files` выполняет файловые операции.
+`InputStream`/`OutputStream` передают байты, `Reader`/`Writer` — кодовые
+единицы текста. Для UTF-8 укажите `StandardCharsets.UTF_8` при создании
+читателя или писателя [@bib-data-files-api; @bib-data-path-api; @bib-data-bufferedreader-api].
+Причины выбора API: @theory:sec-j25-theory-io.
 
 ## Путь {#sec-j25-api-files-path}
 
-| Операция Path | Назначение |
+| Операция `Path` | Назначение |
 |---|---|
 | `static Path of(String first, String... more)` | Создать описание пути |
 | `Path resolve(Path other)` | Присоединить относительный путь; абсолютный задаёт свой путь |
@@ -36,7 +38,7 @@ Java 25. Полное объяснение уровней файла и форм
 `throws IOException` означает проверяемый отказ; возможные непроверяемые
 исключения дополнительно определяются условиями конкретной операции.
 
-| Выбранная сигнатура Files | Результат / условие |
+| Выбранная сигнатура `Files` | Результат / условие |
 |---|---|
 | `static byte[] readAllBytes(Path path) throws IOException` | Все байты в памяти |
 | `static String readString(Path path, Charset cs) throws IOException` | Весь текст в памяти |
@@ -57,6 +59,7 @@ Java 25. Полное объяснение уровней файла и форм
 возвращает фактическое количество, которое может быть меньше буфера.
 `BufferedReader.readLine()` возвращает строку без разделителя либо
 `null` конца входа; пустая строка — самостоятельное значение `""`.
+Разделителями служат LF, CR и CRLF; последняя строка читается и без них.
 
 ```java
 try (var reader = java.nio.file.Files.newBufferedReader(path,
@@ -74,12 +77,13 @@ throws java.io.IOException`. Вход `alpha`, пустая строка, `beta`
 его физический счётчик всё равно увеличивается до `continue`:
 @theory:sec-j25-theory-application-loader. Пустой вход не является отказом.
 
-Открытие и чтение могут дать `IOException`. Повреждённая последовательность
+Открытие, чтение и закрытие могут дать `IOException`. Повреждённая последовательность
 UTF-8 при `Files.readString(path, UTF_8)` приводит к `IOException`;
 у читателя из `newBufferedReader(path, UTF_8)` такое исключение возникает
 при чтении. У `Files.lines(path, UTF_8)` повреждение, обнаруженное в позднем
-обходе, передаётся как `UncheckedIOException`. В приложении из
-@theory:sec-j25-theory-application отказ декодирования через BufferedReader даёт
+обходе, передаётся как `UncheckedIOException`; так же передаётся отказ
+закрытия этого потока строк. В приложении из
+@theory:sec-j25-theory-application отказ декодирования через `BufferedReader` даёт
 код завершения 4 и не публикует накопленные суммы. Код 3 означает, что
 отдельные прочитанные строки отвергнуты, а отчёт по принятым поставкам разрешён.
 Это политика журнала поставок. Для `gradeapp` ошибка данных отменяет весь
@@ -104,15 +108,51 @@ Files.writeString(target, "s3;Ann;80\n", StandardCharsets.UTF_8,
     StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 ```
 
-В этом теле метода `throws IOException` переменная `Path target`
+Фрагмент выполняется в методе с `throws IOException`; переменная `Path target`
 передана аргументом, нужны импорты `Files`, `StandardCharsets` и
 `StandardOpenOption`. При прежнем тексте `s2;Lin;70\n` получится
 `s2;Lin;70\ns3;Ann;80\n`; повтор запуска добавит ещё одну строку.
 
 Наличие разделителя в конце прежнего текста проверяет приложение.
-Операция не обещает откат при сбое: частичный результат возможен.
+При сбое уже записанная часть результата сохраняется.
 `StandardCopyOption.REPLACE_EXISTING` разрешает замену при соответствующей
 операции; `ATOMIC_MOVE` у `move` требует поддержки файловой системы,
 иначе `AtomicMoveNotSupportedException`. При атомарном перемещении
 другие параметры игнорируются, а обработка существующего результата
 зависит от реализации файловой системы.
+
+## Владение ресурсом {#sec-api-files-ownership}
+
+| Способ получения данных | Закрытие |
+|---|---|
+| `Files.readString`, `readAllLines`, `writeString` | Метод сам закрывает открытый файл |
+| `Files.newInputStream`, `newBufferedReader`, `newBufferedWriter` | Полученный ресурс закрывает вызывающий код |
+| `Files.lines` | Закрывается полученный `Stream<String>` |
+| `reader.lines()` | Закрывается владеющий файлом `BufferedReader` |
+| Переданный методу чужой поток | По договору с владельцем; временное использование не передаёт владение |
+
+Закрытие `BufferedReader` закрывает его вложенный читатель. Общие системные
+потоки сохраняют доступными для остальных частей программы. Буферизованный
+вывод может сообщить ошибку при `write`, `flush` или `close`, поэтому
+успех записи включает успешное закрытие собственного файла.
+
+## Исходники файловых опытов {#sec-api-io-examples}
+
+[Комплект опытов](../examples/io-application-examples.zip) содержит
+[инструкцию запуска](../examples/io-application/README.md), `IoDemo.java`,
+`BlockReadDemo.java` и входные файлы. После распаковки перейдите в
+`io-application/`. Команды с JDK 25:
+
+```bash
+javac --release 25 -encoding UTF-8 -d out IoDemo.java BlockReadDemo.java
+java -cp out IoDemo bytes bytes.bin
+java -cp out IoDemo lines lines.txt
+java -cp out IoDemo count lines.txt
+java -cp out BlockReadDemo
+```
+
+Байтовый опыт выводит 0 и 255. Построчный опыт выводит `1: [first]`,
+`2: []`, `3: [last]`; подсчёт непустых строк даёт 2.
+В опыте с буфером после чтения одного оставшегося байта массив равен
+`[50, 20, 30, 40]`, но новой порцией служит только `[50]`.
+Остальные режимы и повреждённый UTF-8 описаны в README.
