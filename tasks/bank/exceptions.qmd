@@ -1,5 +1,5 @@
 ---
-categories: [j25, j25-core, j25-exceptions]
+categories: [java, java-core, java-exceptions]
 exercise-bank: true
 default-exercise-target: manual
 default-exercise-statement-visibility: open
@@ -7,8 +7,8 @@ default-exercise-statement-visibility: open
 
 # Исключения {#sec-j25-bank-exceptions}
 
-Теория: @theory:sec-j25-theory-exceptions. Условия используются в лабораторных по ссылке;
-время в карточках — ориентир чтения, решения и самостоятельной проверки.
+Механизм передачи отказа и состояние после исключения:
+@theory:sec-j25-theory-exceptions.
 
 :::: {#exr-j25-exceptions-exception-flow-errors difficulty="introductory" time="30" project="/projects/j25-exceptions-exception-flow-errors"}
 ## Ошибки в обработке и генерации исключений
@@ -61,7 +61,7 @@ default-exercise-statement-visibility: open
 
 Создайте стек символов в закрытом массиве фиксированной положительной ёмкости. Метод `push(char)` помещает символ на вершину, `char pop()` возвращает и удаляет последний помещённый символ.
 
-При переполнении генерируется проверяемое `StackFullException`, при извлечении из пустого стека — `StackEmptyException`. Неудачная операция не меняет элементы и вершину. Объявите исключения в сигнатурах, покажите заполнение, оба отказа и извлечение в LIFO-порядке с обработкой в вызывающем коде. [@bib-task-stack-exceptions]
+При переполнении генерируется проверяемое `StackFullException`, при извлечении из пустого стека — `StackEmptyException`. Неудачная операция не меняет элементы и вершину. Укажите эти исключения в `throws` методов. Покажите заполнение, оба отказа и извлечение в LIFO-порядке с обработкой в вызывающем коде. [@bib-task-stack-exceptions]
 
 ::::
 
@@ -77,7 +77,9 @@ default-exercise-statement-visibility: open
 :::: {#exr-j25-exceptions-override-exceptions difficulty="intermediate" time="20" project="/projects/j25-exceptions-override-exceptions"}
 ## Переопределение метода и исключения
 
-В классе A объявлен метод void f() throws FileNotFoundException, а класс B extends A пока пуст. Переопределите f() в классе B тремя допустимыми способами, не вызывающими ошибку компиляции. Каждый вариант оформите как отдельную небольшую программу. [@bib-task-override-exceptions]
+В классе `A` объявлен метод `void f() throws FileNotFoundException`,
+а класс `B extends A` пока пуст. Переопределите `f()` в классе `B`
+тремя допустимыми способами, не вызывающими ошибку компиляции. Каждый вариант оформите как отдельную небольшую программу. [@bib-task-override-exceptions]
 
 {{< project-download exr-j25-exceptions-override-exceptions kind="starter" text="Скачать стартовый проект" >}}
 
