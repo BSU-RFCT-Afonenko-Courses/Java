@@ -13,6 +13,19 @@ index e8371cb..ef94114 100644
  export interface ProjectFact {exerciseId:string;source:string;projectRoot:string;bankMember:boolean;purpose?:ExercisePurpose;statementVisibility:StatementVisibility;artifactPolicy:{student?:"starter"|"full";full:"full";conditions:boolean};check?:ResolvedProjectCheck}
  export interface Fragment {
    projects?: ProjectFact[]; topic?: TopicFact;
+diff --git a/_extensions/course-core/entrypoints/preview.ts b/_extensions/course-core/entrypoints/preview.ts
+index 037ecb5..99ded31 100644
+--- a/_extensions/course-core/entrypoints/preview.ts
++++ b/_extensions/course-core/entrypoints/preview.ts
+@@ -85,7 +85,7 @@ export async function finalizeAssessmentPreview(run:NativeRun){
+     // The public post-quarto filter put already-native HTML outside main.
+     // Native book crossrefs resolve there before search and configured hooks.
+     const pending=new Map<string,string>();
+-    html=html.replace(/<!--course-assignment-pending:(exr-[a-z0-9-]+):start--><div hidden(?:="")? inert(?:="")?>([\s\S]*?)<\/div><!--course-assignment-pending:\1:end-->/g,(_match,id,content)=>{pending.set(id,content);return "";});
++    html=html.replace(/<div hidden(?:="")? inert(?:="")?><!--course-assignment-pending:(exr-[a-z0-9-]+):start-->([\s\S]*?)<!--course-assignment-pending:\1:end--><\/div>/g,(_match,id,content)=>{pending.set(id,content);return "";});
+     // Relocate exact native markup only for a current open member; no parser,
+     // constructed address, inferred caption or stale native document lookup.
+     html=html.replace(/<!--course-assignment:(exr-[a-z0-9-]+):start--><template>[\s\S]*?<\/template><!--course-assignment:\1:end-->/g,(_match,id)=>facts.get(id)?.statementVisibility==="open"&&pending.has(id)?pending.get(id)!:'<span class="course-assignment-omitted"></span>');
 diff --git a/_extensions/course-core/filter.lua b/_extensions/course-core/filter.lua
 index eb3d7f1..e4e7d8a 100644
 --- a/_extensions/course-core/filter.lua
@@ -193,6 +206,28 @@ index 2d23f2c..75688ac 100644
  #ProjectFact: {exerciseId:string, source:string, projectRoot:string & !="", bankMember:bool, purpose?:#ExercisePurpose, statementVisibility:#StatementVisibility, artifactPolicy:{student?:"starter"|"full",full:"full",conditions:bool},check?:#ResolvedProjectCheck}
  #TopicFact: {source:string,semester?:string,categories:[...string]}
  #Course: {
+diff --git a/_extensions/course-core/visibility.lua b/_extensions/course-core/visibility.lua
+index bfbcbf5..516fa71 100644
+--- a/_extensions/course-core/visibility.lua
++++ b/_extensions/course-core/visibility.lua
+@@ -275,7 +275,7 @@ function M.defer_native_assignments(doc)
+   return __perfWalk13(doc,{Span=function(span)
+     local member=span.attributes['data-course-assignment-id']
+     if not member then return end
+-    quarto.doc.include_text('after-body','<!--course-assignment-pending:'..member..':start--><div hidden inert>'..pandoc.write(pandoc.Pandoc({pandoc.Plain(span.content)}),'html')..'</div><!--course-assignment-pending:'..member..':end-->')
++    quarto.doc.include_text('after-body','<div hidden inert><!--course-assignment-pending:'..member..':start-->'..pandoc.write(pandoc.Pandoc({pandoc.Plain(span.content)}),'html')..'<!--course-assignment-pending:'..member..':end--></div>')
+     return pandoc.RawInline('html','<!--course-assignment:'..member..':start--><template></template><!--course-assignment:'..member..':end-->')
+   end,Div=function(div)
+     if not div.classes:includes('task-items') then return end
+@@ -287,7 +287,7 @@ function M.defer_native_assignments(doc)
+           if member and last and last.t=='RawBlock' and last.text=='</template><!--course-assignment:'..member..':end-->' then
+             local native=pandoc.List()
+             for i=2,#item-1 do native:insert(item[i]) end
+-            quarto.doc.include_text('after-body','<!--course-assignment-pending:'..member..':start--><div hidden inert>'..pandoc.write(pandoc.Pandoc(native),'html')..'</div><!--course-assignment-pending:'..member..':end-->')
++            quarto.doc.include_text('after-body','<div hidden inert><!--course-assignment-pending:'..member..':start-->'..pandoc.write(pandoc.Pandoc(native),'html')..'<!--course-assignment-pending:'..member..':end--></div>')
+             list.content[index]=pandoc.List({pandoc.RawBlock('html','<!--course-assignment:'..member..':start--><template></template><!--course-assignment:'..member..':end-->')})
+           end
+         end
 diff --git a/_extensions/course-navigation/navigation/plugin.js b/_extensions/course-navigation/navigation/plugin.js
 index 67ed6fc..a875d1c 100644
 --- a/_extensions/course-navigation/navigation/plugin.js
