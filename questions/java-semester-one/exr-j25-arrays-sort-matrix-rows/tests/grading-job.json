@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "sourceFiles": [
+    "Main.java"
+  ],
+  "testFiles": [
+    "api/CliPrecheck.java",
+    "ContractTest.java",
+    "coursesupport/JavaProcess.java",
+    "coursesupport/OutputNumbers.java"
+  ],
+  "mode": "implementation",
+  "runtime": "java25-junit-v1",
+  "java": {
+    "release": 25,
+    "encoding": "UTF-8",
+    "compiler-options": [
+      "-proc:none",
+      "-Xmaxerrs",
+      "5"
+    ]
+  },
+  "limits": {
+    "outer-seconds": 30,
+    "compile-seconds": 15,
+    "run-seconds": 10,
+    "networking": false,
+    "max-output-bytes": 65536
+  },
+  "scoring": {
+    "mode": "all-pass"
+  },
+  "discovery": {
+    "min-executed": 1,
+    "allow-skipped": false
+  },
+  "additionalJavaSources": {
+    "archive": "additional-sources.zip",
+    "maxFiles": 128,
+    "maxFileBytes": 1048576,
+    "maxTotalBytes": 4194304,
+    "maxArchiveBytes": 2097152
+  },
+  "apiPrecheck": {
+    "files": [
+      "api/CliPrecheck.java"
+    ],
+    "entry": "CliPrecheck"
+  }
+}
