@@ -135,7 +135,8 @@ export async function cleanOutput(
     if (!inside(root, source) || inside(output, source)) continue;
     await safePath(root, source);
     try {
-      if ((await Deno.lstat(source)).isFile) {
+      if ((await Deno.lstat(source)).isFile &&
+          !/\.(qmd|ipynb|rmd|ya?ml)$/i.test(source)) {
         copiedResources.add(join(output, relative(root, source)));
       }
     } catch (error) {

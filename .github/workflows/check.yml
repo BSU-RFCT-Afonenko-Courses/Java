@@ -34,8 +34,6 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    env:
-      DOCKER_CONFIG: ${{ runner.temp }}/java-anonymous-ghcr
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -88,7 +86,9 @@ jobs:
           if any(registry.get('profiles', {}).get(name, {}).get('image') != expected for name in ('java25-junit-v1', 'java25-mutation-v1')):
               raise SystemExit('Released runtime registry differs from recorded digest')
           PY
+          export DOCKER_CONFIG="$RUNNER_TEMP/java-anonymous-ghcr"
           mkdir -p "$DOCKER_CONFIG"
+          printf 'DOCKER_CONFIG=%s\n' "$DOCKER_CONFIG" >> "$GITHUB_ENV"
           docker pull "$TASK_PLATFORM_JAVA_IMAGE"
           python3 -m pip install --requirement "$TASK_PLATFORM_DIR/requirements.txt"
           echo "PL_PLATFORM_ROOT=$TASK_PLATFORM_DIR" >> "$GITHUB_ENV"
