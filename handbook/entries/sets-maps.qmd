@@ -1,0 +1,236 @@
+---
+categories: [java, java-core, java-sets-maps]
+---
+
+# Set, Map, Queue и Deque {#sec-j25-api-sets-maps}
+
+Java 25. Объяснение выбора структуры и равенства:
+@theory:sec-j25-theory-collections, @theory:sec-j25-theory-equality.
+Карты входят в Collections Framework, но не наследуют `Collection`
+[@bib-data-set-api; @bib-data-map-api].
+
+## Множества {#sec-j25-api-sets-maps-set}
+
+| Операция Set | Назначение |
+|---|---|
+| `boolean add(E e)` | Обеспечить наличие; `true`, если состав изменился |
+| `boolean contains(Object e)` | Проверить наличие |
+| `boolean remove(Object e)` | Удалить; `true`, если был элемент |
+
+`HashSet` использует хеширование, порядок просмотра не обещан;
+`LinkedHashSet` сохраняет порядок вставки; `TreeSet` поддерживает
+порядок сравнения. У последнего ноль сравнения определяет совпадение.
+У ключей и элементов хеш-структур сведения равенства и хеша должны
+оставаться устойчивыми во время хранения. Ожидаемая постоянная цена
+хеш-операций предполагает хорошее распределение хешей
+[@bib-data-hashset-api].
+
+`HashSet`/`LinkedHashSet` допускают один `null`. Естественный порядок
+`TreeSet` его не принимает; отдельный компаратор может задать политику `null`.
+`HashMap`/`LinkedHashMap` допускают `null`-ключ и значения; `TreeMap` с
+естественным порядком не принимает `null`-ключ. У `LinkedHashSet` повторный
+`add` не переносит элемент в конец; операции `addFirst/addLast` явно меняют положение элемента.
+
+`Set.of` запрещает изменения и `null`, отвергает повторы через
+`IllegalArgumentException`. `Set.copyOf` не отвергает все повторы
+входной коллекции: для равных повторных элементов сохраняется один
+произвольно выбранный представитель. Порядок этих фабрик не обещан.
+
+`HashSet` и `LinkedHashSet` проверяют совпадение через `equals` и согласованный
+хеш. У `TreeSet` вызов `contains` тоже использует сравнение: при сравнении
+только по длине множество с `"cat"` считает `"dog"` уже имеющимся элементом.
+Такой порядок не согласован с `String.equals`, поэтому нарушает общий договор
+`Set`. Сортировка списка этим же порядком сохраняет обе строки.
+
+Основные операции `TreeSet` имеют логарифмическую стоимость. У хеш-множеств
+ожидаемая постоянная стоимость зависит от распределения хешей; сами вызовы
+`equals` и `hashCode` тоже имеют стоимость. Ни одна структура автоматически
+не перестраивает своё расположение после произвольной мутации элемента.
+
+## Соседи по порядку {#sec-j25-api-sets-maps-neighbors}
+
+`NavigableSet<E>` уточняет операции упорядоченного множества:
+
+| Операция | Результат |
+|---|---|
+| `E lower(E value)` | Наибольший элемент, строго меньший `value` |
+| `E floor(E value)` | Наибольший элемент, не превосходящий `value` |
+| `E ceiling(E value)` | Наименьший элемент, не меньший `value` |
+| `E higher(E value)` | Наименьший элемент, строго больший `value` |
+
+При отсутствии подходящего элемента возвращается `null`. Порядок задаётся
+естественным сравнением или компаратором множества.
+
+```java
+java.util.NavigableSet<Integer> values = new java.util.TreeSet<>();
+values.addAll(java.util.List.of(10, 20, 40));
+System.out.println(values.floor(25));   // 20
+System.out.println(values.ceiling(25)); // 40
+System.out.println(values.lower(10));  // null
+```
+
+Выбор по числовому расстоянию дополнительно
+требует своего правила расстояния и обработки ничьей.
+[NavigableSet, Java 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/NavigableSet.html).
+
+## Групповые операции множеств {#sec-j25-api-sets-maps-bulk}
+
+Операции унаследованы от `Collection`. Для множества они изменяют состав
+объекта-получателя; возвращаемый `boolean` сообщает, произошло ли изменение
+[@bib-data-collection-api].
+
+| Сигнатура | Изменение получателя |
+|---|---|
+| `boolean addAll(Collection<? extends E> c)` | Добавить все элементы `c`; уже имеющиеся элементы множества не дублируются |
+| `boolean retainAll(Collection<?> c)` | Удалить все элементы, которых нет в `c`; оставить только общие |
+
+Обе операции возвращают `true`, если состав получателя изменился, иначе
+`false`. При независимых структурах состав аргумента `c` не меняется.
+Если `c` — тот же объект или связанное представление, независимость
+не обеспечена. В частности, поведение `addAll` с самим непустым получателем
+в качестве аргумента не определено контрактом `Collection`.
+
+Обе операции необязательные: неподдерживаемый вызов может дать
+`UnsupportedOperationException`, даже если изменение не потребовалось бы.
+На множествах `Set.of` и `Set.copyOf` изменения запрещены. Для самостоятельного
+результата сначала создают изменяемую копию; копирование состава не копирует
+сами объекты элементов. Аргумент `c` не должен быть `null`.
+
+## Карты {#sec-j25-api-sets-maps-map}
+
+| Сигнатура Map | Значение |
+|---|---|
+| `V put(K key, V value)` | Записать; вернуть прежнее значение или `null` |
+| `V get(Object key)` | Значение или `null` при отсутствии |
+| `boolean containsKey(Object key)` | Проверить наличие ключа |
+| `V getOrDefault(Object key, V fallback)` | Запасное только при отсутствии отображения |
+| `V remove(Object key)` | Удалить отображение и вернуть прежнее значение |
+| `V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> function)` | Добавить ненулевое значение либо объединить с прежним; вернуть новое значение, `null` при удалении |
+| `V computeIfAbsent(K key, Function<? super K, ? extends V> function)` | Вычислить для отсутствующего/`null`-отображения |
+| `Set<K> keySet()` | Представление ключей |
+| `Collection<V> values()` | Представление значений, повторы допустимы |
+| `Set<Map.Entry<K,V>> entrySet()` | Представление пар |
+
+`K` связывает тип добавляемого ключа, `V` — тип значения и результата `get`.
+Например, `Map<String, Integer>` считает обращения к строковым кодам;
+в `put("s1", 2)` компилятор проверяет обе позиции.
+
+При разрешённых `null`-значениях `get`/`put`/`remove` с результатом
+`null` не различают все случаи; проверяют `containsKey` по необходимости.
+Изменяемые представления отражают и изменяют основу, но не поддерживают
+вставку новых соответствий через простой `add`.
+
+`BiFunction` и `Function` находятся в `java.util.function`.
+
+```java
+var counts = new java.util.HashMap<String, Integer>();
+counts.put("java", counts.getOrDefault("java", 0) + 1);
+counts.put("java", counts.getOrDefault("java", 0) + 1);
+System.out.println(counts.get("java")); // 2
+```
+
+Если сохранить `counts.put("java", null)`, вызов `getOrDefault("java", 0)`
+вернёт `null`: отображение существует. Прибавление единицы потребует
+распаковки и завершится `NullPointerException`. Пример счётчика поддерживает
+более узкое условие: все сохранённые значения — ненулевые числа.
+
+### Просмотр и изменение пар
+
+```java
+var prices = new java.util.LinkedHashMap<String, Integer>();
+prices.put("a", 10);
+prices.put("b", 10);
+var keys = prices.keySet();
+var values = prices.values();
+prices.put("c", 20);
+System.out.println(keys);   // [a, b, c]
+System.out.println(values); // [10, 10, 20]
+keys.remove("a");
+System.out.println(prices.containsKey("a")); // false
+for (java.util.Map.Entry<String, Integer> entry : prices.entrySet()) {
+    System.out.println(entry.getKey() + "=" + entry.getValue());
+}
+```
+
+Цикл выводит `b=10`, затем `c=20`. `values` содержит два вхождения 10 до
+удаления ключа: это `Collection<V>`. Представления не дают добавить новую
+пару через `add`; для записи используют саму карту. Через итератор
+изменяемой карты можно удалить текущую пару. `entry.setValue` поддерживается
+не каждой картой; у обычной `HashMap`/`LinkedHashMap` заменяет значение пары.
+Сохранённый объект `Map.Entry` не следует использовать как независимый
+снимок после удаления или перестройки карты.
+
+Вызов `counts.merge("java", 1, Integer::sum)` складывает прежний счётчик
+с единицей через ссылку на метод `Integer::sum`
+(@theory:sec-j25-theory-functions-method-reference).
+Точная сигнатура `merge`:
+[Map.merge](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html#merge(K,V,java.util.function.BiFunction)).
+`merge(key, nonNullValue, function)` записывает значение при отсутствии
+или прежнем `null`, иначе объединяет старое и новое. `null` результата
+функции удаляет отображение. `computeIfAbsent` вычисляет значение для
+отсутствующего или `null`-отображения; `null` результата ничего не добавляет.
+Функция не должна произвольно изменять ту же карту во время вычисления;
+базовые методы обычной `Map` не обещают атомарность для нескольких потоков.
+
+`HashMap` не обещает порядок, обычный `LinkedHashMap` сохраняет порядок
+вставки ключей, `TreeMap` — порядок сравнения. `Map.of`/`copyOf`
+запрещают изменения и `null`. Фабрика `Map.of` отвергает повторные ключи;
+порядок обхода не обещан.
+
+## Очереди {#sec-j25-api-sets-maps-queue}
+
+| Действие Queue | Исключение при пустоте/недоступности | Специальный результат |
+|---|---|---|
+| Добавить | `add(e)` | `offer(e)` → `false` |
+| Удалить голову | `remove()` | `poll()` → `null` |
+| Посмотреть голову | `element()` | `peek()` → `null` |
+
+Исключение удаления/просмотра пустой очереди — `NoSuchElementException`;
+невозможность добавления из-за вместимости при `add` —
+`IllegalStateException`. Другие ограничения элемента могут дать исключение
+в обеих формах. У `Deque` есть пары операций обоих концов:
+`addFirst/addLast`, `offerFirst/offerLast`, `removeFirst/removeLast`,
+`pollFirst/pollLast`, `getFirst/getLast`, `peekFirst/peekLast`
+[@bib-data-deque-api].
+
+| Точная форма Deque | Поведение |
+|---|---|
+| `void addFirst(E e)` / `void addLast(E e)` | Добавить с указанного конца; отказ вместимости — исключение |
+| `boolean offerFirst(E e)` / `boolean offerLast(E e)` | `false` при ограничении вместимости |
+| `E removeFirst()` / `E removeLast()` | Извлечь; пустота — исключение |
+| `E pollFirst()` / `E pollLast()` | Извлечь; пустота — `null` |
+| `E getFirst()` / `E getLast()` | Прочитать; пустота — исключение |
+| `E peekFirst()` / `E peekLast()` | Прочитать; пустота — `null` |
+| `void push(E e)` / `E pop()` | `addFirst` / `removeFirst` для LIFO |
+
+[Deque API](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Deque.html)
+различает отказ вместимости и недопустимость элемента: `offer` не превращает
+запрещённый `null` в обычный `false`.
+
+```java
+java.util.Deque<String> queue = new java.util.ArrayDeque<>();
+queue.addLast("Ada");
+queue.addLast("Lin");
+System.out.println(queue.pollFirst()); // Ada: FIFO
+```
+
+`push/pop` работают с головой как стек LIFO. `ArrayDeque` запрещает `null`.
+`PriorityQueue` выдаёт наименьший по выбранному порядку элемент, но её
+итератор не обещает сортировку всего содержимого. Обычные реализации
+здесь не гарантируют безопасность конкурентного изменения.
+
+
+Порядок извлечения `PriorityQueue` определяется компаратором или естественным
+сравнением; для очереди целых чисел после добавления `3, 1, 2, 1` четыре
+`poll` дают `1, 1, 2, 3`. Равные приоритеты допускаются, порядок между ними
+не обещан. `offer` и `poll` имеют логарифмическую стоимость, `peek` — постоянную,
+а `contains` и `remove(Object)` требуют линейного поиска
+[@bib-collections-priority-api]. Очередь запрещает `null`.
+
+Контракты `List.equals`, `Set.equals` и `Map.equals` сравнивают соответственно
+последовательность, состав и пары ключ—значение. У `Deque` общего договора
+равенства последовательностей нет: два `ArrayDeque` с одинаковым содержимым
+не становятся равными по `equals`.
+
+Самостоятельные программы и ожидаемые результаты:
+@handbook:sec-api-collections-examples.

@@ -1,0 +1,1 @@
+import java.util.*;class TaskBinding{static Set<Integer>union(Set<Integer>a,Set<Integer>b){return SetOps.union(a,b);}static Set<Integer>intersection(Set<Integer>a,Set<Integer>b){return SetOps.intersection(a,b);}}

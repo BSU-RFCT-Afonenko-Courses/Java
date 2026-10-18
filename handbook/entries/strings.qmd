@@ -1,0 +1,199 @@
+---
+categories: [java, java-core, java-strings]
+---
+
+# String, StringBuilder и Unicode {#sec-api-strings}
+
+`String` неизменяем; `StringBuilder` изменяем. Индексы базовых строковых операций измеряются в единицах UTF-16. Полное объяснение: @theory:sec-theory-text. [@bib-fnd-string-api; @bib-fnd-builder-api; @bib-fnd-character-api]
+
+## Методы String {#sec-api-strings-string}
+
+| Сигнатура | Результат и границы |
+|---|---|
+| `int length()` | Количество единиц UTF-16 |
+| `boolean isEmpty()` | `length() == 0` |
+| `boolean isBlank()` | Пустая строка или только кодовые точки, признаваемые `Character.isWhitespace` |
+| `char charAt(int index)` | Одна единица UTF-16; `0 <= index < length()` |
+| `int codePointAt(int index)` | Кодовая точка, если начинается корректная пара, иначе значение единицы |
+| `int codePointCount(int begin, int end)` | Число кодовых точек в `[begin, end)`; непарные суррогаты считаются отдельно |
+| `int offsetByCodePoints(int index, int offset)` | Индекс UTF-16 после перемещения по кодовым точкам |
+| `String substring(int begin, int end)` | Подстрока `[begin, end)`; `0 <= begin <= end <= length()` |
+| `int indexOf(String s)` | Индекс первого совпадения или `-1`; есть перегрузки |
+| `boolean equals(Object other)` | Одинаковая последовательность единиц; `null` даёт `false` |
+| `int compareTo(String anotherString)` | Лексикографический порядок единиц UTF-16; результат читают по знаку |
+| `boolean equalsIgnoreCase(String s)` | Сравнение без учёта регистра по правилам API, без полноценного языкового порядка |
+| `String strip()` | Убирает по краям кодовые точки `Character.isWhitespace` |
+| `String trim()` | Убирает по краям единицы с кодом не выше U+0020 |
+| `String replace(CharSequence a, CharSequence b)` | Буквальная замена |
+| `String replaceAll(String regex, String replacement)` | Регулярное выражение и специальные правила замены |
+| `String[] split(String regex, int limit)` | Разбиение по регулярному выражению |
+| `String toLowerCase(Locale locale)` | Регистр по выбранной локали; длина может меняться |
+
+Неверный индекс или диапазон вызывает `IndexOutOfBoundsException` согласно договору конкретного метода. Вызов экземплярного метода через `null` порождает `NullPointerException`. Регулярные выражения могут давать `PatternSyntaxException`. `split(regex)` равен `split(regex, 0)` и отбрасывает хвостовые пустые поля; отрицательный `limit` сохраняет их. Для точки как разделителя: `split("\\.", -1)`.
+
+`==` сравнивает ссылки. Для сравнения текста используйте `equals`. Если строки могут отсутствовать, используйте `Objects.equals(a, b)`. Интернирование литералов не делает `==` проверкой содержимого.
+
+## Unicode и нормализация {#sec-api-strings-unicode}
+
+`char` содержит одну единицу UTF-16, `int` может представлять кодовую точку. `Character.charCount(codePoint)` возвращает `1` или `2`. Число кодовых точек не равно автоматически числу воспринимаемых текстовых элементов. Каждый метод `Character` определяет свою категорию символов; условие обработки текста должно указывать подходящую категорию.
+
+Для составной записи буквы `é`:
+
+```java
+String text = "e\u0301";
+String normalized = java.text.Normalizer.normalize(
+    text, java.text.Normalizer.Form.NFC);
+System.out.println(text.length());       // 2
+System.out.println(normalized.length()); // 1
+byte[] encoded = text.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+String restored = new String(encoded,
+    java.nio.charset.StandardCharsets.UTF_8);
+```
+
+Нормализация выполняется только по требованиям задачи. Для изменения регистра технических обозначений можно явно выбрать `Locale.ROOT`. В показанном коде байты получены из исходного `text`, поэтому `restored`
+снова содержит две единицы UTF-16. Для кодирования нормализованного текста
+получатель `getBytes` должен быть `normalized`.
+
+Преобразование строк в байты требует кодировки; удобные методы могут заменять некорректный ввод, поэтому для строгого отказа нужен `CharsetDecoder`/`CharsetEncoder` с заданной политикой. [@bib-fnd-normalizer-api]
+
+## Разбор целого числа: Integer.parseInt {#sec-api-strings-parse-int}
+
+Метод класса `Integer`: `public static int parseInt(String s) throws NumberFormatException`.
+
+Метод возвращает знаковое десятичное значение типа `int`: от −2147483648 до 2147483647 включительно. Строка содержит одну или несколько десятичных цифр; первая позиция может быть ASCII-знаком `+` или `-`. Цифры распознаются по правилам `Character.digit(char, 10)`. Ведущие нули допустимы и не означают восьмеричную запись: `parseInt("0016")` даёт `16`.
+
+Пробелы автоматически не удаляются. Десятичная точка, разделители групп и подчёркивания литералов Java в этой форме не принимаются. `NumberFormatException` возникает при `null`, пустой строке, одном знаке без цифр, неподходящих символах или выходе значения за диапазон `int`.
+
+```java
+int pages = Integer.parseInt("+16"); // 16
+// Integer.parseInt(" 16 "); // NumberFormatException
+// Integer.parseInt("2147483648"); // NumberFormatException
+```
+
+Если требования допускают внешние пробелы, их удаляют отдельным действием до разбора. Формат метода не зависит от пользовательской локали. Объяснение перехода от текста к числу: @theory:sec-theory-text-parsing. [@bib-fnd-integer-parse-int]
+
+## Регулярные выражения: полное совпадение и поиск {#sec-api-strings-regex}
+
+`String.matches` проверяет всю строку. Для поиска фрагментов создайте
+`Pattern`, затем `Matcher` для конкретного текста. `compile` создаёт шаблон, `matcher` связывает его с входным текстом:
+
+| Класс | Сигнатура | Результат |
+|---|---|---|
+| `String` | `boolean matches(String regex)` | Вся строка соответствует шаблону |
+| `Pattern` | `static Pattern compile(String regex)` | Скомпилированный шаблон |
+| `Pattern` | `Matcher matcher(CharSequence input)` | Новый объект поиска для входного текста |
+| `Matcher` | `boolean matches()` | Вся текущая область поиска соответствует шаблону; исходно она охватывает весь вход |
+| `Matcher` | `boolean find()` | Найден следующий соответствующий фрагмент |
+| `Matcher` | `String group()` | Текст последнего успешного совпадения |
+| `Matcher` | `Matcher reset()` | Тот же объект поиска после сброса к началу всего входа |
+
+`find()` изменяет состояние поиска: повторный вызов ищет следующее
+совпадение. `group()` используют после успешной операции; до неё или после
+неудачного поиска он выбрасывает `IllegalStateException`. Сброс удаляет сведения о
+совпадении. Неверный синтаксис шаблона вызывает `PatternSyntaxException`
+при `compile` или `String.matches`; результат `false` означает корректный
+шаблон, который не подошёл. [@bib-mat-epam-regex; @bib-text-string-matches; @bib-text-pattern; @bib-text-matcher]
+
+```java
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+String text = "ab12 cd3";
+System.out.println(text.matches("[0-9]+")); // false
+Matcher numbers = Pattern.compile("[0-9]+").matcher(text);
+if (numbers.find()) {
+    System.out.println(numbers.group()); // 12
+}
+if (numbers.find()) {
+    System.out.println(numbers.group()); // 3
+}
+System.out.println(numbers.find());       // false
+numbers.reset();
+System.out.println(numbers.find());       // true
+```
+
+Здесь `[0-9]+` означает одну или более ASCII-цифр. Если шаблону нужен
+обратный слеш, в строковом литерале Java его удваивают: регулярное выражение `\d+`
+записывается как `"\\d+"`. Правила шаблона и правила строкового литерала
+действуют последовательно.
+
+Для буквальных данных в регулярной замене используются разные операции:
+`Pattern.quote(text)` экранирует шаблон, `Matcher.quoteReplacement(text)` —
+строку замены. В результате `"$1"` можно вставить как текст, сохранив знак
+доллара. Полный опыт: @theory:sec-theory-text-replacement.
+
+## Методы StringBuilder {#sec-api-strings-builder}
+
+| Сигнатура | Действие |
+|---|---|
+| `StringBuilder()` | Пустое содержимое, начальная ёмкость 16 |
+| `StringBuilder(int capacity)` | Пустое содержимое с заданным неотрицательным запасом |
+| `StringBuilder(String text)` | Копирует содержимое строки |
+| `StringBuilder append(String s)` | Дописывает текст, `null` представляется `"null"`; есть другие перегрузки |
+| `StringBuilder append(int n)` | Дописывает десятичное представление |
+| `StringBuilder insert(int offset, String s)` | Вставляет при `0 <= offset <= length()`; при `s == null` вставляет `"null"` |
+| `StringBuilder delete(int start, int end)` | Удаляет `[start, min(end, length()))`; требует `0 <= start <= length()` и `start <= end` |
+| `void setLength(int n)` | Требует `n >= 0`; сокращает содержимое или добавляет U+0000 |
+| `int length()`, `int capacity()` | Длина содержимого и ёмкость |
+| `String toString()` | Получает независимое строковое значение |
+
+Для `insert(int, String)` недопустимый `offset` вызывает `StringIndexOutOfBoundsException`. Для `delete` отрицательный `start`, `start > length()` или `start > end` вызывает `StringIndexOutOfBoundsException`; конец выше длины допустим и ограничивается текущей длиной. Для `setLength` отрицательная длина вызывает `IndexOutOfBoundsException`.
+
+`append` возвращает тот же накопитель и позволяет связывать вызовы в цепочку. Доступ к накопителю из нескольких потоков не синхронизируется автоматически. `StringBuffer` синхронизирует свои методы, но составная последовательность вызовов всё равно может требовать внешней организации. `StringBuilder.equals` не определяет равенство содержимого как `String.equals`.
+
+## String.compareTo и знак порядка {#sec-api-strings-compare-to}
+
+Сигнатура: `public int compareTo(String anotherString)`. Метод сравнивает строки лексикографически по значениям единиц UTF-16. На первом различии раньше идёт строка с меньшей единицей; если одна является префиксом другой, раньше идёт короткая. Фрагмент внутри `main`:
+
+```java
+System.out.println("Ada".compareTo("Lin"));   // -11
+System.out.println("Java".compareTo("Java")); // 0
+System.out.println("Java".compareTo("Java course")); // -7
+System.out.println("Lin".compareTo("Ada") > 0); // true
+```
+
+Порядок определяется знаком: `< 0`, `== 0`, `> 0`. В приведённых
+вызовах отрицательные результаты равны `-11` и `-7`. Результат `0` для строк соответствует `equals`. Переданный `null` даёт `NullPointerException`, как и вызов через отсутствующую строку. Это естественный порядок Java-строк; он учитывает регистр и не выполняет нормализацию или сравнение по языковым правилам. Для пользовательского словаря с правилами языка выбирают `Collator`; для технического идентификатора требуется именно согласованный порядок протокола. [String Java 25, compareTo](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#compareTo(java.lang.String)).
+
+## Границы слова в заданном алфавите {#sec-api-strings-word-boundaries}
+
+В ранних текстовых заданиях слово содержит только латинские A–Z/a–z и русские А–Я/а–я с Ё/ё. Цифра, табуляция и пунктуация разделяют слова; все разделители сохраняются при преобразовании. Для поиска слов этого алфавита подходит шаблон `[A-Za-zА-Яа-яЁё]+`. `\w` и `\b` используют правила регулярных выражений, которые не равны этому условию. Поиск возвращает диапазоны исходной строки:
+
+```java
+String text = "Java2\tкод!";
+var words = java.util.regex.Pattern.compile("[A-Za-zА-Яа-яЁё]+").matcher(text);
+while (words.find()) {
+    System.out.println(words.group() + ":" + words.start() + ":" + words.end());
+}
+```
+
+Вывод — `Java:0:4`, затем `код:6:9`. У `Matcher.start()` и `end()` результат типа `int`: включённое начало и исключённый конец последнего успешного совпадения. Как и `group`, их вызывают после успешного `find` или `matches`; иначе `IllegalStateException`. Индексы измерены в единицах UTF-16. Ручной проход может найти те же диапазоны, явно проверяя принадлежность каждой единицы алфавиту. Цифра `2`, табуляция и `!` не исчезли: найденные диапазоны указывают в исходную строку. При преобразовании слова и промежутки между ними извлекают из той же исходной строки, в которой найдены границы. [Matcher Java 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/Matcher.html#start()).
+
+## Диапазоны исходного текста {#sec-api-strings-source-ranges}
+
+`StringBuilder.append(CharSequence source, int start, int end)` добавляет
+диапазон `[start, end)` в накопитель. При существующей строке `source`
+требуется `0 <= start <= end <= source.length()`. Начало равно концу —
+добавляется пустой фрагмент. Индексы `start` и `end` относятся к `source`;
+длина накопителя определяется уже добавленным текстом.
+
+```java
+String source = "Java2код";
+StringBuilder result = new StringBuilder();
+result.append('[').append(source, 0, 4).append(']');
+result.append(source, 4, source.length());
+System.out.println(result); // [Java]2код
+```
+
+Связный проход с сохранением всех разделителей:
+@theory:sec-theory-text-word-walk. [@bib-fnd-builder-api]
+
+## Полные примеры {#sec-api-strings-examples}
+
+[TextValues.java](../examples/methods-arrays-text/TextValues.java)
+содержит длины UTF-16, обход по кодовым точкам, NFC, буквальную замену
+и экранирование регулярного выражения.
+[WordRanges.java](../examples/methods-arrays-text/WordRanges.java)
+выделяет слова, сохраняя их исходные границы и все разделители.
+[Команды и ожидаемые результаты](../examples/methods-arrays-text/README.md),
+[архив примеров](../examples/methods-arrays-text.zip).

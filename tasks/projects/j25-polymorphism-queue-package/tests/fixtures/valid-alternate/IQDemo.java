@@ -1,0 +1,1 @@
+import qpack.*;public class IQDemo{public static void demonstrate(){for(ICharQ q:new ICharQ[]{new FixedQueue(2),new CircularQueue(2),new DynQueue(2)}){q.put('A');System.out.println(q.get());}}void main(){demonstrate();}}

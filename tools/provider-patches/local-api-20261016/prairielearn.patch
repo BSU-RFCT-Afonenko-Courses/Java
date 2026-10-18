@@ -1,0 +1,124 @@
+diff --git a/_extensions/course-prairielearn/application/export-course.ts b/_extensions/course-prairielearn/application/export-course.ts
+index 5e9a4ec..a5d7a5b 100644
+--- a/_extensions/course-prairielearn/application/export-course.ts
++++ b/_extensions/course-prairielearn/application/export-course.ts
+@@ -283,7 +283,7 @@ export async function exportCourse(
+         }
+         const c = fact.check;
+         const descriptor = runtimeDescriptor(c, profile,
+-          sources.map(s => s.name), fact.trustedTests.map((t: any) => t.submissionRelativePath));
++          sources.map(s => s.name), fact.trustedTests.map((t: any) => t.submissionRelativePath), fact.apiPrecheck);
+         await Deno.writeTextFile(
+           join(project, "tests/grading-job.json"),
+           JSON.stringify(descriptor, null, 2) + "\n",
+diff --git a/_extensions/course-prairielearn/application/export.ts b/_extensions/course-prairielearn/application/export.ts
+index 853cce8..a61b9b3 100644
+--- a/_extensions/course-prairielearn/application/export.ts
++++ b/_extensions/course-prairielearn/application/export.ts
+@@ -484,7 +484,7 @@ export async function exportPrairieLearn(
+       !safe(project.slice(1))
+     ) {
+       questionFail(
+-        "Требуется путь проекта от корня выбранной книги",
++        "Требуется путь проекта от корня выбранного проекта",
+         "project",
+       );
+     }
+@@ -501,7 +501,7 @@ export async function exportPrairieLearn(
+     }
+     if ((await Deno.realPath(source)) !== source) {
+       questionFail(
+-        "Проект выходит за пределы выбранной книги",
++        "Проект выходит за пределы выбранного проекта",
+         "project",
+       );
+     }
+diff --git a/_extensions/course-prairielearn/application/runtime-descriptor.ts b/_extensions/course-prairielearn/application/runtime-descriptor.ts
+index 1415bb8..91f4fed 100644
+--- a/_extensions/course-prairielearn/application/runtime-descriptor.ts
++++ b/_extensions/course-prairielearn/application/runtime-descriptor.ts
+@@ -1,9 +1,13 @@
+ import {createMetrics as __createMetrics} from "../observability/bridge.ts";
+ const __metrics=__createMetrics("course-prairielearn");
+ import { normalizeDiscovery } from './grading-descriptor.ts';
+-export function runtimeDescriptor(c: any, profile: any, sources: string[], tests: string[]) {
++import { safePath } from './source-selection.ts';
++export interface ApiPrecheck {files:string[];entry:string}
++export function runtimeDescriptor(c: any, profile: any, sources: string[], tests: string[], api?:ApiPrecheck) {
+   const javaRuntime = profile.javaRelease !== undefined || !profile.sourceExtensions;
+   if (!javaRuntime && c.java !== undefined) throw new Error('PL non-Java runtime cannot declare Java compiler settings');
++  if(Boolean(c['api-precheck'])!==Boolean(api))throw new Error('PL API precheck selection missing or undeclared');
++  if(api&&(!javaRuntime||c.sourceProfile.mode!=='implementation'||!Array.isArray(api.files)||!api.files.length||new Set(api.files).size!==api.files.length||api.files.length>=tests.length||api.files.some(x=>!safePath(x)||!x.endsWith('.java')||!tests.includes(x))||!/^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*$/.test(api.entry)||api.entry!==c['api-precheck'].entry))throw new Error('PL API precheck must be a proper trusted Java subset');
+   return {
+     schemaVersion:1, sourceFiles:sources, testFiles:tests,
+     mode:c.sourceProfile.mode, runtime:c.runtime,
+@@ -11,6 +15,7 @@ export function runtimeDescriptor(c: any, profile: any, sources: string[], tests
+     limits:{'outer-seconds':30,'compile-seconds':15,'run-seconds':10,networking:false,'max-output-bytes':65536,...c.limits},
+     scoring:c.scoring ?? {mode:'weighted'}, discovery:normalizeDiscovery(c.discovery),
+     ...(c.variants ? {variants:c.variants} : {}),
++    ...(api ? {apiPrecheck:{files:[...api.files],entry:api.entry}} : {}),
+   };
+ }
+ 
+diff --git a/_extensions/course-prairielearn/entrypoints/export.ts b/_extensions/course-prairielearn/entrypoints/export.ts
+index abd1fa4..a02de0c 100644
+--- a/_extensions/course-prairielearn/entrypoints/export.ts
++++ b/_extensions/course-prairielearn/entrypoints/export.ts
+@@ -40,13 +40,13 @@ async function main() {
+   if (!core) {
+     throw diagnostic(
+       "PL.INPUT_INVALID",
+-      "В выбранной книге требуется установленный Core",
++      "В выбранном проекте требуется установленный Core",
+       {
+         source: join(root, book),
+         id: work,
+         field: "book",
+         hint:
+-          "Установите совместимый Core в выбранную книгу командой quarto add",
++          "Установите совместимый Core в выбранный проект командой quarto add",
+       },
+     );
+   }
+diff --git a/_extensions/course-prairielearn/validate-paths.ts b/_extensions/course-prairielearn/validate-paths.ts
+index 8478f27..e3c4c57 100644
+--- a/_extensions/course-prairielearn/validate-paths.ts
++++ b/_extensions/course-prairielearn/validate-paths.ts
+@@ -9,13 +9,13 @@ async function main() {
+       source,
+       id,
+       field: "project",
+-      hint: "Укажите существующий каталог проекта внутри выбранной книги",
++      hint: "Укажите существующий каталог проекта внутри выбранного проекта",
+     };
+     const fail = (message: string, cause?: unknown): never => {
+       throw diagnostic("PL.PROJECT_INVALID", message, context, cause);
+     };
+     if (!directory.startsWith("/") || directory.startsWith("//")) {
+-      fail(`Путь должен идти от корня выбранной книги: ${directory}`);
++      fail(`Путь должен идти от корня выбранного проекта: ${directory}`);
+     }
+     let real: string;
+     try {
+@@ -29,7 +29,7 @@ async function main() {
+       !path || path === ".." || path.startsWith("../") ||
+       path.startsWith("..\\") || isAbsolute(path)
+     ) {
+-      fail(`Путь выходит за пределы выбранной книги: ${directory}`);
++      fail(`Путь выходит за пределы выбранного проекта: ${directory}`);
+     }
+     if (!(await Deno.stat(real!)).isDirectory) {
+       fail(`Путь проекта не является каталогом: ${directory}`);
+diff --git a/_extensions/course-prairielearn/validate.lua b/_extensions/course-prairielearn/validate.lua
+index ff2e74f..f6e7b0d 100644
+--- a/_extensions/course-prairielearn/validate.lua
++++ b/_extensions/course-prairielearn/validate.lua
+@@ -73,7 +73,7 @@ function M.validate(doc, effective)
+   end})
+   __perfWalk6(doc,{Div = function(div)
+     if native.target(effective, div) == "prairielearn" then
+-      assert((div.attributes.project or ""):match("^/[^.]"), diagnostics.message("PL.PROJECT_INVALID", "Требуется project от корня выбранной книги", {source = source, id = div.identifier, field = "project", hint = "Укажите существующий каталог проекта, например /projects/clamp"}))
++      assert((div.attributes.project or ""):match("^/[^.]"), diagnostics.message("PL.PROJECT_INVALID", "Требуется project от корня выбранного проекта", {source = source, id = div.identifier, field = "project", hint = "Укажите существующий каталог проекта, например /projects/clamp"}))
+       projects:insert({path = div.attributes.project, id = div.identifier})
+     end
+   end})

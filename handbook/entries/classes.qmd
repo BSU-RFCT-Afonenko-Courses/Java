@@ -1,0 +1,194 @@
+---
+categories: [java, java-core, java-classes]
+pagetitle: Классы и конструкторы
+---
+
+# Классы и конструкторы {#sec-j25-api-classes}
+
+Класс задаёт поля и методы экземпляров. Конструктор с именем класса
+инициализирует новый объект; возвращаемый тип у него отсутствует.
+Выражение `new Counter(4)` создаёт объект и передаёт `4` конструктору.
+Объяснение устройства класса: @theory:sec-j25-theory-classes.
+[@bib-objects-schildt-classes]
+
+## Объявление и создание {#sec-j25-api-classes-declaration}
+
+```java
+final class Counter {
+    private int value;
+    Counter(int initial) { value = initial; }
+    int value() { return value; }
+    void increment() { value = Math.incrementExact(value); }
+}
+Counter counter = new Counter(4);
+counter.increment();
+System.out.println(counter.value()); // 5
+```
+
+`Counter counter;` объявляет ссылочную переменную. Поля нового объекта
+получают значения по умолчанию; локальную переменную можно читать после
+определённого присваивания. В методе экземпляра `this` обозначает получателя
+вызова, а `this.value` — его поле.
+
+## Модификаторы доступа {#sec-j25-api-classes-access}
+
+| Модификатор члена | Доступ |
+|---|---|
+| `private` | В пределах охватывающего верхнеуровневого объявления, включая его вложенные типы |
+| Отсутствует | В том же пакете |
+| `protected` | В том же пакете и при специальных условиях из подкласса в другом пакете |
+| `public` | Из мест, где доступен содержащий тип; дополнительно учитываются модули |
+
+Для `protected`-поля или метода экземпляра подкласс в другом пакете не получает право доступа через произвольную ссылку базового типа:
+
+```java
+// файл p/Base.java
+package p;
+public class Base { protected int value; }
+```
+
+```java
+// файл q/Child.java
+package q;
+public class Child extends p.Base {
+    void inspect(Child child, p.Base base) {
+        child.value = 1; // допустимо
+        // base.value = 1; // запрещено
+    }
+}
+```
+
+Верхнеуровневый обычный класс может быть `public` или иметь доступ внутри пакета; `protected` и `private` для него недопустимы. [@bib-objects-jls-access]
+
+## Конструкторы и инициализация {#sec-j25-api-classes-constructors}
+
+```java
+class Box {
+    private final int side;
+    Box(int side) {
+        if (side <= 0) throw new IllegalArgumentException();
+        this.side = side;
+    }
+    Box() { this(1); }
+}
+```
+
+Если ни одного конструктора нет, обычный класс получает конструктор
+по умолчанию; если хотя бы один объявлен, автоматический не предоставляется.
+Конструкторы не наследуются. `this(...)` вызывает другой конструктор
+того же экземпляра, `super(...)` — конструктор непосредственного
+суперкласса. При отсутствии явного вызова в классе, отличном от `Object`,
+подразумевается `super()`.
+
+В Java 25 разрешён ограниченный пролог перед явным вызовом: проверка аргументов и другие безопасные вычисления. В раннем конструировании нельзя читать состояние текущего экземпляра или вызывать его методы; разрешены предусмотренные правилами простые присваивания собственным полям без инициализатора. Правила раннего обращения к полям: [JLS §6.5.6.1](https://docs.oracle.com/javase/specs/jls/se25/html/jls-6.html#jls-6.5.6.1). [@bib-objects-jep513]
+
+При прямом вызове конструктора суперкласса с пустым прологом сначала
+выполняется этот вызов, затем инициализаторы полей и блоки экземпляра
+в текстовом порядке, затем эпилог конструктора. Делегирование через `this(...)` выполняет эти
+инициализаторы один раз для создаваемого объекта. Трасса:
+@theory:sec-j25-theory-classes-initialization.
+
+## Перегрузка методов {#sec-j25-api-classes-overload}
+
+Перегрузки имеют одинаковое имя и разные списки типов параметров.
+Одного различия возвращаемых типов недостаточно. Выбор происходит
+при компиляции по типам выражений аргументов:
+
+```java
+static String kind(Object value) { return "Object"; }
+static String kind(String value) { return "String"; }
+
+Object text = "Java";
+System.out.println(kind(text));   // Object
+System.out.println(kind("Java")); // String
+```
+
+Если применимые варианты принимают `String` и `Integer`, вызов с `null`
+неоднозначен. Приведение `(String) null` выбирает вариант со `String`.
+
+## `static` и `final` {#sec-j25-api-classes-modifiers}
+
+| Форма | Значение |
+|---|---|
+| `static int count` | Одно поле загруженного класса |
+| `int count` | Собственное поле каждого экземпляра |
+| `static void reset()` | Метод без текущего экземпляра |
+| `final int count` | Запрет повторного присваивания после инициализации |
+| `final void reset()` | Запрет переопределения |
+| `final class Counter` | Запрет подклассов |
+
+Для `final String[] names = {"Ann"}` запись `names[0] = "Bob"`
+допустима; повторное присваивание самой переменной `names` запрещено.
+Статический метод не имеет `this`; доступ к полю экземпляра требует
+явно указанного объекта.
+
+## Записи {#sec-j25-api-classes-records}
+
+```java
+record Range(int start, int end) {
+    Range {
+        if (start > end) throw new IllegalArgumentException();
+    }
+    Range(int end) { this(0, end); }
+}
+```
+
+Компоненты задают поля `private final`, открытые методы чтения и канонический
+конструктор. При отсутствии явных реализаций создаются `equals`, `hashCode`,
+`toString`.
+
+Компактный конструктор получает параметры из заголовка, может нормализовать
+их, а присваивание компонентным полям выполняется после нормального окончания
+тела. Канонический конструктор не содержит явного вызова другого конструктора,
+`throws` или собственных параметров типов. Его доступность не меньше
+доступности записи.
+
+Запись неявно `final`, расширяет `Record`, допускает интерфейсы, но не
+дополнительные поля экземпляра. Это поверхностная неизменяемость.
+Объяснение и выбор формы: @theory:sec-j25-theory-data-classes.
+[@bib-objects-schildt-records]
+
+Запись `grade.Student(String id, String name, int score)` и чтение
+её компонентов через `Class<?>`: @theory:sec-j25-theory-data-classes-reflection.
+
+## Защищённое состояние книги {#sec-j25-api-classes-book}
+
+У модели `Book` из теории конструктор принимает название — строку, отличную
+от `null` и содержащую хотя бы один непробельный символ. Методы `title()` и `borrowed()`
+читают состояние, `borrow()` отвергает
+повторную выдачу с `IllegalStateException` до изменения. Полное объявление
+и наблюдение двух ссылок: @theory:sec-j25-theory-classes-book.
+
+## Запуск примеров {#sec-j25-api-classes-examples}
+
+[Скачать исходники опытов](../examples/objects-examples.zip).
+После распаковки команды выполняются из каталога `objects` в JDK 25.
+Файлы и ожидаемые результаты перечислены в `README.md` архива.
+
+| Каталог | Опыт |
+|---|---|
+| `lecture-entry/` | Книга с конструктором по умолчанию, начальные значения полей и общий объект |
+| `theory-entry/` | Книга с `Book(String)`, копирование и переназначение ссылки |
+| `protected-book/` | `Book(String)`, `title()`, `borrowed()`, `borrow()` с проверкой повторной выдачи |
+| `classes/` | Бронирование, конструкторы, `this`, перегрузка, `static`, `final`, инициализация и стек |
+| `reference/` | Счётчик с начальным значением, конструкторы `Box`, запись `Range` |
+| `access/` | Доступ `protected` из другого пакета |
+
+Для опыта с конструктором по умолчанию:
+
+```bash
+javac --release 25 -encoding UTF-8 -d out/lecture-entry lecture-entry/Book.java lecture-entry/ObjectsEntryDemo.java
+java -cp out/lecture-entry ObjectsEntryDemo
+```
+
+В начале вывода появляются `null` и `false`: поля новой книги ещё содержат
+значения по умолчанию. У версии с конструктором, принимающим название:
+
+```bash
+javac --release 25 -encoding UTF-8 -d out/theory-entry theory-entry/Book.java theory-entry/ObjectsEntryDemo.java
+java -cp out/theory-entry ObjectsEntryDemo
+```
+
+Первые строки — `Java` и `Algorithms`: конструктор каждого объекта записал
+свой аргумент. Каталоги содержат альтернативные определения `Book`;
+каждая команда компилирует выбранное определение вместе с его демонстрацией.

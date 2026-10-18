@@ -1,0 +1,401 @@
+diff --git a/_extensions/course-core/domain/model.ts b/_extensions/course-core/domain/model.ts
+index e8371cb..ef94114 100644
+--- a/_extensions/course-core/domain/model.ts
++++ b/_extensions/course-core/domain/model.ts
+@@ -34,7 +34,9 @@ export interface Pedagogy {
+ export type Extracted<T> = Omit<T, "body" | "gradingNotes" | "source" | "extensions"> & { bodyJson: string; gradingNotesJson?: string[] };
+ export interface TopicFact { source: string; semester?: string; categories: string[] }
+ export interface SourceProfile {mode:"implementation"|"student-tests";root:string;include:string[]}
+-export interface ResolvedProjectCheck {profile:string; runtime:string; sourceProfile:SourceProfile; "source-profile":string; tests:string[]; references?:{name:string;root:string;optional:boolean}[]; [key:string]: unknown}
++export interface AdditionalJavaSources {archive:string; "max-files":number; "max-file-bytes":number; "max-total-bytes":number; "max-archive-bytes":number}
++export interface ApiPrecheck {files:string[];entry:string}
++export interface ResolvedProjectCheck {profile:string; runtime:string; sourceProfile:SourceProfile; "source-profile":string; tests:string[]; "additional-java-sources"?:AdditionalJavaSources; "api-precheck"?:ApiPrecheck; "verification-api-precheck"?:ApiPrecheck; references?:{name:string;root:string;optional:boolean}[]; [key:string]: unknown}
+ export interface ProjectFact {exerciseId:string;source:string;projectRoot:string;bankMember:boolean;purpose?:ExercisePurpose;statementVisibility:StatementVisibility;artifactPolicy:{student?:"starter"|"full";full:"full";conditions:boolean};check?:ResolvedProjectCheck}
+ export interface Fragment {
+   projects?: ProjectFact[]; topic?: TopicFact;
+diff --git a/_extensions/course-core/entrypoints/preview.ts b/_extensions/course-core/entrypoints/preview.ts
+index 037ecb5..99ded31 100644
+--- a/_extensions/course-core/entrypoints/preview.ts
++++ b/_extensions/course-core/entrypoints/preview.ts
+@@ -85,7 +85,7 @@ export async function finalizeAssessmentPreview(run:NativeRun){
+     // The public post-quarto filter put already-native HTML outside main.
+     // Native book crossrefs resolve there before search and configured hooks.
+     const pending=new Map<string,string>();
+-    html=html.replace(/<!--course-assignment-pending:(exr-[a-z0-9-]+):start--><div hidden(?:="")? inert(?:="")?>([\s\S]*?)<\/div><!--course-assignment-pending:\1:end-->/g,(_match,id,content)=>{pending.set(id,content);return "";});
++    html=html.replace(/<div hidden(?:="")? inert(?:="")?><!--course-assignment-pending:(exr-[a-z0-9-]+):start-->([\s\S]*?)<!--course-assignment-pending:\1:end--><\/div>/g,(_match,id,content)=>{pending.set(id,content);return "";});
+     // Relocate exact native markup only for a current open member; no parser,
+     // constructed address, inferred caption or stale native document lookup.
+     html=html.replace(/<!--course-assignment:(exr-[a-z0-9-]+):start--><template>[\s\S]*?<\/template><!--course-assignment:\1:end-->/g,(_match,id)=>facts.get(id)?.statementVisibility==="open"&&pending.has(id)?pending.get(id)!:'<span class="course-assignment-omitted"></span>');
+diff --git a/_extensions/course-core/filter.lua b/_extensions/course-core/filter.lua
+index eb3d7f1..e4e7d8a 100644
+--- a/_extensions/course-core/filter.lua
++++ b/_extensions/course-core/filter.lua
+@@ -114,7 +114,7 @@ return __perfFilters({{Pandoc = function(doc)
+     body = {publicExercises=publicExercises,publicAssessment=projectedAssessment(public),publicAnswers=selectedAnswers,fullAnswers=view=="full" and publicAnswers or nil},
+     resources = resources.facts(raw,public,resourceProjects)
+   })
+-  if rawAssessment and doc.meta["course-current-native-run"]==true and quarto.doc.is_format("html") then
++  if rawAssessment and doc.meta.course["assessment-time"]~=false and doc.meta["course-current-native-run"]==true and quarto.doc.is_format("html") then
+     doc.blocks:insert(pandoc.RawBlock("html","<!--course-assessment-time-->"))
+   end
+   if #canonical>0 and doc.meta["course-current-native-run"]==true and quarto.doc.is_format("html") then
+diff --git a/_extensions/course-core/native-document.lua b/_extensions/course-core/native-document.lua
+index db11112..955856a 100644
+--- a/_extensions/course-core/native-document.lua
++++ b/_extensions/course-core/native-document.lua
+@@ -79,6 +79,8 @@ function M.validate(doc, effective)
+   effective=effective or require("./exercise-defaults").normalize(doc)
+   local owner = pandoc.utils.stringify(doc.meta.course.id or '')
+   check(owner=='' or valid(owner,'^[a-z][a-z0-9%-]*$'),'CORE.COURSE_INVALID','Идентификатор курса должен состоять из строчных латинских букв, цифр и дефисов', {id=owner,field='course.id',hint='Используйте имя вроде course-demo'})
++  local assessmentTime=doc.meta.course['assessment-time']
++  check(assessmentTime==nil or type(assessmentTime)=='boolean','CORE.COURSE_INVALID','Настройка публикации времени должна быть boolean', {field='course.assessment-time',hint='Укажите true или false'})
+   local source,rows = source_path(),occurrences(doc)
+   local bank=contract.bank(doc.meta)
+   local defaults=contract.defaults(doc.meta)
+diff --git a/_extensions/course-core/project-checks/collect.ts b/_extensions/course-core/project-checks/collect.ts
+index 7fe950c..52a3bd2 100644
+--- a/_extensions/course-core/project-checks/collect.ts
++++ b/_extensions/course-core/project-checks/collect.ts
+@@ -3,12 +3,13 @@ const __metrics=__createMetrics("course-core");
+ import { expandGlob } from "stdlib/fs";
+ import { join, relative, resolve } from "stdlib/path";
+ import { collectNativeModel } from "../body-export/collect.ts";
+-import type { ProjectFact } from "../domain/model.ts";
++import type { ProjectFact, ApiPrecheck } from "../domain/model.ts";
+ import { diagnostic } from "../domain/diagnostics.ts";
+ export interface SourceSelection {projectRelativePath:string;submissionRelativePath:string;sha256:string}
+ export interface CheckProject extends ProjectFact {
+   qualifiedId:string; sources:SourceSelection[]; trustedTests:SourceSelection[];
+   verificationTests:SourceSelection[];
++  apiPrecheck?:ApiPrecheck; verificationApiPrecheck?:ApiPrecheck;
+   references:{name:string;root:string;optional:boolean;sources:SourceSelection[];available:boolean}[];
+   contractCasesHash?:{projectRelativePath:string;sha256:string}; contractFixtures:SourceSelection[];readiness:{ready:boolean;missing:string[]};
+ }
+@@ -49,7 +50,7 @@ export async function selectSources(root:string,sourceRoot:string,patterns:strin
+ /** Explicit opted-in inventory; generation executes native Quarto, never Java. */
+ export async function collectProjectChecks(root:string,options:{book:string;profiles?:string[]},current?:Awaited<ReturnType<typeof collectNativeModel>>):Promise<ChecksManifest>{
+  const collected=current??await collectNativeModel(root,options);
+- if(relative(root,collected.projectRoot).replaceAll("\\","/")!==options.book && resolve(root,options.book)!==collected.projectRoot)throw diagnostic("CHECKS.OWNER_MISMATCH","Текущий collected owner не совпадает с выбранной книгой");
++ if(relative(root,collected.projectRoot).replaceAll("\\","/")!==options.book && resolve(root,options.book)!==collected.projectRoot)throw diagnostic("CHECKS.OWNER_MISMATCH","Текущий collected owner не совпадает с выбранным проектом");
+  const projects:CheckProject[]=[];
+  for(const fact of collected.result.model.projects??[]){
+   if(!fact.check)continue;
+@@ -63,13 +64,29 @@ export async function collectProjectChecks(root:string,options:{book:string;prof
+   const trustedTests=(await select("tests",check.tests.map(p=>p.startsWith("tests/")?p.slice(6):p))).map(s=>({...s,submissionRelativePath:s.submissionRelativePath.replace(/^junit\//,"")}));
+   if(!trustedTests.length)missing.push("trustedTests");
+   const verificationTests=await select("student",((check["verification-tests"]??[]) as string[]).map(p=>p.startsWith("student/")?p.slice(8):p));
++  const apiSubset=async (value:ApiPrecheck|undefined,partition:string,available:SourceSelection[],stripJunit=false):Promise<ApiPrecheck|undefined>=>{
++   if(!value)return undefined;
++   if(check.runtime!=="java25-junit-v1"||check.sourceProfile.mode!=="implementation"||!value.files.length||!/^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*$/.test(value.entry))throw diagnostic("CHECKS.API_INVALID","API precheck требует Java implementation, files и entry");
++   const selected=(await select(partition,value.files.map(p=>p.startsWith(partition+"/")?p.slice(partition.length+1):p))).map(s=>({...s,submissionRelativePath:stripJunit?s.submissionRelativePath.replace(/^junit\//,""):s.submissionRelativePath}));
++   if(!selected.length){missing.push(partition+"ApiPrecheck");return {entry:value.entry,files:[]};}
++   if(selected.length>=available.length||selected.some(s=>!s.submissionRelativePath.endsWith('.java')||!available.some(a=>a.projectRelativePath===s.projectRelativePath&&a.submissionRelativePath===s.submissionRelativePath)))throw diagnostic("CHECKS.API_SUBSET_INVALID","API precheck должен быть собственным подмножеством выбранных доверенных Java sources");
++   return {files:selected.map(s=>s.submissionRelativePath),entry:value.entry};
++  };
++  const apiPrecheck=await apiSubset(check['api-precheck'],"tests",trustedTests,true);
++  const verificationApiPrecheck=await apiSubset(check['verification-api-precheck'],"student",verificationTests);
++  if(apiPrecheck&&verificationTests.length&&!verificationApiPrecheck)throw diagnostic("CHECKS.API_PUBLIC_MISSING","Публичная проверка fixed API требует собственной явной API precheck");
++  const extras=check['additional-java-sources'];
++  if(extras){
++   const reserved=[...sources,...trustedTests,...verificationTests].map(x=>x.submissionRelativePath).concat(['grading-job.json','tests/grading-job.json']);
++   if(reserved.some(name=>name===extras.archive||name.startsWith(extras.archive+'/')||extras.archive.startsWith(name+'/')))throw diagnostic('CHECKS.ADDITIONAL_JAVA_COLLISION','Имя ZIP конфликтует с основным/доверенным путём');
++  }
+   const references=[];
+   for(const ref of check.references??[]){
+    let available=true,files:SourceSelection[]=[];
+    files=await select(ref.root,check.sourceProfile.include);available=files.length>0;
+    if(!available&&!ref.optional)missing.push("reference:"+ref.name);
+    const allowed=new Set(sources.map(s=>s.submissionRelativePath));
+-   if(sources.length&&files.some(file=>!allowed.has(file.submissionRelativePath)))throw diagnostic("CHECKS.REFERENCE_MAPPING_INVALID","Reference не соответствует именам выбранных sources",{source:fact.source,id:fact.exerciseId});
++   if(sources.length&&!check['additional-java-sources']&&files.some(file=>!allowed.has(file.submissionRelativePath)))throw diagnostic("CHECKS.REFERENCE_MAPPING_INVALID","Reference не соответствует именам выбранных sources",{source:fact.source,id:fact.exerciseId});
+    references.push({...ref,sources:files,available});
+   }
+   let contractCasesHash:CheckProject['contractCasesHash'];const contractFixtures:SourceSelection[]=[];
+@@ -86,7 +103,7 @@ export async function collectProjectChecks(root:string,options:{book:string;prof
+    }catch(e){if(!(e instanceof Deno.errors.NotFound))throw e;missing.push('contract-cases');}
+   }
+   if(((check['verification-tests']??[]) as string[]).length&&!verificationTests.length)missing.push('verificationTests');
+-  projects.push({...fact,qualifiedId:collected.courseId+"/"+fact.exerciseId,sources,trustedTests,verificationTests,references,contractFixtures,readiness:{ready:missing.length===0,missing},...(contractCasesHash?{contractCasesHash}:{})});
++  projects.push({...fact,qualifiedId:collected.courseId+"/"+fact.exerciseId,sources,trustedTests,verificationTests,references,contractFixtures,readiness:{ready:missing.length===0,missing},...(apiPrecheck?{apiPrecheck}:{}),...(verificationApiPrecheck?{verificationApiPrecheck}:{}),...(contractCasesHash?{contractCasesHash}:{})});
+  }
+  projects.sort((a,b)=>a.qualifiedId.localeCompare(b.qualifiedId));
+  const sources=[];
+diff --git a/_extensions/course-core/project-checks/manifest.cue b/_extensions/course-core/project-checks/manifest.cue
+index 09c0079..d180b35 100644
+--- a/_extensions/course-core/project-checks/manifest.cue
++++ b/_extensions/course-core/project-checks/manifest.cue
+@@ -7,11 +7,13 @@ import "list"
+  qualifiedId:string & !=""
+  check:#ResolvedProjectCheck
+  sources:[...#Selection],trustedTests:[...#Selection],verificationTests:[...#Selection]
++ apiPrecheck?:{files:[...string],entry:#ApiPrecheck.entry}
++ verificationApiPrecheck?:{files:[...string],entry:#ApiPrecheck.entry}
+  references:[...{name:string,root:string,optional:bool,sources:[...#Selection],available:bool}]
+  contractFixtures:[...#Selection]
+  contractCasesHash?:{projectRelativePath:string,sha256:#SHA256}
+  readiness:{ready:bool,missing:[...string]}
+- if readiness.ready {readiness:missing:[],sources:list.MinItems(1),trustedTests:list.MinItems(1)}
++ if readiness.ready {readiness:missing:[],sources:list.MinItems(1),trustedTests:list.MinItems(1),apiPrecheck?:files:list.MinItems(1),verificationApiPrecheck?:files:list.MinItems(1)}
+  if !readiness.ready {readiness:missing:list.MinItems(1)}
+ }
+ #ChecksManifest: {
+diff --git a/_extensions/course-core/projects.lua b/_extensions/course-core/projects.lua
+index cb54e00..c592759 100644
+--- a/_extensions/course-core/projects.lua
++++ b/_extensions/course-core/projects.lua
+@@ -8,7 +8,9 @@ local expectationShape={['student-compilation']=true,job=true,['required-tests']
+ local checkShape={['source-profile']=true,runtime=true,java={release=true,encoding=true,['compiler-options']='array'},limits={['outer-seconds']=true,['compile-seconds']=true,['run-seconds']=true,networking=true,['max-output-bytes']=true},
+  scoring={mode=true,groups='array',basis=true,value=true},references='array',tests='array',['verification-tests']='array',['contract-cases']=true,
+  ['verification-expectations']={reference=expectationShape,starter=expectationShape},
+- discovery={['min-executed']=true,['allow-skipped']=true},variants={correct='array',mutants='array'}}
++ discovery={['min-executed']=true,['allow-skipped']=true},variants={correct='array',mutants='array'},
++ ['additional-java-sources']={archive=true,['max-files']='integer',['max-file-bytes']='integer',['max-total-bytes']='integer',['max-archive-bytes']='integer'},
++ ['api-precheck']={files='array',entry=true},['verification-api-precheck']={files='array',entry=true}}
+ local function fail(field,detail,id) diagnostics.fail('CORE.PROJECT_CHECK_INVALID',detail,{source=quarto.doc.input_file,id=id,field=field}) end
+ local function scalar(value)
+  if type(value)=='boolean' then return value end
+@@ -96,6 +98,22 @@ function M.resolve(config,name,id)
+  if result.limits and result.limits.networking~=nil and result.limits.networking~=false then fail('limits.networking','Network must be false',id) end
+  if result.discovery and result.discovery['allow-skipped']~=nil and type(result.discovery['allow-skipped'])~='boolean' then fail('discovery.allow-skipped','Требуется boolean',id) end
+  if result.discovery and result.discovery['min-executed'] then result.discovery['min-executed']=tonumber(result.discovery['min-executed']);if not result.discovery['min-executed'] or result.discovery['min-executed']<1 or result.discovery['min-executed']%1~=0 then fail('discovery.min-executed','Требуется положительный integer',id) end end
++ local extras=result['additional-java-sources']
++ if extras then
++  if source.mode~='implementation' or result.runtime~='java25-junit-v1' then fail('additional-java-sources','Дополнительные Java sources требуют Java implementation',id) end
++  if type(extras.archive)~='string' or not extras.archive:match('^[A-Za-z0-9][A-Za-z0-9_-]*%.zip$') or #extras.archive>105 then fail('additional-java-sources.archive','Требуется безопасное basename ZIP',id) end
++  for key,cap in pairs({['max-files']=128,['max-file-bytes']=1048576,['max-total-bytes']=4194304,['max-archive-bytes']=2097152}) do
++   local n=extras[key];if type(n)~='number' or n<1 or n>cap or n%1~=0 then fail('additional-java-sources.'..key,'Требуется положительный integer в защитных пределах',id) end
++  end
++ end
++ for _,name in ipairs({'api-precheck','verification-api-precheck'}) do
++  local api=result[name]
++  if api then
++   if source.mode~='implementation' or result.runtime~='java25-junit-v1' then fail(name,'API precheck требует Java implementation',id) end
++   if not api.files or #api.files==0 or not api.entry or not api.entry:match('^[%a_$][%w_$.]*$') then fail(name,'API precheck требует files и Java entry class',id) end
++   for _,value in ipairs(api.files) do path(value,name..'.files') end
++  end
++ end
+  return result
+ end
+ function M.collect(doc,facts)
+diff --git a/_extensions/course-core/spec/core.cue b/_extensions/course-core/spec/core.cue
+index 2d23f2c..75688ac 100644
+--- a/_extensions/course-core/spec/core.cue
++++ b/_extensions/course-core/spec/core.cue
+@@ -119,7 +119,7 @@ import "list"
+ #SourceProfile: {mode:"implementation"|"student-tests",root:string & !="",include:[...string] & list.MinItems(1)}
+ #VerificationExpectation: {"student-compilation"?:"success"|"failure",job?:"complete"|"failure","required-tests"?:"all-pass",classification?:string,"failed-tests"?:{"at-least"?:int & >=0,exactly?:int & >=0},"executed-tests"?:{"at-least"?:int & >=0,exactly?:int & >=0},"test-ids"?:[...string],score?:{"less-than"?:number & >=0,"at-least"?:number & >=0,exactly?:number & >=0}}
+ #Scoring: {mode:"weighted"} | {mode:"all-pass"} | {mode:"contract-groups",groups:[...{id:string & !="",weight:number & >0,tests:[...string] & list.MinItems(1)}] & list.MinItems(1)} | {mode:"threshold",basis:"score"|"passed-tests",value:number & >=0}
+-#ResolvedProjectCheck: {
++#ResolvedProjectCheck: CHECK={
+  profile:string & !="",runtime:string & !="",sourceProfile:#SourceProfile,"source-profile":string & !="",tests:[...string]
+  java?:{release:int & >0,encoding?:string & !="","compiler-options"?:[...string]}
+  limits?:{"outer-seconds"?:number & >0,"compile-seconds"?:number & >0,"run-seconds"?:number & >0,networking?:false,"max-output-bytes"?:int & >0}
+@@ -129,7 +129,15 @@ import "list"
+  "verification-expectations"?:{reference?:#VerificationExpectation,starter?:#VerificationExpectation}
+  discovery?:{"min-executed"?:int & >0,"allow-skipped"?:bool}
+  variants?:{correct:[...string] & list.MinItems(1),mutants:[...string] & list.MinItems(1)}
++ "additional-java-sources"?:#AdditionalJavaSources
++ if CHECK["additional-java-sources"] != _|_ {runtime:"java25-junit-v1",sourceProfile:mode:"implementation"}
++ "api-precheck"?:#ApiPrecheck
++ "verification-api-precheck"?:#ApiPrecheck
++ if CHECK["api-precheck"] != _|_ {runtime:"java25-junit-v1",sourceProfile:mode:"implementation"}
++ if CHECK["verification-api-precheck"] != _|_ {runtime:"java25-junit-v1",sourceProfile:mode:"implementation"}
+ }
++#AdditionalJavaSources: {archive:string & =~"^[A-Za-z0-9][A-Za-z0-9_-]{0,100}\\.zip$","max-files":int & >=1 & <=128,"max-file-bytes":int & >=1 & <=1048576,"max-total-bytes":int & >=1 & <=4194304,"max-archive-bytes":int & >=1 & <=2097152}
++#ApiPrecheck: {files:[...string & !=""] & list.MinItems(1),entry:string & =~"^[A-Za-z_$][A-Za-z0-9_$]*(\\.[A-Za-z_$][A-Za-z0-9_$]*)*$"}
+ #ProjectFact: {exerciseId:string, source:string, projectRoot:string & !="", bankMember:bool, purpose?:#ExercisePurpose, statementVisibility:#StatementVisibility, artifactPolicy:{student?:"starter"|"full",full:"full",conditions:bool},check?:#ResolvedProjectCheck}
+ #TopicFact: {source:string,semester?:string,categories:[...string]}
+ #Course: {
+diff --git a/_extensions/course-core/visibility.lua b/_extensions/course-core/visibility.lua
+index bfbcbf5..516fa71 100644
+--- a/_extensions/course-core/visibility.lua
++++ b/_extensions/course-core/visibility.lua
+@@ -275,7 +275,7 @@ function M.defer_native_assignments(doc)
+   return __perfWalk13(doc,{Span=function(span)
+     local member=span.attributes['data-course-assignment-id']
+     if not member then return end
+-    quarto.doc.include_text('after-body','<!--course-assignment-pending:'..member..':start--><div hidden inert>'..pandoc.write(pandoc.Pandoc({pandoc.Plain(span.content)}),'html')..'</div><!--course-assignment-pending:'..member..':end-->')
++    quarto.doc.include_text('after-body','<div hidden inert><!--course-assignment-pending:'..member..':start-->'..pandoc.write(pandoc.Pandoc({pandoc.Plain(span.content)}),'html')..'<!--course-assignment-pending:'..member..':end--></div>')
+     return pandoc.RawInline('html','<!--course-assignment:'..member..':start--><template></template><!--course-assignment:'..member..':end-->')
+   end,Div=function(div)
+     if not div.classes:includes('task-items') then return end
+@@ -287,7 +287,7 @@ function M.defer_native_assignments(doc)
+           if member and last and last.t=='RawBlock' and last.text=='</template><!--course-assignment:'..member..':end-->' then
+             local native=pandoc.List()
+             for i=2,#item-1 do native:insert(item[i]) end
+-            quarto.doc.include_text('after-body','<!--course-assignment-pending:'..member..':start--><div hidden inert>'..pandoc.write(pandoc.Pandoc(native),'html')..'</div><!--course-assignment-pending:'..member..':end-->')
++            quarto.doc.include_text('after-body','<div hidden inert><!--course-assignment-pending:'..member..':start-->'..pandoc.write(pandoc.Pandoc(native),'html')..'<!--course-assignment-pending:'..member..':end--></div>')
+             list.content[index]=pandoc.List({pandoc.RawBlock('html','<!--course-assignment:'..member..':start--><template></template><!--course-assignment:'..member..':end-->')})
+           end
+         end
+diff --git a/_extensions/course-navigation/navigation/plugin.js b/_extensions/course-navigation/navigation/plugin.js
+index 67ed6fc..a875d1c 100644
+--- a/_extensions/course-navigation/navigation/plugin.js
++++ b/_extensions/course-navigation/navigation/plugin.js
+@@ -63,6 +63,8 @@
+             catch (_) { /* Внешний фрейм может запрещать полноэкранный режим. */ }
+           }
+         };
++        const notes = deck.getPlugin?.('notes');
++        if (typeof notes?.open === 'function') actions.speaker = () => notes.open();
+         document.body.classList.add('course-navigation-active');
+         if (options.sidebar === false) document.body.classList.add('course-navigation-no-sidebar');
+         ui = UI.build(model, options, actions);
+diff --git a/_extensions/course-navigation/navigation/ui.js b/_extensions/course-navigation/navigation/ui.js
+index 2b5d034..be13ee6 100644
+--- a/_extensions/course-navigation/navigation/ui.js
++++ b/_extensions/course-navigation/navigation/ui.js
+@@ -6,13 +6,13 @@
+     ru: { start: 'Начало', material: 'Материал', slide: 'Слайд', topics: 'Разделы', controls: 'Управление презентацией',
+       prev: 'Предыдущий слайд', next: 'Следующий слайд', prevSection: 'Предыдущий раздел', nextSection: 'Следующий раздел',
+       back: 'Назад по посещённым слайдам', forward: 'Вперёд по посещённым слайдам', overview: 'Обзор всех слайдов',
+-      search: 'Поиск по слайдам', fullscreen: 'Полный экран', print: 'Печать / PDF (новая вкладка)', close: 'Закрыть', searchPlaceholder: 'Заголовок, термин или фрагмент кода…',
++      search: 'Поиск по слайдам', fullscreen: 'Полный экран', speaker: 'Окно преподавателя', print: 'Печать / PDF (новая вкладка)', close: 'Закрыть', searchPlaceholder: 'Заголовок, термин или фрагмент кода…',
+       noResults: 'Ничего не найдено', searchHint: 'Поиск выполняется только в этой презентации.', sectionProgress: 'В разделе',
+       allProgress: 'Прогресс презентации', section: 'Раздел', resultCount: 'Найдено слайдов', presentation: 'Презентация' },
+     en: { start: 'Start', material: 'Content', slide: 'Slide', topics: 'Sections', controls: 'Presentation controls',
+       prev: 'Previous slide', next: 'Next slide', prevSection: 'Previous section', nextSection: 'Next section',
+       back: 'Back in visited slides', forward: 'Forward in visited slides', overview: 'Slide overview',
+-      search: 'Search slides', fullscreen: 'Full screen', print: 'Print / PDF (new tab)', close: 'Close', searchPlaceholder: 'Heading, term, or code…',
++      search: 'Search slides', fullscreen: 'Full screen', speaker: 'Speaker view', print: 'Print / PDF (new tab)', close: 'Close', searchPlaceholder: 'Heading, term, or code…',
+       noResults: 'No slides found', searchHint: 'Search only this presentation.', sectionProgress: 'In section',
+       allProgress: 'Presentation progress', section: 'Section', resultCount: 'Slides found', presentation: 'Presentation' }
+   };
+@@ -24,6 +24,7 @@
+     overview: 'M3 3h7v7H3zm11 0h7v7h-7zM3 14h7v7H3zm11 0h7v7h-7z',
+     search: 'M20 20l-5-5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0',
+     fullscreen: 'M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5',
++    speaker: 'M3 3h18v13H3zM8 21l4-5 4 5M7 7h10M7 11h6',
+     print: 'M7 8V3h10v5M7 17H4V9h16v8h-3M7 14h10v7H7zM17 11h.01',
+     topics: 'M4 6h16M4 12h16M4 18h16', close: 'm6 6 12 12M18 6 6 18'
+   };
+@@ -111,6 +112,8 @@
+     // После перехода меню закрывается, в том числе на узком экране.
+     ['prevSection', 'nextSection', 'back', 'forward'].forEach(key =>
+       addControl(menuActions, key, '', true, () => { closeDialogs(); actions[key](); }));
++    if (typeof actions.speaker === 'function')
++      addControl(menuActions, 'speaker', '', true, () => { closeDialogs(); actions.speaker(); });
+     menu.append(menuActions);
+     if (options.links?.length) menu.append(permanentLinks());
+     menu.append(sectionList());
+@@ -118,6 +121,7 @@
+     addControl(controls, 'topics', 'course-nav-menu-toggle');
+     ['back', 'forward', 'prevSection', 'nextSection'].forEach(key => addControl(controls, key, 'course-nav-auxiliary'));
+     ['prev', 'next', 'overview', 'search', 'fullscreen', 'print'].forEach(key => addControl(controls, key));
++    if (typeof actions.speaker === 'function') addControl(controls, 'speaker', 'course-nav-auxiliary');
+     footer.append(status, sectionStatus, controls);
+     // Обзор в порядке документа, независимый от пространственных групп Reveal.
+     const overview = dialog(labels.overview); overview.classList.add('course-nav-overview');
+diff --git a/_extensions/course-presentation/disclosure.js b/_extensions/course-presentation/disclosure.js
+index 8e06350..0300b89 100644
+--- a/_extensions/course-presentation/disclosure.js
++++ b/_extensions/course-presentation/disclosure.js
+@@ -12,7 +12,14 @@
+     const displayed = window.CoursePresentation?.exposeNote(target);
+     if (displayed) target = displayed;
+     let fragment = -1;
+-    const scroll = () => { if (!window.Reveal) target.scrollIntoView({block: 'center', behavior: 'auto'}); };
++    const scroll = () => {
++      if (!window.Reveal) {
++        // Начало длинного раздела должно оставаться видимым. Отступ под
++        // навигационную панель задаёт штатное оформление Quarto для :target.
++        const block = target.tagName === 'SECTION' ? 'start' : 'center';
++        target.scrollIntoView({block, behavior: 'auto'});
++      }
++    };
+     for (let element = target; element; element = element.parentElement) {
+       if (element.tagName === 'DETAILS') element.open = true;
+       if (element.classList.contains('collapse') && !element.classList.contains('show')) {
+diff --git a/_extensions/course-presentation/modules/config.lua b/_extensions/course-presentation/modules/config.lua
+index c08cf7f..da394f9 100644
+--- a/_extensions/course-presentation/modules/config.lua
++++ b/_extensions/course-presentation/modules/config.lua
+@@ -30,6 +30,7 @@ function M.read(meta)
+   local pedagogy = meta["course-pedagogy"] or {}
+   if type(pedagogy) ~= "table" then assert(false, message("course-pedagogy должен содержать YAML-словарь параметров", "course-pedagogy")) end
+   return {answers = answers, reveal = reveal, html = html,bank=meta["exercise-bank"]==true,
++    assessmentTime = not (type(meta.course) == "table" and meta.course["assessment-time"] == false),
+     ru = lang:match("^ru") ~= nil,
+     defaults = pedagogy["document-defaults"] == true and {
+       difficulty = string(meta.difficulty), time = string(meta.time),
+diff --git a/_extensions/course-presentation/modules/metadata.lua b/_extensions/course-presentation/modules/metadata.lua
+index e6681ae..09e3673 100644
+--- a/_extensions/course-presentation/modules/metadata.lua
++++ b/_extensions/course-presentation/modules/metadata.lua
+@@ -28,7 +28,9 @@ function M.decorate(div, cfg)
+     badge(roles[role].label, "role")
+   end
+   badge(label(difficulty[values.difficulty], cfg), "difficulty")
+-  badge(values.time and (values.time .. (cfg.ru and " мин" or " min")), "time")
++  if cfg.assessmentTime ~= false then
++    badge(values.time and (values.time .. (cfg.ru and " мин" or " min")), "time")
++  end
+   if values["work-mode"] ~= "individual" then
+     badge(label(modes[values["work-mode"]], cfg), "work-mode")
+   end
+diff --git a/_extensions/course-presentation/presentation.css b/_extensions/course-presentation/presentation.css
+index 0cd92c1..11534d9 100644
+--- a/_extensions/course-presentation/presentation.css
++++ b/_extensions/course-presentation/presentation.css
+@@ -72,3 +72,11 @@ body.course-navigation-no-sidebar .reveal.show-notes { width: 75%; }
+ html.print-pdf .course-mode-toggle, html.print-pdf .reveal .speaker-notes, html.print-pdf .reveal aside.notes { display: none !important; }
+ 
+ .course-assessment-time { margin: 1rem 0; padding: .75rem 1rem; border-left: .25rem solid var(--bs-primary, #365f91); }
++
++/* Длинные URL библиографии остаются в границах слайда. */
++.reveal .csl-entry a { overflow-wrap: anywhere; }
++
++/* Узкий экран: широкая таблица прокручивается внутри слайда, кроме печати. */
++@media screen and (max-width: 600px) {
++ html:not(.print-pdf) .reveal .slides section table { display: block; max-width: 100%; overflow-x: auto; }
++}
+diff --git a/_extensions/course-presentation/presentation.js b/_extensions/course-presentation/presentation.js
+index 79ecf0f..621ab92 100644
+--- a/_extensions/course-presentation/presentation.js
++++ b/_extensions/course-presentation/presentation.js
+@@ -10,11 +10,37 @@
+   let mode = parameters.get('course-mode') === 'lecture' ? 'lecture' : 'study';
+   let reveal, modeButton, notesBeforePrint, printing = false;
+ 
++  function localizeQuartoLabels() {
++    if (!document.documentElement.lang.startsWith('ru')) return;
++    const labels = [
++      ['#quarto-search .aa-Autocomplete[aria-label="Search"]', 'aria-label', 'Поиск'],
++      ['#quarto-search button[title="Search"]', 'title', 'Поиск'],
++      ['.anchorjs-link[aria-label="Anchor"]', 'aria-label', 'Ссылка на раздел'],
++    ];
++    const localize = root => {
++      if (root.nodeType !== Node.ELEMENT_NODE) return;
++      for (const [selector, attribute, text] of labels) {
++        if (root.matches(selector)) root.setAttribute(attribute, text);
++        root.querySelectorAll(selector).forEach(node => node.setAttribute(attribute, text));
++      }
++    };
++    localize(document.body);
++    // Quarto создаёт ссылки после DOMContentLoaded и может перестроить поиск.
++    // Проверяются только добавленные поддеревья; запись атрибутов не вызывает наблюдатель.
++    new MutationObserver(records => records.forEach(record => record.addedNodes.forEach(localize)))
++      .observe(document.body, {childList: true, subtree: true});
++  }
++
+   // Reveal owns the side panel and speaker window. Its panel is a native copy;
+   // preserve the original IDs in the slide and remove IDs only from that copy.
+   function normalizeNotes() {
+     const panel = reveal?.getRevealElement().querySelector('.speaker-notes');
+     if (!panel) return;
++    const placeholder = panel.querySelector('.notes-placeholder');
++    if (document.documentElement.lang.startsWith('ru') &&
++        placeholder?.textContent === 'No notes on this slide.') {
++      placeholder.textContent = 'Заметок к этому слайду нет.';
++    }
+     panel.querySelectorAll('[id]').forEach(node => {
+       node.dataset.courseNoteId = node.id; node.removeAttribute('id');
+     });
+@@ -104,6 +130,7 @@
+   }
+ 
+   function initialize() {
++    localizeQuartoLabels();
+     labelTabPanels();
+     const deck = window.Reveal;
+     if (deck && document.querySelector('.reveal')) {

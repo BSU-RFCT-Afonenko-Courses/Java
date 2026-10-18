@@ -1,0 +1,1 @@
+import java.util.*;class TaskBinding{static List<Integer>removed(int n,int kind){return kind==0?alternate.Elimination.array(n).removed():alternate.Elimination.linked(n).removed();}static int survivor(int n,int kind){return kind==0?alternate.Elimination.array(n).survivor():alternate.Elimination.linked(n).survivor();}}

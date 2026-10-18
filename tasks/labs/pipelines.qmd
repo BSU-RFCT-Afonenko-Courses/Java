@@ -1,0 +1,38 @@
+---
+categories: [java, java-core, java-pipelines]
+assessment:
+  kind: lab
+---
+
+# Функциональная обработка {#sec-j25-lab-pipelines}
+
+Переданное действие определяет условие отбора или преобразование элемента.
+Порядок результата и момент вызова действия задаются алгоритмом обработки.
+
+Теория: @theory:sec-j25-theory-functions и @theory:sec-j25-theory-streams-lazy. API: @handbook:sec-j25-api-functions, @handbook:sec-j25-api-streams, @handbook:sec-j25-api-streams-char-units. Введение: @practice:sec-j25-practice-pipelines.
+
+## Состав работы
+
+Все задания вне пары обязательны; из каждой пары выполните одно:
+
+- @tasks:exr-j25-pipelines-divisibility-function **либо** @tasks:exr-j25-pipelines-discriminant-function.
+- @tasks:exr-j25-pipelines-count-selected-words **либо** @tasks:exr-j25-pipelines-count-characters.
+
+::: {.task-items stage="homework"}
+1. [@exr-j25-pipelines-divisibility-function]{requirement="optional"}
+1. @exr-j25-pipelines-filter-string-array
+1. @exr-j25-pipelines-order-points
+1. [@exr-j25-pipelines-count-selected-words]{requirement="optional"}
+1. @exr-j25-pipelines-conditional-function
+1. [@exr-j25-pipelines-count-characters]{requirement="optional"}
+1. [@exr-j25-pipelines-discriminant-function]{requirement="optional"}
+:::
+
+## Предъявление и объяснение
+
+Покажите строгую границу длины, пустой отбор, повтор и равные геометрические расстояния точек, отсутствующее слово либо пробел и суррогатные кодовые единицы текста, обе ветви условной функции. Для точек используйте целые координаты из `[-10000, 10000]`: квадраты расстояний точно представимы в `int`, а равные расстояния требуют сохранения взаимного порядка. В подсчёте слов соблюдайте алфавит и порядок запросов из карточки; в подсчёте кодовых единиц учитывайте каждый `char`.
+
+Stream и лямбды обязательны там, где названы карточкой. Частоты можно получить отдельными `filter`/`count` или общим словарём с последующим отчётом. Для `ternaryOperator` объясните типовые параметры, момент вызова предиката, выбор ветви и повторный `apply`; класс и способ вызова вашего метода свободны. Точная трасса промежуточных действий Stream зависит от допустимых оптимизаций: объясните, почему `peek` перед `count` может не выполниться.
+
+Представьте исходные Java-файлы и короткую демонстрацию обычных
+и существенных граничных случаев. Используйте Java 25. Обязательная техника проверяется по исходнику; объяснение включает связь входа, результата и выбранного алгоритма.

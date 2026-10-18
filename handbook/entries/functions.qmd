@@ -1,0 +1,148 @@
+---
+categories: [java, java-core, java-functions]
+---
+
+# Функциональные интерфейсы и лямбда-выражения {#sec-j25-api-functions}
+
+Функциональный интерфейс задаёт одну абстрактную операцию. Лямбда
+реализует её, а вызывающий код передаёт аргументы через метод интерфейса.
+Объяснение передачи действий: @theory:sec-j25-theory-functions.
+Правила Java 25: JLS §15.27 и пакет `java.util.function`
+[@bib-data-jls-lambdas; @bib-data-function-api].
+
+## Формы интерфейсов {#sec-j25-api-functions-interfaces}
+
+| Тип | Основной абстрактный метод |
+|---|---|
+| `Predicate<T>` | `boolean test(T value)` |
+| `Function<T,R>` | `R apply(T value)` |
+| `Consumer<T>` | `void accept(T value)` |
+| `Supplier<T>` | `T get()` |
+| `UnaryOperator<T>` | `T apply(T value)`; частный `Function<T,T>` |
+| `BinaryOperator<T>` | `T apply(T a, T b)`; частный `BiFunction<T,T,T>` |
+| `BiPredicate<T,U>` | `boolean test(T a, U b)` |
+| `BiFunction<T,U,R>` | `R apply(T a, U b)` |
+| `BiConsumer<T,U>` | `void accept(T a, U b)` |
+| `ToIntFunction<T>` | `int applyAsInt(T value)` |
+| `IntPredicate` | `boolean test(int value)` |
+| `IntUnaryOperator` | `int applyAsInt(int value)` |
+
+Статические, `default`- и приватные методы не создают дополнительных
+абстрактных действий. Публичные методы, совпадающие с методами `Object`,
+учитываются специальными правилами функциональности. Аннотация
+`@FunctionalInterface` требует проверки функциональности компилятором.
+Подходящий интерфейс функционален и без аннотации.
+
+Типы из таблицы находятся в `java.util.function`. Самостоятельные примеры
+с импортами и командами:
+[функциональные интерфейсы и Stream](../examples/functions-streams/README.md).
+
+## Запись лямбды {#sec-j25-api-functions-syntax}
+
+```java
+Predicate<String> nonempty = s -> !s.isEmpty();
+BiFunction<Integer, Integer, Integer> sum = (a, b) -> a + b;
+Supplier<String> title = () -> "каталог";
+Function<String, Integer> length = (String s) -> {
+    return s.length();
+};
+```
+
+Целевой тип обязателен: он определяется присваиванием, аргументом,
+возвращаемым типом, приведением или другим допускаемым контекстом.
+`var f = s -> s.length();` недопустимо. В теле-блоке для возвращаемого
+значения нужны соответствующие `return`. Нельзя смешивать явно
+типизированные и нетипизированные параметры одной лямбды.
+Захватываемые локальные переменные окончательные или фактически
+окончательные и определённо инициализированные до создания лямбды.
+Захват ссылки допускает изменение доступного объекта.
+`this` имеет смысл окружающего контекста. При вычислении лямбды
+допустимы как новый объект, так и существующий экземпляр.
+
+## Ссылки на методы {#sec-j25-api-functions-references}
+
+| Форма | Пример и смысл |
+|---|---|
+| Статический метод | `Integer::parseInt`, будущая строка — аргумент |
+| Метод конкретного объекта | `System.out::println`, объект уже выбран |
+| Метод объекта из аргумента | `String::length`, будущая строка — получатель |
+| Конструктор | `ArrayList::new`, подходящий вызов создаёт список |
+
+Выбор перегрузки зависит от целевого типа. Ссылка обозначает действие,
+а запись с круглыми скобками вызывает метод сейчас. Проверяемое исключение
+должно допускаться сигнатурой абстрактного метода: `Function.apply`
+не разрешает непосредственный `IOException` без обработки.
+
+## Композиция {#sec-j25-api-functions-compose}
+
+Сигнатуры методов `Predicate<T>`:
+
+```java
+default Predicate<T> and(Predicate<? super T> other);
+default Predicate<T> or(Predicate<? super T> other);
+default Predicate<T> negate();
+```
+
+`and` вызывает второе условие только при истинности первого, `or` — только
+при ложности первого. `negate` меняет булев ответ на противоположный.
+Создание композиции не вызывает предикаты. `other` должен быть ненулевым;
+иначе `and`/`or` выбрасывает `NullPointerException`. Исключение
+вызванного предиката передаётся вызывающему коду и прекращает проверку.
+
+```java
+Predicate<Integer> positive = n -> n > 0;
+var condition = positive.and(n -> {
+    System.out.println("second");
+    return n < 10;
+});
+System.out.println(condition.test(-1)); // false, second не печатается
+```
+
+Сигнатуры методов `Function<T, R>`:
+
+```java
+default <V> Function<T, V> andThen(
+    Function<? super R, ? extends V> after);
+default <V> Function<V, R> compose(
+    Function<? super V, ? extends T> before);
+```
+
+`andThen` применяет текущую функцию, затем `after`; `compose` применяет
+`before`, затем текущую. Компилятор проверяет совместимость промежуточного
+результата. Объект функции `after` или `before` должен быть ненулевым,
+иначе создание композиции выбросит `NullPointerException`. Допустимость
+`null` как будущего аргумента определяется самими функциями. При применении составленной функции исключение
+любого шага передаётся вызывающему коду; оставшиеся шаги прекращаются.
+
+```java
+Function<String, Integer> length = String::length;
+Function<Integer, Integer> twice = n -> n * 2;
+System.out.println(length.andThen(twice).apply("Java")); // 8
+System.out.println(twice.compose(length).apply("Java")); // 8
+```
+
+Функциональный интерфейс допускает побочные эффекты. Их наличие и работа
+с изменяемым состоянием зависят от переданного действия.
+
+## Возвращаемое действие {#sec-j25-api-functions-returned}
+
+```java
+static java.util.function.IntPredicate atLeast(int threshold) {
+    return n -> n >= threshold;
+}
+```
+
+`atLeast(5)` возвращает действие; `atLeast(5).test(4)` вызывает его и даёт
+`false`. Захватываемый параметр не переприсваивается. Захват ссылки на
+изменяемый объект сохраняет доступ к его последующему состоянию. Поле
+читается при каждом обращении из тела действия. Пример правила с порогом: @theory:sec-j25-theory-functions-returned.
+
+## Самостоятельные опыты {#sec-j25-api-functions-streams-examples}
+
+[Исходники и команды](../examples/functions-streams/README.md) содержат
+отдельные программы отбора, возвращаемого правила, общего состояния,
+композиции, Stream, Optional и файлового источника. Для каждого запуска
+приведены входные данные и ожидаемый результат; четыре отрицательных
+варианта показывают причины отказа компиляции.
+
+[Скачать примеры одним архивом](../examples/functions-streams-examples.zip).

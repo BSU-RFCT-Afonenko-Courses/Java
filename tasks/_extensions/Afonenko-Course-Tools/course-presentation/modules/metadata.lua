@@ -1,3 +1,5 @@
+local __metrics=require("../observability/bridge").create_metrics("course-presentation",1)
+
 -- Компактные подписи формируются из учебных атрибутов. В course.json
 -- хранятся исходные значения, без созданных элементов оформления.
 local M = {}
@@ -8,7 +10,8 @@ local function add_class(div, name) if not div.classes:includes(name) then div.c
 function M.decorate(div, cfg)
   local attrs = div.attributes
   local role = attrs["course-role"]
-  local defaults = (div.identifier:match("^exr%-") or (roles[role] and roles[role].activity)) and cfg.defaults or {}
+  local canonical=cfg.bank and div.identifier:match("^exr%-")
+  local defaults = not canonical and (div.identifier:match("^exr%-") or (roles[role] and roles[role].activity)) and cfg.defaults or {}
   local values = {}
   for _, key in ipairs({"difficulty", "time", "work-mode", "requirement"}) do
     values[key] = attrs[key] or defaults[key]
@@ -25,7 +28,9 @@ function M.decorate(div, cfg)
     badge(roles[role].label, "role")
   end
   badge(label(difficulty[values.difficulty], cfg), "difficulty")
-  badge(values.time and (values.time .. (cfg.ru and " мин" or " min")), "time")
+  if cfg.assessmentTime ~= false then
+    badge(values.time and (values.time .. (cfg.ru and " мин" or " min")), "time")
+  end
   if values["work-mode"] ~= "individual" then
     badge(label(modes[values["work-mode"]], cfg), "work-mode")
   end
@@ -44,4 +49,5 @@ function M.decorate(div, cfg)
   end
   return div
 end
+M.decorate=__metrics.wrap_sync({id="course-presentation.modules.metadata.decorate",kind='phase'},M.decorate)
 return M

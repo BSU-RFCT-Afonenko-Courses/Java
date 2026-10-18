@@ -1,3 +1,6 @@
+local __metrics=require("./observability/bridge").create_metrics("course-core",1)
+local __perfWalk1=__metrics.wrap_walk({id="course-core.native-resources.walk.1",kind='ast_walk',scope="full-document"},function(node,filter)return node:walk(filter)end)
+local diagnostics = require("./diagnostics")
 local M={}
 function M.uses(doc)
   local result,seen=pandoc.List(),{}
@@ -14,7 +17,7 @@ function M.uses(doc)
       for target in node.text:gmatch('[hH][rR][eE][fF]%s*=%s*["\']([^"\']+)["\']') do add({target=target}) end
     end
   end
-  doc:walk({Image=add,Link=add,RawBlock=raw,RawInline=raw});return result
+  __perfWalk1(doc,{Image=add,Link=add,RawBlock=raw,RawInline=raw});return result
 end
 function M.facts(raw,public,canonical)
   local root=quarto.project.directory
@@ -22,7 +25,7 @@ function M.facts(raw,public,canonical)
   -- Reuse pre-projection validation facts; retain paths only, never private bodies.
   for _,fact in ipairs(canonical or {}) do
     if fact.project then
-      if fact.project:sub(1,1)~='/' or fact.project:sub(1,2)=='//' then error('RESOURCE.PROJECT_PATH_INVALID: '..fact.project) end
+      if fact.project:sub(1,1)~='/' or fact.project:sub(1,2)=='//' then diagnostics.fail('RESOURCE.PROJECT_PATH_INVALID','Путь проекта должен начинаться с /: '..fact.project,{id=fact.id,field='project'}) end
       local path=pandoc.path.normalize(pandoc.path.join({root,fact.project:sub(2)}))
       if not seenProjects[path] then rawProjectRoots:insert(path);seenProjects[path]=true end
     end
@@ -55,4 +58,6 @@ function M.facts(raw,public,canonical)
   return {source=pandoc.path.make_relative(input,root),format=FORMAT,view=raw.meta.course.view and pandoc.utils.stringify(raw.meta.course.view) or nil,
     rawProjectRoots=rawProjectRoots,effectiveBase=pandoc.path.directory(input),outputDirectory=outputRoot,outputFile=quarto.doc.output_file,rawUses=rawUses,projectedUses=projectedUses,capturedFiles=capturedFiles}
 end
+M.uses=__metrics.wrap_sync({id="course-core.native-resources.uses",kind='phase'},M.uses)
+M.facts=__metrics.wrap_sync({id="course-core.native-resources.facts",kind='phase'},M.facts)
 return M

@@ -1,11 +1,17 @@
-import type { AssessmentKind } from "../domain/vocabulary.ts";
+import type { AssessmentKind, StatementVisibility, ExercisePurpose } from "../domain/vocabulary.ts";
 export type Node = { t: string; c?: any };
 export interface BodyQuestion {
   owner: string;
   id: string;
   key: string;
+  title?: string;
+  difficulty?: import("../domain/vocabulary.ts").Difficulty;
+  time?: number;
   source: string;
   visibility: "public";
+  statementVisibility: StatementVisibility;
+  purpose?: ExercisePurpose;
+  hasPublicSolution: boolean;
   answerType: "manual" | "single-choice" | "numeric" | "multipart" | "matching";
   condition: Node[];
   publicAnswer: Node[];
@@ -14,7 +20,7 @@ export interface BodyQuestion {
   gradingNotes: Node[];
 }
 export interface BodyPackage {
-  schema: "course-body-package-v1";
+  schema: "course-body-package-v2";
   owner: string;
   release: string;
   apiVersion: number[];
@@ -26,7 +32,9 @@ export interface BodyPackage {
     source: string;
     kind: AssessmentKind;
     title: string;
-    items: string[];
+    introduction?: Node[];
+    slots: import("../domain/model.ts").AssessmentSlot[];
+    theoryTime?: number; relatedExercise?: string;
   }[];
   resources: {
     owner: string;

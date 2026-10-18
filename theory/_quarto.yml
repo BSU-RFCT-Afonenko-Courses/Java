@@ -17,80 +17,88 @@ project:
   - '!**/_*.qmd'
   - '!_freeze/**'
   - '!.quarto/**'
+  - '!**/*.qmd'
+  - '!**/*.rmd'
+  - '!**/*.ipynb'
+  - '!**/_output/**'
+  - '!**/_site*/**'
+  - '!**/_generated/**'
+  - '!**/.superpowers/**'
 book:
+  repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
+  repo-branch: master
+  repo-subdir: theory
+  repo-actions:
+  - source
+  - issue
+  navbar:
+    title: Программирование на Java
+    logo-href: https://bsu-rfct-afonenko-courses.github.io/Java/index.html
+    left:
+    - text: Теория
+      href: index.html
+    - text: Задания
+      href: https://bsu-rfct-afonenko-courses.github.io/Java/tasks/index.html
+    - text: Лекции
+      href: https://bsu-rfct-afonenko-courses.github.io/Java/lectures/index.html
+    - text: Введения к лабораторным
+      href: https://bsu-rfct-afonenko-courses.github.io/Java/practice/index.html
+    - text: Справочник
+      href: https://bsu-rfct-afonenko-courses.github.io/Java/handbook/index.html
   title: Теория Java
-  subtitle: Язык, инструменты и разработка приложений
+  subtitle: Язык, модели программирования и устройство приложений
   search: true
   page-navigation: true
   sidebar:
     collapse-level: 1
-    tools:
-    - icon: house
-      href: ../index.html#sec-portal
-      text: Навигация курса
   chapters:
   - index.qmd
-  - part: Основы языка и платформы Java (Core Java)
+  - part: Язык и платформа
     chapters:
-    - java/platform.qmd
-    - java/runtime/execution.qmd
-    - java/basics.qmd
-    - java/types/numbers.qmd
-    - java/references.qmd
-    - java/types/arrays.qmd
-    - java/types/text.qmd
-    - java/runtime/memory.qmd
-    - java/classes.qmd
-    - java/inheritance.qmd
-    - java/interfaces.qmd
-    - java/types/contracts.qmd
-    - java/generics.qmd
-    - java/lambdas.qmd
-    - java/exceptions.qmd
-  - part: Коллекции, ввод-вывод и представление данных
+    - chapters/languages.qmd
+    - chapters/platform.qmd
+  - part: Значения и вычисления
     chapters:
-    - data/collections.qmd
-    - data/io.qmd
-    - data/formats.qmd
-  - part: Инструменты и процесс разработки
+    - chapters/types.qmd
+    - chapters/expressions.qmd
+    - chapters/control.qmd
+    - chapters/methods.qmd
+    - chapters/arrays.qmd
+    - chapters/text.qmd
+  - part: Объектная модель
     chapters:
-    - development/git/basics.qmd
-    - development/git/branches.qmd
-    - development/build.qmd
-    - development/testing.qmd
-  - part: Объектно ориентированное проектирование
+    - chapters/objects.qmd
+    - chapters/classes.qmd
+    - chapters/inheritance.qmd
+    - chapters/interfaces.qmd
+    - chapters/data-classes.qmd
+  - part: Обобщённые типы и коллекции
     chapters:
-    - design/principles.qmd
-    - design/patterns/creation.qmd
-    - design/patterns/structure.qmd
-    - design/patterns/behavior.qmd
-    - design/events.qmd
-  - part: Многопоточное и асинхронное программирование
+    - chapters/type-parameters.qmd
+    - chapters/type-relations.qmd
+    - chapters/equality.qmd
+    - chapters/collections.qmd
+  - part: Функции и последовательности
     chapters:
-    - concurrency/threads.qmd
-    - concurrency/synchronization.qmd
-    - concurrency/tasks.qmd
-  - part: Сетевое программирование, веб и базы данных
+    - chapters/functions.qmd
+    - chapters/streams.qmd
+  - part: Ошибки, ресурсы и приложение
     chapters:
-    - web/http.qmd
-    - web/servlets.qmd
-    - web/presentation.qmd
-    - persistence/database.qmd
-  - part: Архитектура Java-приложений
-    chapters:
-    - architecture/modules.qmd
-    - architecture/dependencies.qmd
-    - architecture/frameworks.qmd
-  - part: Качество, безопасность и разработка приложения
-    chapters:
-    - quality/diagnostics.qmd
-    - quality/security.qmd
-    - quality/reliability.qmd
-    - integration/application.qmd
+    - chapters/exceptions.qmd
+    - chapters/resources.qmd
+    - chapters/io.qmd
+    - chapters/application.qmd
+  - system-practice.qmd
+  - references.qmd
 lang: ru
-number-sections: false
+language:
+  skip-to-content: Перейти к основному содержанию
+  search-more-matches-text: "— показать остальные совпадения в этом документе"
+  search-matching-documents-text: "— число найденных документов"
+number-sections: true
 format:
   html:
+    css: ../styles/book.css
     theme: cosmo
     toc: true
     toc-depth: 3
@@ -99,13 +107,81 @@ profile:
   group:
   - - student
     - full
-course:
-  id: java-book
 filters:
 - course-core
 - course-presentation
 - reference-catalog
 reference-catalog:
   namespace: theory
-course-presentation:
-  mode: study
+  imports:
+    system-practice-theory:
+      source: ../provenance/system-practice-catalog.json
+      namespace: system-practice-theory
+      base-url: https://bsu-rfct-afonenko-courses.github.io/System-Practice/
+      title: System Practice
+fail-if-warnings: true
+bibliography:
+- ../bibliography/context-data.bib
+- ../bibliography/context-objects.bib
+- ../bibliography/context-foundations.bib
+- ../bibliography/books.bib
+- ../bibliography/data.bib
+- ../bibliography/foundations.bib
+- ../bibliography/history.bib
+- ../bibliography/java.bib
+- ../bibliography/languages.bib
+- ../bibliography/objects.bib
+- ../bibliography/text-api.bib
+csl: ../bibliography/numeric-book-ru.csl
+link-citations: true
+nocite: '@bib-context-collections-design, @bib-context-cpp-map, @bib-context-cpp-raii, @bib-context-epam-exceptions,
+  @bib-context-go-defer, @bib-context-go-errors, @bib-context-jep421, @bib-context-jls1-exceptions,
+  @bib-context-lambda-design, @bib-context-printstream, @bib-context-python-dataclass,
+  @bib-context-python-dictionaries, @bib-context-python-open, @bib-context-python-with, @bib-context-rust-ownership,
+  @bib-context-rust-panic, @bib-context-rust-result, @bib-context-stream-semantics, @bib-cpp-template-constraints,
+  @bib-csharp-generics-runtime, @bib-ctx-clr-cts, @bib-ctx-csharp-types, @bib-ctx-java-arrays-design,
+  @bib-ctx-java-simple-familiar, @bib-ctx-jep286, @bib-ctx-jls-binary, @bib-ctx-jvms-model,
+  @bib-ctx-objects-eckel-composition, @bib-ctx-objects-eckel-interface-boundary, @bib-ctx-objects-eckel-lifetime,
+  @bib-ctx-objects-gj-migration, @bib-ctx-objects-hoare-null, @bib-ctx-objects-kotlin-null,
+  @bib-ctx-objects-optional, @bib-ctx-objects-record-model, @bib-ctx-objects-sealed-model, @bib-ctx-python-model,
+  @bib-ctx-python-numbers, @bib-ctx-ritchie-c, @bib-ctx-schildt-numeric-types, @bib-ctx-stroustrup-invention,
+  @bib-ctx-unicode-utf, @bib-data-autocloseable-api, @bib-data-comparator-api, @bib-data-deque-api,
+  @bib-data-eckel-collections, @bib-data-eckel-exceptions, @bib-data-epam-equality, @bib-data-epam-functions,
+  @bib-data-epam-io, @bib-data-epam-streams, @bib-data-files-api, @bib-data-jls-exceptions, @bib-data-jls-lambdas,
+  @bib-data-jls-resources, @bib-data-list-api, @bib-data-map-api, @bib-data-object-api,
+  @bib-data-schildt-collections, @bib-data-schildt-comparators, @bib-data-schildt-exceptions,
+  @bib-data-schildt-lambdas, @bib-data-schildt-resources, @bib-data-stream-api, @bib-dotnet-generic-math,
+  @bib-epam-generic-classes, @bib-epam-generic-methods, @bib-fnd-arrays-api, @bib-fnd-builder-api,
+  @bib-fnd-character-api, @bib-fnd-cpp-arithmetic, @bib-fnd-epam-arrays, @bib-fnd-epam-builders,
+  @bib-fnd-epam-control, @bib-fnd-epam-strings, @bib-fnd-epam-values, @bib-fnd-java-launcher,
+  @bib-fnd-java-whitepaper-introduction, @bib-fnd-javac, @bib-fnd-jls-arithmetic, @bib-fnd-jls-arrays,
+  @bib-fnd-jls-conversions, @bib-fnd-jls-evaluation, @bib-fnd-jls-launch, @bib-fnd-jls-methods,
+  @bib-fnd-jls-statements, @bib-fnd-jvms-loading, @bib-fnd-jvms-structure, @bib-fnd-math-api,
+  @bib-fnd-normalizer-api, @bib-fnd-python-binding, @bib-fnd-python-numbers, @bib-fnd-schildt-argument-passing,
+  @bib-fnd-schildt-arithmetic, @bib-fnd-schildt-arrays, @bib-fnd-schildt-control, @bib-fnd-schildt-first-program,
+  @bib-fnd-schildt-method-parameters, @bib-fnd-schildt-origins, @bib-fnd-schildt-platform,
+  @bib-fnd-schildt-promotion, @bib-fnd-schildt-short-circuit, @bib-fnd-schildt-strings, @bib-fnd-schildt-types,
+  @bib-fnd-string-api, @bib-gj1998, @bib-goetz-erasure-2020, @bib-java-api-25, @bib-jls-array-store-checks,
+  @bib-jls-boxing-unboxing, @bib-jls-capture-conversion, @bib-jls-class-interface-subtyping,
+  @bib-jls-generic-methods, @bib-jls-heap-pollution, @bib-jls-instanceof, @bib-jls-raw-types,
+  @bib-jls-reifiable-types-restrictions, @bib-jls-type-arguments, @bib-jls-type-erasure,
+  @bib-jls-types-values-variables, @bib-jls1-vector, @bib-jsr14, @bib-jvms-generic-signatures,
+  @bib-objects-eckel-access, @bib-objects-eckel-constructor-polymorphism, @bib-objects-eckel-generics,
+  @bib-objects-eckel-interfaces, @bib-objects-eckel-polymorphism, @bib-objects-eckel-references,
+  @bib-objects-eckel-reuse, @bib-objects-epam-classes, @bib-objects-epam-method-design, @bib-objects-jep395,
+  @bib-objects-jep513, @bib-objects-jls-data-classes, @bib-objects-jls-overriding, @bib-objects-object-api,
+  @bib-objects-schildt-classes, @bib-objects-schildt-generics, @bib-objects-schildt-inheritance,
+  @bib-objects-schildt-interfaces, @bib-objects-schildt-records, @bib-schildt-bounded-types,
+  @bib-schildt-generic-class-example, @bib-schildt-generic-pairs, @bib-schildt-generics-definition,
+  @bib-schildt-wildcards-methods'
+
+repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
+repo-branch: master
+repo-subdir: theory
+repo-actions:
+- source
+- issue
+issue-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java/issues/new
+
+course:
+  assessment-time: false

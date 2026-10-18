@@ -1,12 +1,20 @@
 project:
-  type: default
+  type: website
   render:
-  - 01-intro.qmd
-  - 02-data.qmd
-  - 03-contracts.qmd
-  - 04-boundaries.qmd
-  - 05-runtime.qmd
-  - 06-review.qmd
+  - index.qmd
+  - numbers.qmd
+  - control.qmd
+  - arrays.qmd
+  - text.qmd
+  - objects.qmd
+  - polymorphism.qmd
+  - generics.qmd
+  - collections.qmd
+  - pipelines.qmd
+  - files.qmd
+  - reserve-algorithms.qmd
+  - reserve-models.qmd
+  - reserve-data.qmd
   output-dir: _output
   resources:
   - ./assets/**
@@ -17,6 +25,13 @@ project:
   - '!_freeze/**'
   - '!.quarto/**'
   - '!_extensions/**'
+  - '!**/*.rmd'
+  - '!**/*.ipynb'
+  - '!**/_output/**'
+  - '!**/_site*/**'
+  - '!**/_generated/**'
+  - '!**/projects/**'
+  - '!**/.superpowers/**'
   pre-render:
   - _extensions/Afonenko-Course-Tools/course-core/entrypoints/pre.ts
   post-render:
@@ -28,9 +43,8 @@ profile:
   group:
   - - student
     - full
-course:
-  id: java-practice
 filters:
+- course-navigation
 - course-core
 - course-presentation
 - reference-catalog
@@ -40,12 +54,75 @@ format:
     slide-level: 2
     navigation-mode: linear
     theme: default
-    show-notes: false
     slide-number: true
+    pdf-separate-fragments: false
+    menu:
+      delayInit: true
+      keyboard: false
+      openButton: false
+      openSlideNumber: false
     revealjs-plugins:
     - course-navigation
 lang: ru
+language:
+  skip-to-content: Перейти к основному содержанию
+  search-more-matches-text: "— показать остальные совпадения в этом документе"
+  search-matching-documents-text: "— число найденных документов"
 reference-catalog:
   namespace: practice
-course-presentation:
-  mode: study
+fail-if-warnings: true
+bibliography:
+- ../bibliography/context-data.bib
+- ../bibliography/context-objects.bib
+- ../bibliography/context-foundations.bib
+- ../bibliography/java.bib
+- ../bibliography/console.bib
+- ../bibliography/data.bib
+- ../bibliography/objects.bib
+- ../bibliography/foundations.bib
+csl: ../bibliography/numeric.csl
+link-citations: true
+
+website:
+  title: Введения к лабораторным Java
+  repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
+  repo-branch: master
+  repo-subdir: practice
+  repo-actions:
+  - source
+  - issue
+  navbar:
+    title: Программирование на Java
+    logo-href: https://bsu-rfct-afonenko-courses.github.io/Java/index.html
+    left:
+    - text: Все введения
+      href: index.html
+    - text: Теория
+      href: https://bsu-rfct-afonenko-courses.github.io/Java/theory/index.html
+    - text: Задания
+      href: https://bsu-rfct-afonenko-courses.github.io/Java/tasks/index.html
+    - text: Справочник
+      href: https://bsu-rfct-afonenko-courses.github.io/Java/handbook/index.html
+
+repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
+repo-branch: master
+repo-subdir: practice
+repo-actions:
+- source
+- issue
+issue-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java/issues/new
+course-navigation:
+  course-url: https://bsu-rfct-afonenko-courses.github.io/Java/
+  links:
+  - text: Курс Java
+    href: /index.html
+    scope: course
+  - text: Все введения
+    href: /index.html
+    scope: project
+  - text: Теория
+    href: /theory/index.html
+    scope: course
+
+course:
+  assessment-time: false

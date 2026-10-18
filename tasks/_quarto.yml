@@ -11,7 +11,8 @@ project:
   output-dir: _output
   resources:
   - '!**/projects/**'
-  - '!**/_control.qmd'
+  - '!test-support/**'
+  - '!assessments/**'
   - '!_generated/**'
   - '!tools/**'
   - '!docs/**'
@@ -19,167 +20,375 @@ project:
   - '!**/_*.qmd'
   - '!_freeze/**'
   - '!.quarto/**'
+  - '!**/*.qmd'
+  - '!**/*.rmd'
+  - '!**/*.ipynb'
+  - '!**/_output/**'
+  - '!**/_site*/**'
+  - '!**/_generated/**'
+  - '!**/.superpowers/**'
 profile:
   default: student
   group:
   - - student
     - full
-course:
-  adapters:
-  - prairielearn
-  id: java-essays
-course-pedagogy:
-  document-defaults: true
-work-mode: individual
-prairielearn:
-  assessment-defaults:
-    attempts: 3
-    pass:
-      at-least: 2
-    assignment:
-      mode: assessment-id
 filters:
+- course-navigation
 - course-core
 - course-presentation
 - project-download
 - course-prairielearn
 - reference-catalog
 book:
-  title: Задания и исследования по Java
+  repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
+  repo-branch: master
+  repo-subdir: tasks
+  repo-actions:
+  - source
+  - issue
+  navbar:
+    title: Программирование на Java
+    logo-href: https://bsu-rfct-afonenko-courses.github.io/Java/index.html
+    left:
+    - text: Теория
+      href: https://bsu-rfct-afonenko-courses.github.io/Java/theory/index.html
+    - text: Задания
+      href: index.html
+    - text: Лекции
+      href: https://bsu-rfct-afonenko-courses.github.io/Java/lectures/index.html
+    - text: Введения к лабораторным
+      href: https://bsu-rfct-afonenko-courses.github.io/Java/practice/index.html
+    - text: Справочник
+      href: https://bsu-rfct-afonenko-courses.github.io/Java/handbook/index.html
+  title: Задания по Java
   chapters:
   - index.qmd
-  - part: numbers/index.qmd
+  - part: Лабораторные работы
     chapters:
-    - numbers/integer-promotions/index.qmd
-    - numbers/cyclic-indices/index.qmd
-    - numbers/floating-equality/index.qmd
-    - numbers/boxing-null/index.qmd
-    - numbers/evaluation-order/index.qmd
-  - part: text-arrays/index.qmd
+    - labs/index.qmd
+    - labs/numbers.qmd
+    - labs/control.qmd
+    - labs/arrays.qmd
+    - labs/text.qmd
+    - labs/objects.qmd
+    - labs/polymorphism.qmd
+    - labs/generics.qmd
+    - labs/collections.qmd
+    - labs/pipelines.qmd
+    - labs/files.qmd
+    - labs/reserve-algorithms.qmd
+    - labs/reserve-models.qmd
+    - labs/reserve-data.qmd
+  - part: Банк заданий
     chapters:
-    - text-arrays/unicode-codepoints/index.qmd
-    - text-arrays/normalization-locale/index.qmd
-    - text-arrays/string-identity/index.qmd
-    - text-arrays/array-covariance/index.qmd
-    - text-arrays/matrix-copying/index.qmd
-    - text-arrays/unicode-demonstration/index.qmd
-  - part: object-model/index.qmd
+    - bank/index.qmd
+    - bank/numbers.qmd
+    - bank/control.qmd
+    - bank/arrays.qmd
+    - bank/text.qmd
+    - bank/objects.qmd
+    - bank/polymorphism.qmd
+    - bank/generics.qmd
+    - bank/collections.qmd
+    - bank/pipelines.qmd
+    - bank/exceptions.qmd
+    - bank/files.qmd
+    - bank/projects.qmd
+  - part: Исследования
     chapters:
-    - object-model/overload-dispatch/index.qmd
-    - object-model/construction/index.qmd
-    - object-model/equality-inheritance/index.qmd
-    - object-model/record-components/index.qmd
-    - object-model/sealed-switch/index.qmd
-  - part: generics-collections/index.qmd
-    chapters:
-    - generics-collections/generic-variance/index.qmd
-    - generics-collections/type-erasure/index.qmd
-    - generics-collections/mutable-keys/index.qmd
-    - generics-collections/sorted-equality/index.qmd
-    - generics-collections/views-snapshots/index.qmd
-  - part: functional-processing/index.qmd
-    chapters:
-    - functional-processing/lambda-capture/index.qmd
-    - functional-processing/stream-laziness/index.qmd
-    - functional-processing/reduction-laws/index.qmd
-    - functional-processing/optional-evaluation/index.qmd
-    - functional-processing/map-collisions/index.qmd
-  - part: failures-boundaries/index.qmd
-    chapters:
-    - failures-boundaries/finally-control/index.qmd
-    - failures-boundaries/suppressed-exceptions/index.qmd
-    - failures-boundaries/failure-atomicity/index.qmd
-    - failures-boundaries/constant-inlining/index.qmd
-    - failures-boundaries/charset-decoding/index.qmd
-  - part: shared-state/index.qmd
-    chapters:
-    - shared-state/safe-publication/index.qmd
-    - shared-state/atomic-invariants/index.qmd
-    - shared-state/monitor-protocols/index.qmd
-    - shared-state/cooperative-interruption/index.qmd
-    - shared-state/lock-order/index.qmd
-  - part: task-lifecycle/index.qmd
-    chapters:
-    - task-lifecycle/executor-progress/index.qmd
-    - task-lifecycle/future-composition/index.qmd
-    - task-lifecycle/timeouts-cancellation/index.qmd
-    - task-lifecycle/thread-context/index.qmd
-    - task-lifecycle/virtual-resource-limits/index.qmd
-  - part: collection-contracts/index.qmd
-    chapters:
-    - collection-contracts/concurrent-map/index.qmd
-    - collection-contracts/iteration-models/index.qmd
-    - collection-contracts/collector-laws/index.qmd
-    - collection-contracts/spliterator-contract/index.qmd
-    - collection-contracts/comparator-laws/index.qmd
-  - part: io-networking/index.qmd
-    chapters:
-    - io-networking/tcp-framing/index.qmd
-    - io-networking/socket-half-close/index.qmd
-    - io-networking/http-outcomes/index.qmd
-    - io-networking/bytebuffer-state/index.qmd
-    - io-networking/path-resolution/index.qmd
-  - part: runtime-types/index.qmd
-    chapters:
-    - runtime-types/classloader-identity/index.qmd
-    - runtime-types/reflective-types/index.qmd
-    - runtime-types/module-access/index.qmd
-    - runtime-types/dynamic-proxies/index.qmd
-    - runtime-types/binary-compatibility/index.qmd
-  - part: lifecycle-measurement/index.qmd
-    chapters:
-    - lifecycle-measurement/time-models/index.qmd
-    - lifecycle-measurement/serialization-graphs/index.qmd
-    - lifecycle-measurement/explicit-cleanup/index.qmd
-    - lifecycle-measurement/microbenchmark-design/index.qmd
-    - lifecycle-measurement/regex-literals/index.qmd
-  sidebar:
-    tools:
-    - icon: house
-      href: ../index.html#sec-portal
-      text: Навигация курса
+    - essays/index.qmd
+    - essays/numbers.qmd
+    - essays/control.qmd
+    - essays/arrays.qmd
+    - essays/text.qmd
+    - essays/objects.qmd
+    - essays/polymorphism.qmd
+    - essays/generics.qmd
+    - essays/collections.qmd
+    - essays/pipelines.qmd
+    - essays/exceptions.qmd
+    - essays/files.qmd
+  - references.qmd
 format:
   html:
+    css: ../styles/book.css
     theme: cosmo
     toc: true
     number-sections: true
-    number-depth: 1
     code-copy: true
     code-tools: false
+    toc-depth: 2
 lang: ru
-project-download:
-  resources:
-    exr-essay-charset-decoding-experiment:
-      path: failures-boundaries/charset-decoding/projects/experiment/student
-      profiles:
-      - full
-      exclude:
-      - '**/.*'
-    exr-essay-charset-decoding-implementation:
-      path: failures-boundaries/charset-decoding/projects/implementation/student
-      profiles:
-      - full
-      exclude:
-      - '**/.*'
-    exr-essay-charset-decoding-test-design:
-      path: failures-boundaries/charset-decoding/projects/test-design/student
-      profiles:
-      - full
-      exclude:
-      - '**/.*'
-    exr-essay-unicode-demonstration-experiment:
-      path: text-arrays/unicode-demonstration/projects/experiment/student
-      exclude:
-      - '**/.*'
-    exr-essay-unicode-demonstration-implementation:
-      path: text-arrays/unicode-demonstration/projects/implementation/student
-      exclude:
-      - '**/.*'
-    exr-essay-unicode-demonstration-test-design:
-      path: text-arrays/unicode-demonstration/projects/test-design/student
-      exclude:
-      - '**/.*'
+language:
+  skip-to-content: Перейти к основному содержанию
+  search-more-matches-text: "— показать остальные совпадения в этом документе"
+  search-matching-documents-text: "— число найденных документов"
 reference-catalog:
   namespace: tasks
-course-presentation:
-  mode: study
+fail-if-warnings: true
+bibliography:
+- ../bibliography/context-data.bib
+- ../bibliography/context-objects.bib
+- ../bibliography/context-foundations.bib
+- ../bibliography/data.bib
+- ../bibliography/research/arrays.bib
+- ../bibliography/research/collections.bib
+- ../bibliography/research/control.bib
+- ../bibliography/research/exceptions.bib
+- ../bibliography/research/files.bib
+- ../bibliography/research/generics.bib
+- ../bibliography/research/numbers.bib
+- ../bibliography/research/objects.bib
+- ../bibliography/research/pipelines.bib
+- ../bibliography/research/polymorphism.bib
+- ../bibliography/research/text.bib
+- ../bibliography/tasks/arrays.bib
+- ../bibliography/tasks/collections.bib
+- ../bibliography/tasks/control.bib
+- ../bibliography/tasks/exceptions.bib
+- ../bibliography/tasks/files.bib
+- ../bibliography/tasks/generics.bib
+- ../bibliography/tasks/numbers.bib
+- ../bibliography/tasks/objects.bib
+- ../bibliography/tasks/pipelines.bib
+- ../bibliography/tasks/polymorphism.bib
+- ../bibliography/tasks/projects.bib
+- ../bibliography/tasks/text.bib
+csl: ../bibliography/numeric-book-ru.csl
+link-citations: true
+nocite: '@bib-data-map-api, @bib-korneev-io-exceptions, @bib-research-array-list-type-checks-1,
+  @bib-research-array-list-type-checks-2, @bib-research-array-list-type-checks-3,
+  @bib-research-boolean-evaluation-actions-1, @bib-research-boolean-evaluation-actions-2,
+  @bib-research-boolean-evaluation-actions-3, @bib-research-class-responsibility-design-1,
+  @bib-research-class-responsibility-design-2, @bib-research-class-responsibility-design-3,
+  @bib-research-closed-command-model-1, @bib-research-closed-command-model-2,
+  @bib-research-collection-operation-choice-1, @bib-research-collection-operation-choice-2,
+  @bib-research-collection-operation-choice-4, @bib-research-collection-view-ownership-1,
+  @bib-research-collection-view-ownership-2, @bib-research-collection-view-ownership-3,
+  @bib-research-comparison-set-uniqueness-1, @bib-research-comparison-set-uniqueness-2,
+  @bib-research-comparison-set-uniqueness-3, @bib-research-compiled-artifacts-constants-1,
+  @bib-research-compiled-artifacts-constants-2, @bib-research-compiled-artifacts-constants-3,
+  @bib-research-failed-transfer-invariants-1, @bib-research-failed-transfer-invariants-2,
+  @bib-research-failed-transfer-invariants-3, @bib-research-failure-reporting-boundaries-1,
+  @bib-research-failure-reporting-boundaries-2, @bib-research-floating-value-comparison-1,
+  @bib-research-floating-value-comparison-2, @bib-research-floating-value-comparison-3,
+  @bib-research-frequency-result-merging-1, @bib-research-frequency-result-merging-2,
+  @bib-research-frequency-result-merging-3, @bib-research-generic-source-destination-1,
+  @bib-research-generic-source-destination-2, @bib-research-generic-source-destination-3,
+  @bib-research-integer-range-conversions-1, @bib-research-integer-range-conversions-2,
+  @bib-research-integer-range-conversions-3, @bib-research-integer-range-conversions-4,
+  @bib-research-interfaces-composition-contracts-1, @bib-research-interfaces-composition-contracts-2,
+  @bib-research-interfaces-composition-contracts-3, @bib-research-lambda-setting-capture-1,
+  @bib-research-lambda-setting-capture-2, @bib-research-loop-pipeline-equivalence-1,
+  @bib-research-loop-pipeline-equivalence-2, @bib-research-loop-pipeline-equivalence-3,
+  @bib-research-loop-pipeline-equivalence-4, @bib-research-matrix-reference-copies-1,
+  @bib-research-matrix-reference-copies-2, @bib-research-matrix-reference-copies-3,
+  @bib-research-method-value-aliasing-1, @bib-research-method-value-aliasing-2,
+  @bib-research-object-construction-stages-1, @bib-research-object-construction-stages-2,
+  @bib-research-object-construction-stages-3, @bib-research-object-equality-stable-key-1,
+  @bib-research-object-equality-stable-key-2, @bib-research-optional-fallback-evaluation-1,
+  @bib-research-optional-fallback-evaluation-2, @bib-research-optional-fallback-evaluation-3,
+  @bib-research-optional-number-wrappers-1, @bib-research-optional-number-wrappers-2,
+  @bib-research-optional-number-wrappers-3, @bib-research-overload-runtime-selection-1,
+  @bib-research-overload-runtime-selection-2, @bib-research-record-component-ownership-1,
+  @bib-research-record-component-ownership-2, @bib-research-regex-text-recognition-1,
+  @bib-research-regex-text-recognition-2, @bib-research-regex-text-recognition-3,
+  @bib-research-resource-failure-preservation-1, @bib-research-resource-failure-preservation-2,
+  @bib-research-string-value-identity-1, @bib-research-string-value-identity-2,
+  @bib-research-string-value-identity-3, @bib-research-unicode-units-equivalence-1,
+  @bib-research-unicode-units-equivalence-2, @bib-research-unicode-units-equivalence-3,
+  @bib-research-utf8-byte-text-boundary-1, @bib-research-utf8-byte-text-boundary-2,
+  @bib-task-airline-persistence-project, @bib-task-animal-hierarchy, @bib-task-argument-sum-product,
+  @bib-task-array-average, @bib-task-balanced-brackets, @bib-task-binary-truth-table, @bib-task-book-selection,
+  @bib-task-boolean-truth-table, @bib-task-bubble-sort-strings, @bib-task-byte-file-copy, @bib-task-car-selection,
+  @bib-task-character-file-copy, @bib-task-character-stack, @bib-task-circle-subclass,
+  @bib-task-circular-dynamic-queue, @bib-task-compare-files, @bib-task-compatible-queue-reset,
+  @bib-task-complex-values, @bib-task-compress-character-runs, @bib-task-conditional-function,
+  @bib-task-console-greeting, @bib-task-constructor-checked-exception, @bib-task-control-help-menu,
+  @bib-task-copy-character-queues, @bib-task-count-characters, @bib-task-count-console-spaces,
+  @bib-task-count-normalized-word, @bib-task-count-selected-words, @bib-task-curried-functions,
+  @bib-task-customer-registry, @bib-task-cyclic-matrix-shift, @bib-task-decompress-character-runs,
+  @bib-task-descending-array, @bib-task-digit-stack, @bib-task-discriminant-function, @bib-task-disk-help-menu,
+  @bib-task-distinct-object-array, @bib-task-distinct-three-digits, @bib-task-distinct-word-set,
+  @bib-task-divisibility-function, @bib-task-elimination-circle, @bib-task-exception-flow-errors,
+  @bib-task-filter-string-array, @bib-task-final-line-words, @bib-task-first-primes,
+  @bib-task-fraction-number-subclass, @bib-task-gallon-conversion, @bib-task-generic-circular-queue,
+  @bib-task-generic-dynamic-queue, @bib-task-generic-interface, @bib-task-generic-method, @bib-task-generic-queue,
+  @bib-task-generic-stack, @bib-task-graph-model, @bib-task-huffman-word-coding-project,
+  @bib-task-inch-conversion-table, @bib-task-increasing-digits, @bib-task-insert-after-word-ending,
+  @bib-task-insert-substring, @bib-task-interval-membership, @bib-task-left-align-text, @bib-task-lightning-distance,
+  @bib-task-locale-number-errors, @bib-task-longer-string, @bib-task-longest-nonletter-substring,
+  @bib-task-lunar-weight, @bib-task-matching-line-numbers, @bib-task-matrix-local-minima, @bib-task-month-name,
+  @bib-task-move-row-zeros, @bib-task-multiplication-table, @bib-task-nearest-value, @bib-task-number-extrema,
+  @bib-task-numeric-palindromes, @bib-task-order-points, @bib-task-override-exceptions, @bib-task-partition-list,
+  @bib-task-patient-registry, @bib-task-phone-owner-records, @bib-task-poem-letter-word-frequency,
+  @bib-task-poem-line-order, @bib-task-poem-word-frequency, @bib-task-polynomial-list-multiplication,
+  @bib-task-polynomial-map-addition, @bib-task-price-transformation, @bib-task-primes-to-hundred,
+  @bib-task-property-count, @bib-task-quadratic-roots, @bib-task-queue-exceptions, @bib-task-queue-package,
+  @bib-task-radix-conversion, @bib-task-random-console-values, @bib-task-range-maximum, @bib-task-rational-fractions,
+  @bib-task-recursive-string-reversal, @bib-task-remove-even-values, @bib-task-remove-java-comments,
+  @bib-task-remove-max-rows-columns, @bib-task-remove-nonletters, @bib-task-remove-short-words,
+  @bib-task-replace-word-letter, @bib-task-reset-character-queues, @bib-task-reverse-array, @bib-task-rotate-matrix,
+  @bib-task-saddle-points, @bib-task-select-initial-length, @bib-task-set-union-intersection,
+  @bib-task-short-circuit-and, @bib-task-sort-array, @bib-task-sort-file-numbers, @bib-task-sort-matrix-rows,
+  @bib-task-stack-exceptions, @bib-task-strong-password, @bib-task-subtract-array-average, @bib-task-sum-text-digits,
+  @bib-task-swap-generic-array, @bib-task-swap-object-fields, @bib-task-timetable-interfaces-project,
+  @bib-task-toggle-console-case, @bib-task-transpose-file-matrix, @bib-task-truck-subclass,
+  @bib-task-two-type-container, @bib-task-variadic-sum, @bib-task-vehicle-interface,
+  @bib-task-vowels-before-consonants, @bib-task-word-frequency, @bib-task-word-length-extrema'
+
+course:
+  assessment-time: false
+  id: java-semester-one
+  adapters:
+  - prairielearn
+project-download:
+  course-model: true
+prairielearn:
+  assessment-defaults:
+    attempts: 3
+    question-points: 1
+    pass:
+      at-least: 1
+    assignment:
+      mode: assessment-id
+  delivery:
+    book: tasks
+    course:
+      name: JAVA
+      title: Программирование на Java
+      timezone: Europe/Minsk
+      topics:
+      - name: Java
+        color: blue2
+        description: Программирование на Java 25
+    instances:
+      2026-2027-s1:
+        publishing:
+          start-date: "1970-01-01T00:00:00Z"
+          end-date: "9999-12-31T00:00:00Z"
+        title: Числа, управление и массивы
+        self-enrollment: false
+        works:
+        - sec-lab-numbers
+        - sec-lab-control
+        - sec-lab-arrays
+  question-defaults:
+    topic: Java
+    single-variant: true
+    submission:
+      mode: editor
+      ace-mode: ace/mode/java
+project-checks:
+  defaults:
+    runtime: java25-junit-v1
+    java:
+      release: 25
+      encoding: UTF-8
+      compiler-options:
+      - -proc:none
+      - -Xmaxerrs
+      - '5'
+    limits:
+      outer-seconds: 30
+      networking: false
+      max-output-bytes: 65536
+    references:
+    - name: default
+      root: reference
+      optional: false
+    verification-tests:
+    - student/src/test/java/**/*.java
+    contract-cases: tests/contract-cases.json
+    verification-expectations:
+      reference:
+        student-compilation: success
+        job: complete
+        required-tests: all-pass
+      starter:
+        student-compilation: success
+        job: complete
+        classification: behavior-failure
+        score:
+          less-than: 1
+    discovery:
+      min-executed: 1
+      allow-skipped: false
+  source-profiles:
+    java-main:
+      mode: implementation
+      root: student/src/main/java
+      include:
+      - '**/*.java'
+  profiles:
+    java-labs:
+      source-profile: java-main
+      tests:
+      - tests/junit/**/*.java
+      scoring:
+        mode: all-pass
+    java-cli:
+      source-profile: java-main
+      additional-java-sources:
+        archive: additional-sources.zip
+        max-files: 128
+        max-file-bytes: 1048576
+        max-total-bytes: 4194304
+        max-archive-bytes: 2097152
+      tests:
+      - tests/junit/**/*.java
+      api-precheck:
+        files:
+        - tests/junit/api/CliPrecheck.java
+        entry: CliPrecheck
+      verification-api-precheck:
+        files:
+        - student/src/test/java/api/CliPrecheck.java
+        entry: CliPrecheck
+      scoring:
+        mode: all-pass
+    java-queue:
+      source-profile: java-main
+      tests:
+      - tests/junit/**/*.java
+      api-precheck:
+        files:
+        - tests/junit/api/QueueApi.java
+        - tests/junit/queuecheck/QueueAccess.java
+        entry: QueueApi
+      verification-api-precheck:
+        files:
+        - student/src/test/java/api/QueueApi.java
+        - student/src/test/java/queuecheck/QueueAccess.java
+        entry: QueueApi
+      limits:
+        outer-seconds: 45
+        run-seconds: 15
+      additional-java-sources:
+        archive: additional-sources.zip
+        max-files: 128
+        max-file-bytes: 1048576
+        max-total-bytes: 4194304
+        max-archive-bytes: 2097152
+      scoring:
+        mode: all-pass
+
+repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
+repo-branch: master
+repo-subdir: tasks
+repo-actions:
+- source
+- issue
+issue-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java/issues/new
+course-navigation:
+  course-url: https://bsu-rfct-afonenko-courses.github.io/Java/
+  links:
+  - text: Курс Java
+    href: /index.html
+    scope: course
+  - text: Все задания
+    href: /index.html
+    scope: project
+  - text: Теория
+    href: /theory/index.html
+    scope: course

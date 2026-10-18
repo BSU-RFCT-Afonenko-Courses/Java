@@ -1,0 +1,182 @@
+diff --git a/_extensions/course-prairielearn/application/export-course.ts b/_extensions/course-prairielearn/application/export-course.ts
+index 5e9a4ec..9656317 100644
+--- a/_extensions/course-prairielearn/application/export-course.ts
++++ b/_extensions/course-prairielearn/application/export-course.ts
+@@ -283,7 +283,7 @@ export async function exportCourse(
+         }
+         const c = fact.check;
+         const descriptor = runtimeDescriptor(c, profile,
+-          sources.map(s => s.name), fact.trustedTests.map((t: any) => t.submissionRelativePath));
++          sources.map(s => s.name), fact.trustedTests.map((t: any) => t.submissionRelativePath), fact.apiPrecheck);
+         await Deno.writeTextFile(
+           join(project, "tests/grading-job.json"),
+           JSON.stringify(descriptor, null, 2) + "\n",
+@@ -291,6 +291,7 @@ export async function exportCourse(
+         binding.questions[q.id] = {
+           ...settings,
+           files: sources.map((s) => s.name),
++          ...(descriptor.additionalJavaSources?{additionalJavaSources:descriptor.additionalJavaSources}:{}),
+           externalGradingOptions: {
+             image,
+             timeout: c.limits?.["outer-seconds"] ?? 30,
+diff --git a/_extensions/course-prairielearn/application/export.ts b/_extensions/course-prairielearn/application/export.ts
+index 853cce8..ba91632 100644
+--- a/_extensions/course-prairielearn/application/export.ts
++++ b/_extensions/course-prairielearn/application/export.ts
+@@ -1,5 +1,6 @@
+ import {createMetrics as __createMetrics} from "../observability/bridge.ts";
+ const __metrics=__createMetrics("course-prairielearn");
++import { validateAdditionalJavaSources } from "./runtime-descriptor.ts";
+ import { validateSlots } from "./slots.ts";
+ import { dirname, isAbsolute, join, relative, resolve } from "node:path";
+ import { diagnostic, type DiagnosticContext } from "./diagnostics.ts";
+@@ -425,6 +426,7 @@ export async function exportPrairieLearn(
+       !fields(b, ["topic", "files", "externalGradingOptions"], [
+         "submission",
+         "singleVariant",
++        "additionalJavaSources",
+       ]) ||
+       b.singleVariant !== undefined && typeof b.singleVariant !== "boolean" ||
+       typeof b.topic !== "string" || !b.topic.trim() ||
+@@ -484,7 +486,7 @@ export async function exportPrairieLearn(
+       !safe(project.slice(1))
+     ) {
+       questionFail(
+-        "Требуется путь проекта от корня выбранной книги",
++        "Требуется путь проекта от корня выбранного проекта",
+         "project",
+       );
+     }
+@@ -501,7 +503,7 @@ export async function exportPrairieLearn(
+     }
+     if ((await Deno.realPath(source)) !== source) {
+       questionFail(
+-        "Проект выходит за пределы выбранной книги",
++        "Проект выходит за пределы выбранного проекта",
+         "project",
+       );
+     }
+@@ -541,6 +543,7 @@ export async function exportPrairieLearn(
+         "}}",
+         "&#125;&#125;",
+       );
++    const extras=b.additionalJavaSources===undefined?undefined:validateAdditionalJavaSources(b.additionalJavaSources,b.files,tests.map(f=>f.name));
+     let controls: string;
+     if (submission.mode === "editor") {
+       controls = b.files.map((name: string) => {
+@@ -578,7 +581,11 @@ export async function exportPrairieLearn(
+         '"></pl-file-download>'
+       ).join("\n");
+       controls = downloads + '\n<pl-file-upload file-names="' +
+-        escape(b.files.join(",")) + '"></pl-file-upload>';
++        escape(b.files.join(",")) + '"' + (extras?' optional-file-names="'+escape(extras.archive)+'"':'') + '></pl-file-upload>';
++    }
++    if(extras){
++      if(submission.mode==='editor')controls+='\n<pl-file-upload optional-file-names="'+escape(extras.archive)+'"></pl-file-upload>';
++      controls+='\n<p>Необязательный ZIP дополнительных .java: '+escape(extras.archive)+'. Основные файлы остаются в '+(submission.mode==='editor'?'редакторах':'обязательной загрузке')+'. Относительные пути пакетов допускаются; основные и доверенные файлы перезаписывать нельзя. Пределы: '+extras.maxFiles+' файлов, '+extras.maxFileBytes+' байт на файл, '+extras.maxTotalBytes+' байт распакованных исходников, '+extras.maxArchiveBytes+' байт ZIP. Штатный общий предел PrairieLearn — 5 MB на весь ответ, включая редакторные файлы; доступный размер ZIP зависит от остального ответа. При превышении используйте ручную сдачу.</p>';
+     }
+     text(
+       base + "/question.html",
+diff --git a/_extensions/course-prairielearn/application/runtime-descriptor.ts b/_extensions/course-prairielearn/application/runtime-descriptor.ts
+index 1415bb8..1633924 100644
+--- a/_extensions/course-prairielearn/application/runtime-descriptor.ts
++++ b/_extensions/course-prairielearn/application/runtime-descriptor.ts
+@@ -1,9 +1,26 @@
+ import {createMetrics as __createMetrics} from "../observability/bridge.ts";
+ const __metrics=__createMetrics("course-prairielearn");
+ import { normalizeDiscovery } from './grading-descriptor.ts';
+-export function runtimeDescriptor(c: any, profile: any, sources: string[], tests: string[]) {
++import { safePath } from './source-selection.ts';
++export interface AdditionalJavaSources {archive:string;maxFiles:number;maxFileBytes:number;maxTotalBytes:number;maxArchiveBytes:number}
++export function validateAdditionalJavaSources(value:any,sources:string[],tests:string[]):AdditionalJavaSources {
++  const caps={maxFiles:128,maxFileBytes:1048576,maxTotalBytes:4194304,maxArchiveBytes:2097152};
++  if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).length!==5||Object.keys(value).some(k=>!['archive',...Object.keys(caps)].includes(k))||typeof value.archive!=='string'||!/^[A-Za-z0-9][A-Za-z0-9_-]{0,100}\.zip$/.test(value.archive)||Object.entries(caps).some(([key,cap])=>!Number.isInteger(value[key])||value[key]<1||value[key]>cap))throw new Error('PL invalid additional Java sources policy');
++  if([...sources,...tests,'grading-job.json','tests/grading-job.json'].some(name=>name===value.archive||name.startsWith(value.archive+'/')||value.archive.startsWith(name+'/')))throw new Error('PL additional Java archive conflicts with primary/trusted path');
++  return {...value};
++}
++export interface ApiPrecheck {files:string[];entry:string}
++export function runtimeDescriptor(c: any, profile: any, sources: string[], tests: string[], api?:ApiPrecheck) {
+   const javaRuntime = profile.javaRelease !== undefined || !profile.sourceExtensions;
+   if (!javaRuntime && c.java !== undefined) throw new Error('PL non-Java runtime cannot declare Java compiler settings');
++  if(Boolean(c['api-precheck'])!==Boolean(api))throw new Error('PL API precheck selection missing or undeclared');
++  if(api&&(!javaRuntime||c.sourceProfile.mode!=='implementation'||!Array.isArray(api.files)||!api.files.length||new Set(api.files).size!==api.files.length||api.files.length>=tests.length||api.files.some(x=>!safePath(x)||!x.endsWith('.java')||!tests.includes(x))||!/^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*$/.test(api.entry)||api.entry!==c['api-precheck'].entry))throw new Error('PL API precheck must be a proper trusted Java subset');
++  const extra=c['additional-java-sources'];
++  let additionalJavaSources:AdditionalJavaSources|undefined;
++  if(extra!==undefined){
++    if(!extra||typeof extra!=='object'||Array.isArray(extra)||c.runtime!=='java25-junit-v1'||c.sourceProfile.mode!=='implementation'||Object.keys(extra).some(k=>!['archive','max-files','max-file-bytes','max-total-bytes','max-archive-bytes'].includes(k)))throw new Error('PL additional Java sources require closed Java implementation policy');
++    additionalJavaSources=validateAdditionalJavaSources({archive:extra.archive,maxFiles:extra['max-files'],maxFileBytes:extra['max-file-bytes'],maxTotalBytes:extra['max-total-bytes'],maxArchiveBytes:extra['max-archive-bytes']},sources,tests);
++  }
+   return {
+     schemaVersion:1, sourceFiles:sources, testFiles:tests,
+     mode:c.sourceProfile.mode, runtime:c.runtime,
+@@ -11,6 +28,8 @@ export function runtimeDescriptor(c: any, profile: any, sources: string[], tests
+     limits:{'outer-seconds':30,'compile-seconds':15,'run-seconds':10,networking:false,'max-output-bytes':65536,...c.limits},
+     scoring:c.scoring ?? {mode:'weighted'}, discovery:normalizeDiscovery(c.discovery),
+     ...(c.variants ? {variants:c.variants} : {}),
++    ...(additionalJavaSources?{additionalJavaSources}:{}),
++    ...(api ? {apiPrecheck:{files:[...api.files],entry:api.entry}} : {}),
+   };
+ }
+ 
+diff --git a/_extensions/course-prairielearn/entrypoints/export.ts b/_extensions/course-prairielearn/entrypoints/export.ts
+index abd1fa4..a02de0c 100644
+--- a/_extensions/course-prairielearn/entrypoints/export.ts
++++ b/_extensions/course-prairielearn/entrypoints/export.ts
+@@ -40,13 +40,13 @@ async function main() {
+   if (!core) {
+     throw diagnostic(
+       "PL.INPUT_INVALID",
+-      "В выбранной книге требуется установленный Core",
++      "В выбранном проекте требуется установленный Core",
+       {
+         source: join(root, book),
+         id: work,
+         field: "book",
+         hint:
+-          "Установите совместимый Core в выбранную книгу командой quarto add",
++          "Установите совместимый Core в выбранный проект командой quarto add",
+       },
+     );
+   }
+diff --git a/_extensions/course-prairielearn/validate-paths.ts b/_extensions/course-prairielearn/validate-paths.ts
+index 8478f27..e3c4c57 100644
+--- a/_extensions/course-prairielearn/validate-paths.ts
++++ b/_extensions/course-prairielearn/validate-paths.ts
+@@ -9,13 +9,13 @@ async function main() {
+       source,
+       id,
+       field: "project",
+-      hint: "Укажите существующий каталог проекта внутри выбранной книги",
++      hint: "Укажите существующий каталог проекта внутри выбранного проекта",
+     };
+     const fail = (message: string, cause?: unknown): never => {
+       throw diagnostic("PL.PROJECT_INVALID", message, context, cause);
+     };
+     if (!directory.startsWith("/") || directory.startsWith("//")) {
+-      fail(`Путь должен идти от корня выбранной книги: ${directory}`);
++      fail(`Путь должен идти от корня выбранного проекта: ${directory}`);
+     }
+     let real: string;
+     try {
+@@ -29,7 +29,7 @@ async function main() {
+       !path || path === ".." || path.startsWith("../") ||
+       path.startsWith("..\\") || isAbsolute(path)
+     ) {
+-      fail(`Путь выходит за пределы выбранной книги: ${directory}`);
++      fail(`Путь выходит за пределы выбранного проекта: ${directory}`);
+     }
+     if (!(await Deno.stat(real!)).isDirectory) {
+       fail(`Путь проекта не является каталогом: ${directory}`);
+diff --git a/_extensions/course-prairielearn/validate.lua b/_extensions/course-prairielearn/validate.lua
+index ff2e74f..f6e7b0d 100644
+--- a/_extensions/course-prairielearn/validate.lua
++++ b/_extensions/course-prairielearn/validate.lua
+@@ -73,7 +73,7 @@ function M.validate(doc, effective)
+   end})
+   __perfWalk6(doc,{Div = function(div)
+     if native.target(effective, div) == "prairielearn" then
+-      assert((div.attributes.project or ""):match("^/[^.]"), diagnostics.message("PL.PROJECT_INVALID", "Требуется project от корня выбранной книги", {source = source, id = div.identifier, field = "project", hint = "Укажите существующий каталог проекта, например /projects/clamp"}))
++      assert((div.attributes.project or ""):match("^/[^.]"), diagnostics.message("PL.PROJECT_INVALID", "Требуется project от корня выбранного проекта", {source = source, id = div.identifier, field = "project", hint = "Укажите существующий каталог проекта, например /projects/clamp"}))
+       projects:insert({path = div.attributes.project, id = div.identifier})
+     end
+   end})

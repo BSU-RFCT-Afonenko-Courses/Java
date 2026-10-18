@@ -1,0 +1,201 @@
+---
+categories: [java, java-core, java-files]
+---
+
+# Path, Files и текстовый ввод-вывод {#sec-j25-api-files}
+
+`Path` описывает путь, `Files` выполняет файловые операции.
+`InputStream`/`OutputStream` передают байты, `Reader`/`Writer` — кодовые
+единицы текста. Для UTF-8 укажите `StandardCharsets.UTF_8` при создании
+читателя или писателя [@bib-data-files-api; @bib-data-path-api; @bib-data-bufferedreader-api].
+Причины выбора API: @theory:sec-j25-theory-io.
+
+## Модели чтения {#sec-api-files-models}
+
+| Модель | Получение данных и состояние |
+|---|---|
+| `InputStream` / `Reader` | Последовательное чтение; результат возвращается из вызова |
+| `BufferedInputStream` / `BufferedReader` | Буферизация внутри обёртки; последовательный контракт сохраняется |
+| `FileChannel` и `ByteBuffer` | Синхронная передача порции; программа управляет позицией и пределом буфера |
+| Неблокирующий `SelectableChannel` | Попытка операции может завершиться без передачи данных; `Selector` сообщает о готовности |
+| `AsynchronousFileChannel` | Заказ операции и отдельное завершение через `Future` либо `CompletionHandler` |
+
+`FileChannel` не является `SelectableChannel`. Каналы и буферы сами
+по себе не устанавливают неблокирующий режим. NIO.2 включает файловые
+операции разных моделей: например, `Files.newBufferedReader` возвращает
+обычный синхронный читатель. Сравнение причин и издержек:
+@theory:sec-j25-theory-io-nio, @theory:sec-j25-theory-io-readiness,
+@theory:sec-j25-theory-io-asynchronous.
+
+У `ByteBuffer` всегда `0 ≤ position ≤ limit ≤ capacity`. После заполнения
+`flip()` ограничивает чтение записанной порцией; `clear()` подготавливает
+всю ёмкость для заполнения без стирания байтов; `compact()` сохраняет
+непрочитанный остаток в начале. Буфер асинхронной операции доступен
+программе после её завершения. `Future.get()` может ждать этого события;
+порядок запуска нескольких операций не задаёт порядок их завершения
+[@bib-io-buffer-api; @bib-io-bytebuffer-api; @bib-io-async-file-api].
+
+## Путь {#sec-j25-api-files-path}
+
+| Операция `Path` | Назначение |
+|---|---|
+| `static Path of(String first, String... more)` | Создать описание пути |
+| `Path resolve(Path other)` | Присоединить относительный путь; абсолютный задаёт свой путь |
+| `Path normalize()` | Лексически устранить избыточности, без доступа к файлу |
+| `Path toAbsolutePath()` | Разрешить относительно рабочего каталога |
+| `Path toRealPath(LinkOption... options) throws IOException` | Получить действительный путь существующего файла |
+| `Path getFileName()` / `Path getParent()` | Компоненты; отсутствие возможно как `null` |
+
+`Path.of` не открывает файл и не проверяет существование; неправильный
+синтаксис может дать `InvalidPathException`. Относительный путь зависит
+от рабочего каталога процесса. `normalize` не следует по символическим
+ссылкам и не доказывает существования. Для сравнения существующих файлов
+есть `Files.isSameFile`. Предварительный `Files.exists` не гарантирует
+успех следующего действия: внешнее состояние может измениться.
+
+## Чтение и запись {#sec-j25-api-files-operations}
+
+В таблице даны перегрузки для путей, байтового и текстового ввода-вывода.
+`Path`, `OpenOption`, `CopyOption`, `LinkOption` находятся в
+`java.nio.file`, `FileAttribute` — в `java.nio.file.attribute`,
+`Charset` — в `java.nio.charset`; возвращаемые читатели и потоки —
+в `java.io`, `List` — в `java.util`, `Stream` — в `java.util.stream`.
+`throws IOException` означает проверяемый отказ; возможные непроверяемые
+исключения дополнительно определяются условиями конкретной операции.
+
+| Выбранная сигнатура `Files` | Результат / условие |
+|---|---|
+| `static byte[] readAllBytes(Path path) throws IOException` | Все байты в памяти |
+| `static String readString(Path path, Charset cs) throws IOException` | Весь текст в памяти |
+| `static List<String> readAllLines(Path path, Charset cs) throws IOException` | Все строки в списке, разделители удалены |
+| `static InputStream newInputStream(Path path, OpenOption... options) throws IOException` | Байтовый вход, требуется закрытие |
+| `static BufferedReader newBufferedReader(Path path, Charset cs) throws IOException` | Символьный буферизованный вход, требуется закрытие |
+| `static Stream<String> lines(Path path, Charset cs) throws IOException` | Ленивый `Stream<String>`, требуется закрытие |
+| `static Path writeString(Path path, CharSequence text, Charset cs, OpenOption... options) throws IOException` | Записывает текст и возвращает путь |
+| `static BufferedWriter newBufferedWriter(Path path, Charset cs, OpenOption... options) throws IOException` | Символьный буферизованный вывод |
+| `static Path copy(Path source, Path target, CopyOption... options) throws IOException` | Копирование файла |
+| `static Path move(Path source, Path target, CopyOption... options) throws IOException` | Перемещение |
+| `static Path createDirectories(Path dir, FileAttribute<?>... attrs) throws IOException` | Создать недостающую цепочку каталогов |
+| `static void delete(Path path) throws IOException` / `static boolean deleteIfExists(Path path) throws IOException` | Удаление; во втором случае `false` при отсутствии |
+
+Для учебного UTF-8-формата передают `StandardCharsets.UTF_8`.
+Байты не преобразуют в символы отдельным приведением `(char)`.
+`InputStream.read()` даёт 0–255 либо `-1` конца входа; `read(buffer)`
+возвращает фактическое количество, которое может быть меньше буфера.
+`BufferedReader.readLine()` возвращает строку без разделителя либо
+`null` конца входа; пустая строка — самостоятельное значение `""`.
+Разделителями служат LF, CR и CRLF; последняя строка читается и без них.
+
+```java
+try (var reader = java.nio.file.Files.newBufferedReader(path,
+        java.nio.charset.StandardCharsets.UTF_8)) {
+    String line;
+    while ((line = reader.readLine()) != null) {
+        System.out.println(line);
+    }
+}
+```
+
+Это тело метода `static void show(java.nio.file.Path path)
+throws java.io.IOException`. Вход `alpha`, пустая строка, `beta`
+печатается тремя строками, включая пустую. Если загрузчик пропускает пробельные строки,
+его физический счётчик всё равно увеличивается до `continue`:
+@theory:sec-j25-theory-application-loader. Пустой вход не является отказом.
+
+Открытие, чтение и закрытие могут дать `IOException`. Повреждённая последовательность
+UTF-8 при `Files.readString(path, UTF_8)` приводит к `IOException`;
+у читателя из `newBufferedReader(path, UTF_8)` такое исключение возникает
+при чтении. У `Files.lines(path, UTF_8)` повреждение, обнаруженное в позднем
+обходе, передаётся как `UncheckedIOException`; так же передаётся отказ
+закрытия этого потока строк. В приложении из
+@theory:sec-j25-theory-application отказ декодирования через `BufferedReader` даёт
+код завершения 4; накопленные суммы при этом не публикуются. Код 3 означает, что
+отдельные прочитанные строки отвергнуты, а отчёт по принятым поставкам разрешён.
+Это политика журнала поставок. Для `gradeapp` ошибка данных отменяет весь
+отчёт: @handbook:sec-j25-api-project-contract.
+Операции «прочитать всё» требуют памяти для полного входа.
+
+## Параметры открытия и публикация {#sec-j25-api-files-options}
+
+| `StandardOpenOption` | Смысл |
+|---|---|
+| `READ` / `WRITE` | Направление работы |
+| `CREATE` | Создать при отсутствии |
+| `CREATE_NEW` | Создать только новый; существование → отказ |
+| `TRUNCATE_EXISTING` | Усечь существующий при записи |
+| `APPEND` | Добавлять в конец |
+
+Без параметров `writeString/newBufferedWriter` используют создание,
+запись и усечение. Для дописывания выбирают нужный режим явно:
+
+```java
+Files.writeString(target, "s3;Ann;80\n", StandardCharsets.UTF_8,
+    StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+```
+
+Фрагмент выполняется в методе с `throws IOException`; переменная `Path target`
+передана аргументом, нужны импорты `Files`, `StandardCharsets` и
+`StandardOpenOption`. При прежнем тексте `s2;Lin;70\n` получится
+`s2;Lin;70\ns3;Ann;80\n`; повтор запуска добавит ещё одну строку.
+
+Наличие разделителя в конце прежнего текста проверяет приложение.
+При сбое уже записанная часть результата сохраняется.
+`StandardCopyOption.REPLACE_EXISTING` разрешает замену при соответствующей
+операции; `ATOMIC_MOVE` у `move` требует поддержки файловой системы,
+иначе `AtomicMoveNotSupportedException`. При атомарном перемещении
+другие параметры игнорируются, а обработка существующего результата
+зависит от реализации файловой системы.
+
+## Владение ресурсом {#sec-api-files-ownership}
+
+| Способ получения данных | Закрытие |
+|---|---|
+| `Files.readString`, `readAllLines`, `writeString` | Метод сам закрывает открытый файл |
+| `Files.newInputStream`, `newBufferedReader`, `newBufferedWriter` | Полученный ресурс закрывает вызывающий код |
+| `Files.lines` | Закрывается полученный `Stream<String>` |
+| `reader.lines()` | Закрывается владеющий файлом `BufferedReader` |
+| Переданный методу чужой поток | По договору с владельцем; временное использование не передаёт владение |
+
+Закрытие `BufferedReader` закрывает его вложенный читатель. Общие системные
+потоки сохраняют доступными для остальных частей программы. Буферизованный
+вывод может сообщить ошибку при `write`, `flush` или `close`, поэтому
+успех записи включает успешное закрытие собственного файла.
+
+## Исходники файловых опытов {#sec-api-io-examples}
+
+[Комплект опытов](../examples/io-application-examples.zip) содержит
+[инструкцию запуска](../examples/io-application/README.md), `IoDemo.java`,
+`BlockReadDemo.java` и входные файлы. После распаковки перейдите в
+`io-application/`. Команды с JDK 25:
+
+```bash
+javac --release 25 -encoding UTF-8 -d out IoDemo.java BlockReadDemo.java
+java -cp out IoDemo bytes bytes.bin
+java -cp out IoDemo lines lines.txt
+java -cp out IoDemo count lines.txt
+java -cp out BlockReadDemo
+```
+
+Байтовый опыт выводит 0 и 255. Построчный опыт выводит `1: [first]`,
+`2: []`, `3: [last]`; подсчёт непустых строк даёт 2.
+В опыте с буфером после чтения одного оставшегося байта массив равен
+`[50, 20, 30, 40]`, но новой порцией служит только `[50]`.
+Остальные режимы и повреждённый UTF-8 описаны в README.
+
+### Демонстрации моделей {#sec-api-io-model-examples}
+
+[Комплект моделей ввода-вывода](../examples/io-models.zip) содержит
+четыре независимые программы и два небольших входа. После распаковки
+перейдите в `io-models/`; команды и объяснения приведены
+в [README](../examples/io-models/README.md).
+
+| Программа | Наблюдение |
+|---|---|
+| `StreamLayersDemo` | Одни данные как байты, единицы UTF-16 и строки; цепочка обёрток и владелец |
+| `BufferStatesDemo` | Переходы `position`/`limit`, сохранение остатка и действие `clear` |
+| `FileChannelDemo` | Текущая позиция канала и явное файловое смещение |
+| `AsyncReadDemo` | Заказ чтения, `Future`, обработчик завершения и срок использования буфера |
+
+Это разобранные наблюдения за моделями. Их результаты помогают объяснить
+выбор алгоритма. Программы показывают порядок действий и состояние данных;
+самостоятельные файловые задачи имеют отдельные условия и заготовки.

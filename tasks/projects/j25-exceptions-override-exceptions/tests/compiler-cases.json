@@ -1,0 +1,99 @@
+{
+  "mode": "compile-only/manual-no-behavior-score",
+  "sourceRevision": "c9d05aea901fb819a5fcbb44bbf8a117caaeb9b2",
+  "cases": [
+    {
+      "id": "same",
+      "sources": "reference/same",
+      "api": "tests/api/flat/config.json",
+      "compile": "success",
+      "apiStatus": "success",
+      "mode": "compile-only"
+    },
+    {
+      "id": "narrow",
+      "sources": "reference/narrow",
+      "api": "tests/api/flat/config.json",
+      "compile": "success",
+      "apiStatus": "success",
+      "mode": "compile-only"
+    },
+    {
+      "id": "none",
+      "sources": "reference/none",
+      "api": "tests/api/flat/config.json",
+      "compile": "success",
+      "apiStatus": "success",
+      "mode": "compile-only"
+    },
+    {
+      "id": "alternate-none",
+      "sources": "reference/alternate-none",
+      "api": "tests/api/nested/config.json",
+      "compile": "success",
+      "apiStatus": "success",
+      "mode": "compile-only",
+      "runtimeRequired": false
+    },
+    {
+      "id": "alternate-runtime",
+      "sources": "reference/alternate-runtime",
+      "api": "tests/api/nested/config.json",
+      "compile": "success",
+      "apiStatus": "success",
+      "mode": "compile-only",
+      "runtimeRequired": false
+    },
+    {
+      "id": "alternate-checked",
+      "sources": "reference/alternate-checked",
+      "api": "tests/api/nested/config.json",
+      "compile": "success",
+      "apiStatus": "success",
+      "mode": "compile-only",
+      "runtimeRequired": false
+    },
+    {
+      "id": "broader-checked",
+      "sources": "tests/negative/broader-checked",
+      "compile": "failure",
+      "mode": "intentional-negative-compilation"
+    },
+    {
+      "id": "static-instead-of-override",
+      "sources": "tests/negative/static-instead-of-override",
+      "compile": "failure",
+      "mode": "intentional-negative-compilation"
+    },
+    {
+      "id": "wrong-return",
+      "sources": "tests/negative/wrong-return",
+      "compile": "failure",
+      "mode": "intentional-negative-compilation"
+    },
+    {
+      "id": "api-mismatch",
+      "sources": "tests/fixtures/api-mismatch",
+      "api": "tests/api/flat/config.json",
+      "compile": "success",
+      "apiStatus": "mismatch",
+      "mode": "compile-only-api-negative"
+    },
+    {
+      "id": "no-initialization",
+      "sources": "tests/fixtures/no-initialization",
+      "api": "tests/api/flat/config.json",
+      "compile": "success",
+      "apiStatus": "success",
+      "mode": "no-init-api-canary"
+    },
+    {
+      "id": "missing-given-api",
+      "sources": "tests/fixtures/missing-given-api",
+      "api": "tests/api/flat/config.json",
+      "compile": "success",
+      "apiStatus": "mismatch",
+      "mode": "compile-only-api-negative"
+    }
+  ]
+}
