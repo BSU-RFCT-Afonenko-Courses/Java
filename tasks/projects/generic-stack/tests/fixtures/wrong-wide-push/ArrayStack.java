@@ -1,0 +1,1 @@
+public class ArrayStack<T> implements IGenStack<T>{private final T[]data;private int size;public ArrayStack(T[]data){this.data=data;}public void push(Object value)throws StackFullException{if(size==data.length)throw new StackFullException(size);data[size++]=(T)value;}public T pop()throws StackEmptyException{if(size==0)throw new StackEmptyException("empty");return data[--size];}}

@@ -1,0 +1,1 @@
+import java.util.*;import course.examples.objects.Book;public class Catalogue{private final List<Book>books;public Catalogue(List<Book>input){books=input;}public void add(Book b){books.add(b);}public List<Book>view(){return Collections.unmodifiableList(books);}public List<Book>copy(){return new ArrayList<>(books);}public List<Book>snapshot(){return List.copyOf(books);}}

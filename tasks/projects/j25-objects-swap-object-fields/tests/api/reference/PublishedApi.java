@@ -1,0 +1,1 @@
+import org.prairielearn.api.PlatformApiPrecheck;public class PublishedApi {public static void check(PlatformApiPrecheck.Api api)throws Exception{api.type("Test");api.method("Test","swap",void.class,0,0,api.type("Test"),api.type("Test"));api.compiles("Probe","class Probe{void x(){Test a=new Test(3),b=new Test(8);Test.swap(a,b);}}",true);}}

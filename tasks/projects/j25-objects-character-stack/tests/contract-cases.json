@@ -1,0 +1,40 @@
+{
+  "cases": [
+    {
+      "id": "reference",
+      "sources": "reference",
+      "binding": "tests/bindings/reference",
+      "apiConfig": "tests/api/reference/config.json",
+      "expected": "success"
+    },
+    {
+      "id": "valid-named",
+      "sources": "tests/fixtures/valid-named",
+      "binding": "tests/bindings/valid-named",
+      "apiConfig": "tests/api/valid-named/config.json",
+      "expected": "success"
+    },
+    {
+      "id": "wrong",
+      "sources": "tests/fixtures/wrong",
+      "binding": "tests/bindings/reference",
+      "apiConfig": "tests/api/reference/config.json",
+      "expected": "behavior-failure",
+      "reason": {
+        "original": "return data[--size];",
+        "incorrect": "char first=data[0];System.arraycopy(data,1,data,0,--size);return first;",
+        "file": "Stack.java"
+      }
+    },
+    {
+      "id": "wrong-api",
+      "sources": "tests/fixtures/wrong-api",
+      "binding": "tests/bindings/reference",
+      "apiConfig": "tests/api/reference/config.json",
+      "expected": "student-api-mismatch",
+      "studentCompilation": "success",
+      "dependentExecution": "not-run",
+      "gradable": false
+    }
+  ]
+}

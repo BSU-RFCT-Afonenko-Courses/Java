@@ -11,6 +11,7 @@ project:
   output-dir: _output
   resources:
   - '!**/projects/**'
+  - '!test-support/**'
   - '!assessments/**'
   - '!_generated/**'
   - '!tools/**'
@@ -40,7 +41,7 @@ filters:
 - reference-catalog
 book:
   repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
-  repo-branch: codex/java-course-full-revision-20261015
+  repo-branch: master
   repo-subdir: tasks
   repo-actions:
   - source
@@ -55,7 +56,7 @@ book:
       href: index.html
     - text: Лекции
       href: https://bsu-rfct-afonenko-courses.github.io/Java/lectures/index.html
-    - text: Практики
+    - text: Введения к лабораторным
       href: https://bsu-rfct-afonenko-courses.github.io/Java/practice/index.html
     - text: Справочник
       href: https://bsu-rfct-afonenko-courses.github.io/Java/handbook/index.html
@@ -110,6 +111,7 @@ book:
   - references.qmd
 format:
   html:
+    css: ../styles/book.css
     theme: cosmo
     toc: true
     number-sections: true
@@ -117,6 +119,10 @@ format:
     code-tools: false
     toc-depth: 2
 lang: ru
+language:
+  skip-to-content: Перейти к основному содержанию
+  search-more-matches-text: "— показать остальные совпадения в этом документе"
+  search-matching-documents-text: "— число найденных документов"
 reference-catalog:
   namespace: tasks
 fail-if-warnings: true
@@ -148,7 +154,7 @@ bibliography:
 - ../bibliography/tasks/polymorphism.bib
 - ../bibliography/tasks/projects.bib
 - ../bibliography/tasks/text.bib
-csl: ../bibliography/numeric.csl
+csl: ../bibliography/numeric-book-ru.csl
 link-citations: true
 nocite: '@bib-data-map-api, @bib-korneev-io-exceptions, @bib-research-array-list-type-checks-1,
   @bib-research-array-list-type-checks-2, @bib-research-array-list-type-checks-3,
@@ -232,6 +238,7 @@ nocite: '@bib-data-map-api, @bib-korneev-io-exceptions, @bib-research-array-list
   @bib-task-vowels-before-consonants, @bib-task-word-frequency, @bib-task-word-length-extrema'
 
 course:
+  assessment-time: false
   id: java-semester-one
   adapters:
   - prairielearn
@@ -256,7 +263,7 @@ prairielearn:
         color: blue2
         description: Программирование на Java 25
     instances:
-      pilot:
+      2026-2027-s1:
         publishing:
           start-date: "1970-01-01T00:00:00Z"
           end-date: "9999-12-31T00:00:00Z"
@@ -291,7 +298,7 @@ project-checks:
       root: reference
       optional: false
     verification-tests:
-    - student/src/test/java/**/*Test.java
+    - student/src/test/java/**/*.java
     contract-cases: tests/contract-cases.json
     verification-expectations:
       reference:
@@ -320,9 +327,54 @@ project-checks:
       - tests/junit/**/*.java
       scoring:
         mode: all-pass
+    java-cli:
+      source-profile: java-main
+      additional-java-sources:
+        archive: additional-sources.zip
+        max-files: 128
+        max-file-bytes: 1048576
+        max-total-bytes: 4194304
+        max-archive-bytes: 2097152
+      tests:
+      - tests/junit/**/*.java
+      api-precheck:
+        files:
+        - tests/junit/api/CliPrecheck.java
+        entry: CliPrecheck
+      verification-api-precheck:
+        files:
+        - student/src/test/java/api/CliPrecheck.java
+        entry: CliPrecheck
+      scoring:
+        mode: all-pass
+    java-queue:
+      source-profile: java-main
+      tests:
+      - tests/junit/**/*.java
+      api-precheck:
+        files:
+        - tests/junit/api/QueueApi.java
+        - tests/junit/queuecheck/QueueAccess.java
+        entry: QueueApi
+      verification-api-precheck:
+        files:
+        - student/src/test/java/api/QueueApi.java
+        - student/src/test/java/queuecheck/QueueAccess.java
+        entry: QueueApi
+      limits:
+        outer-seconds: 45
+        run-seconds: 15
+      additional-java-sources:
+        archive: additional-sources.zip
+        max-files: 128
+        max-file-bytes: 1048576
+        max-total-bytes: 4194304
+        max-archive-bytes: 2097152
+      scoring:
+        mode: all-pass
 
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
-repo-branch: codex/java-course-full-revision-20261015
+repo-branch: master
 repo-subdir: tasks
 repo-actions:
 - source

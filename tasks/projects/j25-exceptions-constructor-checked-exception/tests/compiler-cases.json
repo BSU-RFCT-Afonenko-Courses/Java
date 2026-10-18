@@ -1,0 +1,80 @@
+{
+  "mode": "compile-only/manual-no-behavior-score",
+  "sourceRevision": "c9d05aea901fb819a5fcbb44bbf8a117caaeb9b2",
+  "cases": [
+    {
+      "id": "io",
+      "sources": "reference/io",
+      "api": "tests/api/flat/config.json",
+      "compile": "success",
+      "apiStatus": "success",
+      "mode": "compile-only"
+    },
+    {
+      "id": "broad",
+      "sources": "reference/broad",
+      "api": "tests/api/flat/config.json",
+      "compile": "success",
+      "apiStatus": "success",
+      "mode": "compile-only"
+    },
+    {
+      "id": "alternate-io",
+      "sources": "reference/alternate-io",
+      "api": "tests/api/nested/config.json",
+      "compile": "success",
+      "apiStatus": "success",
+      "mode": "compile-only"
+    },
+    {
+      "id": "alternate-throwable",
+      "sources": "reference/alternate-throwable",
+      "api": "tests/api/nested/config.json",
+      "compile": "success",
+      "apiStatus": "success",
+      "mode": "compile-only"
+    },
+    {
+      "id": "implicit-constructor",
+      "sources": "tests/negative/implicit-constructor",
+      "compile": "failure",
+      "mode": "intentional-negative-compilation"
+    },
+    {
+      "id": "missing-throws",
+      "sources": "tests/negative/missing-throws",
+      "compile": "failure",
+      "mode": "intentional-negative-compilation"
+    },
+    {
+      "id": "unhandled-caller",
+      "sources": "tests/negative/unhandled-caller",
+      "compile": "failure",
+      "mode": "intentional-negative-compilation"
+    },
+    {
+      "id": "api-mismatch",
+      "sources": "tests/fixtures/api-mismatch",
+      "api": "tests/api/flat/config.json",
+      "compile": "success",
+      "apiStatus": "mismatch",
+      "mode": "compile-only-api-negative"
+    },
+    {
+      "id": "no-initialization",
+      "sources": "tests/fixtures/no-initialization",
+      "api": "tests/api/flat/config.json",
+      "compile": "success",
+      "apiStatus": "success",
+      "mode": "no-init-api-canary"
+    },
+    {
+      "id": "missing-given-api",
+      "sources": "tests/fixtures/missing-given-api",
+      "api": "tests/api/flat/config.json",
+      "compile": "success",
+      "apiStatus": "mismatch",
+      "mode": "compile-only-api-negative"
+    }
+  ]
+}

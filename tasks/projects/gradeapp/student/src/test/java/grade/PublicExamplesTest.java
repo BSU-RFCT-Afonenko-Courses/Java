@@ -11,13 +11,19 @@ import static org.junit.jupiter.api.Assertions.*;
 class PublicExamplesTest {
     @TempDir Path directory;
 
+    private Path sample(String name, String text) throws java.io.IOException {
+        Path path = directory.resolve(name);
+        Files.writeString(path, text, StandardCharsets.UTF_8);
+        return path;
+    }
+
     @Test void providedStudentNormalizesFields() {
         var student = new Student(" s1 ", " Ada ", 90);
         assertEquals(new Student("s1", "Ada", 90), student);
     }
 
     @Test void normalReport() throws Exception {
-        var source = StudentFiles.read(Path.of("samples", "students.txt"));
+        var source = StudentFiles.read(sample("students.txt", "s2;Lin;70\ns3;Ann;90\ns10;Ada;90\n"));
         var result = Reports.selected(source, 80);
         assertEquals(List.of("s10;Ada;90", "s3;Ann;90"),
             result.stream().map(Reports::line).toList());
@@ -33,6 +39,6 @@ class PublicExamplesTest {
 
     @Test void duplicateCodeIsDataFailure() {
         assertThrows(DataFormatException.class,
-            () -> StudentFiles.read(Path.of("samples", "duplicate.txt")));
+            () -> StudentFiles.read(sample("duplicate.txt", "s1;Ada;90\n s1 ;Other;80\n")));
     }
 }

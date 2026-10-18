@@ -1,48 +1,79 @@
 ---
 page-layout: full
 toc: false
-categories: [java, course]
+categories: [java, курс]
 ---
 
 # Теория Java {#sec-j25-theory}
 
-Теория объясняет Java через действия программы: какие значения хранятся,
-что меняется при вызове, как объект сохраняет допустимое состояние и какие
-операции нужны общему алгоритму. История и сравнения с другими языками
-помогают понять причины этих решений.
+## Язык и платформа
 
-Главы ведут от языка и платформы к значениям и вычислениям, объектной модели,
-обобщённым типам, коллекциям, функциям, обработке ошибок и приложению.
-Внутри темы понятие вводится на примере, затем применяется к новой задаче.
-К отдельной главе можно обращаться самостоятельно. Ссылки внутри главы
-помогают найти нужные определения и примеры.
+- {{< xref theory sec-theory-languages style="title" >}}
+- {{< xref theory sec-theory-platform style="title" >}}
 
-## Как пользоваться материалами
+## Значения и вычисления
 
-{{< xref lectures sec-j25-lectures "Лекции" >}} раскрывают тему в устном
-рассказе, а {{< xref handbook sec-j25-handbook "справочник" >}} помогает
-восстановить сигнатуру, команду или ограничение API.
-{{< xref practice sec-j25-practice "Введения к лабораторным" >}}
-повторяют нужные примеры в начале работы;
-{{< xref tasks sec-j25-labs "условия лабораторных" >}}
-задают самостоятельные задачи.
+- {{< xref theory sec-theory-types style="title" >}}
+- {{< xref theory sec-theory-expressions style="title" >}}
+- {{< xref theory sec-theory-control style="title" >}}
+- {{< xref theory sec-theory-methods style="title" >}}
+- {{< xref theory sec-theory-arrays style="title" >}}
+- {{< xref theory sec-theory-text style="title" >}}
 
-Для первого знакомства с массивом до циклов и передачи в метод есть
-{{< xref theory sec-theory-types-array-minimum "короткий разбор" >}}.
-Перед строковой лабораторной прочитайте
-{{< xref theory sec-theory-text-positions "основы работы с текстом" >}}.
+## Объектная модель
+
+- {{< xref theory sec-j25-theory-objects style="title" >}}
+- {{< xref theory sec-j25-theory-classes style="title" >}}
+- {{< xref theory sec-j25-theory-inheritance style="title" >}}
+- {{< xref theory sec-j25-theory-interfaces style="title" >}}
+- {{< xref theory sec-j25-theory-data-classes style="title" >}}
+
+## Обобщённые типы и коллекции
+
+- {{< xref theory sec-t-type-parameters style="title" >}}
+- {{< xref theory sec-t-type-relations style="title" >}}
+- {{< xref theory sec-j25-theory-equality style="title" >}}
+- {{< xref theory sec-j25-theory-collections style="title" >}}
+
+## Функции и последовательности
+
+- {{< xref theory sec-j25-theory-functions style="title" >}}
+- {{< xref theory sec-j25-theory-streams style="title" >}}
+
+## Ошибки, ресурсы и приложение
+
+- {{< xref theory sec-j25-theory-exceptions style="title" >}}
+- {{< xref theory sec-j25-theory-resources style="title" >}}
+- {{< xref theory sec-j25-theory-io style="title" >}}
+- {{< xref theory sec-j25-theory-application style="title" >}}
+
+## Подготовка к примерам и работам
+
+Для запуска используется JDK 25. Работа с оболочкой, файлами и Git описана
+в {{< xref theory sec-j25-theory-system-practice "разделе подготовки" >}}.
+Компиляция Java, classpath и пакеты разобраны в главе
+{{< xref theory sec-theory-platform "о платформе" >}}.
+
+Краткий разбор {{< xref theory sec-theory-types-array-minimum "компонентов и индексов" >}}
+вводит основные понятия массива. При подготовке к строковой лабораторной
+используйте разборы:
+{{< xref theory sec-theory-text-positions "вставка по позиции в строке" >}}
+и {{< xref theory sec-theory-text-word-walk "обход слов по исходным границам" >}}.
 
 К {{< xref tasks sec-lab-generics "лабораторной по обобщениям" >}}
 готовит глава {{< xref theory sec-t-type-parameters "о параметрах типов и общих алгоритмах" >}}.
-В ней же описаны {{< xref theory sec-t-type-parameters-list-basics "необходимые операции списка" >}}.
-Для контейнера дополнительно нужны
-{{< xref theory sec-t-type-relations-arrays "ограничения массивов" >}}
-и {{< xref theory sec-j25-theory-exceptions-early-checked "проверяемые исключения" >}};
-читать для этой работы всю главу о ресурсах не требуется.
+В ней же объяснены {{< xref theory sec-t-type-parameters-list-basics "основные операции списка" >}}.
+Для контейнера нужны также
+{{< xref theory sec-t-type-relations-runtime-limits "ограничения создания массива" >}},
+{{< xref handbook sec-h-generic-classes-array "условия использования переданного массива" >}}
+и {{< xref theory sec-j25-theory-exceptions-early-checked "проверяемые исключения" >}}.
 
-## Подготовка
+## Связанные материалы
 
-Для запуска примеров используется JDK 25. Общие навыки работы
-с оболочкой, файлами и Git описаны в
-{{< xref theory sec-j25-theory-system-practice "разделе подготовки" >}}.
-Компиляция Java, classpath и пакеты разобраны в теории.
+{{< xref lectures sec-j25-lectures "Лекции" >}} содержат материал устных занятий,
+{{< xref handbook sec-j25-handbook "справочник" >}} — формы объявлений,
+операций и команд. {{< xref practice sec-j25-practice "Введения к лабораторным" >}}
+помогают повторить знакомые решения; {{< xref tasks sec-j25-labs "лабораторные" >}}
+задают состав самостоятельной работы.
+
+Библиография глав собрана на странице [источников](references.qmd).

@@ -1,0 +1,6 @@
+class BroaderOverride {
+    interface Source { String read() throws java.io.IOException; }
+    static class BrokenSource implements Source {
+        @Override public String read() throws Exception { return "90"; }
+    }
+}

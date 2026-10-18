@@ -23,4 +23,9 @@ class Guards(unittest.TestCase):
  def test_missing_tag(self):self.provider.pop('tag');self.rejected()
  def test_tag_mismatch(self):self.provider['commit']='0'*40;self.rejected()
  def test_version_mismatch(self):self.provider['version']='7.0.0';self.rejected()
+ def test_local_candidate_cannot_be_overwritten_by_legacy_sync(self):
+  from unittest.mock import patch
+  self.provider['candidate']={'status':'local-unpublished'}
+  with patch.object(sync,'verify_release',side_effect=AssertionError('legacy installer entered release path')):
+   self.rejected()
 if __name__=='__main__':unittest.main()

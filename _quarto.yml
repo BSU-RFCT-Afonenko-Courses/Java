@@ -4,6 +4,7 @@ project:
   render:
   - index.qmd
   resources:
+  - styles/book.css
   - '!theory/**'
   - '!tasks/**'
   - '!lectures/**'
@@ -31,6 +32,7 @@ project:
   - '!AGENTS.md'
   - '!UPSTREAM.md'
   - '!bibliography/**'
+  - '!provenance/**'
   pre-render:
   - _extensions/Afonenko-Course-Tools/course-site/entrypoints/pre.ts
   post-render:
@@ -42,9 +44,13 @@ format:
     theme: cosmo
     toc: true
 lang: ru
+language:
+  skip-to-content: Перейти к основному содержанию
+  search-more-matches-text: "— показать остальные совпадения в этом документе"
+  search-matching-documents-text: "— число найденных документов"
 website:
   repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
-  repo-branch: codex/java-course-full-revision-20261015
+  repo-branch: master
   repo-subdir: ''
   repo-actions:
   - source
@@ -57,7 +63,7 @@ website:
       href: tasks/index.html
     - text: Лекции
       href: lectures/index.html
-    - text: Практики
+    - text: Введения к лабораторным
       href: practice/index.html
     - text: Справочник
       href: handbook/index.html
@@ -70,6 +76,12 @@ filters:
 - reference-catalog
 reference-catalog:
   namespace: portal
+  imports:
+    system-practice-theory:
+      source: provenance/system-practice-catalog.json
+      namespace: system-practice-theory
+      base-url: https://bsu-rfct-afonenko-courses.github.io/System-Practice/
+      title: System Practice
   publication:
     title: Программирование на Java
 profile:
@@ -84,6 +96,7 @@ subprojects:
 - practice
 - handbook
 course:
+  assessment-time: false
   id: java-semester-one
 fail-if-warnings: true
 bibliography:
@@ -95,7 +108,7 @@ csl: bibliography/numeric.csl
 link-citations: true
 
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
-repo-branch: codex/java-course-full-revision-20261015
+repo-branch: master
 repo-subdir: ''
 repo-actions:
 - source

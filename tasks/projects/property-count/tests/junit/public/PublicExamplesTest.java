@@ -1,0 +1,1 @@
+import org.junit.jupiter.api.Test;import static org.junit.jupiter.api.Assertions.*;import java.util.*;import java.math.*;class PublicExamplesTest{@Test void publishedTwoTypes(){assertEquals(2,TaskBinding.integers(new Integer[]{1,2,3},0));assertEquals(1,TaskBinding.strings(new String[]{"one","four",""},0));}}

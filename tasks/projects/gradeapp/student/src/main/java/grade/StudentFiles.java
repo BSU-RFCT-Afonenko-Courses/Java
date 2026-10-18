@@ -13,7 +13,9 @@ public final class StudentFiles {
 
     public static List<Student> read(Path path)
             throws IOException, DataFormatException {
-        // TODO: read
-        throw new UnsupportedOperationException("TODO: read");
+        // TODO: прочитайте файл в UTF-8, проверьте записи и уникальность кодов.
+        // Верните список в порядке записей файла.
+        // Требования к изменяемости списка приведены в README.md.
+        throw new UnsupportedOperationException("TODO: прочитайте и проверьте файл");
     }
 }

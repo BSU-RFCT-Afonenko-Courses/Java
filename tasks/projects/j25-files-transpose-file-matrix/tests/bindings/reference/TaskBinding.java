@@ -1,0 +1,3 @@
+class TaskBinding {
+record Matrices(int[][] source,int[][] transposed){}static void run(java.nio.file.Path a,java.nio.file.Path b)throws Exception{Study.process(a,b);}static int[][] rows(java.util.List<String> a){return a.stream().map(s->java.util.Arrays.stream(s.strip().split("\\s+")).mapToInt(Integer::parseInt).toArray()).toArray(int[][]::new);}static Matrices read(java.nio.file.Path p)throws Exception{var a=java.nio.file.Files.readAllLines(p);int split=a.indexOf("# Транспонированная");if(a.isEmpty()||!a.get(0).equals("# Исходная")||split<1)throw new IllegalArgumentException("Формат этой привязки");return new Matrices(rows(a.subList(1,split)),rows(a.subList(split+1,a.size())));}
+}

@@ -1,0 +1,8 @@
+package alternate;public class Book {
+private int id,year,pages;private String title,publisher,binding;private String[] authors;private double price;
+public Book(int id,String title,String[] authors,String publisher,int year,int pages,double price,String binding){this.id=id;this.title=title;this.authors=authors.clone();this.publisher=publisher;this.year=year;this.pages=pages;this.price=price;this.binding=binding;}
+public Book(int id,String title,String author){this(id,title,new String[]{author},"P",2000,1,0,"B");}
+public int id(){return id;}public void id(int v){id=v;}public int year(){return year;}public void year(int v){year=v;}public int pages(){return pages;}public void pages(int v){pages=v;}public double price(){return price;}public void price(double v){price=v;}public String title(){return title;}public void title(String v){title=v;}public String publisher(){return publisher;}public void publisher(String v){publisher=v;}public String binding(){return binding;}public void binding(String v){binding=v;}public String[] authors(){return authors.clone();}public void authors(String[]v){authors=v.clone();}
+public String toString(){return id+":"+title+":"+java.util.Arrays.toString(authors)+":"+publisher+":"+year+":"+pages+":"+price+":"+binding;}
+public static Book[] author(Book[]a,String s){return java.util.Arrays.stream(a).filter(b->java.util.Arrays.asList(b.authors).contains(s)).toArray(Book[]::new);}public static Book[] publisher(Book[]a,String s){return java.util.Arrays.stream(a).filter(b->b.publisher.equals(s)).toArray(Book[]::new);}public static Book[] after(Book[]a,int y){return java.util.Arrays.stream(a).filter(b->b.year>y).toArray(Book[]::new);}
+}

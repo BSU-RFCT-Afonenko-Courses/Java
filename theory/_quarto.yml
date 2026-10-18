@@ -26,7 +26,7 @@ project:
   - '!**/.superpowers/**'
 book:
   repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
-  repo-branch: codex/java-course-full-revision-20261015
+  repo-branch: master
   repo-subdir: theory
   repo-actions:
   - source
@@ -41,7 +41,7 @@ book:
       href: https://bsu-rfct-afonenko-courses.github.io/Java/tasks/index.html
     - text: Лекции
       href: https://bsu-rfct-afonenko-courses.github.io/Java/lectures/index.html
-    - text: Практики
+    - text: Введения к лабораторным
       href: https://bsu-rfct-afonenko-courses.github.io/Java/practice/index.html
     - text: Справочник
       href: https://bsu-rfct-afonenko-courses.github.io/Java/handbook/index.html
@@ -91,9 +91,14 @@ book:
   - system-practice.qmd
   - references.qmd
 lang: ru
+language:
+  skip-to-content: Перейти к основному содержанию
+  search-more-matches-text: "— показать остальные совпадения в этом документе"
+  search-matching-documents-text: "— число найденных документов"
 number-sections: true
 format:
   html:
+    css: ../styles/book.css
     theme: cosmo
     toc: true
     toc-depth: 3
@@ -108,6 +113,12 @@ filters:
 - reference-catalog
 reference-catalog:
   namespace: theory
+  imports:
+    system-practice-theory:
+      source: ../provenance/system-practice-catalog.json
+      namespace: system-practice-theory
+      base-url: https://bsu-rfct-afonenko-courses.github.io/System-Practice/
+      title: System Practice
 fail-if-warnings: true
 bibliography:
 - ../bibliography/context-data.bib
@@ -120,7 +131,8 @@ bibliography:
 - ../bibliography/java.bib
 - ../bibliography/languages.bib
 - ../bibliography/objects.bib
-csl: ../bibliography/numeric.csl
+- ../bibliography/text-api.bib
+csl: ../bibliography/numeric-book-ru.csl
 link-citations: true
 nocite: '@bib-context-collections-design, @bib-context-cpp-map, @bib-context-cpp-raii, @bib-context-epam-exceptions,
   @bib-context-go-defer, @bib-context-go-errors, @bib-context-jep421, @bib-context-jls1-exceptions,
@@ -164,9 +176,12 @@ nocite: '@bib-context-collections-design, @bib-context-cpp-map, @bib-context-cpp
   @bib-schildt-wildcards-methods'
 
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
-repo-branch: codex/java-course-full-revision-20261015
+repo-branch: master
 repo-subdir: theory
 repo-actions:
 - source
 - issue
 issue-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java/issues/new
+
+course:
+  assessment-time: false

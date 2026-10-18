@@ -1,95 +1,195 @@
 ---
-categories: [j25, j25-core, j25-comparison]
+categories: [java, java-core, java-comparison]
 ---
 
 # Равенство, Comparable и Comparator {#sec-j25-api-comparison}
 
-Java 25. Развёрнутое объяснение и ошибки проектирования:
-@theory:sec-j25-theory-equality. Основание правил — `Object` и `Comparator` API
-[@bib-data-object-api; @bib-data-comparator-api].
+`equals` сравнивает объекты по правилу их типа, `hashCode` поддерживает
+поиск в хеш-коллекциях, а `compareTo` и `Comparator.compare` задают порядок.
+Идентичность ссылок проверяется через `==`. Механизмы сравнения и разбор ошибок:
+@theory:sec-j25-theory-equality.
 
 ## Идентичность и равенство {#sec-j25-api-comparison-equals}
 
-| Форма | Назначение |
+| Форма | Результат и условие |
 |---|---|
-| `a == b` для ссылок | Один объект или обе ссылки `null` |
-| `a.equals(b)` | Равенство, заданное классом `a`; `a` не должен быть `null` |
-| `Objects.equals(a, b)` | Сравнение с учётом `null` |
-| `a.hashCode()` | Хеш, согласованный с равенством |
+| `a == b` для ссылок | `true` для одного объекта или двух `null` |
+| `a.equals(b)` | Равенство по классу объекта `a`; при `a == null` возникает `NullPointerException` |
+| `Objects.equals(a, b)` | Два `null` равны; один `null` отличается от ненулевого; далее используется равенство объектов |
+| `a.hashCode()` | Хеш объекта; равные объекты обязаны иметь одинаковый хеш |
+| `Objects.hashCode(a)` | `0` для `null`, иначе `a.hashCode()` |
 
-Переопределяемая сигнатура — `public boolean equals(Object other)`.
-Условия: рефлексивность, симметрия, транзитивность, устойчивость при
-неизменных существенных данных и `false` для `null`. У `Object`
-реализация соответствует идентичности. Равные объекты обязаны иметь
-одинаковый хеш, совпадение хешей не доказывает равенства. При
-переопределении `equals` переопределяют согласованный `hashCode`.
-
-Фрагмент — `main` отдельного `EqualityApiDemo.java`.
+У `Object` метод `equals` соответствует идентичности. Переопределяемые
+сигнатуры:
 
 ```java
-String a = new String("Ada"), b = new String("Ada");
-System.out.println(a == b);                    // false
+public boolean equals(Object other)
+public int hashCode()
+```
+
+Для ненулевых ссылок `equals` рефлексивен, симметричен, транзитивен
+и сохраняет ответ при неизменных данных сравнения; `equals(null)`
+возвращает `false`. Параметр другого типа, например `equals(StudentId)`,
+создаёт перегрузку. `@Override` позволяет обнаружить эту ошибку при
+компиляции. Совпадение хешей допускается у неравных объектов.
+[@bib-data-object-api]
+
+Короткий опыт с гарантированно разными строковыми объектами:
+
+```java
+String a = new String("Ada");
+String b = new String("Ada");
+System.out.println(a == b);                     // false
 System.out.println(java.util.Objects.equals(a, b)); // true
 ```
 
-Массивы наследуют идентичностное `equals`; для элементов нужны
-`Arrays.equals`, для вложенных массивов — соответствующие глубокие
-операции. Не считайте запись с компонентом-массивом автоматически
-равной другой записи по содержимому массива.
+Поля равенства и хеша ключа сохраняют неизменными во время хранения
+в `HashMap` или `HashSet`. `final` у переменной сохраняет ссылку;
+изменяемые поля объекта требуют отдельного ограничения. Если ключ
+изменён так, что это влияет на `equals`, общий контракт `Map` не определяет
+последующее поведение. Разбор поиска по старому и новому хешу:
+@theory:sec-j25-theory-equality-mutable.
+
+### Массивы и составные значения
+
+| Содержимое | Равенство | Согласованное хеширование |
+|---|---|---|
+| Один ссылочный компонент с допустимым `null` | `Objects.equals(a, b)` | `Objects.hashCode(a)` |
+| Несколько обычных компонентов | Сравнение каждого значимого компонента | `Objects.hash(a, b, ...)` |
+| Одномерный массив | `Arrays.equals(a, b)` | `Arrays.hashCode(a)` |
+| Вложенные массивы | `Arrays.deepEquals(a, b)` | `Arrays.deepHashCode(a)` |
+
+`equals` самого массива проверяет идентичность. Стандартный `equals`
+записи с массивным компонентом использует это же правило для компонента.
+Защитная копия массива ограничивает изменение состояния; для равенства
+по элементам дополнительно нужны согласованные операции `Arrays`.
+`clone` внешнего массива с массивными элементами сохраняет ссылки
+на внутренние массивы. Пример устойчивого составного ключа:
+@theory:sec-j25-theory-equality-composite.
 
 ## Порядок {#sec-j25-api-comparison-order}
+
+Существенные операции стандартных интерфейсов:
 
 ```java
 interface Comparable<T> { int compareTo(T other); }
 interface Comparator<T> { int compare(T first, T second); }
 ```
 
-Отрицательное значение означает «раньше», ноль — эквивалентность по
-порядку, положительное — «позже». Для выбора порядка используют знак результата; его модуль может различаться.
-Порядок транзитивен; перестановка аргументов меняет знак; элементы с
-нулём сравнения должны одинаково сравниваться с третьим.
+Результат меньше нуля означает «раньше», ноль — эквивалентность по порядку,
+больше нуля — «позже». Используется знак результата. Сравнение обязано
+менять знак при перестановке аргументов и быть транзитивным. Два объекта,
+сравнение которых даёт ноль, должны давать одинаковые знаки при сравнении
+с любым третьим объектом.
+`compareTo(null)` даёт `NullPointerException`; компаратор может явно
+поддерживать `null`.
+[@bib-equality-comparable-api; @bib-data-comparator-api]
 
 | Построение | Назначение |
 |---|---|
 | `Comparator.naturalOrder()` | Естественный порядок `Comparable` |
 | `Comparator.reverseOrder()` | Обратный естественный порядок |
-| `Comparator.comparing(key)` | Извлечь сравнимый ключ |
-| `Comparator.comparing(key, order)` | Извлечь ключ и сравнить заданным способом |
-| `Comparator.comparingInt(key)` | Сравнить примитивные `int`-ключи |
-| `order.reversed()` | Обратить данный порядок |
-| `order.thenComparing(other)` | Второе правило при нуле первого |
-| `Comparator.nullsFirst(order)` / `nullsLast` | Явная политика `null` |
+| `Comparator.comparing(key)` | Извлечь ключ и сравнить естественным порядком |
+| `Comparator.comparing(key, order)` | Сравнить извлечённые ключи заданным способом |
+| `Comparator.comparingInt(key)` | Сравнить `int`-ключи без упаковки ключа |
+| `order.reversed()` | Обратить весь заданный порядок |
+| `order.thenComparing(other)` | Применить другое правило при нуле первого |
+| `order.thenComparing(key)` | При нуле первого сравнить извлечённые ключи |
+| `Comparator.nullsFirst(order)` / `nullsLast(order)` | Поместить `null` до / после ненулевых объектов |
 
-Клиент `OrderDemo.java` подключает `import grade.Student;` из
-@theory:sec-j25-theory-data-classes-record и `import java.util.Comparator;`.
-Student имеет `Student(String,String,int)`, `id()/name()/score()`; id/name
-нормализуются и проверяются, score0..100. В `main`:
+Тип `grade.Student` хранит ненулевые код `id`, имя `name` и балл
+`score` от 0 до 100; методы чтения — `id()`, `name()`, `score()`.
+Конструктор нормализует и проверяет строки:
+@theory:sec-j25-theory-data-classes-student.
+С импортами `grade.Student` и `java.util.Comparator` порядок
+«балл по убыванию, при равенстве код по возрастанию» задаётся так:
 
 ```java
 Comparator<Student> order = Comparator.comparingInt(Student::score)
-    .reversed().thenComparing(Student::id);
+    .reversed()
+    .thenComparing(Student::id);
 System.out.println(order.compare(new Student("s10", "Ada", 90),
     new Student("s2", "Lin", 90)) < 0); // true
 ```
 
 При равных баллах `s10` идёт раньше `s2` по естественному порядку строк.
-Смысл и сигнатура: @handbook:sec-api-strings-compare-to.
-Ссылки на методы: @theory:sec-j25-theory-functions-method-reference.
+`reversed()` применён до добавления кода; вызов в конце цепочки обратил
+бы также порядок кодов. Ссылки на методы:
+@theory:sec-j25-theory-functions-method-reference.
+Обычная реализация метода `compare`:
+@theory:sec-j25-theory-equality-order.
 
-`List.sort` меняет список; `stream().sorted(order)` строит стадию нового
-конвейера. `TreeSet`/`TreeMap` используют ноль сравнения как совпадение
-элемента/ключа. Для соблюдения общего соглашения множеств/карт порядок
-согласуют с `equals`. Сравнение целых вычитанием опасно переполнением;
-используют `Integer.compare`. Для `null` возможен
-`NullPointerException`, если сравнение его не поддерживает.
+Для целочисленного сравнения используют `Integer.compare(a, b)`.
+Вычитание `a - b` может переполниться и вернуть неверный знак.
 
+### Место null в порядке
+
+```java
+Comparator<String> missingLast =
+    Comparator.nullsLast(Comparator.naturalOrder());
+System.out.println(missingLast.compare(null, "Ada") > 0); // true
+System.out.println(missingLast.compare(null, null));      // 0
+```
+
+Внешняя обёртка обрабатывает отсутствие сравниваемого объекта.
+Если извлекаемое поле само может быть `null`, порядок этого поля
+задают в `Comparator.comparing(key, fieldOrder)`.
+
+### Согласованность с equals
+
+Порядок согласован с равенством, если `compare(a, b) == 0`
+равносильно `a.equals(b)` для допустимых ненулевых объектов.
+
+| Операция | Значение нулевого сравнения |
+|---|---|
+| `List.sort(order)` | Ничья в порядке; оба элемента сохраняются |
+| `stream().sorted(order)` | Порядок новой стадии конвейера; число элементов сохраняется |
+| `TreeSet.add(value)` | Уже существующий элемент; добавление возвращает `false` |
+| `TreeMap.put(key, value)` | Уже существующий ключ; значение заменяется |
+
+`List.sort` изменяет список. `stream().sorted(order)` создаёт стадию
+конвейера; исходный список этой операцией не переставляется.
+Для соблюдения общих соглашений `Set` и `Map` в упорядоченных контейнерах
+используют порядок, согласованный с `equals`.
+
+Компаратор по одному `score` объединяет разных участников с равными
+баллами. Сравнение по `score` и `id` также даст ноль для разных имён
+при одинаковых коде и балле. С равенством по всем компонентам `Student`
+согласован следующий порядок:
+
+```java
+Comparator<Student> fullOrder = Comparator.comparingInt(Student::score)
+    .reversed().thenComparing(Student::id).thenComparing(Student::name);
+```
+
+Поля, влияющие на порядок, сохраняют неизменными, пока элемент хранится
+в дереве.
+Причина и контрпример: @theory:sec-j25-theory-equality-tree.
 
 ## Граница обобщённого алгоритма сравнения {#sec-h-comparison-bound}
 
 Граница `<T extends Comparable<T>>` требует сравнения с тем же `T`.
-Гибкая форма `<T extends Comparable<? super T>>` допускает также сравнение
-с супертипом. Например, наследник может использовать унаследованный
-`compareTo` и сохранять собственный тип в результате общего алгоритма.
-Сигнатуры, допустимые вызовы и полный запускаемый пример:
-@sec-h-generic-methods-inference. Причина выбора границы разобрана
-в @theory:sec-t-type-relations-comparison-target.
+Форма `<T extends Comparable<? super T>>` допускает сравнение с супертипом.
+Наследник может использовать унаследованный `compareTo` и сохранить
+собственный тип в результате общего алгоритма. Сигнатуры, допустимые
+вызовы и полный пример: @sec-h-generic-methods-inference.
+Причина выбора границы: @theory:sec-t-type-relations-comparison-target.
+
+## Исходники и запуск {#sec-api-equality-examples}
+
+[Комплект опытов](../examples/equality-examples.zip) содержит исходники
+и [инструкцию запуска](../examples/equality/README.md). После распаковки
+перейдите в каталог `equality/`. Для команд используется JDK 25:
+
+```bash
+javac -encoding UTF-8 -d out *.java grade/Student.java
+java -cp out IdentityDemo
+java -cp out HashEqualityDemo
+java -cp out MutableKeyDemo
+java -cp out OrderDemo
+```
+
+Остальные классы запуска, ожидаемые результаты и отдельный пример
+с ошибкой компиляции перечислены в README. Каждый клиент задаёт
+собственные исходные данные; `grade.Student` сохраняет правило
+записи участника из теории.

@@ -44,8 +44,9 @@ public final class Main {
 
     static int run(Path input, int threshold)
             throws IOException, DataFormatException {
-        // TODO: run
-        throw new UnsupportedOperationException("TODO: run");
+        // TODO: сформируйте отчёт после успешного чтения и проверки всего файла.
+        // Верните значение, которое возвращает printReport.
+        throw new UnsupportedOperationException("TODO: сформируйте отчёт");
     }
 
     static int printReport(List<Student> result) {

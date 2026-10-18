@@ -1,0 +1,1 @@
+import org.prairielearn.api.PlatformApiPrecheck;public class PublishedApi {public static void check(PlatformApiPrecheck.Api api)throws Exception{Class<?>a=api.type("Animal"),d=api.type("Dog"),p=api.type("Puppy");api.expect(a.isAssignableFrom(d)&&d.isAssignableFrom(p),"Animal → Dog → Puppy",p.toString());}}

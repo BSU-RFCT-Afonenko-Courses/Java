@@ -1,76 +1,34 @@
-# Источники установленных расширений
+# Происхождение технической поставки Java
 
-Пакеты устанавливаются целиком штатным `quarto add`. `providers.json` закрепляет опубликованные номерные tag/version, точные source commits, URL и области установки; `installed-packages.json` — состав, SHA256, размеры и фактические права файлов этой опубликованной базы. Сам ZIP inventory не доказывает Git executable modes. Разрешённые пользователем локальные поправки от 16 октября 2026 года учтены отдельно ниже; опубликованные pins не выдают их за новый выпуск.
+Поставка от 18 октября 2026 года использует точные опубликованные версии.
+Активных локальных кандидатов и поправок в установленных пакетах нет.
 
-| Пакеты | Выпуск | Точный исходный commit |
+| Владелец | Выпуск | Коммит |
 | --- | --- | --- |
-| Core / Presentation / Navigation | v7.1.0 | 04a6295569f5dcc0fc1b991dc076bafc050dbd49 |
-| Download | v3.1.0 | 73797d3807e2433d33751d538746e1e9d82d6d57 |
-| PrairieLearn exporter | v7.0.0 | a13008aaf23e0616eac4b18f1dabbf77a77b56f3 |
-| Course Site | v5.1.0 | 62f8c4a01a5fd9af11f5f66abba2bb48c2ef2631 |
-| Reference Catalog | v3.1.0 | 3df2110e9f525f03f3ecb4926b5d55718e955c4c |
+| Afonenko-Course-Tools/quarto-course | v7.3.0 | `e93bc3aa5c5f747e647d42ed6c0f65c127920184` |
+| Afonenko-Course-Tools/quarto-project-publish | v5.1.1 | `4a1d7d19f5a232d8ff91ea91a02097e0acf7d9c0` |
+| Afonenko-Course-Tools/quarto-reference-catalog | v3.1.0 | `3df2110e9f525f03f3ecb4926b5d55718e955c4c` |
+| Afonenko-Course-Tools/quarto-course-prairielearn | v7.1.1 | `aac4ef06d70b3692fc4dcaa79ad9c525dc1bc461` |
+| Afonenko-Course-Tools/quarto-project-download | v3.1.0 | `73797d3807e2433d33751d538746e1e9d82d6d57` |
 
-[Core 7.1.0](https://github.com/Afonenko-Course-Tools/quarto-course/releases/tag/v7.1.0) разрешает отсутствие оценки времени банковской задачи. Заданное время остаётся положительным целым числом; при любом кандидате без оценки вся сводка времени отсутствует, включая необязательные позиции. Это опубликованное поведение владельца. [Поправка пилота Core 6](tools/provider-patches/core-optional-time/README.md) сохранена как история и больше не участвует в установке.
-
-Core, Presentation и QRC устанавливаются в корне и пяти учебных частях. Course Site находится в корне; Download и exporter — в tasks; Navigation — в lectures, practice и tasks. Всего 24 экземпляра семи пакетов. Подготовьте owner repositories с соответствующими tags из `providers.json`, затем выполните:
+`providers.json` закрепляет тег, версию, коммит и архив владельца.
+`installed-packages.json` содержит точные области установки и хеши файлов.
+Установленные копии пересоздаются штатным материализатором:
 
 ```sh
-python3 tools/sync-providers.py --providers-root /absolute/provider/repositories
+python3 tools/materialize-providers.py --write --providers-root /path/to/providers
+python3 tools/materialize-providers.py --check
+python3 CI/check-production-pins.py
 ```
 
-Сценарий проверяет tag→SHA, version в descriptor и source URL до установки. Затем создаёт локальный архив из точного commit, вызывает `quarto add` и переносит полные пакеты, сверяя их состав и bytes. Содержимое текущих рабочих веток owner repositories не используется. Без локальных поправок повторная установка сохраняет пакетные файлы и inventory без дельты.
+Platform 2.2.0 и опубликованные OCI digest сохранены в `CI/toolchain.json`.
+Набор PrairieLearn — `2026-2027-s1`. Действующие Moodle/PrairieLearn этим
+выпуском сайта не изменяются.
 
-## Локальные поправки 16 октября 2026 года
+Старые манифесты и поправки сохранены в `docs/provider-history/` и Git.
+Они описывают историю, не активную поставку. Новые версии Core 7.3.0,
+Publisher 5.1.1 и exporter 7.1.1 включают согласованные исправления Java.
 
-Текущее дерево содержит опубликованную базу и 16 изменённых файлов
-установленных расширений. [Манифест локальных поправок](docs/local-extension-patches.json)
-фиксирует пути, исходные и текущие SHA256, владельца и соответствующий
-коммит. `providers.json` и `installed-packages.json` по-прежнему описывают
-опубликованную базу; эти поправки в неё не включены.
-
-В десяти файлах уточнены русские диагностические сообщения о проекте:
-шесть копий Core и четыре файла PrairieLearn. Изменения владельцев сохранены
-в отдельных деревьях `/home/tolya/JavaBooks/java-editorial-tooling-core-20261016`
-и `/home/tolya/JavaBooks/java-editorial-tooling-prairielearn-20261016`,
-коммиты `2f58359` и `f6a1cb8`. Ещё шесть копий `disclosure.js` получили
-исправление перехода к длинному разделу: обычный HTML показывает начало
-`SECTION`, сохраняя штатный отступ Quarto и поведение Reveal. Эта правка
-сохранена в отдельном дереве Core коммитом
-`5d0a5f339a10d7505ded9af8e46ce2d7c9c82dad` после браузерной проверки
-и независимой приёмки обычных переходов. Состав и свидетельства описаны в
-[журнале редакции](docs/lectures-1-2-5-editorial-revision.md).
-
-Обычный `sync-providers.py` заменит эти файлы опубликованными версиями.
-Для воспроизведения нынешнего состояния после установки базы нужны
-перечисленные локальные поправки и сверка их хешей по манифесту.
-Новый выпуск инструментов, push и внешняя поставка в этой работе
-не выполнялись; исходные занятые деревья владельцев сохранены.
-
-## Среда проверки заданий
-
-Java использует `--release 25`, официальный JUnit Console 1.14.1/Jupiter 5.14.1 и Platform runner. Профили java25-junit-v1/java25-mutation-v1 относятся к образу Java, fish-git-v1 — к отдельному образу fish. Ошибки компиляции и решения отделены от сбоев инфраструктуры. Полная контейнерная проверка должна охватывать всю выбранную поставку.
-
-Platform v2.1.0 закреплён на `e401ee9c6fa9c1725ccbbb7ec5b614ab0988d0e1`. Запуск публикации 38721296402 собирал образы из `901cda93ce847e6a29386277b07b71a39215b86d`; итоговый tag включает проверенные фактические pins. Эти commits различаются утверждёнными метаданными и документацией; исходник сборки не выдаётся за финальный tag. Runner SHA256: `48f29c813ee923d50062774034f2c530da6a49588d2f891d51c4c9d9cc76f63b`.
-
-| Среда исполнения | Опубликованный digest |
-| --- | --- |
-| java | `ghcr.io/afonenko-course-tools/java25-grader@sha256:143e2023d1e6ea1c23950d2a6804becc6225abc1806d1be921b14206e14fa02d` |
-| fish | `ghcr.io/afonenko-course-tools/fish-git-grader@sha256:fa4f2bf5c4034e269323d58362dafd26e5b0eaf6796f49a66e68e43fdca0dc94` |
-| community | `ghcr.io/afonenko-course-tools/prairielearn-community-gateway@sha256:70f9202c4e0a4592d221b5bc32fbc18b8265d8a586cbbf4f50ee7211336a2ee2` |
-
-Доступный совместимый Gateway v2.0.3: source `ab61d24687102a50042574790ea6bba5f8b42eb3`, образ `ghcr.io/afonenko-course-tools/moodle-prairielearn-gateway@sha256:5c498a69a4fb37fb5ba3e468a6fd9689a685c31e2b485e0c5ba1691f1935dc64`. Схема БД — 3; configuration, delivery и results — v2. Deployment курса этой редакцией не обновлялся.
-
-Digest образов и свидетельства публикации закреплены в `CI/toolchain.json`.
-Старые сведения Platform 2.0.0 и прежнее разрешение пропустить CI сохранены
-как история. Проверка текущей редакции Java в Actions имеет статус `pending`:
-публикация владельцами инструментов и локальное получение образов
-не подтверждают доступ курса к пакетам GHCR другой организации. CI использует
-встроенный `GITHUB_TOKEN` и `packages: read`; фактическое получение образа
-проверяется отдельно.
-
-Полный локальный цикл рендеринга редакции лекций 1, 2 и 5 завершён;
-свидетельства и пределы находятся в [её журнале](docs/lectures-1-2-5-editorial-revision.md).
-Новая выбранная поставка и полная контейнерная приёмка этим редакционным
-этапом не подтверждаются. Установка пакетов не является приёмкой курса.
-Среда проверки: Quarto 1.11.5, CUE 0.17.1, Java 25. Порядок подготовки
-лабораторных описан в [документации](docs/prairielearn-labs.md).
+Для быстрого выпуска выполнены адресные проверки механизмов и целостности,
+одна окончательная сборка student. Полная проверка курса, контейнеров
+и production grading в этот выпуск не входит.
