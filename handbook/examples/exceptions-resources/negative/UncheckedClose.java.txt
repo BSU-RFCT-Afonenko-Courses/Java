@@ -1,0 +1,9 @@
+class UncheckedClose {
+    static final class Quiet implements AutoCloseable {
+        @Override public void close() {}
+    }
+    static void run() {
+        AutoCloseable resource = new Quiet();
+        try (resource) {}
+    }
+}

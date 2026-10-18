@@ -1,0 +1,2210 @@
+<!DOCTYPE html>
+<html lang="ru"><head>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
+<script src="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
+<link href="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.11.5">
+
+  <title>Лекции Java – Объекты, состояние и инварианты</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-3ce18430e1250f8c2f6f98be2c9c7b18.css">
+  <link rel="stylesheet" href="assets/lesson.css">
+  
+  <style>.task-items li:has(.course-assignment-omitted):not(:has(a)){display:none}</style>
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/course-navigation/navigation.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <script id="course-navigation-context" type="application/json">{"links":[{"href":"../index.html","path":"index.html","scope":"course","text":"Курс Java"},{"href":"index.html","path":"index.html","scope":"project","text":"Все лекции"},{"href":"../theory/index.html","path":"theory/index.html","scope":"course","text":"Теория"},{"href":"https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/master/lectures/objects-invariants.qmd","scope":"repository","text":"Исходный код"},{"href":"https://github.com/BSU-RFCT-Afonenko-Courses/Java/issues/new","scope":"repository","text":"Сообщить об ошибке"}]}</script>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Объекты, состояние и инварианты</h1>
+  <p class="subtitle">Первый семестр</p>
+
+<div class="quarto-title-authors">
+</div>
+
+</section>
+<section>
+<section id="sec-j25-lecture-objects-invariants" class="title-slide slide level1 center">
+<h1>Класс и экземпляр</h1>
+<ul>
+<li>Класс, экземпляр, ссылки и время жизни объекта.</li>
+<li>Передача аргументов, возвращаемые ссылки и копирование.</li>
+<li>Инвариант, инкапсуляция и сохранение состояния при отказе.</li>
+<li>Конструкторы, <code>this</code> и порядок инициализации.</li>
+<li>Методы, перегрузка, статические члены и <code>final</code>.</li>
+<li>Защита представления, копии, снимки и доступ к членам.</li>
+</ul>
+</section>
+<section id="sec-j25-lecture-objects-invariants-objects" class="slide level2 continuation">
+<h2>Поля экземпляра</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a aria-label="1"></a><span class="kw">class</span> <span class="bu">Book</span> <span class="op">{</span></span>
+<span id="cb1-2"><a aria-label="2"></a>    <span class="bu">String</span> title<span class="op">;</span></span>
+<span id="cb1-3"><a aria-label="3"></a>    <span class="dt">boolean</span> borrowed<span class="op">;</span></span>
+<span id="cb1-4"><a aria-label="4"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Поле <code>title</code> хранит ссылку на строку названия, <code>borrowed</code> — признак выдачи: <code>false</code> означает доступную книгу, <code>true</code> — выданную. Объявление класса определило эти поля; экземпляров <code>Book</code> пока не создано.</p>
+<p>Объекты и ссылки: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-objects" data-qrc-style="default" class="qrc-link" href="../theory/chapters/objects.html#sec-j25-theory-objects"><span>Глава 10</span></a>. <span class="citation" data-cites="bib-objects-schildt-classes"><a href="#/источники" role="doc-biblioref" onclick="">[5]</a></span></p>
+<aside class="notes">
+<p>Попросите указать тип каждого поля. Отделите число объявлений полей от числа книг, которые программа сможет создать с такими полями.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-new" class="slide level2">
+<h2>Создание объекта</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb2-1"><a aria-label="1"></a><span class="bu">Book</span> first <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">();</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>new Book()</code> создаёт экземпляр и даёт ссылку на него. Эта ссылка записывается в локальную переменную <code>first</code>. Начальное состояние:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1"><a aria-label="1"></a>first ───&gt; A: Book</span>
+<span id="cb3-2"><a aria-label="2"></a>             title = null</span>
+<span id="cb3-3"><a aria-label="3"></a>             borrowed = false</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>A</code> обозначает объект на схеме. Его ссылочное поле получило <code>null</code> (названия пока нет), логическое — <code>false</code>. Конструктор без аргументов предоставлен неявно: в объявлении <code>Book</code> конструкторов нет.</p>
+<aside class="notes">
+<p>Попросите найти на схеме переменную first и два поля объекта. Затем предложите назвать число созданных объектов Book и объяснить, какое значение записано в first.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-declaration" class="slide level2 continuation">
+<h2>Присваивание локальной переменной</h2>
+<p>В отдельном опыте локальное объявление предшествует присваиванию:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb4-1"><a aria-label="1"></a><span class="bu">Book</span> pending<span class="op">;</span></span>
+<span id="cb4-2"><a aria-label="2"></a><span class="co">// System.out.println(pending.title); // ошибка компиляции</span></span>
+<span id="cb4-3"><a aria-label="3"></a>pending <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">();</span></span>
+<span id="cb4-4"><a aria-label="4"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>pending<span class="op">.</span><span class="fu">title</span><span class="op">);</span>    <span class="co">// null</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Объявление <code>pending</code> создаёт переменную. Перед чтением её значения компилятор требует определённого присваивания: значение должно быть получено на каждом пути к чтению. После <code>pending = new Book()</code> ссылка есть; чтение поля <code>title</code> созданного объекта даёт его начальное <code>null</code>.</p>
+<aside class="notes">
+<p>Предложите прочитать отдельно pending и pending.title. В первой строке объекта ещё нет; после присваивания он существует и содержит поле title. Спросите, почему раскомментирование печати меняет именно результат компиляции.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-two-objects" class="slide level2 continuation">
+<h2>Состояние двух экземпляров</h2>
+<p>У созданной книги <code>first</code> зададим название и создадим вторую книгу:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb5-1"><a aria-label="1"></a>first<span class="op">.</span><span class="fu">title</span> <span class="op">=</span> <span class="st">"Java"</span><span class="op">;</span></span>
+<span id="cb5-2"><a aria-label="2"></a><span class="bu">Book</span> second <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">();</span></span>
+<span id="cb5-3"><a aria-label="3"></a>second<span class="op">.</span><span class="fu">title</span> <span class="op">=</span> <span class="st">"Algorithms"</span><span class="op">;</span></span>
+<span id="cb5-4"><a aria-label="4"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first<span class="op">.</span><span class="fu">title</span><span class="op">);</span> <span class="co">// Java</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1"><a aria-label="1"></a>first  ───&gt; A: title = "Java",       borrowed = false</span>
+<span id="cb6-2"><a aria-label="2"></a>second ───&gt; B: title = "Algorithms", borrowed = false</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Выражение <code>new Book()</code> создало отдельные поля для <code>B</code>. Запись в <code>second.title</code> изменила поле <code>B</code>; через <code>first</code> читается поле <code>A</code>.</p>
+<aside class="notes">
+<p>Предложите выдать один из двух экземпляров. Попросите назвать данные, которые должны измениться у выбранной книги, и состояние второй книги.</p>
+<p>Предложите мысленно заменить second.title на “Databases” и назвать оба результата чтения title. Для каждого ответа попросите указать объект, которому принадлежит прочитанное поле.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-references" class="slide level2">
+<h2>Ссылочная переменная в Java и C++</h2>
+<p>В C++ локальная запись <code>Book object;</code> создаёт объект с автоматическим временем хранения, если класс допускает такую инициализацию. <code>Book* pointer = &amp;object;</code> создаёт отдельную переменную указателя; копирование указателя сохраняет доступ к общему объекту.</p>
+<p>В Java <code>Book first;</code> объявляет ссылочную переменную. Её значение можно заменить другой ссылкой. C++ <code>Book&amp; alias = object;</code> связывает ссылку с объектом; присваивание через <code>alias</code> действует на этот объект.</p>
+<p>Ссылка Java позволяет обратиться к полям и методам. Арифметика адресов, оператор разыменования <code>*</code> и явное освобождение через <code>delete</code> в этой модели отсутствуют. <span class="citation" data-cites="bib-objects-eckel-references"><a href="#/источники" role="doc-biblioref" onclick="">[6]</a></span></p>
+<aside class="notes">
+<p>Сопоставьте место записи при присваивании переменной указателя C++, ссылочной переменной Java и через ссылку T&amp;. Попросите указать, в каких случаях меняется путь к объекту.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-aliases" class="slide level2">
+<h2>Общий объект</h2>
+<p>Книга <code>first</code> имеет название <code>Java</code> и пока доступна:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb7-1"><a aria-label="1"></a><span class="bu">Book</span> same <span class="op">=</span> first<span class="op">;</span></span>
+<span id="cb7-2"><a aria-label="2"></a>same<span class="op">.</span><span class="fu">borrowed</span> <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb7-3"><a aria-label="3"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first<span class="op">.</span><span class="fu">borrowed</span><span class="op">);</span> <span class="co">// true</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1"><a aria-label="1"></a>first ─────┐</span>
+<span id="cb8-2"><a aria-label="2"></a>           ├──&gt; A: title = "Java", borrowed = true</span>
+<span id="cb8-3"><a aria-label="3"></a>same ──────┘</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Присваивание скопировало ссылку на <code>A</code> в новую переменную <code>same</code>. Запись <code>same.borrowed = true</code> изменила поле общей книги; чтение через <code>first</code> находит это же поле.</p>
+<aside class="notes">
+<p>Попросите указать на рисунке точное место записи borrowed = true. Затем посчитайте переменные first и same и доступные через них книги.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-identity" class="slide level2 continuation">
+<h2>Тождество и содержимое объекта</h2>
+<p>У новой книги установлены те же значения обоих полей:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb9-1"><a aria-label="1"></a><span class="bu">Book</span> other <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">();</span></span>
+<span id="cb9-2"><a aria-label="2"></a>other<span class="op">.</span><span class="fu">title</span> <span class="op">=</span> first<span class="op">.</span><span class="fu">title</span><span class="op">;</span></span>
+<span id="cb9-3"><a aria-label="3"></a>other<span class="op">.</span><span class="fu">borrowed</span> <span class="op">=</span> first<span class="op">.</span><span class="fu">borrowed</span><span class="op">;</span></span>
+<span id="cb9-4"><a aria-label="4"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first <span class="op">==</span> same<span class="op">);</span>  <span class="co">// true</span></span>
+<span id="cb9-5"><a aria-label="5"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first <span class="op">==</span> other<span class="op">);</span> <span class="co">// false</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>first</code> и <code>same</code> ссылаются на <code>A</code>; <code>other</code> — на отдельный экземпляр. Для ссылок <code>==</code> даёт <code>true</code>, когда обе обозначают один объект или обе равны <code>null</code>. Сравнение полей требует своего правила равенства.</p>
+<aside class="notes">
+<p>Попросите объяснить false при одинаковых title и borrowed. Затем предложите заменить создание other присваиванием first и назвать результат повторного сравнения.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-domain-identity" class="slide level2 continuation">
+<h2>Тождество экземпляра и номер книги</h2>
+<p>Номер экземпляра в каталоге определяет, какую физическую книгу выдали. Два чтения записи с одним номером могут создать два Java-объекта: каждый хранит своё представление состояния этой книги.</p>
+<p><code>==</code> проверяет тождество объектов в программе. Сопоставление номера позволяет связать загруженные данные с одной предметной сущностью. При обновлении каталога правило поиска определяет, чьё состояние изменится. Одинакового названия для выбора экземпляра недостаточно.</p>
+<p>Предметное равенство: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-objects-identity" data-qrc-style="default" class="qrc-link" href="../theory/chapters/objects.html#sec-j25-theory-objects-identity">Тождество экземпляра и обозначение книги</a>.</p>
+<aside class="notes">
+<p>Предложите две ситуации: два физических экземпляра одного издания и два чтения одной записи. В каждой попросите посчитать номера каталога и объекты программы.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-reassignment" class="slide level2 continuation">
+<h2>Переназначение переменной</h2>
+<p>До присваивания <code>first</code> и <code>same</code> ссылаются на выданную книгу <code>A</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb10-1"><a aria-label="1"></a>same <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">();</span></span>
+<span id="cb10-2"><a aria-label="2"></a>same<span class="op">.</span><span class="fu">title</span> <span class="op">=</span> <span class="st">"Databases"</span><span class="op">;</span></span>
+<span id="cb10-3"><a aria-label="3"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first<span class="op">.</span><span class="fu">title</span><span class="op">);</span>   <span class="co">// Java</span></span>
+<span id="cb10-4"><a aria-label="4"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first <span class="op">==</span> same<span class="op">);</span> <span class="co">// false</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb11-1"><a aria-label="1"></a>first ───&gt; A: title = "Java",      borrowed = true</span>
+<span id="cb11-2"><a aria-label="2"></a>same  ───&gt; D: title = "Databases", borrowed = false</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Ссылка на новый объект <code>D</code> записана только в <code>same</code>. Переменная <code>first</code> сохранила ссылку на <code>A</code>. Чтение <code>first.title</code> через эту ссылку по-прежнему даёт название <code>Java</code>.</p>
+<aside class="notes">
+<p>Вернитесь к схеме общего объекта и переставьте только стрелку same. Попросите объяснить сохранение borrowed у A и начальное false у D.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-null" class="slide level2">
+<h2>Отсутствие объекта</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb12-1"><a aria-label="1"></a><span class="bu">Book</span> missing <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb12-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>missing <span class="op">==</span> <span class="kw">null</span><span class="op">);</span> <span class="co">// true</span></span>
+<span id="cb12-3"><a aria-label="3"></a><span class="co">// missing.title = "Java";           // NullPointerException</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Переменной <code>missing</code> явно присвоено значение <code>null</code>: объекта по этой ссылке нет. Обращение к полю экземпляра требует объекта и при <code>null</code> завершается <code>NullPointerException</code>. У <code>new Book()</code> объект существует, а его поле <code>title</code> первоначально равно <code>null</code>.</p>
+<aside class="notes">
+<p>Сопоставьте missing и новый Book с неназначенным названием. Попросите указать, в каком случае можно прочитать поле title и получить null.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-null-contract" class="slide level2 continuation">
+<h2>Требования к объекту и его полю</h2>
+<p>Поиск может завершиться без книги. Операция чтения названия требует найденную книгу с заданным названием:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb13-1"><a aria-label="1"></a><span class="dt">static</span> <span class="bu">String</span> <span class="fu">titleOf</span><span class="op">(</span><span class="bu">Book</span> book<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-2"><a aria-label="2"></a>    java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">Objects</span><span class="op">.</span><span class="fu">requireNonNull</span><span class="op">(</span>book<span class="op">,</span> <span class="st">"book"</span><span class="op">);</span></span>
+<span id="cb13-3"><a aria-label="3"></a>    <span class="cf">return</span> java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">Objects</span><span class="op">.</span><span class="fu">requireNonNull</span><span class="op">(</span>book<span class="op">.</span><span class="fu">title</span><span class="op">,</span> <span class="st">"title"</span><span class="op">);</span></span>
+<span id="cb13-4"><a aria-label="4"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>titleOf(null)</code> вызывает <code>NullPointerException</code> на первой проверке. <code>titleOf(new Book())</code> доходит до второй: объект существует, его название равно <code>null</code>. Для <code>first</code> с названием <code>Java</code> обе проверки успешны, результат — <code>Java</code>.</p>
+<aside class="notes">
+<p>Попросите проследить оба ошибочных вызова до конкретной проверки. Затем назовите вызов titleOf(first) и предложите объяснить, почему borrowed не влияет на выполнение этого метода.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-j25-lecture-objects-invariants-arguments" class="title-slide slide level1 center">
+<h1>Передача значений аргументов</h1>
+<p>Метод получает существующую книгу и устанавливает признак выдачи:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb14-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">void</span> <span class="fu">borrow</span><span class="op">(</span><span class="bu">Book</span> book<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-2"><a aria-label="2"></a>    book<span class="op">.</span><span class="fu">borrowed</span> <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb14-3"><a aria-label="3"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Новый опыт: <code>first</code> получает ссылку на новую доступную книгу:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb15-1"><a aria-label="1"></a>first <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">();</span></span>
+<span id="cb15-2"><a aria-label="2"></a>first<span class="op">.</span><span class="fu">title</span> <span class="op">=</span> <span class="st">"Java"</span><span class="op">;</span></span>
+<span id="cb15-3"><a aria-label="3"></a><span class="fu">borrow</span><span class="op">(</span>first<span class="op">);</span></span>
+<span id="cb15-4"><a aria-label="4"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first<span class="op">.</span><span class="fu">borrowed</span><span class="op">);</span> <span class="co">// true</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Параметр <code>book</code> получает копию ссылки из <code>first</code>. Обе переменные обращаются к одной книге; запись в её поле меняет <code>false</code> на <code>true</code>. Передача по значению: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-objects-arguments" data-qrc-style="default" class="qrc-link" href="../theory/chapters/objects.html#sec-j25-theory-objects-arguments">Передача значений аргументов</a>.</p>
+<aside class="notes">
+<p>Добавьте к переменной first отдельную переменную параметра book, проведите обе стрелки к новой книге. Попросите найти получателя записи в теле borrow и назвать состояние книги после возврата.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-replace" class="slide level2 continuation">
+<h2>Параметр как локальная переменная</h2>
+<p>После <code>borrow(first)</code> книга <code>first</code> выдана и называется <code>Java</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb16-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">void</span> <span class="fu">replace</span><span class="op">(</span><span class="bu">Book</span> book<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-2"><a aria-label="2"></a>    book <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">();</span></span>
+<span id="cb16-3"><a aria-label="3"></a>    book<span class="op">.</span><span class="fu">title</span> <span class="op">=</span> <span class="st">"Replacement"</span><span class="op">;</span></span>
+<span id="cb16-4"><a aria-label="4"></a><span class="op">}</span></span>
+<span id="cb16-5"><a aria-label="5"></a><span class="fu">replace</span><span class="op">(</span>first<span class="op">);</span></span>
+<span id="cb16-6"><a aria-label="6"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first<span class="op">.</span><span class="fu">title</span><span class="op">);</span> <span class="co">// Java</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>В начале вызова <code>book</code> получил копию ссылки из <code>first</code>. Присваивание <code>book = new Book()</code> заменило её ссылкой на новую книгу. Запись <code>book.title = "Replacement"</code> изменила поле новой книги. Перед выходом из <code>replace</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb17-1"><a aria-label="1"></a>first ───&gt; прежняя книга: title = Java, borrowed = true</span>
+<span id="cb17-2"><a aria-label="2"></a>book  ───&gt; новая книга:   title = Replacement, borrowed = false</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<aside class="notes">
+<p>Сравните левую часть book = new Book() с book.borrowed = true на предыдущем экране. Найдите обе записи на схеме. Затем предложите заменить тело replace одной строкой book.title = “Replacement” и предсказать название при следующем чтении first.title.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-return" class="slide level2">
+<h2>Возвращаемая ссылка</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb18-1"><a aria-label="1"></a><span class="dt">static</span> <span class="bu">Book</span> <span class="fu">create</span><span class="op">(</span><span class="bu">String</span> title<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb18-2"><a aria-label="2"></a>    <span class="bu">Book</span> result <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">();</span></span>
+<span id="cb18-3"><a aria-label="3"></a>    result<span class="op">.</span><span class="fu">title</span> <span class="op">=</span> title<span class="op">;</span></span>
+<span id="cb18-4"><a aria-label="4"></a>    <span class="cf">return</span> result<span class="op">;</span></span>
+<span id="cb18-5"><a aria-label="5"></a><span class="op">}</span></span>
+<span id="cb18-6"><a aria-label="6"></a><span class="bu">Book</span> book <span class="op">=</span> <span class="fu">create</span><span class="op">(</span><span class="st">"Java"</span><span class="op">);</span></span>
+<span id="cb18-7"><a aria-label="7"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>book<span class="op">.</span><span class="fu">title</span><span class="op">);</span> <span class="co">// Java</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>return result</code> передаёт ссылочное значение как результат вызова. Инициализатор сохраняет его в <code>book</code>. Локальная переменная <code>result</code> прекратила существование, созданная книга доступна через <code>book</code>. Книгу создала операция <code>new</code>; <code>return</code> передал ссылку на неё.</p>
+<aside class="notes">
+<p>Попросите проследить ссылку от new до book. Затем предложите выполнить create(“Algorithms”) без присваивания и предсказать повторное чтение book.title. Сопоставьте это с явным book = create(“Algorithms”).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-copy" class="slide level2">
+<h2>Копирование полей объекта</h2>
+<p>Исходная книга <code>first</code> называется <code>Java</code> и выдана:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb19-1"><a aria-label="1"></a><span class="bu">Book</span> copy <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">();</span></span>
+<span id="cb19-2"><a aria-label="2"></a>copy<span class="op">.</span><span class="fu">title</span> <span class="op">=</span> first<span class="op">.</span><span class="fu">title</span><span class="op">;</span></span>
+<span id="cb19-3"><a aria-label="3"></a>copy<span class="op">.</span><span class="fu">borrowed</span> <span class="op">=</span> first<span class="op">.</span><span class="fu">borrowed</span><span class="op">;</span></span>
+<span id="cb19-4"><a aria-label="4"></a>copy<span class="op">.</span><span class="fu">borrowed</span> <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb19-5"><a aria-label="5"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first<span class="op">.</span><span class="fu">borrowed</span><span class="op">);</span> <span class="co">// true</span></span>
+<span id="cb19-6"><a aria-label="6"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>copy<span class="op">.</span><span class="fu">borrowed</span><span class="op">);</span>  <span class="co">// false</span></span>
+<span id="cb19-7"><a aria-label="7"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first <span class="op">==</span> copy<span class="op">);</span> <span class="co">// false</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>new</code> создал вторую книгу с собственными полями. В её поле <code>borrowed</code> скопировано значение <code>true</code>. Последующая запись <code>false</code> меняет только это поле. В <code>title</code> скопирована ссылка на одну строку; неизменяемость <code>String</code> сохраняет общий текст.</p>
+<aside class="notes">
+<p>Попросите указать оба поля borrowed и общий строковый объект. Затем замените тип вложенного значения на изменяемый массив меток и предложите предсказать, какие данные останутся общими при копировании его ссылки.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-lifetime" class="slide level2">
+<h2>Достижимость объекта</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb20-1"><a aria-label="1"></a><span class="bu">Book</span> kept <span class="op">=</span> <span class="fu">create</span><span class="op">(</span><span class="st">"Java"</span><span class="op">);</span></span>
+<span id="cb20-2"><a aria-label="2"></a><span class="bu">Book</span> alias <span class="op">=</span> kept<span class="op">;</span></span>
+<span id="cb20-3"><a aria-label="3"></a>kept <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb20-4"><a aria-label="4"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>alias<span class="op">.</span><span class="fu">title</span><span class="op">);</span> <span class="co">// Java</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb21-1"><a aria-label="1"></a>kept: null       alias ───&gt; книга: title = Java</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Доступ к книге сохранился через <code>alias</code>. Объект достижим, пока к нему можно обратиться в продолжающемся вычислении; путь может проходить через поля и компоненты массивов. Недостижимая группа объектов может быть собрана целиком, включая её внутренние циклы.</p>
+<aside class="notes">
+<p>Попросите проследить оставшийся путь. Добавьте поле каталога со ссылкой на ту же книгу и предложите установить, что изменит alias = null. Отсутствие локальных ссылок ещё оставляет путь через каталог.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-resources" class="slide level2 continuation">
+<h2>Закрытие внешнего ресурса</h2>
+<p>Сборщик мусора освобождает память недостижимых объектов. Присваивание <code>null</code> удаляет одну ссылку; остальные пути могут сохраниться. Недостижимость не задаёт момент освобождения памяти.</p>
+<p>Открытый файл требует вызова <code>close</code>. Конструкция <code>try</code> с ресурсами вызывает <code>close</code> для успешно инициализированного ресурса, отличного от <code>null</code>, при выходе из блока, в том числе через <code>return</code> или исключение. Закрытие: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-resources" data-qrc-style="default" class="qrc-link" href="../theory/chapters/resources.html#sec-j25-theory-resources"><span>Глава 22</span></a>.</p>
+<p>Выход автоматического объекта C++ из области вызывает его деструктор. Окончание области локальной переменной Java такого действия с объектом не выполняет.</p>
+<aside class="notes">
+<p>Предложите закрыть файл, сохранив ссылку на представляющий его объект. Попросите назвать выполненное действие и объяснить, почему достижимость объекта совместима с закрытым файлом. Затем сопоставьте это с одной записью null без вызова close.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-j25-lecture-objects-invariants-invariant" class="title-slide slide level1 center">
+<h1>Инвариант состояния</h1>
+<p>Объект бронирования хранит вместимость <code>capacity</code> и число занятых мест <code>occupied</code>. <strong>Инвариант</strong> задаёт допустимое состояние между обращениями клиента:</p>
+<ul>
+<li><code>capacity &gt; 0</code>;</li>
+<li><code>0 &lt;= occupied &lt;= capacity</code>.</li>
+</ul>
+<p>Конструктор устанавливает эти условия, доступные операции сохраняют их. Для комнаты на 30 мест допустимы и пустое состояние, и занятость 30. Запрос занять ещё 8 мест допустим, только если свободно хотя бы 8. Условие запроса зависит от текущего состояния объекта. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-classes-invariant" data-qrc-style="default" class="qrc-link" href="../theory/chapters/classes.html#sec-j25-theory-classes-invariant">Сохранение инварианта</a>. <span class="citation" data-cites="bib-objects-epam-classes"><a href="#/источники" role="doc-biblioref" onclick="">[2]</a></span></p>
+<aside class="notes">
+<p>Назовите occupied = 25 при capacity = 30. Попросите сначала проверить само состояние, затем запрос на 8 мест. Найдите условие запроса, которое нарушено при сохранённом инварианте.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-bad-fields" class="slide level2">
+<h2>Нарушение инварианта прямой записью</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb22-1"><a aria-label="1"></a><span class="kw">class</span> OpenReservation <span class="op">{</span></span>
+<span id="cb22-2"><a aria-label="2"></a>    <span class="dt">int</span> capacity<span class="op">;</span></span>
+<span id="cb22-3"><a aria-label="3"></a>    <span class="dt">int</span> occupied<span class="op">;</span></span>
+<span id="cb22-4"><a aria-label="4"></a><span class="op">}</span></span>
+<span id="cb22-5"><a aria-label="5"></a>OpenReservation room <span class="op">=</span> <span class="kw">new</span> <span class="fu">OpenReservation</span><span class="op">();</span></span>
+<span id="cb22-6"><a aria-label="6"></a>room<span class="op">.</span><span class="fu">capacity</span> <span class="op">=</span> <span class="dv">30</span><span class="op">;</span></span>
+<span id="cb22-7"><a aria-label="7"></a>room<span class="op">.</span><span class="fu">occupied</span> <span class="op">=</span> <span class="dv">100</span><span class="op">;</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Сразу после <code>new</code> вместимость равна нулю. После двух присваиваний занято больше мест, чем существует. Оба числа допустимы для <code>int</code>; проверка типов пропускает эти записи. Сохранение инварианта требует контролировать создание и последующие изменения состояния.</p>
+<aside class="notes">
+<p>Попросите проверить оба состояния по неравенствам предыдущего экрана. Предложите клиенту самостоятельно проверять каждую запись и найти, какие места пришлось бы проверить после появления второго клиента.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-private-fields" class="slide level2">
+<h2>Закрытое представление</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb23-1"><a aria-label="1"></a><span class="dt">final</span> <span class="kw">class</span> Reservation <span class="op">{</span></span>
+<span id="cb23-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="dt">int</span> capacity<span class="op">;</span></span>
+<span id="cb23-3"><a aria-label="3"></a>    <span class="kw">private</span> <span class="dt">int</span> occupied<span class="op">;</span></span>
+<span id="cb23-4"><a aria-label="4"></a>    <span class="co">// Конструктор и методы управляют этими полями.</span></span>
+<span id="cb23-5"><a aria-label="5"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Если <code>room</code> — переменная типа <code>Reservation</code>, запись <code>room.occupied = 100</code> из внешнего клиентского кода отвергается при компиляции. Изменение проходит через доступные операции <code>Reservation</code>. <code>private</code> ограничивает доступ по месту кода: метод этого класса может читать закрытое поле другого экземпляра того же класса.</p>
+<p><code>final</code> у <code>capacity</code> запрещает повторное присваивание после инициализации; <code>final</code> у класса запрещает его расширение подклассом.</p>
+<aside class="notes">
+<p>Попросите найти два разных применения final и назвать их адресатов. Затем предложите ошибочный метод самого Reservation, записывающий 100, и установите, почему private не проверяет арифметическое условие.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-construct" class="slide level2 continuation">
+<h2>Допустимое начальное состояние</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb24-1"><a aria-label="1"></a><span class="fu">Reservation</span><span class="op">(</span><span class="dt">int</span> capacity<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb24-2"><a aria-label="2"></a>    <span class="cf">if</span> <span class="op">(</span>capacity <span class="op">&lt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb24-3"><a aria-label="3"></a>        <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"positive capacity required"</span><span class="op">);</span></span>
+<span id="cb24-4"><a aria-label="4"></a>    <span class="op">}</span></span>
+<span id="cb24-5"><a aria-label="5"></a>    <span class="kw">this</span><span class="op">.</span><span class="fu">capacity</span> <span class="op">=</span> capacity<span class="op">;</span></span>
+<span id="cb24-6"><a aria-label="6"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>При <code>new Reservation(30)</code> проверка пропускает положительную вместимость. <code>this.capacity</code> получает <code>30</code>, <code>occupied</code> сохраняет начальный <code>0</code>. Оба условия инварианта выполнены.</p>
+<p>При <code>new Reservation(0)</code> оператор <code>throw</code> прерывает выполнение. Выражение создания завершается исключением и не даёт клиенту ссылку на готовую комнату.</p>
+<aside class="notes">
+<p>Попросите проследить new Reservation(-1) до последней выполненной строки. Затем сопоставьте this.capacity и capacity: поле создаваемого объекта и параметр вызова конструктора.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-available" class="slide level2 continuation">
+<h2>Вычисляемое состояние</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb25-1"><a aria-label="1"></a><span class="dt">int</span> <span class="fu">available</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb25-2"><a aria-label="2"></a>    <span class="cf">return</span> capacity <span class="op">-</span> occupied<span class="op">;</span></span>
+<span id="cb25-3"><a aria-label="3"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Для вместимости 30 и занятости 8 результат равен <code>22</code>. Из инварианта следует, что разность неотрицательна и помещается в <code>int</code>.</p>
+<p>Если хранить свободные места третьим полем, операция бронирования должна согласованно менять занятость и остаток. Вычисление разности получает остаток из двух уже сохранённых величин.</p>
+<aside class="notes">
+<p>Предложите добавить поле free = 30 и при бронировании поменять только occupied. Попросите назвать два противоречащих друг другу ответа о свободных местах и найти лишнюю связь, которую пришлось бы поддерживать.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-reserve" class="slide level2 continuation">
+<h2>Проверка запроса до изменения</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb26-1"><a aria-label="1"></a><span class="dt">void</span> <span class="fu">reserve</span><span class="op">(</span><span class="dt">int</span> count<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-2"><a aria-label="2"></a>    <span class="cf">if</span> <span class="op">(</span>count <span class="op">&lt;=</span> <span class="dv">0</span> <span class="op">||</span> count <span class="op">&gt;</span> <span class="fu">available</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb26-3"><a aria-label="3"></a>        <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"invalid size"</span><span class="op">);</span></span>
+<span id="cb26-4"><a aria-label="4"></a>    <span class="op">}</span></span>
+<span id="cb26-5"><a aria-label="5"></a>    occupied <span class="op">+=</span> count<span class="op">;</span></span>
+<span id="cb26-6"><a aria-label="6"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Успешный запрос удовлетворяет <code>0 &lt; count &lt;= capacity - occupied</code>. Поэтому новая занятость остаётся между нулём и вместимостью. При отказе выполнение заканчивается до записи, и поля сохраняются.</p>
+<p>Проверка через остаток также предотвращает переполнение <code>int</code>: допустимая сумма ограничена вместимостью. Предварительное вычисление <code>occupied + count</code> для произвольного запроса могло бы переполниться.</p>
+<aside class="notes">
+<p>Для изначально пустой комнаты на 30 мест предложите два вызова: сначала reserve(8), затем reserve(25). До следующего экрана попросите назвать остаток после каждого вызова и указать, какой дойдёт до присваивания.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-reservation-result" class="slide level2 continuation">
+<h2>Наблюдение состояния после отказа</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb27-1"><a aria-label="1"></a>Reservation room <span class="op">=</span> <span class="kw">new</span> <span class="fu">Reservation</span><span class="op">(</span><span class="dv">30</span><span class="op">);</span></span>
+<span id="cb27-2"><a aria-label="2"></a>room<span class="op">.</span><span class="fu">reserve</span><span class="op">(</span><span class="dv">8</span><span class="op">);</span></span>
+<span id="cb27-3"><a aria-label="3"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>room<span class="op">.</span><span class="fu">available</span><span class="op">());</span> <span class="co">// 22</span></span>
+<span id="cb27-4"><a aria-label="4"></a><span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb27-5"><a aria-label="5"></a>    room<span class="op">.</span><span class="fu">reserve</span><span class="op">(</span><span class="dv">25</span><span class="op">);</span></span>
+<span id="cb27-6"><a aria-label="6"></a><span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IllegalArgumentException</span> ex<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb27-7"><a aria-label="7"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"refused"</span><span class="op">);</span></span>
+<span id="cb27-8"><a aria-label="8"></a><span class="op">}</span></span>
+<span id="cb27-9"><a aria-label="9"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>room<span class="op">.</span><span class="fu">available</span><span class="op">());</span> <span class="co">// 22</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>catch</code> позволяет продолжить выполнение после исключения. Состояние осталось прежним благодаря порядку действий в <code>reserve</code>: проверка отвергла <code>25</code> до изменения <code>occupied</code>. Сам перехват исключения не восстанавливает поля.</p>
+<aside class="notes">
+<p>Сопоставьте результат с прогнозом. Предложите мысленно перенести occupied += count перед проверкой и объяснить, какой прежний результат потеряется, даже если сообщение refused останется тем же.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-setter" class="slide level2">
+<h2>Операция изменения состояния</h2>
+<p>При занятости 8 действие <code>reserve(8)</code> занимает ещё восемь мест: занятость становится <code>16</code>. Присваивающий метод <code>setOccupied(8)</code> оставил бы занятость равной <code>8</code>.</p>
+<p>Для бронирования клиент сообщает размер новой группы. Метод сам читает текущую занятость, проверяет остаток и выполняет переход. Setter требует от клиента заранее получить итоговое число; отдельная операция исправления учёта может иметь собственные условия доступа.</p>
+<aside class="notes">
+<p>Предложите последовательно забронировать группы из 8 и 5 человек. Попросите записать аргументы reserve и, отдельно, аргументы присваивающего setter. Установите, в каком варианте клиент вычисляет новую занятость и хранит сведения о предыдущих вызовах.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="изменение-представления-бронирования" class="slide level2">
+<h2>Изменение представления бронирования</h2>
+<p>Вместо <code>occupied</code> можно хранить число свободных мест. Клиент продолжает вызывать <code>available()</code> и <code>reserve(count)</code>, если их договор сохранён. Прямое чтение и запись <code>occupied</code> связали бы клиента с прежним устройством.</p>
+<p>Закрытые поля ограничивают места изменения состояния. Проверка инварианта сосредоточена в создании объекта и его операциях; новый клиент использует уже определённые переходы. <span class="citation" data-cites="bib-concept-bloch-encapsulation"><a href="#/источники" role="doc-biblioref" onclick="">[4]</a></span></p>
+<aside class="notes">
+<p>Для комнаты на 30 мест после бронирования 8 сравните два представления: occupied равен 8 либо свободных мест 22. Попросите назвать результат available и изменение при reserve(5) в обоих случаях. Затем найдите, какой клиент потребовал бы правки при смене поля: вызывающий reserve или самостоятельно вычисляющий новое occupied. Попросите задать начальные значения для пустой комнаты в обоих представлениях. Речь идёт о последовательном использовании этого объекта.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-j25-lecture-objects-invariants-constructors" class="title-slide slide level1 center">
+<h1>Конструирование экземпляра</h1>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb28-1"><a aria-label="1"></a><span class="kw">class</span> <span class="bu">Box</span> <span class="op">{</span></span>
+<span id="cb28-2"><a aria-label="2"></a>    <span class="bu">Box</span><span class="op">(</span><span class="dt">int</span> width<span class="op">,</span> <span class="dt">int</span> height<span class="op">)</span> <span class="op">{</span> <span class="co">/* инициализация */</span> <span class="op">}</span></span>
+<span id="cb28-3"><a aria-label="3"></a>    <span class="co">// void Box(int width, int height) { } // обычный метод</span></span>
+<span id="cb28-4"><a aria-label="4"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Конструктор имеет имя класса и объявляется без возвращаемого типа. Он участвует в создании объекта. Добавление <code>void</code> объявляет обычный метод, вызываемый у существующего объекта.</p>
+<p>Конструктор по умолчанию без параметров предоставляется обычному классу, в котором нет объявленных конструкторов. У показанного <code>Box</code> есть <code>Box(int, int)</code>, поэтому <code>new Box()</code> отвергается при компиляции. <span class="citation" data-cites="bib-objects-schildt-classes bib-jls-25"><a href="#/источники" role="doc-biblioref" onclick="">[1, Разд. 8.8]</a>, <a href="#/источники" role="doc-biblioref" onclick="">[5]</a></span></p>
+<aside class="notes">
+<p>Предложите оставить в классе только строку с void, сняв комментарий. Попросите предсказать доступность new Box() и объяснить, какие действия выполнит конструктор по умолчанию.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-this" class="slide level2">
+<h2>Инициализация полей через <code>this</code></h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb29-1"><a aria-label="1"></a><span class="kw">class</span> <span class="bu">Box</span> <span class="op">{</span></span>
+<span id="cb29-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="dt">int</span> width<span class="op">;</span></span>
+<span id="cb29-3"><a aria-label="3"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="dt">int</span> height<span class="op">;</span></span>
+<span id="cb29-4"><a aria-label="4"></a>    <span class="bu">Box</span><span class="op">(</span><span class="dt">int</span> width<span class="op">,</span> <span class="dt">int</span> height<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb29-5"><a aria-label="5"></a>        <span class="cf">if</span> <span class="op">(</span>width <span class="op">&lt;=</span> <span class="dv">0</span> <span class="op">||</span> height <span class="op">&lt;=</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb29-6"><a aria-label="6"></a>            <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">();</span></span>
+<span id="cb29-7"><a aria-label="7"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">width</span> <span class="op">=</span> width<span class="op">;</span></span>
+<span id="cb29-8"><a aria-label="8"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">height</span> <span class="op">=</span> height<span class="op">;</span></span>
+<span id="cb29-9"><a aria-label="9"></a>    <span class="op">}</span></span>
+<span id="cb29-10"><a aria-label="10"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>В <code>new Box(3, 4)</code> параметры получают <code>3</code> и <code>4</code>. После проверки эти значения записываются в поля создаваемой коробки. <code>this.width</code> выбирает поле, простое имя <code>width</code> — одноимённый параметр.</p>
+<aside class="notes">
+<p>Попросите указать два объявления width. Замените this.width = width на width = width и предложите установить, какая переменная получила запись и почему final-поле осталось без требуемой инициализации.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-delegation" class="slide level2 continuation">
+<h2>Делегирование между конструкторами</h2>
+<p>Дополнительный конструктор того же <code>Box</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb30-1"><a aria-label="1"></a><span class="bu">Box</span><span class="op">(</span><span class="dt">int</span> side<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-2"><a aria-label="2"></a>    <span class="kw">this</span><span class="op">(</span>side<span class="op">,</span> side<span class="op">);</span></span>
+<span id="cb30-3"><a aria-label="3"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>new Box(4)</code> создаёт один экземпляр. Вызов <code>this(4, 4)</code> передаёт инициализацию конструктору <code>Box(int, int)</code>: тот проверяет размеры и записывает оба поля. После возврата конструктор <code>Box(int)</code> завершается.</p>
+<p><code>new Box(0)</code> проходит по тому же пути и отвергается общей проверкой. Изменение правила размеров достаточно внести в один конструктор.</p>
+<aside class="notes">
+<p>Проследите на доске два вызова конструкторов и один объект. Затем предложите значение -2 и попросите найти тело, в котором прекратится выполнение всей операции new.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-validation" class="slide level2">
+<h2>Диапазон результата метода</h2>
+<p>Метод площади использует положительные размеры <code>Box</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb31-1"><a aria-label="1"></a><span class="dt">int</span> <span class="fu">area</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb31-2"><a aria-label="2"></a>    <span class="cf">return</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">multiplyExact</span><span class="op">(</span>width<span class="op">,</span> height<span class="op">);</span></span>
+<span id="cb31-3"><a aria-label="3"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>new Box(3, 4).area()</code> даёт <code>12</code>. Для размеров <code>50000</code> и <code>50000</code> конструктор успешно устанавливает поля, но произведение <code>2 500 000 000</code> превышает максимум <code>int</code>.</p>
+<p><code>Math.multiplyExact</code> в этом случае бросает <code>ArithmeticException</code>. Поля коробки сохраняются: вычисление площади только читает размеры.</p>
+<aside class="notes">
+<p>Попросите отдельно проверить положительность размеров и допустимость площади типа int. Затем предложите возвращать long с приведением одного множителя до умножения и предсказать результат для тех же размеров.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-initialization" class="slide level2">
+<h2>Порядок инициализации экземпляра</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb32-1"><a aria-label="1"></a><span class="kw">class</span> Trace <span class="op">{</span></span>
+<span id="cb32-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">int</span> value <span class="op">=</span> <span class="fu">init</span><span class="op">();</span></span>
+<span id="cb32-3"><a aria-label="3"></a>    <span class="op">{</span> <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"block: "</span> <span class="op">+</span> value<span class="op">);</span> <span class="op">}</span></span>
+<span id="cb32-4"><a aria-label="4"></a>    <span class="kw">private</span> <span class="dt">int</span> <span class="fu">init</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb32-5"><a aria-label="5"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"field"</span><span class="op">);</span></span>
+<span id="cb32-6"><a aria-label="6"></a>        <span class="cf">return</span> <span class="dv">7</span><span class="op">;</span></span>
+<span id="cb32-7"><a aria-label="7"></a>    <span class="op">}</span></span>
+<span id="cb32-8"><a aria-label="8"></a>    <span class="fu">Trace</span><span class="op">()</span> <span class="op">{</span> <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"constructor: "</span> <span class="op">+</span> value<span class="op">);</span> <span class="op">}</span></span>
+<span id="cb32-9"><a aria-label="9"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Для <code>new Trace()</code> после начального <code>value = 0</code> и вызова конструктора <code>Object</code> выполняются инициализатор поля, блок экземпляра и тело конструктора: <code>field</code>, <code>block: 7</code>, <code>constructor: 7</code>. Инициализаторы полей и блоки одного класса выполняются в текстовом порядке.</p>
+<aside class="notes">
+<p>Предложите поменять местами инициализатор поля и блок, используя в блоке обращение this.value. Попросите предсказать число в строке block до проверки этого варианта. Для исходного порядка найдите строку, после которой значение 0 заменено на 7.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-j25-lecture-objects-invariants-methods" class="title-slide slide level1 center">
+<h1>Объявление метода</h1>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb33-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">max</span><span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb33-2"><a aria-label="2"></a>    <span class="cf">return</span> a <span class="op">&gt;=</span> b <span class="op">?</span> a <span class="op">:</span> b<span class="op">;</span></span>
+<span id="cb33-3"><a aria-label="3"></a><span class="op">}</span></span>
+<span id="cb33-4"><a aria-label="4"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="fu">max</span><span class="op">(</span><span class="dv">3</span><span class="op">,</span> <span class="dv">8</span><span class="op">));</span> <span class="co">// 8</span></span>
+<span id="cb33-5"><a aria-label="5"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="fu">max</span><span class="op">(</span><span class="dv">9</span><span class="op">,</span> <span class="dv">2</span><span class="op">));</span> <span class="co">// 9</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>int</code> перед именем задаёт тип результата, <code>a</code> и <code>b</code> — параметры отдельного вызова. <code>return</code> завершает вызов с вычисленным числом. Операция получает все входы аргументами и не сохраняет данные между вычислениями. <span class="citation" data-cites="bib-objects-epam-method-design"><a href="#/источники" role="doc-biblioref" onclick="">[3]</a></span></p>
+<p>Поля для <code>a</code> и <code>b</code> потребовали бы предварительных записей и согласования их значений перед каждым вызовом. Параметры связывают входы с одним вычислением <code>max</code>.</p>
+<aside class="notes">
+<p>Попросите выполнить оба вызова и посчитать переменные параметров. Затем предложите вариант с двумя полями и сеттерами: найдите, какой прежний аргумент случайно останется, если второй setter пропущен.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-overload" class="slide level2">
+<h2>Выбор перегруженного объявления</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb34-1"><a aria-label="1"></a><span class="dt">static</span> <span class="bu">String</span> <span class="fu">describe</span><span class="op">(</span><span class="dt">int</span> value<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="st">"int"</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb34-2"><a aria-label="2"></a><span class="dt">static</span> <span class="bu">String</span> <span class="fu">describe</span><span class="op">(</span><span class="bu">String</span> value<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="st">"String"</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb34-3"><a aria-label="3"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="fu">describe</span><span class="op">(</span><span class="dv">3</span><span class="op">));</span>   <span class="co">// int</span></span>
+<span id="cb34-4"><a aria-label="4"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="fu">describe</span><span class="op">(</span><span class="st">"3"</span><span class="op">));</span> <span class="co">// String</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Перегруженные методы имеют одно имя и различающиеся списки типов параметров. По типу выражения аргумента компилятор выбирает применимое объявление. <code>3</code> имеет тип <code>int</code>, <code>"3"</code> — <code>String</code>.</p>
+<p>Объявления с одинаковыми параметрами и разными возвращаемыми типами конфликтуют: возвращаемый тип не различает перегрузки. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-classes-overload" data-qrc-style="default" class="qrc-link" href="../theory/chapters/classes.html#sec-j25-theory-classes-overload">Перегрузка и выбор объявления</a>.</p>
+<aside class="notes">
+<p>В первом объявлении предложите заменить тип параметра int на long и предсказать вызов с аргументом 3. Объясните допустимое расширение int до long. Затем предложите добавить int describe(String value) и установить, почему такое объявление конфликтует с уже существующим.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-j25-lecture-objects-invariants-static" class="title-slide slide level1 center">
+<h1>Статические члены</h1>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb35-1"><a aria-label="1"></a><span class="dt">final</span> <span class="kw">class</span> Ticket <span class="op">{</span></span>
+<span id="cb35-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">static</span> <span class="dt">long</span> nextId <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb35-3"><a aria-label="3"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="dt">long</span> id <span class="op">=</span> nextId<span class="op">++;</span></span>
+<span id="cb35-4"><a aria-label="4"></a>    <span class="dt">long</span> <span class="fu">id</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> id<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb35-5"><a aria-label="5"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Одно поле <code>nextId</code> принадлежит загруженному классу <code>Ticket</code>. У каждого билета собственное поле <code>id</code>. Инициализатор экземпляра записывает текущее значение <code>nextId</code> в <code>id</code>, затем увеличивает общий счётчик.</p>
+<p>При первом создании билета инициализация класса устанавливает <code>nextId = 1</code>. Последующие создания используют уже изменённый счётчик. Опыт выполняется в одном потоке.</p>
+<aside class="notes">
+<p>До перехода к результату попросите вычислить id двух последовательно созданных билетов и nextId после второго создания. Сохраните на доске одну ячейку общего поля и две ячейки полей экземпляров.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-static-result" class="slide level2 continuation">
+<h2>Общий счётчик и номера экземпляров</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb36-1"><a aria-label="1"></a>Ticket first <span class="op">=</span> <span class="kw">new</span> <span class="fu">Ticket</span><span class="op">();</span></span>
+<span id="cb36-2"><a aria-label="2"></a>Ticket second <span class="op">=</span> <span class="kw">new</span> <span class="fu">Ticket</span><span class="op">();</span></span>
+<span id="cb36-3"><a aria-label="3"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first<span class="op">.</span><span class="fu">id</span><span class="op">());</span>  <span class="co">// 1</span></span>
+<span id="cb36-4"><a aria-label="4"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>second<span class="op">.</span><span class="fu">id</span><span class="op">());</span> <span class="co">// 2</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb37-1"><a aria-label="1"></a>Ticket.nextId: 3     first.id: 1     second.id: 2</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>При создании второго билета поле <code>id</code> первого билета сохраняет значение <code>1</code>. Запись выполняется в общий счётчик и поле нового экземпляра.</p>
+<p>Операция <code>++</code> состоит из чтения, увеличения и записи. В нескольких потоках эти действия требуют согласования; <code>static</code> задаёт общность поля и само такого согласования не выполняет.</p>
+<aside class="notes">
+<p>Сопоставьте три значения с прогнозом. Предложите двум потокам прочитать одно nextId до любой записи и попросите объяснить, какие одинаковые номера могут получить билеты.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-static-this" class="slide level2">
+<h2>Статический метод без получателя</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb38-1"><a aria-label="1"></a><span class="kw">class</span> Numbers <span class="op">{</span></span>
+<span id="cb38-2"><a aria-label="2"></a>    <span class="dt">static</span> <span class="dt">int</span> <span class="fu">add</span><span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> a <span class="op">+</span> b<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb38-3"><a aria-label="3"></a><span class="op">}</span></span>
+<span id="cb38-4"><a aria-label="4"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>Numbers<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">));</span> <span class="co">// 5</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Вызов через имя класса не требует экземпляра <code>Numbers</code>. У статического метода нет текущего объекта <code>this</code>; данные переданы параметрами. Обращение к полю экземпляра внутри такого метода требует отдельной ссылки на соответствующий объект.</p>
+<aside class="notes">
+<p>Предложите статическому методу параметр Ticket ticket и вызов ticket.id(). Попросите объяснить, откуда берётся получатель этого вызова, несмотря на отсутствие this у внешнего статического метода.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-final" class="slide level2">
+<h2>Однократное присваивание ссылки</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb39-1"><a aria-label="1"></a><span class="dt">final</span> <span class="dt">int</span><span class="op">[]</span> values <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">};</span></span>
+<span id="cb39-2"><a aria-label="2"></a>values<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> <span class="dv">9</span><span class="op">;</span></span>
+<span id="cb39-3"><a aria-label="3"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>values<span class="op">[</span><span class="dv">0</span><span class="op">]);</span> <span class="co">// 9</span></span>
+<span id="cb39-4"><a aria-label="4"></a><span class="co">// values = new int[]{3};     // ошибка компиляции</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>final</code> запрещает повторно присвоить значение переменной <code>values</code>. Левая часть <code>values[0]</code> выбирает компонент массива; его значение можно изменить. Для C++ сходное различие есть между постоянным указателем <code>T* const</code> и указателем на постоянные данные <code>const T*</code>.</p>
+<aside class="notes">
+<p>Попросите отметить переменную values и компонент 0 как два места хранения. Затем предложите final-параметр массива и предсказать, какие из двух показанных присваиваний останутся допустимыми.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-immutable" class="slide level2">
+<h2>Неизменяемое наблюдаемое значение</h2>
+<p>У неизменяемого объекта наблюдаемое значение сохраняется после создания. Например, общий <code>String</code> сохраняет последовательность символов при доступе через все ссылки.</p>
+<p>Если объект хранит изменяемый массив, клиент может сохранить входную ссылку и позднее изменить его компоненты. При выдаче той же ссылки наружу появляется ещё один путь изменения. Защита собственного состояния требует решения на обеих границах: какие данные копируются при входе и какие доступны в результате метода. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-classes-sharing" data-qrc-style="default" class="qrc-link" href="../theory/chapters/classes.html#sec-j25-theory-classes-sharing">Закрытые поля и разделяемое изменяемое состояние</a>.</p>
+<aside class="notes">
+<p>Предложите объект с private final String[] names и клиентскую ссылку на переданный массив. Попросите назвать допустимую запись клиента, которая изменит наблюдаемое имя. Затем добавьте копию только на входе и проверьте, что остаётся при возврате внутреннего массива.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-j25-lecture-objects-invariants-book-contract" class="title-slide slide level1 center">
+<h1>Защищённое состояние книги</h1>
+<p>Теперь <code>Book</code> устанавливает допустимое название при создании и закрывает поля от прямых записей клиента:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb40-1"><a aria-label="1"></a><span class="kw">public</span> <span class="dt">final</span> <span class="kw">class</span> <span class="bu">Book</span> <span class="op">{</span></span>
+<span id="cb40-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">String</span> title<span class="op">;</span></span>
+<span id="cb40-3"><a aria-label="3"></a>    <span class="kw">private</span> <span class="dt">boolean</span> borrowed<span class="op">;</span></span>
+<span id="cb40-4"><a aria-label="4"></a>    <span class="kw">public</span> <span class="bu">Book</span><span class="op">(</span><span class="bu">String</span> title<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb40-5"><a aria-label="5"></a>        <span class="cf">if</span> <span class="op">(</span>title <span class="op">==</span> <span class="kw">null</span> <span class="op">||</span> title<span class="op">.</span><span class="fu">isBlank</span><span class="op">())</span></span>
+<span id="cb40-6"><a aria-label="6"></a>            <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"Название должно содержать хотя бы один непробельный символ"</span><span class="op">);</span></span>
+<span id="cb40-7"><a aria-label="7"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">title</span> <span class="op">=</span> title<span class="op">;</span></span>
+<span id="cb40-8"><a aria-label="8"></a>    <span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>После успешного создания название отличается от <code>null</code> и содержит хотя бы один непробельный символ (<code>!title.isBlank()</code>). Поле <code>borrowed</code> равно <code>false</code>. Название сохраняется на всё время использования книги.</p>
+<aside class="notes">
+<p>Сопоставьте этот вариант с начальным Book с открытыми полями. Попросите проверить new Book(” “), new Book(null) и new Book(”Java”). Назовите, какой вызов даёт клиенту книгу и каково её состояние.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-book-contract-part-1" class="slide level2 continuation">
+<h2>Операция выдачи</h2>
+<p>Методы того же класса <code>Book</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb41-1"><a aria-label="1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">title</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> title<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb41-2"><a aria-label="2"></a>    <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">borrowed</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> borrowed<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb41-3"><a aria-label="3"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">borrow</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb41-4"><a aria-label="4"></a>        <span class="cf">if</span> <span class="op">(</span>borrowed<span class="op">)</span> <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalStateException</span><span class="op">(</span><span class="st">"Книга уже выдана"</span><span class="op">);</span></span>
+<span id="cb41-5"><a aria-label="5"></a>        borrowed <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb41-6"><a aria-label="6"></a>    <span class="op">}</span></span>
+<span id="cb41-7"><a aria-label="7"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>title()</code> и <code>borrowed()</code> читают состояние. <code>borrow()</code> допускает переход <code>false → true</code>; при уже выданной книге выполнение прекращается до присваивания. <code>public</code> делает эти операции доступными клиенту, <code>private</code> у полей направляет изменение через проверяющее тело метода.</p>
+<aside class="notes">
+<p>До следующего экрана предложите две ссылки на книгу и по одному вызову borrow через каждую. Попросите предсказать, какие значения borrowed будут видны после обоих вызовов и где возникнет исключение.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-book-client" class="slide level2">
+<h2>Общее состояние через защищённый интерфейс</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb42-1"><a aria-label="1"></a><span class="bu">Book</span> first <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">(</span><span class="st">"Java"</span><span class="op">);</span></span>
+<span id="cb42-2"><a aria-label="2"></a><span class="bu">Book</span> same <span class="op">=</span> first<span class="op">;</span></span>
+<span id="cb42-3"><a aria-label="3"></a>same<span class="op">.</span><span class="fu">borrow</span><span class="op">();</span></span>
+<span id="cb42-4"><a aria-label="4"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first <span class="op">==</span> same<span class="op">);</span>    <span class="co">// true</span></span>
+<span id="cb42-5"><a aria-label="5"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first<span class="op">.</span><span class="fu">borrowed</span><span class="op">());</span> <span class="co">// true</span></span>
+<span id="cb42-6"><a aria-label="6"></a><span class="cf">try</span> <span class="op">{</span> first<span class="op">.</span><span class="fu">borrow</span><span class="op">();</span> <span class="op">}</span></span>
+<span id="cb42-7"><a aria-label="7"></a><span class="cf">catch</span> <span class="op">(</span><span class="bu">IllegalStateException</span> ex<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb42-8"><a aria-label="8"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>ex<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span> <span class="co">// Книга уже выдана</span></span>
+<span id="cb42-9"><a aria-label="9"></a><span class="op">}</span></span>
+<span id="cb42-10"><a aria-label="10"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first<span class="op">.</span><span class="fu">borrowed</span><span class="op">());</span> <span class="co">// true</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Обе ссылки обращаются к одной книге. Вызов <code>borrow()</code> через любую из них проверяет одно и то же поле <code>borrowed</code>. После отказа книга остаётся выданной.</p>
+<aside class="notes">
+<p>Сопоставьте результат с прогнозом и найдите последнее выполненное действие повторного borrow. Затем предложите создать отдельную new Book(“Java”) и объяснить исход её первого borrow.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-route" class="slide level2">
+<h2>Условия доступного перехода</h2>
+<p>Каждый вызов ниже начинается с указанного состояния:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Начальное состояние</th>
+<th>Вызов</th>
+<th>Состояние после вызова</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Комната: 30 мест, занято 8</td>
+<td><code>reserve(22)</code></td>
+<td>занято 30</td>
+</tr>
+<tr class="even">
+<td>Комната: 30 мест, занято 8</td>
+<td><code>reserve(25)</code></td>
+<td>отказ, занято 8</td>
+</tr>
+<tr class="odd">
+<td>Книга доступна</td>
+<td><code>borrow()</code></td>
+<td>книга выдана</td>
+</tr>
+<tr class="even">
+<td>Книга выдана</td>
+<td><code>borrow()</code></td>
+<td>отказ, книга выдана</td>
+</tr>
+</tbody>
+</table>
+<p>Инвариант допускает оба состояния комнаты и оба состояния книги. Условие операции выбирает допустимый переход из текущего состояния. Сохранение полей после отказа позволяет продолжить работу с тем же объектом.</p>
+<aside class="notes">
+<p>Перед сравнением второй строки восстановите занятость 8. Попросите подобрать успешный вызов после каждого отказа: reserve(1) для комнаты, title() для книги. Найдите данные, на которые клиент может опираться при продолжении.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-design-check" class="slide level2">
+<h2>Отказ при создании и изменении объекта</h2>
+<p><code>new Reservation(30)</code> устанавливает пустую комнату на 30 мест. <code>reserve(8)</code> меняет занятость, <code>available()</code> возвращает <code>22</code>.</p>
+<p>Отрицательная вместимость прерывает создание до получения результата. Превышение свободного остатка прерывает действие над существующим объектом и сохраняет его поля.</p>
+<aside class="notes">
+<p>Предложите перенести проверку вместимости из конструктора в available. Попросите назвать состояние, которое теперь сможет получить клиент после new, и действие, на котором ошибка обнаружится позже.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-exit" class="slide level2">
+<h2>Сохранение данных при отказе</h2>
+<p>Стек добавляет элемент на вершину и извлекает последний добавленный. При ёмкости 2 помещения <code>A</code> и <code>B</code> заполняют стек. Отклонённое помещение <code>C</code> должно сохранить оба символа: следующие извлечения дают <code>B</code>, затем <code>A</code>.</p>
+<p>Если проверка заполнения выполняется после изменения вершины, сообщение об отказе может сопровождать потерю прежних данных. Последующие чтения обнаруживают это нарушение: у стека — извлечение, у комнаты — <code>available()</code>, у книги — <code>borrowed()</code>.</p>
+<p>Защита состояния: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-classes-invariant" data-qrc-style="default" class="qrc-link" href="../theory/chapters/classes.html#sec-j25-theory-classes-invariant">Сохранение инварианта</a>.</p>
+<aside class="notes">
+<p>Попросите описать ошибочную реализацию, которая сперва перезаписывает верхний элемент, затем сообщает отказ. Предложите предсказать два последующих извлечения и сопоставить их с требуемыми B и A.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-j25-lecture-objects-invariants-additional" class="title-slide slide level1 center">
+<h1>Дополнительные разборы</h1>
+<ul>
+<li>Глубина копирования, общие коллекции, снимки и представления.</li>
+<li>Передача аргументов и проверка типов в других языках.</li>
+<li>Отсутствие значения и неоднозначность перегрузки.</li>
+<li>Раннее конструирование и доступ к незавершённому объекту.</li>
+<li>Модификаторы доступа и защищённые члены.</li>
+</ul>
+</section>
+<section id="sec-j25-lecture-objects-invariants-deep-copy" class="slide level2">
+<h2>Граница копируемого графа</h2>
+<p>Новый внешний объект может хранить ссылки на прежние вложенные объекты. Для независимых меток книги нужен собственный изменяемый контейнер. Для двух книг одного автора общая запись об авторе позволяет наблюдать исправление его данных через обе книги.</p>
+<p>Копирование всех узлов потребовало бы сохранять отношения между копиями и учитывать циклы. Поэтому границу независимости задаёт модель: какие изменения должны оставаться местными, какие — общими. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-objects-copy-depth" data-qrc-style="default" class="qrc-link" href="../theory/chapters/objects.html#sec-j25-theory-objects-copy-depth">Граница независимого состояния</a>.</p>
+<aside class="notes">
+<p>Предложите книге хранить изменяемые метки и общую запись об авторе. Попросите назвать данные, которые должны сохранять независимость при копировании книги, и данные, общность которых нужна каталогу.</p>
+<p>Предложите исправить имя общего автора после создания второй книги. Попросите сравнить наблюдение при общей записи и при независимых копиях, затем выбрать вариант для единого каталога авторов.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-shared-copy" class="slide level2 continuation">
+<h2>Общая коллекция в копии объекта</h2>
+<p><code>List</code> хранит упорядоченную последовательность, <code>ArrayList</code> позволяет менять её состав. <code>add</code> дописывает элемент в конец:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb43-1"><a aria-label="1"></a><span class="kw">class</span> TaggedBook <span class="op">{</span></span>
+<span id="cb43-2"><a aria-label="2"></a>    java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">List</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> tags <span class="op">=</span> <span class="kw">new</span> java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">ArrayList</span><span class="op">&lt;&gt;();</span></span>
+<span id="cb43-3"><a aria-label="3"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb44-1"><a aria-label="1"></a>TaggedBook first <span class="op">=</span> <span class="kw">new</span> <span class="fu">TaggedBook</span><span class="op">();</span></span>
+<span id="cb44-2"><a aria-label="2"></a>TaggedBook copy <span class="op">=</span> <span class="kw">new</span> <span class="fu">TaggedBook</span><span class="op">();</span></span>
+<span id="cb44-3"><a aria-label="3"></a>first<span class="op">.</span><span class="fu">tags</span><span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="st">"java"</span><span class="op">);</span></span>
+<span id="cb44-4"><a aria-label="4"></a>copy<span class="op">.</span><span class="fu">tags</span> <span class="op">=</span> first<span class="op">.</span><span class="fu">tags</span><span class="op">;</span></span>
+<span id="cb44-5"><a aria-label="5"></a>copy<span class="op">.</span><span class="fu">tags</span><span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="st">"oop"</span><span class="op">);</span></span>
+<span id="cb44-6"><a aria-label="6"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first<span class="op">.</span><span class="fu">tags</span><span class="op">);</span> <span class="co">// [java, oop]</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Присваивание <code>copy.tags</code> сохранило ссылку на список первой книги. Оба вызова <code>add</code> изменили одну последовательность.</p>
+<aside class="notes">
+<p>Нарисуйте два TaggedBook и первоначально два пустых списка. Проследите замену ссылки copy.tags и найдите список, который теперь больше недоступен ни через одну из этих книг.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-input-alias" class="slide level2 continuation">
+<h2>Копирование входного контейнера</h2>
+<p>Внешний код передаёт изменяемый список имён и сохраняет свою ссылку. Прямое сохранение этой ссылки в поле оставляет общий контейнер: последующий <code>clear()</code> клиента удалит все имена и для владельца поля.</p>
+<p>Конструктор <code>new ArrayList&lt;&gt;(initial)</code> создаёт собственную структуру списка и копирует ссылки на элементы. Очистка исходного списка сохраняет состав копии. Здесь элементы — неизменяемые строки, поэтому общность самих имён допускается.</p>
+<aside class="notes">
+<p>Попросите построить две схемы: поле хранит initial; поле хранит new ArrayList&lt;&gt;(initial). Для каждой предскажите состав после initial.clear(), затем измените условие на элементы типа Book.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-snapshot" class="slide level2 continuation">
+<h2>Снимок и представление списка</h2>
+<p>Список и все имена в этом опыте отличны от <code>null</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb45-1"><a aria-label="1"></a><span class="dt">final</span> <span class="kw">class</span> GuestList <span class="op">{</span></span>
+<span id="cb45-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">final</span> java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">List</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> names<span class="op">;</span></span>
+<span id="cb45-3"><a aria-label="3"></a>    <span class="fu">GuestList</span><span class="op">(</span>java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">List</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> initial<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb45-4"><a aria-label="4"></a>        names <span class="op">=</span> <span class="kw">new</span> java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">ArrayList</span><span class="op">&lt;&gt;(</span>initial<span class="op">);</span></span>
+<span id="cb45-5"><a aria-label="5"></a>    <span class="op">}</span></span>
+<span id="cb45-6"><a aria-label="6"></a>    <span class="dt">void</span> <span class="fu">add</span><span class="op">(</span><span class="bu">String</span> name<span class="op">)</span> <span class="op">{</span> names<span class="op">.</span><span class="fu">add</span><span class="op">(</span>name<span class="op">);</span> <span class="op">}</span></span>
+<span id="cb45-7"><a aria-label="7"></a>    java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">List</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> <span class="fu">snapshot</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb45-8"><a aria-label="8"></a>        <span class="cf">return</span> java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">List</span><span class="op">.</span><span class="fu">copyOf</span><span class="op">(</span>names<span class="op">);</span></span>
+<span id="cb45-9"><a aria-label="9"></a>    <span class="op">}</span></span>
+<span id="cb45-10"><a aria-label="10"></a>    java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">List</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> <span class="fu">view</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb45-11"><a aria-label="11"></a>        <span class="cf">return</span> java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">Collections</span><span class="op">.</span><span class="fu">unmodifiableList</span><span class="op">(</span>names<span class="op">);</span></span>
+<span id="cb45-12"><a aria-label="12"></a>    <span class="op">}</span></span>
+<span id="cb45-13"><a aria-label="13"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>snapshot()</code> фиксирует текущий состав. Через результат <code>view()</code> при каждом обращении доступен текущий состав внутреннего списка. Через оба результата изменение состава запрещено.</p>
+<aside class="notes">
+<p>До следующего экрана предложите получить оба результата, затем добавить имя через GuestList.add. Попросите предсказать состав каждого результата. Отдельно установите условие List.copyOf: наличие null среди имён вызвало бы NullPointerException.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-guest-client" class="slide level2 continuation">
+<h2>Наблюдение изменений через представление</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb46-1"><a aria-label="1"></a><span class="dt">var</span> guests <span class="op">=</span> <span class="kw">new</span> <span class="fu">GuestList</span><span class="op">(</span>java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="st">"Ann"</span><span class="op">));</span></span>
+<span id="cb46-2"><a aria-label="2"></a><span class="dt">var</span> snapshot <span class="op">=</span> guests<span class="op">.</span><span class="fu">snapshot</span><span class="op">();</span></span>
+<span id="cb46-3"><a aria-label="3"></a><span class="dt">var</span> view <span class="op">=</span> guests<span class="op">.</span><span class="fu">view</span><span class="op">();</span></span>
+<span id="cb46-4"><a aria-label="4"></a>guests<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="st">"Bob"</span><span class="op">);</span></span>
+<span id="cb46-5"><a aria-label="5"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>snapshot<span class="op">);</span> <span class="co">// [Ann]</span></span>
+<span id="cb46-6"><a aria-label="6"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>view<span class="op">);</span>     <span class="co">// [Ann, Bob]</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Снимок сохранил состав на момент вызова <code>snapshot()</code>. Через представление виден изменённый состав списка владельца. Запрет <code>view.add(...)</code> ограничивает операции через представление; сам владелец продолжает менять свой список через <code>guests.add(...)</code>.</p>
+<p>Контракты списков: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-collections-snapshots" data-qrc-style="default" class="qrc-link" href="../theory/chapters/collections.html#sec-j25-theory-collections-snapshots">Общая ссылка, представление, копия и снимок</a>.</p>
+<aside class="notes">
+<p>Сопоставьте оба результата с прогнозом. Затем предложите изменить список через snapshot.add и view.add; объясните отказ обоих действий при разном наблюдении изменений владельца.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-cpp-argument" class="slide level2">
+<h2>Передача указателя в C++</h2>
+<p>Сравнение использует начальный <code>Book</code> с открытым полем <code>borrowed</code>.</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Параметр</th>
+<th>Запись через параметр</th>
+<th>Переназначение параметра</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Java <code>Book book</code></td>
+<td><code>book.borrowed = true</code> меняет книгу</td>
+<td><code>book = other</code> меняет переменную вызова</td>
+</tr>
+<tr class="even">
+<td>C++ <code>Book* book</code></td>
+<td><code>book-&gt;borrowed = true</code> меняет книгу</td>
+<td><code>book = other</code> меняет переменную вызова</td>
+</tr>
+<tr class="odd">
+<td>C++ <code>Book*&amp; book</code></td>
+<td><code>book-&gt;borrowed = true</code> меняет книгу</td>
+<td><code>book = other</code> меняет связанную переменную указателя клиента</td>
+</tr>
+</tbody>
+</table>
+<p>Во всех строках для обращения к полю требуется существующий объект. C++-ссылка на указатель связывает параметр с переменной клиента; Java создаёт отдельную переменную параметра со скопированным значением.</p>
+<aside class="notes">
+<p>Предложите один указатель C++ на книгу и вызов функции с Book*&amp;. Попросите установить получателя записи book = other. Затем вернитесь к схеме replace в Java и найдите отличие места хранения.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-python" class="slide level2">
+<h2>Имена и статическая проверка</h2>
+<p>В Python присваивание <code>second = first</code> может связать два имени с одним изменяемым объектом. Изменение его поля через <code>second</code> тогда наблюдается через <code>first</code>, как в опыте с общей книгой Java.</p>
+<p>В Java объявленный тип переменной определяет доступные члены и допустимые значения. Вызов метода, отсутствующего в этом типе, отвергается при компиляции. Python проверяет доступность атрибута у объекта во время выполнения соответствующего обращения.</p>
+<aside class="notes">
+<p>Попросите сравнить сначала изменение общего borrowed, затем вызов несуществующего метода. Для второго случая назовите разные моменты обнаружения ошибки при общем устройстве ссылок первого опыта.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-nullable-comparison" class="slide level2">
+<h2>Обязательное и допускающее отсутствие значение</h2>
+<p>В Kotlin различаются <code>String</code> и <code>String?</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode numberSource kotlin number-lines code-with-copy"><code class="sourceCode kotlin"><span id="cb47-1"><a aria-label="1"></a><span class="kw">fun</span> <span class="fu">titleLength</span><span class="op">(</span><span class="va">title</span><span class="op">:</span> <span class="dt">String</span><span class="op">):</span> <span class="dt">Int</span> <span class="op">=</span> title<span class="op">.</span>length</span>
+<span id="cb47-2"><a aria-label="2"></a><span class="kw">fun</span> <span class="fu">possibleLength</span><span class="op">(</span><span class="va">title</span><span class="op">:</span> <span class="dt">String</span><span class="op">?):</span> <span class="dt">Int</span><span class="op">?</span> <span class="op">=</span> title<span class="op">?.</span>length</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>titleLength("Java")</code> даёт <code>4</code>. В <code>possibleLength(null)</code> оператор <code>?.</code> сохраняет отсутствие: результат — <code>null</code>. Тип параметра и тип результата второго метода явно допускают этот случай.</p>
+<p><code>!!</code> требует значение, отличное от <code>null</code>, и при <code>null</code> бросает исключение. Для пришедших из Java значений проверка зависит от сведений о допустимости <code>null</code>. <span class="citation" data-cites="bib-ctx-objects-kotlin-null"><a href="#/источники" role="doc-biblioref" onclick="">[8]</a></span></p>
+<aside class="notes">
+<p>Попросите заменить title?.length на title!!.length и предсказать possibleLength(null). Укажите проверку, которая изменила исход вызова.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-null-overload" class="slide level2">
+<h2>Неоднозначность перегрузки</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb48-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">void</span> <span class="fu">show</span><span class="op">(</span><span class="bu">String</span> value<span class="op">)</span> <span class="op">{</span> <span class="op">}</span></span>
+<span id="cb48-2"><a aria-label="2"></a><span class="dt">static</span> <span class="dt">void</span> <span class="fu">show</span><span class="op">(</span><span class="bu">Integer</span> value<span class="op">)</span> <span class="op">{</span> <span class="op">}</span></span>
+<span id="cb48-3"><a aria-label="3"></a><span class="co">// show(null);       // ошибка компиляции: неоднозначность</span></span>
+<span id="cb48-4"><a aria-label="4"></a><span class="fu">show</span><span class="op">((</span><span class="bu">String</span><span class="op">)</span> <span class="kw">null</span><span class="op">);</span> <span class="co">// выбран show(String)</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>null</code> подходит обоим ссылочным параметрам. <code>String</code> и <code>Integer</code> не являются подтипами друг друга, поэтому правила перегрузки не выделяют более конкретного объявления.</p>
+<p>Приведение <code>(String) null</code> задаёт тип выражения аргумента и выбирает <code>show(String)</code>. Значение параметра при выполнении всё ещё равно <code>null</code>.</p>
+<aside class="notes">
+<p>Предложите добавить в show(String) чтение value.length(). Попросите разделить успешный выбор объявления при компиляции и отказ обращения к отсутствующей строке при выполнении.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-java25" class="slide level2">
+<h2>Проверка параметра до конструктора суперкласса</h2>
+<p>В Java 25 допускаются действия до явного <code>super(...)</code> или <code>this(...)</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb49-1"><a aria-label="1"></a><span class="kw">class</span> Parent <span class="op">{</span></span>
+<span id="cb49-2"><a aria-label="2"></a>    <span class="dt">final</span> <span class="dt">int</span> value<span class="op">;</span></span>
+<span id="cb49-3"><a aria-label="3"></a>    <span class="fu">Parent</span><span class="op">(</span><span class="dt">int</span> value<span class="op">)</span> <span class="op">{</span> <span class="kw">this</span><span class="op">.</span><span class="fu">value</span> <span class="op">=</span> value<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb49-4"><a aria-label="4"></a><span class="op">}</span></span>
+<span id="cb49-5"><a aria-label="5"></a><span class="kw">class</span> Child <span class="kw">extends</span> Parent <span class="op">{</span></span>
+<span id="cb49-6"><a aria-label="6"></a>    <span class="fu">Child</span><span class="op">(</span><span class="dt">int</span> value<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb49-7"><a aria-label="7"></a>        <span class="cf">if</span> <span class="op">(</span>value <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">();</span></span>
+<span id="cb49-8"><a aria-label="8"></a>        <span class="kw">super</span><span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb49-9"><a aria-label="9"></a>    <span class="op">}</span></span>
+<span id="cb49-10"><a aria-label="10"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>extends Parent</code> задаёт суперкласс. <code>new Child(3).value</code> даёт <code>3</code>. При <code>new Child(-1)</code> исключение возникает до вызова <code>Parent</code>.</p>
+<aside class="notes">
+<p>Проследите обе ветви на одном параметре value. Попросите добавить печать в Parent и предсказать её наличие для 3 и -1 до запуска.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-early-construction" class="slide level2 continuation">
+<h2>Раннее конструирование</h2>
+<p>Участок перед явным вызовом другого конструктора называется прологом. Он может проверять параметры, вычислять локальные значения и вызывать статические методы. Обращение к создаваемому экземпляру ограничено.</p>
+<p>В прологе разрешено простым присваиванием записать собственное поле, объявленное в этом классе без инициализатора. Такая запись запрещена во вложенной лямбде или внутреннем классе. Чтение полей текущего объекта, вызов его методов и передача его <code>this</code> внешнему коду запрещены; присваивание унаследованного поля тоже запрещено.</p>
+<p>Без явного <code>this(...)</code> или <code>super(...)</code> конструктор обычного класса, отличного от <code>Object</code>, неявно начинает с <code>super()</code>. Написанные операторы образуют эпилог. <span class="citation" data-cites="bib-jls-25"><a href="#/источники" role="doc-biblioref" onclick="">[1, Разд. 8.8.7]</a> и 6.5.6.1</span> Правила инициализации: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-classes-constructor" data-qrc-style="default" class="qrc-link" href="../theory/chapters/classes.html#sec-j25-theory-classes-constructor">Конструкторы и проверка исходного состояния</a>.</p>
+<aside class="notes">
+<p>Для Child с предыдущего экрана предложите добавить своё поле int checked без инициализатора. Сравните допустимое checked = value с checked++, чтением this.value и передачей this в другой метод до super. Для каждого найдите разрешённую запись или запрещённое чтение.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-escape" class="slide level2">
+<h2>Доступ к незавершённому объекту</h2>
+<p>В эпилоге конструктор может передать <code>this</code> внешнему объекту. Если тот сразу вызовет метод создаваемого экземпляра, он прочитает поля в состоянии на этот момент. Поэтому передача ссылки до завершения проверок и записей открывает доступ к состоянию, в котором инвариант ещё может быть нарушен.</p>
+<p>Вызов переопределяемого метода из конструктора суперкласса выбирает реализацию подкласса. Его инициализаторы ещё могут быть не выполнены, и метод увидит начальные значения полей. В C++ виртуальный вызов при конструировании ограничен строящейся частью иерархии. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-inheritance-constructor-call" data-qrc-style="default" class="qrc-link" href="../theory/chapters/inheritance.html#sec-j25-theory-inheritance-constructor-call">Переопределяемые методы в конструкторе</a>.</p>
+<aside class="notes">
+<p>Предложите полю подкласса инициализатор со значением 7, а базовому конструктору — вызов метода, печатающего это поле. Попросите предсказать чтение до и после инициализатора подкласса. Условие: поле не записывается в прологе конструктора подкласса.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-access" class="slide level2">
+<h2>Модификаторы доступа</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Модификатор члена</th>
+<th>Область доступа</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>private</code></td>
+<td>Тело охватывающего класса верхнего уровня, включая вложенные объявления</td>
+</tr>
+<tr class="even">
+<td>Без модификатора</td>
+<td>Тот же пакет</td>
+</tr>
+<tr class="odd">
+<td><code>protected</code></td>
+<td>Тот же пакет; особый доступ из подкласса в другом пакете</td>
+</tr>
+<tr class="even">
+<td><code>public</code></td>
+<td>Клиенты, которым доступен содержащий тип</td>
+</tr>
+</tbody>
+</table>
+<p>У модульного приложения доступность типа также учитывает читаемость модуля и экспорт пакета. Публичный метод закрытого для клиента типа сам по себе доступ к этому типу не создаёт. <span class="citation" data-cites="bib-objects-jls-access"><a href="#/источники" role="doc-biblioref" onclick="">[7]</a></span></p>
+<aside class="notes">
+<p>Выберите public-метод класса без public в другом пакете. Попросите проверить доступность сначала типа, затем члена. После этого перенесите клиента в исходный пакет и установите, какое ограничение изменилось.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-protected" class="slide level2 continuation">
+<h2>Получатель защищённого члена</h2>
+<p>В отдельной иерархии <code>Parent</code> объявляет <code>protected int value</code>, а <code>Child</code> расширяет его в другом пакете. В теле <code>Child</code> доступ к этому полю через ссылку требует, чтобы её статический тип был <code>Child</code> или его подтипом. Ссылки общего типа <code>Parent</code> для такого доступа недостаточно.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb50-1"><a aria-label="1"></a><span class="co">// В классе Child:</span></span>
+<span id="cb50-2"><a aria-label="2"></a><span class="dt">void</span> <span class="fu">inspect</span><span class="op">(</span>Child child<span class="op">,</span> Parent parent<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb50-3"><a aria-label="3"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>child<span class="op">.</span><span class="fu">value</span><span class="op">);</span>  <span class="co">// допустимо для protected value</span></span>
+<span id="cb50-4"><a aria-label="4"></a>    <span class="co">// System.out.println(parent.value); // ошибка доступа</span></span>
+<span id="cb50-5"><a aria-label="5"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Правило ограничивает доступ подкласса к чужим экземплярам общего базового типа. Внутри пакета <code>Parent</code> действует пакетная часть доступа.</p>
+<aside class="notes">
+<p>Попросите объяснить, почему фактический объект Child в переменной parent не меняет результат проверки. Затем перенесите оба класса в один пакет и предскажите доступность второго обращения.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-objects-invariants-prediction" class="slide level2">
+<h2>Общая книга после переназначения</h2>
+<p>У <code>Book</code> с открытыми полями <code>create</code> создаёт доступную книгу, а <code>borrow</code> записывает <code>true</code> в поле полученной книги:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb51-1"><a aria-label="1"></a><span class="bu">Book</span> a <span class="op">=</span> <span class="fu">create</span><span class="op">(</span><span class="st">"Java"</span><span class="op">);</span></span>
+<span id="cb51-2"><a aria-label="2"></a><span class="bu">Book</span> b <span class="op">=</span> a<span class="op">;</span></span>
+<span id="cb51-3"><a aria-label="3"></a><span class="fu">borrow</span><span class="op">(</span>b<span class="op">);</span></span>
+<span id="cb51-4"><a aria-label="4"></a>b <span class="op">=</span> <span class="fu">create</span><span class="op">(</span><span class="st">"Algorithms"</span><span class="op">);</span></span>
+<span id="cb51-5"><a aria-label="5"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>a<span class="op">.</span><span class="fu">title</span> <span class="op">+</span> <span class="st">": "</span> <span class="op">+</span> a<span class="op">.</span><span class="fu">borrowed</span><span class="op">);</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<p>Результат — <code>Java: true</code>. Вызов <code>borrow</code> изменил общую книгу. Последнее присваивание заменило только ссылку в <code>b</code>; <code>a</code> сохранила доступ к выданной книге с прежним названием.</p>
+</div>
+<aside class="notes">
+<p>До раскрытия фрагмента попросите построить схему после каждой строки. Затем сопоставьте прогноз с результатом и найдите отдельные причины сохранения названия и изменения признака выдачи.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="источники" class="slide level2 unnumbered scrollable smaller">
+<h2>Источники</h2>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-bib-jls-25" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/index.html">https://docs.oracle.com/javase/specs/jls/se25/html/index.html</a></div>
+</div>
+<div id="ref-bib-objects-epam-classes" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM. Классы, поля, доступ и конструкторы</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 66–70. Доступно на: <a href="https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf">https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf</a></div>
+</div>
+<div id="ref-bib-objects-epam-method-design" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM. Проектирование методов и использование параметров</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 71–74. Доступно на: <a href="https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf">https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf</a></div>
+</div>
+<div id="ref-bib-concept-bloch-encapsulation" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">Д. Блох, <em>Java. Эффективное программирование</em>, 3-я изд. Диалектика, 2019, сс. 109–113.</div>
+</div>
+<div id="ref-bib-objects-schildt-classes" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство. Классы, ссылки, конструкторы и передача аргументов</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 162–178, 190–192.</div>
+</div>
+<div id="ref-bib-objects-eckel-references" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[6] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Ссылки и время жизни объектов</em>, 4, полное. Санкт-Петербург: Питер, 2015, сс. 70, 74–75.</div>
+</div>
+<div id="ref-bib-objects-jls-access" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[7] </div><div class="csl-right-inline"><em>Java Language Specification, Java SE 25. Access Control</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-6.html#jls-6.6">https://docs.oracle.com/javase/specs/jls/se25/html/jls-6.html#jls-6.6</a></div>
+</div>
+<div id="ref-bib-ctx-objects-kotlin-null" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[8] </div><div class="csl-right-inline"><span>«Kotlin Documentation. Null safety: Nullable types and non-nullable types; Safe call operator; Not-null assertion operator»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://kotlinlang.org/docs/null-safety.html">https://kotlinlang.org/docs/null-safety.html</a></div>
+</div>
+</div>
+
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/course-navigation/model.js"></script>
+  <script src="site_libs/revealjs/plugin/course-navigation/ui.js"></script>
+  <script src="site_libs/revealjs/plugin/course-navigation/plugin.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":false,"delayInit":true,"keyboard":false,"openSlideNumber":false},
+'scrollActivationWidth': 0,
+'courseNav': {"sidebar":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 800,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, CourseNavigation, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Скопировано");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Скопировано");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+
+<script data-qrc-navigation>// Опубликованные цели сохраняют штатные ID Quarto. Обработчик раскрывает
+// существующее представление документа, не вводя учебных ролей и новых ID.
+(() => {
+  if (new URL(location.href).searchParams.has("print-pdf")) return;
+  let navigation = 0;
+
+  function hashId(url) {
+    try { return decodeURIComponent(url.hash.replace(/^#\/?/, "")); }
+    catch { return ""; } // Некорректный фрагмент внешней ссылки не должен нарушать работу страницы.
+  }
+
+  function ancestors(target) {
+    const nodes = [];
+    for (let node = target; node; node = node.parentElement) nodes.push(node);
+    return nodes.reverse();
+  }
+
+  function openDisclosures(nodes, scroll) {
+    for (const node of nodes) {
+      if (node.matches("details")) node.open = true;
+      if (!node.matches(".collapse:not(.show)")) continue;
+
+      // Bootstrap управляет анимацией и состоянием переключателя.
+      // В темах без Bootstrap блок раскрывается напрямую; details работает штатно.
+      const Collapse = window.bootstrap?.Collapse;
+      if (Collapse) {
+        node.addEventListener("shown.bs.collapse", scroll, { once: true });
+        Collapse.getOrCreateInstance(node, { toggle: false }).show();
+      } else {
+        node.classList.add("show");
+        if (!node.id) continue;
+        for (const trigger of document.querySelectorAll("[aria-controls]")) {
+          if (!trigger.getAttribute("aria-controls").split(/\s+/).includes(node.id)) continue;
+          trigger.setAttribute("aria-expanded", "true");
+          trigger.classList.remove("collapsed");
+        }
+      }
+    }
+  }
+
+  function revealTarget(id) {
+    const target = id && document.getElementById(id);
+    if (!target) return;
+    const current = ++navigation;
+    const scroll = () => requestAnimationFrame(() => {
+      // Завершение анимации не должно возвращать прокрутку после нового перехода.
+      if (current === navigation) target.scrollIntoView({ block: "nearest" });
+    });
+    const nodes = ancestors(target);
+    const section = target.closest("section.slide");
+    const reveal = window.Reveal;
+    if (section && target !== section && reveal?.isReady()) {
+      const position = reveal.getIndices(section);
+      reveal.slide(position.h, position.v);
+      // У вложенных фрагментов могут различаться индексы. Показываем
+      // все фрагменты вокруг цели; нулевой индекс также допустим.
+      const indices = nodes.filter(node => node.matches(".fragment[data-fragment-index]"))
+        .map(node => Number(node.getAttribute("data-fragment-index")))
+        .filter(Number.isFinite);
+      if (indices.length) reveal.navigateFragment(Math.max(...indices));
+    }
+    openDisclosures(nodes, scroll);
+    scroll();
+  }
+
+  function initialTarget() {
+    const url = new URL(location.href);
+    revealTarget(url.searchParams.get("qrc-target") || hashId(url));
+  }
+
+  function ready() {
+    if (window.Reveal && !window.Reveal.isReady()) window.Reveal.on("ready", initialTarget);
+    else initialTarget();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", ready, { once: true });
+  else ready();
+
+  // qrc-target обрабатывается только при входе на страницу. Повторное применение
+  // при смене фрагмента URL возвращало бы преподавателя к цели после перехода вперёд.
+  window.addEventListener("hashchange", () => revealTarget(hashId(new URL(location.href))));
+  document.addEventListener("click", event => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.defaultPrevented) return;
+    const link = event.target.closest?.("a[href]");
+    if (!link || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
+    const url = new URL(link.href, location.href);
+    if (url.origin !== location.origin || url.pathname !== location.pathname || url.search !== location.search) return;
+    // Повторный переход по тому же фрагменту URL не вызывает hashchange.
+    // Раскрываем цель после штатной навигации и обработчика Revealjs.
+    queueMicrotask(() => revealTarget(hashId(url)));
+  }, true);
+})();
+</script>
+<script id="course-site-navigation">(function(){
+const base={"courseUrl":"https://bsu-rfct-afonenko-courses.github.io/Java/","rootHref":"../"};
+if(base){
+ const course=new URL(base.courseUrl); course.pathname=course.pathname.replace(/\/$/,'')+'/';
+ const root=new URL(base.rootHref,document.baseURI);
+ for(const link of document.querySelectorAll('#quarto-header a[href],#quarto-sidebar a[href],.quarto-navbar a[href],.quarto-sidebar a[href]')){
+  const url=new URL(link.href,document.baseURI);
+  if(url.origin===course.origin&&url.pathname.startsWith(course.pathname)){
+   let path=url.pathname.slice(course.pathname.length); if(!path||path.endsWith('/')) path+='index.html';
+   link.href=new URL(path+url.search+url.hash,root).href;
+  }
+ }
+}
+const targets=[].map(path=>new URL(path,document.baseURI));
+for(const link of document.querySelectorAll('a[href]')){
+ const url=new URL(link.href,document.baseURI);
+ if(targets.some(target=>target.origin===url.origin&&(
+  target.pathname===url.pathname || target.pathname.endsWith('/index.html')&&target.pathname.slice(0,-'index.html'.length)===url.pathname
+ ))){
+  link.target='_blank'; link.rel=[...new Set([...link.rel.split(/\s+/).filter(Boolean),'noopener','noreferrer'])].join(' ');
+ }
+}
+})();</script>
+</body></html>

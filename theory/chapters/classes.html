@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.5">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Классы, инкапсуляция и инициализация – Теория Java</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../chapters/inheritance.html" rel="next">
+<link href="../chapters/objects.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-752eb067b69f457d87b717766944ae1e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
+<script src="../site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
+<link href="../site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation">
+
+<style>.task-items li:has(.course-assignment-omitted):not(:has(a)){display:none}</style>
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Поиск не дал результатов",
+    "search-matching-documents-text": "— число найденных документов",
+    "search-copy-link-title": "Скопировать ссылку",
+    "search-hide-matches-text": "Скрыть дополнительные результаты",
+    "search-more-match-text": "дополнительный результат в этом документе",
+    "search-more-matches-text": "— показать остальные совпадения в этом документе",
+    "search-clear-button-title": "Очистить",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Отменить",
+    "search-submit-button-title": "Найти",
+    "search-label": "Поиск"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles/book.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Перейти к основному содержанию</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Сайт">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="https://bsu-rfct-afonenko-courses.github.io/Java/index.html">
+    <span class="navbar-title">Программирование на Java</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Поиск"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Переключить навигацию" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Теория</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsu-rfct-afonenko-courses.github.io/Java/tasks/index.html"> 
+<span class="menu-text">Задания</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsu-rfct-afonenko-courses.github.io/Java/lectures/index.html"> 
+<span class="menu-text">Лекции</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsu-rfct-afonenko-courses.github.io/Java/practice/index.html"> 
+<span class="menu-text">Введения к лабораторным</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsu-rfct-afonenko-courses.github.io/Java/handbook/index.html"> 
+<span class="menu-text">Справочник</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+    <a href="https://github.com/BSU-RFCT-Afonenko-Courses/Java/tree/master/theory/" title="Исходный код" class="quarto-navigation-tool px-1" aria-label="Исходный код"><i class="bi bi-github"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" aria-label="Панель инструментов">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Переключить боковую панель навигации" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="Путь"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/objects.html">Объектная модель</a></li><li class="breadcrumb-item"><a href="../chapters/classes.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Классы, инкапсуляция и инициализация</span></a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="Раздел">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Теория Java</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="false">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">Язык и платформа</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/languages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Эволюция языков программирования</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/platform.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Платформа Java</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-controls="quarto-sidebar-section-2" aria-expanded="false">
+ <span class="menu-text" id="quarto-sidebar-section-2-label">Значения и вычисления</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-2" aria-labelledby="quarto-sidebar-section-2-label" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Типы, значения и переменные</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/expressions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Выражения и числовые вычисления</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/control.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Управление выполнением</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Методы и передача аргументов</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/arrays.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Массивы</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/text.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Строки и представление текста</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-controls="quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-3-label">Объектная модель</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-3" aria-labelledby="quarto-sidebar-section-3-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/objects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Объекты, ссылки и время жизни</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/classes.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Классы, инкапсуляция и инициализация</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/inheritance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Наследование и связывание методов</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/interfaces.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Интерфейсы, композиция и делегирование</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/data-classes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Классы для представления данных</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-controls="quarto-sidebar-section-4" aria-expanded="false">
+ <span class="menu-text" id="quarto-sidebar-section-4-label">Обобщённые типы и коллекции</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-4" aria-labelledby="quarto-sidebar-section-4-label" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/type-parameters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Параметризация программ</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/type-relations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Система обобщённых типов</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/equality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Равенство объектов и порядок</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/collections.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Коллекции и способы хранения объектов</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-controls="quarto-sidebar-section-5" aria-expanded="false">
+ <span class="menu-text" id="quarto-sidebar-section-5-label">Функции и последовательности</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-5" aria-labelledby="quarto-sidebar-section-5-label" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Передача поведения и функциональные интерфейсы</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/streams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Конвейеры обработки данных Stream</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-controls="quarto-sidebar-section-6" aria-expanded="false">
+ <span class="menu-text" id="quarto-sidebar-section-6-label">Ошибки, ресурсы и приложение</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-6" aria-labelledby="quarto-sidebar-section-6-label" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/exceptions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Исключения</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/resources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Управление ресурсами</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/io.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Файлы, байты и модели ввода-вывода</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/application.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Консольное приложение</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../system-practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Подготовка в System Practice</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Источники</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">Содержание</h2>
+   
+  <ul>
+  <li><a href="#sec-j25-theory-classes-state" id="toc-sec-j25-theory-classes-state" class="nav-link active" data-scroll-target="#sec-j25-theory-classes-state"><span class="header-section-number">11.1</span> Поля и операции состояния</a>
+  <ul class="collapse">
+  <li><a href="#sec-j25-theory-classes-invariant" id="toc-sec-j25-theory-classes-invariant" class="nav-link" data-scroll-target="#sec-j25-theory-classes-invariant"><span class="header-section-number">11.1.1</span> Сохранение инварианта</a></li>
+  <li><a href="#sec-j25-theory-classes-book" id="toc-sec-j25-theory-classes-book" class="nav-link" data-scroll-target="#sec-j25-theory-classes-book"><span class="header-section-number">11.1.2</span> Защищённое состояние книги</a></li>
+  </ul></li>
+  <li><a href="#sec-j25-theory-classes-constructor" id="toc-sec-j25-theory-classes-constructor" class="nav-link" data-scroll-target="#sec-j25-theory-classes-constructor"><span class="header-section-number">11.2</span> Конструкторы и проверка исходного состояния</a></li>
+  <li><a href="#sec-j25-theory-classes-this" id="toc-sec-j25-theory-classes-this" class="nav-link" data-scroll-target="#sec-j25-theory-classes-this"><span class="header-section-number">11.3</span> Ссылка <code>this</code> на текущий экземпляр</a></li>
+  <li><a href="#sec-j25-theory-classes-overload" id="toc-sec-j25-theory-classes-overload" class="nav-link" data-scroll-target="#sec-j25-theory-classes-overload"><span class="header-section-number">11.4</span> Перегрузка и выбор объявления</a></li>
+  <li><a href="#sec-j25-theory-classes-static" id="toc-sec-j25-theory-classes-static" class="nav-link" data-scroll-target="#sec-j25-theory-classes-static"><span class="header-section-number">11.5</span> Статические члены класса</a></li>
+  <li><a href="#sec-j25-theory-classes-final" id="toc-sec-j25-theory-classes-final" class="nav-link" data-scroll-target="#sec-j25-theory-classes-final"><span class="header-section-number">11.6</span> Ограничения присваивания с <code>final</code></a>
+  <ul class="collapse">
+  <li><a href="#sec-j25-theory-classes-sharing" id="toc-sec-j25-theory-classes-sharing" class="nav-link" data-scroll-target="#sec-j25-theory-classes-sharing"><span class="header-section-number">11.6.1</span> Закрытые поля и разделяемое изменяемое состояние</a></li>
+  </ul></li>
+  <li><a href="#sec-j25-theory-classes-initialization" id="toc-sec-j25-theory-classes-initialization" class="nav-link" data-scroll-target="#sec-j25-theory-classes-initialization"><span class="header-section-number">11.7</span> Порядок инициализации</a></li>
+  <li><a href="#sec-j25-theory-classes-access" id="toc-sec-j25-theory-classes-access" class="nav-link" data-scroll-target="#sec-j25-theory-classes-access"><span class="header-section-number">11.8</span> Доступ к членам класса</a></li>
+  <li><a href="#sec-j25-theory-classes-stack" id="toc-sec-j25-theory-classes-stack" class="nav-link" data-scroll-target="#sec-j25-theory-classes-stack"><span class="header-section-number">11.9</span> Инвариант стека</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/master/theory/chapters/classes.qmd" class="toc-action"><i class="bi bi-github"></i>Показать код</a></li><li><a href="https://github.com/BSU-RFCT-Afonenko-Courses/Java/issues/new" class="toc-action"><i class="bi empty"></i>Сообщить о проблеме</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Путь"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/objects.html">Объектная модель</a></li><li class="breadcrumb-item"><a href="../chapters/classes.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Классы, инкапсуляция и инициализация</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-j25-theory-classes" class="quarto-section-identifier"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Классы, инкапсуляция и инициализация</span></span></h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">java</div>
+    <div class="quarto-category">java-core</div>
+    <div class="quarto-category">java-classes</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<ul>
+<li>Состояние класса, инкапсуляция и инварианты объектов.</li>
+<li>Конструкторы, проверка исходного состояния и ссылка <code>this</code>.</li>
+<li>Перегрузка методов и выбор объявления.</li>
+<li>Статические члены и ограничения <code>final</code>.</li>
+<li>Разделяемое изменяемое состояние и защита представления.</li>
+<li>Порядок инициализации и доступ к членам класса.</li>
+</ul>
+<section id="sec-j25-theory-classes-state" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="sec-j25-theory-classes-state"><span class="header-section-number">11.1</span> Поля и операции состояния</h2>
+<p>Класс вводит тип, задаёт состояние его экземпляров и операции над ним. <strong>Инкапсуляция</strong> объединяет представление данных с этими операциями и ограничивает доступ к внутреннему устройству. Закрытые поля позволяют сосредоточить изменение состояния в коде класса. Его конструкторы и методы определяют, какие значения допустимы и как их можно менять <span class="citation" data-cites="bib-objects-epam-classes bib-objects-eckel-access"><a href="../references.html#ref-bib-objects-epam-classes" role="doc-biblioref">[51]</a>, <a href="../references.html#ref-bib-objects-eckel-access" role="doc-biblioref">[87]</a></span>.</p>
+<p>Состояние бронирования определяется вместимостью <code>capacity</code> и числом занятых мест <code>occupied</code>. Свободные места вычисляются как их разность. Класс предоставляет чтение остатка и операцию бронирования:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">final</span> <span class="kw">class</span> Reservation <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="dt">int</span> capacity<span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> occupied<span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Reservation</span><span class="op">(</span><span class="dt">int</span> capacity<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>capacity <span class="op">&lt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>            <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"capacity must be positive"</span><span class="op">);</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">capacity</span> <span class="op">=</span> capacity<span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="fu">available</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> capacity <span class="op">-</span> occupied<span class="op">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="fu">reserve</span><span class="op">(</span><span class="dt">int</span> count<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>count <span class="op">&lt;=</span> <span class="dv">0</span> <span class="op">||</span> count <span class="op">&gt;</span> <span class="fu">available</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>            <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"invalid reservation size"</span><span class="op">);</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        occupied <span class="op">+=</span> count<span class="op">;</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Reservation room <span class="op">=</span> <span class="kw">new</span> <span class="fu">Reservation</span><span class="op">(</span><span class="dv">30</span><span class="op">);</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>room<span class="op">.</span><span class="fu">reserve</span><span class="op">(</span><span class="dv">8</span><span class="op">);</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>room<span class="op">.</span><span class="fu">available</span><span class="op">());</span> <span class="co">// 22</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">// room.occupied = 100;               // поле private недоступно клиенту</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Конструктор проверяет вместимость перед записью в поле. Начальное значение <code>occupied</code> равно <code>0</code>: пока все места свободны. Метод <code>reserve</code> меняет поле только после проверки размера запроса. Если попытаться занять <code>25</code> мест после первых восьми, метод бросит исключение до изменения поля, и останутся <code>22</code> места. Класс поддерживает инвариант при каждой операции, а клиенту не требуется повторять его проверки.</p>
+<p>Метод <code>setOccupied(int value)</code> с проверкой диапазона задавал бы новое абсолютное количество. При бронировании клиент передаёт размер запроса, а класс сам добавляет его к числу занятых мест. Вычисление <code>available()</code> из двух полей также устраняет дополнительную обязанность: при каждой записи в <code>occupied</code> пришлось бы обновлять отдельно хранимый остаток.</p>
+<section id="sec-j25-theory-classes-invariant" class="level3" data-number="11.1.1">
+<h3 data-number="11.1.1" class="anchored" data-anchor-id="sec-j25-theory-classes-invariant"><span class="header-section-number">11.1.1</span> Сохранение инварианта</h3>
+<p>У бронирования инвариант <code>0 &lt;= occupied &lt;= capacity</code> описывает допустимый объект между вызовами. Предусловие успешного бронирования <code>0 &lt; count &lt;= available()</code> описывает допустимый запрос в текущем состоянии. После успеха <code>occupied</code> увеличен на <code>count</code>, а вместимость прежняя. После отклонённого запроса оба поля прежние.</p>
+<p>Например, после <code>reserve(8)</code> у комнаты на 30 мест свободно 22. Все клиенты, получившие ссылку на эту комнату, читают общий счётчик и видят 22 свободных места. При отказе бронирование сохраняет весь остаток. Частичное выполнение заставило бы клиента выяснять, сколько мест уже занято этим запросом, прежде чем продолжить работу.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Reservation room <span class="op">=</span> <span class="kw">new</span> <span class="fu">Reservation</span><span class="op">(</span><span class="dv">30</span><span class="op">);</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>Reservation same <span class="op">=</span> room<span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>room<span class="op">.</span><span class="fu">reserve</span><span class="op">(</span><span class="dv">8</span><span class="op">);</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    same<span class="op">.</span><span class="fu">reserve</span><span class="op">(</span><span class="dv">25</span><span class="op">);</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IllegalArgumentException</span> ex<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>room<span class="op">.</span><span class="fu">available</span><span class="op">());</span> <span class="co">// 22</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Обработчик <code>catch</code> читает остаток после отказа. Проверка запроса предшествует изменению. Поскольку число занятых мест после сложения не превышает положительную вместимость типа <code>int</code>, этот способ проверки также не допускает переполнения при <code>occupied += count</code>.</p>
+<p>Внутри сложной операции несколько записей могут временно нарушать инвариант. До возврата клиенту или вызова кода, который пользуется состоянием, он должен быть восстановлен; исход при ошибке определяется договором операции. У <code>reserve</code> проверка предшествует единственной записи, поэтому и успех, и отказ оставляют допустимое состояние. <code>private</code> ограничивает места записи; порядок действий задаёт тело метода.</p>
+<p>Это ограничение меняет объём рассуждения о программе. Если <code>occupied</code> доступно для записи всем клиентам, сохранение инварианта зависит от каждой такой записи. При закрытом поле и единственной операции <code>reserve</code> достаточно проверить создание объекта и переход, выполняемый этим методом, при оговорённых условиях последовательного использования. Новый клиент бронирования получает тот же договор, не добавляя ещё одно место самостоятельного изменения счётчика.</p>
+<p>Скрытое представление даёт и свободу последующего изменения. В комнате можно хранить число свободных мест вместо числа занятых, если <code>available</code> и <code>reserve</code> сохраняют прежнее наблюдаемое поведение. В клиентском коде с прямым доступом к <code>occupied</code> такая замена потребовала бы правок. Поэтому набор открытых операций выбирается по смыслу бронирования: публикация отдельного средства записи для каждого поля снова сделала бы клиентов зависимыми от устройства состояния. <span class="citation" data-cites="bib-concept-bloch-encapsulation"><a href="../references.html#ref-bib-concept-bloch-encapsulation" role="doc-biblioref">[53]</a></span></p>
+</section>
+<section id="sec-j25-theory-classes-book" class="level3" data-number="11.1.2">
+<h3 data-number="11.1.2" class="anchored" data-anchor-id="sec-j25-theory-classes-book"><span class="header-section-number">11.1.2</span> Защищённое состояние книги</h3>
+<p>Название книги — строка, отличная от <code>null</code> и содержащая хотя бы один непробельный символ. Оно фиксируется при создании. Книга также хранит состояние выдачи: доступная книга может перейти в выданное состояние. Повторная выдача — отказ, после которого <code>borrowed</code> остаётся <code>true</code>. У этой модели книги закрытые поля: клиент изменяет состояние выдачи через операцию <code>borrow</code>, которая сохраняет инвариант.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">final</span> <span class="kw">class</span> <span class="bu">Book</span> <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">String</span> title<span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">boolean</span> borrowed<span class="op">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">Book</span><span class="op">(</span><span class="bu">String</span> title<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>title <span class="op">==</span> <span class="kw">null</span> <span class="op">||</span> title<span class="op">.</span><span class="fu">isBlank</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>            <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"Название должно содержать хотя бы один непробельный символ"</span><span class="op">);</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">title</span> <span class="op">=</span> title<span class="op">;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">title</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> title<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">borrowed</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> borrowed<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">borrow</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>borrowed<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalStateException</span><span class="op">(</span><span class="st">"Книга уже выдана"</span><span class="op">);</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        borrowed <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Две ссылки на книгу дают доступ к одному состоянию:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Book</span> book <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">(</span><span class="st">"Java"</span><span class="op">);</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Book</span> alias <span class="op">=</span> book<span class="op">;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>alias<span class="op">.</span><span class="fu">borrow</span><span class="op">();</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>book<span class="op">.</span><span class="fu">borrowed</span><span class="op">());</span> <span class="co">// true</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>alias <span class="op">==</span> book<span class="op">);</span>   <span class="co">// true</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    book<span class="op">.</span><span class="fu">borrow</span><span class="op">();</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IllegalStateException</span> ex<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"refused"</span><span class="op">);</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>book<span class="op">.</span><span class="fu">borrowed</span><span class="op">());</span> <span class="co">// true</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Первое <code>true</code> — наблюдение состояния, второе — наблюдение тождества. <code>private</code> запрещает клиенту прямую запись поля, а проверка внутри <code>borrow</code> отвергает неверный переход <strong>до</strong> записи. <code>throw</code> прекращает обычное выполнение; <code>catch</code> здесь перехватывает отказ, чтобы затем прочитать состояние. Полный механизм разобран в <a href="exceptions.html" class="quarto-xref"><span>Глава 21</span></a>. Ошибку создания <code>new Book(" ")</code> конструктор обнаруживает до получения готовой книги.</p>
+</section>
+</section>
+<section id="sec-j25-theory-classes-constructor" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="sec-j25-theory-classes-constructor"><span class="header-section-number">11.2</span> Конструкторы и проверка исходного состояния</h2>
+<p>Конструктор имеет имя класса и не имеет возвращаемого типа, даже <code>void</code>. Он участвует в инициализации нового экземпляра и не вызывается как обычный метод. В объявлении <code>void Reservation(int capacity)</code> наличие возвращаемого типа делает <code>Reservation</code> обычным методом; такой метод вызывается у уже созданного объекта. <span class="citation" data-cites="bib-objects-schildt-classes"><a href="../references.html#ref-bib-objects-schildt-classes" role="doc-biblioref">[78]</a></span></p>
+<p>Если в обычном классе не объявлено ни одного конструктора, компилятор предоставляет конструктор по умолчанию без параметров. Как только появился собственный конструктор, автоматического варианта без параметров нет. У <code>Reservation</code> объявлен только <code>Reservation(int capacity)</code>, поэтому вызов <code>new Reservation()</code> отвергается: клиент должен задать вместимость.</p>
+<p>Несколько допустимых способов создания выражаются перегрузкой и делегированием:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">final</span> <span class="kw">class</span> <span class="bu">Box</span> <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="dt">int</span> width<span class="op">;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="dt">int</span> height<span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">Box</span><span class="op">(</span><span class="dt">int</span> width<span class="op">,</span> <span class="dt">int</span> height<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>width <span class="op">&lt;=</span> <span class="dv">0</span> <span class="op">||</span> height <span class="op">&lt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>            <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"positive dimensions required"</span><span class="op">);</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">width</span> <span class="op">=</span> width<span class="op">;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">height</span> <span class="op">=</span> height<span class="op">;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">Box</span><span class="op">(</span><span class="dt">int</span> side<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">(</span>side<span class="op">,</span> side<span class="op">);</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="fu">area</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">multiplyExact</span><span class="op">(</span>width<span class="op">,</span> height<span class="op">);</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>new Box(3).area()</code> возвращает <code>9</code>, а <code>new Box(3, 4).area()</code> — <code>12</code>. Оба пути проходят одну проверку. Присваивание <code>this.width = width</code> различает поле текущего экземпляра и одноимённый параметр. Если написать только <code>width = width</code>, будет присваивание параметра самому себе; <code>final</code>-поле останется неинициализированным, что обнаружит компилятор.</p>
+<p>Положительные размеры могут дать произведение за пределами <code>int</code>; <code>Math.multiplyExact</code> проверяет переполнение при вычислении площади.</p>
+<p><code>this(...)</code> вызывает другой конструктор того же экземпляра. Дополнительный объект при делегировании не создаётся. Цикл таких вызовов отвергается при компиляции. <code>super(...)</code> обращается к конструктору непосредственного суперкласса; без явного вызова в обычном классе, кроме <code>Object</code>, подразумевается <code>super()</code>.</p>
+<p>Java 25 разрешает пролог перед явным <code>this(...)</code> или <code>super(...)</code>, например проверку параметра. В раннем конструировании нельзя читать поля текущего экземпляра, вызывать его методы или передавать его ссылку. Допускается простое присваивание собственному полю без инициализатора при соблюдении правил раннего доступа. Пример проверки и фактический порядок даны в <a href="inheritance.html#sec-j25-theory-inheritance-construction" class="quarto-xref"><span>Глава 12.2</span></a>. В <code>Box(int side)</code> пролог пуст: делегирование выполняется первым. <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.8.7">Правила тела конструктора, JLS 25 §8.8.7</a>.</p>
+</section>
+<section id="sec-j25-theory-classes-this" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="sec-j25-theory-classes-this"><span class="header-section-number">11.3</span> Ссылка <code>this</code> на текущий экземпляр</h2>
+<p>Обычный метод вызывается для конкретного объекта. Внутри метода <code>this</code> обозначает ссылку на этот объект. В <code>room.reserve(8)</code> именно <code>room</code> задаёт получателя; выражение <code>occupied += count</code> изменяет его поле. Второй экземпляр <code>Reservation</code> имеет своё поле и не меняется.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Reservation first <span class="op">=</span> <span class="kw">new</span> <span class="fu">Reservation</span><span class="op">(</span><span class="dv">30</span><span class="op">);</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>Reservation second <span class="op">=</span> <span class="kw">new</span> <span class="fu">Reservation</span><span class="op">(</span><span class="dv">30</span><span class="op">);</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>first<span class="op">.</span><span class="fu">reserve</span><span class="op">(</span><span class="dv">8</span><span class="op">);</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first<span class="op">.</span><span class="fu">available</span><span class="op">());</span>  <span class="co">// 22</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>second<span class="op">.</span><span class="fu">available</span><span class="op">());</span> <span class="co">// 30</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Проверка доступа <code>private</code> учитывает расположение обращающегося к полю кода. Метод класса <code>Box</code> может читать <code>source.width</code> у другого экземпляра <code>Box</code>. Это позволяет сравнивать экземпляры и создавать копии через фабрики. Для вложенных классов область доступа также включает предусмотренные языком отношения с окружающим объявлением.</p>
+<p>Возврат <code>this</code> позволяет продолжить вызовы на том же экземпляре:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">final</span> <span class="kw">class</span> Counter <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> value<span class="op">;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    Counter <span class="fu">increment</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        value <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">incrementExact</span><span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="kw">this</span><span class="op">;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="fu">value</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> value<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>Counter counter <span class="op">=</span> <span class="kw">new</span> <span class="fu">Counter</span><span class="op">();</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>Counter same <span class="op">=</span> counter<span class="op">.</span><span class="fu">increment</span><span class="op">().</span><span class="fu">increment</span><span class="op">();</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>counter<span class="op">.</span><span class="fu">value</span><span class="op">());</span> <span class="co">// 2</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>same <span class="op">==</span> counter<span class="op">);</span> <span class="co">// true</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Каждый <code>increment()</code> меняет поле получателя и возвращает его ссылку. Поэтому оба вызова и последующее чтение относятся к одному счётчику.</p>
+</section>
+<section id="sec-j25-theory-classes-overload" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="sec-j25-theory-classes-overload"><span class="header-section-number">11.4</span> Перегрузка и выбор объявления</h2>
+<p>Методы могут иметь одинаковое имя и разные списки типов параметров. Перегрузка позволяет назвать одно семейство действий общим именем. Один возвращаемый тип не различает перегрузки.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="bu">String</span> <span class="fu">describe</span><span class="op">(</span><span class="dt">int</span> value<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="st">"int"</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="bu">String</span> <span class="fu">describe</span><span class="op">(</span><span class="bu">String</span> value<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="st">"String"</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="fu">describe</span><span class="op">(</span><span class="dv">3</span><span class="op">));</span>      <span class="co">// int</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="fu">describe</span><span class="op">(</span><span class="st">"3"</span><span class="op">));</span>    <span class="co">// String</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Компилятор выбирает подходящее объявление по типам выражений аргументов и правилам применимости. Если подходящие перегрузки принимают <code>String</code> и <code>Integer</code>, вызов с <code>null</code> неоднозначен: <code>null</code> совместим с обоими типами, а ни один из них не является подтипом другого. Явное приведение <code>describe((String) null)</code> выбирает перегрузку со <code>String</code>; значение аргумента остаётся <code>null</code>.</p>
+<p>В другой паре перегрузок есть отношение подтипов:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="bu">String</span> <span class="fu">kind</span><span class="op">(</span><span class="bu">Object</span> value<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="st">"Object"</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="bu">String</span> <span class="fu">kind</span><span class="op">(</span><span class="bu">String</span> value<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="st">"String"</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="bu">Object</span> text <span class="op">=</span> <span class="st">"Java"</span><span class="op">;</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="fu">kind</span><span class="op">(</span>text<span class="op">));</span>   <span class="co">// Object</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="fu">kind</span><span class="op">(</span><span class="st">"Java"</span><span class="op">));</span> <span class="co">// String</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Тип выражения <code>text</code> — <code>Object</code>, поэтому первый вызов выбирает <code>kind(Object)</code>. Строковый объект, хранимый через эту ссылку, не меняет результат выбора перегрузки. Выбор реализации переопределённого метода при выполнении описан в <a href="inheritance.html" class="quarto-xref"><span>Глава 12</span></a>.</p>
+<p>Перегрузки полезны, когда варианты семантически близки. Набор <code>process(int)</code>, <code>process(String)</code>, <code>process(File)</code> без общего понятного результата превращает имя в скрытый выбор разных операций. Иногда отдельные имена лучше объясняют намерение и уменьшают риск случайного выбора преобразования.</p>
+</section>
+<section id="sec-j25-theory-classes-static" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="sec-j25-theory-classes-static"><span class="header-section-number">11.5</span> Статические члены класса</h2>
+<p><code>static</code>-поле общее для экземпляров одного загруженного класса, а <code>static</code>-метод не имеет текущего экземпляра. Поэтому в статическом методе нельзя использовать <code>this</code> или читать нестатическое поле без указания объекта. <span class="citation" data-cites="bib-objects-epam-classes"><a href="../references.html#ref-bib-objects-epam-classes" role="doc-biblioref">[51]</a></span></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dt">final</span> <span class="kw">class</span> Ticket <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">static</span> <span class="dt">long</span> nextId <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="dt">long</span> id <span class="op">=</span> nextId<span class="op">++;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">long</span> <span class="fu">id</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> id<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>Ticket a <span class="op">=</span> <span class="kw">new</span> <span class="fu">Ticket</span><span class="op">();</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>Ticket b <span class="op">=</span> <span class="kw">new</span> <span class="fu">Ticket</span><span class="op">();</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>a<span class="op">.</span><span class="fu">id</span><span class="op">()</span> <span class="op">+</span> <span class="st">" "</span> <span class="op">+</span> b<span class="op">.</span><span class="fu">id</span><span class="op">());</span> <span class="co">// 1 2</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>При последовательном создании двух билетов <code>nextId</code> проходит значения <code>1 → 2 → 3</code>. Инициализатор каждого <code>id</code> сохраняет значение до увеличения, поэтому билеты получают <code>1</code> и <code>2</code>. Увеличение <code>nextId++</code> включает чтение и запись. Если выполнять его одновременно в нескольких потоках, два создания могут прочитать одно значение; для уникальности тогда потребуется согласовать доступ к счётчику.</p>
+<p>Статический метод подходит для вычисления, которому достаточно аргументов, например <code>Math.max(a, b)</code>. Если хранить <code>a</code> и <code>b</code> в полях и заполнять их сеттерами перед вызовом <code>max()</code>, результат будет зависеть от этой последовательности вызовов. Поле оправдано, когда значение относится к устойчивому состоянию экземпляра или класса. Временная входная величина обычно остаётся параметром метода. <span class="citation" data-cites="bib-objects-epam-method-design"><a href="../references.html#ref-bib-objects-epam-method-design" role="doc-biblioref">[52]</a></span></p>
+</section>
+<section id="sec-j25-theory-classes-final" class="level2" data-number="11.6">
+<h2 data-number="11.6" class="anchored" data-anchor-id="sec-j25-theory-classes-final"><span class="header-section-number">11.6</span> Ограничения присваивания с <code>final</code></h2>
+<p>Для поля <code>capacity</code> слово <code>final</code> запрещает последующее присваивание. У ссылочного поля оно запрещает заменить ссылку; объект по этой ссылке может оставаться изменяемым.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dt">final</span> <span class="bu">String</span><span class="op">[]</span> names <span class="op">=</span> <span class="op">{</span><span class="st">"Ann"</span><span class="op">};</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>names<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> <span class="st">"Bob"</span><span class="op">;</span>         <span class="co">// допустимо</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">// names = new String[]{"Lin"}; // запрещено</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Неизменяемость требует закрыть изменение полей, не выдавать изменяемое внутреннее состояние и принимать входные данные так, чтобы клиент не мог затем менять сохранённый объект. <code>String</code> неизменяема, поэтому несколько книг могут хранить одну ссылку на название без риска изменения текста через другой объект.</p>
+<section id="sec-j25-theory-classes-sharing" class="level3" data-number="11.6.1">
+<h3 data-number="11.6.1" class="anchored" data-anchor-id="sec-j25-theory-classes-sharing"><span class="header-section-number">11.6.1</span> Закрытые поля и разделяемое изменяемое состояние</h3>
+<p>Объект хранит имена в массиве фиксированной длины. Клиент может получить доступ к изменяемым элементам через входную ссылку или результат метода.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dt">final</span> <span class="kw">class</span> OpenNames <span class="op">{</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">String</span><span class="op">[]</span> names<span class="op">;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">OpenNames</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> names<span class="op">)</span> <span class="op">{</span> <span class="kw">this</span><span class="op">.</span><span class="fu">names</span> <span class="op">=</span> names<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span><span class="op">[]</span> <span class="fu">names</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> names<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span><span class="op">[]</span> input <span class="op">=</span> <span class="op">{</span><span class="st">"Ann"</span><span class="op">};</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>OpenNames names <span class="op">=</span> <span class="kw">new</span> <span class="fu">OpenNames</span><span class="op">(</span>input<span class="op">);</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>input<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>names<span class="op">.</span><span class="fu">names</span><span class="op">()[</span><span class="dv">0</span><span class="op">]);</span> <span class="co">// null</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>names<span class="op">.</span><span class="fu">names</span><span class="op">()[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> <span class="st">"Bob"</span><span class="op">;</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>input<span class="op">[</span><span class="dv">0</span><span class="op">]);</span> <span class="co">// Bob</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>И входная ссылка, и результат метода открывают тот же массив. <code>private final</code> ограничивает запись поля; через обе ссылки можно менять элементы массива. Если нужны только непустые имена и независимость от внешних записей, конструктор и метод чтения создают копии массива:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">final</span> <span class="kw">class</span> Names <span class="op">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">String</span><span class="op">[]</span> names<span class="op">;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Names</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> initial<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>        java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">Objects</span><span class="op">.</span><span class="fu">requireNonNull</span><span class="op">(</span>initial<span class="op">,</span> <span class="st">"initial"</span><span class="op">);</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span><span class="op">[]</span> copy <span class="op">=</span> initial<span class="op">.</span><span class="fu">clone</span><span class="op">();</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="bu">String</span> name <span class="op">:</span> copy<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>name <span class="op">==</span> <span class="kw">null</span> <span class="op">||</span> name<span class="op">.</span><span class="fu">isBlank</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>                <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"nonblank name required"</span><span class="op">);</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>        names <span class="op">=</span> copy<span class="op">;</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span><span class="op">[]</span> <span class="fu">names</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> names<span class="op">.</span><span class="fu">clone</span><span class="op">();</span> <span class="op">}</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span><span class="op">[]</span> input <span class="op">=</span> <span class="op">{</span><span class="st">"Ann"</span><span class="op">};</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>Names names <span class="op">=</span> <span class="kw">new</span> <span class="fu">Names</span><span class="op">(</span>input<span class="op">);</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>input<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> <span class="st">"Bob"</span><span class="op">;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span><span class="op">[]</span> read <span class="op">=</span> names<span class="op">.</span><span class="fu">names</span><span class="op">();</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>read<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> <span class="st">"Lin"</span><span class="op">;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>names<span class="op">.</span><span class="fu">names</span><span class="op">()[</span><span class="dv">0</span><span class="op">]);</span> <span class="co">// Ann</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Копия при входе отделяет внутренний массив от <code>input</code>, копия при чтении — от <code>read</code>. Ссылки на строки могут совпадать, потому что сами строки неизменяемы. Для элементов типа изменяемого <code>Book</code> понадобилось бы отдельно решить, можно ли менять общую книгу: <a href="objects.html#sec-j25-theory-objects-copy-sharing" class="quarto-xref"><span>Глава 10.5.1</span></a>. Операции коллекций для создания снимка списка гостей и его живого представления: <a href="collections.html#sec-j25-theory-collections-snapshots" class="quarto-xref"><span>Глава 18.9.1</span></a>.</p>
+<p>Финальный метод нельзя переопределять, финальный класс нельзя расширять. Состояние экземпляров финального класса может меняться: <code>Reservation</code> изменяет <code>occupied</code> по правилам <code>reserve</code>, а <code>OpenNames</code> позволяет клиенту менять элементы сохранённого массива.</p>
+</section>
+</section>
+<section id="sec-j25-theory-classes-initialization" class="level2" data-number="11.7">
+<h2 data-number="11.7" class="anchored" data-anchor-id="sec-j25-theory-classes-initialization"><span class="header-section-number">11.7</span> Порядок инициализации</h2>
+<p>При создании объекта все его поля экземпляра сначала получают значения по умолчанию. Затем выполняется выбранный конструктор. Если он сразу вызывает конструктор суперкласса явно или неявно, порядок следующий: вызов суперкласса, инициализаторы полей и блоки инициализации текущего класса, эпилог конструктора. Эпилогом называют часть тела после вызова <code>this(...)</code> или <code>super(...)</code>, а при неявном <code>super()</code> — всё записанное тело.</p>
+<p>Инициализаторы полей и блоки инициализации экземпляра выполняются в порядке объявления. Блок записывается в теле класса между <code>{</code> и <code>}</code> без имени метода. Он позволяет выполнить несколько действий при создании каждого объекта. Блок с <code>static</code> относится к инициализации самого класса:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Trace <span class="op">{</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="op">{</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"класс"</span><span class="op">);</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> value <span class="op">=</span> <span class="fu">initialize</span><span class="op">();</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"блок: "</span> <span class="op">+</span> value<span class="op">);</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> <span class="fu">initialize</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"поле"</span><span class="op">);</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">7</span><span class="op">;</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Trace</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"конструктор: "</span> <span class="op">+</span> value<span class="op">);</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="kw">new</span> <span class="fu">Trace</span><span class="op">();</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="kw">new</span> <span class="fu">Trace</span><span class="op">();</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Перед первым <code>new Trace()</code> класс инициализируется; его статический блок печатает <code>класс</code>. Для каждого нового объекта <code>initialize()</code> печатает <code>поле</code> и возвращает <code>7</code>, это значение присваивается <code>value</code>. Блок экземпляра и тело конструктора уже читают <code>7</code>:</p>
+<pre class="text"><code>класс
+поле
+блок: 7
+конструктор: 7
+поле
+блок: 7
+конструктор: 7</code></pre>
+<p>При делегировании через <code>this(...)</code> инициализаторы экземпляра выполняются один раз: после возвращения из конструктора суперкласса в конце цепочки. Возврат к делегировавшему конструктору продолжает его эпилог. Пролог Java 25 выполняется перед указанным в нём вызовом конструктора, поэтому допустимая ранняя запись поля может предшествовать <code>super(...)</code>. Отказ любого этапа прерывает оставшуюся последовательность; выражение <code>new</code> при этом не возвращает клиенту ссылку на готовый объект. Порядок определён в <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html#jls-12.5">JLS 25 §12.5</a>.</p>
+<p>Инициализация класса происходит перед первым активным использованием, например созданием экземпляра или вызовом объявленного в этом классе статического метода. Его статические инициализаторы выполняются один раз для данного загруженного класса; сама загрузка может произойти раньше. Подробные условия: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html#jls-12.4.1">JLS 25 §12.4.1</a>.</p>
+</section>
+<section id="sec-j25-theory-classes-access" class="level2" data-number="11.8">
+<h2 data-number="11.8" class="anchored" data-anchor-id="sec-j25-theory-classes-access"><span class="header-section-number">11.8</span> Доступ к членам класса</h2>
+<p>Модификатор доступа определяет, из какого кода разрешено обратиться к полю, методу или конструктору:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Объявление</th>
+<th>Область доступа</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>private</code></td>
+<td>В пределах охватывающего верхнеуровневого объявления, включая его вложенные типы</td>
+</tr>
+<tr class="even">
+<td>Без модификатора</td>
+<td>В том же пакете</td>
+</tr>
+<tr class="odd">
+<td><code>protected</code></td>
+<td>В том же пакете; также из подкласса другого пакета при дополнительных условиях</td>
+</tr>
+<tr class="even">
+<td><code>public</code></td>
+<td>Из кода, которому доступен содержащий тип, с учётом границ модулей</td>
+</tr>
+</tbody>
+</table>
+<p>У верхнеуровневого класса допустимы <code>public</code> и доступ внутри пакета. Даже открытый метод недоступного типа может оказаться недоступен клиенту. При модульной организации доступ к публичному типу другого модуля также зависит от чтения модуля и экспорта пакета.</p>
+<p>В другом пакете подкласс получает доступ к защищённому полю экземпляра через получателя своего типа или его подтипа. Произвольной ссылки на объект базового класса для этого недостаточно. Форма объявления и пример обращения через два типа ссылок: <a data-qrc-custom="false" data-qrc-ref="handbook:sec-j25-api-classes-access" data-qrc-style="default" class="qrc-link" href="../../handbook/entries/classes.html#sec-j25-api-classes-access">Модификаторы доступа</a>. <span class="citation" data-cites="bib-objects-jls-access"><a href="../references.html#ref-bib-objects-jls-access" role="doc-biblioref">[94]</a></span></p>
+</section>
+<section id="sec-j25-theory-classes-stack" class="level2" data-number="11.9">
+<h2 data-number="11.9" class="anchored" data-anchor-id="sec-j25-theory-classes-stack"><span class="header-section-number">11.9</span> Инвариант стека</h2>
+<p>Стек извлекает элементы в порядке, обратном добавлению. У стека чисел массив <code>data</code> содержит элементы в позициях от <code>0</code> до <code>size - 1</code>; <code>size</code> хранит их количество. Инвариант <code>0 &lt;= size &lt;= data.length</code> разрешает пустой и полностью заполненный стек. Ёмкость положительна. Попытка выйти за эти границы завершается <code>IllegalStateException</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="dt">final</span> <span class="kw">class</span> IntStack <span class="op">{</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="dt">int</span><span class="op">[]</span> data<span class="op">;</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> size<span class="op">;</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">IntStack</span><span class="op">(</span><span class="dt">int</span> capacity<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>capacity <span class="op">&lt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"capacity"</span><span class="op">);</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>        data <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">[</span>capacity<span class="op">];</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="fu">size</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> size<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="fu">push</span><span class="op">(</span><span class="dt">int</span> value<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>size <span class="op">==</span> data<span class="op">.</span><span class="fu">length</span><span class="op">)</span> <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalStateException</span><span class="op">(</span><span class="st">"full"</span><span class="op">);</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        data<span class="op">[</span>size<span class="op">]</span> <span class="op">=</span> value<span class="op">;</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>        size<span class="op">++;</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="fu">pop</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>size <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalStateException</span><span class="op">(</span><span class="st">"empty"</span><span class="op">);</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>        size<span class="op">--;</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> data<span class="op">[</span>size<span class="op">];</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>При <code>push</code> успешная проверка подтверждает наличие свободной позиции <code>data[size]</code>. После записи увеличение <code>size</code> включает новый элемент в хранимую последовательность. При <code>pop</code> успешная проверка подтверждает наличие вершины; после уменьшения <code>size</code> её прежний индекс совпадает с новым размером.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>IntStack stack <span class="op">=</span> <span class="kw">new</span> <span class="fu">IntStack</span><span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>stack<span class="op">.</span><span class="fu">push</span><span class="op">(</span><span class="dv">7</span><span class="op">);</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span> <span class="op">{</span> stack<span class="op">.</span><span class="fu">push</span><span class="op">(</span><span class="dv">9</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="cf">catch</span> <span class="op">(</span><span class="bu">IllegalStateException</span> ex<span class="op">)</span> <span class="op">{</span> <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"full refused"</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>stack<span class="op">.</span><span class="fu">size</span><span class="op">());</span> <span class="co">// 1</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>stack<span class="op">.</span><span class="fu">pop</span><span class="op">());</span>  <span class="co">// 7</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span> <span class="op">{</span> stack<span class="op">.</span><span class="fu">pop</span><span class="op">();</span> <span class="op">}</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="cf">catch</span> <span class="op">(</span><span class="bu">IllegalStateException</span> ex<span class="op">)</span> <span class="op">{</span> <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"empty refused"</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>stack<span class="op">.</span><span class="fu">size</span><span class="op">());</span> <span class="co">// 0</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>После отказа <code>push(9)</code> размер равен <code>1</code>, а извлечение возвращает прежнее <code>7</code>. Отказ <code>pop</code> при пустом стеке сохраняет размер <code>0</code>. Если перенести уменьшение размера перед проверкой пустоты, отклонённая операция оставит <code>size == -1</code> и нарушит инвариант. Закрытое хранение массива и размера сосредоточивает проверяемые переходы в методах <code>push</code> и <code>pop</code>.</p>
+<p>Полные программы и команды запуска: <a data-qrc-custom="false" data-qrc-ref="handbook:sec-j25-api-classes-examples" data-qrc-style="default" class="qrc-link" href="../../handbook/entries/classes.html#sec-j25-api-classes-examples">Запуск примеров</a>.</p>
+
+
+
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-bib-ctx-objects-record-model" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">G. Bierman, <span>«JEP 395: Records. Goals; Motivation; Description; Constructors for record classes; Rules for record classes»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://openjdk.org/jeps/395">https://openjdk.org/jeps/395</a></div>
+</div>
+<div id="ref-bib-ctx-objects-sealed-model" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">G. Bierman, <span>«JEP 409: Sealed Classes. Goals; Motivation; Description; Sealing and record classes; Sealed classes and pattern matching»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://openjdk.org/jeps/409">https://openjdk.org/jeps/409</a></div>
+</div>
+<div id="ref-bib-gj1998" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">G. Bracha, M. Odersky, D. Stoutamire, и P. Wadler, <span>«Making the Future Safe for the Past: Adding Genericity to the Java Programming Language»</span>, в <em>Proceedings of OOPSLA 1998</em>, 1998. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://homepages.inf.ed.ac.uk/wadler/papers/gj-oopsla/gj-oopsla-a4.pdf">https://homepages.inf.ed.ac.uk/wadler/papers/gj-oopsla/gj-oopsla-a4.pdf</a></div>
+</div>
+<div id="ref-bib-ctx-objects-gj-migration" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">G. Bracha, M. Odersky, D. Stoutamire, и P. Wadler, <span>«Making the Future Safe for the Past: Adding Genericity to the Java Programming Language. Abstract; section 1, Introduction (author PDF, pp. 1–2)»</span>, в <em>OOPSLA ’98</em>, 1998, сс. 183–200. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://homepages.inf.ed.ac.uk/wadler/papers/gj-oopsla/gj-oopsla-a4.pdf">https://homepages.inf.ed.ac.uk/wadler/papers/gj-oopsla/gj-oopsla-a4.pdf</a></div>
+</div>
+<div id="ref-bib-context-jep421" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">B. Christian и S. Marks, <span>«JEP 421: Deprecate Finalization for Removal — Resource leaks, Finalization and its flaws, Alternative techniques»</span>. OpenJDK, 2022. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://openjdk.org/jeps/421">https://openjdk.org/jeps/421</a></div>
+</div>
+<div id="ref-bib-objects-jep513" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[6] </div><div class="csl-right-inline">A. Cobbs и G. Bierman, <span>«JEP 513: Flexible Constructor Bodies»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://openjdk.org/jeps/513">https://openjdk.org/jeps/513</a></div>
+</div>
+<div id="ref-bib-context-lambda-design" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[7] </div><div class="csl-right-inline">B. Goetz, <span>«State of the Lambda: §1 Background and §2 Functional Interfaces»</span>. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://cr.openjdk.org/~briangoetz/lambda/lambda-state-final.html">https://cr.openjdk.org/~briangoetz/lambda/lambda-state-final.html</a></div>
+</div>
+<div id="ref-bib-goetz-erasure-2020" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[8] </div><div class="csl-right-inline">B. Goetz, <span>«Background: How We Got the Generics We Have: Or, how I learned to stop worrying and love erasure»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://openjdk.org/projects/valhalla/design-notes/in-defense-of-erasure">https://openjdk.org/projects/valhalla/design-notes/in-defense-of-erasure</a></div>
+</div>
+<div id="ref-bib-ctx-jep286" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[9] </div><div class="csl-right-inline">B. Goetz, <span>«JEP 286: Local-Variable Type Inference. Goals; Motivation; Description; Scope Choices»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://openjdk.org/jeps/286">https://openjdk.org/jeps/286</a></div>
+</div>
+<div id="ref-bib-jls1-vector" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[10] </div><div class="csl-right-inline">J. Gosling, B. Joy, и G. Steele, <em>The Java Language Specification</em>, 1-я изд. Addison-Wesley, 1996. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://tecfa.unige.ch/guides/java/langspec-1.0/javautil.doc9.html">https://tecfa.unige.ch/guides/java/langspec-1.0/javautil.doc9.html</a></div>
+</div>
+<div id="ref-bib-context-jls1-exceptions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[11] </div><div class="csl-right-inline">J. Gosling, B. Joy, и G. Steele, <em>The Java Language Specification, First Edition, §11.2: Compile-Time Checking of Exceptions</em>. 1996. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://tecfa.unige.ch/guides/java/langspec-1.0/11.doc.html">https://tecfa.unige.ch/guides/java/langspec-1.0/11.doc.html</a></div>
+</div>
+<div id="ref-bib-jls-types-values-variables" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[12] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Глава 4</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html</a></div>
+</div>
+<div id="ref-bib-jls-array-store-checks" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[13] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Раздел 10.5</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-10.html#jls-10.5">https://docs.oracle.com/javase/specs/jls/se25/html/jls-10.html#jls-10.5</a></div>
+</div>
+<div id="ref-bib-jls-instanceof" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[14] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Раздел 15.20.2</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.20.2">https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.20.2</a></div>
+</div>
+<div id="ref-bib-jls-class-interface-subtyping" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[15] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Раздел 4.10.2</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.10.2">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.10.2</a></div>
+</div>
+<div id="ref-bib-jls-heap-pollution" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[16] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Раздел 4.12.2</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.12.2">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.12.2</a></div>
+</div>
+<div id="ref-bib-jls-type-arguments" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[17] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Раздел 4.5.1</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.5.1">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.5.1</a></div>
+</div>
+<div id="ref-bib-jls-type-erasure" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[18] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Раздел 4.6</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.6">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.6</a></div>
+</div>
+<div id="ref-bib-jls-raw-types" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[19] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Раздел 4.8</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.8">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.8</a></div>
+</div>
+<div id="ref-bib-jls-capture-conversion" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[20] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Раздел 5.1.10</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html#jls-5.1.10">https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html#jls-5.1.10</a></div>
+</div>
+<div id="ref-bib-jls-generic-methods" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[21] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Раздел 8.4.4</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.4">https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.4</a></div>
+</div>
+<div id="ref-bib-jls-reifiable-types-restrictions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[22] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Разделы 4.7, 8.4.2, 15.8.2, 15.9, 15.10.1</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.7">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.7</a></div>
+</div>
+<div id="ref-bib-jls-boxing-unboxing" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[23] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Разделы 5.1.7–5.1.8</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html#jls-5.1.7">https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html#jls-5.1.7</a></div>
+</div>
+<div id="ref-bib-ctx-jls-binary" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[24] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25. §§13.2, 13.4.12, 13.4.14, 13.4.22 Binary Compatibility</em>. Oracle, 2025. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-13.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-13.html</a></div>
+</div>
+<div id="ref-bib-fnd-java-whitepaper-introduction" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[25] </div><div class="csl-right-inline">J. Gosling и H. McGilton, <span>«The Java Language Environment. Introduction to Java»</span>, Sun Microsystems, май 1996. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://www.oracle.com/java/technologies/introduction-to-java.html">https://www.oracle.com/java/technologies/introduction-to-java.html</a></div>
+</div>
+<div id="ref-bib-ctx-java-simple-familiar" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[26] </div><div class="csl-right-inline">J. Gosling и H. McGilton, <span>«The Java Language Environment. Java—Simple and Familiar, §2.1.1 Primitive Data Types»</span>, Sun Microsystems, май 1996. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://www.oracle.com/java/technologies/simple-familiar.html">https://www.oracle.com/java/technologies/simple-familiar.html</a></div>
+</div>
+<div id="ref-bib-ctx-java-arrays-design" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[27] </div><div class="csl-right-inline">J. Gosling и H. McGilton, <span>«The Java Language Environment. Java—Simple and Familiar, §2.1.3 Arrays»</span>, Sun Microsystems, май 1996. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://www.oracle.com/java/technologies/simple-familiar.html">https://www.oracle.com/java/technologies/simple-familiar.html</a></div>
+</div>
+<div id="ref-bib-ctx-objects-hoare-null" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[28] </div><div class="csl-right-inline">T. Hoare, <span>«Null References: The Billion Dollar Mistake. Страница выступления и редакторские заметки»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/">https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/</a></div>
+</div>
+<div id="ref-bib-jsr14" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[29] </div><div class="csl-right-inline">Java Community Process, <span>«JSR 14: Add Generic Types to the Java Programming Language»</span>. 2004. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://jcp.org/en/jsr/detail?id=14">https://jcp.org/en/jsr/detail?id=14</a></div>
+</div>
+<div id="ref-bib-ctx-jvms-model" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[30] </div><div class="csl-right-inline">T. Lindholm, F. Yellin, G. Bracha, A. Buckley, и D. Smith, <em>The Java Virtual Machine Specification, Java SE 25. §§1.2 The Java Virtual Machine, 2.7 Representation of Objects</em>. Oracle, 2025. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-1.html#jvms-1.2">https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-1.html#jvms-1.2</a></div>
+</div>
+<div id="ref-bib-dotnet-generic-math" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[31] </div><div class="csl-right-inline">Microsoft, <span>«Generic Math»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://learn.microsoft.com/en-us/dotnet/standard/generics/math">https://learn.microsoft.com/en-us/dotnet/standard/generics/math</a></div>
+</div>
+<div id="ref-bib-csharp-generics-runtime" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[32] </div><div class="csl-right-inline">Microsoft, <span>«Generics in the Runtime»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/generics-in-the-run-time">https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/generics-in-the-run-time</a></div>
+</div>
+<div id="ref-bib-ctx-python-model" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[33] </div><div class="csl-right-inline">Python Software Foundation, <span>«Python 3.14 Language Reference. Data model, §§3.1, 3.2.1»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.python.org/3.14/reference/datamodel.html">https://docs.python.org/3.14/reference/datamodel.html</a></div>
+</div>
+<div id="ref-bib-ctx-python-numbers" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[34] </div><div class="csl-right-inline">Python Software Foundation, <span>«Python 3.14 Library Reference. Built-in Types, Numeric Types — int, float, complex»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.python.org/3.14/library/stdtypes.html#numeric-types-int-float-complex">https://docs.python.org/3.14/library/stdtypes.html#numeric-types-int-float-complex</a></div>
+</div>
+<div id="ref-bib-ctx-ritchie-c" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[35] </div><div class="csl-right-inline">D. M. Ritchie, <span>«The Development of the C Language. Introduction; The Problems of B; Neonatal C; Portability»</span>, в <em>History of Programming Languages II</em>, 1993. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://www.nokia.com/bell-labs/about/dennis-m-ritchie/chist.html">https://www.nokia.com/bell-labs/about/dennis-m-ritchie/chist.html</a></div>
+</div>
+<div id="ref-bib-cpp-template-constraints" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[36] </div><div class="csl-right-inline">R. Smith, <span>«Working Draft, Standard for Programming Language C++»</span>, ISO/IEC JTC1/SC22/WG21, N4861, апр. 2020. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4861.pdf">https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4861.pdf</a></div>
+</div>
+<div id="ref-bib-ctx-stroustrup-invention" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[37] </div><div class="csl-right-inline">B. Stroustrup, <span>«Bjarne Stroustrup’s FAQ. Why did you invent C++?»</span> Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://www.stroustrup.com/bs_faq.html#invention">https://www.stroustrup.com/bs_faq.html#invention</a></div>
+</div>
+<div id="ref-bib-context-cpp-raii" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[38] </div><div class="csl-right-inline">B. Stroustrup и H. Sutter, <em>C++ Core Guidelines: R.1, Manage resources automatically using resource handles and RAII</em>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rr-raii">https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rr-raii</a></div>
+</div>
+<div id="ref-bib-data-epam-equality" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[39] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое пособие</em>, 2-я изд. 2021, сс. 139–141.</div>
+</div>
+<div id="ref-bib-data-epam-functions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[40] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое пособие</em>, 2-я изд. 2021, сс. 201–209.</div>
+</div>
+<div id="ref-bib-fnd-epam-strings" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[41] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 225–226.</div>
+</div>
+<div id="ref-bib-fnd-epam-builders" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[42] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, с. 232.</div>
+</div>
+<div id="ref-bib-context-epam-exceptions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[43] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое пособие</em>, 2-я изд. 2021, сс. 264–269.</div>
+</div>
+<div id="ref-bib-data-epam-io" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[44] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое пособие</em>, 2-я изд. 2021, сс. 298–300.</div>
+</div>
+<div id="ref-bib-fnd-epam-values" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[45] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 32–34.</div>
+</div>
+<div id="ref-bib-data-epam-streams" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[46] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое пособие</em>, 2-я изд. 2021, сс. 331–338.</div>
+</div>
+<div id="ref-bib-fnd-epam-control" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[47] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 49, 51, 53.</div>
+</div>
+<div id="ref-bib-fnd-epam-arrays" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[48] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 58–59.</div>
+</div>
+<div id="ref-bib-epam-generic-classes" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[49] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 88–90. Доступно на: <a href="https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf">https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf</a></div>
+</div>
+<div id="ref-bib-epam-generic-methods" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[50] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, с. 93. Доступно на: <a href="https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf">https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf</a></div>
+</div>
+<div id="ref-bib-objects-epam-classes" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[51] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM. Классы, поля, доступ и конструкторы</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 66–70. Доступно на: <a href="https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf">https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf</a></div>
+</div>
+<div id="ref-bib-objects-epam-method-design" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[52] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM. Проектирование методов и использование параметров</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 71–74. Доступно на: <a href="https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf">https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf</a></div>
+</div>
+<div id="ref-bib-concept-bloch-encapsulation" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[53] </div><div class="csl-right-inline">Д. Блох, <em>Java. Эффективное программирование</em>, 3-я изд. Диалектика, 2019, сс. 109–113.</div>
+</div>
+<div id="ref-bib-schildt-generics-definition" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[54] </div><div class="csl-right-inline">Г. Шилдт, <em>Java: руководство для начинающих</em>, 9-я изд. Киев: Науковий Світ, 2023, с. 489.</div>
+</div>
+<div id="ref-bib-schildt-generic-class-example" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[55] </div><div class="csl-right-inline">Г. Шилдт, <em>Java: руководство для начинающих</em>, 9-я изд. Киев: Науковий Світ, 2023, сс. 490–491.</div>
+</div>
+<div id="ref-bib-schildt-generic-pairs" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[56] </div><div class="csl-right-inline">Г. Шилдт, <em>Java: руководство для начинающих</em>, 9-я изд. Киев: Науковий Світ, 2023, сс. 494–495.</div>
+</div>
+<div id="ref-bib-schildt-bounded-types" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[57] </div><div class="csl-right-inline">Г. Шилдт, <em>Java: руководство для начинающих</em>, 9-я изд. Киев: Науковий Світ, 2023, сс. 495–498.</div>
+</div>
+<div id="ref-bib-schildt-wildcards-methods" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[58] </div><div class="csl-right-inline">Г. Шилдт, <em>Java: руководство для начинающих</em>, 9-я изд. Киев: Науковий Світ, 2023, сс. 498–506.</div>
+</div>
+<div id="ref-bib-fnd-schildt-arithmetic" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[59] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, с. 111.</div>
+</div>
+<div id="ref-bib-fnd-schildt-short-circuit" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[60] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 126–127.</div>
+</div>
+<div id="ref-bib-fnd-schildt-control" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[61] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 140, 148.</div>
+</div>
+<div id="ref-bib-fnd-schildt-method-parameters" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[62] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, с. 173.</div>
+</div>
+<div id="ref-bib-fnd-schildt-argument-passing" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[63] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 190–192.</div>
+</div>
+<div id="ref-bib-fnd-schildt-strings" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[64] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, с. 206.</div>
+</div>
+<div id="ref-bib-data-schildt-exceptions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[65] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. 2023, сс. 274–277.</div>
+</div>
+<div id="ref-bib-fnd-schildt-origins" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[66] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 34–35, 39–40.</div>
+</div>
+<div id="ref-bib-data-schildt-resources" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[67] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. 2023, сс. 384–387.</div>
+</div>
+<div id="ref-bib-fnd-schildt-platform" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[68] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 43–45.</div>
+</div>
+<div id="ref-bib-data-schildt-lambdas" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[69] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. 2023, сс. 444–445, 451, 454–458.</div>
+</div>
+<div id="ref-bib-data-schildt-collections" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[70] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. 2023, сс. 649–650, 667, 672, 679–682, 687–688, 697–698.</div>
+</div>
+<div id="ref-bib-fnd-schildt-first-program" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[71] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 66–68.</div>
+</div>
+<div id="ref-bib-data-schildt-comparators" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[72] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. 2023, сс. 703–706.</div>
+</div>
+<div id="ref-bib-fnd-schildt-types" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[73] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 80, 92.</div>
+</div>
+<div id="ref-bib-fnd-schildt-promotion" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[74] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, с. 97.</div>
+</div>
+<div id="ref-bib-fnd-schildt-arrays" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[75] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 99, 101.</div>
+</div>
+<div id="ref-bib-objects-schildt-records" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[76] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство. Записи и канонические конструкторы</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 519–528.</div>
+</div>
+<div id="ref-bib-objects-schildt-interfaces" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[77] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство. Интерфейсы и методы по умолчанию</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 254–272.</div>
+</div>
+<div id="ref-bib-objects-schildt-classes" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[78] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство. Классы, ссылки, конструкторы и передача аргументов</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 162–178, 190–192.</div>
+</div>
+<div id="ref-bib-objects-schildt-inheritance" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[79] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство. Наследование и динамическая диспетчеризация</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 217–243.</div>
+</div>
+<div id="ref-bib-objects-schildt-generics" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[80] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство. Обобщения</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 401–443.</div>
+</div>
+<div id="ref-bib-ctx-schildt-numeric-types" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[81] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство. Числовые типы и повышение операндов</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 82–84, 97.</div>
+</div>
+<div id="ref-bib-data-eckel-collections" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[82] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java</em>, 4-я изд. 2015, сс. 325–328.</div>
+</div>
+<div id="ref-bib-data-eckel-exceptions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[83] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java</em>, 4-я изд. 2015, сс. 365–367.</div>
+</div>
+<div id="ref-bib-ctx-objects-eckel-lifetime" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[84] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Глава 2: области видимости и время жизни объектов</em>, 4, полное. Санкт-Петербург: Питер, 2015, сс. 75–76.</div>
+</div>
+<div id="ref-bib-ctx-objects-eckel-composition" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[85] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Глава 7: синтаксис композиции</em>, 4, полное. Санкт-Петербург: Питер, 2015, с. 206.</div>
+</div>
+<div id="ref-bib-ctx-objects-eckel-interface-boundary" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[86] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Глава 9: отделение интерфейса от реализации</em>, 4, полное. Санкт-Петербург: Питер, 2015, с. 270.</div>
+</div>
+<div id="ref-bib-objects-eckel-access" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[87] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Инициализация и ограничение доступа</em>, 4, полное. Санкт-Петербург: Питер, 2015, сс. 143, 197–198.</div>
+</div>
+<div id="ref-bib-objects-eckel-interfaces" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[88] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Интерфейсы и отделение реализации</em>, 4, полное. Санкт-Петербург: Питер, 2015, сс. 266, 270.</div>
+</div>
+<div id="ref-bib-objects-eckel-reuse" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[89] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Повторное использование классов</em>, 4, полное. Санкт-Петербург: Питер, 2015, сс. 206, 220.</div>
+</div>
+<div id="ref-bib-objects-eckel-polymorphism" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[90] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Полиморфные вызовы и расширяемость</em>, 4, полное. Санкт-Петербург: Питер, 2015, сс. 243–244.</div>
+</div>
+<div id="ref-bib-objects-eckel-constructor-polymorphism" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[91] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Полиморфные методы в конструкторах</em>, 4, полное. Санкт-Петербург: Питер, 2015, с. 256.</div>
+</div>
+<div id="ref-bib-objects-eckel-generics" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[92] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Простые обобщения и миграционная совместимость</em>, 4, полное. Санкт-Петербург: Питер, 2015, сс. 501–503, 530–531.</div>
+</div>
+<div id="ref-bib-objects-eckel-references" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[93] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Ссылки и время жизни объектов</em>, 4, полное. Санкт-Петербург: Питер, 2015, сс. 70, 74–75.</div>
+</div>
+<div id="ref-bib-objects-jls-access" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[94] </div><div class="csl-right-inline"><em>Java Language Specification, Java SE 25. Access Control</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-6.html#jls-6.6">https://docs.oracle.com/javase/specs/jls/se25/html/jls-6.html#jls-6.6</a></div>
+</div>
+<div id="ref-bib-objects-jls-data-classes" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[95] </div><div class="csl-right-inline"><em>Java Language Specification, Java SE 25. Enum, Record, and Sealed Types</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html</a></div>
+</div>
+<div id="ref-bib-objects-jls-overriding" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[96] </div><div class="csl-right-inline"><em>Java Language Specification, Java SE 25. Inheritance, Overriding, and Hiding</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.8">https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.8</a></div>
+</div>
+<div id="ref-bib-java-api-25" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[97] </div><div class="csl-right-inline"><em>Java Platform, Standard Edition 25 API Specification</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/index.html">https://docs.oracle.com/en/java/javase/25/docs/api/index.html</a></div>
+</div>
+<div id="ref-bib-data-autocloseable-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[98] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: AutoCloseable</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/AutoCloseable.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/AutoCloseable.html</a></div>
+</div>
+<div id="ref-bib-data-comparator-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[99] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Comparator</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Comparator.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Comparator.html</a></div>
+</div>
+<div id="ref-bib-data-deque-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[100] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Deque</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Deque.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Deque.html</a></div>
+</div>
+<div id="ref-bib-data-files-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[101] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Files</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html</a></div>
+</div>
+<div id="ref-bib-data-list-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[102] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: List</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html</a></div>
+</div>
+<div id="ref-bib-data-map-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[103] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Map</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html</a></div>
+</div>
+<div id="ref-bib-data-object-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[104] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Object</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html</a></div>
+</div>
+<div id="ref-bib-data-stream-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[105] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Stream</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html</a></div>
+</div>
+<div id="ref-bib-context-stream-semantics" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[106] </div><div class="csl-right-inline"><em>Java SE 25 API: java.util.stream — Stream Operations and Pipelines; Non-interference; Side-effects</em>. Oracle, 2025. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html</a></div>
+</div>
+<div id="ref-bib-context-printstream" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[107] </div><div class="csl-right-inline"><em>Java SE 25 API: PrintStream — Class Description and checkError()</em>. Oracle, 2025. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/PrintStream.html#checkError()">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/PrintStream.html#checkError()</a></div>
+</div>
+<div id="ref-bib-fnd-arrays-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[108] </div><div class="csl-right-inline"><em>Java SE 25 API. Arrays</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Arrays.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Arrays.html</a></div>
+</div>
+<div id="ref-bib-fnd-character-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[109] </div><div class="csl-right-inline"><em>Java SE 25 API. Character</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Character.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Character.html</a></div>
+</div>
+<div id="ref-bib-objects-object-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[110] </div><div class="csl-right-inline"><em>Java SE 25 API. Class Object</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html</a></div>
+</div>
+<div id="ref-bib-fnd-math-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[111] </div><div class="csl-right-inline"><em>Java SE 25 API. Math</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Math.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Math.html</a></div>
+</div>
+<div id="ref-bib-fnd-normalizer-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[112] </div><div class="csl-right-inline"><em>Java SE 25 API. Normalizer</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/text/Normalizer.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/text/Normalizer.html</a></div>
+</div>
+<div id="ref-bib-ctx-objects-optional" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[113] </div><div class="csl-right-inline"><em>Java SE 25 API. Optional: Class description; API Note; empty; of; ofNullable; get; orElse</em>. Oracle, 2025. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html</a></div>
+</div>
+<div id="ref-bib-fnd-string-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[114] </div><div class="csl-right-inline"><em>Java SE 25 API. String</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html</a></div>
+</div>
+<div id="ref-bib-fnd-builder-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[115] </div><div class="csl-right-inline"><em>Java SE 25 API. StringBuilder</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/StringBuilder.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/StringBuilder.html</a></div>
+</div>
+<div id="ref-bib-fnd-java-launcher" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[116] </div><div class="csl-right-inline"><em>Java SE 25 Tool Specifications. The java Command</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html">https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html</a></div>
+</div>
+<div id="ref-bib-fnd-javac" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[117] </div><div class="csl-right-inline"><em>Java SE 25 Tool Specifications. The javac Command</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html">https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html</a></div>
+</div>
+<div id="ref-bib-data-jls-exceptions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[118] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25 Edition: Exceptions, Chapter 11</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html</a></div>
+</div>
+<div id="ref-bib-data-jls-lambdas" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[119] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25 Edition: Lambda Expressions, §15.27</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.27">https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.27</a></div>
+</div>
+<div id="ref-bib-data-jls-resources" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[120] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25 Edition: try-with-resources, §14.20.3</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3">https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3</a></div>
+</div>
+<div id="ref-bib-fnd-jls-arrays" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[121] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25. Arrays</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-10.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-10.html</a></div>
+</div>
+<div id="ref-bib-fnd-jls-statements" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[122] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25. Blocks, Statements, and Patterns</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html</a></div>
+</div>
+<div id="ref-bib-fnd-jls-conversions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[123] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25. Conversions and Contexts</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html</a></div>
+</div>
+<div id="ref-bib-fnd-jls-evaluation" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[124] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25. Evaluation Order</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.7">https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.7</a></div>
+</div>
+<div id="ref-bib-fnd-jls-launch" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[125] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25. Java Virtual Machine Startup</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html#jls-12.1">https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html#jls-12.1</a></div>
+</div>
+<div id="ref-bib-fnd-jls-methods" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[126] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25. Method Declarations</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4">https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4</a></div>
+</div>
+<div id="ref-bib-fnd-jls-arithmetic" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[127] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25. Multiplicative and Additive Operators</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.17">https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.17</a></div>
+</div>
+<div id="ref-bib-jvms-generic-signatures" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[128] </div><div class="csl-right-inline"><em>The Java Virtual Machine Specification, Java SE 25 Edition. Раздел 4.7.9</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html#jvms-4.7.9">https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html#jvms-4.7.9</a></div>
+</div>
+<div id="ref-bib-fnd-jvms-loading" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[129] </div><div class="csl-right-inline"><em>The Java Virtual Machine Specification, Java SE 25. Loading, Linking, and Initializing</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-5.html">https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-5.html</a></div>
+</div>
+<div id="ref-bib-fnd-jvms-structure" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[130] </div><div class="csl-right-inline"><em>The Java Virtual Machine Specification, Java SE 25. The Structure of the Java Virtual Machine</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html">https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html</a></div>
+</div>
+<div id="ref-bib-ctx-csharp-types" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[131] </div><div class="csl-right-inline"><em>C# language specification. Types, §§8.1, 8.3.1, 8.3.4–8.3.5, 8.3.13</em>. Microsoft. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/types">https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/types</a></div>
+</div>
+<div id="ref-bib-context-cpp-map" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[132] </div><div class="csl-right-inline"><em>C++ Working Draft: [map.modifiers] — try_emplace</em>. ISO C++. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://eel.is/c++draft/map.modifiers">https://eel.is/c++draft/map.modifiers</a></div>
+</div>
+<div id="ref-bib-context-collections-design" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[133] </div><div class="csl-right-inline"><em>Collections Framework Overview: Introduction and Design Goals</em>. Oracle. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/collections/overview.html">https://docs.oracle.com/javase/8/docs/technotes/guides/collections/overview.html</a></div>
+</div>
+<div id="ref-bib-ctx-clr-cts" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[134] </div><div class="csl-right-inline"><span>«Common Type System. Types in .NET; Structures»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://learn.microsoft.com/en-us/dotnet/standard/base-types/common-type-system">https://learn.microsoft.com/en-us/dotnet/standard/base-types/common-type-system</a></div>
+</div>
+<div id="ref-bib-context-go-errors" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[135] </div><div class="csl-right-inline"><em>Effective Go: Errors</em>. The Go Project. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://go.dev/doc/effective_go#errors">https://go.dev/doc/effective_go#errors</a></div>
+</div>
+<div id="ref-bib-ctx-unicode-utf" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[136] </div><div class="csl-right-inline"><span>«FAQ: UTF-8, UTF-16, UTF-32 and BOM. UTF-16 FAQ: What is UTF-16?; What are surrogates?»</span> Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://www.unicode.org/faq/utf_bom.html">https://www.unicode.org/faq/utf_bom.html</a></div>
+</div>
+<div id="ref-bib-objects-jep395" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[137] </div><div class="csl-right-inline"><span>«JEP 395: Records»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://openjdk.org/jeps/395">https://openjdk.org/jeps/395</a></div>
+</div>
+<div id="ref-bib-ctx-objects-kotlin-null" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[138] </div><div class="csl-right-inline"><span>«Kotlin Documentation. Null safety: Nullable types and non-nullable types; Safe call operator; Not-null assertion operator»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://kotlinlang.org/docs/null-safety.html">https://kotlinlang.org/docs/null-safety.html</a></div>
+</div>
+<div id="ref-bib-context-python-open" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[139] </div><div class="csl-right-inline"><em>Python 3.14 Documentation: Built-in Functions — open</em>. Python Software Foundation. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.python.org/3.14/library/functions.html#open">https://docs.python.org/3.14/library/functions.html#open</a></div>
+</div>
+<div id="ref-bib-context-python-dataclass" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[140] </div><div class="csl-right-inline"><em>Python 3.14 Documentation: dataclasses — Module Contents, eq and unsafe_hash</em>. Python Software Foundation. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.python.org/3.14/library/dataclasses.html">https://docs.python.org/3.14/library/dataclasses.html</a></div>
+</div>
+<div id="ref-bib-context-python-dictionaries" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[141] </div><div class="csl-right-inline"><em>Python 3.14 Tutorial: §5.5 Dictionaries</em>. Python Software Foundation. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.python.org/3.14/tutorial/datastructures.html#dictionaries">https://docs.python.org/3.14/tutorial/datastructures.html#dictionaries</a></div>
+</div>
+<div id="ref-bib-fnd-python-binding" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[142] </div><div class="csl-right-inline"><span>«Python Language Reference. Execution model»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.python.org/3/reference/executionmodel.html">https://docs.python.org/3/reference/executionmodel.html</a></div>
+</div>
+<div id="ref-bib-fnd-python-numbers" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[143] </div><div class="csl-right-inline"><span>«Python Standard Library. Numeric types»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.python.org/3/library/stdtypes.html#numeric-types-int-float-complex">https://docs.python.org/3/library/stdtypes.html#numeric-types-int-float-complex</a></div>
+</div>
+<div id="ref-bib-context-go-defer" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[144] </div><div class="csl-right-inline"><em>The Go Programming Language Specification: Defer statements</em>. The Go Project. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://go.dev/ref/spec#Defer_statements">https://go.dev/ref/spec#Defer_statements</a></div>
+</div>
+<div id="ref-bib-context-python-with" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[145] </div><div class="csl-right-inline"><em>The Python Language Reference, §8.5: The with statement</em>. Python Software Foundation. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.python.org/3/reference/compound_stmts.html#the-with-statement">https://docs.python.org/3/reference/compound_stmts.html#the-with-statement</a></div>
+</div>
+<div id="ref-bib-context-rust-ownership" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[146] </div><div class="csl-right-inline"><em>The Rust Programming Language, §4.1: What is Ownership?</em> The Rust Project. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html">https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html</a></div>
+</div>
+<div id="ref-bib-context-rust-result" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[147] </div><div class="csl-right-inline"><em>The Rust Programming Language, §9.2: Recoverable Errors with Result</em>. The Rust Project. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html">https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html</a></div>
+</div>
+<div id="ref-bib-context-rust-panic" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[148] </div><div class="csl-right-inline"><em>The Rust Programming Language, §9.3: To panic! or Not to panic!</em> The Rust Project. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://doc.rust-lang.org/book/ch09-03-to-panic-or-not-to-panic.html">https://doc.rust-lang.org/book/ch09-03-to-panic-or-not-to-panic.html</a></div>
+</div>
+<div id="ref-bib-fnd-cpp-arithmetic" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[149] </div><div class="csl-right-inline"><span>«Working Draft, Standard for Programming Language C++. Expressions»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://eel.is/c++draft/expr.mul">https://eel.is/c++draft/expr.mul</a></div>
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Скопировано");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Скопировано");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation" aria-label="Страница">
+  <div class="nav-page nav-page-previous">
+      <a href="../chapters/objects.html" class="pagination-link" aria-label="Объекты, ссылки и время жизни">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Объекты, ссылки и время жизни</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../chapters/inheritance.html" class="pagination-link" aria-label="Наследование и связывание методов">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Наследование и связывание методов</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/master/theory/chapters/classes.qmd" class="toc-action"><i class="bi bi-github"></i>Показать код</a></li><li><a href="https://github.com/BSU-RFCT-Afonenko-Courses/Java/issues/new" class="toc-action"><i class="bi empty"></i>Сообщить о проблеме</a></li></ul></div></div></div></footer>
+<script data-qrc-navigation>// Опубликованные цели сохраняют штатные ID Quarto. Обработчик раскрывает
+// существующее представление документа, не вводя учебных ролей и новых ID.
+(() => {
+  if (new URL(location.href).searchParams.has("print-pdf")) return;
+  let navigation = 0;
+
+  function hashId(url) {
+    try { return decodeURIComponent(url.hash.replace(/^#\/?/, "")); }
+    catch { return ""; } // Некорректный фрагмент внешней ссылки не должен нарушать работу страницы.
+  }
+
+  function ancestors(target) {
+    const nodes = [];
+    for (let node = target; node; node = node.parentElement) nodes.push(node);
+    return nodes.reverse();
+  }
+
+  function openDisclosures(nodes, scroll) {
+    for (const node of nodes) {
+      if (node.matches("details")) node.open = true;
+      if (!node.matches(".collapse:not(.show)")) continue;
+
+      // Bootstrap управляет анимацией и состоянием переключателя.
+      // В темах без Bootstrap блок раскрывается напрямую; details работает штатно.
+      const Collapse = window.bootstrap?.Collapse;
+      if (Collapse) {
+        node.addEventListener("shown.bs.collapse", scroll, { once: true });
+        Collapse.getOrCreateInstance(node, { toggle: false }).show();
+      } else {
+        node.classList.add("show");
+        if (!node.id) continue;
+        for (const trigger of document.querySelectorAll("[aria-controls]")) {
+          if (!trigger.getAttribute("aria-controls").split(/\s+/).includes(node.id)) continue;
+          trigger.setAttribute("aria-expanded", "true");
+          trigger.classList.remove("collapsed");
+        }
+      }
+    }
+  }
+
+  function revealTarget(id) {
+    const target = id && document.getElementById(id);
+    if (!target) return;
+    const current = ++navigation;
+    const scroll = () => requestAnimationFrame(() => {
+      // Завершение анимации не должно возвращать прокрутку после нового перехода.
+      if (current === navigation) target.scrollIntoView({ block: "nearest" });
+    });
+    const nodes = ancestors(target);
+    const section = target.closest("section.slide");
+    const reveal = window.Reveal;
+    if (section && target !== section && reveal?.isReady()) {
+      const position = reveal.getIndices(section);
+      reveal.slide(position.h, position.v);
+      // У вложенных фрагментов могут различаться индексы. Показываем
+      // все фрагменты вокруг цели; нулевой индекс также допустим.
+      const indices = nodes.filter(node => node.matches(".fragment[data-fragment-index]"))
+        .map(node => Number(node.getAttribute("data-fragment-index")))
+        .filter(Number.isFinite);
+      if (indices.length) reveal.navigateFragment(Math.max(...indices));
+    }
+    openDisclosures(nodes, scroll);
+    scroll();
+  }
+
+  function initialTarget() {
+    const url = new URL(location.href);
+    revealTarget(url.searchParams.get("qrc-target") || hashId(url));
+  }
+
+  function ready() {
+    if (window.Reveal && !window.Reveal.isReady()) window.Reveal.on("ready", initialTarget);
+    else initialTarget();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", ready, { once: true });
+  else ready();
+
+  // qrc-target обрабатывается только при входе на страницу. Повторное применение
+  // при смене фрагмента URL возвращало бы преподавателя к цели после перехода вперёд.
+  window.addEventListener("hashchange", () => revealTarget(hashId(new URL(location.href))));
+  document.addEventListener("click", event => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.defaultPrevented) return;
+    const link = event.target.closest?.("a[href]");
+    if (!link || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
+    const url = new URL(link.href, location.href);
+    if (url.origin !== location.origin || url.pathname !== location.pathname || url.search !== location.search) return;
+    // Повторный переход по тому же фрагменту URL не вызывает hashchange.
+    // Раскрываем цель после штатной навигации и обработчика Revealjs.
+    queueMicrotask(() => revealTarget(hashId(url)));
+  }, true);
+})();
+</script>
+<script id="course-site-navigation">(function(){
+const base={"courseUrl":"https://bsu-rfct-afonenko-courses.github.io/Java/","rootHref":"../../"};
+if(base){
+ const course=new URL(base.courseUrl); course.pathname=course.pathname.replace(/\/$/,'')+'/';
+ const root=new URL(base.rootHref,document.baseURI);
+ for(const link of document.querySelectorAll('#quarto-header a[href],#quarto-sidebar a[href],.quarto-navbar a[href],.quarto-sidebar a[href]')){
+  const url=new URL(link.href,document.baseURI);
+  if(url.origin===course.origin&&url.pathname.startsWith(course.pathname)){
+   let path=url.pathname.slice(course.pathname.length); if(!path||path.endsWith('/')) path+='index.html';
+   link.href=new URL(path+url.search+url.hash,root).href;
+  }
+ }
+}
+const targets=[].map(path=>new URL(path,document.baseURI));
+for(const link of document.querySelectorAll('a[href]')){
+ const url=new URL(link.href,document.baseURI);
+ if(targets.some(target=>target.origin===url.origin&&(
+  target.pathname===url.pathname || target.pathname.endsWith('/index.html')&&target.pathname.slice(0,-'index.html'.length)===url.pathname
+ ))){
+  link.target='_blank'; link.rel=[...new Set([...link.rel.split(/\s+/).filter(Boolean),'noopener','noreferrer'])].join(' ');
+ }
+}
+})();</script>
+</body></html>

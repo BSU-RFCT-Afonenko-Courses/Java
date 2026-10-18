@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="ru"><head>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
+<script src="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
+<link href="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.11.5">
+
+  <title>Лекции Java – Исключения и ресурсы</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-3ce18430e1250f8c2f6f98be2c9c7b18.css">
+  <link rel="stylesheet" href="assets/lesson.css">
+  
+  <style>.task-items li:has(.course-assignment-omitted):not(:has(a)){display:none}</style>
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/course-navigation/navigation.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <script id="course-navigation-context" type="application/json">{"links":[{"href":"../index.html","path":"index.html","scope":"course","text":"Курс Java"},{"href":"index.html","path":"index.html","scope":"project","text":"Все лекции"},{"href":"../theory/index.html","path":"theory/index.html","scope":"course","text":"Теория"},{"href":"https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/master/lectures/exceptions-resources.qmd","scope":"repository","text":"Исходный код"},{"href":"https://github.com/BSU-RFCT-Afonenko-Courses/Java/issues/new","scope":"repository","text":"Сообщить об ошибке"}]}</script>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Исключения и ресурсы</h1>
+  <p class="subtitle">Первый семестр</p>
+
+<div class="quarto-title-authors">
+</div>
+
+</section>
+<section id="sec-j25-lecture-exceptions-resources" class="title-slide slide level1 center">
+<h1>Исключения и ресурсы</h1>
+<ul>
+<li>Исключительное завершение и передача управления.</li>
+<li>Иерархия исключений, проверяемые отказы и обработчики.</li>
+<li>Предметное исключение, причина и диагностика.</li>
+<li><code>finally</code>, try с ресурсами и порядок закрытия.</li>
+<li>Подавленные исключения и владение ресурсом.</li>
+<li>Состояние после отказа и реакция приложения.</li>
+<li>Типизированный результат и сравнение механизмов разных языков.</li>
+</ul>
+</section>
+
+<section>
+<section id="sec-j25-lecture-exceptions-resources-group-1" class="title-slide slide level1 center">
+<h1>Исключительное завершение</h1>
+
+</section>
+<section id="sec-j25-lecture-exceptions-resources-contract" class="slide level2">
+<h2>Исход операции</h2>
+<p>Поиск студента может успешно завершиться без совпадения. Для загрузки обязательного каталога нужен доступный файл; отказ чтения препятствует получению каталога. Неверный индекс внутри загрузчика требует исправления алгоритма.</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Исход</th>
+<th>Действие вызывающего уровня</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Совпадения нет</td>
+<td>Выбрать действие при отсутствии</td>
+</tr>
+<tr class="even">
+<td>Файл не прочитан</td>
+<td>Сообщить о неудачной загрузке</td>
+</tr>
+<tr class="odd">
+<td>В алгоритме неверный индекс</td>
+<td>Установить и исправить дефект</td>
+</tr>
+</tbody>
+</table>
+<aside class="notes">
+<p>Попросить объяснить, почему пустой результат допустим при поиске. Затем предложить заменить им отказ чтения: какую информацию потеряет клиент? Для неверного индекса установить, поможет ли повтор с тем же входом.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-context" class="slide level2">
+<h2>Условия проверки балла</h2>
+<p><code>parseScore</code> получает строку, отличную от <code>null</code>, без пробелов по краям. Успешный результат — целое число от 0 до 100 включительно.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a aria-label="1"></a>"90"      — допустимый балл</span>
+<span id="cb1-2"><a aria-label="2"></a>"0"       — допустимый нулевой балл</span>
+<span id="cb1-3"><a aria-label="3"></a>"ninety"  — текст не обозначает целое число</span>
+<span id="cb1-4"><a aria-label="4"></a>"120"     — целое число за пределами диапазона баллов</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Если вернуть <code>0</code> для <code>"ninety"</code>, вызывающий код примет ошибку данных за допустимый результат. Отказ должен сохранять это различие.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-parse-definition" class="slide level2">
+<h2>Проверка балла</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb2-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">parseScore</span><span class="op">(</span><span class="bu">String</span> text<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-2"><a aria-label="2"></a>    java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">Objects</span><span class="op">.</span><span class="fu">requireNonNull</span><span class="op">(</span>text<span class="op">,</span> <span class="st">"text"</span><span class="op">);</span></span>
+<span id="cb2-3"><a aria-label="3"></a>    <span class="dt">int</span> score <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span>text<span class="op">);</span></span>
+<span id="cb2-4"><a aria-label="4"></a>    <span class="cf">if</span> <span class="op">(</span>score <span class="op">&lt;</span> <span class="dv">0</span> <span class="op">||</span> score <span class="op">&gt;</span> <span class="dv">100</span><span class="op">)</span></span>
+<span id="cb2-5"><a aria-label="5"></a>        <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"балл вне диапазона 0..100: "</span> <span class="op">+</span> score<span class="op">);</span></span>
+<span id="cb2-6"><a aria-label="6"></a>    <span class="cf">return</span> score<span class="op">;</span></span>
+<span id="cb2-7"><a aria-label="7"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Для <code>"90"</code> число входит в допустимый диапазон; метод возвращает <code>90</code>. <code>null</code> нарушает предусловие и приводит к <code>NullPointerException</code>.</p>
+<aside class="notes">
+<p>Проследить успешный путь до <code>return</code>. Перед следующим экраном предложить заменить только вход на <code>"ninety"</code> и найти первое действие, которое не удастся.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-01" class="slide level2">
+<h2>Ошибка числового представления</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb3-1"><a aria-label="1"></a><span class="dt">int</span> score <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span><span class="st">"ninety"</span><span class="op">);</span></span>
+<span id="cb3-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"балл: "</span> <span class="op">+</span> score<span class="op">);</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<p><code>parseInt</code> выбрасывает <code>NumberFormatException</code>. Присваивание <code>score</code> и печать не выполняются: исключение прерывает вычисление выражения и обычное продолжение вызова.</p>
+<p>Программа компилируется. Ошибка обнаружена при обработке конкретной строки.</p>
+</div>
+<p>Механизм передачи управления: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-exceptions-unwinding" data-qrc-style="default" class="qrc-link" href="../theory/chapters/exceptions.html#sec-j25-theory-exceptions-unwinding">Путь через стек вызовов</a>.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-02" class="slide level2">
+<h2>Ошибка предметного диапазона</h2>
+<p>Вызов <code>parseScore("120")</code> сначала вычисляет:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb4-1"><a aria-label="1"></a><span class="dt">int</span> score <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span><span class="st">"120"</span><span class="op">);</span> <span class="co">// 120</span></span>
+<span id="cb4-2"><a aria-label="2"></a><span class="cf">if</span> <span class="op">(</span>score <span class="op">&lt;</span> <span class="dv">0</span> <span class="op">||</span> score <span class="op">&gt;</span> <span class="dv">100</span><span class="op">)</span></span>
+<span id="cb4-3"><a aria-label="3"></a>    <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"балл вне диапазона 0..100: "</span> <span class="op">+</span> score<span class="op">);</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Преобразование в <code>int</code> успешно. Проверка <code>score &gt; 100</code> приводит к <code>throw</code>, поэтому метод не достигает <code>return score</code>.</p>
+<p>Для <code>parseScore("0")</code> проверка диапазона проходит; результат равен <code>0</code>. Подстановка нуля при отказе смешала бы эти исходы.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-03" class="slide level2">
+<h2>Объект исключения и throw</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb5-1"><a aria-label="1"></a><span class="dt">int</span> score <span class="op">=</span> <span class="dv">120</span><span class="op">;</span></span>
+<span id="cb5-2"><a aria-label="2"></a><span class="dt">var</span> failure <span class="op">=</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"неверный балл: "</span> <span class="op">+</span> score<span class="op">);</span></span>
+<span id="cb5-3"><a aria-label="3"></a><span class="cf">throw</span> failure<span class="op">;</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>new</code> создаёт объект с сообщением <code>неверный балл: 120</code>. <code>throw</code> передаёт ссылку на этот объект механизму обработки исключений. Дальнейшие обычные действия текущей ветви пропускаются.</p>
+<p>В обработчике доступны тип объекта, сообщение и диагностические сведения. Повторное <code>throw failure</code> передаёт тот же объект.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-04" class="slide level2">
+<h2>Ответственность вызывающего кода</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1"><a aria-label="1"></a>parseScore → проверяет текст и диапазон балла</span>
+<span id="cb6-2"><a aria-label="2"></a>загрузчик  → знает путь и физический номер строки</span>
+<span id="cb6-3"><a aria-label="3"></a>приложение → выбирает повтор ввода, пропуск записи или завершение</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Парсер передаёт причину отказа уровню, который располагает данными для дальнейшего действия. Его можно использовать и в интерактивном вводе, и при чтении обязательного файла <span class="citation" data-cites="bib-context-epam-exceptions"><a href="#/источники" role="doc-biblioref" onclick="">[4]</a></span>.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-05" class="slide level2">
+<h2>Передача управления в catch</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb7-1"><a aria-label="1"></a><span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb7-2"><a aria-label="2"></a>    <span class="dt">int</span> score <span class="op">=</span> <span class="fu">parseScore</span><span class="op">(</span><span class="st">"120"</span><span class="op">);</span></span>
+<span id="cb7-3"><a aria-label="3"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"балл: "</span> <span class="op">+</span> score<span class="op">);</span></span>
+<span id="cb7-4"><a aria-label="4"></a><span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IllegalArgumentException</span> failure<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-5"><a aria-label="5"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"неверный балл"</span><span class="op">);</span></span>
+<span id="cb7-6"><a aria-label="6"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<p>Вывод — <code>неверный балл</code>. Тип параметра <code>catch</code> подходит к выброшенному объекту. В <code>failure</code> записана ссылка на него, затем выполняется обработчик. Строка <code>балл: ...</code> пропущена.</p>
+</div>
+<aside class="notes">
+<p>До раскрытия результата попросить выбрать выполняемую строку печати. После раскрытия показать объект исключения и новую переменную <code>failure</code>.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-06" class="slide level2">
+<h2>Продолжение после обработчика</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb8-1"><a aria-label="1"></a><span class="cf">try</span> <span class="op">{</span> <span class="fu">parseScore</span><span class="op">(</span><span class="st">"120"</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb8-2"><a aria-label="2"></a><span class="cf">catch</span> <span class="op">(</span><span class="bu">IllegalArgumentException</span> ex<span class="op">)</span> <span class="op">{</span> <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"ошибка"</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb8-3"><a aria-label="3"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"следующая операция"</span><span class="op">);</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<p>Вывод — <code>ошибка</code>, затем <code>следующая операция</code>. После нормального завершения обработчика выполнение продолжается за всей конструкцией. Вызов <code>parseScore</code> состоялся один раз; к месту после <code>throw</code> управление не возвращается. Повторную попытку организуют циклом с новым вводом.</p>
+</div>
+<aside class="notes">
+<p>До раскрытия результата предложить проследить путь управления. После ответа спросить, где должен находиться цикл для запроса нового балла.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-07" class="slide level2">
+<h2>Раскрутка стека вызовов</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb9-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">readStudent</span><span class="op">(</span><span class="bu">String</span> text<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-2"><a aria-label="2"></a>    <span class="dt">int</span> score <span class="op">=</span> <span class="fu">parseScore</span><span class="op">(</span>text<span class="op">);</span></span>
+<span id="cb9-3"><a aria-label="3"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"запись проверена"</span><span class="op">);</span></span>
+<span id="cb9-4"><a aria-label="4"></a>    <span class="cf">return</span> score<span class="op">;</span></span>
+<span id="cb9-5"><a aria-label="5"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>В <code>main</code> подходящий <code>catch</code> охватывает <code>readStudent("120")</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb10-1"><a aria-label="1"></a>main → readStudent → parseScore → throw</span>
+<span id="cb10-2"><a aria-label="2"></a>       прерывается   прерывается</span>
+<span id="cb10-3"><a aria-label="3"></a>catch в main ← объект исключения</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>запись проверена</code> не печатается. Исключение прерывает незавершённые вызовы на пути к подходящему обработчику. По пути выполняются предусмотренные <code>finally</code> и закрытия ресурсов; выполненные ранее изменения сохраняются.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-08" class="slide level2">
+<h2>Неперехваченное исключение</h2>
+<p>Если подходящий <code>catch</code> не найден, завершается текущий поток выполнения. Его обработчик неперехваченных исключений может вывести трассировку.</p>
+<p>В приложении с единственным рабочим потоком это завершает программу. Другие рабочие потоки могут продолжить выполнение: исключение не переносится автоматически в их стеки вызовов.</p>
+</section></section>
+<section>
+<section id="sec-j25-lecture-exceptions-resources-group-2" class="title-slide slide level1 center">
+<h1>Типы и объявления исключений</h1>
+
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-09" class="slide level2">
+<h2>Иерархия Throwable</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb11-1"><a aria-label="1"></a>Throwable</span>
+<span id="cb11-2"><a aria-label="2"></a>├─ Exception</span>
+<span id="cb11-3"><a aria-label="3"></a>│  └─ RuntimeException</span>
+<span id="cb11-4"><a aria-label="4"></a>└─ Error</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>RuntimeException</code>, <code>Error</code> и их подклассы — непроверяемые исключения. Все остальные классы этой иерархии — проверяемые.</p>
+<p>Для проверяемого отказа компилятор требует обработки или допустимого объявления передачи. Оба вида исключений возникают при выполнении.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-10" class="slide level2">
+<h2>Объявление проверяемого отказа</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb12-1"><a aria-label="1"></a><span class="kw">class</span> EmptyException <span class="kw">extends</span> <span class="bu">Exception</span> <span class="op">{}</span></span>
+<span id="cb12-2"><a aria-label="2"></a></span>
+<span id="cb12-3"><a aria-label="3"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">take</span><span class="op">(</span><span class="dt">boolean</span> empty<span class="op">)</span> <span class="kw">throws</span> EmptyException <span class="op">{</span></span>
+<span id="cb12-4"><a aria-label="4"></a>    <span class="cf">if</span> <span class="op">(</span>empty<span class="op">)</span> <span class="cf">throw</span> <span class="kw">new</span> <span class="fu">EmptyException</span><span class="op">();</span></span>
+<span id="cb12-5"><a aria-label="5"></a>    <span class="cf">return</span> <span class="dv">7</span><span class="op">;</span></span>
+<span id="cb12-6"><a aria-label="6"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>throw</code> выполняется только при <code>empty == true</code>. <code>throws EmptyException</code> входит в объявление метода и учитывается при проверке каждого вызова, включая <code>take(false)</code>.</p>
+<p>Без <code>throws</code> этот метод отвергается при компиляции: проверяемый отказ его тела не обработан и не объявлен <span class="citation" data-cites="bib-data-jls-exceptions"><a href="#/источники" role="doc-biblioref" onclick="">[9]</a></span>.</p>
+<aside class="notes">
+<p>Сопоставить место создания объекта с записью типа в объявлении. Предложить прогноз для отдельного метода, содержащего только <code>take(false)</code> без обработки и без <code>throws</code>. Затем проверить прогноз на следующем экране.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-checked-caller" class="slide level2">
+<h2>Обработка и передача проверяемого отказа</h2>
+<p>Передача следующему вызывающему уровню:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb13-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">forward</span><span class="op">()</span> <span class="kw">throws</span> EmptyException <span class="op">{</span></span>
+<span id="cb13-2"><a aria-label="2"></a>    <span class="cf">return</span> <span class="fu">take</span><span class="op">(</span><span class="kw">false</span><span class="op">);</span></span>
+<span id="cb13-3"><a aria-label="3"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Обработка в месте, где можно выбрать дальнейшее действие:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb14-1"><a aria-label="1"></a><span class="cf">try</span> <span class="op">{</span> <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="fu">take</span><span class="op">(</span><span class="kw">true</span><span class="op">));</span> <span class="op">}</span></span>
+<span id="cb14-2"><a aria-label="2"></a><span class="cf">catch</span> <span class="op">(</span>EmptyException ex<span class="op">)</span> <span class="op">{</span> <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"хранилище пусто"</span><span class="op">);</span> <span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Первый метод возвращает <code>7</code>, второй фрагмент печатает <code>хранилище пусто</code>. Аргумент <code>false</code> не отменяет объявленный <code>EmptyException</code> у <code>take</code>; <code>throws</code> у <code>forward</code> требуется и для этого успешного запуска.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-13" class="slide level2">
+<h2>Порядок обработчиков</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb15-1"><a aria-label="1"></a><span class="cf">try</span> <span class="op">{</span> <span class="fu">parseScore</span><span class="op">(</span><span class="st">"ninety"</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb15-2"><a aria-label="2"></a><span class="cf">catch</span> <span class="op">(</span><span class="bu">NumberFormatException</span> ex<span class="op">)</span> <span class="op">{</span> <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"нужно число"</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb15-3"><a aria-label="3"></a><span class="cf">catch</span> <span class="op">(</span><span class="bu">IllegalArgumentException</span> ex<span class="op">)</span> <span class="op">{</span> <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"нужен диапазон"</span><span class="op">);</span> <span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Вывод — <code>нужно число</code>. <code>NumberFormatException</code> является подклассом <code>IllegalArgumentException</code>, поэтому обратный порядок сделал бы частную ветвь недостижимой.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-14" class="slide level2 continuation">
+<h2>Выбор обработчика по подтипу</h2>
+<p>Для обработчиков предыдущего экрана:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Вход <code>parseScore</code></th>
+<th>Исход</th>
+<th>Выбранная ветвь</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>"ninety"</code></td>
+<td><code>NumberFormatException</code></td>
+<td><code>нужно число</code></td>
+</tr>
+<tr class="even">
+<td><code>"120"</code></td>
+<td><code>IllegalArgumentException</code></td>
+<td><code>нужен диапазон</code></td>
+</tr>
+<tr class="odd">
+<td><code>"90"</code></td>
+<td>Возвращён <code>90</code></td>
+<td>Ни один <code>catch</code></td>
+</tr>
+</tbody>
+</table>
+<p>Поиск выбирает первую подходящую ветвь. После её выполнения второй обработчик той же конструкции не запускается.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-17" class="slide level2">
+<h2>Предметное исключение</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb16-1"><a aria-label="1"></a><span class="kw">class</span> <span class="bu">DataFormatException</span> <span class="kw">extends</span> <span class="bu">Exception</span> <span class="op">{</span></span>
+<span id="cb16-2"><a aria-label="2"></a>    <span class="bu">DataFormatException</span><span class="op">(</span><span class="bu">String</span> message<span class="op">,</span> <span class="bu">Throwable</span> cause<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-3"><a aria-label="3"></a>        <span class="kw">super</span><span class="op">(</span>message<span class="op">,</span> cause<span class="op">);</span></span>
+<span id="cb16-4"><a aria-label="4"></a>    <span class="op">}</span></span>
+<span id="cb16-5"><a aria-label="5"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>DataFormatException</code> обозначает неверное содержимое записи. <code>IOException</code> сообщает о неудачной операции ввода-вывода. Тип позволяет вызывающему коду различить эти причины без разбора текста сообщения.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-18" class="slide level2">
+<h2>Сохранение причины</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb17-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">parseAt</span><span class="op">(</span><span class="bu">String</span> text<span class="op">,</span> <span class="dt">long</span> number<span class="op">)</span></span>
+<span id="cb17-2"><a aria-label="2"></a>        <span class="kw">throws</span> <span class="bu">DataFormatException</span> <span class="op">{</span></span>
+<span id="cb17-3"><a aria-label="3"></a>    <span class="cf">try</span> <span class="op">{</span> <span class="cf">return</span> <span class="fu">parseScore</span><span class="op">(</span>text<span class="op">);</span> <span class="op">}</span></span>
+<span id="cb17-4"><a aria-label="4"></a>    <span class="cf">catch</span> <span class="op">(</span><span class="bu">IllegalArgumentException</span> ex<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-5"><a aria-label="5"></a>        <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">DataFormatException</span><span class="op">(</span><span class="st">"строка "</span> <span class="op">+</span> number<span class="op">,</span> ex<span class="op">);</span></span>
+<span id="cb17-6"><a aria-label="6"></a>    <span class="op">}</span></span>
+<span id="cb17-7"><a aria-label="7"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Для <code>parseAt("ninety", 3)</code> внешний отказ — <code>DataFormatException</code>. Его <code>getMessage()</code> возвращает <code>строка 3</code>, а <code>getCause()</code> — исходный <code>NumberFormatException</code>. Обёртка добавила контекст и сохранила причину.</p>
+<aside class="notes">
+<p>Попросить указать объект, доступный через <code>getCause()</code>. Затем заменить вход на <code>"120"</code>: внешний тип и номер сохранятся, изменится тип причины.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-multi-catch" class="slide level2">
+<h2>Многовариантный обработчик</h2>
+<p><code>DataFormatException</code> — собственный подкласс <code>Exception</code> для ошибки содержимого. Загрузчик объявляет отдельно <code>IOException</code> и этот тип. При одинаковой реакции допустима форма:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb18-1"><a aria-label="1"></a><span class="cf">catch</span> <span class="op">(</span>java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span> <span class="op">|</span> <span class="bu">DataFormatException</span> failure<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb18-2"><a aria-label="2"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">err</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>failure<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb18-3"><a aria-label="3"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Типы в перечне <code>catch</code> не могут быть подтипами друг друга. <code>NumberFormatException | IllegalArgumentException</code> отвергается компилятором. Параметру многовариантного обработчика нельзя присвоить другую ссылку.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-override" class="slide level2">
+<h2>Исключения переопределённого метода</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb19-1"><a aria-label="1"></a><span class="kw">interface</span> TextSource <span class="op">{</span></span>
+<span id="cb19-2"><a aria-label="2"></a>    <span class="bu">String</span> <span class="fu">read</span><span class="op">()</span> <span class="kw">throws</span> java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span><span class="op">;</span></span>
+<span id="cb19-3"><a aria-label="3"></a><span class="op">}</span></span>
+<span id="cb19-4"><a aria-label="4"></a><span class="dt">final</span> <span class="kw">class</span> ConstantSource <span class="kw">implements</span> TextSource <span class="op">{</span></span>
+<span id="cb19-5"><a aria-label="5"></a>    <span class="at">@Override</span> <span class="kw">public</span> <span class="bu">String</span> <span class="fu">read</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> <span class="st">"90"</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb19-6"><a aria-label="6"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Реализация может убрать <code>IOException</code> или сузить его до подкласса. Добавить более широкий <code>Exception</code> нельзя: клиент <code>TextSource</code> обрабатывает лишь отказ, разрешённый интерфейсом.</p>
+<p><code>new ConstantSource().read()</code> обходится без обработки. Вызов через <code>TextSource source</code> требует учитывать <code>IOException</code>, даже когда ссылка ведёт к <code>ConstantSource</code> <span class="citation" data-cites="bib-exceptions-jls-declarations"><a href="#/источники" role="doc-biblioref" onclick="">[11]</a></span>.</p>
+</section>
+<section id="цена-проверяемого-договора" class="slide level2">
+<h2>Цена проверяемого договора</h2>
+<p><code>TextSource</code> допускает файловый источник; объявление <code>throws</code> требует от клиентов учесть <code>IOException</code>. Это обязательство действует и для клиента, который сейчас получил <code>ConstantSource</code>.</p>
+<p>Если убрать отказ из интерфейса, новая файловая реализация потребует выбрать другое представление ошибки или изменить договор клиентов. Компилятор проверяет наличие обработки или объявления передачи; полезное восстановление зависит от возможностей приложения. <span class="citation" data-cites="bib-concept-bloch-checked"><a href="#/источники" role="doc-biblioref" onclick="">[5]</a></span></p>
+<aside class="notes">
+<p>Рассмотреть два клиента: один может попросить другой файл, второй лишь передаёт данные следующему слою. В первом обязанность обработать отказ помогает найти место решения, во втором объявления могут только передавать его по цепочке. Назвать альтернативы: непроверяемое исключение с описанным договором или отдельный результат с диагностикой. Выбор меняет обязанности вызывающего кода. Уже знакомый Function даёт пример интерфейса, чья операция не допускает проверяемого исключения в объявлении.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-20" class="slide level2">
+<h2>Граница перехвата</h2>
+<p><code>catch (Exception ex)</code> охватывает также <code>RuntimeException</code>. Если общий обработчик вернёт пустой каталог, он скроет и отказ чтения, и возможный дефект алгоритма.</p>
+<p><code>catch (Throwable ex)</code> дополнительно охватывает <code>Error</code>, включая <code>OutOfMemoryError</code>. Прежде чем продолжить работу, нужно установить, какие части программы ещё работоспособны.</p>
+<p>Перехват располагают там, где можно выбрать допустимое действие. Промежуточный метод может передать отказ дальше и добавить свой контекст.</p>
+</section></section>
+<section>
+<section id="sec-j25-lecture-exceptions-resources-group-3" class="title-slide slide level1 center">
+<h1>Завершение блока и закрытие ресурса</h1>
+
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-22" class="slide level2">
+<h2>Порядок return и finally</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb20-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">withFinally</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb20-2"><a aria-label="2"></a>    <span class="cf">try</span> <span class="op">{</span> <span class="cf">return</span> <span class="dv">10</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb20-3"><a aria-label="3"></a>    <span class="cf">finally</span> <span class="op">{</span> <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"выход"</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb20-4"><a aria-label="4"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>При <code>System.out.println(withFinally())</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb21-1"><a aria-label="1"></a>выход</span>
+<span id="cb21-2"><a aria-label="2"></a>10</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Сначала вычислено значение <code>10</code>, затем выполнен <code>finally</code>. Его нормальное завершение сохраняет выбранный возврат; клиент печатает число после завершения вызова.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-23" class="slide level2">
+<h2>Замещение завершения в finally</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb22-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">replacedReturn</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb22-2"><a aria-label="2"></a>    <span class="cf">try</span> <span class="op">{</span> <span class="cf">return</span> <span class="dv">10</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb22-3"><a aria-label="3"></a>    <span class="cf">finally</span> <span class="op">{</span> <span class="cf">return</span> <span class="dv">20</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb22-4"><a aria-label="4"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>replacedReturn()</code> возвращает <code>20</code>: новый <code>return</code> вытеснил прежний. Если тело <code>try</code> вместо возврата выбросит исключение, тот же <code>finally</code> всё равно вернёт <code>20</code> и скроет этот отказ.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb23-1"><a aria-label="1"></a><span class="cf">try</span> <span class="op">{</span> <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalStateException</span><span class="op">(</span><span class="st">"body"</span><span class="op">);</span> <span class="op">}</span></span>
+<span id="cb23-2"><a aria-label="2"></a><span class="cf">finally</span> <span class="op">{</span> <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"cleanup"</span><span class="op">);</span> <span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Наружу передаётся <code>cleanup</code>. Исключение <code>body</code> автоматически не сохраняется в <code>cause</code> или <code>suppressed</code>. Резкое завершение <code>finally</code> заменяет прежнюю причину выхода из блока.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-24" class="slide level2">
+<h2>Нормальное и резкое завершение</h2>
+<p>Блок завершается нормально, когда выполнение доходит до его закрывающей скобки. <code>return</code>, <code>throw</code>, <code>break</code> и <code>continue</code> прерывают обычную последовательность; для охваченных блоков это резкое завершение.</p>
+<p>При выходе из <code>try</code> или его обработчика выполняется <code>finally</code>. Если он завершается нормально, исходная причина перехода сохраняется.</p>
+<p>Бесконечный цикл не выходит из блока. Остановка процесса может прекратить исполнение до очистки <span class="citation" data-cites="bib-exceptions-jls-completion"><a href="#/источники" role="doc-biblioref" onclick="">[12]</a></span>.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-25" class="slide level2">
+<h2>Память и внешний ресурс</h2>
+<p>Объект файлового потока хранится в памяти JVM. Через него программа использует файловый дескриптор операционной системы.</p>
+<p>GC освобождает память недостижимых объектов. Завершение области локальной переменной не вызывает <code>close</code>; незакрытые файлы могут исчерпать внешние ресурсы задолго до памяти JVM.</p>
+<p>Владелец ресурса определяет момент закрытия. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-resources-memory" data-qrc-style="default" class="qrc-link" href="../theory/chapters/resources.html#sec-j25-theory-resources-memory">Объект в памяти и внешний ресурс</a></p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-lifetimes" class="slide level2">
+<h2>Время жизни ссылки, ресурса и данных</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb24-1"><a aria-label="1"></a>область reader:   [открытие → чтение → close]</span>
+<span id="cb24-2"><a aria-label="2"></a>файловый ресурс:  [открыт-----------→ закрыт]</span>
+<span id="cb24-3"><a aria-label="3"></a>готовый список:               [создан → используется дальше...]</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Ссылка может оставаться видимой после <code>close</code>, но чтение через закрытый файловый поток завершится <code>IOException</code>. Список уже прочитанных строк остаётся доступным независимо от файла.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-26" class="slide level2">
+<h2>Пропущенное закрытие</h2>
+<p><code>path</code> имеет тип <code>java.nio.file.Path</code> и указывает на UTF-8-файл. Файловые методы принадлежат <code>java.nio.file.Files</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb25-1"><a aria-label="1"></a><span class="dt">var</span> reader <span class="op">=</span> Files<span class="op">.</span><span class="fu">newBufferedReader</span><span class="op">(</span>path<span class="op">,</span> java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">charset</span><span class="op">.</span><span class="fu">StandardCharsets</span><span class="op">.</span><span class="fu">UTF_8</span><span class="op">);</span></span>
+<span id="cb25-2"><a aria-label="2"></a><span class="bu">String</span> line <span class="op">=</span> reader<span class="op">.</span><span class="fu">readLine</span><span class="op">();</span></span>
+<span id="cb25-3"><a aria-label="3"></a>reader<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>При исключении из <code>readLine</code> строка <code>reader.close()</code> пропускается. Если поместить закрытие в <code>finally</code>, оно выполняется при выходе; одновременный отказ чтения и закрытия передаст наружу ошибку <code>close</code>.</p>
+<aside class="notes">
+<p>Попросить проследить успешный путь, затем остановить его на <code>readLine</code>. Сопоставить новый отказ в <code>finally</code> с ранее разобранным <code>cleanup</code>.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-27" class="slide level2">
+<h2>Интерфейс AutoCloseable</h2>
+<p><code>java.lang.AutoCloseable</code> объявляет:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb26-1"><a aria-label="1"></a><span class="dt">void</span> <span class="fu">close</span><span class="op">()</span> <span class="kw">throws</span> <span class="bu">Exception</span><span class="op">;</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Try с ресурсами вызывает <code>close</code> для успешно инициализированных ресурсов, отличных от <code>null</code>, при выходе. Реализация может сузить или убрать проверяемые исключения.</p>
+<p><code>java.io.Closeable</code> расширяет этот интерфейс, объявляет <code>IOException</code> и требует отсутствия эффекта при закрытии уже закрытого потока. <code>AutoCloseable</code> допускает эффект повторного закрытия <span class="citation" data-cites="bib-data-autocloseable-api bib-exceptions-closeable-api"><a href="#/источники" role="doc-biblioref" onclick="">[7]</a>, <a href="#/источники" role="doc-biblioref" onclick="">[8]</a></span>.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-28" class="slide level2">
+<h2>Граница try с ресурсами</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb27-1"><a aria-label="1"></a><span class="dt">static</span> <span class="bu">String</span> <span class="fu">firstLine</span><span class="op">(</span>java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">file</span><span class="op">.</span><span class="fu">Path</span> path<span class="op">)</span> <span class="kw">throws</span> java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span> <span class="op">{</span></span>
+<span id="cb27-2"><a aria-label="2"></a>    <span class="cf">try</span> <span class="op">(</span><span class="dt">var</span> reader <span class="op">=</span> java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">file</span><span class="op">.</span><span class="fu">Files</span><span class="op">.</span><span class="fu">newBufferedReader</span><span class="op">(</span>path<span class="op">,</span></span>
+<span id="cb27-3"><a aria-label="3"></a>            java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">charset</span><span class="op">.</span><span class="fu">StandardCharsets</span><span class="op">.</span><span class="fu">UTF_8</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb27-4"><a aria-label="4"></a>        <span class="cf">return</span> reader<span class="op">.</span><span class="fu">readLine</span><span class="op">();</span></span>
+<span id="cb27-5"><a aria-label="5"></a>    <span class="op">}</span></span>
+<span id="cb27-6"><a aria-label="6"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Для UTF-8-файла с первой строкой <code>first</code> метод возвращает <code>"first"</code> после закрытия. Для пустого файла результат <code>readLine</code> — <code>null</code>; закрытие также выполняется.</p>
+<p>Если <code>close</code> выбросит исключение, подготовленная строка не возвращается. <code>catch</code> этой конструкции охватывает открытие, тело и закрытие.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-29" class="slide level2">
+<h2>Порядок инициализации и закрытия</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb28-1"><a aria-label="1"></a><span class="dt">final</span> <span class="kw">class</span> Trace <span class="kw">implements</span> AutoCloseable <span class="op">{</span></span>
+<span id="cb28-2"><a aria-label="2"></a>    <span class="dt">final</span> <span class="bu">String</span> name<span class="op">;</span></span>
+<span id="cb28-3"><a aria-label="3"></a>    <span class="fu">Trace</span><span class="op">(</span><span class="bu">String</span> name<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb28-4"><a aria-label="4"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">name</span> <span class="op">=</span> name<span class="op">;</span></span>
+<span id="cb28-5"><a aria-label="5"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"open "</span> <span class="op">+</span> name<span class="op">);</span></span>
+<span id="cb28-6"><a aria-label="6"></a>    <span class="op">}</span></span>
+<span id="cb28-7"><a aria-label="7"></a>    <span class="at">@Override</span> <span class="kw">public</span> <span class="dt">void</span> <span class="fu">close</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb28-8"><a aria-label="8"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"close "</span> <span class="op">+</span> name<span class="op">);</span></span>
+<span id="cb28-9"><a aria-label="9"></a>    <span class="op">}</span></span>
+<span id="cb28-10"><a aria-label="10"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Конструктор отмечает успешное открытие, <code>close</code> — вызов закрытия. Этот ресурс позволяет наблюдать порядок без обращения к диску.</p>
+<aside class="notes">
+<p>Перед следующим экраном задать порядок ресурсов <code>A</code>, затем <code>B</code> и тело, печатающее <code>body</code>. Попросить прогноз всех событий.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-31" class="slide level2">
+<h2>Трасса двух ресурсов</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb29-1"><a aria-label="1"></a><span class="cf">try</span> <span class="op">(</span><span class="dt">var</span> a <span class="op">=</span> <span class="kw">new</span> <span class="fu">Trace</span><span class="op">(</span><span class="st">"A"</span><span class="op">);</span> <span class="dt">var</span> b <span class="op">=</span> <span class="kw">new</span> <span class="fu">Trace</span><span class="op">(</span><span class="st">"B"</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb29-2"><a aria-label="2"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"body"</span><span class="op">);</span></span>
+<span id="cb29-3"><a aria-label="3"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb30-1"><a aria-label="1"></a>open A</span>
+<span id="cb30-2"><a aria-label="2"></a>open B</span>
+<span id="cb30-3"><a aria-label="3"></a>body</span>
+<span id="cb30-4"><a aria-label="4"></a>close B</span>
+<span id="cb30-5"><a aria-label="5"></a>close A</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Инициализаторы вычисляются слева направо. Закрытие идёт в обратном порядке; это позволяет завершить зависимый ресурс до ресурса, на который он опирается.</p>
+</div>
+<aside class="notes">
+<p>До раскрытия сопоставить порядок объявлений с прогнозом. После раскрытия попросить указать первую и последнюю выполненную операцию.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-30" class="slide level2">
+<h2>Отказ инициализации</h2>
+<p>Ресурс <code>A</code> успешно инициализирован. При создании следующего ресурса <code>B</code> конструктор выбрасывает <code>IOException("open B")</code> до возврата ссылки.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb31-1"><a aria-label="1"></a>A успешно инициализирован</span>
+<span id="cb31-2"><a aria-label="2"></a>инициализация B прервана</span>
+<span id="cb31-3"><a aria-label="3"></a>A получает вызов close</span>
+<span id="cb31-4"><a aria-label="4"></a>обработчик получает IOException("open B")</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Тело <code>try</code> и <code>B.close</code> не выполняются. Если <code>A.close</code> тоже отказал, его исключение добавляется к <code>open B</code> как подавленное.</p>
+<p>Конструкция закрывает успешно инициализированные ресурсы. Объект, открытый внутри неудавшегося конструктора <code>B</code>, требует очистки самим конструктором или фабрикой.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-file-client" class="slide level2">
+<h2>Копирование файла</h2>
+<p>В каталоге опыта <code>input.txt</code> содержит UTF-8-текст <code>first\n\nlast\n</code>, где <code>\n</code> — перевод строки. <code>copy.txt</code> первоначально отсутствует. Переменные путей имеют тип <code>java.nio.file.Path</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb32-1"><a aria-label="1"></a><span class="dt">var</span> source <span class="op">=</span> java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">file</span><span class="op">.</span><span class="fu">Path</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="st">"input.txt"</span><span class="op">);</span></span>
+<span id="cb32-2"><a aria-label="2"></a><span class="dt">var</span> target <span class="op">=</span> java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">file</span><span class="op">.</span><span class="fu">Path</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="st">"copy.txt"</span><span class="op">);</span></span>
+<span id="cb32-3"><a aria-label="3"></a><span class="cf">try</span> <span class="op">(</span><span class="dt">var</span> input <span class="op">=</span> java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">file</span><span class="op">.</span><span class="fu">Files</span><span class="op">.</span><span class="fu">newInputStream</span><span class="op">(</span>source<span class="op">);</span></span>
+<span id="cb32-4"><a aria-label="4"></a>     <span class="dt">var</span> output <span class="op">=</span> java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">file</span><span class="op">.</span><span class="fu">Files</span><span class="op">.</span><span class="fu">newOutputStream</span><span class="op">(</span>target<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb32-5"><a aria-label="5"></a>    input<span class="op">.</span><span class="fu">transferTo</span><span class="op">(</span>output<span class="op">);</span></span>
+<span id="cb32-6"><a aria-label="6"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>При успехе <code>copy.txt</code> содержит те же байты. Закрывается сначала <code>output</code>, затем <code>input</code>. Если открытие <code>output</code> отказало, <code>input</code> получает <code>close</code>. Существующий целевой файл при открытии был бы усечён: ошибка копирования может оставить записанный префикс.</p>
+</section></section>
+<section>
+<section id="sec-j25-lecture-exceptions-resources-group-4" class="title-slide slide level1 center">
+<h1>Ошибки очистки и владение</h1>
+
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-32" class="slide level2">
+<h2>Первичное и подавленное исключения</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb33-1"><a aria-label="1"></a>тело:  IllegalStateException("body")</span>
+<span id="cb33-2"><a aria-label="2"></a>close: IOException("close")</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Try с ресурсами передаёт наружу исключение тела. Ошибка закрытия добавляется к нему как <em>подавленное исключение</em>; она доступна через <code>getSuppressed()</code>.</p>
+<p>Если тело успешно, основной становится первая ошибка закрытия. Остальные ресурсы тоже получают <code>close</code>; их ошибки добавляются к первичной <span class="citation" data-cites="bib-data-jls-resources"><a href="#/источники" role="doc-biblioref" onclick="">[10]</a></span>.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-33" class="slide level2">
+<h2>Наблюдение ошибки закрытия</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb34-1"><a aria-label="1"></a><span class="kw">class</span> Failing <span class="kw">implements</span> AutoCloseable <span class="op">{</span></span>
+<span id="cb34-2"><a aria-label="2"></a>    <span class="at">@Override</span> <span class="kw">public</span> <span class="dt">void</span> <span class="fu">close</span><span class="op">()</span> <span class="kw">throws</span> java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span> <span class="op">{</span></span>
+<span id="cb34-3"><a aria-label="3"></a>        <span class="cf">throw</span> <span class="kw">new</span> java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span><span class="op">(</span><span class="st">"close"</span><span class="op">);</span></span>
+<span id="cb34-4"><a aria-label="4"></a>    <span class="op">}</span></span>
+<span id="cb34-5"><a aria-label="5"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Клиент:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb35-1"><a aria-label="1"></a><span class="cf">try</span> <span class="op">(</span><span class="dt">var</span> resource <span class="op">=</span> <span class="kw">new</span> <span class="fu">Failing</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb35-2"><a aria-label="2"></a>    <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalStateException</span><span class="op">(</span><span class="st">"body"</span><span class="op">);</span></span>
+<span id="cb35-3"><a aria-label="3"></a><span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">Exception</span> ex<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb35-4"><a aria-label="4"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>ex<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb35-5"><a aria-label="5"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>ex<span class="op">.</span><span class="fu">getSuppressed</span><span class="op">()[</span><span class="dv">0</span><span class="op">].</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb35-6"><a aria-label="6"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Вывод — <code>body</code>, затем <code>close</code>. Обработчик начинает работу после очистки.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-34" class="slide level2">
+<h2>Причина отказа и ошибка очистки</h2>
+<p><code>Resource.close</code> печатает <code>close</code> и выбрасывает <code>IOException("cleanup")</code>. Тело передаёт другую ошибку с причиной:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb36-1"><a aria-label="1"></a><span class="cf">try</span> <span class="op">(</span><span class="dt">var</span> resource <span class="op">=</span> <span class="kw">new</span> <span class="bu">Resource</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb36-2"><a aria-label="2"></a>    <span class="cf">throw</span> <span class="kw">new</span> java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span><span class="op">(</span><span class="st">"read"</span><span class="op">,</span></span>
+<span id="cb36-3"><a aria-label="3"></a>        <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"bad bytes"</span><span class="op">));</span></span>
+<span id="cb36-4"><a aria-label="4"></a><span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span>java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span> failure<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb36-5"><a aria-label="5"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"primary: "</span> <span class="op">+</span> failure<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb36-6"><a aria-label="6"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"cause: "</span> <span class="op">+</span> failure<span class="op">.</span><span class="fu">getCause</span><span class="op">().</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb36-7"><a aria-label="7"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"suppressed: "</span></span>
+<span id="cb36-8"><a aria-label="8"></a>        <span class="op">+</span> failure<span class="op">.</span><span class="fu">getSuppressed</span><span class="op">()[</span><span class="dv">0</span><span class="op">].</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb36-9"><a aria-label="9"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Как связаны три объекта исключений и в каком порядке появятся сообщения?</p>
+<aside class="notes">
+<p>Сначала записать прогноз. Отделить создание причины в теле от нового отказа при <code>close</code>; затем перейти к выводу и схеме связей.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-34-part-1" class="slide level2 continuation">
+<h2>Причина отказа и ошибка очистки</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb37-1"><a aria-label="1"></a>close</span>
+<span id="cb37-2"><a aria-label="2"></a>primary: read</span>
+<span id="cb37-3"><a aria-label="3"></a>cause: bad bytes</span>
+<span id="cb37-4"><a aria-label="4"></a>suppressed: cleanup</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb38-1"><a aria-label="1"></a>IOException("read")</span>
+<span id="cb38-2"><a aria-label="2"></a>├─ cause ──────&gt; IllegalArgumentException("bad bytes")</span>
+<span id="cb38-3"><a aria-label="3"></a>└─ suppressed → IOException("cleanup")</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>cause</code> был задан при создании ошибки <code>read</code>. Подавленная ошибка добавлена при автоматическом закрытии: <code>close</code> завершился дополнительным отказом. Затем конструкция передала <code>read</code> обработчику.</p>
+<aside class="notes">
+<p>Сопоставить прогноз с выводом. При мысленной замене тела на успешное попросить назвать основное исключение: <code>cleanup</code>; его причина не задана.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-35" class="slide level2">
+<h2>Временное пользование ресурсом</h2>
+<p>Метод получает <code>java.io.BufferedReader</code>, который закрывает вызывающая сторона:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb39-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">long</span> <span class="fu">countLines</span><span class="op">(</span>java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">BufferedReader</span> reader<span class="op">)</span> <span class="kw">throws</span> java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span> <span class="op">{</span></span>
+<span id="cb39-2"><a aria-label="2"></a>    <span class="dt">long</span> count <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb39-3"><a aria-label="3"></a>    <span class="cf">while</span> <span class="op">(</span>reader<span class="op">.</span><span class="fu">readLine</span><span class="op">()</span> <span class="op">!=</span> <span class="kw">null</span><span class="op">)</span> count<span class="op">++;</span></span>
+<span id="cb39-4"><a aria-label="4"></a>    <span class="cf">return</span> count<span class="op">;</span></span>
+<span id="cb39-5"><a aria-label="5"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Для строк <code>first</code>, пустой строки и <code>last</code> результат равен <code>3</code>. Ресурс остаётся открытым, а его позиция находится в конце входа. Следующий <code>readLine</code> вернёт <code>null</code>.</p>
+<p>Передача ссылки разрешила чтение; обязанность закрытия осталась у владельца.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-36" class="slide level2">
+<h2>Закрытие обёртки общего потока</h2>
+<p>Закрытие <code>Scanner</code>, читающего <code>System.in</code>, закрывает его нижележащий вход. Остальное приложение может потерять доступ к общему ресурсу.</p>
+<p>Владелец определяет момент закрытия общего потока. Вспомогательный метод только читает его во время вызова и оставляет открытым для других частей приложения.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-38" class="slide level2">
+<h2>Готовые данные и ленивый источник</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb40-1"><a aria-label="1"></a><span class="dt">static</span> java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">List</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> <span class="fu">nonblankLines</span><span class="op">(</span>java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">file</span><span class="op">.</span><span class="fu">Path</span> path<span class="op">)</span></span>
+<span id="cb40-2"><a aria-label="2"></a>        <span class="kw">throws</span> java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span> <span class="op">{</span></span>
+<span id="cb40-3"><a aria-label="3"></a>    <span class="cf">try</span> <span class="op">(</span><span class="dt">var</span> lines <span class="op">=</span> java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">file</span><span class="op">.</span><span class="fu">Files</span><span class="op">.</span><span class="fu">lines</span><span class="op">(</span>path<span class="op">,</span></span>
+<span id="cb40-4"><a aria-label="4"></a>            java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">charset</span><span class="op">.</span><span class="fu">StandardCharsets</span><span class="op">.</span><span class="fu">UTF_8</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb40-5"><a aria-label="5"></a>        <span class="cf">return</span> lines<span class="op">.</span><span class="fu">filter</span><span class="op">(</span>s <span class="op">-&gt;</span> <span class="op">!</span>s<span class="op">.</span><span class="fu">isBlank</span><span class="op">()).</span><span class="fu">toList</span><span class="op">();</span></span>
+<span id="cb40-6"><a aria-label="6"></a>    <span class="op">}</span></span>
+<span id="cb40-7"><a aria-label="7"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Для <code>input.txt</code> с <code>first</code>, пустой строкой и <code>last</code> возвращается <code>[first, last]</code>. <code>toList</code> читает источник внутри блока; список доступен после закрытия.</p>
+<p>Возврат одного <code>lines.filter(...)</code> передал бы ленивый конвейер с уже закрытым источником. Терминальная операция сама <code>close</code> не вызывает.</p>
+</section></section>
+<section>
+<section id="sec-j25-lecture-exceptions-resources-group-5" class="title-slide slide level1 center">
+<h1>Состояние и реакция приложения</h1>
+
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-39" class="slide level2">
+<h2>Частичное изменение состояния</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb41-1"><a aria-label="1"></a><span class="dt">var</span> scores <span class="op">=</span> <span class="kw">new</span> java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">ArrayList</span><span class="op">&lt;</span><span class="bu">Integer</span><span class="op">&gt;();</span></span>
+<span id="cb41-2"><a aria-label="2"></a><span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb41-3"><a aria-label="3"></a>    <span class="cf">for</span> <span class="op">(</span><span class="bu">String</span> text <span class="op">:</span> java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="st">"90"</span><span class="op">,</span> <span class="st">"80"</span><span class="op">,</span> <span class="st">"120"</span><span class="op">))</span></span>
+<span id="cb41-4"><a aria-label="4"></a>        scores<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="fu">parseScore</span><span class="op">(</span>text<span class="op">));</span></span>
+<span id="cb41-5"><a aria-label="5"></a><span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IllegalArgumentException</span> ex<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb41-6"><a aria-label="6"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>scores<span class="op">);</span></span>
+<span id="cb41-7"><a aria-label="7"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<p>Вывод — <code>[90, 80]</code>. Первые два вызова <code>add</code> завершились. Третье преобразование прервалось до добавления; раскрутка стека не отменяет уже выполненные записи.</p>
+</div>
+<aside class="notes">
+<p>До раскрытия попросить указать аргумент каждого <code>add</code>. После ответа обсудить требование «получить все баллы или сохранить старый список».</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-40" class="slide level2">
+<h2>Подготовка результата до публикации</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb42-1"><a aria-label="1"></a>старый каталог доступен вызывающей стороне</span>
+<span id="cb42-2"><a aria-label="2"></a></span>
+<span id="cb42-3"><a aria-label="3"></a>чтение → новый локальный список → все проверки → закрытие → возврат</span>
+<span id="cb42-4"><a aria-label="4"></a>                   ↘ отказ           ↘ отказ        ↘ отказ</span>
+<span id="cb42-5"><a aria-label="5"></a>                         новый список не опубликован</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Старый каталог сохранится, если чтение и проверка изменяют только новый список и не публикуют его до завершения. Запись в общий объект или файл создаёт внешний эффект; сохранение прежнего состояния требует отдельного решения <span class="citation" data-cites="bib-exceptions-bloch-state"><a href="#/источники" role="doc-biblioref" onclick="">[6]</a></span>.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-constructor" class="slide level2">
+<h2>Отказ создания объекта</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb43-1"><a aria-label="1"></a><span class="dt">final</span> <span class="kw">class</span> Limits <span class="op">{</span></span>
+<span id="cb43-2"><a aria-label="2"></a>    <span class="dt">final</span> <span class="dt">int</span> maximum<span class="op">;</span></span>
+<span id="cb43-3"><a aria-label="3"></a>    <span class="fu">Limits</span><span class="op">(</span><span class="dt">int</span> maximum<span class="op">,</span> java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">List</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> events<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb43-4"><a aria-label="4"></a>        events<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="st">"начало создания"</span><span class="op">);</span></span>
+<span id="cb43-5"><a aria-label="5"></a>        <span class="cf">if</span> <span class="op">(</span>maximum <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"maximum &lt; 0"</span><span class="op">);</span></span>
+<span id="cb43-6"><a aria-label="6"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">maximum</span> <span class="op">=</span> maximum<span class="op">;</span></span>
+<span id="cb43-7"><a aria-label="7"></a>    <span class="op">}</span></span>
+<span id="cb43-8"><a aria-label="8"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>До вызова: пустой <code>events</code>, <code>Limits saved = null</code>. После неудачного <code>saved = new Limits(-1, events)</code> ссылка <code>saved</code> остаётся <code>null</code>; журнал содержит <code>"начало создания"</code>.</p>
+<p><code>new</code> не вернул ссылку. Запись во внешний список уже состоялась. Проверка аргумента до <code>events.add</code> оставляет журнал неизменным при этом отказе.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-41" class="slide level2">
+<h2>Пустой результат и неудачная загрузка</h2>
+<p>Предположим, метод чтения использует:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb44-1"><a aria-label="1"></a><span class="cf">catch</span> <span class="op">(</span>java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span> ex<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">();</span> <span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Теперь корректный пустой файл и недоступный файл дают один результат. Клиент не сможет отличить «записей нет» от «данные не получены».</p>
+<p>Для загрузки обязательного каталога отказ передают исключением или отдельным вариантом результата. Пустая коллекция остаётся успешным результатом чтения пустого источника.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-42" class="slide level2">
+<h2>Диагностический путь вызовов</h2>
+<p>Схема кадров трассировки для преобразования строки:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb45-1"><a aria-label="1"></a>NumberFormatException</span>
+<span id="cb45-2"><a aria-label="2"></a>  Integer.parseInt</span>
+<span id="cb45-3"><a aria-label="3"></a>  parseScore</span>
+<span id="cb45-4"><a aria-label="4"></a>  parseAt</span>
+<span id="cb45-5"><a aria-label="5"></a>  вызывающий метод загрузки</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Трассировка указывает места в программе. Сообщение <code>строка 3</code> добавляет позицию во входных данных; <code>cause</code> сохраняет нижележащую ошибку.</p>
+<p><code>printStackTrace()</code> обычно выводит также цепочку причин и подавленные ошибки. Один <code>getMessage()</code> этих связей не содержит.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-retry" class="slide level2">
+<h2>Условия повторной попытки</h2>
+<p><code>parseScore("ninety")</code> при повторе с тем же текстом снова откажет. Интерактивное приложение может запросить новый ввод. Загрузчик обязательного каталога может завершить запуск с сообщением.</p>
+<p>Пропуск строки допустим, если результатом операции служат принятые записи и перечень отклонённых. Такой результат явно сообщает о неполной загрузке. Временный внешний отказ может допускать ограниченное число повторов.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-43" class="slide level2">
+<h2>Обработка на границе приложения</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Отказ</th>
+<th>Сведения для реакции</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Неверные аргументы</td>
+<td>Допустимая форма команды</td>
+</tr>
+<tr class="even">
+<td>Ошибка данных</td>
+<td>Номер строки и предметная причина</td>
+</tr>
+<tr class="odd">
+<td>Ошибка чтения</td>
+<td>Путь файла и причина отказа</td>
+</tr>
+</tbody>
+</table>
+<p>Приложение выбирает внешний результат команды. Загрузчик сохраняет диагностические сведения и завершает работу с принадлежащим ему ресурсом.</p>
+<p>Приложение поставок продолжает обработку после неверных строк и публикует отчёт после полного чтения и закрытия: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-application" data-qrc-style="default" class="qrc-link" href="../theory/chapters/application.html#sec-j25-theory-application"><span>Глава 24</span></a>.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-exit" class="slide level2">
+<h2>Результат операции с ресурсом</h2>
+<p>Загрузчик прочитал две записи в локальный список. На третьей получил <code>DataFormatException</code> с номером строки; <code>close</code> выбросил <code>IOException</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb46-1"><a aria-label="1"></a>внешний результат: DataFormatException</span>
+<span id="cb46-2"><a aria-label="2"></a>подавленная ошибка: IOException от close</span>
+<span id="cb46-3"><a aria-label="3"></a>локальный список: не возвращён</span>
+<span id="cb46-4"><a aria-label="4"></a>прежний каталог: сохранён, если загрузчик его не менял</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Обработчик может сообщить номер неверной строки и сохранить обе ошибки для диагностики. Повтор чтения имеет смысл после изменения входа или условий доступа.</p>
+<p>Полные запускаемые опыты: <a data-qrc-custom="false" data-qrc-ref="handbook:sec-api-exceptions-examples" data-qrc-style="default" class="qrc-link" href="../handbook/entries/exceptions.html#sec-api-exceptions-examples">Программы опытов</a>.</p>
+<aside class="notes">
+<p>Предложить восстановить порядок: третья запись, закрытие, внешний <code>catch</code>. Сравнить этот исход с прежним опытом, где изменения вносились в общий список. Попросить назвать условие сохранности старого каталога.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section id="sec-j25-lecture-exceptions-resources-additional" class="title-slide slide level1 center">
+<h1>Дополнительные механизмы отказа</h1>
+
+</section>
+
+<section>
+<section id="sec-j25-lecture-exceptions-resources-results" class="title-slide slide level1 center">
+<h1>Типизированный результат</h1>
+
+</section>
+<section id="sec-j25-lecture-exceptions-resources-results-interface" class="slide level2">
+<h2>Интерфейс проверки балла</h2>
+<p>Для строки, отличной от <code>null</code>, без пробелов по краям проверка различает балл 0–100, неверное представление <code>int</code> и число вне диапазона.</p>
+<p>Исключение прерывает обычную последовательность исполнения. Другой интерфейс возвращает значение, которое кодирует успех или причину отказа. Вызывающий код выбирает дальнейшее действие по этому значению.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-results-types" class="slide level2">
+<h2>Варианты типизированного результата</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb47-1"><a aria-label="1"></a><span class="kw">sealed</span> <span class="kw">interface</span> ScoreResult <span class="kw">permits</span> Score<span class="op">,</span> ScoreFailure <span class="op">{}</span></span>
+<span id="cb47-2"><a aria-label="2"></a><span class="kw">record</span> <span class="fu">Score</span><span class="op">(</span><span class="dt">int</span> value<span class="op">)</span> <span class="kw">implements</span> ScoreResult <span class="op">{}</span></span>
+<span id="cb47-3"><a aria-label="3"></a><span class="kw">enum</span> ScoreProblem <span class="op">{</span> NOT_INTEGER<span class="op">,</span> OUT_OF_RANGE <span class="op">}</span></span>
+<span id="cb47-4"><a aria-label="4"></a><span class="kw">record</span> <span class="fu">ScoreFailure</span><span class="op">(</span>ScoreProblem problem<span class="op">)</span> <span class="kw">implements</span> ScoreResult <span class="op">{}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>ScoreResult</code> задаёт два исхода: балл или причину отказа. Вариант <code>ScoreFailure</code> хранит причину, а <code>Score</code> — полученное число.</p>
+<aside class="notes">
+<p>Нарисовать два допустимых варианта и поля каждого. Попросить показать, где хранится число при успехе и где хранится причина при неудаче. Перед разбором адаптера выбрать три входа: <code>"90"</code>, <code>"ninety"</code>, <code>"120"</code>. Затем пройти тело метода и для каждого <code>return</code> указать создаваемый вариант.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-results-adapter" class="slide level2">
+<h2>Возврат предметного исхода</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb48-1"><a aria-label="1"></a><span class="dt">static</span> ScoreResult <span class="fu">parseScoreResult</span><span class="op">(</span><span class="bu">String</span> text<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb48-2"><a aria-label="2"></a>    java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">Objects</span><span class="op">.</span><span class="fu">requireNonNull</span><span class="op">(</span>text<span class="op">);</span></span>
+<span id="cb48-3"><a aria-label="3"></a>    <span class="dt">final</span> <span class="dt">int</span> score<span class="op">;</span></span>
+<span id="cb48-4"><a aria-label="4"></a>    <span class="cf">try</span> <span class="op">{</span> score <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span>text<span class="op">);</span> <span class="op">}</span></span>
+<span id="cb48-5"><a aria-label="5"></a>    <span class="cf">catch</span> <span class="op">(</span><span class="bu">NumberFormatException</span> ex<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb48-6"><a aria-label="6"></a>        <span class="cf">return</span> <span class="kw">new</span> <span class="fu">ScoreFailure</span><span class="op">(</span>ScoreProblem<span class="op">.</span><span class="fu">NOT_INTEGER</span><span class="op">);</span></span>
+<span id="cb48-7"><a aria-label="7"></a>    <span class="op">}</span></span>
+<span id="cb48-8"><a aria-label="8"></a>    <span class="cf">if</span> <span class="op">(</span>score <span class="op">&lt;</span> <span class="dv">0</span> <span class="op">||</span> score <span class="op">&gt;</span> <span class="dv">100</span><span class="op">)</span></span>
+<span id="cb48-9"><a aria-label="9"></a>        <span class="cf">return</span> <span class="kw">new</span> <span class="fu">ScoreFailure</span><span class="op">(</span>ScoreProblem<span class="op">.</span><span class="fu">OUT_OF_RANGE</span><span class="op">);</span></span>
+<span id="cb48-10"><a aria-label="10"></a>    <span class="cf">return</span> <span class="kw">new</span> <span class="fu">Score</span><span class="op">(</span>score<span class="op">);</span></span>
+<span id="cb48-11"><a aria-label="11"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>NumberFormatException</code> преобразуется в <code>ScoreFailure</code>. <code>null</code> нарушает предусловие и по-прежнему приводит к исключению. <code>NOT_INTEGER</code> включает число, которое не представимо в <code>int</code>.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-results-inputs" class="slide level2 continuation">
+<h2>Результаты трёх вызовов</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb49-1"><a aria-label="1"></a>"90"     → Score(90)</span>
+<span id="cb49-2"><a aria-label="2"></a>"120"    → ScoreFailure(OUT_OF_RANGE)</span>
+<span id="cb49-3"><a aria-label="3"></a>"ninety" → ScoreFailure(NOT_INTEGER)</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>После возврата значения с описанием ошибки выполнение продолжается со следующей инструкции. Вызывающий код может отбросить результат; чтобы отреагировать на отказ, ему нужно разобрать полученный вариант. Передача <code>null</code>, нарушающая предусловие, и дефекты реализации не превращены в обычную ошибку данных.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-results-switch" class="slide level2">
+<h2>Полнота разбора вариантов</h2>
+<p>Шаблон типа связывает весь объект. Здесь <strong>шаблон записи</strong> проверяет вариант результата и связывает его компонент: <code>Score(var value)</code> вводит <code>value</code> типа <code>int</code>, а <code>ScoreFailure(var problem)</code> — <code>problem</code> типа <code>ScoreProblem</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb50-1"><a aria-label="1"></a><span class="bu">String</span> message <span class="op">=</span> <span class="cf">switch</span> <span class="op">(</span><span class="fu">parseScoreResult</span><span class="op">(</span><span class="st">"120"</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb50-2"><a aria-label="2"></a>    <span class="cf">case</span> <span class="fu">Score</span><span class="op">(</span><span class="dt">var</span> value<span class="op">)</span> <span class="op">-&gt;</span> <span class="st">"балл: "</span> <span class="op">+</span> value<span class="op">;</span></span>
+<span id="cb50-3"><a aria-label="3"></a>    <span class="cf">case</span> <span class="fu">ScoreFailure</span><span class="op">(</span><span class="dt">var</span> problem<span class="op">)</span> <span class="op">-&gt;</span> <span class="st">"ошибка: "</span> <span class="op">+</span> problem<span class="op">;</span></span>
+<span id="cb50-4"><a aria-label="4"></a><span class="op">};</span></span>
+<span id="cb50-5"><a aria-label="5"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>message<span class="op">);</span> <span class="co">// ошибка: OUT_OF_RANGE</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Выражение разбирает оба разрешённых вида. Дальнейшее действие задаёт каждая ветвь: в этом клиенте результат проверки превращается в сообщение.</p>
+<aside class="notes">
+<p>Прочитать <code>switch</code> вместе с типами двух связанных переменных. Попросить заменить вход на <code>"90"</code> и получить точное сообщение. Затем обсудить действие после сообщения об ошибке: повтор, пропуск и завершение потребуют самостоятельного решения вызывающего кода. Для каждого варианта указать, какой участок клиента задаёт эту реакцию.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-results-state" class="slide level2">
+<h2>Состояние после возвращённой ошибки</h2>
+<p>Если до возврата <code>ScoreFailure</code> уже добавлены две записи в общий список, они остаются там после <code>return</code>, как остаются после <code>throw</code>.</p>
+<p><strong>Способ сообщения об отказе не создаёт откат.</strong> «Объект корректен» и «объект совсем не изменился» — разные требования к состоянию после отказа.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-return-close" class="slide level2">
+<h2>Возврат результата и ошибка закрытия</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb51-1"><a aria-label="1"></a>вычислен Score или ScoreFailure → close → возврат</span>
+<span id="cb51-2"><a aria-label="2"></a>                                      ↘ IOException вместо результата</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong><code>return ScoreFailure</code> выбирает возвращаемое значение и запускает закрытие.</strong> Если <code>close</code> отказал, значение не возвращается; сведения об ошибке данных автоматически не попадают в <code>cause</code> или <code>suppressed</code>.</p>
+<aside class="notes">
+<p>Сравнить возврат <code>90</code> и возврат <code>ScoreFailure</code>: оба запускают <code>close</code> перед возвратом выбранного значения. Если <code>close</code> выбрасывает <code>IOException</code>, значение не возвращается. Попросить объяснить, почему <code>ScoreFailure</code> автоматически не появляется в <code>suppressed</code>. Сопоставить с выброшенным <code>DataFormatException</code> в таблице двух исходов.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-return-close-errors" class="slide level2 continuation">
+<h2>Ошибка как значение и исключение тела</h2>
+<p>Для ресурса, чей <code>close</code> выбрасывает <code>IOException("close")</code>:</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Действие тела</th>
+<th>Основной отказ</th>
+<th>Подавленные ошибки</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>return ScoreFailure</code></td>
+<td><code>IOException("close")</code></td>
+<td>Нет</td>
+</tr>
+<tr class="even">
+<td><code>throw DataFormatException</code></td>
+<td><code>DataFormatException</code></td>
+<td><code>IOException("close")</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Чтобы сохранить ошибку данных, переданную значением, вместе с ошибкой закрытия, метод должен явно объединить сведения о них.</strong> В первом опыте <code>getCause() == null</code>, <code>getSuppressed().length == 0</code>. Полные примеры: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-resources-results" data-qrc-style="default" class="qrc-link" href="../theory/chapters/resources.html#sec-j25-theory-resources-results">Дополнительно: возврат ошибки и завершение работы с ресурсом</a>.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-results-recovery" class="slide level2">
+<h2>Передача отказа и восстановление</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Механизм</th>
+<th>Что происходит с отказом</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Java <code>throw</code></td>
+<td>Поиск подходящего <code>catch</code> по пути вызовов</td>
+</tr>
+<tr class="even">
+<td>Java <code>ScoreFailure</code> / Rust <code>Err</code></td>
+<td>Возврат отдельного варианта</td>
+</tr>
+<tr class="odd">
+<td>Go <code>error</code></td>
+<td>Возврат компонента пары</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Повтор, отказ от загрузки и накопление ошибок — решения приложения.</strong> В Rust <code>panic!</code> запускает отдельный механизм аварийного завершения <span class="citation" data-cites="bib-context-rust-panic"><a href="#/источники" role="doc-biblioref" onclick="">[17]</a></span>.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-rust-result" class="slide level2">
+<h2>Тип Result в Rust</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode numberSource rust number-lines code-with-copy"><code class="sourceCode rust"><span id="cb52-1"><a aria-label="1"></a><span class="kw">fn</span> parse_score(text<span class="op">:</span> <span class="op">&amp;</span><span class="dt">str</span>) <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span><span class="dt">i32</span><span class="op">,</span> ScoreProblem<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb52-2"><a aria-label="2"></a>    <span class="kw">let</span> score <span class="op">=</span> text<span class="op">.</span><span class="pp">parse::</span><span class="op">&lt;</span><span class="dt">i32</span><span class="op">&gt;</span>()</span>
+<span id="cb52-3"><a aria-label="3"></a>        <span class="op">.</span>map_err(<span class="op">|</span>_<span class="op">|</span> <span class="pp">ScoreProblem::</span>NotInteger)<span class="op">?;</span></span>
+<span id="cb52-4"><a aria-label="4"></a>    <span class="cf">if</span> score <span class="op">&lt;</span> <span class="dv">0</span> <span class="op">||</span> score <span class="op">&gt;</span> <span class="dv">100</span> <span class="op">{</span></span>
+<span id="cb52-5"><a aria-label="5"></a>        <span class="cf">return</span> <span class="cn">Err</span>(<span class="pp">ScoreProblem::</span>OutOfRange)<span class="op">;</span></span>
+<span id="cb52-6"><a aria-label="6"></a>    <span class="op">}</span></span>
+<span id="cb52-7"><a aria-label="7"></a>    <span class="cn">Ok</span>(score)</span>
+<span id="cb52-8"><a aria-label="8"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>?</code> извлекает успех либо возвращает ошибку из текущей функции. <code>ScoreProblem</code> — перечисление двух причин <span class="citation" data-cites="bib-context-rust-result"><a href="#/источники" role="doc-biblioref" onclick="">[16]</a></span>.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-go-result" class="slide level2">
+<h2>Значение error в Go</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="sourceCode numberSource go number-lines code-with-copy"><code class="sourceCode go"><span id="cb53-1"><a aria-label="1"></a>score<span class="op">,</span> err <span class="op">:=</span> parseScore<span class="op">(</span><span class="st">"120"</span><span class="op">)</span></span>
+<span id="cb53-2"><a aria-label="2"></a><span class="cf">if</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span></span>
+<span id="cb53-3"><a aria-label="3"></a>    fmt<span class="op">.</span>Println<span class="op">(</span>err<span class="op">)</span></span>
+<span id="cb53-4"><a aria-label="4"></a>    <span class="cf">return</span></span>
+<span id="cb53-5"><a aria-label="5"></a><span class="op">}</span></span>
+<span id="cb53-6"><a aria-label="6"></a>fmt<span class="op">.</span>Println<span class="op">(</span>score<span class="op">)</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Функция возвращает <code>(int, error)</code>. По её соглашению балл пригоден только при <code>err == nil</code>; это проверяет вызывающий код. Тип пары сам не запрещает одновременно значение и ошибку <span class="citation" data-cites="bib-context-go-errors"><a href="#/источники" role="doc-biblioref" onclick="">[13]</a></span>. Полная функция: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-exceptions-language-results" data-qrc-style="default" class="qrc-link" href="../theory/chapters/exceptions.html#sec-j25-theory-exceptions-language-results">Дополнительно: проверка балла в Rust и Go</a>.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-step-12" class="slide level2">
+<h2>Объявление исключений в разных языках</h2>
+<p>Java проверяет обработку объявленных проверяемых исключений при компиляции. Переопределение метода должно сохранить допустимость прежних вызовов.</p>
+<p>В современном C++ <code>noexcept</code> задаёт ограничение распространения исключений: выход исключения из такой функции вызывает <code>std::terminate</code>. Проверять обработку каждого вызова, как для проверяемых исключений Java, <code>noexcept</code> не требует <span class="citation" data-cites="bib-exceptions-cpp-noexcept"><a href="#/источники" role="doc-biblioref" onclick="">[18]</a></span>.</p>
+<p>В Python обычное объявление функции также не содержит проверяемого компилятором списка <code>throws</code>.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-cleanup-models" class="slide level2">
+<h2>Границы освобождения в разных языках</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Средство</th>
+<th>Граница завершающего действия</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Java try с ресурсами</td>
+<td>Выход из ресурсной конструкции</td>
+</tr>
+<tr class="even">
+<td>C++ RAII</td>
+<td>Разрушение управляющего объекта</td>
+</tr>
+<tr class="odd">
+<td>Python <code>with</code></td>
+<td>Выход после успешного <code>__enter__</code></td>
+</tr>
+<tr class="even">
+<td>Go <code>defer</code></td>
+<td>Выход из окружающей функции</td>
+</tr>
+</tbody>
+</table>
+<p>В Go краткий <code>defer file.Close()</code> отбрасывает возвращённую ошибку закрытия. Java try с ресурсами сохраняет дополнительный отказ закрытия через <code>suppressed</code> <span class="citation" data-cites="bib-context-cpp-raii bib-context-go-defer bib-context-python-with"><a href="#/источники" role="doc-biblioref" onclick="">[3]</a>, <a href="#/источники" role="doc-biblioref" onclick="">[14]</a>, <a href="#/источники" role="doc-biblioref" onclick="">[15]</a></span>.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-constructor-throws" class="slide level2">
+<h2>Исключение конструктора суперкласса</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb54-1"><a aria-label="1"></a><span class="kw">class</span> TextSnapshot <span class="op">{</span></span>
+<span id="cb54-2"><a aria-label="2"></a>    <span class="fu">TextSnapshot</span><span class="op">(</span>java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">file</span><span class="op">.</span><span class="fu">Path</span> path<span class="op">)</span> <span class="kw">throws</span> java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span> <span class="op">{</span></span>
+<span id="cb54-3"><a aria-label="3"></a>        java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">file</span><span class="op">.</span><span class="fu">Files</span><span class="op">.</span><span class="fu">readString</span><span class="op">(</span>path<span class="op">);</span></span>
+<span id="cb54-4"><a aria-label="4"></a>    <span class="op">}</span></span>
+<span id="cb54-5"><a aria-label="5"></a><span class="op">}</span></span>
+<span id="cb54-6"><a aria-label="6"></a><span class="kw">class</span> NamedSnapshot <span class="kw">extends</span> TextSnapshot <span class="op">{</span></span>
+<span id="cb54-7"><a aria-label="7"></a>    <span class="fu">NamedSnapshot</span><span class="op">(</span>java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">file</span><span class="op">.</span><span class="fu">Path</span> path<span class="op">)</span> <span class="kw">throws</span> java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span> <span class="op">{</span></span>
+<span id="cb54-8"><a aria-label="8"></a>        <span class="kw">super</span><span class="op">(</span>path<span class="op">);</span></span>
+<span id="cb54-9"><a aria-label="9"></a>    <span class="op">}</span></span>
+<span id="cb54-10"><a aria-label="10"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Отказ <code>super(path)</code> прерывает создание <code>NamedSnapshot</code>. Конструктор подкласса объявляет <code>IOException</code> или его допустимый супертип. Конструкторы не переопределяются; ограничение сужения из правил методов к ним не относится <span class="citation" data-cites="bib-exceptions-jls-declarations"><a href="#/источники" role="doc-biblioref" onclick="">[11]</a></span>.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-checked-close" class="slide level2">
+<h2>Статический тип ресурса</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb55"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb55-1"><a aria-label="1"></a><span class="dt">final</span> <span class="kw">class</span> Quiet <span class="kw">implements</span> AutoCloseable <span class="op">{</span></span>
+<span id="cb55-2"><a aria-label="2"></a>    <span class="at">@Override</span> <span class="kw">public</span> <span class="dt">void</span> <span class="fu">close</span><span class="op">()</span> <span class="op">{}</span></span>
+<span id="cb55-3"><a aria-label="3"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb56-1"><a aria-label="1"></a><span class="cf">try</span> <span class="op">(</span><span class="dt">var</span> resource <span class="op">=</span> <span class="kw">new</span> <span class="fu">Quiet</span><span class="op">())</span> <span class="op">{}</span> <span class="co">// проверяемого отказа close нет</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Альтернативный вариант в методе с <code>throws Exception</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb57"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb57-1"><a aria-label="1"></a>AutoCloseable resource <span class="op">=</span> <span class="kw">new</span> <span class="fu">Quiet</span><span class="op">();</span></span>
+<span id="cb57-2"><a aria-label="2"></a><span class="cf">try</span> <span class="op">(</span>resource<span class="op">)</span> <span class="op">{}</span> <span class="co">// у AutoCloseable.close объявлен Exception</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Оба запуска вызывают пустой <code>Quiet.close</code>. Компилятор учитывает объявление <code>close</code> по статическому типу; второй вариант требует обработки или <code>throws</code>.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-checked-history" class="slide level2">
+<h2>Проверяемые исключения в ранней Java</h2>
+<p>В первой JLS 1996 года <code>throws</code> с проверяемыми исключениями уже описан как часть соглашения автора метода и его пользователя. Цель компиляционной проверки — уменьшить число необработанных отказов.</p>
+<p><strong>Проверка требует обработать отказ или объявить его передачу.</strong> Разделение на проверяемые и непроверяемые исключения было частью раннего описания <span class="citation" data-cites="bib-context-jls1-exceptions"><a href="#/источники" role="doc-biblioref" onclick="">[2]</a></span>.</p>
+</section>
+<section id="sec-j25-lecture-exceptions-resources-finalization" class="slide level2">
+<h2>Финализация и задержка очистки</h2>
+<p>В JDK 18, согласно JEP 421, финализацию объявили устаревшей с намерением удалить её в будущем. Задержка очистки не ограничена; её выполнение не гарантируется.</p>
+<p><code>Cleaner</code> тоже не обеспечивает своевременное закрытие. Для файла нужен владелец и определённая граница <code>close</code> <span class="citation" data-cites="bib-context-jep421"><a href="#/источники" role="doc-biblioref" onclick="">[1]</a></span>.</p>
+</section>
+<section id="источники" class="slide level2 unnumbered scrollable smaller">
+<h2>Источники</h2>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-bib-context-jep421" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">B. Christian и S. Marks, <span>«JEP 421: Deprecate Finalization for Removal — Resource leaks, Finalization and its flaws, Alternative techniques»</span>. OpenJDK, 2022. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://openjdk.org/jeps/421">https://openjdk.org/jeps/421</a></div>
+</div>
+<div id="ref-bib-context-jls1-exceptions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">J. Gosling, B. Joy, и G. Steele, <em>The Java Language Specification, First Edition, §11.2: Compile-Time Checking of Exceptions</em>. 1996. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://tecfa.unige.ch/guides/java/langspec-1.0/11.doc.html">https://tecfa.unige.ch/guides/java/langspec-1.0/11.doc.html</a></div>
+</div>
+<div id="ref-bib-context-cpp-raii" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">B. Stroustrup и H. Sutter, <em>C++ Core Guidelines: R.1, Manage resources automatically using resource handles and RAII</em>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rr-raii">https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rr-raii</a></div>
+</div>
+<div id="ref-bib-context-epam-exceptions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое пособие</em>, 2-я изд. 2021, сс. 264–269.</div>
+</div>
+<div id="ref-bib-concept-bloch-checked" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">Д. Блох, <em>Java. Эффективное программирование</em>, 3-я изд. Диалектика, 2019, сс. 363–366.</div>
+</div>
+<div id="ref-bib-exceptions-bloch-state" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[6] </div><div class="csl-right-inline">Д. Блох, <em>Java. Эффективное программирование</em>, 3-я изд. 2019, сс. 376–378.</div>
+</div>
+<div id="ref-bib-data-autocloseable-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[7] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: AutoCloseable</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/AutoCloseable.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/AutoCloseable.html</a></div>
+</div>
+<div id="ref-bib-exceptions-closeable-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[8] </div><div class="csl-right-inline"><em>Java SE 25 API: интерфейс Closeable</em>. Oracle, 2025. Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Closeable.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Closeable.html</a></div>
+</div>
+<div id="ref-bib-data-jls-exceptions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[9] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25 Edition: Exceptions, Chapter 11</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html</a></div>
+</div>
+<div id="ref-bib-data-jls-resources" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[10] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25 Edition: try-with-resources, §14.20.3</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3">https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3</a></div>
+</div>
+<div id="ref-bib-exceptions-jls-declarations" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[11] </div><div class="csl-right-inline"><em>Спецификация языка Java SE 25: исключения при переопределении и конструкторы</em>. Oracle, 2025. Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html</a></div>
+</div>
+<div id="ref-bib-exceptions-jls-completion" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[12] </div><div class="csl-right-inline"><em>Спецификация языка Java SE 25: нормальное и резкое завершение, try-finally</em>. Oracle, 2025. Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.2">https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.2</a></div>
+</div>
+<div id="ref-bib-context-go-errors" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[13] </div><div class="csl-right-inline"><em>Effective Go: Errors</em>. The Go Project. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://go.dev/doc/effective_go#errors">https://go.dev/doc/effective_go#errors</a></div>
+</div>
+<div id="ref-bib-context-go-defer" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[14] </div><div class="csl-right-inline"><em>The Go Programming Language Specification: Defer statements</em>. The Go Project. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://go.dev/ref/spec#Defer_statements">https://go.dev/ref/spec#Defer_statements</a></div>
+</div>
+<div id="ref-bib-context-python-with" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[15] </div><div class="csl-right-inline"><em>The Python Language Reference, §8.5: The with statement</em>. Python Software Foundation. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.python.org/3/reference/compound_stmts.html#the-with-statement">https://docs.python.org/3/reference/compound_stmts.html#the-with-statement</a></div>
+</div>
+<div id="ref-bib-context-rust-result" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[16] </div><div class="csl-right-inline"><em>The Rust Programming Language, §9.2: Recoverable Errors with Result</em>. The Rust Project. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html">https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html</a></div>
+</div>
+<div id="ref-bib-context-rust-panic" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[17] </div><div class="csl-right-inline"><em>The Rust Programming Language, §9.3: To panic! or Not to panic!</em> The Rust Project. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://doc.rust-lang.org/book/ch09-03-to-panic-or-not-to-panic.html">https://doc.rust-lang.org/book/ch09-03-to-panic-or-not-to-panic.html</a></div>
+</div>
+<div id="ref-bib-exceptions-cpp-noexcept" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[18] </div><div class="csl-right-inline"><em>Рабочий проект стандарта C++: ограничение noexcept и завершение terminate</em>. ISO C++. Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://eel.is/c++draft/except.terminate">https://eel.is/c++draft/except.terminate</a></div>
+</div>
+</div>
+
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/course-navigation/model.js"></script>
+  <script src="site_libs/revealjs/plugin/course-navigation/ui.js"></script>
+  <script src="site_libs/revealjs/plugin/course-navigation/plugin.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":false,"delayInit":true,"keyboard":false,"openSlideNumber":false},
+'scrollActivationWidth': 0,
+'courseNav': {"sidebar":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 800,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, CourseNavigation, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Скопировано");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Скопировано");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+
+<script data-qrc-navigation>// Опубликованные цели сохраняют штатные ID Quarto. Обработчик раскрывает
+// существующее представление документа, не вводя учебных ролей и новых ID.
+(() => {
+  if (new URL(location.href).searchParams.has("print-pdf")) return;
+  let navigation = 0;
+
+  function hashId(url) {
+    try { return decodeURIComponent(url.hash.replace(/^#\/?/, "")); }
+    catch { return ""; } // Некорректный фрагмент внешней ссылки не должен нарушать работу страницы.
+  }
+
+  function ancestors(target) {
+    const nodes = [];
+    for (let node = target; node; node = node.parentElement) nodes.push(node);
+    return nodes.reverse();
+  }
+
+  function openDisclosures(nodes, scroll) {
+    for (const node of nodes) {
+      if (node.matches("details")) node.open = true;
+      if (!node.matches(".collapse:not(.show)")) continue;
+
+      // Bootstrap управляет анимацией и состоянием переключателя.
+      // В темах без Bootstrap блок раскрывается напрямую; details работает штатно.
+      const Collapse = window.bootstrap?.Collapse;
+      if (Collapse) {
+        node.addEventListener("shown.bs.collapse", scroll, { once: true });
+        Collapse.getOrCreateInstance(node, { toggle: false }).show();
+      } else {
+        node.classList.add("show");
+        if (!node.id) continue;
+        for (const trigger of document.querySelectorAll("[aria-controls]")) {
+          if (!trigger.getAttribute("aria-controls").split(/\s+/).includes(node.id)) continue;
+          trigger.setAttribute("aria-expanded", "true");
+          trigger.classList.remove("collapsed");
+        }
+      }
+    }
+  }
+
+  function revealTarget(id) {
+    const target = id && document.getElementById(id);
+    if (!target) return;
+    const current = ++navigation;
+    const scroll = () => requestAnimationFrame(() => {
+      // Завершение анимации не должно возвращать прокрутку после нового перехода.
+      if (current === navigation) target.scrollIntoView({ block: "nearest" });
+    });
+    const nodes = ancestors(target);
+    const section = target.closest("section.slide");
+    const reveal = window.Reveal;
+    if (section && target !== section && reveal?.isReady()) {
+      const position = reveal.getIndices(section);
+      reveal.slide(position.h, position.v);
+      // У вложенных фрагментов могут различаться индексы. Показываем
+      // все фрагменты вокруг цели; нулевой индекс также допустим.
+      const indices = nodes.filter(node => node.matches(".fragment[data-fragment-index]"))
+        .map(node => Number(node.getAttribute("data-fragment-index")))
+        .filter(Number.isFinite);
+      if (indices.length) reveal.navigateFragment(Math.max(...indices));
+    }
+    openDisclosures(nodes, scroll);
+    scroll();
+  }
+
+  function initialTarget() {
+    const url = new URL(location.href);
+    revealTarget(url.searchParams.get("qrc-target") || hashId(url));
+  }
+
+  function ready() {
+    if (window.Reveal && !window.Reveal.isReady()) window.Reveal.on("ready", initialTarget);
+    else initialTarget();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", ready, { once: true });
+  else ready();
+
+  // qrc-target обрабатывается только при входе на страницу. Повторное применение
+  // при смене фрагмента URL возвращало бы преподавателя к цели после перехода вперёд.
+  window.addEventListener("hashchange", () => revealTarget(hashId(new URL(location.href))));
+  document.addEventListener("click", event => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.defaultPrevented) return;
+    const link = event.target.closest?.("a[href]");
+    if (!link || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
+    const url = new URL(link.href, location.href);
+    if (url.origin !== location.origin || url.pathname !== location.pathname || url.search !== location.search) return;
+    // Повторный переход по тому же фрагменту URL не вызывает hashchange.
+    // Раскрываем цель после штатной навигации и обработчика Revealjs.
+    queueMicrotask(() => revealTarget(hashId(url)));
+  }, true);
+})();
+</script>
+<script id="course-site-navigation">(function(){
+const base={"courseUrl":"https://bsu-rfct-afonenko-courses.github.io/Java/","rootHref":"../"};
+if(base){
+ const course=new URL(base.courseUrl); course.pathname=course.pathname.replace(/\/$/,'')+'/';
+ const root=new URL(base.rootHref,document.baseURI);
+ for(const link of document.querySelectorAll('#quarto-header a[href],#quarto-sidebar a[href],.quarto-navbar a[href],.quarto-sidebar a[href]')){
+  const url=new URL(link.href,document.baseURI);
+  if(url.origin===course.origin&&url.pathname.startsWith(course.pathname)){
+   let path=url.pathname.slice(course.pathname.length); if(!path||path.endsWith('/')) path+='index.html';
+   link.href=new URL(path+url.search+url.hash,root).href;
+  }
+ }
+}
+const targets=[].map(path=>new URL(path,document.baseURI));
+for(const link of document.querySelectorAll('a[href]')){
+ const url=new URL(link.href,document.baseURI);
+ if(targets.some(target=>target.origin===url.origin&&(
+  target.pathname===url.pathname || target.pathname.endsWith('/index.html')&&target.pathname.slice(0,-'index.html'.length)===url.pathname
+ ))){
+  link.target='_blank'; link.rel=[...new Set([...link.rel.split(/\s+/).filter(Boolean),'noopener','noreferrer'])].join(' ');
+ }
+}
+})();</script>
+</body></html>

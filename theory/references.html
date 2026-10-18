@@ -1,0 +1,2174 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.5">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Источники – Теория Java</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./system-practice.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-752eb067b69f457d87b717766944ae1e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
+<script src="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
+<link href="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation">
+
+<style>.task-items li:has(.course-assignment-omitted):not(:has(a)){display:none}</style>
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Поиск не дал результатов",
+    "search-matching-documents-text": "— число найденных документов",
+    "search-copy-link-title": "Скопировать ссылку",
+    "search-hide-matches-text": "Скрыть дополнительные результаты",
+    "search-more-match-text": "дополнительный результат в этом документе",
+    "search-more-matches-text": "— показать остальные совпадения в этом документе",
+    "search-clear-button-title": "Очистить",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Отменить",
+    "search-submit-button-title": "Найти",
+    "search-label": "Поиск"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles/book.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Перейти к основному содержанию</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Сайт">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="https://bsu-rfct-afonenko-courses.github.io/Java/index.html">
+    <span class="navbar-title">Программирование на Java</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Поиск"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Переключить навигацию" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Теория</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsu-rfct-afonenko-courses.github.io/Java/tasks/index.html"> 
+<span class="menu-text">Задания</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsu-rfct-afonenko-courses.github.io/Java/lectures/index.html"> 
+<span class="menu-text">Лекции</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsu-rfct-afonenko-courses.github.io/Java/practice/index.html"> 
+<span class="menu-text">Введения к лабораторным</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsu-rfct-afonenko-courses.github.io/Java/handbook/index.html"> 
+<span class="menu-text">Справочник</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+    <a href="https://github.com/BSU-RFCT-Afonenko-Courses/Java/tree/master/theory/" title="Исходный код" class="quarto-navigation-tool px-1" aria-label="Исходный код"><i class="bi bi-github"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" aria-label="Панель инструментов">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Переключить боковую панель навигации" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="Путь"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./references.html">Источники</a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="Раздел">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Теория Java</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="false">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">Язык и платформа</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/languages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Эволюция языков программирования</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/platform.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Платформа Java</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-controls="quarto-sidebar-section-2" aria-expanded="false">
+ <span class="menu-text" id="quarto-sidebar-section-2-label">Значения и вычисления</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-2" aria-labelledby="quarto-sidebar-section-2-label" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Типы, значения и переменные</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/expressions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Выражения и числовые вычисления</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/control.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Управление выполнением</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Методы и передача аргументов</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/arrays.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Массивы</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/text.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Строки и представление текста</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-controls="quarto-sidebar-section-3" aria-expanded="false">
+ <span class="menu-text" id="quarto-sidebar-section-3-label">Объектная модель</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-3" aria-labelledby="quarto-sidebar-section-3-label" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/objects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Объекты, ссылки и время жизни</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/classes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Классы, инкапсуляция и инициализация</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/inheritance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Наследование и связывание методов</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/interfaces.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Интерфейсы, композиция и делегирование</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/data-classes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Классы для представления данных</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-controls="quarto-sidebar-section-4" aria-expanded="false">
+ <span class="menu-text" id="quarto-sidebar-section-4-label">Обобщённые типы и коллекции</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-4" aria-labelledby="quarto-sidebar-section-4-label" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/type-parameters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Параметризация программ</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/type-relations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Система обобщённых типов</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/equality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Равенство объектов и порядок</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/collections.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Коллекции и способы хранения объектов</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-controls="quarto-sidebar-section-5" aria-expanded="false">
+ <span class="menu-text" id="quarto-sidebar-section-5-label">Функции и последовательности</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-5" aria-labelledby="quarto-sidebar-section-5-label" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Передача поведения и функциональные интерфейсы</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/streams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Конвейеры обработки данных Stream</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-controls="quarto-sidebar-section-6" aria-expanded="false">
+ <span class="menu-text" id="quarto-sidebar-section-6-label">Ошибки, ресурсы и приложение</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-6" aria-labelledby="quarto-sidebar-section-6-label" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/exceptions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Исключения</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/resources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Управление ресурсами</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/io.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Файлы, байты и модели ввода-вывода</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/application.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Консольное приложение</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./system-practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Подготовка в System Practice</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Источники</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Источники</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-bib-ctx-objects-record-model" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">G.
+Bierman, <span>«JEP 395: Records. Goals; Motivation; Description;
+Constructors for record classes; Rules for record classes»</span>.
+Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://openjdk.org/jeps/395">https://openjdk.org/jeps/395</a></div>
+</div>
+<div id="ref-bib-ctx-objects-sealed-model" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">G.
+Bierman, <span>«JEP 409: Sealed Classes. Goals; Motivation; Description;
+Sealing and record classes; Sealed classes and pattern matching»</span>.
+Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://openjdk.org/jeps/409">https://openjdk.org/jeps/409</a></div>
+</div>
+<div id="ref-bib-gj1998" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">G.
+Bracha, M. Odersky, D. Stoutamire, и P. Wadler, <span>«Making the Future
+Safe for the Past: Adding Genericity to the Java Programming
+Language»</span>, в <em>Proceedings of OOPSLA 1998</em>, 1998.
+Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://homepages.inf.ed.ac.uk/wadler/papers/gj-oopsla/gj-oopsla-a4.pdf">https://homepages.inf.ed.ac.uk/wadler/papers/gj-oopsla/gj-oopsla-a4.pdf</a></div>
+</div>
+<div id="ref-bib-ctx-objects-gj-migration" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">G.
+Bracha, M. Odersky, D. Stoutamire, и P. Wadler, <span>«Making the Future
+Safe for the Past: Adding Genericity to the Java Programming Language.
+Abstract; section 1, Introduction (author PDF, pp. 1–2)»</span>, в
+<em>OOPSLA ’98</em>, 1998, сс. 183–200. Просмотрено: 12.10.2026.
+[Онлайн]. Доступно на: <a href="https://homepages.inf.ed.ac.uk/wadler/papers/gj-oopsla/gj-oopsla-a4.pdf">https://homepages.inf.ed.ac.uk/wadler/papers/gj-oopsla/gj-oopsla-a4.pdf</a></div>
+</div>
+<div id="ref-bib-context-jep421" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">B.
+Christian и S. Marks, <span>«JEP 421: Deprecate Finalization for Removal
+— Resource leaks, Finalization and its flaws, Alternative
+techniques»</span>. OpenJDK, 2022. Просмотрено: 11.10.2026. [Онлайн].
+Доступно на: <a href="https://openjdk.org/jeps/421">https://openjdk.org/jeps/421</a></div>
+</div>
+<div id="ref-bib-objects-jep513" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[6] </div><div class="csl-right-inline">A.
+Cobbs и G. Bierman, <span>«JEP 513: Flexible Constructor Bodies»</span>.
+Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://openjdk.org/jeps/513">https://openjdk.org/jeps/513</a></div>
+</div>
+<div id="ref-bib-context-lambda-design" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[7] </div><div class="csl-right-inline">B.
+Goetz, <span>«State of the Lambda: §1 Background and §2 Functional
+Interfaces»</span>. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://cr.openjdk.org/~briangoetz/lambda/lambda-state-final.html">https://cr.openjdk.org/~briangoetz/lambda/lambda-state-final.html</a></div>
+</div>
+<div id="ref-bib-concept-lambda-libraries" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[8] </div><div class="csl-right-inline">B.
+Goetz, <span>«Проектирование библиотек для лямбда-выражений: внутренний
+обход и потоки»</span>. Просмотрено: 17.10.2026. [Онлайн]. Доступно на:
+<a href="https://cr.openjdk.org/~briangoetz/lambda/lambda-libraries-final.html">https://cr.openjdk.org/~briangoetz/lambda/lambda-libraries-final.html</a></div>
+</div>
+<div id="ref-bib-concept-lambda-evolution" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[9] </div><div class="csl-right-inline">B.
+Goetz, <span>«Проектирование лямбда-выражений: функциональные
+интерфейсы, захват и развитие интерфейсов»</span>. Просмотрено:
+17.10.2026. [Онлайн]. Доступно на: <a href="https://cr.openjdk.org/~briangoetz/lambda/lambda-state-final.html">https://cr.openjdk.org/~briangoetz/lambda/lambda-state-final.html</a></div>
+</div>
+<div id="ref-bib-goetz-erasure-2020" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[10] </div><div class="csl-right-inline">B.
+Goetz, <span>«Background: How We Got the Generics We Have: Or, how I
+learned to stop worrying and love erasure»</span>. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://openjdk.org/projects/valhalla/design-notes/in-defense-of-erasure">https://openjdk.org/projects/valhalla/design-notes/in-defense-of-erasure</a></div>
+</div>
+<div id="ref-bib-ctx-jep286" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[11] </div><div class="csl-right-inline">B.
+Goetz, <span>«JEP 286: Local-Variable Type Inference. Goals; Motivation;
+Description; Scope Choices»</span>. Просмотрено: 11.10.2026. [Онлайн].
+Доступно на: <a href="https://openjdk.org/jeps/286">https://openjdk.org/jeps/286</a></div>
+</div>
+<div id="ref-bib-jls1-vector" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[12] </div><div class="csl-right-inline">J.
+Gosling, B. Joy, и G. Steele, <em>The Java Language Specification</em>,
+1-я изд. Addison-Wesley, 1996. Просмотрено: 11.10.2026. [Онлайн].
+Доступно на: <a href="https://tecfa.unige.ch/guides/java/langspec-1.0/javautil.doc9.html">https://tecfa.unige.ch/guides/java/langspec-1.0/javautil.doc9.html</a></div>
+</div>
+<div id="ref-bib-context-jls1-exceptions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[13] </div><div class="csl-right-inline">J.
+Gosling, B. Joy, и G. Steele, <em>The Java Language Specification, First
+Edition, §11.2: Compile-Time Checking of Exceptions</em>. 1996.
+Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://tecfa.unige.ch/guides/java/langspec-1.0/11.doc.html">https://tecfa.unige.ch/guides/java/langspec-1.0/11.doc.html</a></div>
+</div>
+<div id="ref-bib-jls-25" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[14] </div><div class="csl-right-inline">J.
+Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25
+Edition</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно
+на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/index.html">https://docs.oracle.com/javase/specs/jls/se25/html/index.html</a></div>
+</div>
+<div id="ref-bib-jls-types-values-variables" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[15] </div><div class="csl-right-inline">J.
+Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25
+Edition. Глава 4</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн].
+Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html</a></div>
+</div>
+<div id="ref-bib-jls-array-store-checks" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[16] </div><div class="csl-right-inline">J.
+Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25
+Edition. Раздел 10.5</em>. Oracle, 2025. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-10.html#jls-10.5">https://docs.oracle.com/javase/specs/jls/se25/html/jls-10.html#jls-10.5</a></div>
+</div>
+<div id="ref-bib-jls-instanceof" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[17] </div><div class="csl-right-inline">J.
+Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25
+Edition. Раздел 15.20.2</em>. Oracle, 2025. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.20.2">https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.20.2</a></div>
+</div>
+<div id="ref-bib-jls-instance-creation" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[18] </div><div class="csl-right-inline">J.
+Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25
+Edition. Раздел 15.9</em>. Oracle, 2025. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.9">https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.9</a></div>
+</div>
+<div id="ref-bib-jls-class-interface-subtyping" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[19] </div><div class="csl-right-inline">J.
+Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25
+Edition. Раздел 4.10.2</em>. Oracle, 2025. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.10.2">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.10.2</a></div>
+</div>
+<div id="ref-bib-jls-heap-pollution" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[20] </div><div class="csl-right-inline">J.
+Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25
+Edition. Раздел 4.12.2</em>. Oracle, 2025. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.12.2">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.12.2</a></div>
+</div>
+<div id="ref-bib-jls-type-variables" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[21] </div><div class="csl-right-inline">J.
+Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25
+Edition. Раздел 4.4</em>. Oracle, 2025. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.4">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.4</a></div>
+</div>
+<div id="ref-bib-jls-type-arguments" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[22] </div><div class="csl-right-inline">J.
+Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25
+Edition. Раздел 4.5.1</em>. Oracle, 2025. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.5.1">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.5.1</a></div>
+</div>
+<div id="ref-bib-jls-type-erasure" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[23] </div><div class="csl-right-inline">J.
+Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25
+Edition. Раздел 4.6</em>. Oracle, 2025. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.6">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.6</a></div>
+</div>
+<div id="ref-bib-jls-raw-types" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[24] </div><div class="csl-right-inline">J.
+Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25
+Edition. Раздел 4.8</em>. Oracle, 2025. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.8">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.8</a></div>
+</div>
+<div id="ref-bib-jls-capture-conversion" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[25] </div><div class="csl-right-inline">J.
+Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25
+Edition. Раздел 5.1.10</em>. Oracle, 2025. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html#jls-5.1.10">https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html#jls-5.1.10</a></div>
+</div>
+<div id="ref-bib-jls-generic-methods" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[26] </div><div class="csl-right-inline">J.
+Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25
+Edition. Раздел 8.4.4</em>. Oracle, 2025. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.4">https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.4</a></div>
+</div>
+<div id="ref-bib-jls-reifiable-types-restrictions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[27] </div><div class="csl-right-inline">J.
+Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25
+Edition. Разделы 4.7, 8.4.2, 15.8.2, 15.9, 15.10.1</em>. Oracle, 2025.
+Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.7">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.7</a></div>
+</div>
+<div id="ref-bib-jls-boxing-unboxing" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[28] </div><div class="csl-right-inline">J.
+Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25
+Edition. Разделы 5.1.7–5.1.8</em>. Oracle, 2025. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html#jls-5.1.7">https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html#jls-5.1.7</a></div>
+</div>
+<div id="ref-bib-ctx-jls-binary" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[29] </div><div class="csl-right-inline">J.
+Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25.
+§§13.2, 13.4.12, 13.4.14, 13.4.22 Binary Compatibility</em>. Oracle,
+2025. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-13.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-13.html</a></div>
+</div>
+<div id="ref-bib-fnd-java-whitepaper-portability" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[30] </div><div class="csl-right-inline">J.
+Gosling и H. McGilton, <span>«The Java Language Environment.
+Architecture Neutral, Portable, and Robust»</span>, Sun Microsystems,
+май 1996. Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://www.oracle.com/java/technologies/architecture-neutral-portable-robust.html">https://www.oracle.com/java/technologies/architecture-neutral-portable-robust.html</a></div>
+</div>
+<div id="ref-bib-fnd-java-whitepaper-introduction" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[31] </div><div class="csl-right-inline">J.
+Gosling и H. McGilton, <span>«The Java Language Environment.
+Introduction to Java»</span>, Sun Microsystems, май 1996. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://www.oracle.com/java/technologies/introduction-to-java.html">https://www.oracle.com/java/technologies/introduction-to-java.html</a></div>
+</div>
+<div id="ref-bib-ctx-java-simple-familiar" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[32] </div><div class="csl-right-inline">J.
+Gosling и H. McGilton, <span>«The Java Language Environment. Java—Simple
+and Familiar, §2.1.1 Primitive Data Types»</span>, Sun Microsystems, май
+1996. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://www.oracle.com/java/technologies/simple-familiar.html">https://www.oracle.com/java/technologies/simple-familiar.html</a></div>
+</div>
+<div id="ref-bib-ctx-java-arrays-design" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[33] </div><div class="csl-right-inline">J.
+Gosling и H. McGilton, <span>«The Java Language Environment. Java—Simple
+and Familiar, §2.1.3 Arrays»</span>, Sun Microsystems, май 1996.
+Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://www.oracle.com/java/technologies/simple-familiar.html">https://www.oracle.com/java/technologies/simple-familiar.html</a></div>
+</div>
+<div id="ref-bib-ctx-objects-hoare-null" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[34] </div><div class="csl-right-inline">T.
+Hoare, <span>«Null References: The Billion Dollar Mistake. Страница
+выступления и редакторские заметки»</span>. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/">https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/</a></div>
+</div>
+<div id="ref-bib-cpp-requires" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[35] </div><div class="csl-right-inline">ISO/IEC JTC1/SC22/WG21, <em>Working Draft,
+Standard for Programming Language C++. Раздел expr.prim.req:
+Requires-expressions</em>. Просмотрено: 15.10.2026. [Онлайн]. Доступно
+на: <a href="https://eel.is/c++draft/expr.prim.req">https://eel.is/c++draft/expr.prim.req</a></div>
+</div>
+<div id="ref-bib-cpp-template-parameters" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[36] </div><div class="csl-right-inline">ISO/IEC JTC1/SC22/WG21, <em>Working Draft,
+Standard for Programming Language C++. Раздел temp.param: Template
+parameters</em>. Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://eel.is/c++draft/temp.param">https://eel.is/c++draft/temp.param</a></div>
+</div>
+<div id="ref-bib-jsr14" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[37] </div><div class="csl-right-inline">Java Community Process, <span>«JSR 14: Add
+Generic Types to the Java Programming Language»</span>. 2004.
+Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://jcp.org/en/jsr/detail?id=14">https://jcp.org/en/jsr/detail?id=14</a></div>
+</div>
+<div id="ref-bib-io-jsr203" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[38] </div><div class="csl-right-inline">Java Community Process, <span>«JSR 203: More
+New I/O APIs for the Java Platform (NIO.2)»</span>. Просмотрено:
+17.10.2026. [Онлайн]. Доступно на: <a href="https://www.jcp.org/en/jsr/detail?id=203">https://www.jcp.org/en/jsr/detail?id=203</a></div>
+</div>
+<div id="ref-bib-io-jsr51" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[39] </div><div class="csl-right-inline">Java Community Process, <span>«JSR 51: New I/O
+APIs for the Java Platform»</span>. Просмотрено: 17.10.2026. [Онлайн].
+Доступно на: <a href="https://www.jcp.org/en/jsr/detail?id=51">https://www.jcp.org/en/jsr/detail?id=51</a></div>
+</div>
+<div id="ref-bib-ctx-jvms-model" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[40] </div><div class="csl-right-inline">T.
+Lindholm, F. Yellin, G. Bracha, A. Buckley, и D. Smith, <em>The Java
+Virtual Machine Specification, Java SE 25. §§1.2 The Java Virtual
+Machine, 2.7 Representation of Objects</em>. Oracle, 2025. Просмотрено:
+12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-1.html#jvms-1.2">https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-1.html#jvms-1.2</a></div>
+</div>
+<div id="ref-bib-dotnet-generic-math" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[41] </div><div class="csl-right-inline">Microsoft, <span>«Generic Math»</span>.
+Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://learn.microsoft.com/en-us/dotnet/standard/generics/math">https://learn.microsoft.com/en-us/dotnet/standard/generics/math</a></div>
+</div>
+<div id="ref-bib-csharp-generics-runtime" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[42] </div><div class="csl-right-inline">Microsoft, <span>«Generics in the
+Runtime»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/generics-in-the-run-time">https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/generics-in-the-run-time</a></div>
+</div>
+<div id="ref-bib-collections-iterator-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[43] </div><div class="csl-right-inline">Oracle, <span>«Iterator: последовательность
+вызовов и удаление в Java SE 25»</span>. Просмотрено: 17.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Iterator.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Iterator.html</a></div>
+</div>
+<div id="ref-bib-java-comparable" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[44] </div><div class="csl-right-inline">Oracle, <em>Java SE 25 API. Comparable:
+compareTo</em>. 2025. Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Comparable.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Comparable.html</a></div>
+</div>
+<div id="ref-bib-collections-linkedlist-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[45] </div><div class="csl-right-inline">Oracle, <span>«LinkedList: контракт и стоимость
+поиска по позиции в Java SE 25»</span>. Просмотрено: 17.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/LinkedList.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/LinkedList.html</a></div>
+</div>
+<div id="ref-bib-collections-priority-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[46] </div><div class="csl-right-inline">Oracle, <span>«PriorityQueue: извлечение, обход
+и стоимость операций в Java SE 25»</span>. Просмотрено: 17.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/PriorityQueue.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/PriorityQueue.html</a></div>
+</div>
+<div id="ref-bib-jls-invocation-inference" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[47] </div><div class="csl-right-inline">Oracle, <em>The Java Language Specification,
+Java SE 25 Edition. Раздел 18.5.2: Invocation Type Inference</em>. 2025.
+Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-18.html#jls-18.5.2">https://docs.oracle.com/javase/specs/jls/se25/html/jls-18.html#jls-18.5.2</a></div>
+</div>
+<div id="ref-bib-jvms-methods" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[48] </div><div class="csl-right-inline">Oracle, <em>The Java Virtual Machine
+Specification, Java SE 25 Edition. Раздел 4.6: Methods</em>. 2025.
+Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html#jvms-4.6">https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html#jvms-4.6</a></div>
+</div>
+<div id="ref-bib-collections-treeset-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[49] </div><div class="csl-right-inline">Oracle, <span>«TreeSet: сравнение, равенство и
+стоимость операций в Java SE 25»</span>. Просмотрено: 17.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/TreeSet.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/TreeSet.html</a></div>
+</div>
+<div id="ref-bib-collections-design-faq" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[50] </div><div class="csl-right-inline">Oracle, <span>«Решения при проектировании
+Collections Framework: вопросы и ответы»</span>. Просмотрено:
+17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/doc-files/coll-designfaq.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/doc-files/coll-designfaq.html</a></div>
+</div>
+<div id="ref-bib-io-virtual-threads" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[51] </div><div class="csl-right-inline">Oracle, <span>«Java Platform, Standard Edition
+25: Virtual Threads»</span>. Просмотрено: 17.10.2026. [Онлайн]. Доступно
+на: <a href="https://docs.oracle.com/en/java/javase/25/core/virtual-threads.html">https://docs.oracle.com/en/java/javase/25/core/virtual-threads.html</a></div>
+</div>
+<div id="ref-bib-io-async-file-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[52] </div><div class="csl-right-inline">Oracle, <span>«Java SE 25 API:
+AsynchronousFileChannel»</span>. Просмотрено: 17.10.2026. [Онлайн].
+Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/AsynchronousFileChannel.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/AsynchronousFileChannel.html</a></div>
+</div>
+<div id="ref-bib-io-buffer-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[53] </div><div class="csl-right-inline">Oracle, <span>«Java SE 25 API: Buffer»</span>.
+Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/Buffer.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/Buffer.html</a></div>
+</div>
+<div id="ref-bib-io-bytebuffer-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[54] </div><div class="csl-right-inline">Oracle, <span>«Java SE 25 API:
+ByteBuffer»</span>. Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/ByteBuffer.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/ByteBuffer.html</a></div>
+</div>
+<div id="ref-bib-io-decoder-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[55] </div><div class="csl-right-inline">Oracle, <span>«Java SE 25 API:
+CharsetDecoder»</span>. Просмотрено: 17.10.2026. [Онлайн]. Доступно на:
+<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/charset/CharsetDecoder.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/charset/CharsetDecoder.html</a></div>
+</div>
+<div id="ref-bib-io-unmodifiable-map-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[56] </div><div class="csl-right-inline">Oracle, <span>«Java SE 25 API:
+Collections.unmodifiableMap»</span>. Просмотрено: 17.10.2026. [Онлайн].
+Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collections.html#unmodifiableMap(java.util.Map)">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collections.html#unmodifiableMap(java.util.Map)</a></div>
+</div>
+<div id="ref-bib-io-file-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[57] </div><div class="csl-right-inline">Oracle, <span>«Java SE 25 API: File»</span>.
+Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html</a></div>
+</div>
+<div id="ref-bib-io-filechannel-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[58] </div><div class="csl-right-inline">Oracle, <span>«Java SE 25 API:
+FileChannel»</span>. Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/FileChannel.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/FileChannel.html</a></div>
+</div>
+<div id="ref-bib-io-future-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[59] </div><div class="csl-right-inline">Oracle, <span>«Java SE 25 API: Future»</span>.
+Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/Future.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/Future.html</a></div>
+</div>
+<div id="ref-bib-io-inputstream-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[60] </div><div class="csl-right-inline">Oracle, <span>«Java SE 25 API:
+InputStream»</span>. Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/InputStream.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/InputStream.html</a></div>
+</div>
+<div id="ref-bib-io-linkedhashmap-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[61] </div><div class="csl-right-inline">Oracle, <span>«Java SE 25 API:
+LinkedHashMap»</span>. Просмотрено: 17.10.2026. [Онлайн]. Доступно на:
+<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/LinkedHashMap.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/LinkedHashMap.html</a></div>
+</div>
+<div id="ref-bib-io-file-package-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[62] </div><div class="csl-right-inline">Oracle, <span>«Java SE 25 API: Package
+java.nio.file»</span>. Просмотрено: 17.10.2026. [Онлайн]. Доступно на:
+<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/package-summary.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/package-summary.html</a></div>
+</div>
+<div id="ref-bib-io-random-access-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[63] </div><div class="csl-right-inline">Oracle, <span>«Java SE 25 API:
+RandomAccessFile»</span>. Просмотрено: 17.10.2026. [Онлайн]. Доступно
+на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/RandomAccessFile.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/RandomAccessFile.html</a></div>
+</div>
+<div id="ref-bib-io-selectable-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[64] </div><div class="csl-right-inline">Oracle, <span>«Java SE 25 API:
+SelectableChannel»</span>. Просмотрено: 17.10.2026. [Онлайн]. Доступно
+на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/SelectableChannel.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/SelectableChannel.html</a></div>
+</div>
+<div id="ref-bib-io-selector-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[65] </div><div class="csl-right-inline">Oracle, <span>«Java SE 25 API:
+Selector»</span>. Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/Selector.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/Selector.html</a></div>
+</div>
+<div id="ref-bib-python-typing" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[66] </div><div class="csl-right-inline">Python Software Foundation, <em>Python 3.14
+Documentation. typing — Support for type hints</em>. Просмотрено:
+15.10.2026. [Онлайн]. Доступно на: <a href="https://docs.python.org/3.14/library/typing.html">https://docs.python.org/3.14/library/typing.html</a></div>
+</div>
+<div id="ref-bib-ctx-python-model" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[67] </div><div class="csl-right-inline">Python Software Foundation, <span>«Python 3.14
+Language Reference. Data model, §§3.1, 3.2.1»</span>. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.python.org/3.14/reference/datamodel.html">https://docs.python.org/3.14/reference/datamodel.html</a></div>
+</div>
+<div id="ref-bib-ctx-python-numbers" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[68] </div><div class="csl-right-inline">Python Software Foundation, <span>«Python 3.14
+Library Reference. Built-in Types, Numeric Types — int, float,
+complex»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.python.org/3.14/library/stdtypes.html#numeric-types-int-float-complex">https://docs.python.org/3.14/library/stdtypes.html#numeric-types-int-float-complex</a></div>
+</div>
+<div id="ref-bib-python-protocols" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[69] </div><div class="csl-right-inline">Python Software Foundation, <em>Specification
+for the Python Type System. Protocols</em>. Просмотрено: 15.10.2026.
+[Онлайн]. Доступно на: <a href="https://typing.python.org/en/latest/spec/protocol.html">https://typing.python.org/en/latest/spec/protocol.html</a></div>
+</div>
+<div id="ref-bib-ctx-ritchie-c" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[70] </div><div class="csl-right-inline">D.
+M. Ritchie, <span>«The Development of the C Language. Introduction; The
+Problems of B; Neonatal C; Portability»</span>, в <em>History of
+Programming Languages II</em>, 1993. Просмотрено: 12.10.2026. [Онлайн].
+Доступно на: <a href="https://www.nokia.com/bell-labs/about/dennis-m-ritchie/chist.html">https://www.nokia.com/bell-labs/about/dennis-m-ritchie/chist.html</a></div>
+</div>
+<div id="ref-bib-cpp-template-constraints" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[71] </div><div class="csl-right-inline">R.
+Smith, <span>«Working Draft, Standard for Programming Language
+C++»</span>, ISO/IEC JTC1/SC22/WG21, N4861, апр. 2020. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4861.pdf">https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4861.pdf</a></div>
+</div>
+<div id="ref-bib-ctx-stroustrup-invention" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[72] </div><div class="csl-right-inline">B.
+Stroustrup, <span>«Bjarne Stroustrup’s FAQ. Why did you invent
+C++?»</span> Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://www.stroustrup.com/bs_faq.html#invention">https://www.stroustrup.com/bs_faq.html#invention</a></div>
+</div>
+<div id="ref-bib-context-cpp-raii" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[73] </div><div class="csl-right-inline">B.
+Stroustrup и H. Sutter, <em>C++ Core Guidelines: R.1, Manage resources
+automatically using resource handles and RAII</em>. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rr-raii">https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rr-raii</a></div>
+</div>
+<div id="ref-bib-python-numeric-typing" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[74] </div><div class="csl-right-inline">The Python Typing Team, <em>Specification for
+the Python Type System. Special cases for float and complex</em>.
+Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://typing.python.org/en/latest/spec/special-types.html#special-cases-for-float-and-complex">https://typing.python.org/en/latest/spec/special-types.html#special-cases-for-float-and-complex</a></div>
+</div>
+<div id="ref-bib-gj-author-abstract" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[75] </div><div class="csl-right-inline">P.
+Wadler, <span>«Java and Object-Orientation. Аннотация статьи Making the
+Future Safe for the Past»</span>. Просмотрено: 15.10.2026. [Онлайн].
+Доступно на: <a href="https://homepages.inf.ed.ac.uk/wadler/topics/gj.html">https://homepages.inf.ed.ac.uk/wadler/topics/gj.html</a></div>
+</div>
+<div id="ref-bib-fnd-hotspot-profiling" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[76] </div><div class="csl-right-inline">R.
+Westrelin, <span>«Runtime profiling in OpenJDK’s HotSpot JVM»</span>.
+Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://developers.redhat.com/articles/2021/11/18/runtime-profiling-openjdks-hotspot-jvm">https://developers.redhat.com/articles/2021/11/18/runtime-profiling-openjdks-hotspot-jvm</a></div>
+</div>
+<div id="ref-bib-io-model-epam" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[77] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое
+пособие</em>, 2, исправленное. Минск: Четыре четверти, 2021, сс.
+290–301.</div>
+</div>
+<div id="ref-bib-data-epam-equality" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[78] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое
+пособие</em>, 2-я изд. 2021, сс. 139–141.</div>
+</div>
+<div id="ref-bib-interfaces-epam-roles" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[79] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое
+пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 177–181,
+198–200.</div>
+</div>
+<div id="ref-bib-data-epam-functions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[80] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое
+пособие</em>, 2-я изд. 2021, сс. 201–209.</div>
+</div>
+<div id="ref-bib-functions-epam-closures" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[81] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое
+пособие</em>, 2-я изд. Четыре четверти, 2021, сс. 216–219.</div>
+</div>
+<div id="ref-bib-fnd-epam-strings" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[82] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое
+пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 225–226.</div>
+</div>
+<div id="ref-bib-fnd-epam-builders" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[83] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое
+пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, с. 232.</div>
+</div>
+<div id="ref-bib-context-epam-exceptions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[84] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое
+пособие</em>, 2-я изд. 2021, сс. 264–269.</div>
+</div>
+<div id="ref-bib-data-epam-io" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[85] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое
+пособие</em>, 2-я изд. 2021, сс. 298–300.</div>
+</div>
+<div id="ref-bib-collections-epam-list" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[86] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое
+пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 323–327.
+Доступно на: <a href="https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf">https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf</a></div>
+</div>
+<div id="ref-bib-fnd-epam-values" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[87] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое
+пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 32–34.</div>
+</div>
+<div id="ref-bib-data-epam-streams" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[88] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое
+пособие</em>, 2-я изд. 2021, сс. 331–338.</div>
+</div>
+<div id="ref-bib-collections-epam-linked" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[89] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое
+пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 341–345.
+Доступно на: <a href="https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf">https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf</a></div>
+</div>
+<div id="ref-bib-fnd-epam-control" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[90] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое
+пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 49, 51,
+53.</div>
+</div>
+<div id="ref-bib-fnd-epam-arrays" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[91] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое
+пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 58–59.</div>
+</div>
+<div id="ref-bib-epam-generic-classes" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[92] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое
+пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 88–90. Доступно
+на: <a href="https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf">https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf</a></div>
+</div>
+<div id="ref-bib-epam-generic-methods" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[93] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое
+пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, с. 93. Доступно на:
+<a href="https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf">https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf</a></div>
+</div>
+<div id="ref-bib-objects-epam-classes" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[94] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM. Классы, поля, доступ и
+конструкторы</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 66–70.
+Доступно на: <a href="https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf">https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf</a></div>
+</div>
+<div id="ref-bib-objects-epam-inheritance" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[95] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM. Наследование,
+полиморфизм и исключения</em>, 2-я изд. Минск: Четыре четверти, 2021,
+сс. 121–137, 278–279. Доступно на: <a href="https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf">https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf</a></div>
+</div>
+<div id="ref-bib-objects-epam-method-design" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[96] </div><div class="csl-right-inline">И.
+Н. Блинов и В. С. Романчик, <em>Java from EPAM. Проектирование методов и
+использование параметров</em>, 2-я изд. Минск: Четыре четверти, 2021,
+сс. 71–74. Доступно на: <a href="https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf">https://campus.epam.com/static/news/Books/Ihar_Blinou.Java.from.EPAM.v2.2021.pdf</a></div>
+</div>
+<div id="ref-bib-equality-bloch-order" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[97] </div><div class="csl-right-inline">Д.
+Блох, <em>Java: эффективное программирование</em>, 3-я изд. 2019, сс.
+100–107.</div>
+</div>
+<div id="ref-bib-interfaces-bloch-composition" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[98] </div><div class="csl-right-inline">Д.
+Блох, <em>Java: эффективное программирование</em>, 3-я изд.
+Санкт-Петербург: Диалектика, 2019, сс. 125–129.</div>
+</div>
+<div id="ref-bib-interfaces-bloch-design" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[99] </div><div class="csl-right-inline">Д.
+Блох, <em>Java: эффективное программирование</em>, 3-я изд.
+Санкт-Петербург: Диалектика, 2019, сс. 138–141, 144–146.</div>
+</div>
+<div id="ref-bib-generics-bloch-pecs" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[100] </div><div class="csl-right-inline">Д. Блох, <em>Java: эффективное
+программирование</em>, 3-я изд. Санкт-Петербург: Диалектика, 2019, сс.
+183–190.</div>
+</div>
+<div id="ref-bib-collections-bloch-copy" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[101] </div><div class="csl-right-inline">Д. Блох, <em>Java: эффективное
+программирование</em>, 3-я изд. Санкт-Петербург: Диалектика, 2019, сс.
+287–292.</div>
+</div>
+<div id="ref-bib-io-model-bloch" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[102] </div><div class="csl-right-inline">Д. Блох, <em>Java: эффективное
+программирование</em>, 3-я изд. Санкт-Петербург: Диалектика, 2019, сс.
+57–66.</div>
+</div>
+<div id="ref-bib-equality-bloch-equals" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[103] </div><div class="csl-right-inline">Д. Блох, <em>Java: эффективное
+программирование</em>, 3-я изд. 2019, сс. 67–81.</div>
+</div>
+<div id="ref-bib-equality-bloch-hash" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[104] </div><div class="csl-right-inline">Д. Блох, <em>Java: эффективное
+программирование</em>, 3-я изд. 2019, сс. 81–87.</div>
+</div>
+<div id="ref-bib-objects-bloch-inheritance" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[105] </div><div class="csl-right-inline">Д. Блох, <em>Java: эффективное
+программирование. Композиция и проектирование наследования</em>, 3-я
+изд. Санкт-Петербург: Диалектика, 2019, сс. 125–137.</div>
+</div>
+<div id="ref-bib-concept-bloch-encapsulation" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[106] </div><div class="csl-right-inline">Д. Блох, <em>Java. Эффективное
+программирование</em>, 3-я изд. Диалектика, 2019, сс. 109–113.</div>
+</div>
+<div id="ref-bib-concept-bloch-immutable" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[107] </div><div class="csl-right-inline">Д. Блох, <em>Java. Эффективное
+программирование</em>, 3-я изд. Диалектика, 2019, сс. 117–124.</div>
+</div>
+<div id="ref-bib-concept-bloch-evolution" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[108] </div><div class="csl-right-inline">Д. Блох, <em>Java. Эффективное
+программирование</em>, 3-я изд. Диалектика, 2019, сс. 125–131,
+144–146.</div>
+</div>
+<div id="ref-bib-concept-bloch-functions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[109] </div><div class="csl-right-inline">Д. Блох, <em>Java. Эффективное
+программирование</em>, 3-я изд. Диалектика, 2019, сс. 253–264.</div>
+</div>
+<div id="ref-bib-concept-bloch-checked" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[110] </div><div class="csl-right-inline">Д. Блох, <em>Java. Эффективное
+программирование</em>, 3-я изд. Диалектика, 2019, сс. 363–366.</div>
+</div>
+<div id="ref-bib-exceptions-bloch-state" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[111] </div><div class="csl-right-inline">Д. Блох, <em>Java. Эффективное
+программирование</em>, 3-я изд. 2019, сс. 376–378.</div>
+</div>
+<div id="ref-bib-exceptions-bloch-resources" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[112] </div><div class="csl-right-inline">Д. Блох, <em>Java. Эффективное
+программирование</em>, 3-я изд. 2019, сс. 63–66.</div>
+</div>
+<div id="ref-bib-functions-bloch-2019" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[113] </div><div class="csl-right-inline">Д. Блох, <em>Java. Эффективное
+программирование</em>, 3-я изд. Диалектика, 2019.</div>
+</div>
+<div id="ref-bib-schildt-generics-definition" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[114] </div><div class="csl-right-inline">Г. Шилдт, <em>Java: руководство для
+начинающих</em>, 9-я изд. Киев: Науковий Світ, 2023, с. 489.</div>
+</div>
+<div id="ref-bib-schildt-generic-class-example" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[115] </div><div class="csl-right-inline">Г. Шилдт, <em>Java: руководство для
+начинающих</em>, 9-я изд. Киев: Науковий Світ, 2023, сс. 490–491.</div>
+</div>
+<div id="ref-bib-schildt-generic-pairs" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[116] </div><div class="csl-right-inline">Г. Шилдт, <em>Java: руководство для
+начинающих</em>, 9-я изд. Киев: Науковий Світ, 2023, сс. 494–495.</div>
+</div>
+<div id="ref-bib-schildt-bounded-types" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[117] </div><div class="csl-right-inline">Г. Шилдт, <em>Java: руководство для
+начинающих</em>, 9-я изд. Киев: Науковий Світ, 2023, сс. 495–498.</div>
+</div>
+<div id="ref-bib-schildt-wildcards-methods" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[118] </div><div class="csl-right-inline">Г. Шилдт, <em>Java: руководство для
+начинающих</em>, 9-я изд. Киев: Науковий Світ, 2023, сс. 498–506.</div>
+</div>
+<div id="ref-bib-fnd-schildt-arithmetic" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[119] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, с. 111.</div>
+</div>
+<div id="ref-bib-fnd-schildt-short-circuit" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[120] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 126–127.</div>
+</div>
+<div id="ref-bib-fnd-schildt-control" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[121] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 140, 148.</div>
+</div>
+<div id="ref-bib-fnd-schildt-method-parameters" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[122] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, с. 173.</div>
+</div>
+<div id="ref-bib-fnd-schildt-argument-passing" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[123] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 190–192.</div>
+</div>
+<div id="ref-bib-fnd-schildt-strings" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[124] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, с. 206.</div>
+</div>
+<div id="ref-bib-data-schildt-exceptions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[125] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. 2023, сс. 274–277.</div>
+</div>
+<div id="ref-bib-fnd-schildt-origins" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[126] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 34–35, 39–40.</div>
+</div>
+<div id="ref-bib-data-schildt-resources" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[127] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. 2023, сс. 384–387.</div>
+</div>
+<div id="ref-bib-fnd-schildt-generics-definition" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[128] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, с. 402.</div>
+</div>
+<div id="ref-bib-fnd-schildt-generics-containers" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[129] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 402–409.</div>
+</div>
+<div id="ref-bib-fnd-schildt-generic-class-example" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[130] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 403–406.</div>
+</div>
+<div id="ref-bib-fnd-schildt-generic-pairs" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[131] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 409–410.</div>
+</div>
+<div id="ref-bib-fnd-schildt-bounded-types" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[132] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 411–413.</div>
+</div>
+<div id="ref-bib-fnd-schildt-wildcards-methods" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[133] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 413–424.</div>
+</div>
+<div id="ref-bib-fnd-schildt-platform" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[134] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 43–45.</div>
+</div>
+<div id="ref-bib-data-schildt-lambdas" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[135] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. 2023, сс. 444–445, 451, 454–458.</div>
+</div>
+<div id="ref-bib-data-schildt-collections" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[136] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. 2023, сс. 649–650, 667, 672, 679–682, 687–688, 697–698.</div>
+</div>
+<div id="ref-bib-collections-schildt-storage" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[137] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 666–677.</div>
+</div>
+<div id="ref-bib-fnd-schildt-first-program" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[138] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 66–68.</div>
+</div>
+<div id="ref-bib-collections-schildt-iteration" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[139] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 681–683.</div>
+</div>
+<div id="ref-bib-data-schildt-comparators" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[140] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. 2023, сс. 703–706.</div>
+</div>
+<div id="ref-bib-fnd-schildt-types" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[141] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 80, 92.</div>
+</div>
+<div id="ref-bib-io-model-schildt" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[142] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 834–838, 867–875.</div>
+</div>
+<div id="ref-bib-fnd-schildt-promotion" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[143] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, с. 97.</div>
+</div>
+<div id="ref-bib-fnd-schildt-arrays" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[144] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 99, 101.</div>
+</div>
+<div id="ref-bib-mat-schildt-arrays" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[145] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>,
+12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 99–104.</div>
+</div>
+<div id="ref-bib-objects-schildt-records" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[146] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство. Записи
+и канонические конструкторы</em>, 12-я изд. Санкт-Петербург: Диалектика,
+2023, сс. 519–528.</div>
+</div>
+<div id="ref-bib-objects-schildt-interfaces" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[147] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство.
+Интерфейсы и методы по умолчанию</em>, 12-я изд. Санкт-Петербург:
+Диалектика, 2023, сс. 254–272.</div>
+</div>
+<div id="ref-bib-objects-schildt-classes" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[148] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство. Классы,
+ссылки, конструкторы и передача аргументов</em>, 12-я изд.
+Санкт-Петербург: Диалектика, 2023, сс. 162–178, 190–192.</div>
+</div>
+<div id="ref-bib-objects-schildt-inheritance" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[149] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство.
+Наследование и динамическая диспетчеризация</em>, 12-я изд.
+Санкт-Петербург: Диалектика, 2023, сс. 217–243.</div>
+</div>
+<div id="ref-bib-objects-schildt-generics" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[150] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство.
+Обобщения</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс.
+401–443.</div>
+</div>
+<div id="ref-bib-ctx-schildt-numeric-types" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[151] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство.
+Числовые типы и повышение операндов</em>, 12-я изд. Санкт-Петербург:
+Диалектика, 2023, сс. 82–84, 97.</div>
+</div>
+<div id="ref-bib-data-eckel-collections" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[152] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java</em>, 4-я изд.
+2015, сс. 325–328.</div>
+</div>
+<div id="ref-bib-data-eckel-exceptions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[153] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java</em>, 4-я изд.
+2015, сс. 365–367.</div>
+</div>
+<div id="ref-bib-ctx-objects-eckel-lifetime" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[154] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Глава 2: области
+видимости и время жизни объектов</em>, 4, полное. Санкт-Петербург:
+Питер, 2015, сс. 75–76.</div>
+</div>
+<div id="ref-bib-ctx-objects-eckel-composition" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[155] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Глава 7:
+синтаксис композиции</em>, 4, полное. Санкт-Петербург: Питер, 2015, с.
+206.</div>
+</div>
+<div id="ref-bib-ctx-objects-eckel-interface-boundary" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[156] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Глава 9:
+отделение интерфейса от реализации</em>, 4, полное. Санкт-Петербург:
+Питер, 2015, с. 270.</div>
+</div>
+<div id="ref-bib-objects-eckel-access" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[157] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Инициализация и
+ограничение доступа</em>, 4, полное. Санкт-Петербург: Питер, 2015, сс.
+143, 197–198.</div>
+</div>
+<div id="ref-bib-objects-eckel-interfaces" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[158] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Интерфейсы и
+отделение реализации</em>, 4, полное. Санкт-Петербург: Питер, 2015, сс.
+266, 270.</div>
+</div>
+<div id="ref-bib-objects-eckel-reuse" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[159] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Повторное
+использование классов</em>, 4, полное. Санкт-Петербург: Питер, 2015, сс.
+206, 220.</div>
+</div>
+<div id="ref-bib-objects-eckel-polymorphism" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[160] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Полиморфные
+вызовы и расширяемость</em>, 4, полное. Санкт-Петербург: Питер, 2015,
+сс. 243–244.</div>
+</div>
+<div id="ref-bib-objects-eckel-constructor-polymorphism" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[161] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Полиморфные
+методы в конструкторах</em>, 4, полное. Санкт-Петербург: Питер, 2015, с.
+256.</div>
+</div>
+<div id="ref-bib-objects-eckel-generics" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[162] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Простые
+обобщения и миграционная совместимость</em>, 4, полное. Санкт-Петербург:
+Питер, 2015, сс. 501–503, 530–531.</div>
+</div>
+<div id="ref-bib-objects-eckel-references" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[163] </div><div class="csl-right-inline">Б. Эккель, <em>Философия Java. Ссылки и время
+жизни объектов</em>, 4, полное. Санкт-Петербург: Питер, 2015, сс. 70,
+74–75.</div>
+</div>
+<div id="ref-bib-fnd-hotspot-performance" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[164] </div><div class="csl-right-inline"><em>Java HotSpot Virtual Machine Performance
+Enhancements</em>. Oracle, 2025. Просмотрено: 15.10.2026. [Онлайн].
+Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/vm/java-hotspot-virtual-machine-performance-enhancements.html">https://docs.oracle.com/en/java/javase/25/vm/java-hotspot-virtual-machine-performance-enhancements.html</a></div>
+</div>
+<div id="ref-bib-objects-jls-access" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[165] </div><div class="csl-right-inline"><em>Java Language Specification, Java SE 25.
+Access Control</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн].
+Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-6.html#jls-6.6">https://docs.oracle.com/javase/specs/jls/se25/html/jls-6.html#jls-6.6</a></div>
+</div>
+<div id="ref-bib-objects-jls-data-classes" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[166] </div><div class="csl-right-inline"><em>Java Language Specification, Java SE 25.
+Enum, Record, and Sealed Types</em>. Oracle, 2025. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html</a></div>
+</div>
+<div id="ref-bib-objects-jls-overriding" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[167] </div><div class="csl-right-inline"><em>Java Language Specification, Java SE 25.
+Inheritance, Overriding, and Hiding</em>. Oracle, 2025. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.8">https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.8</a></div>
+</div>
+<div id="ref-bib-java-api-25" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[168] </div><div class="csl-right-inline"><em>Java Platform, Standard Edition 25 API
+Specification</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн].
+Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/index.html">https://docs.oracle.com/en/java/javase/25/docs/api/index.html</a></div>
+</div>
+<div id="ref-bib-fnd-gc-introduction" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[169] </div><div class="csl-right-inline"><em>Java Platform, Standard Edition HotSpot
+Virtual Machine Garbage Collection Tuning Guide. Introduction</em>.
+Oracle, 2025. Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/gctuning/introduction-garbage-collection-tuning.html">https://docs.oracle.com/en/java/javase/25/gctuning/introduction-garbage-collection-tuning.html</a></div>
+</div>
+<div id="ref-bib-data-arraylist-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[170] </div><div class="csl-right-inline"><em>Java SE 25 API Specification:
+ArrayList</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн].
+Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayList.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayList.html</a></div>
+</div>
+<div id="ref-bib-data-autocloseable-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[171] </div><div class="csl-right-inline"><em>Java SE 25 API Specification:
+AutoCloseable</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн].
+Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/AutoCloseable.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/AutoCloseable.html</a></div>
+</div>
+<div id="ref-bib-data-comparator-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[172] </div><div class="csl-right-inline"><em>Java SE 25 API Specification:
+Comparator</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн].
+Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Comparator.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Comparator.html</a></div>
+</div>
+<div id="ref-bib-data-deque-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[173] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Deque</em>.
+Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Deque.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Deque.html</a></div>
+</div>
+<div id="ref-bib-data-files-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[174] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Files</em>.
+Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html</a></div>
+</div>
+<div id="ref-bib-data-list-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[175] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: List</em>.
+Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html</a></div>
+</div>
+<div id="ref-bib-data-map-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[176] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Map</em>.
+Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html</a></div>
+</div>
+<div id="ref-bib-data-object-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[177] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Object</em>.
+Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html</a></div>
+</div>
+<div id="ref-bib-data-path-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[178] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Path</em>.
+Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Path.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Path.html</a></div>
+</div>
+<div id="ref-bib-data-stream-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[179] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Stream</em>.
+Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html</a></div>
+</div>
+<div id="ref-bib-context-stream-semantics" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[180] </div><div class="csl-right-inline"><em>Java SE 25 API: java.util.stream — Stream
+Operations and Pipelines; Non-interference; Side-effects</em>. Oracle,
+2025. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html</a></div>
+</div>
+<div id="ref-bib-context-printstream" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[181] </div><div class="csl-right-inline"><em>Java SE 25 API: PrintStream — Class
+Description and checkError()</em>. Oracle, 2025. Просмотрено:
+12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/PrintStream.html#checkError()">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/PrintStream.html#checkError()</a></div>
+</div>
+<div id="ref-bib-exceptions-throwable-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[182] </div><div class="csl-right-inline"><em>Java SE 25 API: Throwable, причина и
+подавленные исключения</em>. Oracle, 2025. Просмотрено: 17.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Throwable.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Throwable.html</a></div>
+</div>
+<div id="ref-bib-exceptions-closeable-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[183] </div><div class="csl-right-inline"><em>Java SE 25 API: интерфейс Closeable</em>.
+Oracle, 2025. Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Closeable.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Closeable.html</a></div>
+</div>
+<div id="ref-bib-fnd-arrays-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[184] </div><div class="csl-right-inline"><em>Java SE 25 API. Arrays</em>. Oracle, 2025.
+Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Arrays.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Arrays.html</a></div>
+</div>
+<div id="ref-bib-fnd-character-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[185] </div><div class="csl-right-inline"><em>Java SE 25 API. Character</em>. Oracle,
+2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Character.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Character.html</a></div>
+</div>
+<div id="ref-bib-objects-object-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[186] </div><div class="csl-right-inline"><em>Java SE 25 API. Class Object</em>. Oracle,
+2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html</a></div>
+</div>
+<div id="ref-bib-text-matcher" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[187] </div><div class="csl-right-inline"><em>Java SE 25 API. Matcher: полное совпадение,
+поиск и состояние</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн].
+Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/Matcher.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/Matcher.html</a></div>
+</div>
+<div id="ref-bib-fnd-math-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[188] </div><div class="csl-right-inline"><em>Java SE 25 API. Math</em>. Oracle, 2025.
+Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Math.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Math.html</a></div>
+</div>
+<div id="ref-bib-fnd-math-abs" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[189] </div><div class="csl-right-inline"><em>Java SE 25 API. Math.abs(int)</em>. Oracle,
+2025. Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Math.html#abs(int)">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Math.html#abs(int)</a></div>
+</div>
+<div id="ref-bib-fnd-normalizer-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[190] </div><div class="csl-right-inline"><em>Java SE 25 API. Normalizer</em>. Oracle,
+2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/text/Normalizer.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/text/Normalizer.html</a></div>
+</div>
+<div id="ref-bib-ctx-objects-optional" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[191] </div><div class="csl-right-inline"><em>Java SE 25 API. Optional: Class
+description; API Note; empty; of; ofNullable; get; orElse</em>. Oracle,
+2025. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html</a></div>
+</div>
+<div id="ref-bib-text-pattern" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[192] </div><div class="csl-right-inline"><em>Java SE 25 API. Pattern: компиляция
+регулярного выражения</em>. Oracle, 2025. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/Pattern.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/Pattern.html</a></div>
+</div>
+<div id="ref-bib-fnd-reader-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[193] </div><div class="csl-right-inline"><em>Java SE 25 API. Reader.read()</em>. Oracle,
+2025. Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Reader.html#read()">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Reader.html#read()</a></div>
+</div>
+<div id="ref-bib-fnd-string-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[194] </div><div class="csl-right-inline"><em>Java SE 25 API. String</em>. Oracle, 2025.
+Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html</a></div>
+</div>
+<div id="ref-bib-fnd-builder-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[195] </div><div class="csl-right-inline"><em>Java SE 25 API. StringBuilder</em>. Oracle,
+2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/StringBuilder.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/StringBuilder.html</a></div>
+</div>
+<div id="ref-bib-fnd-compact-source" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[196] </div><div class="csl-right-inline"><em>Java SE 25 Language Updates. Compact Source
+Files and Instance Main Methods</em>. Oracle, 2025. Просмотрено:
+15.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/language/compact-source-files-instance-main-methods.html">https://docs.oracle.com/en/java/javase/25/language/compact-source-files-instance-main-methods.html</a></div>
+</div>
+<div id="ref-bib-fnd-java-launcher" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[197] </div><div class="csl-right-inline"><em>Java SE 25 Tool Specifications. The java
+Command</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно
+на: <a href="https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html">https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html</a></div>
+</div>
+<div id="ref-bib-fnd-javac" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[198] </div><div class="csl-right-inline"><em>Java SE 25 Tool Specifications. The javac
+Command</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно
+на: <a href="https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html">https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html</a></div>
+</div>
+<div id="ref-bib-fnd-jpackage" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[199] </div><div class="csl-right-inline"><em>Java SE 25 Tool Specifications. The
+jpackage Command</em>. Oracle, 2025. Просмотрено: 15.10.2026. [Онлайн].
+Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/specs/man/jpackage.html">https://docs.oracle.com/en/java/javase/25/docs/specs/man/jpackage.html</a></div>
+</div>
+<div id="ref-bib-fnd-jls-invocation" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[200] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE
+25</em>. Oracle, 2025. Просмотрено: 15.10.2026. [Онлайн]. Доступно на:
+<a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.12.4.5">https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.12.4.5</a></div>
+</div>
+<div id="ref-bib-data-jls-exceptions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[201] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25
+Edition: Exceptions, Chapter 11</em>. Oracle, 2025. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html</a></div>
+</div>
+<div id="ref-bib-data-jls-lambdas" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[202] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25
+Edition: Lambda Expressions, §15.27</em>. Oracle, 2025. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.27">https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.27</a></div>
+</div>
+<div id="ref-bib-data-jls-resources" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[203] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25
+Edition: try-with-resources, §14.20.3</em>. Oracle, 2025. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3">https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3</a></div>
+</div>
+<div id="ref-bib-fnd-jls-arrays" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[204] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE
+25. Arrays</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн].
+Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-10.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-10.html</a></div>
+</div>
+<div id="ref-bib-fnd-jls-statements" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[205] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE
+25. Blocks, Statements, and Patterns</em>. Oracle, 2025. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html</a></div>
+</div>
+<div id="ref-bib-fnd-jls-conversions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[206] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE
+25. Conversions and Contexts</em>. Oracle, 2025. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html</a></div>
+</div>
+<div id="ref-bib-fnd-jls-evaluation" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[207] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE
+25. Evaluation Order</em>. Oracle, 2025. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.7">https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.7</a></div>
+</div>
+<div id="ref-bib-fnd-jls-floating" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[208] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE
+25. Floating-point Expressions</em>. Oracle, 2025. Просмотрено:
+15.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.4">https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.4</a></div>
+</div>
+<div id="ref-bib-fnd-jls-launch" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[209] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE
+25. Java Virtual Machine Startup</em>. Oracle, 2025. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html#jls-12.1">https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html#jls-12.1</a></div>
+</div>
+<div id="ref-bib-fnd-jls-methods" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[210] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE
+25. Method Declarations</em>. Oracle, 2025. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4">https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4</a></div>
+</div>
+<div id="ref-bib-fnd-jls-arithmetic" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[211] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE
+25. Multiplicative and Additive Operators</em>. Oracle, 2025.
+Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.17">https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.17</a></div>
+</div>
+<div id="ref-bib-jvms-25" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[212] </div><div class="csl-right-inline"><em>The Java Virtual Machine Specification,
+Java SE 25 Edition</em>. Oracle, 2025. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jvms/se25/html/index.html">https://docs.oracle.com/javase/specs/jvms/se25/html/index.html</a></div>
+</div>
+<div id="ref-bib-jvms-generic-signatures" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[213] </div><div class="csl-right-inline"><em>The Java Virtual Machine Specification,
+Java SE 25 Edition. Раздел 4.7.9</em>. Oracle, 2025. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html#jvms-4.7.9">https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html#jvms-4.7.9</a></div>
+</div>
+<div id="ref-bib-fnd-jvms-loading" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[214] </div><div class="csl-right-inline"><em>The Java Virtual Machine Specification,
+Java SE 25. Loading, Linking, and Initializing</em>. Oracle, 2025.
+Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-5.html">https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-5.html</a></div>
+</div>
+<div id="ref-bib-fnd-jvms-structure" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[215] </div><div class="csl-right-inline"><em>The Java Virtual Machine Specification,
+Java SE 25. The Structure of the Java Virtual Machine</em>. Oracle,
+2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html">https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html</a></div>
+</div>
+<div id="ref-bib-fnd-javap" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[216] </div><div class="csl-right-inline"><em>The javap Command</em>. Oracle, 2025.
+Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/specs/man/javap.html">https://docs.oracle.com/en/java/javase/25/docs/specs/man/javap.html</a></div>
+</div>
+<div id="ref-bib-equality-openjdk-hashmap" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[217] </div><div class="csl-right-inline"><span>«Исходный код HashMap в OpenJDK
+25»</span>. OpenJDK, 2025. Просмотрено: 17.10.2026. [Онлайн]. Доступно
+на: <a href="https://github.com/openjdk/jdk/blob/jdk-25-ga/src/java.base/share/classes/java/util/HashMap.java">https://github.com/openjdk/jdk/blob/jdk-25-ga/src/java.base/share/classes/java/util/HashMap.java</a></div>
+</div>
+<div id="ref-bib-equality-arrays-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[218] </div><div class="csl-right-inline"><em>Спецификация API Java SE 25: Arrays</em>.
+Oracle, 2025. Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Arrays.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Arrays.html</a></div>
+</div>
+<div id="ref-bib-generics-number-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[219] </div><div class="csl-right-inline"><em>Спецификация API Java SE 25: Number</em>.
+Oracle, 2025. Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Number.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Number.html</a></div>
+</div>
+<div id="ref-bib-equality-record-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[220] </div><div class="csl-right-inline"><em>Спецификация API Java SE 25: Record</em>.
+Oracle, 2025. Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Record.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Record.html</a></div>
+</div>
+<div id="ref-bib-exceptions-jls-declarations" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[221] </div><div class="csl-right-inline"><em>Спецификация языка Java SE 25: исключения
+при переопределении и конструкторы</em>. Oracle, 2025. Просмотрено:
+17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html</a></div>
+</div>
+<div id="ref-bib-exceptions-jls-completion" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[222] </div><div class="csl-right-inline"><em>Спецификация языка Java SE 25: нормальное и
+резкое завершение, try-finally</em>. Oracle, 2025. Просмотрено:
+17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.2">https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.2</a></div>
+</div>
+<div id="ref-bib-interfaces-jls-methods" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[223] </div><div class="csl-right-inline"><span>«Спецификация языка Java SE 25.
+Интерфейсы»</span>. Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html</a></div>
+</div>
+<div id="ref-bib-ctx-csharp-types" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[224] </div><div class="csl-right-inline"><em>C# language specification. Types, §§8.1,
+8.3.1, 8.3.4–8.3.5, 8.3.13</em>. Microsoft. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/types">https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/types</a></div>
+</div>
+<div id="ref-bib-context-cpp-map" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[225] </div><div class="csl-right-inline"><em>C++ Working Draft: [map.modifiers] —
+try_emplace</em>. ISO C++. Просмотрено: 12.10.2026. [Онлайн]. Доступно
+на: <a href="https://eel.is/c++draft/map.modifiers">https://eel.is/c++draft/map.modifiers</a></div>
+</div>
+<div id="ref-bib-fnd-cpp-array" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[226] </div><div class="csl-right-inline"><span>«Class template array: Overview»</span>.
+Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://eel.is/c++draft/array.overview">https://eel.is/c++draft/array.overview</a></div>
+</div>
+<div id="ref-bib-context-collections-design" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[227] </div><div class="csl-right-inline"><em>Collections Framework Overview:
+Introduction and Design Goals</em>. Oracle. Просмотрено: 12.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/collections/overview.html">https://docs.oracle.com/javase/8/docs/technotes/guides/collections/overview.html</a></div>
+</div>
+<div id="ref-bib-ctx-clr-cts" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[228] </div><div class="csl-right-inline"><span>«Common Type System. Types in .NET;
+Structures»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://learn.microsoft.com/en-us/dotnet/standard/base-types/common-type-system">https://learn.microsoft.com/en-us/dotnet/standard/base-types/common-type-system</a></div>
+</div>
+<div id="ref-bib-fnd-cpp-references" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[229] </div><div class="csl-right-inline"><span>«Declarations: References»</span>.
+Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://eel.is/c++draft/dcl.ref">https://eel.is/c++draft/dcl.ref</a></div>
+</div>
+<div id="ref-bib-context-go-errors" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[230] </div><div class="csl-right-inline"><em>Effective Go: Errors</em>. The Go Project.
+Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://go.dev/doc/effective_go#errors">https://go.dev/doc/effective_go#errors</a></div>
+</div>
+<div id="ref-bib-ctx-unicode-utf" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[231] </div><div class="csl-right-inline"><span>«FAQ: UTF-8, UTF-16, UTF-32 and BOM.
+UTF-16 FAQ: What is UTF-16?; What are surrogates?»</span> Просмотрено:
+12.10.2026. [Онлайн]. Доступно на: <a href="https://www.unicode.org/faq/utf_bom.html">https://www.unicode.org/faq/utf_bom.html</a></div>
+</div>
+<div id="ref-bib-fnd-idea-application" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[232] </div><div class="csl-right-inline"><span>«IntelliJ IDEA. Run/debug configuration:
+Application»</span>. Просмотрено: 16.10.2026. [Онлайн]. Доступно на: <a href="https://www.jetbrains.com/help/idea/run-debug-configuration-java-application.html">https://www.jetbrains.com/help/idea/run-debug-configuration-java-application.html</a></div>
+</div>
+<div id="ref-bib-fnd-idea-sdk" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[233] </div><div class="csl-right-inline"><span>«IntelliJ IDEA. SDKs»</span>.
+Просмотрено: 16.10.2026. [Онлайн]. Доступно на: <a href="https://www.jetbrains.com/help/idea/sdk.html">https://www.jetbrains.com/help/idea/sdk.html</a></div>
+</div>
+<div id="ref-bib-objects-jep395" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[234] </div><div class="csl-right-inline"><span>«JEP 395: Records»</span>. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://openjdk.org/jeps/395">https://openjdk.org/jeps/395</a></div>
+</div>
+<div id="ref-bib-fnd-jmh-modes" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[235] </div><div class="csl-right-inline"><span>«JMH Samples.
+JMHSample_02_BenchmarkModes»</span>. Просмотрено: 16.10.2026. [Онлайн].
+Доступно на: <a href="https://github.com/openjdk/jmh/blob/master/jmh-samples/src/main/java/org/openjdk/jmh/samples/JMHSample_02_BenchmarkModes.java">https://github.com/openjdk/jmh/blob/master/jmh-samples/src/main/java/org/openjdk/jmh/samples/JMHSample_02_BenchmarkModes.java</a></div>
+</div>
+<div id="ref-bib-fnd-jmh-dead-code" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[236] </div><div class="csl-right-inline"><span>«JMH Samples.
+JMHSample_08_DeadCode»</span>. Просмотрено: 15.10.2026. [Онлайн].
+Доступно на: <a href="https://github.com/openjdk/jmh/blob/master/jmh-samples/src/main/java/org/openjdk/jmh/samples/JMHSample_08_DeadCode.java">https://github.com/openjdk/jmh/blob/master/jmh-samples/src/main/java/org/openjdk/jmh/samples/JMHSample_08_DeadCode.java</a></div>
+</div>
+<div id="ref-bib-fnd-jmh-loops" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[237] </div><div class="csl-right-inline"><span>«JMH Samples. JMHSample_11_Loops»</span>.
+Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://github.com/openjdk/jmh/blob/master/jmh-samples/src/main/java/org/openjdk/jmh/samples/JMHSample_11_Loops.java">https://github.com/openjdk/jmh/blob/master/jmh-samples/src/main/java/org/openjdk/jmh/samples/JMHSample_11_Loops.java</a></div>
+</div>
+<div id="ref-bib-ctx-objects-kotlin-null" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[238] </div><div class="csl-right-inline"><span>«Kotlin Documentation. Null safety:
+Nullable types and non-nullable types; Safe call operator; Not-null
+assertion operator»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно
+на: <a href="https://kotlinlang.org/docs/null-safety.html">https://kotlinlang.org/docs/null-safety.html</a></div>
+</div>
+<div id="ref-bib-context-python-open" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[239] </div><div class="csl-right-inline"><em>Python 3.14 Documentation: Built-in
+Functions — open</em>. Python Software Foundation. Просмотрено:
+12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.python.org/3.14/library/functions.html#open">https://docs.python.org/3.14/library/functions.html#open</a></div>
+</div>
+<div id="ref-bib-context-python-dataclass" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[240] </div><div class="csl-right-inline"><em>Python 3.14 Documentation: dataclasses —
+Module Contents, eq and unsafe_hash</em>. Python Software Foundation.
+Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.python.org/3.14/library/dataclasses.html">https://docs.python.org/3.14/library/dataclasses.html</a></div>
+</div>
+<div id="ref-bib-context-python-dictionaries" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[241] </div><div class="csl-right-inline"><em>Python 3.14 Tutorial: §5.5
+Dictionaries</em>. Python Software Foundation. Просмотрено: 12.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.python.org/3.14/tutorial/datastructures.html#dictionaries">https://docs.python.org/3.14/tutorial/datastructures.html#dictionaries</a></div>
+</div>
+<div id="ref-bib-records-python-dataclasses" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[242] </div><div class="csl-right-inline"><em>Python 3.15 Documentation. dataclasses —
+Data Classes</em>. Python Software Foundation. Просмотрено: 17.10.2026.
+[Онлайн]. Доступно на: <a href="https://docs.python.org/3/library/dataclasses.html">https://docs.python.org/3/library/dataclasses.html</a></div>
+</div>
+<div id="ref-bib-fnd-python-binding" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[243] </div><div class="csl-right-inline"><span>«Python Language Reference. Execution
+model»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.python.org/3/reference/executionmodel.html">https://docs.python.org/3/reference/executionmodel.html</a></div>
+</div>
+<div id="ref-bib-fnd-python-numbers" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[244] </div><div class="csl-right-inline"><span>«Python Standard Library. Numeric
+types»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.python.org/3/library/stdtypes.html#numeric-types-int-float-complex">https://docs.python.org/3/library/stdtypes.html#numeric-types-int-float-complex</a></div>
+</div>
+<div id="ref-bib-fnd-nullness-checker" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[245] </div><div class="csl-right-inline"><em>The Checker Framework Manual. Nullness
+Checker</em>. Checker Framework. Просмотрено: 15.10.2026. [Онлайн].
+Доступно на: <a href="https://checkerframework.org/manual/#nullness-checker">https://checkerframework.org/manual/#nullness-checker</a></div>
+</div>
+<div id="ref-bib-context-go-defer" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[246] </div><div class="csl-right-inline"><em>The Go Programming Language Specification:
+Defer statements</em>. The Go Project. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://go.dev/ref/spec#Defer_statements">https://go.dev/ref/spec#Defer_statements</a></div>
+</div>
+<div id="ref-bib-context-python-with" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[247] </div><div class="csl-right-inline"><em>The Python Language Reference, §8.5: The
+with statement</em>. Python Software Foundation. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.python.org/3/reference/compound_stmts.html#the-with-statement">https://docs.python.org/3/reference/compound_stmts.html#the-with-statement</a></div>
+</div>
+<div id="ref-bib-context-rust-ownership" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[248] </div><div class="csl-right-inline"><em>The Rust Programming Language, §4.1: What
+is Ownership?</em> The Rust Project. Просмотрено: 11.10.2026. [Онлайн].
+Доступно на: <a href="https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html">https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html</a></div>
+</div>
+<div id="ref-bib-context-rust-result" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[249] </div><div class="csl-right-inline"><em>The Rust Programming Language, §9.2:
+Recoverable Errors with Result</em>. The Rust Project. Просмотрено:
+11.10.2026. [Онлайн]. Доступно на: <a href="https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html">https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html</a></div>
+</div>
+<div id="ref-bib-context-rust-panic" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[250] </div><div class="csl-right-inline"><em>The Rust Programming Language, §9.3: To
+panic! or Not to panic!</em> The Rust Project. Просмотрено: 11.10.2026.
+[Онлайн]. Доступно на: <a href="https://doc.rust-lang.org/book/ch09-03-to-panic-or-not-to-panic.html">https://doc.rust-lang.org/book/ch09-03-to-panic-or-not-to-panic.html</a></div>
+</div>
+<div id="ref-bib-records-cpp-copy" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[251] </div><div class="csl-right-inline"><em>Working Draft, Standard for Programming
+Language C++. Copy and move constructors</em>. ISO/IEC JTC1/SC22/WG21.
+Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://eel.is/c++draft/class.copy.ctor">https://eel.is/c++draft/class.copy.ctor</a></div>
+</div>
+<div id="ref-bib-records-cpp-comparison" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[252] </div><div class="csl-right-inline"><em>Working Draft, Standard for Programming
+Language C++. Equality operator</em>. ISO/IEC JTC1/SC22/WG21.
+Просмотрено: 17.10.2026. [Онлайн]. Доступно на: <a href="https://eel.is/c++draft/class.eq">https://eel.is/c++draft/class.eq</a></div>
+</div>
+<div id="ref-bib-fnd-cpp-arithmetic" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[253] </div><div class="csl-right-inline"><span>«Working Draft, Standard for Programming
+Language C++. Expressions»</span>. Просмотрено: 11.10.2026. [Онлайн].
+Доступно на: <a href="https://eel.is/c++draft/expr.mul">https://eel.is/c++draft/expr.mul</a></div>
+</div>
+</div>
+
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Скопировано");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Скопировано");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation" aria-label="Страница">
+  <div class="nav-page nav-page-previous">
+      <a href="./system-practice.html" class="pagination-link" aria-label="Подготовка в System Practice">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Подготовка в System Practice</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/master/theory/references.qmd" class="toc-action"><i class="bi bi-github"></i>Показать код</a></li><li><a href="https://github.com/BSU-RFCT-Afonenko-Courses/Java/issues/new" class="toc-action"><i class="bi empty"></i>Сообщить о проблеме</a></li></ul></div></div></div></footer>
+<script data-qrc-navigation>// Опубликованные цели сохраняют штатные ID Quarto. Обработчик раскрывает
+// существующее представление документа, не вводя учебных ролей и новых ID.
+(() => {
+  if (new URL(location.href).searchParams.has("print-pdf")) return;
+  let navigation = 0;
+
+  function hashId(url) {
+    try { return decodeURIComponent(url.hash.replace(/^#\/?/, "")); }
+    catch { return ""; } // Некорректный фрагмент внешней ссылки не должен нарушать работу страницы.
+  }
+
+  function ancestors(target) {
+    const nodes = [];
+    for (let node = target; node; node = node.parentElement) nodes.push(node);
+    return nodes.reverse();
+  }
+
+  function openDisclosures(nodes, scroll) {
+    for (const node of nodes) {
+      if (node.matches("details")) node.open = true;
+      if (!node.matches(".collapse:not(.show)")) continue;
+
+      // Bootstrap управляет анимацией и состоянием переключателя.
+      // В темах без Bootstrap блок раскрывается напрямую; details работает штатно.
+      const Collapse = window.bootstrap?.Collapse;
+      if (Collapse) {
+        node.addEventListener("shown.bs.collapse", scroll, { once: true });
+        Collapse.getOrCreateInstance(node, { toggle: false }).show();
+      } else {
+        node.classList.add("show");
+        if (!node.id) continue;
+        for (const trigger of document.querySelectorAll("[aria-controls]")) {
+          if (!trigger.getAttribute("aria-controls").split(/\s+/).includes(node.id)) continue;
+          trigger.setAttribute("aria-expanded", "true");
+          trigger.classList.remove("collapsed");
+        }
+      }
+    }
+  }
+
+  function revealTarget(id) {
+    const target = id && document.getElementById(id);
+    if (!target) return;
+    const current = ++navigation;
+    const scroll = () => requestAnimationFrame(() => {
+      // Завершение анимации не должно возвращать прокрутку после нового перехода.
+      if (current === navigation) target.scrollIntoView({ block: "nearest" });
+    });
+    const nodes = ancestors(target);
+    const section = target.closest("section.slide");
+    const reveal = window.Reveal;
+    if (section && target !== section && reveal?.isReady()) {
+      const position = reveal.getIndices(section);
+      reveal.slide(position.h, position.v);
+      // У вложенных фрагментов могут различаться индексы. Показываем
+      // все фрагменты вокруг цели; нулевой индекс также допустим.
+      const indices = nodes.filter(node => node.matches(".fragment[data-fragment-index]"))
+        .map(node => Number(node.getAttribute("data-fragment-index")))
+        .filter(Number.isFinite);
+      if (indices.length) reveal.navigateFragment(Math.max(...indices));
+    }
+    openDisclosures(nodes, scroll);
+    scroll();
+  }
+
+  function initialTarget() {
+    const url = new URL(location.href);
+    revealTarget(url.searchParams.get("qrc-target") || hashId(url));
+  }
+
+  function ready() {
+    if (window.Reveal && !window.Reveal.isReady()) window.Reveal.on("ready", initialTarget);
+    else initialTarget();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", ready, { once: true });
+  else ready();
+
+  // qrc-target обрабатывается только при входе на страницу. Повторное применение
+  // при смене фрагмента URL возвращало бы преподавателя к цели после перехода вперёд.
+  window.addEventListener("hashchange", () => revealTarget(hashId(new URL(location.href))));
+  document.addEventListener("click", event => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.defaultPrevented) return;
+    const link = event.target.closest?.("a[href]");
+    if (!link || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
+    const url = new URL(link.href, location.href);
+    if (url.origin !== location.origin || url.pathname !== location.pathname || url.search !== location.search) return;
+    // Повторный переход по тому же фрагменту URL не вызывает hashchange.
+    // Раскрываем цель после штатной навигации и обработчика Revealjs.
+    queueMicrotask(() => revealTarget(hashId(url)));
+  }, true);
+})();
+</script>
+<script id="course-site-navigation">(function(){
+const base={"courseUrl":"https://bsu-rfct-afonenko-courses.github.io/Java/","rootHref":"../"};
+if(base){
+ const course=new URL(base.courseUrl); course.pathname=course.pathname.replace(/\/$/,'')+'/';
+ const root=new URL(base.rootHref,document.baseURI);
+ for(const link of document.querySelectorAll('#quarto-header a[href],#quarto-sidebar a[href],.quarto-navbar a[href],.quarto-sidebar a[href]')){
+  const url=new URL(link.href,document.baseURI);
+  if(url.origin===course.origin&&url.pathname.startsWith(course.pathname)){
+   let path=url.pathname.slice(course.pathname.length); if(!path||path.endsWith('/')) path+='index.html';
+   link.href=new URL(path+url.search+url.hash,root).href;
+  }
+ }
+}
+const targets=[].map(path=>new URL(path,document.baseURI));
+for(const link of document.querySelectorAll('a[href]')){
+ const url=new URL(link.href,document.baseURI);
+ if(targets.some(target=>target.origin===url.origin&&(
+  target.pathname===url.pathname || target.pathname.endsWith('/index.html')&&target.pathname.slice(0,-'index.html'.length)===url.pathname
+ ))){
+  link.target='_blank'; link.rel=[...new Set([...link.rel.split(/\s+/).filter(Boolean),'noopener','noreferrer'])].join(' ');
+ }
+}
+})();</script>
+</body></html>

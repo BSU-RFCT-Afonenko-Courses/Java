@@ -1,0 +1,8 @@
+class MissingThrows {
+    static class EmptyException extends Exception {}
+    static int take(boolean empty) throws EmptyException {
+        if (empty) throw new EmptyException();
+        return 7;
+    }
+    static int forward() { return take(false); }
+}

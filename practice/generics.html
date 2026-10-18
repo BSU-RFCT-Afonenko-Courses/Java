@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="ru"><head>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
+<script src="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
+<link href="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.11.5">
+
+  <title>Введения к лабораторным Java – Обобщённые алгоритмы и контейнеры: введение к работе</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-3ce18430e1250f8c2f6f98be2c9c7b18.css">
+  <link rel="stylesheet" href="assets/lesson.css">
+  
+  <style>.task-items li:has(.course-assignment-omitted):not(:has(a)){display:none}</style>
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/course-navigation/navigation.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <script id="course-navigation-context" type="application/json">{"links":[{"href":"../index.html","path":"index.html","scope":"course","text":"Курс Java"},{"href":"index.html","path":"index.html","scope":"project","text":"Все введения"},{"href":"../theory/index.html","path":"theory/index.html","scope":"course","text":"Теория"},{"href":"https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/master/practice/generics.qmd","scope":"repository","text":"Исходный код"},{"href":"https://github.com/BSU-RFCT-Afonenko-Courses/Java/issues/new","scope":"repository","text":"Сообщить об ошибке"}]}</script>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Обобщённые алгоритмы и контейнеры: введение к работе</h1>
+
+<div class="quarto-title-authors">
+</div>
+
+</section>
+<section id="sec-p-generics" class="title-slide slide level1 center">
+<h1>Обобщённые алгоритмы и контейнеры</h1>
+<ul>
+<li>Параметр типа, обобщённый контейнер и проверка общего тела.</li>
+<li>Обмен элементов, сравнение и поиск максимума диапазона.</li>
+<li>Объект арифметики и сумма попарных произведений.</li>
+<li>Передача правила для подсчёта по свойству.</li>
+<li>Очередь и стек: тип элементов, вместимость и отказ.</li>
+<li>Массивное хранилище, wildcard и проверяемые исключения.</li>
+</ul>
+<p>Лабораторная работа: <a data-qrc-custom="true" data-qrc-ref="tasks:sec-lab-generics" data-qrc-style="default" class="qrc-link" href="../tasks/labs/generics.html#sec-lab-generics">обобщённые алгоритмы и контейнеры</a>. Теория: <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-parameters" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-parameters.html#sec-t-type-parameters"><span>Глава 15</span></a>. Программы и команды: <a data-qrc-custom="false" data-qrc-ref="handbook:sec-h-generic-methods-examples" data-qrc-style="default" class="qrc-link" href="../handbook/entries/generic-methods.html#sec-h-generic-methods-examples">Полные примеры и запуск</a>.</p>
+<aside class="notes">
+<p>Предложить вспомнить один вызов из теории, в котором значение возвращается с тем же типом, с которым его передали. Вопрос о нужной операции возвращать к конкретной строке каждого разбираемого примера.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+
+<section>
+<section id="sec-p-generics-object" class="title-slide slide level1 center">
+<h1>Чтение сохранённой строки</h1>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a aria-label="1"></a><span class="dt">final</span> <span class="kw">class</span> ObjectBox <span class="op">{</span></span>
+<span id="cb1-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">Object</span> value<span class="op">;</span></span>
+<span id="cb1-3"><a aria-label="3"></a>    <span class="fu">ObjectBox</span><span class="op">(</span><span class="bu">Object</span> value<span class="op">)</span> <span class="op">{</span> <span class="kw">this</span><span class="op">.</span><span class="fu">value</span> <span class="op">=</span> value<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb1-4"><a aria-label="4"></a>    <span class="bu">Object</span> <span class="fu">get</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> value<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb1-5"><a aria-label="5"></a><span class="op">}</span></span>
+<span id="cb1-6"><a aria-label="6"></a></span>
+<span id="cb1-7"><a aria-label="7"></a>ObjectBox title <span class="op">=</span> <span class="kw">new</span> <span class="fu">ObjectBox</span><span class="op">(</span><span class="st">"Java"</span><span class="op">);</span></span>
+<span id="cb1-8"><a aria-label="8"></a><span class="bu">String</span> text <span class="op">=</span> <span class="op">(</span><span class="bu">String</span><span class="op">)</span> title<span class="op">.</span><span class="fu">get</span><span class="op">();</span></span>
+<span id="cb1-9"><a aria-label="9"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>text<span class="op">.</span><span class="fu">length</span><span class="op">());</span> <span class="co">// 4</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Почему клиент восстанавливает <code>String</code> приведением? В объявлении <code>get</code> указан только <code>Object</code>. При замене содержимого на <code>25</code> приведение всё ещё скомпилируется, но при чтении возникнет <code>ClassCastException</code>.</p>
+<p>Клиенту заранее известно, что здесь нужна строка. <strong>Как связать это требование с созданием коробки и типом результата <code>get()</code>?</strong></p>
+<aside class="notes">
+<p>Повторить опыт из <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-parameters-object" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-parameters.html#sec-t-type-parameters-object">Контейнер с типом Object</a>. Попросить указать объявление, по которому компилятор определяет тип title.get(). Обсудить, почему успешная запись строки сама не меняет это объявление.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-p-generics-parameters" class="slide level2 continuation">
+<h2>Один параметр в трёх местах</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb2-1"><a aria-label="1"></a><span class="dt">final</span> <span class="kw">class</span> <span class="bu">Box</span><span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb2-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">final</span> T value<span class="op">;</span></span>
+<span id="cb2-3"><a aria-label="3"></a>    <span class="bu">Box</span><span class="op">(</span>T value<span class="op">)</span> <span class="op">{</span> <span class="kw">this</span><span class="op">.</span><span class="fu">value</span> <span class="op">=</span> value<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb2-4"><a aria-label="4"></a>    T <span class="fu">get</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> value<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb2-5"><a aria-label="5"></a><span class="op">}</span></span>
+<span id="cb2-6"><a aria-label="6"></a></span>
+<span id="cb2-7"><a aria-label="7"></a><span class="bu">Box</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> title <span class="op">=</span> <span class="kw">new</span> <span class="bu">Box</span><span class="op">&lt;&gt;(</span><span class="st">"Java"</span><span class="op">);</span></span>
+<span id="cb2-8"><a aria-label="8"></a><span class="bu">String</span> text <span class="op">=</span> title<span class="op">.</span><span class="fu">get</span><span class="op">();</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Одно имя <code>T</code> связывает принимаемое значение, поле и результат чтения. При <code>Box&lt;String&gt;</code> все три места согласованы со <code>String</code>, поэтому <code>Box&lt;String&gt; title = new Box&lt;&gt;(25)</code> отвергается уже при компиляции.</p>
+<p>Для чисел выбираем <code>Box&lt;Integer&gt;</code> и сохраняем то же тело класса. <code>get()</code> использует <code>T</code>, объявленный у <code>Box</code>; собственного параметра у этого метода нет. Разбор: <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-parameters-type-parameter" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-parameters.html#sec-t-type-parameters-type-parameter">Параметр типа</a>.</p>
+<aside class="notes">
+<p>Попросить проследить путь строки от аргумента конструктора к результату. Если заменить T на Object только в результате get, клиент снова потеряет строковый тип.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-p-generics-body" class="slide level2 continuation">
+<h2>Проверка общего тела</h2>
+<p>Вставим в <code>Box&lt;T&gt;</code> ещё один метод:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb3-1"><a aria-label="1"></a><span class="dt">int</span> <span class="fu">length</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> value<span class="op">.</span><span class="fu">length</span><span class="op">();</span> <span class="op">}</span> <span class="co">// ошибка компиляции</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Почему создание <code>Box&lt;String&gt;</code> не делает этот метод допустимым? Тело класса должно работать для каждого разрешённого аргумента типа. У <code>T</code> здесь есть только граница <code>Object</code>, которая не предоставляет <code>length()</code>.</p>
+<p>Разберите две проверки: какие операции разрешены автору <code>Box&lt;T&gt;</code> и какое значение разрешено клиенту <code>Box&lt;String&gt;</code>?</p>
+<p>Объявление связывает типы. При помещении в коробку объект не копируется. Если коробка хранит изменяемую книгу, обе ссылки по-прежнему ведут к этой книге: <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-parameters-sharing" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-parameters.html#sec-t-type-parameters-sharing">Общий объект в контейнере</a>.</p>
+<aside class="notes">
+<p>Разместить ошибочный метод в отдельной копии коробки. До компиляции сравнить два разрешённых применения, Box<string> и Box<integer>. Доступ к конкретной строковой операции вернуть клиенту после get().</integer></string></p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-p-generics-swap" class="title-slide slide level1 center">
+<h1>Обмен элементов</h1>
+<p>Теперь нужно поменять местами два элемента массива. Какие действия над самими значениями нужны при переходе от строк к целым числам?</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb4-1"><a aria-label="1"></a><span class="dt">static</span> <span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="dt">void</span> <span class="fu">swap</span><span class="op">(</span>T<span class="op">[]</span> values<span class="op">,</span> <span class="dt">int</span> i<span class="op">,</span> <span class="dt">int</span> j<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-2"><a aria-label="2"></a>    T saved <span class="op">=</span> values<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb4-3"><a aria-label="3"></a>    values<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> values<span class="op">[</span>j<span class="op">];</span></span>
+<span id="cb4-4"><a aria-label="4"></a>    values<span class="op">[</span>j<span class="op">]</span> <span class="op">=</span> saved<span class="op">;</span></span>
+<span id="cb4-5"><a aria-label="5"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Сохраняем одну ссылку и переставляем две ссылки. Сравнивать или складывать значения не требуется, поэтому у <code>T</code> нет дополнительной границы. Тело подходит и <code>String[]</code>, и <code>Integer[]</code>.</p>
+<p>Параметр объявлен самим методом: он связывает массив с временным значением при каждом вызове. Массив существует, индексы допустимы. Разбор: <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-parameters-swap" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-parameters.html#sec-t-type-parameters-swap">Перестановка элементов</a>.</p>
+<aside class="notes">
+<p>Проследить обмен на names = {“Ada”, “Lin”}, затем на {4, 9}. Попросить объяснить, зачем saved сохраняется до первой записи в массив. Ни один шаг не создаёт копию объекта элемента.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-p-generics-comparison" class="slide level2 continuation">
+<h2>Выбор большего</h2>
+<p>Для выбора большего уже нужно узнать порядок. Что позволит общему коду сравнить два <code>T</code>, если оператор <code>&gt;</code> для произвольных объектов не определён?</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb5-1"><a aria-label="1"></a><span class="dt">static</span> <span class="op">&lt;</span>T <span class="kw">extends</span> <span class="bu">Comparable</span><span class="op">&lt;</span>T<span class="op">&gt;&gt;</span> T <span class="fu">larger</span><span class="op">(</span>T left<span class="op">,</span> T right<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-2"><a aria-label="2"></a>    <span class="cf">return</span> left<span class="op">.</span><span class="fu">compareTo</span><span class="op">(</span>right<span class="op">)</span> <span class="op">&gt;=</span> <span class="dv">0</span> <span class="op">?</span> left <span class="op">:</span> right<span class="op">;</span></span>
+<span id="cb5-3"><a aria-label="3"></a><span class="op">}</span></span>
+<span id="cb5-4"><a aria-label="4"></a></span>
+<span id="cb5-5"><a aria-label="5"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"Ada"</span><span class="op">.</span><span class="fu">compareTo</span><span class="op">(</span><span class="st">"Lin"</span><span class="op">));</span> <span class="co">// -11</span></span>
+<span id="cb5-6"><a aria-label="6"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="fu">larger</span><span class="op">(</span><span class="st">"Ada"</span><span class="op">,</span> <span class="st">"Lin"</span><span class="op">));</span> <span class="co">// Lin</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Граница предоставляет метод <code>compareTo</code>. Его результат — <code>int</code>: знак сообщает порядок, поэтому его можно сравнить с нулём. Здесь <code>-11 &lt; 0</code>, выбирается правый аргумент; при равенстве сохраняется левый.</p>
+<p>Аргументы отличны от <code>null</code>, сравнение задаёт согласованный порядок. Разбор: <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-parameters-comparison-sign" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-parameters.html#sec-t-type-parameters-comparison-sign">Сравнение значений</a>.</p>
+<aside class="notes">
+<p>Спросить, почему проверка == -1 не подходит для результата сравнения. Вернуть обсуждение к выбору одного из исходных объектов.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-p-generics-candidate" class="slide level2 continuation">
+<h2>Кандидат на максимум</h2>
+<p>Как использовать выбор большего для списка <code>[4, 9, 2]</code>? После сравнения <code>4</code> и <code>9</code> нужно сохранить <code>9</code> для сравнения с <code>2</code>. Назовём сохранённого кандидата <code>best</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb6-1"><a aria-label="1"></a>T best <span class="op">=</span> values<span class="op">.</span><span class="fu">get</span><span class="op">(</span><span class="dv">0</span><span class="op">);</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Начинаем с первого элемента: он уже имеет нужный тип и принадлежит данным. Числовой ноль не подходит строкам и может оказаться больше всех отрицательных чисел. Для пустого списка первый кандидат отсутствует.</p>
+<p>Следующий <code>value</code> сравниваем с <code>best</code>; это прежний выбор из двух:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb7-1"><a aria-label="1"></a><span class="cf">if</span> <span class="op">(</span>value<span class="op">.</span><span class="fu">compareTo</span><span class="op">(</span>best<span class="op">)</span> <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> best <span class="op">=</span> value<span class="op">;</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Если значения равны, кандидат остаётся прежним. После шага он максимален среди всех уже просмотренных элементов.</p>
+<aside class="notes">
+<p>Попросить назвать best после сравнения с 9, затем с 2. Сопоставить шаг с best = larger(best, value): ветвь равенства оставляет тот же объект. После каждого шага попросить назвать уже просмотренные элементы и указать среди них максимальный.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-p-generics-maximum" class="slide level2 continuation">
+<h2>Повторение шага</h2>
+<p>Первый элемент уже стал кандидатом. Поэтому обход начинается с индекса 1:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb8-1"><a aria-label="1"></a><span class="dt">static</span> <span class="op">&lt;</span>T <span class="kw">extends</span> <span class="bu">Comparable</span><span class="op">&lt;</span>T<span class="op">&gt;&gt;</span> T <span class="fu">maximum</span><span class="op">(</span><span class="bu">List</span><span class="op">&lt;</span>T<span class="op">&gt;</span> values<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-2"><a aria-label="2"></a>    <span class="cf">if</span> <span class="op">(</span>values<span class="op">.</span><span class="fu">isEmpty</span><span class="op">())</span> <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"Empty list"</span><span class="op">);</span></span>
+<span id="cb8-3"><a aria-label="3"></a>    T best <span class="op">=</span> values<span class="op">.</span><span class="fu">get</span><span class="op">(</span><span class="dv">0</span><span class="op">);</span></span>
+<span id="cb8-4"><a aria-label="4"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;</span> values<span class="op">.</span><span class="fu">size</span><span class="op">();</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb8-5"><a aria-label="5"></a>        T value <span class="op">=</span> values<span class="op">.</span><span class="fu">get</span><span class="op">(</span>i<span class="op">);</span></span>
+<span id="cb8-6"><a aria-label="6"></a>        <span class="cf">if</span> <span class="op">(</span>value<span class="op">.</span><span class="fu">compareTo</span><span class="op">(</span>best<span class="op">)</span> <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> best <span class="op">=</span> value<span class="op">;</span></span>
+<span id="cb8-7"><a aria-label="7"></a>    <span class="op">}</span></span>
+<span id="cb8-8"><a aria-label="8"></a>    <span class="cf">return</span> best<span class="op">;</span></span>
+<span id="cb8-9"><a aria-label="9"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>get(i)</code> читает элемент, <code>size()</code> ограничивает обход. Когда просмотрен весь список, свойство <code>best</code> даёт искомый максимум. Строгое <code>&gt; 0</code> сохраняет первый из равных максимумов.</p>
+<p>Список и элементы отличны от <code>null</code>, порядок согласован. Разбор: <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-parameters-maximum" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-parameters.html#sec-t-type-parameters-maximum">Поиск максимума</a>.</p>
+<p>Для <code>n</code> элементов выполняется <code>n - 1</code> сравнений. Оценка общего времени зависит также от стоимости <code>get(i)</code> и самого <code>compareTo</code>.</p>
+<aside class="notes">
+<p>До чтения цикла предложить назвать первый ещё не просмотренный индекс. Проверить рассуждение на одном элементе: цикл не нужен, кандидат уже является ответом. Отказ пустого списка относится к этому методу.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-p-generics-range" class="slide level2 continuation">
+<h2>Диапазон самостоятельного поиска</h2>
+<p>В массиве <code>{4, 9, 2, 7}</code> диапазон <code>[1, 3)</code> содержит <code>9</code> и <code>2</code>: индекс <code>1</code> включён, индекс <code>3</code> исключён. Диапазон <code>[2, 3)</code> содержит ровно один элемент <code>2</code>.</p>
+<p>Какие позиции следует просмотреть для <code>[2, 4)</code>? В нём максимум <code>7</code>, хотя максимум всего массива — <code>9</code>.</p>
+<p>В <a data-qrc-custom="true" data-qrc-ref="tasks:exr-range-maximum" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-range-maximum">самостоятельном задании</a> диапазон заранее допустим и непуст: программная проверка этих предпосылок не требуется. У массива размер доступен через <code>length</code>, у списка — через <code>size()</code>.</p>
+<p>Условие допускает обе изученные границы <code>Comparable&lt;T&gt;</code> и <code>Comparable&lt;? super T&gt;</code>, а при нескольких максимумах — любой из них.</p>
+<aside class="notes">
+<p>Предложить отметить позиции ещё одного полуинтервала и назвать ожидаемый результат до реализации. При вопросе об унаследованном сравнении перейти к <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-relations-comparison-target" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-relations.html#sec-t-type-relations-comparison-target">Граница унаследованного сравнения</a>.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-p-generics-operations" class="title-slide slide level1 center">
+<h1>Сумма попарных произведений</h1>
+<p>Вернёмся к <code>dot</code> из теории. Для <code>[1, 2]</code> и <code>[3, 4]</code> нужно получить <code>1·3 + 2·4 = 11</code>. Для <code>[1+i, 2]</code> и <code>[3, 4−i]</code> — <code>(1+i)·3 + 2·(4−i) = 11+i</code>.</p>
+<p>Какие действия нужны одному циклу для обоих случаев?</p>
+<ul>
+<li>Получить начальный ноль суммы.</li>
+<li>Умножить элементы с одним индексом.</li>
+<li>Прибавить произведение к накопленному результату.</li>
+</ul>
+<p>У произвольного <code>T</code> нет операторов <code>+</code> и <code>*</code>. Передадим объект, который умеет выполнять эти действия над выбранным типом. Здесь сумма вычисляется <strong>без комплексного сопряжения</strong>.</p>
+<p>Разбор: <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-parameters-operations" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-parameters.html#sec-t-type-parameters-operations">Контракт арифметических операций</a>.</p>
+<aside class="notes">
+<p>Попросить назвать три действия по формуле до перехода к интерфейсу. Уточнить, что Number предоставляет преобразования чисел, а нужные здесь сложение и умножение с результатом T требуют собственного контракта.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-p-generics-arithmetic" class="slide level2 continuation">
+<h2>Контракт операций</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb9-1"><a aria-label="1"></a><span class="kw">interface</span> Arithmetic<span class="op">&lt;</span>T<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb9-2"><a aria-label="2"></a>    T <span class="fu">zero</span><span class="op">();</span></span>
+<span id="cb9-3"><a aria-label="3"></a>    T <span class="fu">add</span><span class="op">(</span>T left<span class="op">,</span> T right<span class="op">);</span></span>
+<span id="cb9-4"><a aria-label="4"></a>    T <span class="fu">multiply</span><span class="op">(</span>T left<span class="op">,</span> T right<span class="op">);</span></span>
+<span id="cb9-5"><a aria-label="5"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Одно <code>T</code> связывает операнды и результат: произведение можно прибавить к сумме, а новую сумму — использовать на следующем шаге.</p>
+<p><code>DoubleArithmetic</code> реализует эти действия над <code>Double</code>: <code>zero()</code> возвращает <code>0.0</code>, методы <code>add</code> и <code>multiply</code> используют <code>+</code> и <code>*</code>. <code>ComplexArithmetic</code> возвращает <code>Complex</code> и вычисляет его действительную и мнимую части.</p>
+<p>В этом опыте списки, элементы, объект арифметики и результаты операций отличны от <code>null</code>; операции не изменяют переданные элементы.</p>
+<aside class="notes">
+<p>Попросить проследить тип результата multiply до аргумента add. При необходимости открыть реализацию арифметики в теории: знание конкретных числовых операций находится именно в этих классах.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-p-generics-dot" class="slide level2 continuation">
+<h2>Построение общего цикла</h2>
+<p>Почему начинать нужно с <code>zero()</code>? У суммы ещё нет слагаемых; добавление первого произведения должно дать это произведение. Для пустых векторов останется тот же ноль.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb10-1"><a aria-label="1"></a>T result <span class="op">=</span> arithmetic<span class="op">.</span><span class="fu">zero</span><span class="op">();</span></span>
+<span id="cb10-2"><a aria-label="2"></a><span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> left<span class="op">.</span><span class="fu">size</span><span class="op">();</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb10-3"><a aria-label="3"></a>    T term <span class="op">=</span> arithmetic<span class="op">.</span><span class="fu">multiply</span><span class="op">(</span>left<span class="op">.</span><span class="fu">get</span><span class="op">(</span>i<span class="op">),</span> right<span class="op">.</span><span class="fu">get</span><span class="op">(</span>i<span class="op">));</span></span>
+<span id="cb10-4"><a aria-label="4"></a>    result <span class="op">=</span> arithmetic<span class="op">.</span><span class="fu">add</span><span class="op">(</span>result<span class="op">,</span> term<span class="op">);</span></span>
+<span id="cb10-5"><a aria-label="5"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Это тело <code>dot</code> после проверки равенства длин. При разных длинах некоторому элементу не хватает пары. Длины проверяет программа; параметр <code>T</code> связывает типы элементов, промежуточных значений и результата.</p>
+<p>Для действительных входов <code>[1, 2]</code> и <code>[3, 4]</code> сумма меняется <code>0 → 3 → 11</code>. Как пройдёт тот же цикл с комплексной арифметикой?</p>
+<aside class="notes">
+<p>Предложить найти в теле каждую операцию объявленного контракта. Для Double операции выполняются с обычным округлением double; значения 0.0, 3.0 и 11.0 в этом опыте представимы точно.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-p-generics-dot-calls" class="slide level2 continuation">
+<h2>Смена арифметики</h2>
+<p>В первом вызове <code>T</code> связывает элементы и арифметику для <code>Double</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb11-1"><a aria-label="1"></a><span class="dt">double</span> real <span class="op">=</span> <span class="fu">dot</span><span class="op">(</span><span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="fl">1.0</span><span class="op">,</span> <span class="fl">2.0</span><span class="op">),</span> <span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="fl">3.0</span><span class="op">,</span> <span class="fl">4.0</span><span class="op">),</span></span>
+<span id="cb11-2"><a aria-label="2"></a>                  <span class="kw">new</span> <span class="fu">DoubleArithmetic</span><span class="op">());</span> <span class="co">// 11.0</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Второй вызов использует <code>record Complex(double re, double im)</code> из теории:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb12-1"><a aria-label="1"></a>Complex value <span class="op">=</span> <span class="fu">dot</span><span class="op">(</span></span>
+<span id="cb12-2"><a aria-label="2"></a>    <span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Complex</span><span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">),</span> <span class="kw">new</span> <span class="fu">Complex</span><span class="op">(</span><span class="dv">2</span><span class="op">,</span> <span class="dv">0</span><span class="op">)),</span></span>
+<span id="cb12-3"><a aria-label="3"></a>    <span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Complex</span><span class="op">(</span><span class="dv">3</span><span class="op">,</span> <span class="dv">0</span><span class="op">),</span> <span class="kw">new</span> <span class="fu">Complex</span><span class="op">(</span><span class="dv">4</span><span class="op">,</span> <span class="op">-</span><span class="dv">1</span><span class="op">)),</span></span>
+<span id="cb12-4"><a aria-label="4"></a>    <span class="kw">new</span> <span class="fu">ComplexArithmetic</span><span class="op">());</span> <span class="co">// части результата: 11.0 и 1.0</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Произведения равны <code>3+3i</code> и <code>8−2i</code>; накопленная сумма меняется <code>0 → 3+3i → 11+i</code>. Изменились данные и объект с операциями. Цикл по-прежнему умножает пару элементов и прибавляет результат.</p>
+<aside class="notes">
+<p>Сопоставить каждый шаг комплексного вычисления со строкой того же цикла. Попросить указать аргумент вызова, который выбирает реализацию операций.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-p-generics-dot-law" class="slide level2 continuation">
+<h2>Начальный элемент вычисления</h2>
+<p>Пусть другой объект арифметики возвращает <code>1.0</code> из <code>zero()</code>, сохраняя обычные сложение и умножение. Все сигнатуры по-прежнему используют <code>Double</code>. Какой результат даст прежний цикл?</p>
+<p>Для <code>[1, 2]</code> и <code>[3, 4]</code> получится <code>1 → 4 → 12</code>. Для двух пустых списков получится <code>1</code>. Оба результата имеют нужный тип. Начальное значение нарушает смысл суммы: оно должно оставлять первое слагаемое неизменным.</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Условие</th>
+<th>Чем обеспечивается в <code>dot</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Типы элементов и операций согласованы</td>
+<td><code>T</code> и <code>Arithmetic&lt;T&gt;</code></td>
+</tr>
+<tr class="even">
+<td>У каждого элемента есть пара</td>
+<td>Проверка равенства длин</td>
+</tr>
+<tr class="odd">
+<td>Начальное значение ведёт себя как ноль суммы</td>
+<td>Договор реализации арифметики</td>
+</tr>
+</tbody>
+</table>
+<aside class="notes">
+<p>Сначала получить прогноз без запуска, затем открыть WrongZeroArithmetic в полном примере java/dot. Попросить назвать, какое из трёх условий проверил бы компилятор и какие остались свойствами выполнения и операций.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-p-generics-property" class="slide level2 continuation">
+<h2>Правило для подсчёта</h2>
+<p>Обобщённый метод подсчёта получает правило выбора элементов. Например, одно правило выбирает нечётные целые числа, другое — строки длиннее трёх символов.</p>
+<p>Что должен узнать общий алгоритм о каждом элементе? Достаточно ответа, удовлетворяет ли он свойству. Выбор свойства передадим отдельному объекту, как в <code>dot</code> передавали конкретную арифметику.</p>
+<p>Определение нечётности и обращение к длине строки принадлежат разным правилам. Обход и подсчёт должны работать с любым переданным правилом по его общему контракту.</p>
+<p><a data-qrc-custom="true" data-qrc-ref="tasks:exr-property-count" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-property-count">Условие подсчёта</a> задаёт форму операции проверки и необходимые демонстрации. Задание включает интерфейс, классы правил и метод подсчёта.</p>
+<aside class="notes">
+<p>Предложить назвать ещё одно свойство строки и описать ожидаемый ответ для одного значения.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-p-generics-container" class="title-slide slide level1 center">
+<h1>Действия пользователя контейнера</h1>
+<p>Теперь значения нужно хранить между вызовами. Пользователь помещает <code>A</code>, затем <code>B</code>, после чего просит извлечь один элемент. Тип содержимого определяет тип аргумента и результата, а выбор контейнера — порядок.</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Контейнер</th>
+<th>Помещение</th>
+<th>Извлечение</th>
+<th>Первым вернётся</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Очередь</td>
+<td><code>void put(T value)</code></td>
+<td><code>T get()</code></td>
+<td><code>A</code>: первый помещённый</td>
+</tr>
+<tr class="even">
+<td>Стек</td>
+<td><code>void push(T value)</code></td>
+<td><code>T pop()</code></td>
+<td><code>B</code>: последний помещённый</td>
+</tr>
+</tbody>
+</table>
+<p>Для строк <code>T = String</code>, для целых чисел — <code>T = Integer</code>. Извлечение возвращает значение и удаляет его из контейнера.</p>
+<p>Как изменится доступное место после извлечения? Что должна означать попытка добавить значение, если место уже занято целиком?</p>
+<aside class="notes">
+<p>Связать тип аргумента и результата с разобранным ранее примером коробки. Очередь сохраняет порядок FIFO, стек — LIFO.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-p-generics-state" class="slide level2 continuation">
+<h2>Вместимость и отказ</h2>
+<p>Пусть вместимость равна двум. После добавления <code>A</code> и <code>B</code> свободного места нет. Попытка добавить <code>C</code> должна сообщить отказ и сохранить прежние значения в прежнем порядке.</p>
+<p>Теперь извлечём один элемент и снова добавим <code>C</code>:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Контейнер</th>
+<th>Извлечено</th>
+<th>Порядок следующих извлечений</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Очередь</td>
+<td><code>A</code></td>
+<td><code>B</code>, затем <code>C</code></td>
+</tr>
+<tr class="even">
+<td>Стек</td>
+<td><code>B</code></td>
+<td><code>C</code>, затем <code>A</code></td>
+</tr>
+</tbody>
+</table>
+<p>Успешное извлечение освобождает место. У пустого контейнера нет значения для извлечения — нужен второй вид отказа.</p>
+<p>Внутреннее размещение элементов и вспомогательные поля выберите самостоятельно при реализации.</p>
+<aside class="notes">
+<p>Предложить продолжить каждый опыт до пустого состояния и назвать ожидаемые значения и отказы.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-p-generics-array" class="slide level2 continuation">
+<h2>Массив для выбранного типа</h2>
+<p>В этой работе хранилищем служит переданный конструктору массив. Поле <code>T[]</code> допустимо. Создание <code>new T[n]</code> запрещено: параметр <code>T</code> не предоставляет фактический тип компонента для нового массива.</p>
+<p>Какой массив позволит контейнеру <code>Number</code> хранить и целые, и дробные числа?</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb13-1"><a aria-label="1"></a><span class="bu">Number</span><span class="op">[]</span> safe <span class="op">=</span> <span class="kw">new</span> <span class="bu">Number</span><span class="op">[</span><span class="dv">2</span><span class="op">];</span></span>
+<span id="cb13-2"><a aria-label="2"></a><span class="bu">Number</span><span class="op">[]</span> narrow <span class="op">=</span> <span class="kw">new</span> <span class="bu">Integer</span><span class="op">[</span><span class="dv">2</span><span class="op">];</span></span>
+<span id="cb13-3"><a aria-label="3"></a>safe<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> <span class="fl">2.5</span><span class="op">;</span></span>
+<span id="cb13-4"><a aria-label="4"></a><span class="co">// narrow[0] = 2.5; // ArrayStoreException</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>Number[]</code> принимает <code>Double</code>, а фактический <code>Integer[]</code> отвергает его при записи. Поэтому условие требует совпадения типа компонента массива с аргументом типа контейнера; проверять это программно не требуется.</p>
+<p>Причины: <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-relations-runtime-limits" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-relations.html#sec-t-type-relations-runtime-limits">Ограничения выполняемого представления</a>. Форма хранилища: <a data-qrc-custom="false" data-qrc-ref="handbook:sec-h-generic-classes-array" data-qrc-style="default" class="qrc-link" href="../handbook/entries/generic-classes.html#sec-h-generic-classes-array">Массив как хранилище</a>.</p>
+<aside class="notes">
+<p>Тип переменной narrow разрешает запись Number; отказ создаёт проверка типа компонента самого массива Integer[]. Условия также оговаривают положительную вместимость и дальнейшее использование массива только контейнером.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-p-generics-wildcard" class="slide level2 continuation">
+<h2>Тип списка и доступные действия</h2>
+<p>Массив <code>Integer[]</code> разрешено рассматривать как <code>Number[]</code>, но запись <code>Double</code> завершилась отказом. Какая запись запрещается заранее у списка?</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb14-1"><a aria-label="1"></a><span class="bu">List</span><span class="op">&lt;</span><span class="bu">Integer</span><span class="op">&gt;</span> integers <span class="op">=</span> <span class="kw">new</span> <span class="bu">ArrayList</span><span class="op">&lt;&gt;(</span><span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">));</span></span>
+<span id="cb14-2"><a aria-label="2"></a><span class="co">// List&lt;Number&gt; numbers = integers; // ошибка компиляции</span></span>
+<span id="cb14-3"><a aria-label="3"></a><span class="bu">List</span><span class="op">&lt;?</span> <span class="kw">extends</span> <span class="bu">Number</span><span class="op">&gt;</span> source <span class="op">=</span> integers<span class="op">;</span></span>
+<span id="cb14-4"><a aria-label="4"></a><span class="bu">Number</span> first <span class="op">=</span> source<span class="op">.</span><span class="fu">get</span><span class="op">(</span><span class="dv">0</span><span class="op">);</span></span>
+<span id="cb14-5"><a aria-label="5"></a><span class="co">// source.add(2.5);                // ошибка компиляции</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Через <code>List&lt;Number&gt;</code> можно было бы записать <code>Double</code> в список целых. <code>? extends Number</code> сохраняет безопасное чтение. Неизвестный аргумент не позволяет выбрать для добавления значение, отличное от <code>null</code>.</p>
+<p>Что изменит <code>source.clear()</code>? Удаление допускается по типам; в данном <code>ArrayList</code> оно очистит тот же объект, видимый через <code>integers</code>.</p>
+<aside class="notes">
+<p>Нужны импорты java.util.List и java.util.ArrayList. Повторить рассуждение об инвариантности из <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-relations-subtyping" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-relations.html#sec-t-type-relations-subtyping">Инвариантность параметризованных типов</a>; показать различие между допустимостью присваивания и проверкой массивной записи. Уточнить: неизвестность аргумента не означает неизменяемость списка.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-p-generics-checked" class="title-slide slide level1 center">
+<h1>Сообщение об отказе</h1>
+<p>Как сообщить вызывающему коду, что значение не удалось получить? Вспомним <code>take</code>: успешный вызов возвращает <code>7</code>, другой путь создаёт отказ.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb15-1"><a aria-label="1"></a><span class="dt">static</span> <span class="kw">class</span> EmptyException <span class="kw">extends</span> <span class="bu">Exception</span> <span class="op">{</span></span>
+<span id="cb15-2"><a aria-label="2"></a>    <span class="fu">EmptyException</span><span class="op">(</span><span class="bu">String</span> message<span class="op">)</span> <span class="op">{</span> <span class="kw">super</span><span class="op">(</span>message<span class="op">);</span> <span class="op">}</span></span>
+<span id="cb15-3"><a aria-label="3"></a><span class="op">}</span></span>
+<span id="cb15-4"><a aria-label="4"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">take</span><span class="op">(</span><span class="dt">boolean</span> empty<span class="op">)</span> <span class="kw">throws</span> EmptyException <span class="op">{</span></span>
+<span id="cb15-5"><a aria-label="5"></a>    <span class="cf">if</span> <span class="op">(</span>empty<span class="op">)</span> <span class="cf">throw</span> <span class="kw">new</span> <span class="fu">EmptyException</span><span class="op">(</span><span class="st">"empty"</span><span class="op">);</span></span>
+<span id="cb15-6"><a aria-label="6"></a>    <span class="cf">return</span> <span class="dv">7</span><span class="op">;</span></span>
+<span id="cb15-7"><a aria-label="7"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>throw</code> выполняется в ветви отказа. <code>throws</code> в объявлении сообщает клиенту, что такой выход возможен, и требует обработать или передать проверяемое исключение. Само объявление отказа не создаёт.</p>
+<p>Проверяемый отказ операции: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-exceptions-early-checked" data-qrc-style="default" class="qrc-link" href="../theory/chapters/exceptions.html#sec-j25-theory-exceptions-early-checked">Проверяемый отказ операции</a>.</p>
+<aside class="notes">
+<p>Класс исключения и take — члены EarlyCheckedDemo. Предложить пройти ветви с false и true, назвав для каждой результат действия. Контейнер применит то же средство к своему состоянию.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sec-p-generics-checked-client" class="slide level2 continuation">
+<h2>Реакция вызывающего кода</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb16-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">forward</span><span class="op">(</span><span class="dt">boolean</span> empty<span class="op">)</span> <span class="kw">throws</span> EmptyException <span class="op">{</span></span>
+<span id="cb16-2"><a aria-label="2"></a>    <span class="cf">return</span> <span class="fu">take</span><span class="op">(</span>empty<span class="op">);</span></span>
+<span id="cb16-3"><a aria-label="3"></a><span class="op">}</span></span>
+<span id="cb16-4"><a aria-label="4"></a></span>
+<span id="cb16-5"><a aria-label="5"></a><span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb16-6"><a aria-label="6"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="fu">forward</span><span class="op">(</span><span class="kw">true</span><span class="op">));</span></span>
+<span id="cb16-7"><a aria-label="7"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"после успешного вызова"</span><span class="op">);</span></span>
+<span id="cb16-8"><a aria-label="8"></a><span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span>EmptyException failure<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-9"><a aria-label="9"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>failure<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span> <span class="co">// empty</span></span>
+<span id="cb16-10"><a aria-label="10"></a><span class="op">}</span></span>
+<span id="cb16-11"><a aria-label="11"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"дальше"</span><span class="op">);</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>forward</code> передаёт отказ клиенту, <code>catch</code> выбирает реакцию. В этом вызове печать после успеха пропускается; после обработчика выводится «дальше».</p>
+<p>В контейнерной задаче клиент после отказа должен увидеть прежнее состояние. Исключение само ничего не откатывает: порядок действий внутри операции должен обеспечить это требование.</p>
+<aside class="notes">
+<p>Метод forward расположен в EarlyCheckedDemo, try/catch — внутри main. Определить, где компилятор потребует throws, если убрать обработчик.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section id="sec-p-generics-work" class="title-slide slide level1 center">
+<h1>Самостоятельная работа</h1>
+<p>Примените разобранные связи типов и правила состояния к новым условиям:</p>
+<ul>
+<li><a data-qrc-custom="true" data-qrc-ref="tasks:exr-range-maximum" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-range-maximum">Максимум диапазона</a>: выделить область поиска и сохранить тип результата.</li>
+<li><a data-qrc-custom="true" data-qrc-ref="tasks:exr-property-count" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-property-count">Подсчёт по свойству</a>: отделить общее действие от правила для конкретного типа элементов.</li>
+<li><a data-qrc-custom="true" data-qrc-ref="tasks:exr-generic-queue" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-generic-queue">Очередь</a> <strong>либо</strong> <a data-qrc-custom="true" data-qrc-ref="tasks:exr-generic-stack" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-generic-stack">стек</a>: связать тип содержимого, порядок извлечения и состояние при успешных действиях и отказах.</li>
+</ul>
+<p>Полный состав и представление результата — в <a data-qrc-custom="true" data-qrc-ref="tasks:sec-lab-generics" data-qrc-style="default" class="qrc-link" href="../tasks/labs/generics.html#sec-lab-generics">лабораторной работе</a>. В пределах условий выберите устройство программы самостоятельно. Перед реализацией сформулируйте ожидаемый результат своих примеров.</p>
+<p>Формы объявлений: <a data-qrc-custom="true" data-qrc-ref="handbook:sec-h-generic-methods" data-qrc-style="default" class="qrc-link" href="../handbook/entries/generic-methods.html#sec-h-generic-methods">методы</a> и <a data-qrc-custom="true" data-qrc-ref="handbook:sec-h-generic-classes" data-qrc-style="default" class="qrc-link" href="../handbook/entries/generic-classes.html#sec-h-generic-classes">классы</a>.</p>
+<aside class="notes">
+<p>Предпосылки из условий не превращать в дополнительные проверки входа. Уточнить, что оба метода обязательны, а из двух контейнеров выбирается один.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+
+<section id="источники" class="title-slide slide level1 unnumbered scrollable smaller">
+<h1>Источники</h1>
+<p>Правила параметров типов и обобщённых методов: <span class="citation" data-cites="bib-jls-type-variables bib-jls-generic-methods"><a href="#/источники" role="doc-biblioref" onclick="">[1]</a>, <a href="#/источники" role="doc-biblioref" onclick="">[2]</a></span>. Первичные источники задач указаны в карточках работы.</p>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-bib-jls-type-variables" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Раздел 4.4</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.4">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.4</a></div>
+</div>
+<div id="ref-bib-jls-generic-methods" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Раздел 8.4.4</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.4">https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.4</a></div>
+</div>
+</div>
+
+
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/course-navigation/model.js"></script>
+  <script src="site_libs/revealjs/plugin/course-navigation/ui.js"></script>
+  <script src="site_libs/revealjs/plugin/course-navigation/plugin.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":false,"delayInit":true,"keyboard":false,"openSlideNumber":false},
+'scrollActivationWidth': 0,
+'courseNav': {"sidebar":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 800,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, CourseNavigation, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Скопировано");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Скопировано");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+
+<script data-qrc-navigation>// Опубликованные цели сохраняют штатные ID Quarto. Обработчик раскрывает
+// существующее представление документа, не вводя учебных ролей и новых ID.
+(() => {
+  if (new URL(location.href).searchParams.has("print-pdf")) return;
+  let navigation = 0;
+
+  function hashId(url) {
+    try { return decodeURIComponent(url.hash.replace(/^#\/?/, "")); }
+    catch { return ""; } // Некорректный фрагмент внешней ссылки не должен нарушать работу страницы.
+  }
+
+  function ancestors(target) {
+    const nodes = [];
+    for (let node = target; node; node = node.parentElement) nodes.push(node);
+    return nodes.reverse();
+  }
+
+  function openDisclosures(nodes, scroll) {
+    for (const node of nodes) {
+      if (node.matches("details")) node.open = true;
+      if (!node.matches(".collapse:not(.show)")) continue;
+
+      // Bootstrap управляет анимацией и состоянием переключателя.
+      // В темах без Bootstrap блок раскрывается напрямую; details работает штатно.
+      const Collapse = window.bootstrap?.Collapse;
+      if (Collapse) {
+        node.addEventListener("shown.bs.collapse", scroll, { once: true });
+        Collapse.getOrCreateInstance(node, { toggle: false }).show();
+      } else {
+        node.classList.add("show");
+        if (!node.id) continue;
+        for (const trigger of document.querySelectorAll("[aria-controls]")) {
+          if (!trigger.getAttribute("aria-controls").split(/\s+/).includes(node.id)) continue;
+          trigger.setAttribute("aria-expanded", "true");
+          trigger.classList.remove("collapsed");
+        }
+      }
+    }
+  }
+
+  function revealTarget(id) {
+    const target = id && document.getElementById(id);
+    if (!target) return;
+    const current = ++navigation;
+    const scroll = () => requestAnimationFrame(() => {
+      // Завершение анимации не должно возвращать прокрутку после нового перехода.
+      if (current === navigation) target.scrollIntoView({ block: "nearest" });
+    });
+    const nodes = ancestors(target);
+    const section = target.closest("section.slide");
+    const reveal = window.Reveal;
+    if (section && target !== section && reveal?.isReady()) {
+      const position = reveal.getIndices(section);
+      reveal.slide(position.h, position.v);
+      // У вложенных фрагментов могут различаться индексы. Показываем
+      // все фрагменты вокруг цели; нулевой индекс также допустим.
+      const indices = nodes.filter(node => node.matches(".fragment[data-fragment-index]"))
+        .map(node => Number(node.getAttribute("data-fragment-index")))
+        .filter(Number.isFinite);
+      if (indices.length) reveal.navigateFragment(Math.max(...indices));
+    }
+    openDisclosures(nodes, scroll);
+    scroll();
+  }
+
+  function initialTarget() {
+    const url = new URL(location.href);
+    revealTarget(url.searchParams.get("qrc-target") || hashId(url));
+  }
+
+  function ready() {
+    if (window.Reveal && !window.Reveal.isReady()) window.Reveal.on("ready", initialTarget);
+    else initialTarget();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", ready, { once: true });
+  else ready();
+
+  // qrc-target обрабатывается только при входе на страницу. Повторное применение
+  // при смене фрагмента URL возвращало бы преподавателя к цели после перехода вперёд.
+  window.addEventListener("hashchange", () => revealTarget(hashId(new URL(location.href))));
+  document.addEventListener("click", event => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.defaultPrevented) return;
+    const link = event.target.closest?.("a[href]");
+    if (!link || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
+    const url = new URL(link.href, location.href);
+    if (url.origin !== location.origin || url.pathname !== location.pathname || url.search !== location.search) return;
+    // Повторный переход по тому же фрагменту URL не вызывает hashchange.
+    // Раскрываем цель после штатной навигации и обработчика Revealjs.
+    queueMicrotask(() => revealTarget(hashId(url)));
+  }, true);
+})();
+</script>
+<script id="course-site-navigation">(function(){
+const base={"courseUrl":"https://bsu-rfct-afonenko-courses.github.io/Java/","rootHref":"../"};
+if(base){
+ const course=new URL(base.courseUrl); course.pathname=course.pathname.replace(/\/$/,'')+'/';
+ const root=new URL(base.rootHref,document.baseURI);
+ for(const link of document.querySelectorAll('#quarto-header a[href],#quarto-sidebar a[href],.quarto-navbar a[href],.quarto-sidebar a[href]')){
+  const url=new URL(link.href,document.baseURI);
+  if(url.origin===course.origin&&url.pathname.startsWith(course.pathname)){
+   let path=url.pathname.slice(course.pathname.length); if(!path||path.endsWith('/')) path+='index.html';
+   link.href=new URL(path+url.search+url.hash,root).href;
+  }
+ }
+}
+const targets=[].map(path=>new URL(path,document.baseURI));
+for(const link of document.querySelectorAll('a[href]')){
+ const url=new URL(link.href,document.baseURI);
+ if(targets.some(target=>target.origin===url.origin&&(
+  target.pathname===url.pathname || target.pathname.endsWith('/index.html')&&target.pathname.slice(0,-'index.html'.length)===url.pathname
+ ))){
+  link.target='_blank'; link.rel=[...new Set([...link.rel.split(/\s+/).filter(Boolean),'noopener','noreferrer'])].join(' ');
+ }
+}
+})();</script>
+</body></html>

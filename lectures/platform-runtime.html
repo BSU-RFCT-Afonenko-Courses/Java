@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="ru"><head>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
+<script src="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
+<link href="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.11.5">
+
+  <title>Лекции Java – Исполнение программ Java</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-3ce18430e1250f8c2f6f98be2c9c7b18.css">
+  <link rel="stylesheet" href="assets/lesson.css">
+  
+  <style>.task-items li:has(.course-assignment-omitted):not(:has(a)){display:none}</style>
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/course-navigation/navigation.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <script id="course-navigation-context" type="application/json">{"links":[{"href":"../index.html","path":"index.html","scope":"course","text":"Курс Java"},{"href":"index.html","path":"index.html","scope":"project","text":"Все лекции"},{"href":"../theory/index.html","path":"theory/index.html","scope":"course","text":"Теория"},{"href":"https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/master/lectures/platform-runtime.qmd","scope":"repository","text":"Исходный код"},{"href":"https://github.com/BSU-RFCT-Afonenko-Courses/Java/issues/new","scope":"repository","text":"Сообщить об ошибке"}]}</script>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Исполнение программ Java</h1>
+  <p class="subtitle">Платформа, модель JVM, реализация HotSpot</p>
+
+<div class="quarto-title-authors">
+</div>
+
+</section>
+<section id="sec-lecture-platform-runtime" class="title-slide slide level1 center">
+<h1>Переносимость программы</h1>
+<ul>
+<li>Переносимость и промежуточное представление программы.</li>
+<li>Компиляция, запуск и состав платформы Java.</li>
+<li>Модель JVM: загрузка классов, байткод, кадры и куча.</li>
+<li>HotSpot: интерпретация, JIT-компиляция и прогрев.</li>
+<li>Выделение памяти и сборка мусора.</li>
+<li>Числовая семантика, измерение и распространение программы.</li>
+</ul>
+<aside class="notes">
+<p>Попросить назвать привычный результат сборки C++. Зафиксировать различие между передачей исходников и готового исполняемого файла.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+
+<section>
+<section id="sec-lecture-platform-runtime-transfer" class="title-slide slide level1 center">
+<h1>Переносимость кода</h1>
+
+</section>
+<section id="нативный-исполняемый-файл" class="slide level2">
+<h2>Нативный исполняемый файл</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a aria-label="1"></a>исходники C++ → компиляция → объектные файлы</span>
+<span id="cb1-2"><a aria-label="2"></a>             → компоновка → исполняемый файл</span>
+<span id="cb1-3"><a aria-label="3"></a>             → загрузка ОС → инструкции процессора</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>В обычной нативной сборке исполняемый файл использует инструкции процессора и соглашения целевой системы. Для другой платформы может понадобиться новая сборка из тех же исходников.</p>
+</section>
+<section id="промежуточное-представление-java" class="slide level2 continuation">
+<h2>Промежуточное представление Java</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1"><a aria-label="1"></a>Reading.java → javac → Reading.class</span>
+<span id="cb2-2"><a aria-label="2"></a>                          ├→ JVM для одной платформы</span>
+<span id="cb2-3"><a aria-label="3"></a>                          └→ JVM для другой платформы</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Класс содержит инструкции JVM — <strong>байткод</strong>. Реализация JVM для конкретной системы выполняет их, сохраняя правила виртуальной машины. Общей границей становится формат класса. Реализация среды обеспечивает работу с ОС и процессором.</p>
+</section>
+<section id="предпосылки-создания-java" class="slide level2">
+<h2>Предпосылки создания Java</h2>
+<p>В начале 1990-х разработчики Java искали способ выполнять программы на разных устройствах. Затем та же потребность возникла при распространении программ по сети между разными системами.</p>
+<p>В описании Java 1996 года переносимый байткод и одинаковые правила основных типов связываются с выполнением одной программы на разных платформах. <span class="citation" data-cites="bib-fnd-java-whitepaper-portability bib-fnd-schildt-origins"><a href="#/источники" role="doc-biblioref" onclick="">[1]</a>, <a href="#/источники" role="doc-biblioref" onclick="">[3]</a></span></p>
+<aside class="notes">
+<p>Вернуться к схемам «Нативный исполняемый файл» и «Промежуточное представление Java». Предложить найти на них артефакты поставки: нативный исполняемый файл и файл класса. Сопоставить, какая часть каждой схемы зависит от процессора и операционной системы.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-lecture-platform-runtime-toolchain" class="title-slide slide level1 center">
+<h1>Компиляция и запуск</h1>
+
+</section>
+<section id="компактный-исходный-файл" class="slide level2">
+<h2>Компактный исходный файл</h2>
+<p>Сохраним в <code>Hello.java</code>, выберем JDK 25:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb3-1"><a aria-label="1"></a><span class="dt">void</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-2"><a aria-label="2"></a>    IO<span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"Hello"</span><span class="op">);</span></span>
+<span id="cb3-3"><a aria-label="3"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a aria-label="1"></a><span class="ex">java</span> Hello.java</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Вывод — <code>Hello</code>. <code>main</code> задаёт начальное действие, <code>void</code> означает отсутствие возвращаемого значения, <code>IO.println</code> печатает строку. Команда компилирует исходник для этого запуска.</p>
+<aside class="notes">
+<p>Перед опытом проверить выбранную версию <code>java --version</code>. При нескольких установках использовать путь к JDK 25, например <code>/usr/lib/jvm/java-25-openjdk/bin/java Hello.java</code>. Все последующие команды берутся из этого же JDK. Предложить изменить текст и повторить прямой запуск. Компактный файл неявно объявляет класс. Для именованного пакета требуется явное объявление класса.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="суммирование-компонентов-массива" class="slide level2">
+<h2>Суммирование компонентов массива</h2>
+<p>За два дня прочитано <code>5</code> и <code>7</code> страниц. Метод получает массив и возвращает сумму первых двух компонентов:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb5-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">total</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> pages<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-2"><a aria-label="2"></a>    <span class="dt">int</span> sum <span class="op">=</span> pages<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">+</span> pages<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="cb5-3"><a aria-label="3"></a>    <span class="cf">return</span> sum<span class="op">;</span></span>
+<span id="cb5-4"><a aria-label="4"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>int[]</code> обозначает массив целых; <code>pages[0]</code> и <code>pages[1]</code> читают компоненты с индексами <code>0</code> и <code>1</code>. В этом опыте массив существует и содержит два компонента. Ожидаемый результат — <code>12</code>.</p>
+</section>
+<section id="исходный-файл" class="slide level2 continuation">
+<h2>Исходный файл</h2>
+<p>Файл <code>Reading.java</code>; команды далее используют тот же JDK 25:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb6-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">total</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> pages<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-2"><a aria-label="2"></a>    <span class="dt">int</span> sum <span class="op">=</span> pages<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">+</span> pages<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="cb6-3"><a aria-label="3"></a>    <span class="cf">return</span> sum<span class="op">;</span></span>
+<span id="cb6-4"><a aria-label="4"></a><span class="op">}</span></span>
+<span id="cb6-5"><a aria-label="5"></a></span>
+<span id="cb6-6"><a aria-label="6"></a><span class="dt">void</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb6-7"><a aria-label="7"></a>    <span class="dt">int</span><span class="op">[]</span> pages <span class="op">=</span> <span class="op">{</span><span class="dv">5</span><span class="op">,</span> <span class="dv">7</span><span class="op">};</span></span>
+<span id="cb6-8"><a aria-label="8"></a>    <span class="dt">int</span> sum <span class="op">=</span> <span class="fu">total</span><span class="op">(</span>pages<span class="op">);</span></span>
+<span id="cb6-9"><a aria-label="9"></a>    IO<span class="op">.</span><span class="fu">println</span><span class="op">(</span>sum<span class="op">);</span></span>
+<span id="cb6-10"><a aria-label="10"></a>    IO<span class="op">.</span><span class="fu">println</span><span class="op">(</span>sum <span class="op">/</span> <span class="fl">2.0</span><span class="op">);</span></span>
+<span id="cb6-11"><a aria-label="11"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="точка-входа-и-библиотека" class="slide level2 continuation">
+<h2>Точка входа и библиотека</h2>
+<p><code>main</code> создаёт массив, вызывает <code>total</code>, печатает сумму и среднее. Компилятор помещает методы в неявно объявленный класс <code>Reading</code>. Для вызова нестатического <code>main</code> среда создаёт объект этого класса.</p>
+<p>Метод <code>total</code> объявлен <code>static</code>: его вызову отдельный объект не требуется. Параметр <code>pages</code> получает ссылку на массив, <code>return</code> возвращает число. <code>IO.println</code> — обращение к стандартной библиотеке. Правила языка задают смысл выражений; библиотека предоставляет готовые операции; JVM исполняет код классов.</p>
+</section>
+<section id="сохранённый-файл-класса" class="slide level2">
+<h2>Сохранённый файл класса</h2>
+<p>Из каталога с <code>Reading.java</code>, команды JDK 25:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a aria-label="1"></a><span class="ex">javac</span> <span class="at">-encoding</span> UTF-8 <span class="at">-g</span> Reading.java</span>
+<span id="cb7-2"><a aria-label="2"></a><span class="ex">java</span> Reading</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1"><a aria-label="1"></a>12</span>
+<span id="cb8-2"><a aria-label="2"></a>6.0</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>javac</code> записал <code>Reading.class</code>; <code>java Reading</code> читает готовый класс. Опция <code>-g</code> сохраняет отладочные сведения, включая имена локальных переменных. <span class="citation" data-cites="bib-fnd-javac bib-fnd-java-launcher"><a href="#/источники" role="doc-biblioref" onclick="">[6]</a>, <a href="#/источники" role="doc-biblioref" onclick="">[7]</a></span></p>
+<aside class="notes">
+<p>Сопоставить <code>java Hello.java</code> и <code>java Reading</code>: расширение <code>.java</code> выбирало режим исходника, имя класса выбирает сохранённый результат. До следующего экрана назвать замену <code>{5, 7}</code> на <code>{9, 7}</code> и предложить предсказать вывод при повторном <code>java Reading</code> без <code>javac</code>.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="повторный-запуск-класса" class="slide level2 continuation">
+<h2>Повторный запуск класса</h2>
+<p>В исходнике заменим <code>{5, 7}</code> на <code>{9, 7}</code>.</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Следующее действие</th>
+<th>Что исполняется</th>
+<th>Вывод</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>java Reading</code></td>
+<td>Прежний класс</td>
+<td><code>12</code>, <code>6.0</code></td>
+</tr>
+<tr class="even">
+<td><code>java Reading.java</code></td>
+<td>Текущий исходник</td>
+<td><code>16</code>, <code>8.0</code></td>
+</tr>
+<tr class="odd">
+<td>Снова <code>javac</code>, затем <code>java</code></td>
+<td>Класс из нового исходника</td>
+<td><code>16</code>, <code>8.0</code></td>
+</tr>
+</tbody>
+</table>
+<p>Редактирование <code>.java</code> и прямой запуск исходника не обновляют сохранённый <code>.class</code>. Для его обновления нужна отдельная компиляция.</p>
+<aside class="notes">
+<p>Показать таблицу после прогноза. Попросить назвать входной файл каждой команды. Если студент считает все команды <code>java</code> повторной компиляцией, вернуть внимание к аргументу: <code>Reading</code> или <code>Reading.java</code>.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="компоненты-платформы" class="slide level2">
+<h2>Компоненты платформы</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Участник</th>
+<th>Работа в нашем опыте</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Язык Java</td>
+<td>Правила вызова, сложения, присваивания</td>
+</tr>
+<tr class="even">
+<td><code>javac</code></td>
+<td>Проверка исходника и создание классов</td>
+</tr>
+<tr class="odd">
+<td>JVM</td>
+<td>Загрузка и выполнение классов</td>
+</tr>
+<tr class="even">
+<td>Стандартная библиотека</td>
+<td>Печать, строки и другие готовые средства</td>
+</tr>
+<tr class="odd">
+<td>JDK</td>
+<td>Среда разработки с инструментами и средой выполнения</td>
+</tr>
+</tbody>
+</table>
+<p>Спецификация JVM описывает договор; HotSpot — одна из его реализаций. <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-platform-components" data-qrc-style="default" class="qrc-link" href="../theory/chapters/platform.html#sec-theory-platform-components">Состав платформы</a></p>
+</section></section>
+<section>
+<section id="sec-lecture-platform-runtime-vm" class="title-slide slide level1 center">
+<h1>Модель выполнения JVM</h1>
+
+</section>
+<section id="загрузка-класса" class="slide level2">
+<h2>Загрузка класса</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb9-1"><a aria-label="1"></a>имя Reading</span>
+<span id="cb9-2"><a aria-label="2"></a>  → загрузка определения класса</span>
+<span id="cb9-3"><a aria-label="3"></a>  → связывание: проверка и подготовка</span>
+<span id="cb9-4"><a aria-label="4"></a>  → инициализация класса</span>
+<span id="cb9-5"><a aria-label="5"></a>  → создание объекта и вызов main</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>При загрузке JVM получает представление класса. Проверка устанавливает, что код удовлетворяет требованиям JVM; подготовка создаёт статические поля и их начальные значения. Инициализация выполняет предусмотренные языком начальные присваивания и код инициализации класса.</p>
+</section>
+<section id="разрешение-символических-ссылок" class="slide level2 continuation">
+<h2>Разрешение символических ссылок</h2>
+<p>В классе есть ссылки на другие классы, поля и методы — например, на библиотечный <code>println</code>. При <strong>разрешении</strong> JVM связывает такие символические ссылки с конкретными сущностями среды.</p>
+<p>Разрешение является частью связывания и может происходить по мере обращений. Часть зависимостей может разрешаться уже после начала <code>main</code>, когда программа впервые использует соответствующие классы, поля и методы. <span class="citation" data-cites="bib-fnd-jvms-loading"><a href="#/источники" role="doc-biblioref" onclick="">[12]</a></span></p>
+<aside class="notes">
+<p>Развести три вопроса: есть ли определение класса; допустимы ли инструкции; существует ли метод, который требуется вызвать. Предложить ситуацию: класс найден, но вызываемый метод из него удалён. Ошибка обнаруживается при разрешении обращения к этому методу.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="проверка-байткода" class="slide level2">
+<h2>Проверка байткода</h2>
+<p>Инструкция <code>iadd</code> должна получить два целых значения со стека операндов. Проверка байткода отслеживает совместимость таких действий с типами и устройством метода.</p>
+<p>Выражение <code>pages[0] - pages[1]</code> также удовлетворяет требованиям к типам операндов. Оно вычисляет разность, поэтому для задачи суммирования формула ошибочна. Требование «сложить страницы» задаёт условие задачи; проверка байткода устанавливает допустимость инструкций JVM.</p>
+</section>
+<section id="исследование-файла-класса" class="slide level2">
+<h2>Исследование файла класса</h2>
+<p><strong>В <code>Reading.java</code> восстановлен массив <code>{5, 7}</code> и повторно выполнен <code>javac</code>.</strong> Инструкции метода <code>total</code> доступны через <code>javap</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a aria-label="1"></a><span class="ex">javap</span> <span class="at">-c</span> <span class="at">-p</span> <span class="at">-l</span> Reading</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>-c</code> показывает инструкции, <code>-p</code> — все методы и поля, <code>-l</code> — доступные таблицы строк и локальных переменных. <span class="citation" data-cites="bib-fnd-javap"><a href="#/источники" role="doc-biblioref" onclick="">[14]</a></span></p>
+</section>
+<section id="сложение-в-исходнике-и-классе" class="slide level2 continuation">
+<h2>Сложение в исходнике и классе</h2>
+<div class="columns">
+<div class="column" style="width:48%;">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb11-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">total</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> pages<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-2"><a aria-label="2"></a>    <span class="dt">int</span> sum <span class="op">=</span> pages<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">+</span> pages<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="cb11-3"><a aria-label="3"></a>    <span class="cf">return</span> sum<span class="op">;</span></span>
+<span id="cb11-4"><a aria-label="4"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Сначала читаются два числа, затем вычисляется сумма, сохраняется в <code>sum</code> и возвращается вызывающему коду.</p>
+</div><div class="column" style="width:52%;">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb12-1"><a aria-label="1"></a> 0: aload_0</span>
+<span id="cb12-2"><a aria-label="2"></a> 1: iconst_0</span>
+<span id="cb12-3"><a aria-label="3"></a> 2: iaload</span>
+<span id="cb12-4"><a aria-label="4"></a> 3: aload_0</span>
+<span id="cb12-5"><a aria-label="5"></a> 4: iconst_1</span>
+<span id="cb12-6"><a aria-label="6"></a> 5: iaload</span>
+<span id="cb12-7"><a aria-label="7"></a> 6: iadd</span>
+<span id="cb12-8"><a aria-label="8"></a> 7: istore_1</span>
+<span id="cb12-9"><a aria-label="9"></a> 8: iload_1</span>
+<span id="cb12-10"><a aria-label="10"></a> 9: ireturn</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+</div></div>
+</section>
+<section id="кадр-вызова" class="slide level2">
+<h2>Кадр вызова</h2>
+<p>При вызове <code>total</code> возникает его собственный <strong>кадр</strong>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb13-1"><a aria-label="1"></a>локальные переменные           стек операндов</span>
+<span id="cb13-2"><a aria-label="2"></a>0: pages — ссылка на массив    пуст</span>
+<span id="cb13-3"><a aria-label="3"></a>1: место для sum</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Параметр <code>pages</code> этого статического метода занимает локальную позицию <code>0</code>. Инструкции кладут промежуточные значения на стек операндов и снимают их. Кадры вызовов образуют стек данного потока. <span class="citation" data-cites="bib-fnd-jvms-structure"><a href="#/источники" role="doc-biblioref" onclick="">[13]</a></span></p>
+<aside class="notes">
+<p>Слово «стек» встречается в двух масштабах. Стек потока содержит кадры вызовов; стек операндов принадлежит одному кадру и обслуживает вычисление. Попросить указать на схеме, какие значения принадлежат вызову <code>total</code>.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="чтение-первого-компонента" class="slide level2 continuation">
+<h2>Чтение первого компонента</h2>
+<p><code>A</code> обозначает массив <code>[5, 7]</code> в <strong>куче</strong> — области JVM для объектов и массивов. Вершина стека операндов справа.</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>После инструкции</th>
+<th>Стек операндов</th>
+<th>Что произошло</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Вход в <code>total</code></td>
+<td><code>[]</code></td>
+<td>Локальная <code>0</code> содержит ссылку <code>A</code></td>
+</tr>
+<tr class="even">
+<td><code>aload_0</code></td>
+<td><code>[A]</code></td>
+<td>Скопирована ссылка из локальной <code>0</code></td>
+</tr>
+<tr class="odd">
+<td><code>iconst_0</code></td>
+<td><code>[A, 0]</code></td>
+<td>Добавлен индекс</td>
+</tr>
+<tr class="even">
+<td><code>iaload</code></td>
+<td><code>[5]</code></td>
+<td>Ссылка и индекс заменены значением <code>A[0]</code></td>
+</tr>
+</tbody>
+</table>
+<p>Сам массив остался в куче. <code>iaload</code> прочитала его компонент, а на стек поместила число <code>5</code>.</p>
+<aside class="notes">
+<p>До следующего экрана предложить добавить к этому стеку чтение <code>A[1]</code>: какие два значения получит <code>iadd</code> и что останется после сложения? Сохранить прогноз для сопоставления с трассировкой.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="второй-компонент-и-сумма" class="slide level2 continuation">
+<h2>Второй компонент и сумма</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>После инструкции</th>
+<th>Стек операндов</th>
+<th>Действие</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>aload_0</code></td>
+<td><code>[5, A]</code></td>
+<td>Снова нужна ссылка на тот же массив</td>
+</tr>
+<tr class="even">
+<td><code>iconst_1</code></td>
+<td><code>[5, A, 1]</code></td>
+<td>Индекс второго компонента</td>
+</tr>
+<tr class="odd">
+<td><code>iaload</code></td>
+<td><code>[5, 7]</code></td>
+<td>Прочитан <code>A[1]</code></td>
+</tr>
+<tr class="even">
+<td><code>iadd</code></td>
+<td><code>[12]</code></td>
+<td>Два числа заменены суммой</td>
+</tr>
+<tr class="odd">
+<td><code>istore_1</code></td>
+<td><code>[]</code></td>
+<td><code>12</code> сохранено в локальной <code>1</code></td>
+</tr>
+<tr class="even">
+<td><code>iload_1</code></td>
+<td><code>[12]</code></td>
+<td>Значение подготовлено для возврата</td>
+</tr>
+<tr class="odd">
+<td><code>ireturn</code></td>
+<td>—</td>
+<td><code>12</code> передано вызывающему коду</td>
+</tr>
+</tbody>
+</table>
+<aside class="notes">
+<p>Сопоставить предыдущий прогноз с состоянием <code>[5, 7]</code> и результатом <code>[12]</code>. Предложить воспроизвести переход после <code>iaload</code>, не перечитывая Java. При возврате кадр <code>total</code> завершает работу; значение результата получает вызывающий кадр. Локальная <code>sum</code> сама между кадрами не переносится.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="общий-объект-двух-вызовов" class="slide level2 continuation">
+<h2>Общий объект двух вызовов</h2>
+<p>Во время вызова:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb14-1"><a aria-label="1"></a>стек потока                     куча</span>
+<span id="cb14-2"><a aria-label="2"></a>┌──────────────────┐</span>
+<span id="cb14-3"><a aria-label="3"></a>│ total: pages ────┼──────┐</span>
+<span id="cb14-4"><a aria-label="4"></a>│        sum       │      v</span>
+<span id="cb14-5"><a aria-label="5"></a>├──────────────────┤    A: [5, 7]</span>
+<span id="cb14-6"><a aria-label="6"></a>│ main:  pages ────┼──────┘</span>
+<span id="cb14-7"><a aria-label="7"></a>│        sum       │</span>
+<span id="cb14-8"><a aria-label="8"></a>└──────────────────┘</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>После возврата кадр <code>total</code> удаляется. <code>main</code> получает число <code>12</code> и продолжает обращаться к массиву через свою переменную <code>pages</code>.</p>
+</section>
+<section id="код-метода-и-состояние-вызова" class="slide level2 continuation">
+<h2>Код метода и состояние вызова</h2>
+<p>Если <code>main</code> снова вызовет <code>total(pages)</code> с тем же массивом <code>[5, 7]</code>, JVM создаст новый кадр и снова выполнит уже загруженное тело метода.</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Что хранится</th>
+<th>Где в модели JVM</th>
+<th>После возврата из <code>total</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Байткод <code>total</code> и сведения о методе</td>
+<td>Общая область методов</td>
+<td>Доступны для следующего вызова</td>
+</tr>
+<tr class="even">
+<td>Параметр <code>pages</code>, локальная <code>sum</code>, промежуточные значения</td>
+<td>Кадр вызова в стеке потока</td>
+<td>Кадр завершён</td>
+</tr>
+<tr class="odd">
+<td>Компоненты массива <code>[5, 7]</code></td>
+<td>Общая куча</td>
+<td>Массив доступен из <code>main</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Область методов</strong> хранит определения, общие для вызовов. Каждый вызов получает собственное состояние, поэтому два выполнения одного байткода могут работать с разными аргументами. <span class="citation" data-cites="bib-fnd-jvms-structure"><a href="#/источники" role="doc-biblioref" onclick="">[13]</a></span></p>
+<aside class="notes">
+<p>Предложить повторный вызов с другим массивом: какие строки таблицы изменятся? Тело <code>total</code> остаётся прежним; новый кадр получает другую ссылку.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="абстрактная-машина-jvm" class="slide level2">
+<h2>Абстрактная машина JVM</h2>
+<p>В модели JVM каждый вызов получает локальные переменные и стек операндов. Куча является общей областью для объектов и массивов; каждый поток имеет собственный стек вызовов.</p>
+<p>Реализация может использовать регистры, встраивать вызовы и устранять ненужные выделения памяти. Она должна сохранить наблюдаемое поведение программы; физическое размещение данных и последовательность машинных инструкций определяются реализацией. <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-platform-frames-heap" data-qrc-style="default" class="qrc-link" href="../theory/chapters/platform.html#sec-theory-platform-frames-heap">Вызов метода и объект в куче</a></p>
+</section></section>
+<section>
+<section id="sec-lecture-platform-runtime-jit" class="title-slide slide level1 center">
+<h1>Исполнение в HotSpot</h1>
+
+</section>
+<section id="продолжительность-нагрузки" class="slide level2">
+<h2>Продолжительность нагрузки</h2>
+<p>Наш <code>main</code> вызывает <code>total</code> один раз, печатает результат и завершает процесс. Теперь представим сервис: он получает очередную пару чисел и снова вызывает тот же метод. Пользователю по-прежнему нужна сумма, но код исполняется многократно в одном процессе.</p>
+<p>Именно повторное выполнение даёт среде наблюдения о нагрузке и возможность окупить работу по улучшению машинного кода. HotSpot использует эти наблюдения для JIT-компиляции. Спецификация JVM допускает различные стратегии исполнения, включая работу без JIT.</p>
+</section>
+<section id="многоуровневая-jit-компиляция" class="slide level2 continuation">
+<h2>Многоуровневая JIT-компиляция</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb15-1"><a aria-label="1"></a>байткод метода</span>
+<span id="cb15-2"><a aria-label="2"></a>  → интерпретация / код с профилированием</span>
+<span id="cb15-3"><a aria-label="3"></a>  → наблюдения о повторных вызовах и путях</span>
+<span id="cb15-4"><a aria-label="4"></a>  → JIT-компиляция выбранного кода</span>
+<span id="cb15-5"><a aria-label="5"></a>  → машинный код в последующих выполнениях</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Интерпретатор выполняет действия байткода. JIT-компилятор создаёт машинный код во время работы процесса. В HotSpot многоуровневая компиляция сочетает быстро скомпилированный код с профилированием и более затратную оптимизацию. Полученный машинный код хранится в <strong>кеше кода</strong> (code cache) и может использоваться многими вызовами. Создание кода расходует время процессора, хранение — память процесса. <span class="citation" data-cites="bib-fnd-hotspot-performance"><a href="#/источники" role="doc-biblioref" onclick="">[4]</a></span></p>
+</section>
+<section id="профиль-выполнения" class="slide level2 continuation">
+<h2>Профиль выполнения</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Наблюдение</th>
+<th>Как оно помогает</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Частые вызовы или повторения цикла</td>
+<td>Найти код, где оптимизация может окупиться</td>
+</tr>
+<tr class="even">
+<td>Частота ветвей</td>
+<td>Организовать код с учётом обычного пути</td>
+</tr>
+<tr class="odd">
+<td>Типы получателей вызовов</td>
+<td>Выбрать оптимизацию для встречавшихся случаев</td>
+</tr>
+</tbody>
+</table>
+<p>Наблюдавшиеся типы позволяют специализировать вызов, например встроить реализацию с проверкой предположения. По журналам компиляции и машинному коду можно определить, какие оптимизации выполнены в данном процессе. <span class="citation" data-cites="bib-fnd-hotspot-profiling"><a href="#/источники" role="doc-biblioref" onclick="">[2]</a></span></p>
+<aside class="notes">
+<p>Предложить два возможных результата компиляции <code>total</code>: отдельное машинное тело или встраивание в вызывающий код. Установить выбранный вариант в конкретном запуске позволяют диагностические данные JVM для этой нагрузки.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="встраивание-методов" class="slide level2">
+<h2>Встраивание методов</h2>
+<p>Компилятор может встроить действия <code>total</code> в вызывающий код. Тогда видны вместе получение массива, чтение компонентов и использование суммы; часть промежуточной работы может стать ненужной.</p>
+<p>Оптимизация обязана сохранить результат, исключения и другие наблюдаемые эффекты. Нативные компиляторы C++ также встраивают вызовы. HotSpot может выбирать встраивание с учётом профиля текущего процесса.</p>
+</section>
+<section id="прогрев-среды" class="slide level2 continuation">
+<h2>Прогрев среды</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Начало процесса</th>
+<th>Продолжительная работа</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Загрузка нужных классов</td>
+<td>Часть классов уже загружена</td>
+</tr>
+<tr class="even">
+<td>Первые выполнения кода</td>
+<td>Накоплены наблюдения о нагрузке</td>
+</tr>
+<tr class="odd">
+<td>Компиляция ещё требует ресурсов</td>
+<td>Можно использовать подготовленный код</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Прогрев</strong> — изменение состояния среды при выполнении нагрузки. Чтобы сравнивать измерения, отдельно учитывают запуск и участок работы после выбранного прогрева; его длительность проверяют для этой нагрузки.</p>
+</section>
+<section id="выделение-памяти-и-сборка-мусора" class="slide level2">
+<h2>Выделение памяти и сборка мусора</h2>
+<p>Если для каждого запроса создаётся новый <code>int[]</code>, среда выделяет память для очередного массива. Когда прежние объекты становятся недостижимы, сборщик мусора может освободить их память.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb16-1"><a aria-label="1"></a>создание объекта → использование → потеря достижимости</span>
+<span id="cb16-2"><a aria-label="2"></a>                                      → возможное освобождение GC</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Выделение памяти и сборка расходуют ресурсы. Сборка может приостанавливать приложение; возможность выполнять часть работы одновременно с ним зависит от выбранного сборщика. Недостижимость объекта позволяет освободить его память; момент освобождения определяется работой сборщика. <span class="citation" data-cites="bib-fnd-gc-introduction"><a href="#/источники" role="doc-biblioref" onclick="">[5]</a></span></p>
+<aside class="notes">
+<p>Указать путь к массиву <code>A</code> из <code>main</code> после возврата из <code>total</code>. Затем мысленно убрать все нужные программе пути к объекту. Попросить назвать, какое условие для освобождения памяти изменилось.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="время-выполнения-процесса" class="slide level2">
+<h2>Время выполнения процесса</h2>
+<p>Для команды <code>java Reading</code> измерим время от запуска процесса до его завершения. В этот интервал входят:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb17-1"><a aria-label="1"></a>запуск JVM → загрузка классов → main: массив, сумма, печать → завершение</span>
+<span id="cb17-2"><a aria-label="2"></a>|&lt;--------------------- полное время процесса ---------------------&gt;|</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Полученное время в миллисекундах относится ко всей команде. Даже если сложение станет вдвое быстрее, загрузка и вывод двух строк останутся. По полному времени нельзя определить, сколько занял один <code>iadd</code>.</p>
+<p>Десять запусков команды создают десять процессов JVM. Десять вызовов <code>total</code> внутри одного процесса используют уже загруженный класс и могут выполняться при разных состояниях JIT-компиляции.</p>
+<aside class="notes">
+<p>До показа экрана предложить два способа повторить расчёт: заново запустить команду или повторить вызов в работающей программе. После прогноза показать схему и сопоставить повторяемые действия.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="пропускная-способность-и-задержка" class="slide level2">
+<h2>Пропускная способность и задержка</h2>
+<p>Теперь сервис получает пары чисел и возвращает суммы. В модельном журнале после прогрева за <strong>10 секунд завершены 1000 запросов</strong>. Его пропускная способность за этот интервал — <strong>100 запросов/с</strong>.</p>
+<p>Один из запросов принят в <code>2,000 с</code>, ответ отправлен в <code>2,150 с</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb18-1"><a aria-label="1"></a>приём запроса → ожидание обработки → вычисление → отправка ответа</span>
+<span id="cb18-2"><a aria-label="2"></a>2,000 с                                                    2,150 с</span>
+<span id="cb18-3"><a aria-label="3"></a>|&lt;--------------------- задержка 150 мс -------------------------&gt;|</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Частное <code>10 с / 1000 = 10 мс</code> получено из общего времени наблюдения и числа завершённых запросов. Этот запрос ждал <strong>150 мс</strong>: одновременно в системе могли находиться другие запросы. Для задержки собирают времена отдельных запросов; распределение показывает и обычные, и редкие долгие ожидания.</p>
+<aside class="notes">
+<p>До показа экрана дать только 1000 запросов за 10 секунд и спросить, известна ли задержка каждого. Затем показать времена одного запроса и сопоставить с ответом. Приостановка приложения во время GC может увеличить ожидание нескольких запросов сразу; среднее число завершений скрывает этот эпизод. JMH отдельно демонстрирует скорость повторений и выборку длительностей вызовов метода. Граница запроса сервиса может быть шире такого вызова. <span class="citation" data-cites="bib-fnd-jmh-modes"><a href="#/источники" role="doc-biblioref" onclick="">[15]</a></span></p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-lecture-platform-runtime-numbers" class="title-slide slide level1 center">
+<h1>Числовая семантика</h1>
+
+</section>
+<section id="переполнение-целого-произведения" class="slide level2">
+<h2>Переполнение целого произведения</h2>
+<p>Пусть нужно вычислить квадрат числа записей:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb19-1"><a aria-label="1"></a><span class="dt">int</span> count <span class="op">=</span> <span class="dv">50_000</span><span class="op">;</span></span>
+<span id="cb19-2"><a aria-label="2"></a><span class="dt">long</span> first <span class="op">=</span> count <span class="op">*</span> count<span class="op">;</span></span>
+<span id="cb19-3"><a aria-label="3"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first<span class="op">);</span> <span class="co">// -1794967296</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Оба операнда имеют тип <code>int</code>, поэтому умножение выполняется как <code>int</code>. Математическое <code>2500000000</code> выходит за его диапазон; сохраняются младшие 32 бита. Уже полученное отрицательное значение расширяется до <code>long</code>.</p>
+</section>
+<section id="числовое-повышение" class="slide level2 continuation">
+<h2>Числовое повышение</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb20-1"><a aria-label="1"></a><span class="dt">long</span> second <span class="op">=</span> <span class="op">(</span><span class="dt">long</span><span class="op">)</span> count <span class="op">*</span> count<span class="op">;</span></span>
+<span id="cb20-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>second<span class="op">);</span> <span class="co">// 2500000000</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb21-1"><a aria-label="1"></a>count * count         → умножение int  → -1794967296 → long</span>
+<span id="cb21-2"><a aria-label="2"></a>(long) count * count  → умножение long →  2500000000</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>У <code>int</code> фиксирован 32-битный диапазон со знаком, у <code>long</code> — 64-битный. Выбранная платформа не меняет это правило. Более широкий тип назначения не возвращает сведения, потерянные во время операции. <span class="citation" data-cites="bib-fnd-jls-arithmetic bib-fnd-jls-conversions"><a href="#/источники" role="doc-biblioref" onclick="">[9]</a>, <a href="#/источники" role="doc-biblioref" onclick="">[11]</a></span></p>
+<aside class="notes">
+<p>Предложить перенести приведение наружу: <code>(long) (count * count)</code>. Результат останется отрицательным, потому что меняется уже вычисленное значение. Попросить указать типы операндов непосредственно перед умножением в обоих вариантах.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="тип-деления" class="slide level2">
+<h2>Тип деления</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb22-1"><a aria-label="1"></a><span class="dt">int</span> sum <span class="op">=</span> <span class="dv">5</span><span class="op">;</span></span>
+<span id="cb22-2"><a aria-label="2"></a><span class="dt">double</span> first <span class="op">=</span> sum <span class="op">/</span> <span class="dv">2</span><span class="op">;</span>          <span class="co">// 2.0</span></span>
+<span id="cb22-3"><a aria-label="3"></a><span class="dt">double</span> second <span class="op">=</span> <span class="op">(</span><span class="dt">double</span><span class="op">)</span> sum <span class="op">/</span> <span class="dv">2</span><span class="op">;</span> <span class="co">// 2.5</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Сначала определяется операция по типам операндов. Целое деление отбросило дробную часть, затем <code>2</code> преобразовалось в <code>2.0</code>.</p>
+<p>В исходном <code>Reading</code> делитель <code>2.0</code> имеет тип <code>double</code>, поэтому среднее вычислялось с плавающей точкой ещё до печати.</p>
+</section>
+<section id="двоичное-представление-дробей" class="slide level2">
+<h2>Двоичное представление дробей</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb23-1"><a aria-label="1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="fl">0.1</span> <span class="op">+</span> <span class="fl">0.2</span><span class="op">);</span>       <span class="co">// 0.30000000000000004</span></span>
+<span id="cb23-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="fl">0.1</span> <span class="op">+</span> <span class="fl">0.2</span> <span class="op">==</span> <span class="fl">0.3</span><span class="op">);</span> <span class="co">// false</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>double</code> хранит значения в конечном двоичном формате. Эти десятичные дроби представляются приближённо, а операции округляют результат. Переносимость сохраняет правила вычисления, включая такое округление. <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-types" data-qrc-style="default" class="qrc-link" href="../theory/chapters/types.html#sec-theory-types"><span>Глава 4</span></a></p>
+</section></section>
+<section>
+<section id="sec-lecture-platform-runtime-exit" class="title-slide slide level1 center">
+<h1>Распространение программы</h1>
+
+</section>
+<section id="явное-объявление-класса" class="slide level2">
+<h2>Явное объявление класса</h2>
+<p>Для именованного пакета объявим класс явно. Отдельный вариант <code>Hello.java</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb24-1"><a aria-label="1"></a><span class="kw">package</span><span class="im"> course</span><span class="op">;</span></span>
+<span id="cb24-2"><a aria-label="2"></a></span>
+<span id="cb24-3"><a aria-label="3"></a><span class="kw">public</span> <span class="kw">class</span> Hello <span class="op">{</span></span>
+<span id="cb24-4"><a aria-label="4"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb24-5"><a aria-label="5"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"Hello"</span><span class="op">);</span></span>
+<span id="cb24-6"><a aria-label="6"></a>    <span class="op">}</span></span>
+<span id="cb24-7"><a aria-label="7"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Здесь <code>public</code> делает точку входа доступной, <code>static</code> позволяет вызвать её без объекта, <code>String[] args</code> принимает аргументы командной строки. <code>System.out.println</code> — ещё одна библиотечная форма печати.</p>
+<aside class="notes">
+<p>Сопоставить с первым компактным файлом. Действие печати осталось тем же; новая явная структура нужна для имени <code>course.Hello</code>. При переходе к этому варианту сохранить показанный файл целиком на месте компактного.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="имя-класса-и-путь-поиска" class="slide level2 continuation">
+<h2>Имя класса и путь поиска</h2>
+<p>Из каталога с новым <code>Hello.java</code>, JDK 25:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a aria-label="1"></a><span class="ex">javac</span> <span class="at">-d</span> out Hello.java</span>
+<span id="cb25-2"><a aria-label="2"></a><span class="ex">java</span> <span class="at">-cp</span> out course.Hello</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Вывод — <code>Hello</code>. Опция <code>-d out</code> задаёт корень результата: <code>out/course/Hello.class</code>. Опция <code>-cp out</code> задаёт корень поиска, а <code>course.Hello</code> — полное имя класса.</p>
+<p>Пакет организует имена классов. Среда находит определение по имени и пути поиска, поэтому исходный файл и запускаемый класс задаются по-разному.</p>
+</section>
+<section id="среда-выполнения-приложения" class="slide level2">
+<h2>Среда выполнения приложения</h2>
+<p>Для запуска нужен класс, скомпилированный из нужного исходника, совместимая версия среды и правильный путь поиска. Если программа использует дополнительные библиотеки, их совместимые классы тоже должны быть доступны.</p>
+<p>Файлы данных и нативные библиотеки должны быть доступны на целевой системе. Обращения к ним требуют соответствующих прав доступа и настроек ОС; эти условия входят в договор поставки программы.</p>
+<p>Пользователю можно передать приложение вместе со совместимой средой выполнения. Например, <code>jpackage</code> создаёт пакет приложения с образом среды выполнения (runtime image); полный JDK с компилятором пользователю такого пакета не требуется. <span class="citation" data-cites="bib-fnd-jpackage"><a href="#/источники" role="doc-biblioref" onclick="">[8]</a></span></p>
+</section></section>
+<section>
+<section id="sec-lecture-platform-runtime-additional" class="title-slide slide level1 center">
+<h1>Дополнительные материалы</h1>
+
+</section>
+<section id="строгость-плавающих-вычислений" class="slide level2">
+<h2>Строгость вычислений с плавающей точкой</h2>
+<p>Начиная с Java 17, выражения с плавающей точкой всегда вычисляются строго; <code>strictfp</code> больше не меняет результат. <code>double</code> сохраняет двоичное представление с ограниченной точностью; точность библиотечных функций определяется их собственными требованиями. <span class="citation" data-cites="bib-fnd-jls-floating"><a href="#/источники" role="doc-biblioref" onclick="">[10]</a></span></p>
+</section>
+<section id="отрицательное-целое-деление" class="slide level2">
+<h2>Отрицательное целое деление</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Выражение</th>
+<th>Результат</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Java <code>-5 / 2</code></td>
+<td><code>-2</code></td>
+</tr>
+<tr class="even">
+<td>Java <code>-5 % 2</code></td>
+<td><code>-1</code></td>
+</tr>
+<tr class="odd">
+<td>Python <code>-5 // 2</code></td>
+<td><code>-3</code></td>
+</tr>
+<tr class="even">
+<td>Java <code>Math.floorMod(-5, 2)</code></td>
+<td><code>1</code></td>
+</tr>
+</tbody>
+</table>
+<p>Java округляет целое частное к нулю. Для циклического индекса следует выбрать операцию, которая даёт требуемый диапазон остатка. <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-expressions-division" data-qrc-style="default" class="qrc-link" href="../theory/chapters/expressions.html#sec-theory-expressions-division">Деление и остаток</a></p>
+</section>
+<section id="повторение-в-измерительном-опыте" class="slide level2">
+<h2>Повторение в измерительном опыте</h2>
+<p>Если вычисленный результат не используется, оптимизатор может удалить расчёт. Написанный вручную цикл повторений тоже способен изменить операцию: компилятор видит всю серию и может объединить или вынести часть работы.</p>
+<p>В опытах JMH использование результата и устройство цикла определяют, какая работа сохраняется после оптимизации. <span class="citation" data-cites="bib-fnd-jmh-dead-code bib-fnd-jmh-loops"><a href="#/источники" role="doc-biblioref" onclick="">[16]</a>, <a href="#/источники" role="doc-biblioref" onclick="">[17]</a></span></p>
+</section>
+<section id="деоптимизация" class="slide level2">
+<h2>Деоптимизация</h2>
+<p>Оптимизированный код может опираться на проверяемое предположение о встречавшихся типах или путях. При его нарушении HotSpot способен восстановить состояние и продолжить выполнение через интерпретатор, а позднее получить другой машинный код.</p>
+<p>Такая <strong>деоптимизация</strong> меняет стоимость исполнения, сохраняя допустимое поведение программы. <span class="citation" data-cites="bib-fnd-hotspot-profiling"><a href="#/источники" role="doc-biblioref" onclick="">[2]</a></span></p>
+</section>
+<section id="двоичная-совместимость" class="slide level2">
+<h2>Двоичная совместимость</h2>
+<p>Старый класс обращается к методу с определённым именем и типами. Изменение тела метода может сохранить возможность связывания; удаление необходимого метода способно привести к <code>NoSuchMethodError</code> при разрешении обращения.</p>
+<p>Если новое тело возвращает другой результат, связывание может пройти успешно, а поведение клиента изменится. Совместимость поведения проверяют по договору библиотеки. <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-platform-compatibility" data-qrc-style="default" class="qrc-link" href="../theory/chapters/platform.html#sec-theory-platform-compatibility">Двоичная совместимость</a></p>
+</section>
+<section id="источники" class="slide level2 unnumbered scrollable smaller">
+<h2>Источники</h2>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-bib-fnd-java-whitepaper-portability" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">J. Gosling и H. McGilton, <span>«The Java Language Environment. Architecture Neutral, Portable, and Robust»</span>, Sun Microsystems, май 1996. Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://www.oracle.com/java/technologies/architecture-neutral-portable-robust.html">https://www.oracle.com/java/technologies/architecture-neutral-portable-robust.html</a></div>
+</div>
+<div id="ref-bib-fnd-hotspot-profiling" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">R. Westrelin, <span>«Runtime profiling in OpenJDK’s HotSpot JVM»</span>. Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://developers.redhat.com/articles/2021/11/18/runtime-profiling-openjdks-hotspot-jvm">https://developers.redhat.com/articles/2021/11/18/runtime-profiling-openjdks-hotspot-jvm</a></div>
+</div>
+<div id="ref-bib-fnd-schildt-origins" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 34–35, 39–40.</div>
+</div>
+<div id="ref-bib-fnd-hotspot-performance" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline"><em>Java HotSpot Virtual Machine Performance Enhancements</em>. Oracle, 2025. Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/vm/java-hotspot-virtual-machine-performance-enhancements.html">https://docs.oracle.com/en/java/javase/25/vm/java-hotspot-virtual-machine-performance-enhancements.html</a></div>
+</div>
+<div id="ref-bib-fnd-gc-introduction" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline"><em>Java Platform, Standard Edition HotSpot Virtual Machine Garbage Collection Tuning Guide. Introduction</em>. Oracle, 2025. Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/gctuning/introduction-garbage-collection-tuning.html">https://docs.oracle.com/en/java/javase/25/gctuning/introduction-garbage-collection-tuning.html</a></div>
+</div>
+<div id="ref-bib-fnd-java-launcher" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[6] </div><div class="csl-right-inline"><em>Java SE 25 Tool Specifications. The java Command</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html">https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html</a></div>
+</div>
+<div id="ref-bib-fnd-javac" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[7] </div><div class="csl-right-inline"><em>Java SE 25 Tool Specifications. The javac Command</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html">https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html</a></div>
+</div>
+<div id="ref-bib-fnd-jpackage" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[8] </div><div class="csl-right-inline"><em>Java SE 25 Tool Specifications. The jpackage Command</em>. Oracle, 2025. Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/specs/man/jpackage.html">https://docs.oracle.com/en/java/javase/25/docs/specs/man/jpackage.html</a></div>
+</div>
+<div id="ref-bib-fnd-jls-conversions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[9] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25. Conversions and Contexts</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html</a></div>
+</div>
+<div id="ref-bib-fnd-jls-floating" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[10] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25. Floating-point Expressions</em>. Oracle, 2025. Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.4">https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.4</a></div>
+</div>
+<div id="ref-bib-fnd-jls-arithmetic" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[11] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25. Multiplicative and Additive Operators</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.17">https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.17</a></div>
+</div>
+<div id="ref-bib-fnd-jvms-loading" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[12] </div><div class="csl-right-inline"><em>The Java Virtual Machine Specification, Java SE 25. Loading, Linking, and Initializing</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-5.html">https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-5.html</a></div>
+</div>
+<div id="ref-bib-fnd-jvms-structure" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[13] </div><div class="csl-right-inline"><em>The Java Virtual Machine Specification, Java SE 25. The Structure of the Java Virtual Machine</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html">https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html</a></div>
+</div>
+<div id="ref-bib-fnd-javap" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[14] </div><div class="csl-right-inline"><em>The javap Command</em>. Oracle, 2025. Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/specs/man/javap.html">https://docs.oracle.com/en/java/javase/25/docs/specs/man/javap.html</a></div>
+</div>
+<div id="ref-bib-fnd-jmh-modes" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[15] </div><div class="csl-right-inline"><span>«JMH Samples. JMHSample_02_BenchmarkModes»</span>. Просмотрено: 16.10.2026. [Онлайн]. Доступно на: <a href="https://github.com/openjdk/jmh/blob/master/jmh-samples/src/main/java/org/openjdk/jmh/samples/JMHSample_02_BenchmarkModes.java">https://github.com/openjdk/jmh/blob/master/jmh-samples/src/main/java/org/openjdk/jmh/samples/JMHSample_02_BenchmarkModes.java</a></div>
+</div>
+<div id="ref-bib-fnd-jmh-dead-code" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[16] </div><div class="csl-right-inline"><span>«JMH Samples. JMHSample_08_DeadCode»</span>. Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://github.com/openjdk/jmh/blob/master/jmh-samples/src/main/java/org/openjdk/jmh/samples/JMHSample_08_DeadCode.java">https://github.com/openjdk/jmh/blob/master/jmh-samples/src/main/java/org/openjdk/jmh/samples/JMHSample_08_DeadCode.java</a></div>
+</div>
+<div id="ref-bib-fnd-jmh-loops" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[17] </div><div class="csl-right-inline"><span>«JMH Samples. JMHSample_11_Loops»</span>. Просмотрено: 15.10.2026. [Онлайн]. Доступно на: <a href="https://github.com/openjdk/jmh/blob/master/jmh-samples/src/main/java/org/openjdk/jmh/samples/JMHSample_11_Loops.java">https://github.com/openjdk/jmh/blob/master/jmh-samples/src/main/java/org/openjdk/jmh/samples/JMHSample_11_Loops.java</a></div>
+</div>
+</div>
+
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/course-navigation/model.js"></script>
+  <script src="site_libs/revealjs/plugin/course-navigation/ui.js"></script>
+  <script src="site_libs/revealjs/plugin/course-navigation/plugin.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":false,"delayInit":true,"keyboard":false,"openSlideNumber":false},
+'scrollActivationWidth': 0,
+'courseNav': {"sidebar":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 800,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, CourseNavigation, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Скопировано");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Скопировано");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+
+<script data-qrc-navigation>// Опубликованные цели сохраняют штатные ID Quarto. Обработчик раскрывает
+// существующее представление документа, не вводя учебных ролей и новых ID.
+(() => {
+  if (new URL(location.href).searchParams.has("print-pdf")) return;
+  let navigation = 0;
+
+  function hashId(url) {
+    try { return decodeURIComponent(url.hash.replace(/^#\/?/, "")); }
+    catch { return ""; } // Некорректный фрагмент внешней ссылки не должен нарушать работу страницы.
+  }
+
+  function ancestors(target) {
+    const nodes = [];
+    for (let node = target; node; node = node.parentElement) nodes.push(node);
+    return nodes.reverse();
+  }
+
+  function openDisclosures(nodes, scroll) {
+    for (const node of nodes) {
+      if (node.matches("details")) node.open = true;
+      if (!node.matches(".collapse:not(.show)")) continue;
+
+      // Bootstrap управляет анимацией и состоянием переключателя.
+      // В темах без Bootstrap блок раскрывается напрямую; details работает штатно.
+      const Collapse = window.bootstrap?.Collapse;
+      if (Collapse) {
+        node.addEventListener("shown.bs.collapse", scroll, { once: true });
+        Collapse.getOrCreateInstance(node, { toggle: false }).show();
+      } else {
+        node.classList.add("show");
+        if (!node.id) continue;
+        for (const trigger of document.querySelectorAll("[aria-controls]")) {
+          if (!trigger.getAttribute("aria-controls").split(/\s+/).includes(node.id)) continue;
+          trigger.setAttribute("aria-expanded", "true");
+          trigger.classList.remove("collapsed");
+        }
+      }
+    }
+  }
+
+  function revealTarget(id) {
+    const target = id && document.getElementById(id);
+    if (!target) return;
+    const current = ++navigation;
+    const scroll = () => requestAnimationFrame(() => {
+      // Завершение анимации не должно возвращать прокрутку после нового перехода.
+      if (current === navigation) target.scrollIntoView({ block: "nearest" });
+    });
+    const nodes = ancestors(target);
+    const section = target.closest("section.slide");
+    const reveal = window.Reveal;
+    if (section && target !== section && reveal?.isReady()) {
+      const position = reveal.getIndices(section);
+      reveal.slide(position.h, position.v);
+      // У вложенных фрагментов могут различаться индексы. Показываем
+      // все фрагменты вокруг цели; нулевой индекс также допустим.
+      const indices = nodes.filter(node => node.matches(".fragment[data-fragment-index]"))
+        .map(node => Number(node.getAttribute("data-fragment-index")))
+        .filter(Number.isFinite);
+      if (indices.length) reveal.navigateFragment(Math.max(...indices));
+    }
+    openDisclosures(nodes, scroll);
+    scroll();
+  }
+
+  function initialTarget() {
+    const url = new URL(location.href);
+    revealTarget(url.searchParams.get("qrc-target") || hashId(url));
+  }
+
+  function ready() {
+    if (window.Reveal && !window.Reveal.isReady()) window.Reveal.on("ready", initialTarget);
+    else initialTarget();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", ready, { once: true });
+  else ready();
+
+  // qrc-target обрабатывается только при входе на страницу. Повторное применение
+  // при смене фрагмента URL возвращало бы преподавателя к цели после перехода вперёд.
+  window.addEventListener("hashchange", () => revealTarget(hashId(new URL(location.href))));
+  document.addEventListener("click", event => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.defaultPrevented) return;
+    const link = event.target.closest?.("a[href]");
+    if (!link || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
+    const url = new URL(link.href, location.href);
+    if (url.origin !== location.origin || url.pathname !== location.pathname || url.search !== location.search) return;
+    // Повторный переход по тому же фрагменту URL не вызывает hashchange.
+    // Раскрываем цель после штатной навигации и обработчика Revealjs.
+    queueMicrotask(() => revealTarget(hashId(url)));
+  }, true);
+})();
+</script>
+<script id="course-site-navigation">(function(){
+const base={"courseUrl":"https://bsu-rfct-afonenko-courses.github.io/Java/","rootHref":"../"};
+if(base){
+ const course=new URL(base.courseUrl); course.pathname=course.pathname.replace(/\/$/,'')+'/';
+ const root=new URL(base.rootHref,document.baseURI);
+ for(const link of document.querySelectorAll('#quarto-header a[href],#quarto-sidebar a[href],.quarto-navbar a[href],.quarto-sidebar a[href]')){
+  const url=new URL(link.href,document.baseURI);
+  if(url.origin===course.origin&&url.pathname.startsWith(course.pathname)){
+   let path=url.pathname.slice(course.pathname.length); if(!path||path.endsWith('/')) path+='index.html';
+   link.href=new URL(path+url.search+url.hash,root).href;
+  }
+ }
+}
+const targets=[].map(path=>new URL(path,document.baseURI));
+for(const link of document.querySelectorAll('a[href]')){
+ const url=new URL(link.href,document.baseURI);
+ if(targets.some(target=>target.origin===url.origin&&(
+  target.pathname===url.pathname || target.pathname.endsWith('/index.html')&&target.pathname.slice(0,-'index.html'.length)===url.pathname
+ ))){
+  link.target='_blank'; link.rel=[...new Set([...link.rel.split(/\s+/).filter(Boolean),'noopener','noreferrer'])].join(' ');
+ }
+}
+})();</script>
+</body></html>

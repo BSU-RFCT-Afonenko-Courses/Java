@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.5">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>7&nbsp; String, StringBuilder и Unicode – Справочник Java</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../entries/classes.html" rel="next">
+<link href="../entries/arrays.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-752eb067b69f457d87b717766944ae1e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
+<script src="../site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
+<link href="../site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation">
+
+<style>.task-items li:has(.course-assignment-omitted):not(:has(a)){display:none}</style>
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Поиск не дал результатов",
+    "search-matching-documents-text": "— число найденных документов",
+    "search-copy-link-title": "Скопировать ссылку",
+    "search-hide-matches-text": "Скрыть дополнительные результаты",
+    "search-more-match-text": "дополнительный результат в этом документе",
+    "search-more-matches-text": "— показать остальные совпадения в этом документе",
+    "search-clear-button-title": "Очистить",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Отменить",
+    "search-submit-button-title": "Найти",
+    "search-label": "Поиск"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles/book.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Перейти к основному содержанию</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Сайт">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="https://bsu-rfct-afonenko-courses.github.io/Java/index.html">
+    <span class="navbar-title">Программирование на Java</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Поиск"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Переключить навигацию" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsu-rfct-afonenko-courses.github.io/Java/theory/index.html"> 
+<span class="menu-text">Теория</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsu-rfct-afonenko-courses.github.io/Java/tasks/index.html"> 
+<span class="menu-text">Задания</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsu-rfct-afonenko-courses.github.io/Java/lectures/index.html"> 
+<span class="menu-text">Лекции</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsu-rfct-afonenko-courses.github.io/Java/practice/index.html"> 
+<span class="menu-text">Введения к лабораторным</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Справочник</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+    <a href="https://github.com/BSU-RFCT-Afonenko-Courses/Java/tree/master/handbook/" title="Исходный код" class="quarto-navigation-tool px-1" aria-label="Исходный код"><i class="bi bi-github"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" aria-label="Панель инструментов">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Переключить боковую панель навигации" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="Путь"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../entries/values.html">Язык</a></li><li class="breadcrumb-item"><a href="../entries/strings.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">String, StringBuilder и Unicode</span></a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="Раздел">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Справочник Java</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">Язык</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/values.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Значения, типы и переменные</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Операции и выражения</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/statements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Операторы управления выполнением</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Объявление и вызов методов</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/arrays.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Массивы и класс Arrays</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/strings.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">String, StringBuilder и Unicode</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-controls="quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-2-label">Объектные типы</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-2" aria-labelledby="quarto-sidebar-section-2-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/classes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Классы и конструкторы</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/inheritance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Наследование и переопределение</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/interfaces.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Интерфейсы</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-controls="quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-3-label">Обобщённые типы</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-3" aria-labelledby="quarto-sidebar-section-3-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/generic-classes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Обобщённые классы</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/generic-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Обобщённые методы</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/wildcards.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Неизвестный аргумент типа и его границы</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/erasure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Стирание типов</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-controls="quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-4-label">Коллекции и функции</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-4" aria-labelledby="quarto-sidebar-section-4-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Равенство, Comparable и Comparator</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/lists.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">List и ArrayList</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/sets-maps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Set, Map, Queue и Deque</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Функциональные интерфейсы и лямбда-выражения</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/streams.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Stream и Collectors</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/optional.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Optional</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-controls="quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-5-label">Ввод-вывод и приложение</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-5" aria-labelledby="quarto-sidebar-section-5-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/console.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Стандартный ввод и вывод</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/exceptions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Исключения: throw, throws, try и catch</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/resources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">AutoCloseable и try с ресурсами</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Path, Files и текстовый ввод-вывод</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/java-tools.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Инструменты JDK и запуск программы</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entries/project.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Сборка и запуск консольного Java-проекта</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Источники</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">Содержание</h2>
+   
+  <ul>
+  <li><a href="#sec-api-strings-string" id="toc-sec-api-strings-string" class="nav-link active" data-scroll-target="#sec-api-strings-string"><span class="header-section-number">7.1</span> Методы String</a></li>
+  <li><a href="#sec-api-strings-unicode" id="toc-sec-api-strings-unicode" class="nav-link" data-scroll-target="#sec-api-strings-unicode"><span class="header-section-number">7.2</span> Unicode и нормализация</a></li>
+  <li><a href="#sec-api-strings-parse-int" id="toc-sec-api-strings-parse-int" class="nav-link" data-scroll-target="#sec-api-strings-parse-int"><span class="header-section-number">7.3</span> Разбор целого числа: Integer.parseInt</a></li>
+  <li><a href="#sec-api-strings-regex" id="toc-sec-api-strings-regex" class="nav-link" data-scroll-target="#sec-api-strings-regex"><span class="header-section-number">7.4</span> Регулярные выражения: полное совпадение и поиск</a></li>
+  <li><a href="#sec-api-strings-builder" id="toc-sec-api-strings-builder" class="nav-link" data-scroll-target="#sec-api-strings-builder"><span class="header-section-number">7.5</span> Методы StringBuilder</a></li>
+  <li><a href="#sec-api-strings-compare-to" id="toc-sec-api-strings-compare-to" class="nav-link" data-scroll-target="#sec-api-strings-compare-to"><span class="header-section-number">7.6</span> String.compareTo и знак порядка</a></li>
+  <li><a href="#sec-api-strings-word-boundaries" id="toc-sec-api-strings-word-boundaries" class="nav-link" data-scroll-target="#sec-api-strings-word-boundaries"><span class="header-section-number">7.7</span> Границы слова в заданном алфавите</a></li>
+  <li><a href="#sec-api-strings-source-ranges" id="toc-sec-api-strings-source-ranges" class="nav-link" data-scroll-target="#sec-api-strings-source-ranges"><span class="header-section-number">7.8</span> Диапазоны исходного текста</a></li>
+  <li><a href="#sec-api-strings-examples" id="toc-sec-api-strings-examples" class="nav-link" data-scroll-target="#sec-api-strings-examples"><span class="header-section-number">7.9</span> Полные примеры</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/master/handbook/entries/strings.qmd" class="toc-action"><i class="bi bi-github"></i>Показать код</a></li><li><a href="https://github.com/BSU-RFCT-Afonenko-Courses/Java/issues/new" class="toc-action"><i class="bi empty"></i>Сообщить о проблеме</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Путь"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../entries/values.html">Язык</a></li><li class="breadcrumb-item"><a href="../entries/strings.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">String, StringBuilder и Unicode</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-api-strings" class="quarto-section-identifier"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">String, StringBuilder и Unicode</span></span></h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">java</div>
+    <div class="quarto-category">java-core</div>
+    <div class="quarto-category">java-strings</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><code>String</code> неизменяем; <code>StringBuilder</code> изменяем. Индексы базовых строковых операций измеряются в единицах UTF-16. Полное объяснение: <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-text" data-qrc-style="default" class="qrc-link" href="../../theory/chapters/text.html#sec-theory-text"><span>Глава 9</span></a>. <span class="citation" data-cites="bib-fnd-string-api bib-fnd-builder-api bib-fnd-character-api"><a href="../references.html#ref-bib-fnd-character-api" role="doc-biblioref">[45]</a>, <a href="../references.html#ref-bib-fnd-string-api" role="doc-biblioref">[55]</a>, <a href="../references.html#ref-bib-fnd-builder-api" role="doc-biblioref">[56]</a></span></p>
+<section id="sec-api-strings-string" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="sec-api-strings-string"><span class="header-section-number">7.1</span> Методы String</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Сигнатура</th>
+<th>Результат и границы</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>int length()</code></td>
+<td>Количество единиц UTF-16</td>
+</tr>
+<tr class="even">
+<td><code>boolean isEmpty()</code></td>
+<td><code>length() == 0</code></td>
+</tr>
+<tr class="odd">
+<td><code>boolean isBlank()</code></td>
+<td>Пустая строка или только кодовые точки, признаваемые <code>Character.isWhitespace</code></td>
+</tr>
+<tr class="even">
+<td><code>char charAt(int index)</code></td>
+<td>Одна единица UTF-16; <code>0 &lt;= index &lt; length()</code></td>
+</tr>
+<tr class="odd">
+<td><code>int codePointAt(int index)</code></td>
+<td>Кодовая точка, если начинается корректная пара, иначе значение единицы</td>
+</tr>
+<tr class="even">
+<td><code>int codePointCount(int begin, int end)</code></td>
+<td>Число кодовых точек в <code>[begin, end)</code>; непарные суррогаты считаются отдельно</td>
+</tr>
+<tr class="odd">
+<td><code>int offsetByCodePoints(int index, int offset)</code></td>
+<td>Индекс UTF-16 после перемещения по кодовым точкам</td>
+</tr>
+<tr class="even">
+<td><code>String substring(int begin, int end)</code></td>
+<td>Подстрока <code>[begin, end)</code>; <code>0 &lt;= begin &lt;= end &lt;= length()</code></td>
+</tr>
+<tr class="odd">
+<td><code>int indexOf(String s)</code></td>
+<td>Индекс первого совпадения или <code>-1</code>; есть перегрузки</td>
+</tr>
+<tr class="even">
+<td><code>boolean equals(Object other)</code></td>
+<td>Одинаковая последовательность единиц; <code>null</code> даёт <code>false</code></td>
+</tr>
+<tr class="odd">
+<td><code>int compareTo(String anotherString)</code></td>
+<td>Лексикографический порядок единиц UTF-16; результат читают по знаку</td>
+</tr>
+<tr class="even">
+<td><code>boolean equalsIgnoreCase(String s)</code></td>
+<td>Сравнение без учёта регистра по правилам API, без полноценного языкового порядка</td>
+</tr>
+<tr class="odd">
+<td><code>String strip()</code></td>
+<td>Убирает по краям кодовые точки <code>Character.isWhitespace</code></td>
+</tr>
+<tr class="even">
+<td><code>String trim()</code></td>
+<td>Убирает по краям единицы с кодом не выше U+0020</td>
+</tr>
+<tr class="odd">
+<td><code>String replace(CharSequence a, CharSequence b)</code></td>
+<td>Буквальная замена</td>
+</tr>
+<tr class="even">
+<td><code>String replaceAll(String regex, String replacement)</code></td>
+<td>Регулярное выражение и специальные правила замены</td>
+</tr>
+<tr class="odd">
+<td><code>String[] split(String regex, int limit)</code></td>
+<td>Разбиение по регулярному выражению</td>
+</tr>
+<tr class="even">
+<td><code>String toLowerCase(Locale locale)</code></td>
+<td>Регистр по выбранной локали; длина может меняться</td>
+</tr>
+</tbody>
+</table>
+<p>Неверный индекс или диапазон вызывает <code>IndexOutOfBoundsException</code> согласно договору конкретного метода. Вызов экземплярного метода через <code>null</code> порождает <code>NullPointerException</code>. Регулярные выражения могут давать <code>PatternSyntaxException</code>. <code>split(regex)</code> равен <code>split(regex, 0)</code> и отбрасывает хвостовые пустые поля; отрицательный <code>limit</code> сохраняет их. Для точки как разделителя: <code>split("\\.", -1)</code>.</p>
+<p><code>==</code> сравнивает ссылки. Для сравнения текста используйте <code>equals</code>. Если строки могут отсутствовать, используйте <code>Objects.equals(a, b)</code>. Интернирование литералов не делает <code>==</code> проверкой содержимого.</p>
+</section>
+<section id="sec-api-strings-unicode" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="sec-api-strings-unicode"><span class="header-section-number">7.2</span> Unicode и нормализация</h2>
+<p><code>char</code> содержит одну единицу UTF-16, <code>int</code> может представлять кодовую точку. <code>Character.charCount(codePoint)</code> возвращает <code>1</code> или <code>2</code>. Число кодовых точек не равно автоматически числу воспринимаемых текстовых элементов. Каждый метод <code>Character</code> определяет свою категорию символов; условие обработки текста должно указывать подходящую категорию.</p>
+<p>Для составной записи буквы <code>é</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> text <span class="op">=</span> <span class="st">"e</span><span class="sc">\u0301</span><span class="st">"</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> normalized <span class="op">=</span> java<span class="op">.</span><span class="fu">text</span><span class="op">.</span><span class="fu">Normalizer</span><span class="op">.</span><span class="fu">normalize</span><span class="op">(</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    text<span class="op">,</span> java<span class="op">.</span><span class="fu">text</span><span class="op">.</span><span class="fu">Normalizer</span><span class="op">.</span><span class="fu">Form</span><span class="op">.</span><span class="fu">NFC</span><span class="op">);</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>text<span class="op">.</span><span class="fu">length</span><span class="op">());</span>       <span class="co">// 2</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>normalized<span class="op">.</span><span class="fu">length</span><span class="op">());</span> <span class="co">// 1</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="dt">byte</span><span class="op">[]</span> encoded <span class="op">=</span> text<span class="op">.</span><span class="fu">getBytes</span><span class="op">(</span>java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">charset</span><span class="op">.</span><span class="fu">StandardCharsets</span><span class="op">.</span><span class="fu">UTF_8</span><span class="op">);</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> restored <span class="op">=</span> <span class="kw">new</span> <span class="bu">String</span><span class="op">(</span>encoded<span class="op">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">charset</span><span class="op">.</span><span class="fu">StandardCharsets</span><span class="op">.</span><span class="fu">UTF_8</span><span class="op">);</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Нормализация выполняется только по требованиям задачи. Для изменения регистра технических обозначений можно явно выбрать <code>Locale.ROOT</code>. В показанном коде байты получены из исходного <code>text</code>, поэтому <code>restored</code> снова содержит две единицы UTF-16. Для кодирования нормализованного текста получатель <code>getBytes</code> должен быть <code>normalized</code>.</p>
+<p>Преобразование строк в байты требует кодировки; удобные методы могут заменять некорректный ввод, поэтому для строгого отказа нужен <code>CharsetDecoder</code>/<code>CharsetEncoder</code> с заданной политикой. <span class="citation" data-cites="bib-fnd-normalizer-api"><a href="../references.html#ref-bib-fnd-normalizer-api" role="doc-biblioref">[51]</a></span></p>
+</section>
+<section id="sec-api-strings-parse-int" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="sec-api-strings-parse-int"><span class="header-section-number">7.3</span> Разбор целого числа: Integer.parseInt</h2>
+<p>Метод класса <code>Integer</code>: <code>public static int parseInt(String s) throws NumberFormatException</code>.</p>
+<p>Метод возвращает знаковое десятичное значение типа <code>int</code>: от −2147483648 до 2147483647 включительно. Строка содержит одну или несколько десятичных цифр; первая позиция может быть ASCII-знаком <code>+</code> или <code>-</code>. Цифры распознаются по правилам <code>Character.digit(char, 10)</code>. Ведущие нули допустимы и не означают восьмеричную запись: <code>parseInt("0016")</code> даёт <code>16</code>.</p>
+<p>Пробелы автоматически не удаляются. Десятичная точка, разделители групп и подчёркивания литералов Java в этой форме не принимаются. <code>NumberFormatException</code> возникает при <code>null</code>, пустой строке, одном знаке без цифр, неподходящих символах или выходе значения за диапазон <code>int</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> pages <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span><span class="st">"+16"</span><span class="op">);</span> <span class="co">// 16</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Integer.parseInt(" 16 "); // NumberFormatException</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Integer.parseInt("2147483648"); // NumberFormatException</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Если требования допускают внешние пробелы, их удаляют отдельным действием до разбора. Формат метода не зависит от пользовательской локали. Объяснение перехода от текста к числу: <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-text-parsing" data-qrc-style="default" class="qrc-link" href="../../theory/chapters/text.html#sec-theory-text-parsing">Текст числа и числовое значение</a>. <span class="citation" data-cites="bib-fnd-integer-parse-int"><a href="../references.html#ref-bib-fnd-integer-parse-int" role="doc-biblioref">[48]</a></span></p>
+</section>
+<section id="sec-api-strings-regex" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="sec-api-strings-regex"><span class="header-section-number">7.4</span> Регулярные выражения: полное совпадение и поиск</h2>
+<p><code>String.matches</code> проверяет всю строку. Для поиска фрагментов создайте <code>Pattern</code>, затем <code>Matcher</code> для конкретного текста. <code>compile</code> создаёт шаблон, <code>matcher</code> связывает его с входным текстом:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Класс</th>
+<th>Сигнатура</th>
+<th>Результат</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>String</code></td>
+<td><code>boolean matches(String regex)</code></td>
+<td>Вся строка соответствует шаблону</td>
+</tr>
+<tr class="even">
+<td><code>Pattern</code></td>
+<td><code>static Pattern compile(String regex)</code></td>
+<td>Скомпилированный шаблон</td>
+</tr>
+<tr class="odd">
+<td><code>Pattern</code></td>
+<td><code>Matcher matcher(CharSequence input)</code></td>
+<td>Новый объект поиска для входного текста</td>
+</tr>
+<tr class="even">
+<td><code>Matcher</code></td>
+<td><code>boolean matches()</code></td>
+<td>Вся текущая область поиска соответствует шаблону; исходно она охватывает весь вход</td>
+</tr>
+<tr class="odd">
+<td><code>Matcher</code></td>
+<td><code>boolean find()</code></td>
+<td>Найден следующий соответствующий фрагмент</td>
+</tr>
+<tr class="even">
+<td><code>Matcher</code></td>
+<td><code>String group()</code></td>
+<td>Текст последнего успешного совпадения</td>
+</tr>
+<tr class="odd">
+<td><code>Matcher</code></td>
+<td><code>Matcher reset()</code></td>
+<td>Тот же объект поиска после сброса к началу всего входа</td>
+</tr>
+</tbody>
+</table>
+<p><code>find()</code> изменяет состояние поиска: повторный вызов ищет следующее совпадение. <code>group()</code> используют после успешной операции; до неё или после неудачного поиска он выбрасывает <code>IllegalStateException</code>. Сброс удаляет сведения о совпадении. Неверный синтаксис шаблона вызывает <code>PatternSyntaxException</code> при <code>compile</code> или <code>String.matches</code>; результат <code>false</code> означает корректный шаблон, который не подошёл. <span class="citation" data-cites="bib-mat-epam-regex bib-text-string-matches bib-text-pattern bib-text-matcher"><a href="../references.html#ref-bib-mat-epam-regex" role="doc-biblioref">[16]</a>, <a href="../references.html#ref-bib-text-matcher" role="doc-biblioref">[49]</a>, <a href="../references.html#ref-bib-text-pattern" role="doc-biblioref">[52]</a>, <a href="../references.html#ref-bib-text-string-matches" role="doc-biblioref">[57]</a></span></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">regex</span><span class="op">.</span><span class="im">Matcher</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">regex</span><span class="op">.</span><span class="im">Pattern</span><span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> text <span class="op">=</span> <span class="st">"ab12 cd3"</span><span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>text<span class="op">.</span><span class="fu">matches</span><span class="op">(</span><span class="st">"[0-9]+"</span><span class="op">));</span> <span class="co">// false</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="bu">Matcher</span> numbers <span class="op">=</span> <span class="bu">Pattern</span><span class="op">.</span><span class="fu">compile</span><span class="op">(</span><span class="st">"[0-9]+"</span><span class="op">).</span><span class="fu">matcher</span><span class="op">(</span>text<span class="op">);</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>numbers<span class="op">.</span><span class="fu">find</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>numbers<span class="op">.</span><span class="fu">group</span><span class="op">());</span> <span class="co">// 12</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>numbers<span class="op">.</span><span class="fu">find</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>numbers<span class="op">.</span><span class="fu">group</span><span class="op">());</span> <span class="co">// 3</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>numbers<span class="op">.</span><span class="fu">find</span><span class="op">());</span>       <span class="co">// false</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>numbers<span class="op">.</span><span class="fu">reset</span><span class="op">();</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>numbers<span class="op">.</span><span class="fu">find</span><span class="op">());</span>       <span class="co">// true</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Здесь <code>[0-9]+</code> означает одну или более ASCII-цифр. Если шаблону нужен обратный слеш, в строковом литерале Java его удваивают: регулярное выражение <code>\d+</code> записывается как <code>"\\d+"</code>. Правила шаблона и правила строкового литерала действуют последовательно.</p>
+<p>Для буквальных данных в регулярной замене используются разные операции: <code>Pattern.quote(text)</code> экранирует шаблон, <code>Matcher.quoteReplacement(text)</code> — строку замены. В результате <code>"$1"</code> можно вставить как текст, сохранив знак доллара. Полный опыт: <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-text-replacement" data-qrc-style="default" class="qrc-link" href="../../theory/chapters/text.html#sec-theory-text-replacement">Замена и разбиение текста</a>.</p>
+</section>
+<section id="sec-api-strings-builder" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="sec-api-strings-builder"><span class="header-section-number">7.5</span> Методы StringBuilder</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Сигнатура</th>
+<th>Действие</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>StringBuilder()</code></td>
+<td>Пустое содержимое, начальная ёмкость 16</td>
+</tr>
+<tr class="even">
+<td><code>StringBuilder(int capacity)</code></td>
+<td>Пустое содержимое с заданным неотрицательным запасом</td>
+</tr>
+<tr class="odd">
+<td><code>StringBuilder(String text)</code></td>
+<td>Копирует содержимое строки</td>
+</tr>
+<tr class="even">
+<td><code>StringBuilder append(String s)</code></td>
+<td>Дописывает текст, <code>null</code> представляется <code>"null"</code>; есть другие перегрузки</td>
+</tr>
+<tr class="odd">
+<td><code>StringBuilder append(int n)</code></td>
+<td>Дописывает десятичное представление</td>
+</tr>
+<tr class="even">
+<td><code>StringBuilder insert(int offset, String s)</code></td>
+<td>Вставляет при <code>0 &lt;= offset &lt;= length()</code>; при <code>s == null</code> вставляет <code>"null"</code></td>
+</tr>
+<tr class="odd">
+<td><code>StringBuilder delete(int start, int end)</code></td>
+<td>Удаляет <code>[start, min(end, length()))</code>; требует <code>0 &lt;= start &lt;= length()</code> и <code>start &lt;= end</code></td>
+</tr>
+<tr class="even">
+<td><code>void setLength(int n)</code></td>
+<td>Требует <code>n &gt;= 0</code>; сокращает содержимое или добавляет U+0000</td>
+</tr>
+<tr class="odd">
+<td><code>int length()</code>, <code>int capacity()</code></td>
+<td>Длина содержимого и ёмкость</td>
+</tr>
+<tr class="even">
+<td><code>String toString()</code></td>
+<td>Получает независимое строковое значение</td>
+</tr>
+</tbody>
+</table>
+<p>Для <code>insert(int, String)</code> недопустимый <code>offset</code> вызывает <code>StringIndexOutOfBoundsException</code>. Для <code>delete</code> отрицательный <code>start</code>, <code>start &gt; length()</code> или <code>start &gt; end</code> вызывает <code>StringIndexOutOfBoundsException</code>; конец выше длины допустим и ограничивается текущей длиной. Для <code>setLength</code> отрицательная длина вызывает <code>IndexOutOfBoundsException</code>.</p>
+<p><code>append</code> возвращает тот же накопитель и позволяет связывать вызовы в цепочку. Доступ к накопителю из нескольких потоков не синхронизируется автоматически. <code>StringBuffer</code> синхронизирует свои методы, но составная последовательность вызовов всё равно может требовать внешней организации. <code>StringBuilder.equals</code> не определяет равенство содержимого как <code>String.equals</code>.</p>
+</section>
+<section id="sec-api-strings-compare-to" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="sec-api-strings-compare-to"><span class="header-section-number">7.6</span> String.compareTo и знак порядка</h2>
+<p>Сигнатура: <code>public int compareTo(String anotherString)</code>. Метод сравнивает строки лексикографически по значениям единиц UTF-16. На первом различии раньше идёт строка с меньшей единицей; если одна является префиксом другой, раньше идёт короткая. Фрагмент внутри <code>main</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"Ada"</span><span class="op">.</span><span class="fu">compareTo</span><span class="op">(</span><span class="st">"Lin"</span><span class="op">));</span>   <span class="co">// -11</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"Java"</span><span class="op">.</span><span class="fu">compareTo</span><span class="op">(</span><span class="st">"Java"</span><span class="op">));</span> <span class="co">// 0</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"Java"</span><span class="op">.</span><span class="fu">compareTo</span><span class="op">(</span><span class="st">"Java course"</span><span class="op">));</span> <span class="co">// -7</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"Lin"</span><span class="op">.</span><span class="fu">compareTo</span><span class="op">(</span><span class="st">"Ada"</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">0</span><span class="op">);</span> <span class="co">// true</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Порядок определяется знаком: <code>&lt; 0</code>, <code>== 0</code>, <code>&gt; 0</code>. В приведённых вызовах отрицательные результаты равны <code>-11</code> и <code>-7</code>. Результат <code>0</code> для строк соответствует <code>equals</code>. Переданный <code>null</code> даёт <code>NullPointerException</code>, как и вызов через отсутствующую строку. Это естественный порядок Java-строк; он учитывает регистр и не выполняет нормализацию или сравнение по языковым правилам. Для пользовательского словаря с правилами языка выбирают <code>Collator</code>; для технического идентификатора требуется именно согласованный порядок протокола. <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#compareTo(java.lang.String)">String Java 25, compareTo</a>.</p>
+</section>
+<section id="sec-api-strings-word-boundaries" class="level2" data-number="7.7">
+<h2 data-number="7.7" class="anchored" data-anchor-id="sec-api-strings-word-boundaries"><span class="header-section-number">7.7</span> Границы слова в заданном алфавите</h2>
+<p>В ранних текстовых заданиях слово содержит только латинские A–Z/a–z и русские А–Я/а–я с Ё/ё. Цифра, табуляция и пунктуация разделяют слова; все разделители сохраняются при преобразовании. Для поиска слов этого алфавита подходит шаблон <code>[A-Za-zА-Яа-яЁё]+</code>. <code>\w</code> и <code>\b</code> используют правила регулярных выражений, которые не равны этому условию. Поиск возвращает диапазоны исходной строки:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> text <span class="op">=</span> <span class="st">"Java2</span><span class="sc">\t</span><span class="st">код!"</span><span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> words <span class="op">=</span> java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">regex</span><span class="op">.</span><span class="fu">Pattern</span><span class="op">.</span><span class="fu">compile</span><span class="op">(</span><span class="st">"[A-Za-zА-Яа-яЁё]+"</span><span class="op">).</span><span class="fu">matcher</span><span class="op">(</span>text<span class="op">);</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span>words<span class="op">.</span><span class="fu">find</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>words<span class="op">.</span><span class="fu">group</span><span class="op">()</span> <span class="op">+</span> <span class="st">":"</span> <span class="op">+</span> words<span class="op">.</span><span class="fu">start</span><span class="op">()</span> <span class="op">+</span> <span class="st">":"</span> <span class="op">+</span> words<span class="op">.</span><span class="fu">end</span><span class="op">());</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Вывод — <code>Java:0:4</code>, затем <code>код:6:9</code>. У <code>Matcher.start()</code> и <code>end()</code> результат типа <code>int</code>: включённое начало и исключённый конец последнего успешного совпадения. Как и <code>group</code>, их вызывают после успешного <code>find</code> или <code>matches</code>; иначе <code>IllegalStateException</code>. Индексы измерены в единицах UTF-16. Ручной проход может найти те же диапазоны, явно проверяя принадлежность каждой единицы алфавиту. Цифра <code>2</code>, табуляция и <code>!</code> не исчезли: найденные диапазоны указывают в исходную строку. При преобразовании слова и промежутки между ними извлекают из той же исходной строки, в которой найдены границы. <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/Matcher.html#start()">Matcher Java 25</a>.</p>
+</section>
+<section id="sec-api-strings-source-ranges" class="level2" data-number="7.8">
+<h2 data-number="7.8" class="anchored" data-anchor-id="sec-api-strings-source-ranges"><span class="header-section-number">7.8</span> Диапазоны исходного текста</h2>
+<p><code>StringBuilder.append(CharSequence source, int start, int end)</code> добавляет диапазон <code>[start, end)</code> в накопитель. При существующей строке <code>source</code> требуется <code>0 &lt;= start &lt;= end &lt;= source.length()</code>. Начало равно концу — добавляется пустой фрагмент. Индексы <code>start</code> и <code>end</code> относятся к <code>source</code>; длина накопителя определяется уже добавленным текстом.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> source <span class="op">=</span> <span class="st">"Java2код"</span><span class="op">;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">StringBuilder</span> result <span class="op">=</span> <span class="kw">new</span> <span class="bu">StringBuilder</span><span class="op">();</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>result<span class="op">.</span><span class="fu">append</span><span class="op">(</span><span class="ch">'['</span><span class="op">).</span><span class="fu">append</span><span class="op">(</span>source<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">4</span><span class="op">).</span><span class="fu">append</span><span class="op">(</span><span class="ch">']'</span><span class="op">);</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>result<span class="op">.</span><span class="fu">append</span><span class="op">(</span>source<span class="op">,</span> <span class="dv">4</span><span class="op">,</span> source<span class="op">.</span><span class="fu">length</span><span class="op">());</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>result<span class="op">);</span> <span class="co">// [Java]2код</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Связный проход с сохранением всех разделителей: <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-text-word-walk" data-qrc-style="default" class="qrc-link" href="../../theory/chapters/text.html#sec-theory-text-word-walk">Построение результата по исходным границам</a>. <span class="citation" data-cites="bib-fnd-builder-api"><a href="../references.html#ref-bib-fnd-builder-api" role="doc-biblioref">[56]</a></span></p>
+</section>
+<section id="sec-api-strings-examples" class="level2" data-number="7.9">
+<h2 data-number="7.9" class="anchored" data-anchor-id="sec-api-strings-examples"><span class="header-section-number">7.9</span> Полные примеры</h2>
+<p><a href="../examples/methods-arrays-text/TextValues.java">TextValues.java</a> содержит длины UTF-16, обход по кодовым точкам, NFC, буквальную замену и экранирование регулярного выражения. <a href="../examples/methods-arrays-text/WordRanges.java">WordRanges.java</a> выделяет слова, сохраняя их исходные границы и все разделители. <a href="../examples/methods-arrays-text/README.md">Команды и ожидаемые результаты</a>, <a href="../examples/methods-arrays-text.zip">архив примеров</a>.</p>
+
+
+
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-bib-objects-jep513" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">A. Cobbs и G. Bierman, <span>«JEP 513: Flexible Constructor Bodies»</span>. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://openjdk.org/jeps/513">https://openjdk.org/jeps/513</a></div>
+</div>
+<div id="ref-bib-jls-types-values-variables" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Глава 4</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html</a></div>
+</div>
+<div id="ref-bib-jls-instanceof" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Раздел 15.20.2</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.20.2">https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.20.2</a></div>
+</div>
+<div id="ref-bib-jls-class-interface-subtyping" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Раздел 4.10.2</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.10.2">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.10.2</a></div>
+</div>
+<div id="ref-bib-jls-type-variables" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Раздел 4.4</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.4">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.4</a></div>
+</div>
+<div id="ref-bib-jls-type-erasure" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[6] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Раздел 4.6</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.6">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.6</a></div>
+</div>
+<div id="ref-bib-jls-capture-conversion" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[7] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Раздел 5.1.10</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html#jls-5.1.10">https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html#jls-5.1.10</a></div>
+</div>
+<div id="ref-bib-jls-final-fields" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[8] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Раздел 8.3.1.2</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.3.1.2">https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.3.1.2</a></div>
+</div>
+<div id="ref-bib-jls-wildcards-capture" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[9] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Разделы 4.5.1, 5.1.10</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.5.1">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.5.1</a></div>
+</div>
+<div id="ref-bib-jls-type-arguments-unboxing-inference" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[10] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Разделы 4.5.1, 5.1.8, 15.9</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.5.1">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.5.1</a></div>
+</div>
+<div id="ref-bib-jls-reifiable-types-restrictions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[11] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Разделы 4.7, 8.4.2, 15.8.2, 15.9, 15.10.1</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.7">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.7</a></div>
+</div>
+<div id="ref-bib-jls-raw-types-heap-pollution" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[12] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Разделы 4.8, 4.12.2</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.8">https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.8</a></div>
+</div>
+<div id="ref-bib-jls-boxing-unboxing" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[13] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Разделы 5.1.7–5.1.8</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html#jls-5.1.7">https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html#jls-5.1.7</a></div>
+</div>
+<div id="ref-bib-jls-generic-classes-methods" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[14] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25 Edition. Разделы 8.1.2, 8.4.4</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.1.2">https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.1.2</a></div>
+</div>
+<div id="ref-bib-ctx-jls-binary" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[15] </div><div class="csl-right-inline">J. Gosling <em>и др.</em>, <em>The Java Language Specification, Java SE 25. §§13.2, 13.4.12, 13.4.14, 13.4.22 Binary Compatibility</em>. Oracle, 2025. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-13.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-13.html</a></div>
+</div>
+<div id="ref-bib-mat-epam-regex" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[16] </div><div class="csl-right-inline">И. Н. Блинов и В. С. Романчик, <em>Java from EPAM: учебно-методическое пособие</em>, 2-я изд. Минск: Четыре четверти, 2021, сс. 234–236.</div>
+</div>
+<div id="ref-bib-objects-schildt-records" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[17] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство. Записи и канонические конструкторы</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 519–528.</div>
+</div>
+<div id="ref-bib-objects-schildt-interfaces" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[18] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство. Интерфейсы и методы по умолчанию</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 254–272.</div>
+</div>
+<div id="ref-bib-objects-schildt-classes" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[19] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство. Классы, ссылки, конструкторы и передача аргументов</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 162–178, 190–192.</div>
+</div>
+<div id="ref-bib-objects-schildt-inheritance" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[20] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство. Наследование и динамическая диспетчеризация</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 217–243.</div>
+</div>
+<div id="ref-bib-objects-schildt-generics" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[21] </div><div class="csl-right-inline">Г. Шилдт, <em>Java. Полное руководство. Обобщения</em>, 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 401–443.</div>
+</div>
+<div id="ref-bib-objects-jls-access" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[22] </div><div class="csl-right-inline"><em>Java Language Specification, Java SE 25. Access Control</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-6.html#jls-6.6">https://docs.oracle.com/javase/specs/jls/se25/html/jls-6.html#jls-6.6</a></div>
+</div>
+<div id="ref-bib-objects-jls-data-classes" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[23] </div><div class="csl-right-inline"><em>Java Language Specification, Java SE 25. Enum, Record, and Sealed Types</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html</a></div>
+</div>
+<div id="ref-bib-objects-jls-overriding" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[24] </div><div class="csl-right-inline"><em>Java Language Specification, Java SE 25. Inheritance, Overriding, and Hiding</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.8">https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.8</a></div>
+</div>
+<div id="ref-bib-java-api-25" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[25] </div><div class="csl-right-inline"><em>Java Platform, Standard Edition 25 API Specification</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/index.html">https://docs.oracle.com/en/java/javase/25/docs/api/index.html</a></div>
+</div>
+<div id="ref-bib-java-tools-25" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[26] </div><div class="csl-right-inline"><em>Java Platform, Standard Edition 25: Tool Specifications</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/specs/man/index.html">https://docs.oracle.com/en/java/javase/25/docs/specs/man/index.html</a></div>
+</div>
+<div id="ref-bib-data-arraylist-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[27] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: ArrayList</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayList.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayList.html</a></div>
+</div>
+<div id="ref-bib-data-autocloseable-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[28] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: AutoCloseable</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/AutoCloseable.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/AutoCloseable.html</a></div>
+</div>
+<div id="ref-bib-data-bufferedreader-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[29] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: BufferedReader</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/BufferedReader.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/BufferedReader.html</a></div>
+</div>
+<div id="ref-bib-data-collection-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[30] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Collection</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collection.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collection.html</a></div>
+</div>
+<div id="ref-bib-data-comparator-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[31] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Comparator</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Comparator.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Comparator.html</a></div>
+</div>
+<div id="ref-bib-data-deque-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[32] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Deque</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Deque.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Deque.html</a></div>
+</div>
+<div id="ref-bib-data-files-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[33] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Files</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html</a></div>
+</div>
+<div id="ref-bib-data-hashset-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[34] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: HashSet</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashSet.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashSet.html</a></div>
+</div>
+<div id="ref-bib-data-function-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[35] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: java.util.function</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/package-summary.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/package-summary.html</a></div>
+</div>
+<div id="ref-bib-data-list-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[36] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: List</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html</a></div>
+</div>
+<div id="ref-bib-data-map-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[37] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Map</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html</a></div>
+</div>
+<div id="ref-bib-data-object-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[38] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Object</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html</a></div>
+</div>
+<div id="ref-bib-data-optional-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[39] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Optional</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html</a></div>
+</div>
+<div id="ref-bib-data-path-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[40] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Path</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Path.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Path.html</a></div>
+</div>
+<div id="ref-bib-data-set-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[41] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Set</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html</a></div>
+</div>
+<div id="ref-bib-data-stream-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[42] </div><div class="csl-right-inline"><em>Java SE 25 API Specification: Stream</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html</a></div>
+</div>
+<div id="ref-bib-context-printstream" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[43] </div><div class="csl-right-inline"><em>Java SE 25 API: PrintStream — Class Description and checkError()</em>. Oracle, 2025. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/PrintStream.html#checkError()">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/PrintStream.html#checkError()</a></div>
+</div>
+<div id="ref-bib-fnd-arrays-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[44] </div><div class="csl-right-inline"><em>Java SE 25 API. Arrays</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Arrays.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Arrays.html</a></div>
+</div>
+<div id="ref-bib-fnd-character-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[45] </div><div class="csl-right-inline"><em>Java SE 25 API. Character</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Character.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Character.html</a></div>
+</div>
+<div id="ref-bib-console-input-stream" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[46] </div><div class="csl-right-inline"><em>Java SE 25 API. InputStream.read()</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/InputStream.html#read()">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/InputStream.html#read()</a></div>
+</div>
+<div id="ref-bib-console-input-stream-reader" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[47] </div><div class="csl-right-inline"><em>Java SE 25 API. InputStreamReader: декодирование стандартного ввода</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/InputStreamReader.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/InputStreamReader.html</a></div>
+</div>
+<div id="ref-bib-fnd-integer-parse-int" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[48] </div><div class="csl-right-inline"><em>Java SE 25 API. Integer.parseInt(String)</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html#parseInt(java.lang.String)">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html#parseInt(java.lang.String)</a></div>
+</div>
+<div id="ref-bib-text-matcher" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[49] </div><div class="csl-right-inline"><em>Java SE 25 API. Matcher: полное совпадение, поиск и состояние</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/Matcher.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/Matcher.html</a></div>
+</div>
+<div id="ref-bib-fnd-math-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[50] </div><div class="csl-right-inline"><em>Java SE 25 API. Math</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Math.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Math.html</a></div>
+</div>
+<div id="ref-bib-fnd-normalizer-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[51] </div><div class="csl-right-inline"><em>Java SE 25 API. Normalizer</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/text/Normalizer.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/text/Normalizer.html</a></div>
+</div>
+<div id="ref-bib-text-pattern" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[52] </div><div class="csl-right-inline"><em>Java SE 25 API. Pattern: компиляция регулярного выражения</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/Pattern.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/Pattern.html</a></div>
+</div>
+<div id="ref-bib-console-reader" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[53] </div><div class="csl-right-inline"><em>Java SE 25 API. Reader.read()</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Reader.html#read()">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Reader.html#read()</a></div>
+</div>
+<div id="ref-bib-console-scanner" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[54] </div><div class="csl-right-inline"><em>Java SE 25 API. Scanner: целые числа и завершение ввода</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Scanner.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Scanner.html</a></div>
+</div>
+<div id="ref-bib-fnd-string-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[55] </div><div class="csl-right-inline"><em>Java SE 25 API. String</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html</a></div>
+</div>
+<div id="ref-bib-fnd-builder-api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[56] </div><div class="csl-right-inline"><em>Java SE 25 API. StringBuilder</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/StringBuilder.html">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/StringBuilder.html</a></div>
+</div>
+<div id="ref-bib-text-string-matches" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[57] </div><div class="csl-right-inline"><em>Java SE 25 API. String.matches(String)</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#matches(java.lang.String)">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#matches(java.lang.String)</a></div>
+</div>
+<div id="ref-bib-fnd-system-arraycopy" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[58] </div><div class="csl-right-inline"><em>Java SE 25 API. System.arraycopy</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/System.html#arraycopy(java.lang.Object,int,java.lang.Object,int,int)">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/System.html#arraycopy(java.lang.Object,int,java.lang.Object,int,int)</a></div>
+</div>
+<div id="ref-bib-console-system-in" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[59] </div><div class="csl-right-inline"><em>Java SE 25 API. System.in</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/System.html#in">https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/System.html#in</a></div>
+</div>
+<div id="ref-bib-fnd-java-launcher" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[60] </div><div class="csl-right-inline"><em>Java SE 25 Tool Specifications. The java Command</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html">https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html</a></div>
+</div>
+<div id="ref-bib-fnd-javac" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[61] </div><div class="csl-right-inline"><em>Java SE 25 Tool Specifications. The javac Command</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html">https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html</a></div>
+</div>
+<div id="ref-bib-data-jls-exceptions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[62] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25 Edition: Exceptions, Chapter 11</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html</a></div>
+</div>
+<div id="ref-bib-data-jls-lambdas" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[63] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25 Edition: Lambda Expressions, §15.27</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.27">https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.27</a></div>
+</div>
+<div id="ref-bib-data-jls-resources" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[64] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25 Edition: try-with-resources, §14.20.3</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3">https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3</a></div>
+</div>
+<div id="ref-bib-fnd-jls-arrays" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[65] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25. Arrays</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-10.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-10.html</a></div>
+</div>
+<div id="ref-bib-fnd-jls-statements" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[66] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25. Blocks, Statements, and Patterns</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html</a></div>
+</div>
+<div id="ref-bib-fnd-jls-conversions" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[67] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25. Conversions and Contexts</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html">https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html</a></div>
+</div>
+<div id="ref-bib-fnd-jls-evaluation" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[68] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25. Evaluation Order</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.7">https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.7</a></div>
+</div>
+<div id="ref-bib-fnd-jls-launch" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[69] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25. Java Virtual Machine Startup</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html#jls-12.1">https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html#jls-12.1</a></div>
+</div>
+<div id="ref-bib-fnd-jls-methods" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[70] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25. Method Declarations</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4">https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4</a></div>
+</div>
+<div id="ref-bib-fnd-jls-arithmetic" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[71] </div><div class="csl-right-inline"><em>The Java Language Specification, Java SE 25. Multiplicative and Additive Operators</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.17">https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.17</a></div>
+</div>
+<div id="ref-bib-jvms-method-descriptors-signatures" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[72] </div><div class="csl-right-inline"><em>The Java Virtual Machine Specification, Java SE 25 Edition. Разделы 4.3.3, 4.7.9</em>. Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: <a href="https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html#jvms-4.3.3">https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html#jvms-4.3.3</a></div>
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Скопировано");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Скопировано");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation" aria-label="Страница">
+  <div class="nav-page nav-page-previous">
+      <a href="../entries/arrays.html" class="pagination-link" aria-label="Массивы и класс Arrays">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Массивы и класс Arrays</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../entries/classes.html" class="pagination-link" aria-label="Классы и конструкторы">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Классы и конструкторы</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/master/handbook/entries/strings.qmd" class="toc-action"><i class="bi bi-github"></i>Показать код</a></li><li><a href="https://github.com/BSU-RFCT-Afonenko-Courses/Java/issues/new" class="toc-action"><i class="bi empty"></i>Сообщить о проблеме</a></li></ul></div></div></div></footer>
+<script data-qrc-navigation>// Опубликованные цели сохраняют штатные ID Quarto. Обработчик раскрывает
+// существующее представление документа, не вводя учебных ролей и новых ID.
+(() => {
+  if (new URL(location.href).searchParams.has("print-pdf")) return;
+  let navigation = 0;
+
+  function hashId(url) {
+    try { return decodeURIComponent(url.hash.replace(/^#\/?/, "")); }
+    catch { return ""; } // Некорректный фрагмент внешней ссылки не должен нарушать работу страницы.
+  }
+
+  function ancestors(target) {
+    const nodes = [];
+    for (let node = target; node; node = node.parentElement) nodes.push(node);
+    return nodes.reverse();
+  }
+
+  function openDisclosures(nodes, scroll) {
+    for (const node of nodes) {
+      if (node.matches("details")) node.open = true;
+      if (!node.matches(".collapse:not(.show)")) continue;
+
+      // Bootstrap управляет анимацией и состоянием переключателя.
+      // В темах без Bootstrap блок раскрывается напрямую; details работает штатно.
+      const Collapse = window.bootstrap?.Collapse;
+      if (Collapse) {
+        node.addEventListener("shown.bs.collapse", scroll, { once: true });
+        Collapse.getOrCreateInstance(node, { toggle: false }).show();
+      } else {
+        node.classList.add("show");
+        if (!node.id) continue;
+        for (const trigger of document.querySelectorAll("[aria-controls]")) {
+          if (!trigger.getAttribute("aria-controls").split(/\s+/).includes(node.id)) continue;
+          trigger.setAttribute("aria-expanded", "true");
+          trigger.classList.remove("collapsed");
+        }
+      }
+    }
+  }
+
+  function revealTarget(id) {
+    const target = id && document.getElementById(id);
+    if (!target) return;
+    const current = ++navigation;
+    const scroll = () => requestAnimationFrame(() => {
+      // Завершение анимации не должно возвращать прокрутку после нового перехода.
+      if (current === navigation) target.scrollIntoView({ block: "nearest" });
+    });
+    const nodes = ancestors(target);
+    const section = target.closest("section.slide");
+    const reveal = window.Reveal;
+    if (section && target !== section && reveal?.isReady()) {
+      const position = reveal.getIndices(section);
+      reveal.slide(position.h, position.v);
+      // У вложенных фрагментов могут различаться индексы. Показываем
+      // все фрагменты вокруг цели; нулевой индекс также допустим.
+      const indices = nodes.filter(node => node.matches(".fragment[data-fragment-index]"))
+        .map(node => Number(node.getAttribute("data-fragment-index")))
+        .filter(Number.isFinite);
+      if (indices.length) reveal.navigateFragment(Math.max(...indices));
+    }
+    openDisclosures(nodes, scroll);
+    scroll();
+  }
+
+  function initialTarget() {
+    const url = new URL(location.href);
+    revealTarget(url.searchParams.get("qrc-target") || hashId(url));
+  }
+
+  function ready() {
+    if (window.Reveal && !window.Reveal.isReady()) window.Reveal.on("ready", initialTarget);
+    else initialTarget();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", ready, { once: true });
+  else ready();
+
+  // qrc-target обрабатывается только при входе на страницу. Повторное применение
+  // при смене фрагмента URL возвращало бы преподавателя к цели после перехода вперёд.
+  window.addEventListener("hashchange", () => revealTarget(hashId(new URL(location.href))));
+  document.addEventListener("click", event => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.defaultPrevented) return;
+    const link = event.target.closest?.("a[href]");
+    if (!link || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
+    const url = new URL(link.href, location.href);
+    if (url.origin !== location.origin || url.pathname !== location.pathname || url.search !== location.search) return;
+    // Повторный переход по тому же фрагменту URL не вызывает hashchange.
+    // Раскрываем цель после штатной навигации и обработчика Revealjs.
+    queueMicrotask(() => revealTarget(hashId(url)));
+  }, true);
+})();
+</script>
+<script id="course-site-navigation">(function(){
+const base={"courseUrl":"https://bsu-rfct-afonenko-courses.github.io/Java/","rootHref":"../../"};
+if(base){
+ const course=new URL(base.courseUrl); course.pathname=course.pathname.replace(/\/$/,'')+'/';
+ const root=new URL(base.rootHref,document.baseURI);
+ for(const link of document.querySelectorAll('#quarto-header a[href],#quarto-sidebar a[href],.quarto-navbar a[href],.quarto-sidebar a[href]')){
+  const url=new URL(link.href,document.baseURI);
+  if(url.origin===course.origin&&url.pathname.startsWith(course.pathname)){
+   let path=url.pathname.slice(course.pathname.length); if(!path||path.endsWith('/')) path+='index.html';
+   link.href=new URL(path+url.search+url.hash,root).href;
+  }
+ }
+}
+const targets=[].map(path=>new URL(path,document.baseURI));
+for(const link of document.querySelectorAll('a[href]')){
+ const url=new URL(link.href,document.baseURI);
+ if(targets.some(target=>target.origin===url.origin&&(
+  target.pathname===url.pathname || target.pathname.endsWith('/index.html')&&target.pathname.slice(0,-'index.html'.length)===url.pathname
+ ))){
+  link.target='_blank'; link.rel=[...new Set([...link.rel.split(/\s+/).filter(Boolean),'noopener','noreferrer'])].join(' ');
+ }
+}
+})();</script>
+</body></html>
