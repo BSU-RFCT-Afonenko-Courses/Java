@@ -96,3 +96,12 @@ html.print-pdf .reveal .slides section:is(
   height: var(--slide-height);
   min-height: 0;
 }
+
+/* До завершения Mermaid скрытые мобильные секции сохраняют геометрию. */
+@media screen and (max-width: 600px) {
+  html:not(.print-pdf) body.course-navigation-active > .reveal > .slides
+    section:not(.present):has(pre.mermaid-js) {
+    display: block !important;
+    visibility: hidden;
+  }
+}
