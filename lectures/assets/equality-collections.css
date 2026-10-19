@@ -18,3 +18,25 @@
   display: block;
   margin-inline: auto !important;
 }
+
+/* На узком экране прокручивается схема, а не весь слайд. */
+@media screen and (max-width: 600px) {
+  html:not(.print-pdf) .reveal .cell:has(.mermaid-js) {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  html:not(.print-pdf) .reveal .cell-output-display:has(.mermaid-js) {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  html:not(.print-pdf) .reveal .cell-output-display:has(.mermaid-js) > div {
+    min-width: 650px;
+  }
+
+  html:not(.print-pdf) .reveal .cell-output-display svg.mermaid-js {
+    margin-inline: 0 !important;
+  }
+}
