@@ -40,3 +40,59 @@
     margin-inline: 0 !important;
   }
 }
+
+/* Четыре состояния имеют общие рамки и одну высоту верхнего контекста. */
+.reveal section:is(#sec-j25-lecture-equality-collections-step-16,
+  #sec-lecture-collections-array-shift,
+  #sec-j25-lecture-equality-collections-step-23,
+  #sec-lecture-collections-linked-insert) > h2 {
+  display: block;
+}
+.reveal section:is(#sec-lecture-collections-array-shift,
+  #sec-lecture-collections-linked-insert) > h2 {
+  visibility: hidden;
+}
+.reveal .collection-state-context {
+  display: flow-root;
+  height: 210px;
+}
+.reveal .collection-state-stage {
+  margin: 0;
+  max-width: 100%;
+}
+.reveal .collection-state-canvas {
+  width: 1000px;
+  max-width: 100%;
+  margin-inline: auto;
+}
+.reveal .collection-state-canvas > p { margin: 0; }
+.reveal img.collection-state-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+}
+@media screen and (max-width: 600px) {
+  html:not(.print-pdf) .reveal .collection-state-stage {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+  html:not(.print-pdf) .reveal .collection-state-canvas {
+    width: 650px;
+    min-width: 650px;
+    max-width: none;
+    margin-inline: 0;
+  }
+}
+
+/* В печати высота слайда не включает верхнее поле страницы Reveal. */
+html.print-pdf .reveal .slides section:is(
+  #sec-j25-lecture-equality-collections-step-16,
+  #sec-lecture-collections-array-shift,
+  #sec-j25-lecture-equality-collections-step-23,
+  #sec-lecture-collections-linked-insert) {
+  height: var(--slide-height);
+  min-height: 0;
+}
