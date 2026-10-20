@@ -11,6 +11,32 @@ categories: [java, java-core, java-equality]
 - Композиция сравнений, устойчивость и правила равенства в коллекциях.
 - Сравнение чисел, строк, массивов и составных данных.
 
+## Система операций сравнения {#sec-theory-equality-operations}
+
+Коллекция выбирает способ поиска, а тип элемента предоставляет операции,
+которые этот способ использует. Операции сравнения в Java:
+
+| Операция | Результат и назначение | Источник правила |
+|---|---|---|
+| `a == b` для ссылок | `boolean`: общий объект или два `null` | Язык |
+| `a.equals(b)` | `boolean`: равенство значения | Метод класса, унаследованный от `Object` или переопределённый |
+| `a.hashCode()` | `int`: отбор кандидатов для поиска | Метод класса, согласованный с `equals` |
+| `a.compareTo(b)` | Знак `int`: естественный порядок типа | `Comparable<T>` |
+| `order.compare(a, b)` | Знак `int`: выбранный внешний порядок | Объект `Comparator<T>` |
+
+`Object` даёт исходные методы равенства и хеша каждому классу.
+Тип значения переопределяет их согласованно. Интерфейсы порядка добавляют
+другое требование: возможность расположить значения до, после или на одном
+месте по выбранному сравнению. Внешний компаратор позволяет менять порядок
+отчёта без изменения самого класса и его равенства.
+[@bib-data-object-api; @bib-equality-comparable-api; @bib-data-comparator-api]
+
+У каталога поиск по коду, сравнение двух версий сведений и порядок ведомости
+используют разные данные. Устойчивый ключ `StudentId` представляет код;
+`Student` сравнивает все компоненты; компаратор ведомости выбирает балл
+и дополнительные критерии. Отдельное изменение порядка не меняет
+значения уже сохранённых ключей.
+
 ## Идентичность и равенство содержимого {#sec-j25-theory-equality-identity}
 
 Для ссылочных значений `==` возвращает `true`, когда обе ссылки ведут
@@ -226,6 +252,14 @@ System.out.println(id.equals(null));                 // false
 Композиция позволяет отдельно хранить идентификатор и дополнительные
 сведения, оставляя каждому типу своё равенство.
 
+Сравнение подкласса с базовым объектом только по коду восстанавливает
+симметрию этой пары. Пусть именованные пропуска `a(17, Ada)` и `b(17, Lin)`
+различаются именем, а базовый `p(17)` имени не содержит. Тогда `a` равен `p`,
+`p` равен `b`, но `a` не равен `b`.
+Нарушена транзитивность. Добавление значимого состояния требует заново
+проверить отношение между всеми допустимыми типами во всех сочетаниях.
+[@bib-equality-bloch-equals]
+
 ### Переопределение и перегрузка
 
 Переопределяемая сигнатура — `public boolean equals(Object other)`.
@@ -262,6 +296,45 @@ System.out.println(first.equals(argument)); // false
 Аннотация `@Override` у ошибочного метода заставит компилятор сообщить,
 что он ничего не переопределяет. Разбор выбора перегрузки и динамического
 вызова: @theory:sec-j25-theory-inheritance.
+
+## Линейный поиск по значению {#sec-theory-equality-linear-search}
+
+Метод `containsCode` получает строки через `Iterable<String>`
+и завершает последовательный обход на первом равном значении:
+
+```java
+static boolean containsCode(Iterable<String> codes, String sought) {
+    for (String code : codes) {
+        if (java.util.Objects.equals(sought, code)) return true;
+    }
+    return false;
+}
+```
+
+`Objects.equals(sought, code)` обрабатывает отсутствие: два `null`
+считаются равными, один `null` отличается от существующей строки.
+Для существующего `sought` вызывается его `equals`. Источник `codes`
+должен быть отличен от `null`, в том числе при пустой последовательности.
+[@bib-equality-objects-api]
+
+```java
+var codes = java.util.List.of("s1", "s2", "s1");
+System.out.println(containsCode(codes, "s2")); // true
+System.out.println(containsCode(codes, "s9")); // false
+System.out.println(containsCode(java.util.List.of(), "s1")); // false
+```
+
+| Запрос к `[s1, s2, s1]` | Проверенные значения | Причина остановки |
+|---|---|---|
+| `s1` | Первый `s1` | Первое совпадение |
+| `s2` | `s1`, `s2` | Второе значение совпало |
+| `s9` | Все три значения | Обход закончился |
+
+Для источника из $n$ элементов требуется от нуля до $n$ проверок;
+для отсутствующего значения проверяются все элементы. Эта оценка считает
+проверки, а стоимость одного равенства зависит от типа значения.
+Хеш-таблица использует предварительное размещение, чтобы начинать поиск
+с меньшего набора кандидатов.
 
 ## Равенство и хеш {#sec-j25-theory-equality-hash}
 
@@ -319,8 +392,8 @@ System.out.println(counts.size());                    // 2
 | Второй `s17` | 2 | Ключ отсутствует |
 | `s18` | 2 | 1 |
 
-Второй `s17` заменил значение под уже существующим ключом. Порядок обхода
-`HashMap` и `HashSet` этим опытом не задаётся.
+Второй `s17` заменил значение под уже существующим ключом. `HashMap`
+и `HashSet` не гарантируют определённого порядка обхода.
 
 ### Коллизия и качество хеша
 
@@ -356,6 +429,64 @@ System.out.println(collisions.size()); // 2
 коллизии и не задаёт адрес объекта либо доступный клиенту индекс таблицы.
 [@bib-data-object-api; @bib-equality-bloch-hash]
 
+### Ячейка, хеш узла и равный ключ {#sec-theory-equality-hash-search}
+
+В `HashMap` OpenJDK `jdk-25-ga` исходный хеш существующего ключа
+`h = key.hashCode()` преобразуется в `hash = h ^ (h >>> 16)`. При длине
+таблицы $n$ индекс ячейки вычисляется как `(n - 1) & hash`. Узел хранит этот `hash`, ссылку на ключ и значение.
+Метод поиска сначала сравнивает хеш узла с хешем запроса и затем проверяет
+совпадение ссылки либо `equals`. Это устройство реализовано в `Node`,
+`hash`, `getNode` и `putVal`. Общий договор `Map` оставляет выбор
+способа хранения и поиска реализации.
+[@bib-equality-openjdk-hashmap]
+
+После первой вставки новая карта `values` содержит 16 ячеек:
+
+```java
+var firstAa = new StudentId("Aa");
+var firstBb = new StudentId("BB");
+var values = new java.util.HashMap<StudentId, Integer>(16);
+values.put(firstAa, 1);
+values.put(firstBb, 2);
+System.out.println(values.get(new StudentId("BB"))); // 2
+```
+
+В обоих ключах исходный и смешанный хеши равны 2112, индекс равен 0.
+Короткая цепочка этой ячейки содержит оба узла:
+
+```{mermaid}
+%%{init: {"flowchart": {"rankSpacing": 20, "padding": 8}}}%%
+flowchart LR
+  Q["Запрос BB:<br/>hash 2112"] --> B["Ячейка<br/>0"]
+  B --> A["Aa:<br/>hash 2112"]
+  A -->|"equals:<br/>false"| C["BB:<br/>hash 2112"]
+  C -->|"equals:<br/>true"| V["Значение<br/>2"]
+```
+
+`Aa` пропущен после проверки равенства, `BB` найден. Разные полные хеши
+тоже могут дать один индекс; тогда проверка сохранённого хеша отсеивает
+узел ещё до сравнения значений. В данной ячейке связаны два узла;
+для длинных ячеек реализация также допускает дерево.
+
+Повторный `put` проходит тот же отбор, находит существующий ключ
+и возвращает прежнее значение:
+
+```java
+var repeatedBb = new StudentId("BB");
+System.out.println(values.put(repeatedBb, 20)); // 2
+System.out.println(values.size());             // 2
+System.out.println(values.get(firstBb));       // 20
+for (StudentId stored : values.keySet()) {
+    if (stored.equals(repeatedBb)) {
+        System.out.println(stored == firstBb); // true
+    }
+}
+```
+
+В `jdk-25-ga` обновилось значение найденного узла; ссылка на прежний ключ
+сохранилась. Цикл выбирает этот ключ проверкой равенства, поэтому его
+положение в порядке обхода не влияет на результат.
+
 ## Изменяемые ключи {#sec-j25-theory-equality-mutable}
 
 Хеш-коллекция размещает запись при добавлении ключа. Данные его равенства
@@ -390,6 +521,23 @@ broken.put(key, "stored");
 System.out.println(broken.get(new MutableKey(1))); // stored
 key.code = 2;
 ```
+
+Сохранённая связь до и после присваивания различается только полем ключа:
+
+```{mermaid}
+flowchart TB
+  subgraph BEFORE["После вставки"]
+    B1["Ячейка 1"] --> N1["Узел: hash 1"] --> K1["Ключ: code 1"]
+  end
+  subgraph AFTER["После key.code = 2"]
+    B2["Ячейка 1"] --> N2["Узел: hash 1"] --> K2["Ключ: code 2"]
+  end
+  BEFORE ~~~ AFTER
+```
+
+При длине таблицы 16 запрос с новым хешем 2 попадает в пустую ячейку 2.
+Старая запись остаётся в ячейке 1. Изменение поля ключа не обращается
+к методам карты и не меняет сохранённый хеш узла.
 
 Перед следующим поиском определите, какой хеш вычислится теперь и
 выполнялась ли операция переноса записи. Для `HashMap` OpenJDK 25
@@ -547,6 +695,65 @@ System.out.println(vector.hashCode() == sameValue.hashCode()); // true
 @theory:sec-j25-theory-data-classes-array-value.
 [@bib-equality-arrays-api; @bib-equality-record-api]
 
+### Глубина снимка ключа {#sec-theory-equality-key-snapshot}
+
+Для `ScoreVector` достаточно копии массива примитивов: каждый `int`
+сохраняется как самостоятельное значение. У массива или списка ссылок
+копирование состава оставляет общими объекты по этим ссылкам.
+Глубину снимка определяют данные, участвующие в равенстве и хеше.
+
+Пусть ключ задаёт последовательность текстовых кодов. Источник передаёт
+`List<StringBuilder>`: каждый `StringBuilder` хранит изменяемые символы.
+`List.copyOf(input)` сохранил бы ссылки на те же изменяемые объекты.
+`CodePath` фиксирует текст каждого компонента и состав списка:
+
+```java
+final class CodePath {
+    private final java.util.List<String> parts;
+
+    CodePath(java.util.List<StringBuilder> input) {
+        var snapshot = new java.util.ArrayList<String>();
+        for (StringBuilder part : input) snapshot.add(part.toString());
+        this.parts = java.util.List.copyOf(snapshot);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof CodePath path && parts.equals(path.parts);
+    }
+
+    @Override
+    public int hashCode() { return parts.hashCode(); }
+}
+```
+
+Конструктор принимает существующий список существующих компонентов;
+`null` вместо списка или компонента приводит к `NullPointerException`.
+Во время копирования источник не изменяют. `StringBuilder.toString()`
+фиксирует текущие символы в неизменяемой строке; последующие изменения
+построителя эту строку не меняют. Полученный список наружу не выдаётся.
+[@bib-equality-stringbuilder-api; @bib-equality-list-api]
+
+```java
+var part = new StringBuilder("s1");
+var input = new java.util.ArrayList<>(java.util.List.of(part));
+var key = new CodePath(input);
+var same = new CodePath(java.util.List.of(new StringBuilder("s1")));
+var keys = new java.util.HashSet<CodePath>();
+keys.add(key);
+part.append("9");
+input.clear();
+System.out.println(key.equals(same)); // true
+System.out.println(key.hashCode() == same.hashCode()); // true
+System.out.println(keys.contains(same)); // true
+```
+
+Первое изменение затронуло исходные символы, второе — исходный состав.
+В ключе осталась последовательность `[s1]`. Защита охватывает оба пути
+изменения данных равенства. Снимок сохраняет значения, определяющие ключ
+в предметной модели; исходный граф изменяемых объектов остаётся у клиента.
+[@bib-collections-bloch-copy]
+
 ## Естественный порядок и порядок отчёта {#sec-j25-theory-equality-order}
 
 `Comparable<T>` задаёт естественный порядок значений типа методом
@@ -646,6 +853,22 @@ java.util.Comparator<Student> byScoreAndId =
 считает ноль совпадением ключа. Поэтому ноль сравнения определяет
 уникальность в этих контейнерах.
 
+В модели бинарного дерева с естественным порядком строк ключи слева
+меньше узла, справа — больше:
+
+```{mermaid}
+flowchart TD
+  R["s2"] -->|"меньше"| L["s1"]
+  R -->|"больше"| G["s3"]
+```
+
+Запрос `s3` сначала сравнивается с `s2`: положительный знак выбирает правую
+ветвь. Следующее сравнение с `s3` даёт ноль и завершает поиск.
+Запрос `s0` дважды выбирает левую ветвь — у `s2`, затем у `s1` —
+и достигает отсутствующего дочернего узла. Значение не найдено.
+Конкретное размещение и балансировку узлов определяет реализация дерева.
+[@bib-collections-treeset-api]
+
 Пусть компаратор учитывает только балл. Два участника с баллом 90
 различаются по `equals`, но сравнение по баллу даёт ноль:
 
@@ -705,3 +928,159 @@ java.util.Comparator<Student> byAllComponents =
 Сигнатуры и готовые способы построения сравнений:
 @handbook:sec-j25-api-comparison. Полные исходники опытов и команды:
 @handbook:sec-api-equality-examples.
+
+## Внешнее правило равенства в C++ и C\# {#sec-theory-equality-external-rule}
+
+Равенство значения может принадлежать типу или выбираться для отдельной
+коллекции. В Java стандартная `HashMap` вызывает методы ключа `hashCode`
+и `equals`; параметра для внешней пары этих операций у её конструктора нет.
+Для другого равенства удобно выделить другой тип ключа, например сохраняющий
+нормализованный код. Тогда его данные и операции выражают одну модель.
+
+C++20 `std::unordered_set<Key, Hash, Pred>` получает типы объектов
+хеширования и равенства. `Pred` должен задавать эквивалентность, а `Hash`
+обязан возвращать одинаковые хеши для эквивалентных ключей. При хранении
+результаты обеих операций должны оставаться устойчивыми.
+`std::set<Key, Compare>` использует внешний строгий слабый порядок:
+два ключа эквивалентны, когда `Compare` не считает меньшим ни один из них.
+Такое совпадение не требует вызова `operator==`.
+[@bib-equality-cpp-unordered; @bib-equality-cpp-associative]
+
+### ASCII-коды в C++20
+
+Коды `s1` и `S1` обозначают один ключ. Данные ограничены ASCII;
+функция `foldAscii` переводит английские заглавные буквы в строчные.
+Хеш и равенство используют одну и ту же нормализацию:
+
+```cpp
+#include <functional>
+#include <iostream>
+#include <string>
+#include <unordered_set>
+
+std::string foldAscii(std::string value) {
+    for (char& c : value) {
+        if (c >= 'A' && c <= 'Z') c = char(c + ('a' - 'A'));
+    }
+    return value;
+}
+
+struct AsciiHash {
+    std::size_t operator()(const std::string& value) const {
+        return std::hash<std::string>{}(foldAscii(value));
+    }
+};
+struct AsciiEqual {
+    bool operator()(const std::string& a, const std::string& b) const {
+        return foldAscii(a) == foldAscii(b);
+    }
+};
+```
+
+`operator()` делает объект вызываемым как функцию. Контейнер получает
+`AsciiHash` и `AsciiEqual` как параметры своего шаблона и создаёт
+соответствующие объекты. Численное значение строкового хеша не фиксируется:
+важно совпадение при равенстве нормализованных строк.
+
+```cpp
+int main() {
+    std::unordered_set<std::string, AsciiHash, AsciiEqual> codes;
+    std::cout << std::boolalpha;
+    std::cout << codes.insert("s1").second << '\n'; // true
+    std::cout << codes.insert("S1").second << '\n'; // false
+    std::cout << codes.size() << '\n';             // 1
+}
+```
+
+`insert` возвращает пару: позицию элемента и признак новой вставки.
+Поле `.second` читает этот признак. Обе строки обозначают один ключ
+данного множества; обычное сравнение исходных `std::string` их различает.
+Создание временной нормализованной строки входит в стоимость каждой
+операции равенства и хеширования.
+
+### Пара Equals и GetHashCode в C\#
+
+В C# интерфейс `IEqualityComparer<T>` описывает внешний объект с двумя
+методами: `Equals` сравнивает значения типа `T`, `GetHashCode` вычисляет
+согласованный хеш. `HashSet<T>` и `Dictionary<TKey,TValue>` могут получить
+такой объект при создании. Интерфейс `IComparer<T>` отдельно задаёт порядок
+методом `Compare`; он не заменяет пару равенства и хеша.
+[@bib-equality-dotnet-comparer]
+
+Для обычного сравнения строк без учёта регистра доступен готовый
+`StringComparer.OrdinalIgnoreCase`. На тех же ASCII-данных .NET10 даёт:
+
+```csharp
+var codes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+Console.WriteLine(codes.Add("s1")); // True
+Console.WriteLine(codes.Add("S1")); // False
+Console.WriteLine(codes.Count);     // 1
+```
+
+`Add` сообщает, появилось ли новое значение, `Count` читает число элементов.
+Готовый компаратор использует порядковое сравнение без учёта регистра,
+независимое от текущей языковой культуры. Для произвольного Unicode его
+правила не сводятся к функции `foldAscii` из предыдущего опыта.
+[@bib-equality-dotnet-hashset; @bib-equality-dotnet-stringcomparer]
+
+`AsciiCodeComparer` согласует равенство и хеширование через нормализацию
+ASCII-кодов. Класс использует пространства имён `System`
+и `System.Collections.Generic`; обозначение `string?` допускает `null`
+в параметре сравнения.
+
+```csharp
+sealed class AsciiCodeComparer : IEqualityComparer<string> {
+    static string FoldAscii(string value) {
+        char[] chars = value.ToCharArray();
+        for (int i = 0; i < chars.Length; i++) {
+            if (chars[i] >= 'A' && chars[i] <= 'Z')
+                chars[i] = (char)(chars[i] + ('a' - 'A'));
+        }
+        return new string(chars);
+    }
+
+    public bool Equals(string? x, string? y) {
+        if (x is null || y is null) return x is null && y is null;
+        return StringComparer.Ordinal.Equals(FoldAscii(x), FoldAscii(y));
+    }
+
+    public int GetHashCode(string value) {
+        ArgumentNullException.ThrowIfNull(value);
+        return StringComparer.Ordinal.GetHashCode(FoldAscii(value));
+    }
+}
+```
+
+Для двух `null` метод `Equals` возвращает `true`, для одного — `false`.
+Хеширование существующей строки использует ту же нормализацию.
+`StringComparer.Ordinal` сравнивает полученные строки по кодовым единицам
+и предоставляет согласованный строковый хеш.
+[@bib-equality-dotnet-ordinal]
+
+```csharp
+var comparer = new AsciiCodeComparer();
+Console.WriteLine(comparer.Equals("s1", "S1")); // True
+Console.WriteLine(comparer.GetHashCode("s1")
+    == comparer.GetHashCode("S1")); // True
+var codes = new HashSet<string>(comparer);
+codes.Add("s1");
+Console.WriteLine(codes.Add("S1")); // False
+```
+
+Для словаря выбранное правило определяет совпадение ключей. Присваивание
+через индексатор заменяет значение, а метод `Add` отклоняет уже имеющийся
+ключ:
+
+```csharp
+var counts = new Dictionary<string, int>(new AsciiCodeComparer());
+counts["s1"] = 1;
+counts["S1"] = 2;
+Console.WriteLine(counts.Count); // 1
+Console.WriteLine(counts["s1"]); // 2
+// counts.Add("S1", 3) вызвал бы ArgumentException.
+```
+
+В C# индексатор `counts[key]` выражает чтение или запись по ключу.
+Как и в Java-каталоге, требование отвергать повтор входного кода
+следует отличать от обновления уже существующего соответствия.
+[@bib-equality-dotnet-dictionary]
