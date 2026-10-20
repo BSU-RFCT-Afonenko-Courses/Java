@@ -78,3 +78,11 @@ python3 -m unittest discover -s tasks/test-support -p test_materialize.py -v
 тестами. Канонический файл находится вне `src/`, поэтому JDK-only `check.py`
 не требует Platform helper. При самостоятельном JUnit-запуске не включайте
 `api/` в зависимую компиляцию: precheck выполняется отдельной стадией Platform.
+
+`runCheckingUncaught` различает наблюдённое необработанное исключение
+(`JavaProcess.UncaughtStudentException`), истечение срока ожидания вложенного процесса
+(`StudentTimeout`) и превышение общего объёма вывода (`StudentOutputLimit`).
+Все три типа — final наследники `AssertionError`; прежние run/Result signatures
+и catchability сохраняются. Ненулевой exitCode сам по себе не означает исключение.
+Студенческая диагностика внешней проверки использует типы и проверенное trusted
+происхождение классов, а не текст ошибки или stderr.
