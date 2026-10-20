@@ -2744,6 +2744,118 @@
     "text": "Источники [1] G. Bierman, «JEP 395: Records. Goals; Motivation; Description; Constructors for record classes; Rules for record classes» . Просмотрено: 11.10.2026. [Онлайн]. Доступно на: https://openjdk.org/jeps/395 [2] G. Bierman, «JEP 409: Sealed Classes. Goals; Motivation; Description; Sealing and record classes; Sealed classes and pattern matching» . Просмотрено: 11.10.2026. [Онлайн]. Доступно на: https://openjdk.org/jeps/409 [3] B. Goetz, «Проектирование лямбда-выражений: функциональные интерфейсы, захват и развитие интерфейсов» . Просмотрено: 17.10.2026. [Онлайн]. Доступно на: https://cr.openjdk.org/~briangoetz/lambda/lambda-state-final.html [4] Д. Блох, Java: эффективное программирование , 3-я изд. Санкт-Петербург: Диалектика, 2019, сс. 125–129. [5] Д. Блох, Java: эффективное программирование. Композиция и проектирование наследования , 3-я изд. Санкт-Петербург: Диалектика, 2019, сс. 125–137. [6] Д. Блох, Java. Эффективное программирование , 3-я изд. Диалектика, 2019, сс. 125–131, 144–146. [7] Г. Шилдт, Java. Полное руководство. Записи и канонические конструкторы , 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 519–528. [8] Г. Шилдт, Java. Полное руководство. Наследование и динамическая диспетчеризация , 12-я изд. Санкт-Петербург: Диалектика, 2023, сс. 217–243. [9] Java Language Specification, Java SE 25. Enum, Record, and Sealed Types . Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html [10] Java Language Specification, Java SE 25. Inheritance, Overriding, and Hiding . Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.8"
   },
   {
+    "objectID": "equality-collections.html#sec-lecture-collections-roles",
+    "href": "equality-collections.html#sec-lecture-collections-roles",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Отношения между элементами",
+    "text": "Отношения между элементами В журнал поступили коды участников s1, s2, s1 . Интерфейс Сохраняемые сведения Операция List<E> Все вхождения и их позиции: [s1, s2, s1] Прочитать позицию Set<E> Наличие кодов: {s1, s2} Проверить принадлежность Queue<E> Элементы, ожидающие обработки Получить голову Map<K,V> Соответствия: s1 → 2, s2 → 1 Найти значение по ключу E обозначает тип элемента, K — ключа, V — значения. У очереди голову определяет дисциплина обработки: порядок поступления или приоритет. Преобразование журнала в множество удаляет сведения о числе и позициях повторений. Предложить восстановить журнал по множеству и затем по карте частот. Для очереди сопоставить обработку обращений по поступлению и по срочности."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-interfaces",
+    "href": "equality-collections.html#sec-lecture-collections-interfaces",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Иерархия интерфейсов",
+    "text": "Иерархия интерфейсов Collection объединяет размер, проверку наличия и обход элементов. Iterable предоставляет получение итератора. SequencedCollection добавляет определённый порядок обхода и доступ к обоим концам. %%{init: {\"htmlLabels\": false, \"flowchart\": {\"htmlLabels\": false}, \"fontSize\": 28, \"fontFamily\": \"Arial, sans-serif\", \"themeVariables\": {\"fontSize\": \"28px\", \"fontFamily\": \"Arial, sans-serif\"}, \"class\": {\"hideEmptyMembersBox\": true}}}%% classDiagram direction LR Iterable <|-- Collection Collection <|-- Set Collection <|-- SequencedCollection Collection <|-- Queue SequencedCollection <|-- List SequencedCollection <|-- Deque Queue <|-- Deque Set <|-- SequencedSet SequencedCollection <|-- SequencedSet Все узлы — интерфейсы; треугольник указывает на расширяемый интерфейс. Deque объединяет очередь и оба конца, SequencedSet — уникальность и порядок обхода. Семейство Sequenced* доступно с Java 21. Проследить от List путь к Iterable. Затем найти два непосредственных общих интерфейса Deque. Попросить объяснить, почему произвольный Set не даёт договорённости о первом элементе."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-map-views",
+    "href": "equality-collections.html#sec-lecture-collections-map-views",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Отображение и его коллекции",
+    "text": "Отображение и его коллекции Map<K,V> связывает ключ со значением. Она имеет отдельный интерфейс: для get(key) достаточно ключа, для put(key, value) нужны обе части. %%{init: {\"htmlLabels\": false, \"flowchart\": {\"htmlLabels\": false}, \"fontFamily\": \"Arial, sans-serif\", \"themeVariables\": {\"fontSize\": \"28px\", \"fontFamily\": \"Arial, sans-serif\"}}}%% flowchart LR M[\"Map: s1 → 2, s2 → 1\"] -->|keySet| K[\"Set ключей<br/>s1, s2\"] M -->|values| V[\"Collection значений<br/>2, 1\"] M -->|entrySet| E[\"Set пар Map.Entry<br/>s1 → 2, s2 → 1\"] Стрелки обозначают получение представления данных карты. Каждое из трёх представлений допускает общий обход элементов. Сам Map не расширяет Collection или Iterable . [10] Предложить выбрать представление для печати кодов, суммирования частот и печати соответствий. Обратить внимание на возможность одинаковых значений у разных ключей: values имеет тип Collection."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-implementations",
+    "href": "equality-collections.html#sec-lecture-collections-implementations",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Интерфейс и реализация",
+    "text": "Интерфейс и реализация Интерфейс задаёт операции и их смысл. Класс реализации определяет способ хранения. Интерфейс клиента Классы Основа хранения List ArrayList , LinkedList Массив ссылок, связанные узлы Deque ArrayDeque , LinkedList Массив, связанные узлы Set HashSet , TreeSet Хеш-таблица, дерево Map HashMap , TreeMap Хеш-таблица, дерево LinkedHashSet и LinkedHashMap дополнительно поддерживают связи для порядка обхода. LinkedList реализует и List , и Deque . List < String > codes = new ArrayList <>(); codes . add ( \"s1\" ); String first = codes . get ( 0 ); // s1 Замена конструктора на new LinkedList<>() сохраняет эти операции и меняет устройство доступа. Реализации и абстрактные основы . Найти в строке объявления выбор договора и выбор класса. Попросить назвать две роли одного LinkedList."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-20",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-20",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Единый договор библиотек",
+    "text": "Единый договор библиотек Загрузчик возвращает List<String> , а отчёт принимает List<String> . Обе библиотеки согласуют тип элементов, позиции и операции списка. Операции List скрывают внутренний массив или узлы от клиентского кода. Совместимость независимо написанных API была целью Collections Framework. Разработчики выбрали небольшую систему основных интерфейсов; прежние Vector и Hashtable приспособили к ней. [15] Изменяющие операции могут быть необязательными. Например, List допускает объекты с запрещённым изменением состава; разрешённые действия определяются также договором конкретного объекта. Такое решение ограничило число вариантов интерфейсов. [10] Предложить заменить реализацию в загрузчике. Установить, какие сведения обязаны сохранить смысл для отчёта: порядок, повторения, допустимость null и поддерживаемые действия. Отделить это от внутренней вместимости."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-sequenced",
+    "href": "equality-collections.html#sec-lecture-collections-sequenced",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Общий договор порядка",
+    "text": "Общий договор порядка У списка есть порядок позиций, у LinkedHashSet — порядок добавления, у TreeSet — порядок сравнения. До Java 21 общий тип Collection терял сведения о порядке, а List исключал множества. SequencedCollection позволяет принимать все три вида через один тип: получать первый и последний элементы, обходить в обратном порядке. SequencedMap задаёт соответствующие возможности для отображений. [14] SequencedCollection < String > codes = new LinkedHashSet <>( List . of ( \"s2\" , \"s1\" , \"s2\" )); System . out . println ( codes . getFirst ()); // s2 System . out . println ( codes . getLast ()); // s1 Порядок обхода этого множества определяется добавлением кодов. Числовых позиций get(i) интерфейс SequencedCollection не вводит. Сопоставить порядок появления s2, s1 и результат сортировки тех же кодов. Попросить объяснить, почему доступ к концам полезен в обоих случаях."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-iterator",
+    "href": "equality-collections.html#sec-lecture-collections-iterator",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Источник и состояние обхода",
+    "text": "Источник и состояние обхода Iterable<String> предоставляет метод iterator() , возвращающий Iterator<String> . Полученный объект хранит состояние одного обхода. %%{init: {\"htmlLabels\": false, \"flowchart\": {\"htmlLabels\": false}, \"fontFamily\": \"Arial, sans-serif\", \"themeVariables\": {\"fontSize\": \"28px\", \"fontFamily\": \"Arial, sans-serif\"}}}%% flowchart LR C[\"codes: источник строк\"] -->|\"iterator()\"| I[\"it: состояние обхода\"] I -->|\"next()\"| E[\"очередная строка\"] hasNext() проверяет, есть ли ещё элемент. next() возвращает следующий элемент и продвигает обход. После исчерпания hasNext() даёт false , а next() выбрасывает NoSuchElementException . [6] , [11] Попросить указать объект, который меняет состояние при next. Разделить наличие следующего элемента и получение этого элемента."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-common-algorithm",
+    "href": "equality-collections.html#sec-lecture-collections-common-algorithm",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Алгоритм чтения кодов",
+    "text": "Алгоритм чтения кодов Метод печатает строки по одной и не вызывает операций изменения коллекции: static void printCodes ( Iterable < String > codes ) { Iterator < String > it = codes . iterator (); while ( it . hasNext ()) { String code = it . next (); System . out . println ( code ); } } Алгоритму нужны только получение итератора и выдача следующих строк. В итераторе ArrayList продвижение связано с позицией массива, в итераторе LinkedList — с переходом к следующему узлу. Проследить первое выполнение тела на последовательности s1, s2, s1. Предложить заменить List на Iterable в параметре метода, который использовал только такой обход: какие возможности клиенту больше не нужны?"
+  },
+  {
+    "objectID": "equality-collections.html#одинаковый-алгоритм-разные-коллекции",
+    "href": "equality-collections.html#одинаковый-алгоритм-разные-коллекции",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Одинаковый алгоритм, разные коллекции",
+    "text": "Одинаковый алгоритм, разные коллекции var input = List . of ( \"s1\" , \"s2\" , \"s1\" ); printCodes ( new ArrayList <>( input )); printCodes ( new LinkedList <>( input )); printCodes ( new LinkedHashSet <>( input )); Конструкторы создают коллекции из вхождений input . Переданный объект Строки вывода по порядку ArrayList s1 , s2 , s1 LinkedList s1 , s2 , s1 LinkedHashSet s1 , s2 Множество сохраняет первое появление каждого кода. Повтор исчезает при создании множества; тело printCodes одинаково во всех трёх вызовах. Попросить указать точное действие, при котором сократилось число вхождений. Затем заменить вход пустым списком и получить прогноз отсутствия вывода."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-two-iterators",
+    "href": "equality-collections.html#sec-lecture-collections-two-iterators",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Два итератора одного списка",
+    "text": "Два итератора одного списка Новый список содержит три разных кода и во время опыта не меняется: var codes = new ArrayList <>( List . of ( \"s1\" , \"s2\" , \"s3\" )); Iterator < String > first = codes . iterator (); Iterator < String > second = codes . iterator (); список codes: [s1, s2, s3] обход first: | s1, s2, s3 обход second: | s1, s2, s3 Черта отделяет уже выданный префикс от оставшихся элементов. Это два положения в одном списке. Предскажите результаты first.next() , ещё одного first.next() , затем second.next() . Получить три прогноза до следующего экрана. Попросить различить два объекта итераторов и общий список; новые строки в этом опыте не создаются."
+  },
+  {
+    "objectID": "equality-collections.html#независимые-положения",
+    "href": "equality-collections.html#независимые-положения",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Независимые положения",
+    "text": "Независимые положения Действие Результат first : выдано | осталось second : выдано | осталось first.next() s1 s1 | s2, s3 | s1, s2, s3 first.next() s2 s1, s2 | s3 | s1, s2, s3 second.next() s1 s1, s2 | s3 s1 | s2, s3 список codes: [s1, s2, s3] обход first: s1, s2 | s3 обход second: s1 | s2, s3 Продвижение first сохранило положение second . Присваивание second = first дало бы две ссылки на один итератор и общее положение. Сопоставить результаты с прогнозом. Предложить продолжить first до конца и объяснить, почему у second ещё остаются два элемента."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-foreach",
+    "href": "equality-collections.html#sec-lecture-collections-foreach",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Цикл for-each",
+    "text": "Цикл for-each Для списка codes обе формы печатают s1 , s2 , s3 : for ( String code : codes ) { System . out . println ( code ); } for ( Iterator < String > it = codes . iterator (); it . hasNext (); ) { String code = it . next (); System . out . println ( code ); } При обходе Iterable расширенный for получает собственный итератор. У массива эта форма цикла использует последовательные индексы; массив не реализует Iterable . [16] Найти во второй форме состояние, скрытое первой формой. Попросить объяснить независимость двух вложенных циклов по одному списку."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-cpp-iteration",
+    "href": "equality-collections.html#sec-lecture-collections-cpp-iteration",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Обход диапазона в C++",
+    "text": "Обход диапазона в C++ Те же коды в std::vector<std::string> : std:: vector < std:: string > codes { \"s1\" , \"s2\" , \"s3\" }; for ( auto it = codes . begin (); it != codes . end (); ++ it ) { std:: cout << * it << ' \\n ' ; } begin() обозначает первую позицию, end() — границу за последней. *it читает элемент, ++it продвигает позицию. Конец не разыменовывается. Вывод — s1 , s2 , s3 . Шаблонный алгоритм может принимать итераторы разных контейнеров. Для последовательной печати подходят и vector , и list ; переход сразу на произвольное смещение требует более сильных возможностей итератора. [21] Сопоставить чтение и продвижение: в Java next выполняет оба действия, в цикле C++ они записаны отдельно. Попросить назвать состояние пустого диапазона: begin равен end."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-csharp-iteration",
+    "href": "equality-collections.html#sec-lecture-collections-csharp-iteration",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Перечислитель в C#",
+    "text": "Перечислитель в C# В C# IEnumerable<T> задаёт источник элементов типа T , а IEnumerator<T> — перечислитель с собственным состоянием обхода. string обозначает строку. Список строк в .NET 10 обходится так: IEnumerable < string > codes = new List < string > { \"s1\" , \"s2\" , \"s3\" }; using ( IEnumerator < string > it = codes . GetEnumerator ()) { while ( it . MoveNext ()) { Console . WriteLine ( it . Current ); } } MoveNext() сначала продвигается, затем сообщает об успешном переходе. Current — свойство, читающее текущий элемент без продвижения. Вывод — s1 , s2 , s3 . using вызывает Dispose() при выходе из блока, завершая использование перечислителя. [2] Попросить найти первый вызов, после которого допустимо читать Current. Затем сопоставить повторное чтение Current и повторный вызов Java next."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-iteration-states",
+    "href": "equality-collections.html#sec-lecture-collections-iteration-states",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Продвижение и завершение",
+    "text": "Продвижение и завершение Состав последовательности [s1, s2, s3] во время обхода сохраняется: Состояние Java Iterator C++ vector::iterator C# IEnumerator Начало Следующий — s1 *begin() — s1 Перед первым; Current ещё не определён Один элемент прочитан next() выдал s1 *it прочитан; ++it ведёт к s2 MoveNext() дал true ; Current — s1 Завершение hasNext() — false it == end() MoveNext() — false ; Current не определён Java и C# выражают общий протокол интерфейсами. C++ задаёт требования к операциям типа итератора при использовании шаблонного алгоритма. Протоколы обхода в C++ и C# . Попросить для каждого столбца назвать проверку, защищающую следующее чтение. Для C# сопоставить допустимость чтения Current до первого успешного MoveNext, после него и после завершения обхода."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-equality-operations",
+    "href": "equality-collections.html#sec-lecture-equality-operations",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Операции сравнения",
+    "text": "Операции сравнения Операция Какой вопрос решает Где задано правило a == b для ссылок Это один объект? В языке Java a.equals(b) Это одно значение? В классе; исходный метод — в Object a.hashCode() К каким кандидатам направить поиск? В классе; согласовано с equals a.compareTo(b) Как расположить значения типа? Comparable<T> в самом типе order.compare(a, b) Как расположить их в этой задаче? Отдельный Comparator<T> Хеш возвращает int ; равные значения обязаны иметь равные хеши. Порядок возвращает знак: меньше нуля, ноль или больше нуля. Система операций сравнения . Для каталога сопоставить поиск участника по коду и сортировку ведомости по баллу. Попросить назвать сведения, нужные каждой операции."
+  },
+  {
     "objectID": "equality-collections.html#ссылки-на-равные-строки",
     "href": "equality-collections.html#ссылки-на-равные-строки",
     "title": "Равенство, порядок и коллекции",
@@ -2755,77 +2867,56 @@
     "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-01",
     "title": "Равенство, порядок и коллекции",
     "section": "Сравнение строк",
-    "text": "Сравнение строк Для созданных строк a , b и ссылки alias : System . out . println ( a == b ); // false System . out . println ( a . equals ( b )); // true System . out . println ( alias == a ); // true == над ссылками проверяет общий объект. String.equals сравнивает содержимое, поэтому два разных объекта могут представлять одно значение. В Python этим вопросам соответствуют is и == . Идентичность и равенство содержимого . Сопоставить каждый результат с прогнозом. Попросить объяснить, почему копирование ссылки в alias сохранило число созданных строковых объектов."
+    "text": "Сравнение строк System . out . println ( a == b ); // false System . out . println ( a . equals ( b )); // true System . out . println ( alias == a ); // true == над ссылками проверяет общий объект. String.equals сравнивает содержимое, поэтому два разных объекта могут представлять одно значение. Унаследованный Object.equals сохраняет проверку идентичности; класс значения переопределяет этот метод. В Python этим вопросам соответствуют is и == . Идентичность и равенство содержимого . Сопоставить каждый результат с прогнозом. Попросить объяснить, почему копирование ссылки в alias сохранило число созданных строковых объектов."
   },
   {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-02",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-02",
+    "objectID": "equality-collections.html#sec-lecture-equality-linear-search",
+    "href": "equality-collections.html#sec-lecture-equality-linear-search",
     "title": "Равенство, порядок и коллекции",
-    "section": "Копирование ссылки",
-    "text": "Копирование ссылки alias = b ; System . out . println ( alias == a ); // false System . out . println ( alias == b ); // true a ─────────> A: строка \"Ada\" b, alias ──> B: строка \"Ada\" Изменилось значение переменной alias . Строковые объекты и их содержимое сохранились. Поиск по содержимому по-прежнему считает строки равными. Найти на схеме единственную изменившуюся связь. Предложить сравнить присваивание Java-ссылке с присваиванием через C++ T&: там меняется связанный объект, здесь переменная получает другую ссылку."
+    "section": "Поиск через общий обход",
+    "text": "Поиск через общий обход Последовательный поиск проверяет строки, получаемые через Iterable : static boolean containsCode ( Iterable < String > codes , String sought ) { for ( String code : codes ) { if ( java . util . Objects . equals ( sought , code )) return true ; } return false ; } Objects.equals сравнивает значения и обрабатывает null : два null равны, ровно один — различается с существующим значением. При первом совпадении поиск завершается; при исчерпании входа возвращает false . Требуется только последовательный обход. Сопоставить тело цикла с printCodes: получение следующего элемента сохранилось, действие стало проверкой с ранним возвратом."
   },
   {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-03",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-03",
+    "objectID": "equality-collections.html#последовательность-проверок",
+    "href": "equality-collections.html#последовательность-проверок",
     "title": "Равенство, порядок и коллекции",
-    "section": "Унаследованное равенство",
-    "text": "Унаследованное равенство class Token { int code = 17 ; } Token first = new Token (); Token second = new Token (); System . out . println ( first . equals ( second )); // false Object.equals проверяет идентичность. Поля двух Token равны, но унаследованный метод их не читает. Тип идентификатора должен сам определить равенство по коду, если поиск должен находить отдельный объект с тем же кодом. Попросить выбрать между идентичностью двух открытых вкладок и равенством двух идентификаторов. У одинаковых адресов вкладок могут быть разные состояния; идентификатор представляет значение кода."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-04",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-04",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Соглашение equals",
-    "text": "Соглашение equals Для ссылок x , y , z , отличных от null : Свойство Требование Рефлексивность x.equals(x) истинно Симметрия x.equals(y) совпадает с y.equals(x) Транзитивность Из x ~ y и y ~ z следует x ~ z Устойчивость Неизменные сведения дают прежний ответ x.equals(null) ложно. Транзитивность позволяет использовать один объект как представителя группы равных значений. Близость баллов «разность ≤ 1» не подходит: 80 близок к 81, 81 — к 82, а 80 и 82 различаются. Выбрать сначала 80, затем 81 представителем и сопоставить результаты сравнения с баллом 82."
+    "section": "Последовательность проверок",
+    "text": "Последовательность проверок Для исходных кодов [s1, s2, s1] : Запрос Первый s1 s2 Последний s1 Результат s2 Не равен Равен Не читается true s9 Не равен Не равен Не равен false var codes = List . of ( \"s1\" , \"s2\" , \"s1\" ); System . out . println ( containsCode ( codes , \"s2\" )); // true System . out . println ( containsCode ( codes , \"s9\" )); // false В худшем случае проверяются все \\(n\\) элементов. Чтобы сократить область поиска, хеш-таблица заранее размещает ключи по их хешам. Получить результат для пустого списка. Попросить сосчитать проверки для запроса s1 и объяснить, почему второе вхождение s1 не понадобится."
   },
   {
     "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-context",
     "href": "equality-collections.html#sec-j25-lecture-equality-collections-context",
     "title": "Равенство, порядок и коллекции",
     "section": "Устойчивый идентификатор",
-    "text": "Устойчивый идентификатор StudentId представляет строку кода, отличную от null , без нормализации. Два идентификатора с кодом s17 должны находить одну запись. отдельные объекты: StudentId(\"s17\") и StudentId(\"s17\") значение ключа: одна строка кода \"s17\" Строка неизменяема, и класс сохранит её на всё время жизни объекта. Устойчивость данных ключа нужна для размещения в хеш-таблице. Предложить определить, какие сведения нужны ключу для поиска участника: код или также текущая оценка. Вернуться к выбору после сравнения версий Student."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-05",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-05",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Состояние ключа",
-    "text": "Состояние ключа Начало объявления StudentId : final class StudentId { private final String value ; StudentId ( String value ) { this . value = java . util . Objects . requireNonNull ( value ); } Конструктор отвергает null . Поле final сохраняет ссылку, а неизменяемость String сохраняет значение кода. final у класса закрывает наследование и ограничивает сравнение этим типом. Разделить назначение final у класса и поля. Попросить объяснить, почему одного final у поля изменяемого объекта было бы недостаточно."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-05-part-1",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-05-part-1",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Равенство кодов",
-    "text": "Равенство кодов Продолжение того же объявления: @Override public boolean equals ( Object other ) { if ( this == other ) return true ; if (!( other instanceof StudentId id )) return false ; return value . equals ( id . value ); } Тот же объект равен себе. null и объект другого типа отвергаются проверкой instanceof . Для двух StudentId сравниваются строки. Параметр Object соответствует переопределяемому методу. Проследить вызовы с тем же объектом, новой строкой “s17”, null и новым StudentId(“s17”). Попросить назвать последнюю выполненную проверку каждого пути."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-key-hash",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-key-hash",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Хеш ключа",
-    "text": "Хеш ключа Завершение StudentId : @Override public int hashCode () { return value . hashCode (); } } Равные коды дают равные хеши. Таблица использует хеш для выбора кандидатов и затем устанавливает совпадение ключа. Разные хеши позволяют исключить равенство; одинаковые хеши требуют дальнейшей проверки. Метод equals(StudentId) был бы перегрузкой; при наличии @Override компилятор выявит такую ошибку сигнатуры. Попросить объяснить, почему добавление в hashCode постороннего изменяемого поля могло бы развести равные ключи по разным областям поиска."
+    "text": "Устойчивый идентификатор StudentId хранит строку кода, отличную от null , без нормализации. Его equals сравнивает строки с учётом регистра, hashCode возвращает хеш этой строки. Класс закрыт для наследования, состояние сохраняется. StudentId first = new StudentId ( \"s17\" ); StudentId second = new StudentId ( \"s17\" ); System . out . println ( first == second ); // false System . out . println ( first . equals ( second )); // true System . out . println ( first . hashCode () == second . hashCode ()); // true Равенство должно быть симметричным, транзитивным и устойчивым при неизменных данных. equals(null) возвращает false . Объявление класса ; полный договор: Соглашение equals . Предложить определить, какие сведения нужны ключу для поиска участника: код или также текущая оценка. Вернуться к выбору после сравнения версий Student."
   },
   {
     "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-06",
     "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-06",
     "title": "Равенство, порядок и коллекции",
     "section": "Поиск отдельным равным ключом",
-    "text": "Поиск отдельным равным ключом Set хранит по одному представителю равного значения; add сообщает, изменился ли состав. StudentId first = new StudentId ( \"s17\" ); StudentId second = new StudentId ( \"s17\" ); Set < StudentId > ids = new HashSet <>(); ids . add ( first ); Предскажите first == second , ids.contains(second) , ids.add(second) и итоговый размер. Для поиска нужен существующий объект или равное значение? Зафиксировать четыре ответа. Для contains попросить назвать хеш нового ключа относительно сохранённого и результат последующего equals."
-  },
-  {
-    "objectID": "equality-collections.html#совпадение-ключа",
-    "href": "equality-collections.html#совпадение-ключа",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Совпадение ключа",
-    "text": "Совпадение ключа System . out . println ( first == second ); // false System . out . println ( ids . contains ( second )); // true System . out . println ( ids . add ( second )); // false System . out . println ( ids . size ()); // 1 Одинаковый хеш направил поиск к сохранённому ключу; equals подтвердил совпадение. Второй объект представляет уже имеющееся значение, поэтому множество сохранило размер. [1] Сопоставить прогноз с каждым результатом. Перед следующим экраном дать данные: у строк Aa и BB одинаковый хеш 2112, а содержимое различается; предложить прогноз размера множества из двух таких StudentId."
+    "text": "Поиск отдельным равным ключом Set < StudentId > ids = new HashSet <>(); ids . add ( first ); System . out . println ( ids . contains ( second )); // true System . out . println ( ids . add ( second )); // false System . out . println ( ids . size ()); // 1 Одинаковый хеш направил поиск к сохранённому ключу; equals подтвердил совпадение. HashSet оставил одного представителя значения s17 . Для HashMap найденный равный ключ означает уже существующее соответствие: повторный put заменяет его значение. Попросить объяснить, почему для contains не требуется ссылка first. Разделить результат add множества и результат put карты."
   },
   {
     "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-collision",
     "href": "equality-collections.html#sec-j25-lecture-equality-collections-collision",
     "title": "Равенство, порядок и коллекции",
     "section": "Коллизия",
-    "text": "Коллизия StudentId aa = new StudentId ( \"Aa\" ); StudentId bb = new StudentId ( \"BB\" ); System . out . println ( aa . hashCode () == bb . hashCode ()); // true System . out . println ( aa . equals ( bb )); // false Set < StudentId > keys = new HashSet <>(); keys . add ( aa ); keys . add ( bb ); System . out . println ( keys . size ()); // 2 Коллизия — совпадение хешей неравных объектов. Проверка равенства различила два ключа, поэтому оба сохранены. Постоянный хеш также может быть корректен, но направляет все ключи в одну область и ухудшает поиск. Попросить объяснить результат без предположения об уникальности хеша. Сопоставить необходимость согласованного хеша и пользу его распределения."
+    "text": "Коллизия У строк Aa и BB одинаковый хеш 2112. Карта сохраняет оба ключа: StudentId aa = new StudentId ( \"Aa\" ); StudentId bb = new StudentId ( \"BB\" ); var collisions = new HashMap < StudentId , Integer >( 16 ); collisions . put ( aa , 1 ); collisions . put ( bb , 2 ); System . out . println ( aa . hashCode () == bb . hashCode ()); // true System . out . println ( aa . equals ( bb )); // false System . out . println ( collisions . size ()); // 2 Коллизия — совпадение хешей неравных объектов. Равенство различает ключи, поэтому оба соответствия сохранены. Попросить предсказать get для нового StudentId(“BB”) и объяснить, почему одна ячейка таблицы должна допускать больше одного ключа."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-equality-hash-search",
+    "href": "equality-collections.html#sec-lecture-equality-hash-search",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Отбор кандидатов по хешу",
+    "text": "Отбор кандидатов по хешу В HashMap OpenJDK jdk-25-ga после этих вставок 16 ячеек. Смешанный хеш 2112 ^ (2112 >>> 16) равен 2112; индекс (16 - 1) & 2112 равен 0. %%{init: {\"htmlLabels\": false, \"flowchart\": {\"htmlLabels\": false, \"rankSpacing\": 20, \"padding\": 8}, \"fontSize\": 28, \"fontFamily\": \"Arial, sans-serif\", \"themeVariables\": {\"fontSize\": \"28px\", \"fontFamily\": \"Arial, sans-serif\"}}}%% flowchart LR Q[\"Запрос BB:<br/>hash 2112\"] --> B[\"Ячейка<br/>0\"] B --> A[\"Aa:<br/>hash 2112\"] A -->|\"equals:<br/>false\"| C[\"BB:<br/>hash 2112\"] C -->|\"equals:<br/>true\"| V[\"Значение<br/>2\"] Сначала проверяется сохранённый хеш узла, затем совпадение ссылки или equals . В одну ячейку могут попасть ключи с разными полными хешами; совпадающие хеши могут принадлежать неравным ключам. [25] Проследить запрос отдельным объектом BB. Оба сохранённых хеша совпадают с хешем запроса, поэтому различение этих узлов выполняет equals."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-equality-key-replacement",
+    "href": "equality-collections.html#sec-lecture-equality-key-replacement",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Повтор равного ключа",
+    "text": "Повтор равного ключа В карте collisions повторный put возвращает прежнее значение. StudentId repeated = new StudentId ( \"BB\" ); System . out . println ( collisions . put ( repeated , 20 )); // 2 System . out . println ( collisions . size ()); // 2 System . out . println ( collisions . get ( bb )); // 20 Сохранённый код До put После put Aa 1 1 BB 2 20 Поиск дошёл до узла BB ; обновилось его значение. Нового соответствия не возникло. В этой реализации узел также сохраняет прежний объект ключа. [25] Сопоставить этот шаг со вставкой неравного Aa при совпадающем хеше. Попросить назвать проверку, от которой зависит создание нового узла."
   },
   {
     "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-value-version",
@@ -2839,42 +2930,49 @@
     "href": "equality-collections.html#sec-j25-lecture-equality-collections-mutable-definition",
     "title": "Равенство, порядок и коллекции",
     "section": "Изменяемый ключ",
-    "text": "Изменяемый ключ В следующем типе доступна запись в данные равенства: final class MutableKey { int code ; MutableKey ( int code ) { this . code = code ; } @Override public boolean equals ( Object other ) { return other instanceof MutableKey k && code == k . code ; } @Override public int hashCode () { return code ; } } При текущем code методы согласованы. Для хранения ключа нужно также, чтобы эти данные оставались устойчивыми после вставки. Попросить найти операцию клиента, которая сможет изменить данные ключа. Отличить согласованность пары методов сейчас от устойчивости при хранении."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-map-before-mutation",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-map-before-mutation",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Запись и поиск по ключу",
-    "text": "Запись и поиск по ключу Карта broken типа HashMap<MutableKey, String> хранит пары «ключ → строковое значение». Для ключа с code = 1 сохраним строку \"stored\" . Операция Действие put(key, value) Сохранить значение под ключом; заменить прежнее при равном ключе get(key) Найти значение по ключу size() Получить число сохранённых пар В этом опыте все сохраняемые значения отличны от null . Результат null у get означает, что поиск не нашёл пару. Хеш ключа направляет поиск к узлу таблицы. Попросить показать ключ и значение в будущей паре. Сопоставить два вопроса: нашёл ли get значение по данному ключу и сколько пар считает size."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-entry-before-mutation",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-entry-before-mutation",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Обход сохранённых пар",
-    "text": "Обход сохранённых пар Значение существующей пары можно прочитать последовательным обходом: Шаг цепочки Результат broken.entrySet() Представление всех пар карты .iterator() Итератор для последовательного получения пар .next() Следующая пара; в опыте она одна .getValue() Строковое значение полученной пары Итератор HashMap OpenJDK 25 посещает уже размещённые узлы таблицы. Он выбирает следующий узел по связям и позициям в таблице, без вычисления нового хеша ключа. Поэтому обход позволяет отдельно проверить, сохранилась ли запись после изменения поля ключа. [1] Проследить цепочку от всей карты к одной паре и её значению. Попросить указать действие, которое читает строку stored. Далее сопоставить обход размещённых узлов с поиском get по переданному ключу."
+    "text": "Изменяемый ключ В диагностическом типе доступна запись в данные равенства: final class MutableKey { int code ; MutableKey ( int code ) { this . code = code ; } @Override public boolean equals ( Object other ) { return other instanceof MutableKey k && code == k . code ; } @Override public int hashCode () { return code ; } } При текущем code методы согласованы. Для хранения ключа нужно также, чтобы эти данные оставались устойчивыми после вставки. Попросить найти операцию клиента, которая сможет изменить данные ключа. Отличить согласованность пары методов сейчас от устойчивости при хранении."
   },
   {
     "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-08",
     "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-08",
     "title": "Равенство, порядок и коллекции",
-    "section": "Размещение и изменение ключа",
-    "text": "Размещение и изменение ключа final var key = new MutableKey ( 1 ); var broken = new HashMap < MutableKey , String >(); broken . put ( key , \"stored\" ); System . out . println ( broken . get ( new MutableKey ( 1 ))); // stored key . code = 2 ; В узле HashMap OpenJDK 25 сохранён хеш вставки 1. Изменение code сохранило узел, но новый поиск вычислит хеш 2. Был ли вызван метод карты, который перенёс бы запись? Как соотносятся теперь get(key) и size() ? До результата нарисовать узел с сохранённым хешем и ссылкой на key. Получить отдельно прогноз поиска и числа записей."
+    "section": "Размещение ключа",
+    "text": "Размещение ключа final var key = new MutableKey ( 1 ); var broken = new HashMap < MutableKey , String >( 16 ); broken . put ( key , \"stored\" ); System . out . println ( broken . get ( new MutableKey ( 1 ))); // stored %%{init: {\"htmlLabels\": false, \"flowchart\": {\"htmlLabels\": false}, \"fontSize\": 28, \"fontFamily\": \"Arial, sans-serif\", \"themeVariables\": {\"fontSize\": \"28px\", \"fontFamily\": \"Arial, sans-serif\"}}}%% flowchart LR B1[\"Ячейка 1\"] --> N[\"Узел: hash 1\"] --> K[\"Ключ: code 1\"] B2[\"Ячейка 2: пуста\"] Узел хранит хеш вставки и ссылку на ключ. Поиск кода 1 попадает в ячейку 1 и находит stored . Схема относится к jdk-25-ga . Различить хеш, сохранённый в узле, и поле объекта по ссылке. Попросить указать, какая часть схемы изменится после key.code = 2."
   },
   {
     "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-mutable-observation",
     "href": "equality-collections.html#sec-j25-lecture-equality-collections-mutable-observation",
     "title": "Равенство, порядок и коллекции",
     "section": "Повреждённый поиск",
-    "text": "Повреждённый поиск Для этого опыта в HashMap OpenJDK 25: Состояние key.code Хеш в узле Хеш поиска После вставки 1 1 1 После изменения 2 1 2 System . out . println ( broken . get ( key )); // null System . out . println ( broken . size ()); // 1 System . out . println ( broken . entrySet (). iterator (). next (). getValue ()); // stored Поиск проверяет хеш до совпадения ссылки; прежняя запись осталась в таблице. Общий договор Map не определяет поведение после изменения данных равенства ключа. Числа и результаты трассы относятся к этой реализации и входу. [1] , [10] Сопоставить прогнозы с наблюдениями. Попросить объяснить, почему обход находит запись, хотя поиск по изменившемуся хешу её пропускает."
+    "text": "Повреждённый поиск key . code = 2 ; System . out . println ( broken . get ( key )); // OpenJDK 25: null System . out . println ( broken . size ()); // OpenJDK 25: 1 %%{init: {\"htmlLabels\": false, \"flowchart\": {\"htmlLabels\": false}, \"fontSize\": 28, \"fontFamily\": \"Arial, sans-serif\", \"themeVariables\": {\"fontSize\": \"28px\", \"fontFamily\": \"Arial, sans-serif\"}}}%% flowchart LR B1[\"Ячейка 1\"] --> N[\"Узел: hash 1\"] --> K[\"Ключ: code 2\"] B2[\"Ячейка 2: пуста\"] Новый хеш 2 направляет get в пустую ячейку 2. Узел остался в ячейке 1; присваивание полю ключа не вызвало переноса записи. Общий договор Map не определяет результат после изменения данных равенства ключа. [24] , [25] Сопоставить две схемы по именам узлов. Изменился только code; из него поиск заново вычисляет хеш. Затем спросить, обнаружит ли узел обход."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-entry-before-mutation",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-entry-before-mutation",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Обход сохранённых пар",
+    "text": "Обход сохранённых пар var entry = broken . entrySet (). iterator (). next (); System . out . println ( entry . getKey () == key ); // true System . out . println ( entry . getValue ()); // stored entrySet() предоставляет пары карты, iterator().next() получает единственную пару, getKey() и getValue() читают её части. Итератор этой HashMap посещает размещённые узлы без нового вычисления хеша ключа. Поэтому обход обнаруживает запись, пропущенную поиском. [25] Вернуться к узлу в ячейке 1. Попросить объяснить совместимость трёх наблюдений: get вернул null, size равен 1, итератор выдал stored."
   },
   {
     "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-09",
     "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-09",
     "title": "Равенство, порядок и коллекции",
     "section": "Устойчивые данные ключа",
-    "text": "Устойчивые данные ключа final у переменной key фиксирует ссылку. Запись key.code = 2 меняет поле объекта и остаётся допустимой. Map < StudentId , Student > catalog = new HashMap <>(); StudentId id = new StudentId ( \"s1\" ); catalog . put ( id , new Student ( \"s1\" , \"Ada\" , 90 )); catalog . put ( id , new Student ( \"s1\" , \"Ada\" , 95 )); System . out . println ( catalog . get ( new StudentId ( \"s1\" )). score ()); // 95 System . out . println ( catalog . size ()); // 1 Ключ сохранил строку кода и размещение. Обновилось значение карты. Изменяемые ключи . Попросить назвать конкретное состояние, которое должно быть устойчивым: строка StudentId. Сопоставить замену значения карты с изменением её ключа."
+    "text": "Устойчивые данные ключа final у переменной key сохраняет ссылку; её объект оставался изменяемым. У StudentId сохраняются и ссылка, и неизменяемая строка кода: Map < StudentId , Student > catalog = new HashMap <>(); StudentId id = new StudentId ( \"s1\" ); catalog . put ( id , new Student ( \"s1\" , \"Ada\" , 90 )); catalog . put ( id , new Student ( \"s1\" , \"Ada\" , 95 )); System . out . println ( catalog . get ( new StudentId ( \"s1\" )). score ()); // 95 System . out . println ( catalog . size ()); // 1 Обновилось значение карты под прежним ключом. Если ключ содержит изменяемые вложенные данные, устойчивость требует их собственного снимка. Глубина снимка ключа . Попросить назвать конкретные данные равенства StudentId. Отделить final у ссылки от устойчивости всего значения ключа."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-equality-external-rule",
+    "href": "equality-collections.html#sec-lecture-equality-external-rule",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Равенство, выбранное коллекцией",
+    "text": "Равенство, выбранное коллекцией Коды s1 и S1 должны означать один ключ, хотя обычное строковое равенство их различает. Правило равенства и согласованный хеш задаются типом ключа или выбираются для отдельной коллекции: Библиотека Где задаётся равенство Где задаётся согласованный хеш Java HashSet<T> T.equals T.hashCode C++20 unordered_set<T, Hash, Pred> Объект Pred Объект Hash .NET10 HashSet<T> IEqualityComparer<T>.Equals Тот же объект: GetHashCode В Java можно создать тип ключа, сохраняющий нормализованный код. C++ и .NET позволяют передать коллекции внешнее правило для строк. Изменение равенства требует согласованного изменения хеширования. [3] , [19] Попросить проследить ошибку: сравнение уже считает s1 и S1 равными, но хеширование ещё использует исходные символы. Где поиск потеряет кандидата?"
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-equality-csharp-rule",
+    "href": "equality-collections.html#sec-lecture-equality-csharp-rule",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Регистр строк в C#",
+    "text": "Регистр строк в C# В C# интерфейс IEqualityComparer<T> объединяет две операции над значениями типа T . Готовый StringComparer.OrdinalIgnoreCase сравнивает строки без учёта регистра и предоставляет согласованный хеш: var codes = new HashSet < string >( StringComparer . OrdinalIgnoreCase ); Console . WriteLine ( codes . Add ( \"s1\" )); // True Console . WriteLine ( codes . Add ( \"S1\" )); // False Console . WriteLine ( codes . Count ); // 1 Count — свойство с числом элементов. Отдельный HashSet<string>() с обычным правилом сохранил бы оба кода. Коды в примере состоят из ASCII-символов. Правила сопоставления регистра для Unicode определяет выбранная библиотека. Полная пара методов: собственный компаратор . [1] , [5] Сопоставить результат Add с Java HashSet.add. Попросить назвать объект, который определяет обе операции именно у созданного множества."
   },
   {
     "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-10",
@@ -2898,11 +2996,11 @@
     "text": "Сортировка списка var rows = new ArrayList <>( List . of ( new Student ( \"s3\" , \"Ann\" , 90 ), new Student ( \"s2\" , \"Lin\" , 70 ), new Student ( \"s1\" , \"Ada\" , 90 ))); rows . sort ( new ReportOrder ()); for ( Student row : rows ) System . out . println ( row . id ()); // s1 // s3 // s2 Сортировка вызывает compare и переставляет ссылки в списке. Все три вхождения сохранены. При нуле сравнения стабильная List.sort сохраняет взаимный порядок исходных вхождений. Сопоставить результат с прогнозом начала раздела. Предложить добавить точное повторение s1:Ada:90: сортировка сохранит и это вхождение."
   },
   {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-13",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-13",
+    "objectID": "equality-collections.html#sec-lecture-equality-tree-search",
+    "href": "equality-collections.html#sec-lecture-equality-tree-search",
     "title": "Равенство, порядок и коллекции",
-    "section": "Переполнение при сравнении",
-    "text": "Переполнение при сравнении int a = Integer . MIN_VALUE ; int b = 1 ; System . out . println ( a - b > 0 ); // true System . out . println ( Integer . compare ( a , b ) < 0 ); // true Математическая разность меньше минимального int ; после переполнения получается Integer.MAX_VALUE . Вычитание дало неверный знак порядка. Integer.compare сравнивает весь диапазон без этой ошибки. Перестановка аргументов должна менять знак, а отношение «раньше» должно быть транзитивно. У равных по сравнению объектов знаки сравнений с любым третьим объектом совпадают. Попросить восстановить математический знак до вычисления в int. Уточнить, что диапазон баллов 0–100 безопасен для этой разности, но общий компаратор int должен обрабатывать весь диапазон."
+    "section": "Направление поиска в дереве",
+    "text": "Направление поиска в дереве В модели бинарного дерева кодов действует естественный порядок строк. Слева от узла расположены меньшие ключи, справа — большие: %%{init: {\"htmlLabels\": false, \"flowchart\": {\"htmlLabels\": false}, \"fontSize\": 28, \"fontFamily\": \"Arial, sans-serif\", \"themeVariables\": {\"fontSize\": \"28px\", \"fontFamily\": \"Arial, sans-serif\"}}}%% flowchart TD R[\"s2\"] -->|\"меньше\"| L[\"s1\"] R -->|\"больше\"| G[\"s3\"] Для запроса s3 сравнение с s2 положительно — поиск идёт вправо. Сравнение с s3 даёт ноль — ключ найден. Запрос s0 идёт влево от s2 , затем влево от s1 ; пустая ветвь означает отсутствие ключа. У TreeSet направление задаёт compareTo или переданный Comparator . Нулевой результат одновременно определяет совпадение элементов. [9] Проследить обе трассы на одних узлах. Затем спросить, что произойдёт, если разные записи получают ноль у выбранного компаратора."
   },
   {
     "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-14",
@@ -2916,7 +3014,7 @@
     "href": "equality-collections.html#совпадение-по-порядку",
     "title": "Равенство, порядок и коллекции",
     "section": "Совпадение по порядку",
-    "text": "Совпадение по порядку System . out . println ( a . equals ( b )); // false System . out . println ( set . add ( b )); // false System . out . println ( set . contains ( b )); // true System . out . println ( set . size ()); // 1 Участники различаются по данным, но оба имеют балл 90. При нулевом результате сравнения дерево считает b уже имеющимся элементом. В дереве остался a . Список при сортировке тем же правилом сохранил бы обоих участников. Для соблюдения общего договора Set требуется compare(a, b) == 0 тогда и только тогда, когда a.equals(b) . [5] Разобрать contains: алгоритм сравнил искомый b с сохранённым a и получил 0. Перед следующим экраном дать одинаковые id и score, но разные name."
+    "text": "Совпадение по порядку System . out . println ( a . equals ( b )); // false System . out . println ( set . add ( b )); // false System . out . println ( set . contains ( b )); // true System . out . println ( set . size ()); // 1 Участники различаются по данным, но оба имеют балл 90. При нулевом результате сравнения дерево считает b уже имеющимся элементом. В дереве остался a . Список при сортировке тем же правилом сохранил бы обоих участников. Для соблюдения общего договора Set требуется compare(a, b) == 0 тогда и только тогда, когда a.equals(b) . [9] Разобрать contains: алгоритм сравнил искомый b с сохранённым a и получил 0. Перед следующим экраном дать одинаковые id и score, но разные name."
   },
   {
     "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-15",
@@ -2929,8 +3027,372 @@
     "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-16",
     "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-16",
     "title": "Равенство, порядок и коллекции",
-    "section": "Расширяемое хранилище",
-    "text": "Расширяемое хранилище var names = new ArrayList < String >( 2 ); names . add ( \"Ada\" ); names . add ( \"Lin\" ); names . add ( \"Ada\" ); System . out . println ( names . size ()); // 3 Вместимость 2 задавала начальное хранилище пустого списка. Третье добавление потребовало его расширить. ArrayList перенёс ссылки в больший внутренний массив; объект списка сохранился. Обычный массив new String[2] сохраняет длину 2 на всё время жизни. Попросить нарисовать один список и два последовательных внутренних массива. Отличить перенос ссылок от создания новых строк."
+    "section": "Массив ссылок",
+    "text": "Массив ссылок У списка array вместимость 3, заняты две позиции: var array = new ArrayList < String >( 3 ); array . add ( \"s1\" ); array . add ( \"s3\" ); Объект списка хранит ссылку на массив. Позиции массива хранят ссылки на строки; свободная позиция не входит в размер списка. Вставка array.add(1, \"s2\") должна сохранить порядок s1, s2, s3 . Указать свободную позицию 2. Попросить определить, какую существующую ссылку нужно переместить, чтобы освободить позицию 1."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-array-shift",
+    "href": "equality-collections.html#sec-lecture-collections-array-shift",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Сдвиг хвоста",
+    "text": "Сдвиг хвоста array . add ( 1 , \"s2\" ); System . out . println ( array ); // [s1, s2, s3] Ссылка на s3 перемещена из позиции 1 в позицию 2, в освободившуюся позицию записана ссылка на s2 . Массив M и строки s1 , s3 сохранились. Индекс сразу задаёт место вставки; освобождение этого места требует сдвига. Сопоставить положение ссылки на s3 на двух схемах. Получить прогноз для вставки в позицию 0 и в позицию size(): сколько ссылок сдвинется?"
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-array-growth",
+    "href": "equality-collections.html#sec-lecture-collections-array-growth",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Рост массива",
+    "text": "Рост массива Другой список получает те же коды, но резерв равен 2: var tight = new ArrayList < String >( 2 ); tight . add ( \"s1\" ); tight . add ( \"s3\" ); tight . add ( 1 , \"s2\" ); System . out . println ( tight ); // [s1, s2, s3] до: список T → массив M: [s1, s3] size = 2 рост: список T → новый массив N, места не меньше 3 после: список T → массив N: [s1, s2, s3] size = 3 Рост выделяет больший массив и переносит прежние ссылки. Сам список T и объекты строк сохраняются. Длина отдельного массива постоянна; коэффициент роста внутреннего массива API ArrayList не фиксирует. [22] Различить перенос прежних ссылок при росте и сдвиг хвоста для вставки. Попросить назвать объект, который клиент продолжает видеть через tight."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-22",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-22",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Стоимость ArrayList",
+    "text": "Стоимость ArrayList В списке \\(n\\) элементов, позиция вставки имеет индекс \\(i\\) . Действие Работа с хранилищем get(i) , set(i, e) Индексация массива: \\(O(1)\\) Вставка в позицию i Сдвиг хвоста: \\(O(n-i)\\) плюс возможный рост Добавление в свободный конец Одна запись Расширение Новый массив и перенос ссылок: \\(O(n)\\) Суммарная работа серии из \\(n\\) добавлений в конец — \\(O(n)\\) . Амортизированная стоимость одного добавления — \\(O(1)\\) , хотя отдельное расширение дороже. [22] Сопоставить одно расширение и всю серию. Предложить отделить резервирование вместимости от появления элементов: после new ArrayList<>(100) размер 0."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-23",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-23",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Связанные узлы",
+    "text": "Связанные узлы В LinkedList та же последовательность [s1, s3] хранится в двух узлах: var linked = new LinkedList <>( List . of ( \"s1\" , \"s3\" )); var position = linked . listIterator ( 1 ); Каждый узел содержит ссылку на элемент и связи с соседями. listIterator(1) находит границу перед вторым элементом. Индексная операция проходит от ближайшего конца; получение позиции имеет свою стоимость. Поставить курсор перед узлом N3. Отдельно назвать найденную позицию и операцию, которая будет выполнена в этой позиции."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-linked-insert",
+    "href": "equality-collections.html#sec-lecture-collections-linked-insert",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Вставка узла",
+    "text": "Вставка узла position . add ( \"s2\" ); System . out . println ( linked ); // [s1, s2, s3] Новый узел N2 включён между N1 и N3: изменились соседние связи. Прежние узлы и строки сохранились. Вставка или удаление одного узла по уже найденной позиции требует постоянного числа изменений связей. Индексный remove(i) дополнительно находит удаляемый узел. Цикл get(0), …, get(n-1) у LinkedList повторяет поиск позиции и требует \\(O(n^2)\\) переходов. Один итератор проходит узлы за \\(O(n)\\) . [7] Назвать четыре направления связей, окружающих новый узел. Для шести элементов сравнить число переходов индексного обхода и одного итератора."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-21",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-21",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Необязательные операции",
+    "text": "Необязательные операции List < String > names = List . of ( \"Ada\" ); names . add ( \"Lin\" ); // UnsupportedOperationException Вызов допустим по типу List , но полученный объект запрещает изменение. Та же переменная могла бы хранить изменяемый ArrayList . Поддержку операций определяет договор конкретного списка. Разработчики сохранили небольшую систему интерфейсов, оставив различия изменяемости и фиксированного размера в договорах объектов. [10] Разделить проверку компилятора и отказ при выполнении. Попросить сравнить это с доступом через const std::vector в C++."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-24",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-24",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Удаление при обходе",
+    "text": "Удаление при обходе var names = new ArrayList <>( List . of ( \"Ada\" , \"\" , \"Lin\" , \"\" )); var it = names . iterator (); while ( it . hasNext ()) { if ( it . next (). isEmpty ()) it . remove (); } System . out . println ( names ); // [Ada, Lin] Итератор сохраняет положение и последний выданный элемент. Его remove удаляет этот элемент и согласует обход с изменением списка. Обе пустые строки посещены и удалены, включая последнюю. Провести курсор по четырём исходным позициям. После удаления пустой строки показать, какой элемент станет следующим, и сравнить с ошибочным увеличением индекса после сдвига хвоста."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-remove-state",
+    "href": "equality-collections.html#sec-lecture-collections-remove-state",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Положение после удаления",
+    "text": "Положение после удаления В том же списке [Ada, \"\", Lin, \"\"] : Действие Последний выданный Следующий Текущий состав Первый next() Ada Первая пустая строка [Ada, \"\", Lin, \"\"] Второй next() Первая пустая строка Lin [Ada, \"\", Lin, \"\"] it.remove() Удалён Lin [Ada, Lin, \"\"] Следующий next() Lin Последняя пустая строка [Ada, Lin, \"\"] ArrayList сдвинул хвост, а итератор согласовал свою позицию со сдвигом. Второе удаление без нового next() дало бы IllegalStateException . Попросить закончить таблицу: чтение последней пустой строки, её удаление, проверка конца. Проследить, почему Lin не пропущен после первого удаления."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-25",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-25",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Условия обхода",
+    "text": "Условия обхода Действие итератора Условие next() Есть следующий элемент; иначе NoSuchElementException remove() Уже был next , после него ещё не было remove Удаление Поддерживается итератором Структурное изменение ArrayList через сам список во время его обхода нарушает условия итератора. Fail-fast проверка может выдать ConcurrentModificationException даже в одном потоке. Она выполняется по возможности; правильный алгоритм не зависит от момента её срабатывания. [6] Предложить последовательность next, remove, remove и найти первое недопустимое действие. Затем заменить it.remove на names.remove и указать нарушенную связь между состоянием обхода и списком."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-java-replacement",
+    "href": "equality-collections.html#sec-lecture-collections-java-replacement",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Замена элемента при обходе Java",
+    "text": "Замена элемента при обходе Java У конкретного ArrayList Java 25 замена через set сохраняет состав позиций: var codes = new ArrayList <>( List . of ( \"s1\" , \"s2\" )); var it = codes . iterator (); System . out . println ( it . next ()); // s1 codes . set ( 1 , \"s9\" ); System . out . println ( it . next ()); // s9 Это неструктурное изменение. Добавление через codes.add(\"s3\") после создания итератора нарушило бы условия обхода этой реализации. У LinkedList замена через set также неструктурна. [7] , [22] Попросить различить замену ссылки в существующей позиции и появление новой позиции. Уточнить, какие два конкретных класса задают это правило."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-dotnet-mutation",
+    "href": "equality-collections.html#sec-lecture-collections-dotnet-mutation",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Замена элемента при обходе C#",
+    "text": "Замена элемента при обходе C# У .NET 10 List<T> индексатор codes[1] заменяет элемент списка: var codes = new List < string > { \"s1\" , \"s2\" }; var it = codes . GetEnumerator (); it . MoveNext (); Console . WriteLine ( it . Current ); // s1 codes [ 1 ] = \"s9\" ; it . MoveNext (); // InvalidOperationException Перечислитель этого класса теряет действительность при добавлении, удалении и замене элемента. Следующий MoveNext обнаруживает изменение. Список уже содержит s9 ; продолжать обход прежним перечислителем нельзя. [4] Сопоставить одну замену в Java и C#. Попросить назвать конкретный тип списка и вызов, на котором различаются результаты."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-cpp-mutation",
+    "href": "equality-collections.html#sec-lecture-collections-cpp-mutation",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Действительность итератора C++20",
+    "text": "Действительность итератора C++20 Для std::vector<std::string> и std::list<std::string> : Операция Сохранившиеся позиции vector::insert , места достаточно Только до места вставки; прежний end недействителен vector::insert , понадобилось новое хранилище Все прежние итераторы, ссылки и указатели недействительны vector::erase Только до места удаления list::insert Все прежние итераторы и ссылки list::erase Все, кроме относящихся к удалённым элементам При добавлении в конец vector без роста итератор на первый элемент сохраняется. После перераспределения новые позиции получают от контейнера. Разыменование недействительного итератора вызывает неопределённое поведение. Обязательное исключение не предусмотрено. Изменение контейнеров C++20 и .NET 10 . Для вектора из двух элементов выбрать позиции begin и end. Разобрать push_back сначала с достаточным резервом, затем с ростом."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-34",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-34",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Представления карты",
+    "text": "Представления карты Новая карта и сохранённое представление её ключей: var scores = new LinkedHashMap < String , Integer >(); scores . put ( \"s1\" , 95 ); scores . put ( \"s2\" , 70 ); var keys = scores . keySet (); keys . remove ( \"s2\" ); scores . put ( \"s3\" , 80 ); System . out . println ( scores . containsKey ( \"s2\" )); // false System . out . println ( keys ); // [s1, s3] keys связано с текущим содержимым карты. Удаление через представление удалило запись, а последующая вставка в карту стала видна через keys . Нарисовать одну карту и стрелку представления. Попросить назвать значение, которого не хватает для операции keys.add(“s4”); вставка так не поддерживается."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-map-view-state",
+    "href": "equality-collections.html#sec-lecture-collections-map-view-state",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Связь представления с картой",
+    "text": "Связь представления с картой %%{init: {\"htmlLabels\": false, \"flowchart\": {\"htmlLabels\": false, \"rankSpacing\": 20, \"padding\": 8, \"wrappingWidth\": 320}, \"fontSize\": 28, \"fontFamily\": \"Arial, sans-serif\", \"themeVariables\": {\"fontSize\": \"28px\", \"fontFamily\": \"Arial, sans-serif\"}}}%% flowchart LR K[\"keys<br/>представление ключей\"] --> M[\"scores<br/>одна LinkedHashMap\"] Действие Пары scores Состав прежнего keys После создания keys s1 → 95, s2 → 70 [s1, s2] keys.remove(\"s2\") s1 → 95 [s1] scores.put(\"s3\", 80) s1 → 95, s3 → 80 [s1, s3] Представление обращается к той же карте при каждом чтении. Добавление через keys.add не поддерживается: одного ключа недостаточно для создания соответствия со значением. Проследить удаление от keys к scores через связь представления и основы. Для вставки в scores проследить, какое следующее чтение keys её обнаружит."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-reversed",
+    "href": "equality-collections.html#sec-lecture-collections-reversed",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Обратный порядок ArrayList",
+    "text": "Обратный порядок ArrayList var codes = new ArrayList <>( List . of ( \"s1\" , \"s2\" )); var reverse = codes . reversed (); reverse . addFirst ( \"s3\" ); System . out . println ( codes ); // [s1, s2, s3] System . out . println ( reverse ); // [s3, s2, s1] основа: первый → s1, s2, s3 ← последний reversed: последний основы становится первым представления addFirst обратного представления добавил элемент в конец основы. reversed() сохраняет связь с этим ArrayList ; отдельного состава для перестановки не создаётся. Операции обоих концов заданы SequencedCollection . Изменение обратного представления . Попросить определить результат reverse.removeLast(): какой код исчезнет из обоих обходов? Сопоставить действие с удалением первого элемента основы."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-37",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-37",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Представление и копии списка",
+    "text": "Представление и копии списка Book(\"Java\") создаёт доступную книгу. borrow() отмечает выдачу; borrowed() читает этот признак. Book book = new Book ( \"Java\" ); var source = new ArrayList <>( List . of ( book )); List < Book > alias = source ; var view = Collections . unmodifiableList ( source ); var copy = new ArrayList <>( source ); var snapshot = List . copyOf ( source ); Предскажите размеры после source.add(new Book(\"Types\")) . Затем отдельно предскажите borrowed() первой книги после book.borrow() . Разделить на доске список и книгу. Попросить указать, какой объект меняет добавление второй книги и какой — выдача первой. Получить два набора прогнозов до следующего экрана. Уточнить, что книга одна на момент создания списков; alias получил ссылку на сам source."
+  },
+  {
+    "objectID": "equality-collections.html#изменение-состава",
+    "href": "equality-collections.html#изменение-состава",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Изменение состава",
+    "text": "Изменение состава source . add ( new Book ( \"Types\" )); После добавления второй книги: source, alias ──> S: [Java, Types] view ───────────> представление S copy ───────────> C: [Java] snapshot ───────> [Java] Размеры source/alias/view/copy/snapshot : 2/2/2/1/1 . Через представление доступен текущий состав основы. Копия и снимок сохраняют прежний состав. copy можно изменять независимо; view и snapshot запрещают изменение через свои методы. Сопоставить с первым прогнозом. Попросить объяснить, через какую ссылку изменение попало в view и почему оно не попало в snapshot."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-38",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-38",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Общая книга",
+    "text": "Общая книга book . borrow (); System . out . println ( source . get ( 0 ). borrowed ()); // true System . out . println ( view . get ( 0 ). borrowed ()); // true System . out . println ( copy . get ( 0 ). borrowed ()); // true System . out . println ( snapshot . get ( 0 ). borrowed ()); // true System . out . println ( snapshot . get ( 0 ) == book ); // true %%{init: {\"htmlLabels\": false, \"flowchart\": {\"htmlLabels\": false, \"rankSpacing\": 20, \"padding\": 8}, \"fontSize\": 28, \"fontFamily\": \"Arial, sans-serif\", \"themeVariables\": {\"fontSize\": \"28px\", \"fontFamily\": \"Arial, sans-serif\"}}}%% flowchart LR S[\"source / alias\"] --> B[\"Book Java<br/>borrowed = true\"] V[\"view\"] --> S C[\"copy\"] --> B P[\"snapshot\"] --> B Стрелки от списков к книге обозначают ссылку в первой позиции. Все первые позиции содержат ссылку на одну книгу. Её выдача меняет состояние общего объекта; состав снимка сохраняется. List.copyOf может использовать подходящий список повторно и не копирует сами книги. Общая ссылка, представление, копия и снимок . Сопоставить со вторым прогнозом. Проследить на схеме все пути к книге и указать объект, в котором записано borrowed = true."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-snapshot-owner",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-snapshot-owner",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Независимость входного состава",
+    "text": "Независимость входного состава var clientList = new ArrayList <>( List . of ( book )); var owned = new ArrayList <>( clientList ); clientList . clear (); System . out . println ( clientList . size ()); // 0 System . out . println ( owned . size ()); // 1 Владелец сохранил самостоятельную последовательность ссылок. Изменение первоначального списка не изменило owned . Книга осталась общей: входное копирование защищает состав списка. [17] Предложить заменить копирование на owned = clientList и объяснить размер 0. Затем спросить, какая дополнительная независимость потребовала бы новой книги."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-44",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-44",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Развитие каталога",
+    "text": "Развитие каталога Для редкого поиска небольшой список можно просмотреть последовательно: static Student findStudent ( Iterable < Student > students , String code ) { for ( Student student : students ) { if ( student . id (). equals ( code )) return student ; } return null ; } Источник students , его элементы и строка code отличны от null . Первое совпадение возвращает запись, отсутствие — null . При частых запросах повторный обход читает одни и те же коды. Индекс требует дополнительного хранения и согласованного обновления, зато направляет каждый поиск к кандидатам по ключу. Для трёх записей и запроса отсутствующего кода получить число сравнений. Сопоставить один запрос и много повторных запросов без изменения каталога."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-catalog-index",
+    "href": "equality-collections.html#sec-lecture-collections-catalog-index",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Индекс текущих сведений",
+    "text": "Индекс текущих сведений Коды поступают в порядке регистрации s3, s2, s1 : var input = List . of ( new Student ( \"s3\" , \"Ann\" , 90 ), new Student ( \"s2\" , \"Lin\" , 70 ), new Student ( \"s1\" , \"Ada\" , 90 )); var current = new LinkedHashMap < StudentId , Student >(); for ( Student student : input ) { var id = new StudentId ( student . id ()); if ( current . putIfAbsent ( id , student ) != null ) throw new IllegalArgumentException ( \"Повтор кода: \" + student . id ()); } System . out . println ( current . get ( new StudentId ( \"s1\" )). score ()); // 90 putIfAbsent сохраняет имеющееся соответствие и возвращает его значение; для нового ключа вставляет запись и возвращает null . Значения каталога отличны от null , поэтому результат обнаруживает повтор входного кода. Загрузка новой карты завершается ошибкой при повторе. Добавить мысленно второй s1 с баллом 95. Попросить назвать действие, которое останавливает загрузку, и объяснить, почему первый s1 не заменён."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-32",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-32",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Повтор кода каталога",
+    "text": "Повтор кода каталога s1;Ada;90 s1;Ada;95 HashSet<Student> сохранит обе версии: баллы различаются. HashSet<String> кодов обнаружит повтор через результат add . Map<String, Student> позволяет заменить сведения по существующему коду. Вход каталога с требованием уникальных кодов должен отклонить вторую строку. При обновлении каталога та же строка может задавать новую версию. Равенство записи и уникальность кода . Попросить назвать, какое отношение использует каждая структура. Отличить проверку уникальности входа от уже выполненной замены put."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-40",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-40",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Порядок входа и отчёта",
+    "text": "Порядок входа и отчёта порядок регистрации: s3:90, s2:70, s1:90 LinkedHashMap по кодам: s3 → ..., s2 → ..., s1 → ... список после ReportOrder: s1:90, s3:90, s2:70 Карта сохраняет адресацию по коду и порядок регистрации. Сортировка самостоятельного списка значений переставляет ссылки для ведомости; соответствия основной карты сохраняются. Попросить объяснить, почему отчёт по баллам требует своего порядка, даже когда карта уже имеет определённый порядок обхода."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-catalog-report",
+    "href": "equality-collections.html#sec-lecture-collections-catalog-report",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Отдельный список ведомости",
+    "text": "Отдельный список ведомости var draft = new ArrayList <>( current . values ()); draft . sort ( new ReportOrder ()); var report = List . copyOf ( draft ); for ( Student row : report ) System . out . println ( row . id ()); // s1 // s3 // s2 ReportOrder сравнивает баллы по убыванию, при ничьей — коды по возрастанию. Сортируется самостоятельный список; порядок регистрации в current остаётся s3, s2, s1 . List.copyOf фиксирует состав и порядок ведомости. Попросить указать получателя sort и объяснить, почему карта сохранила свой порядок. Затем предсказать, что изменит новая оценка участника s1."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-catalog-saved",
+    "href": "equality-collections.html#sec-lecture-collections-catalog-saved",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Обновление текущего каталога",
+    "text": "Обновление текущего каталога current . put ( new StudentId ( \"s1\" ), new Student ( \"s1\" , \"Ada\" , 95 )); current . put ( new StudentId ( \"s4\" ), new Student ( \"s4\" , \"Max\" , 80 )); System . out . println ( current . get ( new StudentId ( \"s1\" )). score ()); // 95 System . out . println ( report . get ( 0 ). score ()); // 90 System . out . println ( current . size ()); // 4 System . out . println ( report . size ()); // 3 %%{init: {\"htmlLabels\": false, \"flowchart\": {\"htmlLabels\": false, \"rankSpacing\": 20, \"padding\": 8}, \"fontSize\": 28, \"fontFamily\": \"Arial, sans-serif\", \"themeVariables\": {\"fontSize\": \"28px\", \"fontFamily\": \"Arial, sans-serif\"}}}%% flowchart LR C[\"current<br/>ключ s1\"] --> N[\"Student<br/>s1, Ada, 95\"] R[\"report<br/>позиция 0\"] --> O[\"Student<br/>s1, Ada, 90\"] Сведения изменены заменой записи. Компоненты Student — неизменяемые строки и int , поэтому сохранённые записи ведомости остаются прежними. В current ключ s1 сохранил место регистрации, новый s4 оказался в конце. Сопоставить два объекта Student на схеме и общий объект Book прежнего опыта. Попросить назвать основание устойчивости сведений, помимо самого слова record."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-exit",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-exit",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Сохранение состояния отчёта",
+    "text": "Сохранение состояния отчёта Текущий каталог содержит четыре записи, сохранённая ведомость — три. Баллы s1 равны 95 в каталоге и 90 в ведомости. Какие операции нужны, чтобы выпустить новую ведомость с оценкой 95, сохранив прежнюю? Почему изменение общей книги было видно через все копии списков, а замена Student в карте оставила прежний отчёт устойчивым? Получить последовательность: взять текущие values, создать отдельный список, отсортировать и сохранить новый снимок. Старый report сохраняется. Объяснение должно назвать место записи: поле общего Book или значение карты, заменённое ссылкой на новый Student."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-cpp-categories",
+    "href": "equality-collections.html#sec-lecture-collections-cpp-categories",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Возможности итераторов C++",
+    "text": "Возможности итераторов C++ Категория Требуемые возможности input Чтение и продвижение; возможен один проход output Запись и продвижение forward Чтение, повторные проходы, независимые копии положения bidirectional Дополнительно шаг назад random_access Дополнительно смещение и расстояние за постоянное время contiguous Дополнительно непрерывное расположение элементов Итератор list двунаправленный, deque — произвольного доступа, vector<int> — непрерывный. Возможность записи проверяется отдельно: const_iterator запрещает изменение через себя. Последовательной печати достаточно входного итератора; std::sort требует произвольного доступа. [20] , [21] Предложить выбрать минимальные возможности для печати, возврата на предыдущий элемент и перехода на сто позиций за постоянное время. Попросить объяснить, почему стандартная list предоставляет свой sort."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-listiterator",
+    "href": "equality-collections.html#sec-lecture-collections-listiterator",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Итератор списка",
+    "text": "Итератор списка ListIterator добавляет обход назад и операции в позиции списка. Его курсор находится между вхождениями; listIterator(size()) создаёт курсор за последним: var codes = List . of ( \"s1\" , \"s2\" , \"s3\" ); ListIterator < String > it = codes . listIterator ( codes . size ()); while ( it . hasPrevious ()) System . out . println ( it . previous ()); // s3, s2, s1 — по одному коду в строке previous() сдвигает курсор назад и возвращает пройденный элемент. Если итератор поддерживает соответствующую операцию, set заменяет последний выданный элемент, add вставляет перед элементом, который вернул бы следующий next . У списка от List.of эти изменения запрещены. [12] Нарисовать четыре границы для трёх вхождений. После первого previous предложить next: оба вызова вернут s3, проходя одно вхождение в противоположных направлениях."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-collections-spliterator",
+    "href": "equality-collections.html#sec-lecture-collections-spliterator",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Разделение обхода",
+    "text": "Разделение обхода Spliterator поддерживает последовательную обработку и отделение части оставшихся элементов через trySplit() . Результат null означает, что на этом шаге часть не отделена. var codes = new ArrayList <>( List . of ( \"s1\" , \"s2\" , \"s3\" , \"s4\" )); Spliterator < String > rest = codes . spliterator (); Spliterator < String > prefix = rest . trySplit (); if ( prefix != null ) prefix . forEachRemaining ( System . out :: println ); rest . forEachRemaining ( System . out :: println ); // s1, s2, s3, s4 — по одному коду в строке System.out::println передаёт действие печати; forEachRemaining применяет его ко всем оставшимся элементам. Для упорядоченного обхода отделяется префикс. Он и остаток обрабатываются здесь последовательно; параллельный алгоритм может передать части разным исполнителям. [13] Проследить две ветви: разбиение удалось и вернулся null. Объяснить сохранение всех кодов в обоих случаях. Отделить создание частей от их последовательной обработки вызовами forEachRemaining."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-02",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-02",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Копирование ссылки",
+    "text": "Копирование ссылки String a = new String ( \"Ada\" ); String b = new String ( \"Ada\" ); String alias = a ; alias = b ; System . out . println ( alias == a ); // false System . out . println ( alias == b ); // true a ─────────> A: строка \"Ada\" b, alias ──> B: строка \"Ada\" Изменилось значение переменной alias . Строковые объекты и их содержимое сохранились. Поиск по содержимому по-прежнему считает строки равными. Найти на схеме единственную изменившуюся связь. Предложить сравнить присваивание Java-ссылке с присваиванием через C++ T&: там меняется связанный объект, здесь переменная получает другую ссылку."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-03",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-03",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Унаследованное равенство",
+    "text": "Унаследованное равенство class Token { int code = 17 ; } Token first = new Token (); Token second = new Token (); System . out . println ( first . equals ( second )); // false Object.equals проверяет идентичность. Поля двух Token равны, но унаследованный метод их не читает. Тип идентификатора должен сам определить равенство по коду, если поиск должен находить отдельный объект с тем же кодом. Попросить выбрать между идентичностью двух открытых вкладок и равенством двух идентификаторов. У одинаковых адресов вкладок могут быть разные состояния; идентификатор представляет значение кода."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-04",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-04",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Соглашение equals",
+    "text": "Соглашение equals Для ссылок x , y , z , отличных от null : Свойство Требование Рефлексивность x.equals(x) истинно Симметрия x.equals(y) совпадает с y.equals(x) Транзитивность Из x ~ y и y ~ z следует x ~ z Устойчивость Неизменные сведения дают прежний ответ x.equals(null) ложно. Транзитивность позволяет использовать один объект как представителя группы равных значений. Близость баллов «разность ≤ 1» не подходит: 80 близок к 81, 81 — к 82, а 80 и 82 различаются. Выбрать сначала 80, затем 81 представителем и сопоставить результаты сравнения с баллом 82."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-05",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-05",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Состояние ключа",
+    "text": "Состояние ключа Начало объявления StudentId : final class StudentId { private final String value ; StudentId ( String value ) { this . value = java . util . Objects . requireNonNull ( value ); } Конструктор отвергает null . Поле final сохраняет ссылку, а неизменяемость String сохраняет значение кода. final у класса закрывает наследование и ограничивает сравнение этим типом. Разделить назначение final у класса и поля. Попросить объяснить, почему одного final у поля изменяемого объекта было бы недостаточно."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-05-part-1",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-05-part-1",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Равенство кодов",
+    "text": "Равенство кодов Продолжение того же объявления: @Override public boolean equals ( Object other ) { if ( this == other ) return true ; if (!( other instanceof StudentId id )) return false ; return value . equals ( id . value ); } Тот же объект равен себе. null и объект другого типа отвергаются проверкой instanceof . Для двух StudentId сравниваются строки. Параметр Object соответствует переопределяемому методу. Проследить вызовы с тем же объектом, новой строкой “s17”, null и новым StudentId(“s17”). Попросить назвать последнюю выполненную проверку каждого пути."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-key-hash",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-key-hash",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Хеш ключа",
+    "text": "Хеш ключа Завершение StudentId : @Override public int hashCode () { return value . hashCode (); } } Равные коды дают равные хеши. Таблица использует хеш для выбора кандидатов и затем устанавливает совпадение ключа. Разные хеши позволяют исключить равенство; одинаковые хеши требуют дальнейшей проверки. Метод equals(StudentId) был бы перегрузкой; при наличии @Override компилятор выявит такую ошибку сигнатуры. Попросить объяснить, почему добавление в hashCode постороннего изменяемого поля могло бы развести равные ключи по разным областям поиска."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-map-before-mutation",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-map-before-mutation",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Запись и поиск по ключу",
+    "text": "Запись и поиск по ключу Карта broken типа HashMap<MutableKey, String> хранит пары «ключ → строковое значение». В диагностическом опыте под ключом с code = 1 сохраняется строка \"stored\" . Операция Действие put(key, value) Сохранить значение под ключом; заменить прежнее при равном ключе get(key) Найти значение по ключу size() Получить число сохранённых пар В этом опыте все сохраняемые значения отличны от null . Результат null у get означает, что поиск не нашёл пару. Хеш ключа направляет поиск к узлу таблицы. Попросить показать ключ и значение в сохранённой паре. Сопоставить два вопроса: нашёл ли get значение по данному ключу и сколько пар считает size."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-13",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-13",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Переполнение при сравнении",
+    "text": "Переполнение при сравнении int a = Integer . MIN_VALUE ; int b = 1 ; System . out . println ( a - b > 0 ); // true System . out . println ( Integer . compare ( a , b ) < 0 ); // true Математическая разность меньше минимального int ; после переполнения получается Integer.MAX_VALUE . Вычитание дало неверный знак порядка. Integer.compare сравнивает весь диапазон без этой ошибки. Перестановка аргументов должна менять знак, а отношение «раньше» должно быть транзитивно. У равных по сравнению объектов знаки сравнений с любым третьим объектом совпадают. Попросить восстановить математический знак до вычисления в int. Уточнить, что диапазон баллов 0–100 безопасен для этой разности, но общий компаратор int должен обрабатывать весь диапазон."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-equality-inheritance",
+    "href": "equality-collections.html#sec-lecture-equality-inheritance",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Наследование и новое значимое поле",
+    "text": "Наследование и новое значимое поле Базовый пропуск сравнивает code . Именованный подкласс добавляет name . У базового p(17) и именованных a(17, Ada) , b(17, Lin) одинаковый код; имена двух объектов подкласса различаются. Правило подкласса Что происходит Равен только именованному пропуску Базовый p признаёт a равным по коду; a отвергает p по типу. Нарушена симметрия С базовым сравнивает код, с именованным — код и имя a равен p , p равен b , но a не равен b . Нарушена транзитивность Закрытый тип значения фиксирует набор сравниваемых состояний. Композиция позволяет хранить устойчивый идентификатор отдельно от имени. Проверка точного класса задаёт иной договор и требует согласования с использованием подтипов. [18] Пройти три сравнения второго варианта, не меняя объекты. Попросить указать, какое новое поле разделило ранее общую группу равенства."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-equality-key-snapshot",
+    "href": "equality-collections.html#sec-lecture-equality-key-snapshot",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Снимок значимых данных ключа",
+    "text": "Снимок значимых данных ключа CodePath принимает список изменяемых StringBuilder и сохраняет последовательность кодов. В его конструкторе: var snapshot = new ArrayList < String >(); for ( StringBuilder part : input ) snapshot . add ( part . toString ()); this . parts = List . copyOf ( snapshot ); Действие с источником Источник Состояние ключа Создание ключа Построитель s1 в списке Строка s1 в собственном списке part.append(\"9\") Построитель s19 Строка s1 input.clear() Пустой список Строка s1 Копия только внешнего списка сохранила бы общий изменяемый построитель. Устойчивость равенства и хеша требует снимка всех значимых данных. Полное объявление и поиск: Глубина снимка ключа . Различить изменение состава и изменение символов. Попросить объяснить, почему для массива int достаточно clone, а для этих ссылок нужен ещё toString."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-equality-cpp-normalization",
+    "href": "equality-collections.html#sec-lecture-equality-cpp-normalization",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Нормализация ASCII-кодов в C++",
+    "text": "Нормализация ASCII-кодов в C++ Для ASCII-кодов функция foldAscii на C++20 создаёт нормализованную строку: std:: string foldAscii ( std:: string value ) { for ( char & c : value ) { if ( c >= 'A' && c <= 'Z' ) c = char ( c + ( 'a' - 'A' )); } return value ; } Для s1 и S1 результат одинаков: s1 . И равенство, и хеширование используют этот результат. Исходные строки остаются различимыми обычным std::string::operator== . Сопоставить функцию с предметным условием одного ключа для двух написаний. Предложить добавить s2 и проверить, почему нормализация его не объединяет с s1."
+  },
+  {
+    "objectID": "equality-collections.html#пара-правил-для-unordered_set",
+    "href": "equality-collections.html#пара-правил-для-unordered_set",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Пара правил для unordered_set",
+    "text": "Пара правил для unordered_set struct AsciiHash { std:: size_t operator ()( const std:: string & value ) const { return std:: hash < std:: string >{}( foldAscii ( value )); } }; struct AsciiEqual { bool operator ()( const std:: string & a , const std:: string & b ) const { return foldAscii ( a ) == foldAscii ( b ); } }; operator() делает объект вызываемым. Типы передаются контейнеру std::unordered_set<std::string, AsciiHash, AsciiEqual> . Вставки s1 , затем S1 оставляют один элемент: Pred сообщает равенство, а Hash направляет оба запроса к одним кандидатам. Внешнее правило равенства в C++ и C# . Попросить сопоставить два типа C++ с двумя методами IEqualityComparer. Напомнить, что создание временных строк входит в стоимость этого примера."
+  },
+  {
+    "objectID": "equality-collections.html#sec-lecture-equality-csharp-comparer",
+    "href": "equality-collections.html#sec-lecture-equality-csharp-comparer",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Собственный компаратор равенства C#",
+    "text": "Собственный компаратор равенства C# AsciiCodeComparer задаёт равенство ASCII-кодов. Начало класса: sealed class AsciiCodeComparer : IEqualityComparer < string > { static string FoldAscii ( string value ) { char [] chars = value . ToCharArray (); for ( int i = 0 ; i < chars . Length ; i ++) { if ( chars [ i ] >= 'A' && chars [ i ] <= 'Z' ) chars [ i ] = ( char )( chars [ i ] + ( 'a' - 'A' )); } return new string ( chars ); } sealed закрывает наследование; после : указан реализуемый интерфейс. Метод создаёт нормализованную строку для двух последующих операций. Используются пространства имён System и System.Collections.Generic . Сопоставить преобразование с foldAscii из C++. Обе функции здесь работают только с выбранным ASCII-правилом."
+  },
+  {
+    "objectID": "equality-collections.html#согласованные-equals-и-gethashcode",
+    "href": "equality-collections.html#согласованные-equals-и-gethashcode",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Согласованные Equals и GetHashCode",
+    "text": "Согласованные Equals и GetHashCode Завершение класса AsciiCodeComparer : public bool Equals ( string ? x , string ? y ) { if ( x is null || y is null ) return x is null && y is null ; return StringComparer . Ordinal . Equals ( FoldAscii ( x ), FoldAscii ( y )); } public int GetHashCode ( string value ) { ArgumentNullException . ThrowIfNull ( value ); return StringComparer . Ordinal . GetHashCode ( FoldAscii ( value )); } } string? допускает null : два отсутствующих значения равны. Хеширование требует существующую строку. StringComparer.Ordinal сравнивает нормализованные строки и предоставляет согласованный хеш. Для s1 и S1 равенство истинно, хеши совпадают. [3] Попросить пройти отдельно пути двух null, одного null и двух кодов. Сравнить одинаковую нормализацию в Equals и GetHashCode."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-07",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-07",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Запись как тип значения",
+    "text": "Запись как тип значения record CodeId ( String value ) {} var ids = new HashSet < CodeId >(); ids . add ( new CodeId ( \"s1\" )); System . out . println ( ids . add ( new CodeId ( \"s1\" ))); // false Стандартные equals и hashCode используют компонент записи. CodeId — отдельный тип с другим конструктором: дополнительного запрета null в нём нет. StudentId сохраняет собственную проверку кода на null . Сопоставить два объявления по равенству и допустимым состояниям. Попросить объяснить, почему краткость объявления не добавляет проверку null."
+  },
+  {
+    "objectID": "equality-collections.html#удаление-до-изменения-ключа",
+    "href": "equality-collections.html#удаление-до-изменения-ключа",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Удаление до изменения ключа",
+    "text": "Удаление до изменения ключа Для ещё исправной карты: var key = new MutableKey ( 1 ); var map = new HashMap < MutableKey , String >(); map . put ( key , \"stored\" ); String saved = map . remove ( key ); key . code = 2 ; map . put ( key , saved ); System . out . println ( map . get ( new MutableKey ( 2 ))); // stored Удаление использовало старый хеш и нашло запись. Новая вставка создала размещение по изменённому ключу. Удаление после изменения уже зависело бы от повреждённого поиска. Попросить переставить remove и изменение code в рассуждении и назвать первое действие, для которого теряется корректная предпосылка."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-comparator-factory",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-comparator-factory",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Фабрика компаратора",
+    "text": "Фабрика компаратора Comparator < Student > order = Comparator . comparingInt ( Student :: score ). reversed () . thenComparing ( Student :: id ); Student::score передаёт чтение балла. comparingInt строит возрастающий порядок, reversed обращает его, thenComparing сравнивает коды при ничьей. Перенос reversed в конец цепочки обратил бы и порядок кодов. Ссылки на методы: Ссылки на методы . Сопоставить части фабрики с ветвями ReportOrder. Для двух баллов 90 объяснить различие расположений reversed."
+  },
+  {
+    "objectID": "equality-collections.html#представление-диапазона",
+    "href": "equality-collections.html#представление-диапазона",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Представление диапазона",
+    "text": "Представление диапазона var names = new ArrayList <>( List . of ( \"Ada\" , \"Lin\" , \"Max\" )); var part = names . subList ( 1 , 3 ); part . set ( 0 , \"Ann\" ); System . out . println ( names ); // [Ada, Ann, Max] part . remove ( 1 ); System . out . println ( names ); // [Ada, Ann] Диапазон [1, 3) имеет собственные индексы, связанные с позицией основы. Изменения через представление отражаются в основе. Структурное изменение основы вне part делает дальнейшую семантику этого представления неопределённой договором subList . Соединить индекс 0 part с индексом 1 names. Предложить способ получить самостоятельный диапазон для дальнейших независимых изменений."
+  },
+  {
+    "objectID": "equality-collections.html#фиксированный-размер",
+    "href": "equality-collections.html#фиксированный-размер",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Фиксированный размер",
+    "text": "Фиксированный размер String [] array = { \"Ada\" , \"Lin\" }; List < String > names = Arrays . asList ( array ); names . set ( 0 , \"Ann\" ); System . out . println ( array [ 0 ]); // Ann names . add ( \"Max\" ); // UnsupportedOperationException Arrays.asList предоставляет список поверх массива. Замена элемента допустима и видна через массив; изменение размера запрещено. У List.of запрещена также замена элементов. Попросить назвать свойства двух списков по отдельности: поддержка set, поддержка add, связь с исходным хранилищем."
+  },
+  {
+    "objectID": "equality-collections.html#обратное-представление",
+    "href": "equality-collections.html#обратное-представление",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Обратное представление",
+    "text": "Обратное представление Начиная с Java 21 у List доступны операции первого и последнего элемента и reversed() : var names = new ArrayList <>( List . of ( \"Ada\" , \"Lin\" )); var reverse = names . reversed (); reverse . set ( 0 , \"Max\" ); System . out . println ( names ); // [Ada, Max] System . out . println ( reverse ); // [Max, Ada] Индекс 0 обратного представления соответствует последнему элементу основы. Изменение прошло в тот же список. [23] Сопоставить обратное представление и отдельную копию с обращённым порядком. Попросить объяснить, какой вариант сохранит прежний состав после добавления элемента в исходный список."
+  },
+  {
+    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-43",
+    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-43",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Приоритетная очередь",
+    "text": "Приоритетная очередь var queue = new PriorityQueue < Integer >(); queue . addAll ( List . of ( 30 , 10 , 20 , 10 )); while (! queue . isEmpty ()) System . out . println ( queue . poll ()); // 10, 10, 20, 30 — по одному числу в строке Голова — минимум по естественному порядку или компаратору. Повторения сохраняются; среди равных приоритетов представитель выбирается произвольно. Итератор не задаёт отсортированный обход всей очереди. poll поддерживает минимум и удаляет его: полный такой просмотр опустошает очередь. [8] Попросить назвать изменение, нужное для сохранения исходной очереди при получении отсортированной последовательности: обход копии через poll. Затем сравнить стоимость peek и poll по их разной работе."
+  },
+  {
+    "objectID": "equality-collections.html#равенство-контейнеров",
+    "href": "equality-collections.html#равенство-контейнеров",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Равенство контейнеров",
+    "text": "Равенство контейнеров List < String > a = new ArrayList <>( List . of ( \"Ada\" , \"Lin\" )); List < String > b = new LinkedList <>( List . of ( \"Ada\" , \"Lin\" )); System . out . println ( a . equals ( b )); // true List сравнивает последовательность, Set — состав, Map — соответствия. У двух разных ArrayDeque с одинаковыми элементами equals ложно: общего равенства последовательностей интерфейс Deque не задаёт. Для сравнения порядка можно получить списки и применить List.equals . Попросить выбрать проверку результата, допускающую смену реализации списка. Затем изменить только порядок элементов и сопоставить List.equals и Set.equals."
+  },
+  {
+    "objectID": "equality-collections.html#журнал-множество-и-частоты",
+    "href": "equality-collections.html#журнал-множество-и-частоты",
+    "title": "Равенство, порядок и коллекции",
+    "section": "Журнал, множество и частоты",
+    "text": "Журнал, множество и частоты обращения: [Ada, Lin, Ada] посещённые имена: {Ada, Lin} число обращений: Ada → 2, Lin → 1 Список хранит позиции и повторения. Множество сохраняет наличие, карта частот — число вхождений каждого ключа. Предложить восстановить журнал по одному множеству и затем по частотам. Установить, какие сведения потеряны в каждом случае."
   },
   {
     "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-17",
@@ -2952,48 +3414,6 @@
     "title": "Равенство, порядок и коллекции",
     "section": "Замена и вставка",
     "text": "Замена и вставка Для прежнего names : names . set ( 1 , \"Max\" ); // [Ada, Max, Ada] names . add ( 1 , \"Lin\" ); // [Ada, Lin, Max, Ada] set заменяет ссылку и сохраняет размер. add освобождает позицию, сдвигая хвост, и увеличивает размер. Вставка по индексу size() добавляет в конец; чтение по этому индексу недопустимо. Сопоставить два прогноза с результатом. На схеме массива указать ссылки, которые пришлось сдвинуть при вставке в позицию 1."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-22",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-22",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Стоимость ArrayList",
-    "text": "Стоимость ArrayList Действие Работа с хранилищем get(i) , set(i, e) Индексация массива: \\(O(1)\\) Вставка в позицию i Сдвиг хвоста: \\(O(n-i)\\) плюс возможный рост Добавление в свободный конец Одна запись Расширение Новый массив и перенос ссылок: \\(O(n)\\) Суммарная работа серии из \\(n\\) добавлений в конец — \\(O(n)\\) . Амортизированная стоимость одного добавления — \\(O(1)\\) , хотя отдельное расширение дороже. [8] Сопоставить одно расширение и всю серию. Предложить отделить резервирование вместимости от появления элементов: после new ArrayList<>(100) размер 0."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-23",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-23",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Поиск позиции в LinkedList",
-    "text": "Поиск позиции в LinkedList первый узел <──> узел <──> узел <──> последний узел ссылка ссылка ссылка ссылка на элемент на элемент на элемент get(i) проходит от ближайшего конца. Удаление уже найденного узла меняет соседние связи за \\(O(1)\\) ; remove(i) дополнительно ищет этот узел. Цикл с get(i) для всех индексов многократно повторяет поиск: \\(O(n^2)\\) . Один итератор последовательно посещает узлы за \\(O(n)\\) . [3] На шести узлах посчитать переходы для get(0)…get(5), затем для одного итератора. Для алгоритма с частыми удалениями попросить сопоставить стоимость поиска позиции и удаления в каждой реализации."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-20",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-20",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Общий тип контейнера",
-    "text": "Общий тип контейнера List<Student> позволяет загрузчику передать последовательность в отчёт, сохранив операции чтения независимо от внутреннего массива или узлов. Collection также предоставляет общий обход через Iterable . Система Collections Framework объединила контейнеры и алгоритмы такими интерфейсами. Прежние Vector и Hashtable были включены в общую систему; совместимость независимо написанных API была целью её проектирования. [11] Предложить назвать всё, что нужно отчёту для последовательного чтения. Сопоставить этот набор с знанием внутренней вместимости ArrayList."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-21",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-21",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Необязательные операции",
-    "text": "Необязательные операции List < String > names = List . of ( \"Ada\" ); names . add ( \"Lin\" ); // UnsupportedOperationException Вызов допустим по типу List , но полученный объект запрещает изменение. Та же переменная могла бы хранить изменяемый ArrayList . Договор возвращаемого списка должен определять поддержку операций. Разработчики сохранили небольшую систему интерфейсов, оставив различия изменяемости и фиксированного размера в договорах объектов. [6] Разделить проверку компилятора и отказ при выполнении. Попросить сравнить это с доступом через const std::vector в C++."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-24",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-24",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Удаление при обходе",
-    "text": "Удаление при обходе var names = new ArrayList <>( List . of ( \"Ada\" , \"\" , \"Lin\" , \"\" )); var it = names . iterator (); while ( it . hasNext ()) { if ( it . next (). isEmpty ()) it . remove (); } System . out . println ( names ); // [Ada, Lin] Итератор сохраняет положение и последний выданный элемент. Его remove удаляет этот элемент и согласует обход с изменением списка. Обе пустые строки посещены и удалены, включая последнюю. Провести курсор по четырём исходным позициям. После удаления пустой строки показать, какой элемент станет следующим, и сравнить с ошибочным увеличением индекса после сдвига хвоста."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-25",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-25",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Условия обхода",
-    "text": "Условия обхода Действие итератора Условие next() Есть следующий элемент; иначе NoSuchElementException remove() Уже был next , после него ещё не было remove Удаление Поддерживается итератором Структурное изменение ArrayList через сам список во время его обхода нарушает условия итератора. Fail-fast проверка может выдать ConcurrentModificationException даже в одном потоке. Она выполняется по возможности; правильный алгоритм не зависит от момента её срабатывания. [2] Предложить последовательность next, remove, remove и найти первое недопустимое действие. Затем заменить it.remove на names.remove и указать нарушенную связь между состоянием обхода и списком."
   },
   {
     "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-26",
@@ -3045,13 +3465,6 @@
     "text": "Отсутствие ключа Та же карта допускает null -значения: scores . put ( \"s3\" , null ); System . out . println ( scores . get ( \"s3\" )); // null System . out . println ( scores . get ( \"missing\" )); // null System . out . println ( scores . containsKey ( \"s3\" )); // true System . out . println ( scores . containsKey ( \"missing\" )); // false System . out . println ( scores . getOrDefault ( \"s3\" , 0 )); // null System . out . println ( scores . getOrDefault ( \"missing\" , 0 )); // 0 containsKey различает два состояния. Запасное значение используется при отсутствии отображения; хранящееся null остаётся результатом. Его распаковка в int вызвала бы NullPointerException . Попросить сформулировать договор карты частот, при котором getOrDefault можно распаковывать: присутствующие значения отличны от null. Для сложения с единицей также требуется запас в диапазоне int."
   },
   {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-32",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-32",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Повтор кода каталога",
-    "text": "Повтор кода каталога s1;Ada;90 s1;Ada;95 HashSet<Student> сохранит обе версии: баллы различаются. HashSet<String> кодов обнаружит повтор через результат add . Map<String, Student> позволяет заменить сведения по существующему коду. Вход каталога с требованием уникальных кодов должен отклонить вторую строку. При обновлении каталога та же строка может задавать новую версию. Равенство записи и уникальность кода . Попросить назвать, какое отношение использует каждая структура. Отличить проверку уникальности входа от уже выполненной замены put."
-  },
-  {
     "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-33",
     "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-33",
     "title": "Равенство, порядок и коллекции",
@@ -3059,18 +3472,11 @@
     "text": "Запись соответствия в разных языках Java: byId.put(id, student) Python: by_id[id] = student C++: byId[id] = student При существующем ключе эти действия заменяют значение. В Java put возвращает прежнее значение; C++ try_emplace позволяет отдельно проверить, был ли ключ уже представлен. Правило отказа при повторе входа задаётся вызывающей программой. Каталог и порядок отчёта . Попросить объяснить, какие дополнительные сведения нужны загрузчику, чтобы различить допустимое обновление и недопустимый повтор."
   },
   {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-34",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-34",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Представления карты",
-    "text": "Представления карты Новая карта и сохранённое представление её ключей: var scores = new LinkedHashMap < String , Integer >(); scores . put ( \"s1\" , 95 ); scores . put ( \"s2\" , 70 ); var keys = scores . keySet (); keys . remove ( \"s2\" ); scores . put ( \"s3\" , 80 ); System . out . println ( scores . containsKey ( \"s2\" )); // false System . out . println ( keys ); // [s1, s3] keys связано с текущим содержимым карты. Удаление через представление удалило запись, а последующая вставка в карту стала видна через keys . Нарисовать одну карту и стрелку представления. Попросить назвать значение, которого не хватает для операции keys.add(“s4”); вставка так не поддерживается."
-  },
-  {
     "objectID": "equality-collections.html#обход-значений-и-пар",
     "href": "equality-collections.html#обход-значений-и-пар",
     "title": "Равенство, порядок и коллекции",
     "section": "Обход значений и пар",
-    "text": "Обход значений и пар Для прежней карты s1 → 95, s3 → 80 : for ( var entry : scores . entrySet ()) { System . out . println ( entry . getKey () + \": \" + entry . getValue ()); } // s1: 95 // s3: 80 entrySet() выдаёт пары с ключом и значением. values() выдаёт только значения и допускает повторы: после scores.put(\"s4\", 80) два разных ключа имеют балл 80. Удаление через изменяемые представления меняет карту. Попросить выбрать представление, если нужны только ключи, только оценки или обе части пары. Объяснить, почему тип Collection у values допускает повторяющиеся значения."
+    "text": "Обход значений и пар Карта содержит два соответствия; обход получает обе части каждой пары: var scores = new LinkedHashMap < String , Integer >(); scores . put ( \"s1\" , 95 ); scores . put ( \"s3\" , 80 ); for ( var entry : scores . entrySet ()) { System . out . println ( entry . getKey () + \": \" + entry . getValue ()); } // s1: 95 // s3: 80 entrySet() выдаёт пары с ключом и значением. values() выдаёт только значения и допускает повторы: после scores.put(\"s4\", 80) два разных ключа имеют балл 80. Удаление через изменяемые представления меняет карту. Попросить выбрать представление, если нужны только ключи, только оценки или обе части пары. Объяснить, почему тип Collection у values допускает повторяющиеся значения."
   },
   {
     "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-35",
@@ -3087,46 +3493,11 @@
     "text": "Запрет изменения состава var names = List . of ( \"Ada\" , \"Ada\" ); System . out . println ( names . size ()); // 2 names . set ( 0 , \"Lin\" ); // UnsupportedOperationException List.of допускает повторения и запрещает null . Запрещены добавление, удаление и замена элементов, включая set , sort , replaceAll . У Set.of повторное значение отвергается, у Map.of — повторный ключ. Обе фабрики также запрещают null и изменение контейнера. Попросить объяснить, почему неизменный размер недостаточен для разрешения set. Сопоставить запрет изменения списка с возможностью изменения его элемента."
   },
   {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-37",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-37",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Представление и копии списка",
-    "text": "Представление и копии списка Book(\"Java\") создаёт доступную книгу. borrow() отмечает выдачу; borrowed() читает этот признак. Book book = new Book ( \"Java\" ); var source = new ArrayList <>( List . of ( book )); List < Book > alias = source ; var view = Collections . unmodifiableList ( source ); var copy = new ArrayList <>( source ); var snapshot = List . copyOf ( source ); Предскажите размеры после source.add(new Book(\"Types\")) . Затем отдельно предскажите borrowed() первой книги после book.borrow() . Разделить на доске список и книгу. Попросить указать, какой объект меняет добавление второй книги и какой — выдача первой. Получить два набора прогнозов до следующего экрана. Уточнить, что книга одна на момент создания списков; alias получил ссылку на сам source."
-  },
-  {
-    "objectID": "equality-collections.html#изменение-состава",
-    "href": "equality-collections.html#изменение-состава",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Изменение состава",
-    "text": "Изменение состава После добавления второй книги: source, alias ──> S: [Java, Types] view ───────────> представление S copy ───────────> C: [Java] snapshot ───────> [Java] Размеры source/alias/view/copy/snapshot : 2/2/2/1/1 . Через представление доступен текущий состав основы. Копия и снимок сохраняют прежний состав. copy можно изменять независимо; view и snapshot запрещают изменение через свои методы. Сопоставить с первым прогнозом. Попросить объяснить, через какую ссылку изменение попало в view и почему оно не попало в snapshot."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-38",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-38",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Общая книга",
-    "text": "Общая книга book . borrow (); System . out . println ( source . get ( 0 ). borrowed ()); // true System . out . println ( view . get ( 0 ). borrowed ()); // true System . out . println ( copy . get ( 0 ). borrowed ()); // true System . out . println ( snapshot . get ( 0 ). borrowed ()); // true System . out . println ( snapshot . get ( 0 ) == book ); // true Все первые позиции содержат ссылку на одну книгу. Её выдача меняет состояние общего объекта; состав снимка сохраняется. List.copyOf может использовать подходящий список повторно и не копирует сами книги. Общая ссылка, представление, копия и снимок . Сопоставить со вторым прогнозом. Попросить добавить на предыдущую схему одну книгу и четыре стрелки к ней; отметить запись borrowed = true."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-snapshot-owner",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-snapshot-owner",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Независимость входного состава",
-    "text": "Независимость входного состава var clientList = new ArrayList <>( List . of ( book )); var owned = new ArrayList <>( clientList ); clientList . clear (); System . out . println ( clientList . size ()); // 0 System . out . println ( owned . size ()); // 1 Владелец сохранил самостоятельную последовательность ссылок. Изменение первоначального списка не изменило owned . Книга осталась общей: входное копирование защищает состав списка. [7] Предложить заменить копирование на owned = clientList и объяснить размер 0. Затем спросить, какая дополнительная независимость потребовала бы новой книги."
-  },
-  {
     "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-39",
     "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-39",
     "title": "Равенство, порядок и коллекции",
     "section": "Состояние индекса каталога",
     "text": "Состояние индекса каталога входной список: [s1:Ada:90, s2:Lin:70] индекс: s1 → Ada:90, s2 → Lin:70 Замена в карте на s1 → Ada:95 оставит прежнюю запись в списке. Добавление только в список сохранит прежний состав индекса. Владелец текущего каталога должен согласовать изменения обеих структур или строить каждый отчёт из одной основной карты. Список записей Student фиксирует версии сведений благодаря неизменяемым компонентам. Попросить проследить обе независимые записи по схеме. Уточнить разницу между старым снимком отчёта и случайно устаревшим индексом текущих данных."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-40",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-40",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Порядок входа и отчёта",
-    "text": "Порядок входа и отчёта порядок регистрации: s3:90, s2:70, s1:90 LinkedHashMap по кодам: s3 → ..., s2 → ..., s1 → ... список после ReportOrder: s1:90, s3:90, s2:70 Карта сохраняет адресацию по коду и порядок регистрации. Сортировка самостоятельного списка значений переставляет ссылки для ведомости; соответствия основной карты сохраняются. Попросить объяснить, почему отчёт по баллам требует своего порядка, даже когда карта уже имеет определённый порядок обхода."
   },
   {
     "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-41",
@@ -3143,81 +3514,18 @@
     "text": "Пустая очередь System . out . println ( queue . pollFirst ()); // Lin System . out . println ( queue . pollFirst ()); // null queue . removeFirst (); // NoSuchElementException pollFirst сообщает пустоту специальным результатом; removeFirst — исключением. Для цикла до исчерпания пустота завершает обработку. Для операции, требующей существующей головы, пустота нарушает условие вызова. Работа с одним концом через push / pop даёт LIFO: после добавления Ada , затем Lin первым извлекается Lin . Сопоставить прогнозы с результатами. Попросить объяснить, почему запрет null у ArrayDeque сохраняет однозначность признака пустоты."
   },
   {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-44",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-44",
+    "objectID": "equality-collections.html#sec-lecture-collections-book-report",
+    "href": "equality-collections.html#sec-lecture-collections-book-report",
     "title": "Равенство, порядок и коллекции",
-    "section": "Развитие каталога",
-    "text": "Развитие каталога Небольшой каталог можно хранить списком и искать код обходом. Когда поиски становятся частыми, индекс по коду сокращает повторную работу. Если одновременно нужен порядок поступления, список и индекс придётся обновлять согласованно. Отчёт добавляет ещё одно требование: сохранить сведения на выбранный момент. Его снимок должен пережить последующие изменения каталога. Более быстрый поиск и воспроизводимый отчёт получают ценой дополнительного хранения и явных правил обновления. Начать с редкого поиска в небольшом списке: затраты на сопровождение отдельного индекса могут превышать экономию на поиске. Затем увеличить число поисков и вернуться к примеру замены Student в списке при старом значении карты. Попросить выбрать единственное хранилище текущих сведений или описать согласованное обновление двух структур. Для отчёта отделить текущий индекс от намеренно сохранённой прежней версии. Структуры выбираются заново при изменении нагрузки и договора клиента."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-exit",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-exit",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Сохранение состояния отчёта",
-    "text": "Сохранение состояния отчёта Есть изменяемый список книг и полученный List.copyOf . Сначала к источнику добавили вторую книгу, затем выдали первую читателю. Как изменились размер снимка и состояние его первой книги? Что потребуется, если отчёт должен сохранить также прежний признак выдачи? Получить самостоятельный ответ: размер прежний, borrowed первой книги true. Для сохранения прежнего признака нужны отдельные устойчивые сведения о книге на момент отчёта или соответствующее копирование её состояния. Попросить обосновать ответ через ссылки и место записи."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-07",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-07",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Запись как тип значения",
-    "text": "Запись как тип значения record CodeId ( String value ) {} var ids = new HashSet < CodeId >(); ids . add ( new CodeId ( \"s1\" )); System . out . println ( ids . add ( new CodeId ( \"s1\" ))); // false Стандартные equals и hashCode используют компонент записи. CodeId — отдельный тип с другим конструктором: дополнительного запрета null в нём нет. StudentId сохраняет собственную проверку кода на null . Сопоставить два объявления по равенству и допустимым состояниям. Попросить объяснить, почему краткость объявления не добавляет проверку null."
-  },
-  {
-    "objectID": "equality-collections.html#удаление-до-изменения-ключа",
-    "href": "equality-collections.html#удаление-до-изменения-ключа",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Удаление до изменения ключа",
-    "text": "Удаление до изменения ключа Для ещё исправной карты: var key = new MutableKey ( 1 ); var map = new HashMap < MutableKey , String >(); map . put ( key , \"stored\" ); String saved = map . remove ( key ); key . code = 2 ; map . put ( key , saved ); System . out . println ( map . get ( new MutableKey ( 2 ))); // stored Удаление использовало старый хеш и нашло запись. Новая вставка создала размещение по изменённому ключу. Удаление после изменения уже зависело бы от повреждённого поиска. Попросить переставить remove и изменение code в рассуждении и назвать первое действие, для которого теряется корректная предпосылка."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-comparator-factory",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-comparator-factory",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Фабрика компаратора",
-    "text": "Фабрика компаратора Comparator < Student > order = Comparator . comparingInt ( Student :: score ). reversed () . thenComparing ( Student :: id ); Student::score передаёт чтение балла. comparingInt строит возрастающий порядок, reversed обращает его, thenComparing сравнивает коды при ничьей. Перенос reversed в конец цепочки обратил бы и порядок кодов. Ссылки на методы: Ссылки на методы . Сопоставить части фабрики с ветвями ReportOrder. Для двух баллов 90 объяснить различие расположений reversed."
-  },
-  {
-    "objectID": "equality-collections.html#представление-диапазона",
-    "href": "equality-collections.html#представление-диапазона",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Представление диапазона",
-    "text": "Представление диапазона var names = new ArrayList <>( List . of ( \"Ada\" , \"Lin\" , \"Max\" )); var part = names . subList ( 1 , 3 ); part . set ( 0 , \"Ann\" ); System . out . println ( names ); // [Ada, Ann, Max] part . remove ( 1 ); System . out . println ( names ); // [Ada, Ann] Диапазон [1, 3) имеет собственные индексы, связанные с позицией основы. Изменения через представление отражаются в основе. Структурное изменение основы вне part делает дальнейшую семантику этого представления неопределённой договором subList . Соединить индекс 0 part с индексом 1 names. Предложить способ получить самостоятельный диапазон для дальнейших независимых изменений."
-  },
-  {
-    "objectID": "equality-collections.html#фиксированный-размер",
-    "href": "equality-collections.html#фиксированный-размер",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Фиксированный размер",
-    "text": "Фиксированный размер String [] array = { \"Ada\" , \"Lin\" }; List < String > names = Arrays . asList ( array ); names . set ( 0 , \"Ann\" ); System . out . println ( array [ 0 ]); // Ann names . add ( \"Max\" ); // UnsupportedOperationException Arrays.asList предоставляет список поверх массива. Замена элемента допустима и видна через массив; изменение размера запрещено. У List.of запрещена также замена элементов. Попросить назвать свойства двух списков по отдельности: поддержка set, поддержка add, связь с исходным хранилищем."
-  },
-  {
-    "objectID": "equality-collections.html#обратное-представление",
-    "href": "equality-collections.html#обратное-представление",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Обратное представление",
-    "text": "Обратное представление Начиная с Java 21 у List доступны операции первого и последнего элемента и reversed() : var names = new ArrayList <>( List . of ( \"Ada\" , \"Lin\" )); var reverse = names . reversed (); reverse . set ( 0 , \"Max\" ); System . out . println ( names ); // [Ada, Max] System . out . println ( reverse ); // [Max, Ada] Индекс 0 обратного представления соответствует последнему элементу основы. Изменение прошло в тот же список. [9] Сопоставить обратное представление и отдельную копию с обращённым порядком. Попросить объяснить, какой вариант сохранит прежний состав после добавления элемента в исходный список."
-  },
-  {
-    "objectID": "equality-collections.html#sec-j25-lecture-equality-collections-step-43",
-    "href": "equality-collections.html#sec-j25-lecture-equality-collections-step-43",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Приоритетная очередь",
-    "text": "Приоритетная очередь var queue = new PriorityQueue < Integer >(); queue . addAll ( List . of ( 30 , 10 , 20 , 10 )); while (! queue . isEmpty ()) System . out . println ( queue . poll ()); // 10, 10, 20, 30 — по одному числу в строке Голова — минимум по естественному порядку или компаратору. Повторения сохраняются; среди равных приоритетов представитель выбирается произвольно. Итератор не задаёт отсортированный обход всей очереди. poll поддерживает минимум и удаляет его: полный такой просмотр опустошает очередь. [4] Попросить назвать изменение, нужное для сохранения исходной очереди при получении отсортированной последовательности: обход копии через poll. Затем сравнить стоимость peek и poll по их разной работе."
-  },
-  {
-    "objectID": "equality-collections.html#равенство-контейнеров",
-    "href": "equality-collections.html#равенство-контейнеров",
-    "title": "Равенство, порядок и коллекции",
-    "section": "Равенство контейнеров",
-    "text": "Равенство контейнеров List < String > a = new ArrayList <>( List . of ( \"Ada\" , \"Lin\" )); List < String > b = new LinkedList <>( List . of ( \"Ada\" , \"Lin\" )); System . out . println ( a . equals ( b )); // true List сравнивает последовательность, Set — состав, Map — соответствия. У двух разных ArrayDeque с одинаковыми элементами equals ложно: общего равенства последовательностей интерфейс Deque не задаёт. Для сравнения порядка можно получить списки и применить List.equals . Попросить выбрать проверку результата, допускающую смену реализации списка. Затем изменить только порядок элементов и сопоставить List.equals и Set.equals."
+    "section": "Сохранение состояния книги",
+    "text": "Сохранение состояния книги Есть изменяемый список книг и полученный List.copyOf . Сначала к источнику добавили вторую книгу, затем выдали первую читателю. Как изменились размер снимка и состояние его первой книги? Что потребуется, если отчёт должен сохранить также прежний признак выдачи? Получить самостоятельный ответ: размер прежний, borrowed первой книги true. Для сохранения прежнего признака нужны отдельные устойчивые сведения о книге на момент отчёта или соответствующее копирование её состояния. Попросить обосновать ответ через ссылки и место записи."
   },
   {
     "objectID": "equality-collections.html#источники",
     "href": "equality-collections.html#источники",
     "title": "Равенство, порядок и коллекции",
     "section": "Источники",
-    "text": "Источники [1] OpenJDK, «HashMap: сохранённый хеш узла и поиск по текущему хешу ключа» . Просмотрено: 17.10.2026. [Онлайн]. Доступно на: https://github.com/openjdk/jdk/blob/jdk-25-ga/src/java.base/share/classes/java/util/HashMap.java [2] Oracle, «Iterator: последовательность вызовов и удаление в Java SE 25» . Просмотрено: 17.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Iterator.html [3] Oracle, «LinkedList: контракт и стоимость поиска по позиции в Java SE 25» . Просмотрено: 17.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/LinkedList.html [4] Oracle, «PriorityQueue: извлечение, обход и стоимость операций в Java SE 25» . Просмотрено: 17.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/PriorityQueue.html [5] Oracle, «TreeSet: сравнение, равенство и стоимость операций в Java SE 25» . Просмотрено: 17.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/TreeSet.html [6] Oracle, «Решения при проектировании Collections Framework: вопросы и ответы» . Просмотрено: 17.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/doc-files/coll-designfaq.html [7] Д. Блох, Java: эффективное программирование , 3-я изд. Санкт-Петербург: Диалектика, 2019, сс. 287–292. [8] Java SE 25 API Specification: ArrayList . Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayList.html [9] Java SE 25 API Specification: List . Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html [10] Java SE 25 API Specification: Map . Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html [11] Collections Framework Overview: Introduction and Design Goals . Oracle. Просмотрено: 12.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/javase/8/docs/technotes/guides/collections/overview.html"
+    "text": "Источники [1] Microsoft, «HashSet<T>: выбранное правило равенства в .NET 10» . Просмотрено: 19.10.2026. [Онлайн]. Доступно на: https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1?view=net-10.0 [2] Microsoft, «IEnumerator<T>: состояние обхода и завершение использования в .NET 10» . Просмотрено: 19.10.2026. [Онлайн]. Доступно на: https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerator-1?view=net-10.0 [3] Microsoft, «IEqualityComparer<T>: равенство и хеширование в .NET 10» . Просмотрено: 19.10.2026. [Онлайн]. Доступно на: https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.iequalitycomparer-1?view=net-10.0 [4] Microsoft, «List<T>.Enumerator: условия обхода в .NET 10» . Просмотрено: 20.10.2026. [Онлайн]. Доступно на: https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.enumerator?view=net-10.0 [5] Microsoft, «StringComparer.OrdinalIgnoreCase: строковое сравнение в .NET 10» . Просмотрено: 19.10.2026. [Онлайн]. Доступно на: https://learn.microsoft.com/en-us/dotnet/api/system.stringcomparer.ordinalignorecase?view=net-10.0 [6] Oracle, «Iterator: последовательность вызовов и удаление в Java SE 25» . Просмотрено: 17.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Iterator.html [7] Oracle, «LinkedList: контракт и стоимость поиска по позиции в Java SE 25» . Просмотрено: 17.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/LinkedList.html [8] Oracle, «PriorityQueue: извлечение, обход и стоимость операций в Java SE 25» . Просмотрено: 17.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/PriorityQueue.html [9] Oracle, «TreeSet: сравнение, равенство и стоимость операций в Java SE 25» . Просмотрено: 17.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/TreeSet.html [10] Oracle, «Решения при проектировании Collections Framework: вопросы и ответы» . Просмотрено: 17.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/doc-files/coll-designfaq.html [11] Oracle, «Iterable: источник последовательного обхода в Java SE 25» . Просмотрено: 19.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Iterable.html [12] Oracle, «ListIterator: курсор списка и необязательные изменения в Java SE 25» . Просмотрено: 19.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ListIterator.html [13] Oracle, «Spliterator: разделение обхода и характеристики в Java SE 25» . Просмотрено: 19.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Spliterator.html [14] Oracle, «Коллекции, множества и отображения с заданным порядком обхода» . Просмотрено: 19.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/core/creating-sequenced-collections-sets-and-maps.html [15] Oracle, «Обзор системы коллекций Java SE 25» . Просмотрено: 19.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/doc-files/coll-overview.html [16] Oracle, «Спецификация языка Java SE 25: расширенный цикл for» . Просмотрено: 19.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.14.2 [17] Д. Блох, Java: эффективное программирование , 3-я изд. Санкт-Петербург: Диалектика, 2019, сс. 287–292. [18] Д. Блох, Java: эффективное программирование , 3-я изд. 2019, сс. 67–81. [19] Рабочая группа ISO C++, «C++20 N4861: требования к неупорядоченным ассоциативным контейнерам» . Просмотрено: 20.10.2026. [Онлайн]. Доступно на: https://timsong-cpp.github.io/cppwp/n4861/unord.req [20] Рабочая группа стандартизации C++, «Сортировка C++ и требование произвольного доступа» . Просмотрено: 19.10.2026. [Онлайн]. Доступно на: https://eel.is/c++draft/sort [21] Рабочая группа стандартизации C++, «Требования к итераторам C++: общие положения» . Просмотрено: 19.10.2026. [Онлайн]. Доступно на: https://eel.is/c++draft/iterator.requirements.general [22] Java SE 25 API Specification: ArrayList . Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayList.html [23] Java SE 25 API Specification: List . Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html [24] Java SE 25 API Specification: Map . Oracle, 2025. Просмотрено: 11.10.2026. [Онлайн]. Доступно на: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html [25] «Исходный код HashMap в OpenJDK 25» . OpenJDK, 2025. Просмотрено: 17.10.2026. [Онлайн]. Доступно на: https://github.com/openjdk/jdk/blob/jdk-25-ga/src/java.base/share/classes/java/util/HashMap.java"
   },
   {
     "objectID": "exceptions-resources.html#sec-j25-lecture-exceptions-resources-contract",

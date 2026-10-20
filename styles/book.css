@@ -7,3 +7,46 @@ main.content table.table {
   max-width: 100%;
   overflow-x: auto;
 }
+
+/* Масштаб схем сохраняется только в двух главах о равенстве и коллекциях. */
+@media screen and (max-width: 600px) {
+  html:not(.print-pdf) body:has(#sec-j25-theory-collections, #sec-j25-theory-equality) .cell:has(.mermaid-js) {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  html:not(.print-pdf) body:has(#sec-j25-theory-collections, #sec-j25-theory-equality) .cell-output-display:has(.mermaid-js) {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  html:not(.print-pdf) body:has(#sec-j25-theory-collections, #sec-j25-theory-equality) .cell-output-display:has(.mermaid-js) > div {
+    min-width: 800px;
+  }
+
+  html:not(.print-pdf) body:has(#sec-j25-theory-collections, #sec-j25-theory-equality) .cell-output-display svg.mermaid-js {
+    display: block;
+    margin-inline: 0 !important;
+  }
+}
+
+/* Контраст только схемы состояния изменяемого ключа в главе равенства. */
+#sec-j25-theory-equality-mutable svg.mermaid-js .cluster rect {
+  fill: #f8f9fa;
+  stroke: #6c757d;
+}
+
+#sec-j25-theory-equality-mutable svg.mermaid-js .node rect {
+  fill: #fff;
+  stroke: #6c757d;
+}
+
+#sec-j25-theory-equality-mutable svg.mermaid-js .nodeLabel {
+  color: #212529;
+}
+
+#sec-j25-theory-equality-mutable svg.mermaid-js .label text,
+#sec-j25-theory-equality-mutable svg.mermaid-js .cluster-label text {
+  fill: #212529;
+}
