@@ -604,7 +604,7 @@ index 1a54da3..04c5e7f 100644
      (await buildBodies(collected.result, {
        projectRoot: collected.projectRoot,
 diff --git a/_extensions/course-prairielearn/native.lua b/_extensions/course-prairielearn/native.lua
-index 199e02d..831da15 100644
+index 199e02d..ca4e63f 100644
 --- a/_extensions/course-prairielearn/native.lua
 +++ b/_extensions/course-prairielearn/native.lua
 @@ -36,6 +36,10 @@ function M.read(doc, effective)
@@ -628,6 +628,15 @@ index 199e02d..831da15 100644
        if d.attributes["prairielearn-topic"] then payload.topic = d.attributes["prairielearn-topic"] end
        if d.attributes["prairielearn-submission"] then payload.submission = payload.submission or {}; payload.submission.mode = d.attributes["prairielearn-submission"]; if payload.submission.mode == "upload" then payload.submission["ace-mode"] = nil end end
        value.exercises:insert({id = d.identifier, payload = payload})
+@@ -86,7 +93,7 @@ function M.write(doc, value)
+   local pointer = io.open(root .. "/_generated/course-spec/active-native-run.json", "r")
+   if pointer then
+     local run = pandoc.json.decode(pointer:read("*a")); pointer:close()
+-    assert(run.schema == "course-native-run-pointer-v1" and run.projectRoot == root, diagnostics.message("PL.NATIVE_INVALID", "Неверный указатель native-сборки", {source = value.source, field = "active-native-run"}))
++    assert(run.schema == "course-native-run-pointer-v2" and run.projectRoot == root, diagnostics.message("PL.NATIVE_INVALID", "Неверный указатель native-сборки", {source = value.source, field = "active-native-run"}))
+     assert(pandoc.path.directory(run.directory) == root .. "/_generated/course-spec/native-runs", diagnostics.message("PL.NATIVE_INVALID", "Неверный каталог native-сборки", {source = value.source, field = "active-native-run.directory"}))
+     assert(pandoc.json.encode(run.profiles) == pandoc.json.encode(profiles), diagnostics.message("PL.NATIVE_INVALID", "Профили адаптера расходятся с native-сборкой", {source = value.source, field = "active-native-run.profiles"}))
+     local folder = run.directory .. "/adapters/" .. contract.name
 diff --git a/_extensions/course-prairielearn/spec/prairielearn.cue b/_extensions/course-prairielearn/spec/prairielearn.cue
 index c46de5d..a3aeb7e 100644
 --- a/_extensions/course-prairielearn/spec/prairielearn.cue
