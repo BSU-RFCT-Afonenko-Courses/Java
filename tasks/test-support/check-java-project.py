@@ -5,7 +5,7 @@
 import argparse,hashlib,json,os,re,shutil,signal,subprocess,sys,tempfile,time
 from pathlib import Path,PurePosixPath
 
-IMAGE='sha256:75421e71603b933f160761762949d6907aa304f282f1ec0656d9784c82e22e5f'
+IMAGE='sha256:9bcfbe69320f54cfff34e3dedb3e32fab67d7ee768c4d1df2b41df20636aad63'
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def guarded(path):
     absolute=path.absolute()
