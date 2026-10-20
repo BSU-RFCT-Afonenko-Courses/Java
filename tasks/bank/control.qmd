@@ -19,7 +19,7 @@ default-exercise-statement-visibility: open
 Числа разделяются пробельными символами; десятичный разделитель — точка.
 Формы чтения и вывода: @handbook:sec-api-console.
 
-:::: {#exr-j25-control-month-name difficulty="introductory" target="prairielearn" project="/projects/month-name" project-check="java-cli"}
+:::: {#exr-control-month-name difficulty="introductory" target="prairielearn" project="/projects/control/month-name" project-check="java-cli"}
 ## Название месяца
 
 Введите число от 1 до 12 и выведите русское название соответствующего месяца. Проверьте корректность ввода.
@@ -28,13 +28,13 @@ default-exercise-statement-visibility: open
 
 Точка входа — `Main.main(String[] args)`.
 
-{{< project-download exr-j25-control-month-name kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-control-month-name kind="starter" text="Скачать стартовый проект" >}}
 
 [@bib-task-month-name]
 
 ::::
 
-:::: {#exr-j25-control-multiplication-table difficulty="introductory" target="prairielearn" project="/projects/multiplication-table" project-check="java-cli"}
+:::: {#exr-control-multiplication-table difficulty="introductory" target="prairielearn" project="/projects/control/multiplication-table" project-check="java-cli"}
 ## Таблица умножения
 
 Выведите таблицу умножения для множителей от 1 до 10 включительно.
@@ -43,28 +43,37 @@ default-exercise-statement-visibility: open
 
 Точка входа — `Main.main(String[] args)`.
 
-{{< project-download exr-j25-control-multiplication-table kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-control-multiplication-table kind="starter" text="Скачать стартовый проект" >}}
 
 [@bib-task-multiplication-table]
 
 ::::
 
-:::: {#exr-j25-control-count-console-spaces difficulty="intermediate" target="prairielearn" project="/projects/count-console-spaces" project-check="java-cli"}
+:::: {#exr-control-count-console-spaces difficulty="intermediate" target="prairielearn" project="/projects/control/count-console-spaces" project-check="java-count-console-spaces" prairielearn-grading="mixed" prairielearn-submission="upload"}
 ## Подсчёт пробелов
 
-Читайте символы из стандартного ввода до первой точки или конца ввода и подсчитайте обычные пробелы U+0020. Точка завершает обработку и не учитывается; всё после неё игнорируется. Табуляция и переводы строки не считаются пробелами. Допустимо объявить `throws IOException` в `main`.
+Читайте текст из стандартного ввода до первой точки или конца ввода
+и подсчитайте обычные пробелы U+0020. Точка завершает обработку
+и не учитывается; всё после неё игнорируется. Табуляция и переводы
+строки не считаются пробелами.
 
-Вход и результат: стандартный ввод — текст в UTF-8; выведите только целое количество пробелов. Например, `a b c.after dot  ` даёт `2`, немедленная точка или пустой ввод — `0`.
+Входной текст имеет кодировку UTF-8. Выведите только целое количество
+пробелов. Например, `a b c.after dot  ` даёт `2`, немедленная точка
+или пустой ввод — `0`.
 
-Точка входа — `Main.main(String[] args)`.
+Используйте JDK 25. Точка входа — `Main.main(String[] args)`;
+в ней допустимо объявить `throws IOException`. Способ чтения,
+форму цикла и вспомогательные методы выберите самостоятельно.
 
-{{< project-download exr-j25-control-count-console-spaces kind="starter" text="Скачать стартовый проект" >}}
+Представьте исходники и команды запуска. Покажите точку в начале,
+пробелы рядом с табуляцией, завершение по концу ввода и данные
+после точки. Объясните, что хранит счётчик после выбранного шага
+и к какой части входа относится его значение.
 
-[@bib-task-count-console-spaces]
-
+{{< project-download exr-control-count-console-spaces kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 ::::
 
-:::: {#exr-j25-control-toggle-console-case difficulty="intermediate" target="prairielearn" project="/projects/toggle-console-case" project-check="java-cli"}
+:::: {#exr-control-toggle-console-case difficulty="intermediate" target="prairielearn" project="/projects/control/toggle-console-case" project-check="java-cli"}
 ## Изменение регистра символов
 
 Читайте текст из стандартного ввода до первой точки или конца ввода. Замените ASCII A–Z на a–z, а a–z на A–Z, используя разницу кодов 32. Остальные символы сохраните без изменения: цифры, знаки, пробелы, переводы строк, кириллицу и эмодзи. Точка не входит в результат; всё после неё игнорируется. Подсчитайте каждую изменённую ASCII-букву. Допустимо объявить `throws IOException` в `main`.
@@ -73,28 +82,47 @@ default-exercise-statement-visibility: open
 
 Точка входа — `Main.main(String[] args)`.
 
-{{< project-download exr-j25-control-toggle-console-case kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-control-toggle-console-case kind="starter" text="Скачать стартовый проект" >}}
 
 [@bib-task-toggle-console-case]
 
 ::::
 
-:::: {#exr-j25-control-number-extrema difficulty="intermediate" target="prairielearn" project="/projects/number-extrema" project-check="java-cli"}
+:::: {#exr-control-number-extrema difficulty="intermediate" target="prairielearn" project="/projects/control/number-extrema" project-check="java-number-extrema" prairielearn-grading="mixed" prairielearn-submission="upload"}
 ## Наибольшее и наименьшее число
 
-Сначала введите положительное целое `n`, затем ровно `n` значений типа `int`. Найдите наибольшее и наименьшее значение; при `n = 1` они совпадают. Нулевое или отрицательное `n` отклоните, не читая последовательность: пустая последовательность не имеет экстремумов.
+Сначала прочитайте целое количество `n`. Если оно положительно,
+прочитайте ровно `n` значений типа `int` и найдите наибольшее
+и наименьшее. При `n = 1` оба результата совпадают.
+Нулевое или отрицательное `n` отклоните, не читая последовательность:
+пустая последовательность не имеет экстремумов.
 
-Вход и результат: числа стандартного ввода разделены пробельными символами. Для допустимого набора выведите `Максимум: <значение>`, затем `Минимум: <значение>`. Например, `4 7 -3 0 7` даёт `Максимум: 7` и `Минимум: -3`. Для `n <= 0` выведите `Количество должно быть положительным`. Для положительного `n` гарантирован полный корректный набор чисел.
+Числа стандартного ввода разделены пробельными символами.
+Для положительного `n` гарантирован полный корректный набор чисел.
+Выведите `Максимум: <значение>`, затем `Минимум: <значение>`.
+Например, ввод `4 7 -3 0 7` даёт:
 
-Точка входа — `Main.main(String[] args)`.
+```text
+Максимум: 7
+Минимум: -3
+```
 
-{{< project-download exr-j25-control-number-extrema kind="starter" text="Скачать стартовый проект" >}}
+Для `n <= 0` выведите `Количество должно быть положительным`.
+Приглашения к вводу не печатайте.
 
-[@bib-task-number-extrema]
+Используйте JDK 25. Точка входа — `Main.main(String[] args)`.
+Способ чтения, форму цикла и вспомогательные методы выберите
+самостоятельно; для чтения допустим `Scanner`.
 
+Представьте исходники и команды запуска. Покажите одно значение,
+набор только из отрицательных значений и `n = 0`.
+Объясните выбор начальных экстремумов и их связь с уже обработанными
+числами после выбранного шага.
+
+{{< project-download exr-control-number-extrema kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 ::::
 
-:::: {#exr-j25-control-inch-conversion-table difficulty="introductory"}
+:::: {#exr-control-inch-conversion-table difficulty="introductory"}
 ## Таблица преобразования дюймов в метры
 
 Выведите таблицу перевода целого количества дюймов в метры для значений
@@ -106,7 +134,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-control-primes-to-hundred difficulty="intermediate"}
+:::: {#exr-control-primes-to-hundred difficulty="intermediate"}
 ## Простые числа от 2 до 100
 
 Выведите по возрастанию все простые числа от 2 до 100 включительно.
@@ -116,7 +144,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-control-distinct-three-digits difficulty="intermediate"}
+:::: {#exr-control-distinct-three-digits difficulty="intermediate"}
 ## Трёхзначные числа с разными цифрами
 
 Сначала введите неотрицательное целое `n`, затем ровно `n` чисел типа `int`.
@@ -128,7 +156,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-control-numeric-palindromes difficulty="advanced" project="/projects/j25-control-numeric-palindromes"}
+:::: {#exr-control-numeric-palindromes difficulty="advanced" project="/projects/control/numeric-palindromes"}
 ## Числа-палиндромы
 
 Сначала введите неотрицательное целое `n`, затем ровно `n` чисел типа `int`.
@@ -138,11 +166,11 @@ default-exercise-statement-visibility: open
 повторные вхождения. Если подходящих чисел нет, в том числе при `n = 0`,
 выведите «Подходящих чисел нет». [@bib-task-numeric-palindromes]
 
-{{< project-download exr-j25-control-numeric-palindromes kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-control-numeric-palindromes kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
-:::: {#exr-j25-control-increasing-digits difficulty="advanced"}
+:::: {#exr-control-increasing-digits difficulty="advanced"}
 ## Строгий порядок возрастания цифр
 
 Сначала введите неотрицательное целое `n`, затем ровно `n` чисел типа `int`.
@@ -154,7 +182,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-j25-control-control-help-menu difficulty="intermediate"}
+:::: {#exr-control-control-help-menu difficulty="intermediate"}
 ## Справочная система по управляющим операторам
 
 Создайте простую справочную систему, отображающую синтаксис управляющих операторов Java. Первая версия выводит меню с операторами if и традиционным switch, ожидает выбора и отображает синтаксис выбранного оператора.

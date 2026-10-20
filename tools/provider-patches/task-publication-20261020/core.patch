@@ -1,0 +1,623 @@
+diff --git a/_extensions/course-core/artifacts/materialize.ts b/_extensions/course-core/artifacts/materialize.ts
+new file mode 100644
+index 0000000..d9b3448
+--- /dev/null
++++ b/_extensions/course-core/artifacts/materialize.ts
+@@ -0,0 +1,244 @@
++import {dirname, isAbsolute, join, relative, resolve} from 'stdlib/path';
++import type {NativeRun} from '../infrastructure/native-run.ts';
++import {diagnostic} from '../domain/diagnostics.ts';
++import {bindProjectMaterializations,bindArtifactProjectMaterializations} from '../domain/project-materialization.ts';
++
++export interface MaterializeOptions {
++ nativeRun:NativeRun;
++ sourceRoot:string;
++ outputRoot:string;
++ exerciseIds:string[];
++ audience:'student'|'grading';
++ teacherRoot?:string;
++ checkOnly?:boolean;
++}
++export interface MaterializedFile {
++ source:string;
++ target:string;
++ sha256:string;
++ origin:'public'|'teacher'|'common';
++}
++export interface MaterializationManifest {
++ schema:'course-project-materialization-v1';
++ sourceRoot:string;
++ sourceCommit?:string;
++ audience:'student'|'grading';
++ exerciseIds:string[];
++ files:MaterializedFile[];
++ projects:{exerciseId:string;projectRoot:string}[];
++ replacementRoots:string[];
++ commonSources:Record<string,string>;
++ sourceDocuments:Record<string,string>;
++ declarationsHash:string;
++}
++const fail=(text:string):never=>{throw diagnostic('ARTIFACT.MATERIALIZATION_INVALID',text)};
++const inside=(parent:string,path:string)=>{
++ const r=relative(parent,path);
++ return !r || !isAbsolute(r)&&r!=='..'&&!r.startsWith('../')&&!r.startsWith('..\\');
++};
++const overlaps=(a:string,b:string)=>inside(a,b)||inside(b,a);
++const generated=new Set(['.git','.gradle','.mvn','.quarto','_generated','node_modules','build','target','out','__pycache__']);
++const privateNames=new Set(['private','reference','solution','solutions','grading-notes','rubric.md','contract.md']);
++const publicExcluded=(name:string)=>/\.(?:qmd|rmd|ipynb|class|jar)$/i.test(name)||/^(?:_quarto(?:[-.].*)?|_metadata\.ya?ml)$/i.test(name)||name==='check.sh'||name.startsWith('.')&&name!=='.gitignore';
++async function hash(bytes:Uint8Array){
++ const digest=await crypto.subtle.digest('SHA-256',new Uint8Array(bytes).buffer);
++ return Array.from(new Uint8Array(digest),x=>x.toString(16).padStart(2,'0')).join('');
++}
++async function absent(path:string){
++ try{await Deno.lstat(path);return false}catch(error){if(error instanceof Deno.errors.NotFound)return true;throw error}
++}
++async function real(path:string){
++ if(await Deno.realPath(path)!==path)fail('Символическая ссылка в пути: '+path);
++ return path;
++}
++async function safeParent(path:string){
++ let parent=path;
++ while(await absent(parent)){
++  const next=dirname(parent);if(next===parent)fail('Не найден родитель выходного пути');parent=next;
++ }
++ await real(parent);
++ if(!(await Deno.lstat(parent)).isDirectory)fail('Родитель выходного пути не является каталогом');
++}
++function local(path:string){
++ if(typeof path!=='string'||!path||/[\\\0*?\[\]{}:]/.test(path)||isAbsolute(path)||path.split('/').some(p=>!p||p==='.'||p==='..'))fail('Недопустимый относительный путь: '+path);
++ return path;
++}
++
++type PlanOptions=Omit<MaterializeOptions,'outputRoot'|'checkOnly'>;
++async function sourceHead(root:string){
++ try{
++  const result=await new Deno.Command('git',{args:['rev-parse','--verify','HEAD'],cwd:root,stdout:'piped',stderr:'null'}).output();
++  const value=new TextDecoder().decode(result.stdout).trim();
++  return result.success&&/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(value)?value:undefined;
++ }catch(error){if(error instanceof Deno.errors.NotFound)return undefined;throw error}
++}
++/** One private planner owns file selection and all file guards for both entries. */
++async function planProjects(options:PlanOptions,fullOwner:boolean){
++ const {nativeRun,audience}=options;
++ const source=resolve(options.sourceRoot);
++ if(nativeRun?.schema!=='course-native-run-v1'||nativeRun.projectRoot!==source||fullOwner&&!nativeRun.renderAll||!Array.isArray(nativeRun.documents)||!nativeRun.documents.length)fail('Требуется полный NativeRun данного публичного owner');
++ if(!['student','grading'].includes(audience))fail('Неизвестная аудитория сборки');
++ if(audience==='student'&&options.teacherRoot!==undefined||audience==='grading'&&!options.teacherRoot)fail('teacherRoot обязателен только для grading и запрещён для student');
++ if(!Array.isArray(options.exerciseIds)||!options.exerciseIds.length||new Set(options.exerciseIds).size!==options.exerciseIds.length)fail('Требуется непустой список различных задач');
++ const teacher=options.teacherRoot===undefined?undefined:resolve(options.teacherRoot);
++ await real(source);
++ if(teacher&&overlaps(source,teacher))fail('Пути source и teacher пересекаются');
++ if(teacher)await real(teacher);
++ const sourceCommit=fullOwner?await sourceHead(source):undefined;
++ const facts=fullOwner?bindProjectMaterializations(nativeRun.documents):bindArtifactProjectMaterializations(nativeRun);
++ const chosen=options.exerciseIds.map(id=>{
++  const matches=facts.filter(f=>f.exerciseId===id);
++  if(matches.length!==1)fail('Задача должна разрешаться ровно в один проект: '+id);
++  if(matches[0].statementVisibility!=='open'&&audience==='student')fail('Закрытая задача недоступна в student');
++  local(matches[0].projectRoot);
++  return matches[0];
++ });
++ if(new Set(chosen.map(f=>f.projectRoot)).size!==chosen.length)fail('Разные задачи не могут записывать один project root');
++ for(const a of chosen)for(const b of chosen)if(a!==b&&overlaps(resolve(source,a.projectRoot),resolve(source,b.projectRoot)))fail('Project roots пересекаются');
++ const planned=new Map<string,{file:MaterializedFile;bytes:Uint8Array}>();
++ const commonSources:Record<string,string>={},sourceDocuments:Record<string,string>={};
++ const add=async(path:string,target:string,origin:MaterializedFile['origin'])=>{
++  local(target);await real(path);
++  const info=await Deno.lstat(path);if(!info.isFile)fail('Ожидался обычный файл: '+path);
++  if(planned.has(target))fail('Повторная запись целевого файла: '+target);
++  const bytes=await Deno.readFile(path);
++  planned.set(target,{file:{source:path,target,origin,sha256:await hash(bytes)},bytes});
++ };
++ const tree=async(base:string,prefix:string,origin:'public'|'teacher',includeGit=false)=>{
++  await real(base);
++  if(!(await Deno.lstat(base)).isDirectory)fail('Ожидался каталог: '+base);
++  const walk=async(path:string,target:string)=>{
++   for await(const entry of Deno.readDir(path)){
++    const inGit=target.split('/').includes('.git');
++    if(entry.isSymlink)fail('Символическая ссылка запрещена: '+join(path,entry.name));
++    if(entry.name==='.git'&&includeGit){
++     if(!entry.isDirectory)fail('Учебная .git должна быть самостоятельным каталогом');
++    }else if(!inGit&&generated.has(entry.name))continue;
++    if(inGit&&['commondir','alternates'].includes(entry.name))fail('Учебная история с внешними Git objects запрещена');
++    if(!inGit&&origin==='public'&&privateNames.has(entry.name))fail('Закрытый файл в публичном student tree: '+entry.name);
++    if(!inGit&&origin==='public'&&!(entry.name==='.git'&&includeGit)&&publicExcluded(entry.name))continue;
++    const next=join(path,entry.name),dest=target+'/'+entry.name;
++    if(entry.isDirectory)await walk(next,dest);
++    else if(entry.isFile){
++     if(/\.(?:class|pyc)$/.test(entry.name))continue;
++     await add(next,dest,origin);
++    }else fail('Специальный файл запрещён: '+next);
++   }
++  };
++  await walk(base,prefix);
++ };
++ for(const fact of chosen){
++  const sourceDocument=join(source,local(fact.source));await real(sourceDocument);
++  sourceDocuments[fact.source]=await hash(await Deno.readFile(sourceDocument));
++  const project=join(source,fact.projectRoot);await real(project);
++  await tree(join(project,'student'),fact.projectRoot+'/student','public',fact.materialization?.includeGit===true);
++  const materialization=fact.materialization;
++  if(materialization){
++   if(Object.keys(materialization).some(k=>!['commonFiles','includeGit'].includes(k))||!Array.isArray(materialization.commonFiles)||materialization.includeGit!==undefined&&typeof materialization.includeGit!=='boolean')fail('Некорректная декларация materialization');
++   const declaredTargets=new Set<string>();
++   for(const item of materialization.commonFiles){
++    if(Object.keys(item).sort().join(',')!=='audience,source,target'||!['student','grading'].includes(item.audience))fail('Некорректный common file');
++    const sourceName=local(item.source),targetName=local(item.target);
++    const target=fact.projectRoot+'/'+targetName;
++    if(declaredTargets.has(target)||planned.has(target))fail('Common target имеет двух владельцев: '+target);
++    declaredTargets.add(target);
++    if(sourceName.split('/').includes('.git'))fail('Common не читает служебную Git базу');
++    if(sourceName.split('/').some(part=>privateNames.has(part)||part==='tests'))fail('Common source не может читать закрытый project partition');
++    if(publicExcluded(sourceName.split('/').at(-1)!))fail('Common source не может читать source/config/generated файл');
++    if(item.audience==='student'&&!targetName.startsWith('student/'))fail('Публичный common должен находиться внутри student');
++    if(item.audience==='grading'&&targetName.startsWith('student/'))fail('Grading-only common не может находиться в student');
++    if(item.audience==='student'&&targetName.split('/').some(part=>privateNames.has(part)))fail('Закрытый common target в student partition');
++    if(item.audience==='student'&&targetName.split('/').some(publicExcluded))fail('Source/config/generated common target в student partition');
++    if(!['student','reference','tests'].includes(targetName.split('/')[0])&&!['rubric.md','contract.md'].includes(targetName))fail('Common target находится вне project partitions');
++    if(targetName.split('/').some(p=>generated.has(p)))fail('Common target находится в служебном каталоге');
++    const path=join(source,sourceName);await real(path);
++    if(!(await Deno.lstat(path)).isFile)fail('Common source должен быть обычным файлом');
++    commonSources[sourceName]=await hash(await Deno.readFile(path));
++    if(item.audience==='student'||audience==='grading')await add(path,fact.projectRoot+'/'+targetName,'common');
++   }
++  }
++  if(teacher){
++   const overlay=join(teacher,fact.projectRoot);await real(overlay);
++   for await(const entry of Deno.readDir(overlay)){
++    if(entry.isSymlink)fail('Символическая ссылка в teacher overlay');
++    if(!['reference','tests','rubric.md','contract.md'].includes(entry.name))fail('Teacher overlay пытается изменить публичную область: '+entry.name);
++    const path=join(overlay,entry.name),target=fact.projectRoot+'/'+entry.name;
++    if(entry.isDirectory&&['reference','tests'].includes(entry.name))await tree(path,target,'teacher');
++    else if(entry.isFile&&['rubric.md','contract.md'].includes(entry.name))await add(path,target,'teacher');
++    else fail('Некорректный раздел teacher overlay: '+entry.name);
++   }
++  }
++ }
++ const files=[...planned.values()].map(p=>p.file).sort((a,b)=>a.target<b.target?-1:a.target>b.target?1:0);
++ if(!files.length)fail('Выбранная файловая область пуста');
++ const projects=chosen.map(({exerciseId,projectRoot})=>({exerciseId,projectRoot}));
++ const replacementRoots=chosen.flatMap(f=>(audience==='student'?['student']:['student','reference','tests','rubric.md','contract.md']).map(part=>f.projectRoot+'/'+part));
++ const manifest:MaterializationManifest={schema:'course-project-materialization-v1',sourceRoot:source,...(sourceCommit?{sourceCommit}:{}),audience,exerciseIds:[...options.exerciseIds],projects,replacementRoots,files,commonSources,sourceDocuments,declarationsHash:await hash(new TextEncoder().encode(JSON.stringify(chosen)))};
++ if(fullOwner&&await sourceHead(source)!==sourceCommit)fail('Source HEAD изменился во время materialization');
++ return {manifest,planned};
++}
++
++/** Full owner staging never accepts a selected-document capture. */
++export async function materializeProjects(options:MaterializeOptions):Promise<MaterializationManifest>{
++ const source=resolve(options.sourceRoot),output=resolve(options.outputRoot),teacher=options.teacherRoot===undefined?undefined:resolve(options.teacherRoot);
++ if(overlaps(source,output)||teacher&&overlaps(output,teacher))fail('Пути source, output и teacher пересекаются');
++ await safeParent(output);
++ if(!options.checkOnly&&!await absent(output))fail('Выходной каталог должен быть новым');
++ const {manifest,planned}=await planProjects(options,true),files=manifest.files;
++ if(options.checkOnly){
++  await real(output);
++  const stored=JSON.parse(await Deno.readTextFile(join(output,'materialization.json')));
++  if(JSON.stringify(stored)!==JSON.stringify(manifest))fail('Receipt не соответствует текущим источникам и декларациям');
++  const expected=new Set(['materialization.json',...files.map(f=>f.target)]);
++  const inspect=async(path:string,prefix='')=>{
++   for await(const entry of Deno.readDir(path)){
++    const name=prefix+entry.name;
++    if(entry.isSymlink)fail('Символическая ссылка в output');
++    if(entry.isDirectory)await inspect(join(path,entry.name),name+'/');
++    else if(!entry.isFile||!expected.has(name))fail('Неучтённый файл в output: '+name);
++   }
++  };
++  await inspect(output);
++  for(const file of files){
++   const target=join(output,file.target);await real(target);
++   if(await hash(await Deno.readFile(target))!==file.sha256)fail('Материализованный файл отсутствует или изменён: '+file.target);
++  }
++  return manifest;
++ }
++ // Все источники, области и пересечения проверены до первой записи.
++ await Deno.mkdir(dirname(output),{recursive:true});
++ await Deno.mkdir(output);
++ try{
++  for(const {file,bytes} of planned.values()){
++   const target=join(output,file.target);await Deno.mkdir(dirname(target),{recursive:true});
++   await Deno.writeFile(target,bytes,{createNew:true});
++  }
++  await Deno.writeTextFile(join(output,'materialization.json'),JSON.stringify(manifest,null,2)+'\n',{createNew:true});
++ }catch(error){await Deno.remove(output,{recursive:true});throw error}
++ return manifest;
++}
++
++/** Only the current open student partition; no staging capability or receipt. */
++export async function materializeStarterArtifact(run:NativeRun,request:{source:string;exerciseId:string}):Promise<{name:string;bytes:Uint8Array}[]>{
++ const source=resolve(run.projectRoot),output=resolve(run.outputDirectory);
++ if(run.schema!=='course-native-run-v1'||typeof run.renderAll!=='boolean'||run.projectRoot!==source||!Array.isArray(run.profiles)||!Array.isArray(run.documents)||!Array.isArray(run.inputFiles)||!Array.isArray(run.outputFiles))fail('Требуется текущий NativeRun');
++ local(request.source);await real(source);await real(output);
++ const documents=run.documents.filter(doc=>doc.source===request.source);
++ if(documents.length!==1)fail('Требуется ровно один текущий документ');
++ const doc=documents[0];
++ if(doc.scope!=='document'||!doc.document?.format||doc.document.source!==request.source||JSON.stringify(doc.document.profiles)!==JSON.stringify(run.profiles)||!['student','full'].includes(doc.course.view??''))fail('Document/profile context не соответствует NativeRun');
++ const input=resolve(source,request.source),result=resolve(output,local(doc.document.output));
++ if(!inside(source,input)||!inside(output,result)||!run.inputFiles.map(p=>resolve(source,p)).includes(input)||!run.outputFiles.map(p=>resolve(output,p)).includes(result))fail('Document input/output отсутствует в текущем capture');
++ await real(input);await real(result);
++ const facts=bindArtifactProjectMaterializations(run).filter(f=>f.exerciseId===request.exerciseId&&f.source===request.source);
++ const exercises=doc.body?.publicExercises?.filter(e=>e.id===request.exerciseId)??[];
++ if(facts.length!==1||exercises.length!==1)fail('Student exercise/project отсутствует в текущем source');
++ const fact=facts[0];
++ if(fact.statementVisibility!=='open'||exercises[0].statementVisibility!=='open'||!['starter','full'].includes(fact.artifactPolicy.student??'')||exercises[0].project.replace(/^\//,'')!==fact.projectRoot)fail('Student project/policy не соответствует публичной проекции');
++ const {planned}=await planProjects({nativeRun:run,sourceRoot:source,exerciseIds:[request.exerciseId],audience:'student'},false);
++ const prefix=fact.projectRoot+'/student/';
++ return [...planned.values()].sort((a,b)=>a.file.target.localeCompare(b.file.target)).map(({file,bytes})=>{
++  if(!file.target.startsWith(prefix)||!file.target.slice(prefix.length))fail('Artifact target вне выбранной student partition');
++  return {name:file.target.slice(prefix.length),bytes};
++ });
++}
+diff --git a/_extensions/course-core/artifacts/resolve.ts b/_extensions/course-core/artifacts/resolve.ts
+index 00585ea..0c4256f 100644
+--- a/_extensions/course-core/artifacts/resolve.ts
++++ b/_extensions/course-core/artifacts/resolve.ts
+@@ -5,6 +5,8 @@ import type {NativeRun} from '../infrastructure/native-run.ts';
+ import {diagnostic} from '../domain/diagnostics.ts';
+ import {evaluateResources,projectedResourceUses} from '../infrastructure/resources.ts';
+ import {command,quartoExecutable} from '../infrastructure/process.ts';
++import {materializeStarterArtifact} from './materialize.ts';
++import {bindArtifactProjectMaterializations} from '../domain/project-materialization.ts';
+ export interface ArtifactRequest {source:string;exerciseId:string;kind?:'starter'|'full'|'conditions'}
+ export interface ResolvedArtifact {kind:'starter'|'full'|'conditions';projectRoot:string;partition?:'student';files?:{name:string;bytes:Uint8Array}[]}
+ const attributes=(node:any)=>node.t==='Header'?node.c[1]:['Div','Span','CodeBlock','Code','Link','Image'].includes(node.t)?node.c[0]:undefined;
+@@ -37,7 +39,7 @@ async function writeHtml(ast:any,cwd:string){
+ export async function resolveArtifact(run:NativeRun,request:ArtifactRequest):Promise<ResolvedArtifact>{
+  if(run.schema!=='course-native-run-v1'||!run.documents.length)throw diagnostic('ARTIFACT.TRUSTED_RUN_REQUIRED','Требуется текущий NativeRun');
+  const doc=run.documents.find(d=>d.source===request.source);
+- const fact=doc?.projects?.find(p=>p.exerciseId===request.exerciseId);
++ const fact=bindArtifactProjectMaterializations(run).find(p=>p.exerciseId===request.exerciseId&&p.source===request.source);
+  if(!doc||!fact)throw diagnostic('ARTIFACT.PROJECT_MISSING','Проект упражнения отсутствует в текущей модели',{source:request.source,id:request.exerciseId});
+  const audience=doc.course.view;
+  if(audience!=='student'&&audience!=='full')throw diagnostic('ARTIFACT.AUDIENCE_REQUIRED','NativeRun должен иметь student/full audience');
+@@ -46,7 +48,11 @@ export async function resolveArtifact(run:NativeRun,request:ArtifactRequest):Pro
+  const path=resolve(run.projectRoot,fact.projectRoot),location=relative(run.projectRoot,path);
+  if(!location||location==='..'||location.startsWith('../')||location.startsWith('..\\'))throw diagnostic('ARTIFACT.PROJECT_OUTSIDE_OWNER','Проект находится вне native owner');
+  if(await Deno.realPath(path)!==path)throw diagnostic('ARTIFACT.SYMLINK_FORBIDDEN','Project root не должен содержать symlink');
+- if(kind!=='conditions')return {kind,projectRoot:fact.projectRoot,...(kind==='starter'?{partition:'student' as const}:{})};
++ if(kind==='starter'){
++  const files=await materializeStarterArtifact(run,{source:request.source,exerciseId:request.exerciseId});
++  return {kind,projectRoot:fact.projectRoot,partition:'student',files};
++ }
++ if(kind!=='conditions')return {kind,projectRoot:fact.projectRoot};
+  if(audience==='student'&&!fact.artifactPolicy.conditions)throw diagnostic('ARTIFACT.ACCESS_DENIED','Условия недоступны');
+  const output=join(run.outputDirectory,doc.document.output);
+  if(!/\.html$/.test(output)||!run.outputFiles.includes(output))throw diagnostic('ARTIFACT.NATIVE_HTML_REQUIRED','Conditions требуют resolved текущий HTML output');
+diff --git a/_extensions/course-core/assessment.lua b/_extensions/course-core/assessment.lua
+index 0f616cb..7cec0be 100644
+--- a/_extensions/course-core/assessment.lua
++++ b/_extensions/course-core/assessment.lua
+@@ -68,7 +68,7 @@ function M.collect(doc)
+               check(candidate.attributes.requirement==nil and candidate.attributes['work-mode']==nil,'Атрибуты назначения принадлежат внешней позиции, не кандидату группы',id,'slots')
+             end})
+             group=span
+-            check(span.identifier:match('^alt%-[a-z0-9][a-z0-9%-]*$') and span.attributes.selection=='random','Группа требует явные alt-* и selection=random',id,'slots')
++            check(span.identifier:match('^alt%-[a-z0-9][a-z0-9%-]*$') and (span.attributes.selection=='random' or span.attributes.selection=='choice'),'Группа требует явные alt-* и selection=random|choice',id,'slots')
+           end
+           for key,_ in pairs(span.attributes) do
+             check(key=='requirement' or key=='work-mode' or alternatives and key=='selection' or visibilityFields[key],'Неизвестный атрибут позиции: '..key,id,key)
+@@ -95,8 +95,9 @@ function M.collect(doc)
+         else check(#refs==1,'Каждый пункт требует одну ссылку или task-alternatives',id,'slots') end
+         local slotId=group and group.identifier or refs[1]
+         check(not slotIds[slotId],'Повторный ID позиции: '..slotId,id,'slots');slotIds[slotId]=true
++        if group and group.attributes.selection=='choice' then check((requirement or defaultRequirement)=='required','Самостоятельный выбор требует required',id,'requirement') end
+         sizes:insert(1)
+-        slots:insert({id=slotId,selection=group and 'random' or 'fixed',candidates=refs,assignment={stage=stage,requirement=requirement or defaultRequirement,workMode=workMode or defaultMode}})
++        slots:insert({id=slotId,selection=group and group.attributes.selection or 'fixed',candidates=refs,assignment={stage=stage,requirement=requirement or defaultRequirement,workMode=workMode or defaultMode}})
+       end
+     end
+   end})
+diff --git a/_extensions/course-core/body-export/package.cue b/_extensions/course-core/body-export/package.cue
+index dc54236..656974b 100644
+--- a/_extensions/course-core/body-export/package.cue
++++ b/_extensions/course-core/body-export/package.cue
+@@ -12,11 +12,12 @@ import (
+ }
+ #Slot: {
+ 	id:        string & =~"^[a-z][a-z0-9-]*/[a-z][a-z0-9-]*/(exr|alt)-[a-z0-9][a-z0-9-]*$"
+-	selection: "fixed" | "random"
++	selection: "fixed" | "random" | "choice"
+ 	candidates: [...string & =~"^[a-z][a-z0-9-]*/exr-[a-z0-9][a-z0-9-]*$"] & list.UniqueItems
+ 	assignment: #Assignment
++	if selection == "choice" {assignment:requirement:"required"}
+ 	if selection == "fixed" {candidates: list.MinItems(1) & list.MaxItems(1)}
+-	if selection == "random" {candidates: list.MinItems(2)}
++	if selection == "random" || selection == "choice" {candidates: list.MinItems(2)}
+ }
+ #Question: {
+ 	owner:               string
+diff --git a/_extensions/course-core/domain/assemble.ts b/_extensions/course-core/domain/assemble.ts
+index e42f425..77f6872 100644
+--- a/_extensions/course-core/domain/assemble.ts
++++ b/_extensions/course-core/domain/assemble.ts
+@@ -1,4 +1,5 @@
+ import { diagnostic } from "./diagnostics.ts";
++import {bindProjectMaterializations} from './project-materialization.ts';
+ import type { Adapter, Assessment, Body, Course, Exercise, Extracted, Fragment, Json } from "./model.ts";
+ function withBody<T>(item: Extracted<T>): Omit<Extracted<T>, "bodyJson" | "gradingNotesJson"> & { body: Body; gradingNotes?: Body[] } {
+   const { bodyJson, gradingNotesJson, ...rest } = item;
+@@ -59,5 +60,7 @@ export function assemble(selected: string[], fragments: Map<string, Fragment>, a
+       result.assessments.push({ ...withBody<Assessment>(part.assessment), source, extensions });
+     }
+   }
++  const bound=bindProjectMaterializations(selected.map(source=>fragments.get(source)!));
++  if(bound.length)result.projects=bound;
+   return result;
+ }
+diff --git a/_extensions/course-core/domain/model.ts b/_extensions/course-core/domain/model.ts
+index ef94114..827e5d9 100644
+--- a/_extensions/course-core/domain/model.ts
++++ b/_extensions/course-core/domain/model.ts
+@@ -16,7 +16,7 @@ export interface Assessment {
+ }
+ import type { AssessmentKind, ExercisePurpose, PedagogicalKind, Difficulty, WorkMode, Requirement, View, Stage, StatementVisibility } from "./vocabulary.ts";
+ export type { PedagogicalKind, ExercisePurpose } from "./vocabulary.ts";
+-export interface AssessmentSlot { id: string; selection: "fixed" | "random"; candidates: string[]; assignment: Assignment }
++export interface AssessmentSlot { id: string; selection: "fixed" | "random" | "choice"; candidates: string[]; assignment: Assignment }
+ export interface Assignment { stage?: Stage; requirement: "required" | "optional"; workMode: WorkMode }
+ export interface ExerciseDeclaration { id: string; source: string; difficulty: Difficulty; time?: number; statementVisibility: StatementVisibility; purpose?: ExercisePurpose; hasSolution: boolean; hasPublicSolution: boolean }
+ export type AssessmentComposition = Omit<Assessment, "body" | "source" | "extensions">;
+@@ -36,9 +36,12 @@ export interface TopicFact { source: string; semester?: string; categories: stri
+ export interface SourceProfile {mode:"implementation"|"student-tests";root:string;include:string[]}
+ export interface AdditionalJavaSources {archive:string; "max-files":number; "max-file-bytes":number; "max-total-bytes":number; "max-archive-bytes":number}
+ export interface ApiPrecheck {files:string[];entry:string}
+-export interface ResolvedProjectCheck {profile:string; runtime:string; sourceProfile:SourceProfile; "source-profile":string; tests:string[]; "additional-java-sources"?:AdditionalJavaSources; "api-precheck"?:ApiPrecheck; "verification-api-precheck"?:ApiPrecheck; references?:{name:string;root:string;optional:boolean}[]; [key:string]: unknown}
+-export interface ProjectFact {exerciseId:string;source:string;projectRoot:string;bankMember:boolean;purpose?:ExercisePurpose;statementVisibility:StatementVisibility;artifactPolicy:{student?:"starter"|"full";full:"full";conditions:boolean};check?:ResolvedProjectCheck}
++export interface PublicCase {id:string;name:string;test:string;input?:string;state?:string;action?:string;expected:string}
++export interface ResolvedProjectCheck {feedback?:{requirement:string;"what-check":string};"public-cases"?:PublicCase[];profile:string; runtime:string; sourceProfile:SourceProfile; "source-profile":string; tests:string[]; "additional-java-sources"?:AdditionalJavaSources; "api-precheck"?:ApiPrecheck; "verification-api-precheck"?:ApiPrecheck; references?:{name:string;root:string;optional:boolean}[]; [key:string]: unknown}
++export interface ProjectMaterialization {commonFiles:{source:string;target:string;audience:'student'|'grading'}[];includeGit?:boolean}
++export interface ProjectFact {exerciseId:string;source:string;projectRoot:string;bankMember:boolean;purpose?:ExercisePurpose;statementVisibility:StatementVisibility;artifactPolicy:{student?:"starter"|"full";full:"full";conditions:boolean};check?:ResolvedProjectCheck;materialization?:ProjectMaterialization}
+ export interface Fragment {
++  projectMaterializations?: Record<string,ProjectMaterialization>;
+   projects?: ProjectFact[]; topic?: TopicFact;
+   source: string; course: { id?: string; view?: View };
+   declarations?: ExerciseDeclaration[]; rawAssessment?: AssessmentComposition | null;
+diff --git a/_extensions/course-core/domain/project-materialization.ts b/_extensions/course-core/domain/project-materialization.ts
+new file mode 100644
+index 0000000..084390f
+--- /dev/null
++++ b/_extensions/course-core/domain/project-materialization.ts
+@@ -0,0 +1,48 @@
++import type {Fragment,ProjectFact,ProjectMaterialization} from './model.ts';
++import type {NativeRun} from '../infrastructure/native-run.ts';
++import {diagnostic} from './diagnostics.ts';
++type Captured=Pick<Fragment,'source'|'projects'|'projectMaterializations'>&Partial<Pick<Fragment,'exercises'|'declarations'>>;
++const fail=(message:string):never=>{throw diagnostic('CORE.PROJECT_MATERIALIZATION_INVALID',message)};
++const stable=(value:unknown):string=>JSON.stringify(value,(_key,item)=>item&&typeof item==='object'&&!Array.isArray(item)?Object.fromEntries(Object.entries(item).sort(([a],[b])=>a.localeCompare(b))):item);
++function declaration(value:ProjectMaterialization):ProjectMaterialization{
++ if(!value||typeof value!=='object'||Object.keys(value).some(k=>!['commonFiles','includeGit'].includes(k))||!Array.isArray(value.commonFiles)||value.includeGit!==undefined&&typeof value.includeGit!=='boolean')fail('Некорректная captured materialization');
++ const safe=(p:unknown)=>typeof p==='string'&&!!p&&!/^[\/\\]/.test(p)&&!/[\\\0:*?\[\]{}]/.test(p)&&!p.split('/').some(part=>!part||part==='.'||part==='..'||part==='.git');
++ const targets=new Set();
++ for(const file of value.commonFiles){
++  if(!file||Object.keys(file).sort().join(',')!=='audience,source,target'||!safe(file.source)||!safe(file.target)||!['student','grading'].includes(file.audience)||targets.has(file.target))fail('Некорректный captured common file');
++  if(file.audience==='student'&&!file.target.startsWith('student/')||file.audience==='grading'&&file.target.startsWith('student/'))fail('Captured common audience/target mismatch');
++  if(!['student','reference','tests'].includes(file.target.split('/')[0])&&!['rubric.md','contract.md'].includes(file.target))fail('Captured common target вне project partitions');
++  const privateNames=['private','reference','solution','solutions','grading-notes','rubric.md','contract.md'];
++  if(file.source.split('/').some(part=>privateNames.includes(part)||part==='tests')||file.audience==='student'&&file.target.split('/').some(part=>privateNames.includes(part)))fail('Закрытый captured common path');
++  targets.add(file.target);
++ }
++ return {commonFiles:value.commonFiles,includeGit:value.includeGit??false};
++}
++function bind(documents:Captured[],complete:boolean):ProjectFact[]{
++ const declarations=new Map<string,ProjectMaterialization>(),known=new Set<string>(),facts:ProjectFact[]=[];
++ for(const document of documents){
++  for(const exercise of [...document.exercises??[],...document.declarations??[]])known.add(exercise.id);
++  for(const fact of document.projects??[]){
++   if(fact.source!==document.source||facts.some(f=>f.exerciseId===fact.exerciseId))fail('Неоднозначная captured project/source: '+fact.exerciseId);
++   known.add(fact.exerciseId);facts.push({...fact,...(fact.materialization?{materialization:declaration(fact.materialization)}:{})});
++  }
++  for(const [id,raw] of Object.entries(document.projectMaterializations??{})){
++   if(!/^exr-[a-z0-9][a-z0-9-]*$/.test(id))fail('Некорректный materialization ID');
++   const value=declaration(raw);
++   if(declarations.has(id)&&stable(declarations.get(id))!==stable(value))fail('Несогласованные materialization declarations: '+id);
++   declarations.set(id,value);
++  }
++ }
++ for(const [id,value] of declarations){
++  const matches=facts.filter(f=>f.exerciseId===id);
++  if(matches.length!==1){if(!complete&&!known.has(id))continue;fail('Materialization требует ровно один действующий project: '+id)}
++  const fact=matches[0];
++  if(fact.materialization&&stable(fact.materialization)!==stable(value))fail('Project fact расходится с captured declaration: '+id);
++  fact.materialization=value;
++ }
++ return facts;
++}
++/** Complete owner binding: no unknown declaration is accepted. */
++export function bindProjectMaterializations(documents:Captured[]):ProjectFact[]{return bind(documents,true)}
++/** Completeness comes only from the successful current native capture. */
++export function bindArtifactProjectMaterializations(run:NativeRun):ProjectFact[]{return bind(run.documents,run.renderAll)}
+diff --git a/_extensions/course-core/domain/release.ts b/_extensions/course-core/domain/release.ts
+index 284683c..6fccac1 100644
+--- a/_extensions/course-core/domain/release.ts
++++ b/_extensions/course-core/domain/release.ts
+@@ -100,7 +100,8 @@ export function assembleRelease(
+     if(assessment.relatedExercise!==undefined && !facts.has(assessment.relatedExercise)) fail("CORE.RELATED_EXERCISE_MISSING","Связанное упражнение отсутствует в текущих декларациях",{source:assessment.source,id:assessment.id,field:"related-exercise",related:[{id:assessment.relatedExercise}]});
+     const used=new Set<string>(),slotIds=new Set<string>();
+     for (const slot of assessment.slots) {
+-      if(Object.keys(slot).some(k=>!["id","selection","candidates","assignment"].includes(k)) || !/^(exr|alt)-[a-z0-9][a-z0-9-]*$/.test(slot.id) || slotIds.has(slot.id) || !Array.isArray(slot.candidates) || (slot.selection==="fixed" ? slot.candidates.length!==1 || slot.id!==slot.candidates[0] : slot.selection!=="random" || !slot.id.startsWith("alt-") || slot.candidates.length<2)) fail("CORE.ASSESSMENT_INVALID","Некорректная позиция",{id:assessment.id,field:"slots"});
++      if(slot.selection==="choice"&&slot.assignment?.requirement!=="required")fail("CORE.ASSESSMENT_INVALID","Самостоятельный выбор требует required",{id:assessment.id,field:"slots"});
++      if(Object.keys(slot).some(k=>!["id","selection","candidates","assignment"].includes(k)) || !/^(exr|alt)-[a-z0-9][a-z0-9-]*$/.test(slot.id) || slotIds.has(slot.id) || !Array.isArray(slot.candidates) || (slot.selection==="fixed" ? slot.candidates.length!==1 || slot.id!==slot.candidates[0] : !["random","choice"].includes(slot.selection) || !slot.id.startsWith("alt-") || slot.candidates.length<2)) fail("CORE.ASSESSMENT_INVALID","Некорректная позиция",{id:assessment.id,field:"slots"});
+       slotIds.add(slot.id);
+       for(const member of slot.candidates){
+       if(used.has(member))fail("CORE.ASSESSMENT_INVALID","Повторный кандидат",{id:assessment.id,field:"slots"});used.add(member);
+diff --git a/_extensions/course-core/entrypoints/materialize-projects.ts b/_extensions/course-core/entrypoints/materialize-projects.ts
+new file mode 100644
+index 0000000..305e159
+--- /dev/null
++++ b/_extensions/course-core/entrypoints/materialize-projects.ts
+@@ -0,0 +1,26 @@
++import {resolve} from 'stdlib/path';
++import {materializeProjects} from '../artifacts/materialize.ts';
++import {loadNativeRun} from '../infrastructure/native-run.ts';
++import {diagnostic} from '../domain/diagnostics.ts';
++import {runCli} from './diagnostics.ts';
++export async function main(args=Deno.args){
++ if(args[0]==='--')args=args.slice(1);
++ const values:Record<string,string>={},tasks:string[]=[];let mode='';
++ const invalid=():never=>{throw diagnostic('ARTIFACT.ARGUMENTS_INVALID','Укажите --root OWNER --model current-native-run.json --output-root FRESH --audience student|grading --task ID [--task ID] --write|--check [--teacher-root ROOT]')};
++ for(let i=0;i<args.length;i++){
++  const key=args[i];
++  if(key==='--write'||key==='--check'){if(mode)invalid();mode=key;continue}
++  if(!['--root','--model','--output-root','--audience','--task','--teacher-root'].includes(key)||!args[i+1]||args[i+1].startsWith('--'))invalid();
++  const value=args[++i];if(key==='--task')tasks.push(value);else{if(values[key])invalid();values[key]=value}
++ }
++ if(!mode||!tasks.length||['--root','--model','--output-root','--audience'].some(key=>!values[key])||!['student','grading'].includes(values['--audience']))invalid();
++ const root=await Deno.realPath(resolve(values['--root']));
++ const run=await loadNativeRun(root);
++ const supplied=JSON.parse(await Deno.readTextFile(resolve(values['--model'])));
++ // Compare to the current persisted capture, including the complete document set.
++ const normalized={...run,adapters:run.adapters.map(a=>({...a,fragments:[...a.fragments.values()]}))};
++ if(JSON.stringify(supplied)!==JSON.stringify(normalized))throw diagnostic('NATIVE.RUN_NOT_CURRENT','--model не совпадает с текущим NativeRun');
++ const manifest=await materializeProjects({nativeRun:run,sourceRoot:root,outputRoot:resolve(values['--output-root']),exerciseIds:tasks,audience:values['--audience'] as 'student'|'grading',teacherRoot:values['--teacher-root']?resolve(values['--teacher-root']):undefined,checkOnly:mode==='--check'});
++ console.log(`${mode==='--check'?'Проверено':'Материализовано'}: ${manifest.exerciseIds.length} проектов, ${manifest.files.length} файлов`);
++}
++if(import.meta.main)await runCli(main);
+diff --git a/_extensions/course-core/filter.lua b/_extensions/course-core/filter.lua
+index e4e7d8a..5d463ad 100644
+--- a/_extensions/course-core/filter.lua
++++ b/_extensions/course-core/filter.lua
+@@ -104,7 +104,7 @@ return __perfFilters({{Pandoc = function(doc)
+   end
+   output.write({
+     exportContext=doc.meta["course-export-context"]==true or nil,
+-    projects=projectFacts, topic=topic,
++    projects=projectFacts, projectMaterializations=require('./projects').materialization(doc.meta), topic=topic,
+     declarations=declarations, rawAssessment=require("./assessment").composition(rawAssessment),
+     course = {id = doc.meta.course.id and pandoc.utils.stringify(doc.meta.course.id) or nil,
+               view = doc.meta.course.view and pandoc.utils.stringify(doc.meta.course.view) or nil},
+diff --git a/_extensions/course-core/projects.lua b/_extensions/course-core/projects.lua
+index c592759..105f3c0 100644
+--- a/_extensions/course-core/projects.lua
++++ b/_extensions/course-core/projects.lua
+@@ -6,7 +6,7 @@ local M={}
+ local countShape={['at-least']='integer',exactly='integer'}
+ local expectationShape={['student-compilation']=true,job=true,['required-tests']=true,classification=true,['failed-tests']=countShape,['executed-tests']=countShape,['test-ids']='array',score={['less-than']='number',['at-least']='number',exactly='number'}}
+ local checkShape={['source-profile']=true,runtime=true,java={release=true,encoding=true,['compiler-options']='array'},limits={['outer-seconds']=true,['compile-seconds']=true,['run-seconds']=true,networking=true,['max-output-bytes']=true},
+- scoring={mode=true,groups='array',basis=true,value=true},references='array',tests='array',['verification-tests']='array',['contract-cases']=true,
++ feedback={requirement=true,['what-check']=true},['public-cases']='array',scoring={mode=true,groups='array',basis=true,value=true},references='array',tests='array',['verification-tests']='array',['contract-cases']=true,
+  ['verification-expectations']={reference=expectationShape,starter=expectationShape},
+  discovery={['min-executed']=true,['allow-skipped']=true},variants={correct='array',mutants='array'},
+  ['additional-java-sources']={archive=true,['max-files']='integer',['max-file-bytes']='integer',['max-total-bytes']='integer',['max-archive-bytes']='integer'},
+@@ -29,6 +29,7 @@ local function decode(value,shape,path)
+    local list=pandoc.List()
+    for _,entry in ipairs(item) do
+     if key=='references' then list:insert(decode(entry,{name=true,root=true,optional=true},path..'.references'))
++    elseif key=='public-cases' then list:insert(decode(entry,{id=true,name=true,test=true,input=true,state=true,action=true,expected=true},path..'.public-cases'))
+     elseif key=='groups' then list:insert(decode(entry,{id=true,weight=true,tests='array'},path..'.groups'))
+     else list:insert(scalar(entry)) end
+    end
+@@ -98,6 +99,20 @@ function M.resolve(config,name,id)
+  if result.limits and result.limits.networking~=nil and result.limits.networking~=false then fail('limits.networking','Network must be false',id) end
+  if result.discovery and result.discovery['allow-skipped']~=nil and type(result.discovery['allow-skipped'])~='boolean' then fail('discovery.allow-skipped','Требуется boolean',id) end
+  if result.discovery and result.discovery['min-executed'] then result.discovery['min-executed']=tonumber(result.discovery['min-executed']);if not result.discovery['min-executed'] or result.discovery['min-executed']<1 or result.discovery['min-executed']%1~=0 then fail('discovery.min-executed','Требуется положительный integer',id) end end
++ local feedback=result.feedback
++ if feedback then
++  if not feedback.requirement or not feedback['what-check'] then fail('feedback','Требуются requirement и what-check',id) end
++  for _,value in pairs(feedback) do if type(value)~='string' or value=='' or #value>8192 then fail('feedback','Требуется явный публичный текст',id) end end
++ end
++ local publicIds={}
++ if result['public-cases'] then
++  if #result['public-cases']>32 then fail('public-cases','Слишком много публичных сценариев',id) end
++  for _,case in ipairs(result['public-cases']) do
++   if not case.name or not case.name:match('%S') or #case.name>256 or not case.id or case.id=='' or not case.test or case.test=='' or case.expected==nil or not (case.input or case.state or case.action) or publicIds[case.id] then fail('public-cases','Требуются distinct id/test/expected и input/state/action',id) end
++   publicIds[case.id]=true
++   for _,value in pairs(case) do if type(value)~='string' or #value>8192 then fail('public-cases','Требуется непустой текст ограниченной длины',id) end end
++  end
++ end
+  local extras=result['additional-java-sources']
+  if extras then
+   if source.mode~='implementation' or result.runtime~='java25-junit-v1' then fail('additional-java-sources','Дополнительные Java sources требуют Java implementation',id) end
+@@ -116,8 +131,41 @@ function M.resolve(config,name,id)
+  end
+  return result
+ end
++-- Keep all effective owner declarations: a key may belong to another QMD.
++function M.materialization(meta)
++ local raw=meta['project-materialization'];if raw==nil then return nil end
++ local declarations={}
++ for key,_ in pairs(raw) do if key~='projects' then fail('project-materialization.'..key,'Неизвестное поле materialization') end end
++ if type(raw.projects)~='table' then fail('project-materialization.projects','Требуется словарь проектов') end
++ local function safe(value,field)
++  path(value,field)
++  if value:find('[%z*?%[%]{}:]') or value:find('//',1,true) or value:sub(-1)=='/' then fail(field,'Требуется явный относительный путь файла') end
++  for segment in value:gmatch('[^/]+') do if segment=='.git' then fail(field,'Служебный .git недопустим в mapping') end end
++ end
++ for id,entry in pairs(raw.projects) do
++  local field='project-materialization.projects.'..id
++  if type(entry)~='table' then fail(field,'Требуется словарь') end
++  for key,_ in pairs(entry) do if key~='common-files' and key~='include-git' then fail(field..'.'..key,'Неизвестное поле materialization') end end
++  if type(entry['common-files'])~='table' then fail(field..'.common-files','Требуется список common-files') end
++  for key,_ in pairs(entry['common-files']) do if type(key)~='number' or key%1~=0 or key<1 or key>#entry['common-files'] then fail(field..'.common-files','Требуется список common-files') end end
++  if entry['include-git']~=nil and type(entry['include-git'])~='boolean' then fail(field..'.include-git','Требуется boolean') end
++  local files=pandoc.List();local targets={}
++  for _,item in ipairs(entry['common-files']) do
++   local file=decode(item,{source=true,target=true,audience=true},field..'.common-files')
++   safe(file.source,field..'.source');safe(file.target,field..'.target')
++   if file.audience~='student' and file.audience~='grading' then fail(field..'.audience','Неизвестная аудитория') end
++   if file.audience=='student' and not file.target:match('^student/.+') then fail(field..'.target','Публичный target должен находиться в student/') end
++   if file.audience=='grading' and file.target:match('^student/') then fail(field..'.target','Grading-only target не может находиться в student/') end
++   if targets[file.target] then fail(field..'.target','Повторный target') end;targets[file.target]=true
++   files:insert(file)
++  end
++  declarations[id]={commonFiles=files,includeGit=entry['include-git']}
++ end
++ return declarations
++end
+ function M.collect(doc,facts)
+  local config=M.configuration(doc.meta)
++ local materialization=M.materialization(doc.meta) or {}
+  local result=pandoc.List()
+  for _,fact in pairs(facts) do
+   if fact.project then
+@@ -126,7 +174,7 @@ function M.collect(doc,facts)
+    local statement=fact.statementVisibility or 'open'
+    local open=statement=='open'
+    result:insert({exerciseId=fact.id,source=fact.source,projectRoot=project,bankMember=fact.banked,purpose=fact.purpose,
+-    statementVisibility=statement,artifactPolicy={student=open and (fact.purpose=='demonstration' and 'full' or 'starter') or nil,full='full',conditions=open},check=check})
++    statementVisibility=statement,artifactPolicy={student=open and (fact.purpose=='demonstration' and 'full' or 'starter') or nil,full='full',conditions=open},check=check,materialization=materialization[fact.id]})
+   end
+  end
+  table.sort(result,function(a,b)return a.exerciseId<b.exerciseId end)
+diff --git a/_extensions/course-core/spec/core.cue b/_extensions/course-core/spec/core.cue
+index 75688ac..34dba68 100644
+--- a/_extensions/course-core/spec/core.cue
++++ b/_extensions/course-core/spec/core.cue
+@@ -20,11 +20,12 @@ import "list"
+ #Assignment: {stage?: #Stage, requirement: "required" | "optional", workMode: #WorkMode}
+ #Slot: {
+   id: string
+-  selection: "fixed" | "random"
++  selection: "fixed" | "random" | "choice"
+   candidates: [...string & =~"^exr-[a-z0-9][a-z0-9-]*$"] & list.UniqueItems
+   assignment: #Assignment
++  if selection == "choice" {assignment:requirement:"required"}
+   if selection == "fixed" {id: candidates[0], candidates: list.MinItems(1) & list.MaxItems(1)}
+-  if selection == "random" {id: =~"^alt-[a-z0-9][a-z0-9-]*$", candidates: list.MinItems(2)}
++  if selection == "random" || selection == "choice" {id: =~"^alt-[a-z0-9][a-z0-9-]*$", candidates: list.MinItems(2)}
+ }
+ #Declaration: {id: string & =~"^exr-[a-z0-9][a-z0-9-]*$", source: string & !="", difficulty: #Difficulty, time?: int & >0, statementVisibility: #StatementVisibility, purpose?: #ExercisePurpose, hasSolution: bool, hasPublicSolution: bool}
+ #Composition: {
+@@ -119,10 +120,13 @@ import "list"
+ #SourceProfile: {mode:"implementation"|"student-tests",root:string & !="",include:[...string] & list.MinItems(1)}
+ #VerificationExpectation: {"student-compilation"?:"success"|"failure",job?:"complete"|"failure","required-tests"?:"all-pass",classification?:string,"failed-tests"?:{"at-least"?:int & >=0,exactly?:int & >=0},"executed-tests"?:{"at-least"?:int & >=0,exactly?:int & >=0},"test-ids"?:[...string],score?:{"less-than"?:number & >=0,"at-least"?:number & >=0,exactly?:number & >=0}}
+ #Scoring: {mode:"weighted"} | {mode:"all-pass"} | {mode:"contract-groups",groups:[...{id:string & !="",weight:number & >0,tests:[...string] & list.MinItems(1)}] & list.MinItems(1)} | {mode:"threshold",basis:"score"|"passed-tests",value:number & >=0}
++#PublicCase: {id:string & !="",name:string & !="",test:string & !="",input?:string,state?:string,action?:string,expected:string} & ({input:string}|{state:string}|{action:string})
+ #ResolvedProjectCheck: CHECK={
+  profile:string & !="",runtime:string & !="",sourceProfile:#SourceProfile,"source-profile":string & !="",tests:[...string]
+  java?:{release:int & >0,encoding?:string & !="","compiler-options"?:[...string]}
+  limits?:{"outer-seconds"?:number & >0,"compile-seconds"?:number & >0,"run-seconds"?:number & >0,networking?:false,"max-output-bytes"?:int & >0}
++ feedback?:{requirement:string & !="","what-check":string & !=""}
++ "public-cases"?:[...#PublicCase] & list.MaxItems(32)
+  scoring:#Scoring
+  references?:[...{name:string & !="",root:string & !="",optional:bool}]
+  "verification-tests"?:[...string],"contract-cases"?:string & !=""
+@@ -138,7 +142,8 @@ import "list"
+ }
+ #AdditionalJavaSources: {archive:string & =~"^[A-Za-z0-9][A-Za-z0-9_-]{0,100}\\.zip$","max-files":int & >=1 & <=128,"max-file-bytes":int & >=1 & <=1048576,"max-total-bytes":int & >=1 & <=4194304,"max-archive-bytes":int & >=1 & <=2097152}
+ #ApiPrecheck: {files:[...string & !=""] & list.MinItems(1),entry:string & =~"^[A-Za-z_$][A-Za-z0-9_$]*(\\.[A-Za-z_$][A-Za-z0-9_$]*)*$"}
+-#ProjectFact: {exerciseId:string, source:string, projectRoot:string & !="", bankMember:bool, purpose?:#ExercisePurpose, statementVisibility:#StatementVisibility, artifactPolicy:{student?:"starter"|"full",full:"full",conditions:bool},check?:#ResolvedProjectCheck}
++#ProjectMaterialization: {commonFiles:[...{source:string & !="",target:string & !="",audience:"student"|"grading"}],includeGit?:bool}
++#ProjectFact: {exerciseId:string, source:string, projectRoot:string & !="", bankMember:bool, purpose?:#ExercisePurpose, statementVisibility:#StatementVisibility, artifactPolicy:{student?:"starter"|"full",full:"full",conditions:bool},check?:#ResolvedProjectCheck,materialization?:#ProjectMaterialization}
+ #TopicFact: {source:string,semester?:string,categories:[...string]}
+ #Course: {
+   projects?: [...#ProjectFact]

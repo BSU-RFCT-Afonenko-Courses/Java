@@ -23,9 +23,9 @@ python3 tasks/test-support/materialize.py --root tasks \
 не включаются в student. Единственный алгоритм отбора, guards и hash receipt
 принадлежит Core. Каталог `test-support/` исключён из ресурсов сайта.
 
-`projects.json` и `materialized.json` пока фиксируют прежнюю поставку в 21 проект;
-новый adapter их не читает. Удаление этих копий и замена metadata выполняются
-в составе технической миграции банка, после приёмки общей основы.
+Старые `projects.json` и `materialized.json` выведены из активного состава.
+Тематические проекты не содержат копий общего кода: dependencies объявлены
+в `project-materialization.projects`, а receipt генерируется Core для новой сборки.
 
 `coursesupport.JavaProcess.run(Main.class, input, args...)` запускает новую JVM
 с JDK текущего процесса, UTF-8, памятью 128 МиБ, временем 10 секунд и общим
@@ -86,3 +86,8 @@ python3 -m unittest discover -s tasks/test-support -p test_materialize.py -v
 и catchability сохраняются. Ненулевой exitCode сам по себе не означает исключение.
 Студенческая диагностика внешней проверки использует типы и проверенное trusted
 происхождение классов, а не текст ошибки или stderr.
+
+Общая инструкция открытых JDK-проверок — `CHECKS.md`. Она генерируется рядом
+с README выбранной задачи. `junit/PublicScenarioTest.java` — общий адаптер
+только явно публичных сценариев для grading; он не входит в JDK-комплект.
+Закрытые ContractTest, данные и эталоны находятся во внешнем teacher root.

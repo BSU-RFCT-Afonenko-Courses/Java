@@ -21,47 +21,63 @@ default-exercise-statement-visibility: open
 если карточка не задаёт другой критерий; количество знаков не фиксируется.
 Формы чтения и вывода: @handbook:sec-api-console.
 
-:::: {#exr-j25-numbers-console-greeting difficulty="introductory" target="prairielearn" project="/projects/console-greeting" project-check="java-cli"}
+:::: {#exr-numbers-console-greeting difficulty="introductory" target="prairielearn" project="/projects/numbers/console-greeting" project-check="java-console-greeting" prairielearn-grading="mixed" prairielearn-submission="upload"}
 ## Приветствие пользователя
 
-Приветствуйте пользователя, чьё имя передано первым аргументом `main(String[] args)`. Имя сохраните без изменения; последующие аргументы не учитывайте. Без аргументов сообщите, что имя требуется.
+Напишите программу, которая приветствует пользователя по имени из первого
+аргумента командной строки. Сохраните имя без изменения; последующие
+аргументы не учитывайте. Имя может содержать кириллицу, пробелы и эмодзи.
+Стандартный ввод не используется.
 
-Вход и результат: `java Main "Анна"` выводит одну строку `Здравствуйте, Анна!`; запуск без аргументов — `Укажите имя.`. Имя может содержать кириллицу, пробелы и эмодзи. Стандартный ввод не используется.
+Команда `java Main "Анна"` выводит одну строку `Здравствуйте, Анна!`.
+При запуске без аргументов выведите одну строку `Укажите имя.`.
+Вывод содержит только соответствующее сообщение.
 
-Точка входа — `Main.main(String[] args)`.
+Используйте JDK 25. Точка входа — `Main.main(String[] args)`.
+Вспомогательные методы и разбиение программы выберите самостоятельно.
 
-{{< project-download exr-j25-numbers-console-greeting kind="starter" text="Скачать стартовый проект" >}}
+Представьте исходники и покажите запуск с именем и без аргументов.
+Объясните, как программа различает эти случаи и почему имя с пробелами
+нужно передать одним аргументом.
 
-[@bib-task-console-greeting]
-
+{{< project-download exr-numbers-console-greeting kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 ::::
 
 
-:::: {#exr-numbers-image-size difficulty="intermediate" target="prairielearn" project="/projects/image-size" project-check="java-cli"}
+:::: {#exr-numbers-image-size difficulty="intermediate" target="prairielearn" project="/projects/numbers/image-size" project-check="java-image-size" prairielearn-grading="mixed" prairielearn-submission="upload"}
 ## Размер изображения
 
 Изображение имеет `width` столбцов и `height` строк пикселей. Каждый пиксель
 занимает `bytesPerPixel` байт; сжатие и служебные заголовки отсутствуют.
-Вычислите точное количество байтов и размер в мебибайтах: 1 МиБ = 1 048 576 байт.
+Вычислите точное количество байтов и размер в мебибайтах:
+1 МиБ = 1 048 576 байт.
 
-Стандартный ввод содержит три целых числа: `width height bytesPerPixel`.
-Ширина и высота находятся в диапазоне от 1 до 100 000, число байтов на пиксель —
-от 1 до 8. Вход заведомо соответствует этим условиям.
-Выведите количество байтов как целое число, затем размер в МиБ как дробное
-число с точкой. Для второго результата допустима абсолютная ошибка `1e-8`.
+Стандартный ввод содержит три целых числа `width height bytesPerPixel`,
+разделённых пробельными символами. Ширина и высота находятся в диапазоне
+от 1 до 100 000, число байтов на пиксель — от 1 до 8. Вход заведомо
+соответствует этим условиям.
 
-Примеры: `1024 1024 4` даёт `4194304 4.0`;
+Выведите количество байтов как целое число, затем размер в МиБ как
+вещественное число с точкой. Числа разделите пробельными символами,
+подписи и приглашения к вводу не печатайте. Для размера в МиБ допустима
+абсолютная ошибка `1e-8`; количество знаков после точки не фиксируется.
+
+Ввод `1024 1024 4` даёт `4194304 4.0`;
 `50000 50000 3` — `7500000000 7152.557373046875`.
-Также проверьте один пиксель. Выберите типы промежуточных вычислений так,
-чтобы результат оставался точным для всех допустимых входных значений.
+Выберите типы промежуточных вычислений так, чтобы количество байтов
+оставалось точным для всех допустимых входных значений.
 
-Точка входа — `Main.main(String[] args)`.
+Используйте JDK 25. Точка входа — `Main.main(String[] args)`.
+Алгоритм и вспомогательные методы выберите самостоятельно.
 
-{{< project-download exr-numbers-image-size kind="starter" text="Скачать стартовый проект" >}}
+Представьте исходники и покажите оба примера и изображение из одного
+пикселя. Объясните тип каждого промежуточного числового выражения
+и почему большой пример позволяет обнаружить потерю точности.
 
+{{< project-download exr-numbers-image-size kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 ::::
 
-:::: {#exr-j25-numbers-lunar-weight difficulty="introductory" target="prairielearn" project="/projects/lunar-weight" project-check="java-cli"}
+:::: {#exr-numbers-lunar-weight difficulty="introductory" target="prairielearn" project="/projects/numbers/lunar-weight" project-check="java-cli"}
 ## Вес на Луне
 
 Напишите программу, вычисляющую силу тяжести на Луне как 17% силы тяжести на Земле. Исходное значение — неотрицательное конечное `double` в ньютонах; результат также выражается в ньютонах. Масса тела при перемещении на Луну не меняется. В исходнике задайте положительный пример и покажите также нулевое значение.
@@ -84,13 +100,13 @@ $$
 
 Точка входа — `Main.main(String[] args)`.
 
-{{< project-download exr-j25-numbers-lunar-weight kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-numbers-lunar-weight kind="starter" text="Скачать стартовый проект" >}}
 
 [@bib-task-lunar-weight]
 
 ::::
 
-:::: {#exr-j25-numbers-lightning-distance difficulty="introductory" target="prairielearn" project="/projects/lightning-distance" project-check="java-cli"}
+:::: {#exr-numbers-lightning-distance difficulty="introductory" target="prairielearn" project="/projects/numbers/lightning-distance" project-check="java-cli"}
 ## Расстояние до места вспышки молнии
 
 Вычислите расстояние в метрах между наблюдателем и местом вспышки молнии. Скорость звука в воздухе — 335 метров в секунду; интервал между вспышкой и звуком — 7,2 секунды. Задайте эти константы в программе и используйте значения с плавающей точкой.
@@ -103,13 +119,13 @@ $$
 
 Точка входа — `Main.main(String[] args)`.
 
-{{< project-download exr-j25-numbers-lightning-distance kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-numbers-lightning-distance kind="starter" text="Скачать стартовый проект" >}}
 
 [@bib-task-lightning-distance]
 
 ::::
 
-:::: {#exr-j25-numbers-boolean-truth-table difficulty="intermediate" target="prairielearn" project="/projects/boolean-truth-table" project-check="java-cli"}
+:::: {#exr-numbers-boolean-truth-table difficulty="intermediate" target="prairielearn" project="/projects/numbers/boolean-truth-table" project-check="java-cli"}
 ## Таблица истинности для логических операций
 
 Отобразите таблицу истинности для логических операций Java. Колонки: P, Q, AND, OR, XOR, NOT; NOT означает отрицание P. Используйте табуляцию между колонками и включите все четыре сочетания P и Q.
@@ -118,28 +134,39 @@ $$
 
 Точка входа — `Main.main(String[] args)`.
 
-{{< project-download exr-j25-numbers-boolean-truth-table kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-numbers-boolean-truth-table kind="starter" text="Скачать стартовый проект" >}}
 
 [@bib-task-boolean-truth-table]
 
 ::::
 
-:::: {#exr-j25-numbers-interval-membership difficulty="intermediate" target="prairielearn" project="/projects/interval-membership" project-check="java-cli"}
+:::: {#exr-numbers-interval-membership difficulty="intermediate" target="prairielearn" project="/projects/numbers/interval-membership" project-check="java-interval-membership" prairielearn-grading="mixed" prairielearn-submission="upload"}
 ## Принадлежность интервалам
 
-Для целых `n`, `m`, `k`, где `n < m`, определите принадлежность `k` каждому из интервалов `(n, m]`, `[n, m)`, `(n, m)`, `[n, m]`. Проверьте обе границы, внутреннюю точку и значения снаружи.
+Для целых `n`, `m`, `k`, где `n < m`, определите принадлежность `k`
+каждому из интервалов `(n, m]`, `[n, m)`, `(n, m)`, `[n, m]`.
+Круглая скобка исключает соответствующую границу, квадратная включает её.
 
-Вход и результат: стандартный ввод содержит `n m k` типа `int`, разделённые пробельными символами. Выведите четыре значения `true` или `false` в указанном порядке. Например, `-2 4 -2` даёт `false true false true`; `-2 4 4` — `true false false true`. Некорректный ввод и случай `n >= m` не проверяются.
+Стандартный ввод содержит `n m k` типа `int`, разделённые пробельными
+символами. Вход корректен, условие `n < m` выполняется.
+Вывод должен содержать только четыре значения `true` или `false`
+в указанном порядке, разделённые пробельными символами.
 
-Точка входа — `Main.main(String[] args)`.
+Для `-2 4 -2` результат — `false true false true`;
+для `-2 4 4` — `true false false true`.
 
-{{< project-download exr-j25-numbers-interval-membership kind="starter" text="Скачать стартовый проект" >}}
+Используйте JDK 25. Точка входа — `Main.main(String[] args)`.
+Способ вычисления, вспомогательные методы и разбиение программы
+выберите самостоятельно.
 
-[@bib-task-interval-membership]
+Представьте исходники и покажите обе границы, внутреннюю точку
+и значения снаружи интервалов. Объясните, как строгость сравнения
+определяет результат на границе.
 
+{{< project-download exr-numbers-interval-membership kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 ::::
 
-:::: {#exr-j25-numbers-short-circuit-and difficulty="intermediate" target="prairielearn" project="/projects/short-circuit-and" project-check="java-cli"}
+:::: {#exr-numbers-short-circuit-and difficulty="intermediate" target="prairielearn" project="/projects/numbers/short-circuit-and" project-check="java-cli"}
 ## Проверка положительного частного
 
 Определите, является ли целочисленное частное положительным, если операция допустима. При нулевом делителе результат проверки считается ложным.
@@ -150,13 +177,13 @@ $$
 
 Точка входа — `Main.main(String[] args)`.
 
-{{< project-download exr-j25-numbers-short-circuit-and kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-numbers-short-circuit-and kind="starter" text="Скачать стартовый проект" >}}
 
 [@bib-task-short-circuit-and]
 
 ::::
 
-:::: {#exr-j25-numbers-gallon-conversion difficulty="introductory" target="prairielearn" project="/projects/gallon-conversion" project-check="java-cli"}
+:::: {#exr-numbers-gallon-conversion difficulty="introductory" target="prairielearn" project="/projects/numbers/gallon-conversion" project-check="java-cli"}
 ## Преобразование галлонов в литры
 
 Преобразуйте 10 галлонов в литры, используя коэффициент 3,7854 литра на галлон. Начальное количество и коэффициент задайте в программе.
@@ -169,29 +196,29 @@ $$
 
 Точка входа — `Main.main(String[] args)`.
 
-{{< project-download exr-j25-numbers-gallon-conversion kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-numbers-gallon-conversion kind="starter" text="Скачать стартовый проект" >}}
 
 [@bib-task-gallon-conversion]
 
 ::::
 
-:::: {#exr-j25-numbers-random-console-values difficulty="introductory"}
+:::: {#exr-numbers-random-console-values difficulty="introductory"}
 ## Случайные числа в консоли
 
 Получите десять псевдослучайных целых чисел от 0 до 99 включительно. Используйте `java.util.Random` с начальным значением 42 и значения `nextInt(100)`. Дважды покажите одну и ту же последовательность: в строке и по одному числу в строке. [@bib-task-random-console-values]
 
 ::::
 
-:::: {#exr-j25-numbers-argument-sum-product difficulty="intermediate" project="/projects/j25-numbers-argument-sum-product"}
+:::: {#exr-numbers-argument-sum-product difficulty="intermediate" project="/projects/numbers/argument-sum-product"}
 ## Сумма и произведение аргументов
 
 Примите целые числа через аргументы командной строки и вычислите их сумму и произведение. Разбирайте аргументы как `long`; исходные данные выбираются так, чтобы все промежуточные результаты помещались в `long`. Для пустого набора сумма равна 0, произведение — 1. Корректная запись всех аргументов предполагается; проверять произвольный текст в этой задаче не требуется. [@bib-task-argument-sum-product]
 
-{{< project-download exr-j25-numbers-argument-sum-product kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-numbers-argument-sum-product kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
-:::: {#exr-j25-numbers-quadratic-roots difficulty="intermediate"}
+:::: {#exr-numbers-quadratic-roots difficulty="intermediate"}
 ## Корни квадратного уравнения
 
 Найдите корни квадратного уравнения. Коэффициенты передайте аргументами командной строки.
@@ -200,7 +227,7 @@ $$
 
 ::::
 
-:::: {#exr-j25-numbers-radix-conversion difficulty="advanced" project="/projects/j25-numbers-radix-conversion"}
+:::: {#exr-numbers-radix-conversion difficulty="advanced" project="/projects/numbers/radix-conversion"}
 ## Позиционная запись целого числа
 
 Получите позиционную запись неотрицательного целого числа в системе
@@ -213,11 +240,11 @@ $$
 типом `long`; представление должно сохранять введённое целое значение.
 Покажите также преобразование нуля. [@bib-task-radix-conversion]
 
-{{< project-download exr-j25-numbers-radix-conversion kind="starter" text="Скачать стартовый проект" >}}
+{{< project-download exr-numbers-radix-conversion kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
-:::: {#exr-j25-numbers-binary-truth-table difficulty="advanced"}
+:::: {#exr-numbers-binary-truth-table difficulty="advanced"}
 ## Таблица истинности со значениями 1 и 0
 
 Создайте таблицу истинности для логических операций, представляя истину

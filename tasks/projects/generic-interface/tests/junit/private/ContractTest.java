@@ -1,1 +1,0 @@
-import org.junit.jupiter.api.Test;import static org.junit.jupiter.api.Assertions.*;import java.util.*;import java.math.*;import java.io.*;import java.nio.charset.StandardCharsets;class ContractTest{@Test void samePublishedPairRemainsAssignableAcrossRepeatedInstances(){assertTrue(TaskBinding.witness());assertTrue(TaskBinding.witness());}}

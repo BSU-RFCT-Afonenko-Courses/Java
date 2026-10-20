@@ -64,7 +64,7 @@ System.out.println(source.toAbsolutePath());
 Для копирования подготовьте UTF-8 с кириллицей, ASCII-пробелом и
 переводом строки; сохраните вход для сравнения. Входной и выходной
 файлы выбирайте разными. Правило одинакового файла и состояние выхода
-после отказа определяет условие @tasks:exr-j25-files-byte-file-copy.
+после отказа определяет условие @tasks:exr-files-byte-file-copy.
 
 При копировании вход открывается до выхода. Если вход отсутствует,
 прежний выход должен сохраниться; если запись отказала, часть выхода
@@ -196,15 +196,15 @@ Stdout: `closed`; stderr: `operation failed: read failed`; процесс
 
 ### Фрагменты с исключениями {#sec-j25-practice-files-exceptions}
 
-В @tasks:exr-j25-exceptions-exception-flow-errors исправьте независимые
+В @tasks:exr-exceptions-exception-flow-errors исправьте независимые
 ошибки `try`, порядка обработчиков и `throws`. Отказ компиляции отличайте
 от исключения при выполнении. Связь проверяемых исключений с операциями
 контейнера разобрана в @theory:sec-j25-theory-exceptions-early-checked.
 
 ### Две версии копирования {#sec-j25-practice-files-s6 .continuation}
 
-@tasks:exr-j25-files-byte-file-copy — байтовые потоки и явное закрытие;
-@tasks:exr-j25-files-character-file-copy — символьные потоки UTF-8 и `try`
+@tasks:exr-files-byte-file-copy — байтовые потоки и явное закрытие;
+@tasks:exr-files-character-file-copy — символьные потоки UTF-8 и `try`
 с ресурсами. Обе версии должны учитывать пустой вход. Проверяйте байты
 и символы по соответствующему условию, не только строку в терминале.
 
@@ -234,7 +234,7 @@ Stdout: `closed`; stderr: `operation failed: read failed`; процесс
 
 ### Сборка заготовки {#sec-j25-practice-files-gradeapp-build}
 
-@tasks:exr-j25-files-gradeapp-report использует готовые модель, исключение,
+@tasks:exr-files-gradeapp-report использует готовые модель, исключение,
 сборку и проверку аргументов команды. Из корня скачанного `student` проверьте
 `sh ./build.sh --version`, затем `sh ./build.sh -DskipTests package`.
 Версия Java должна быть 25; точные команды и состав:

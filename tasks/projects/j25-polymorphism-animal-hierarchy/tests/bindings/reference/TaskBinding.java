@@ -1,1 +1,0 @@
-class TaskBinding {static Object animal(int kind,String name){return switch(kind){case 0->new Animal(name);case 1->new Dog(name);default->new Puppy(name);};}static String voice(Object x){Animal a=(Animal)x;return a.voice();}static String[]actions(Object x){Puppy p=(Puppy)x;return new String[]{p.run(),p.bite(),p.jump()};}}

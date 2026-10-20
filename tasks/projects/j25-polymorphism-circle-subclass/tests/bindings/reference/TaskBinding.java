@@ -1,1 +1,0 @@
-class TaskBinding {static Object circle(double r){return new Circle(r);}static double width(Object x){return ((TwoDShape)x).getWidth();}static double height(Object x){return ((TwoDShape)x).getHeight();}static String name(Object x){return ((TwoDShape)x).getName();}static double area(Object x){TwoDShape shape=(TwoDShape)x;return shape.area();}}
