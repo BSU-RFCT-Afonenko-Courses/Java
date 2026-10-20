@@ -5,7 +5,7 @@
 import argparse,hashlib,json,os,re,shutil,signal,subprocess,sys,tempfile,time
 from pathlib import Path,PurePosixPath
 
-IMAGE='sha256:966ca8fb73b8f6ea0a314ac1e2ec04de866adb83bae7118816ba54c08c713e69'
+IMAGE='sha256:75421e71603b933f160761762949d6907aa304f282f1ec0656d9784c82e22e5f'
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def guarded(path):
     absolute=path.absolute()
@@ -70,7 +70,7 @@ def main():
     cfg={'schemaVersion':1,'runtime':'java25-junit-v1','mode':'implementation','java':{'release':25,'encoding':'UTF-8','compiler-options':['-proc:none','-Xmaxerrs','5']},'limits':{'outer-seconds':60,'compile-seconds':15,'run-seconds':15,'max-output-bytes':65536,'networking':False},'scoring':{'mode':'all-pass'},'discovery':{'min-executed':1,'allow-skipped':False},'sourceFiles':list(student),'testFiles':list(trusted)}
     if api:cfg['apiPrecheck']=api
     (job/'tests/grading-job.json').write_text(json.dumps(cfg,ensure_ascii=False,indent=2)+'\n')
-    argv=[sys.executable,str(runner),'--job-dir',str(job)] if args.backend=='host' else ['docker','run','--rm','--pull','never','--network','none','--cpus','0.9','--memory','512m','--cidfile',str(work/'container.cid'),'--mount',f'type=bind,src={job},dst=/grade',args.image]
+    argv=[sys.executable,str(runner),'--job-dir',str(job),'--verification'] if args.backend=='host' else ['docker','run','--rm','--pull','never','--network','none','--cpus','0.9','--memory','512m','--cidfile',str(work/'container.cid'),'--mount',f'type=bind,src={job},dst=/grade',args.image,'--verification']
     started=time.monotonic();code=None;reason=None;output='';process=None
     with tempfile.TemporaryDirectory(prefix='anonymous-docker-',dir=work) as dockerconfig:
         env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1','DOCKER_CONFIG':dockerconfig}
@@ -89,9 +89,11 @@ def main():
     except (OSError,ValueError):value={}
     rawvalue=dict(value)
     if not value:value={'classification':'infrastructure-failure','gradable':False,'manualRequired':True,'message':reason or 'Platform не создал читаемый receipt'}
-    message=value.get('message','')
-    if value.get('classification')=='infrastructure-failure' and message.startswith('Trusted suite compilation failed:'):
-        value.update(classification='binding-setup-failure',manualRequired=True,studentCompilation='success',trustedCompilation='failure',dependentExecution='not-run',message='Преподавательская Java-привязка/зависимые тесты не скомпилировались. Требуется ручной разбор причины; ошибка решения не установлена. '+message)
+    if (value.get('classification')=='infrastructure-failure'
+        and value.get('studentCompilation')=='success'
+        and value.get('trustedCompilation')=='failure'
+        and value.get('dependentExecution')=='not-run'):
+        value.update(classification='binding-setup-failure',manualRequired=True,message='Преподавательская Java-привязка/зависимые тесты не скомпилировались. Требуется ручной разбор причины; ошибка решения не установлена.')
         value.pop('score',None)
     if value.get('classification')=='student-compilation-failure':value.setdefault('dependentExecution','not-run')
     after={str(p):sha(p) if p.is_file() else None for p in tracked}
