@@ -2838,6 +2838,292 @@ project-checks:
       feedback:
         requirement: Три вида комментариев и сохранение литералов. Сохранение границы токенов.
         what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого API/формата подготовьте подходящую обычную привязку или демонстрацию.
+    java-collections-digit-stack:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Ноль в начале результата
+        test: PublicExamplesTest#normal
+        state: '120'
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: '021'
+      - id: boundary
+        name: Входной ноль
+        test: PublicExamplesTest#boundary
+        state: '0'
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: '0'
+      feedback:
+        requirement: Обратный порядок всех цифр без потери нуля. Одна цифра вместо пустого результата.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-collections-word-frequency:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Повторы и значимый регистр
+        test: PublicExamplesTest#normal
+        state: Java java, code! Code code
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Java=1, java=1, code=2, Code=1; порядок свободен
+      - id: boundary
+        name: Нет английских букв
+        test: PublicExamplesTest#boundary
+        state: 123 — абв!
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Пустая карта
+      feedback:
+        requirement: Состав слов и их частоты. Пустой результат без пустого ключа.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-collections-poem-line-order:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/HistoricalContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Равные длины и устойчивый порядок
+        test: PublicExamplesTest#normal
+        state: Четыре опубликованные строки Пушкина в порядке1,2,3,4
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Позиции2,3,1,4; исходник прежний
+      - id: boundary
+        name: Пустой список строк
+        test: PublicExamplesTest#boundary
+        state: Пустой список
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Пустая последовательность; исходник прежний
+      feedback:
+        requirement: Копия по char-длине и сохранение исходного списка. Допустимый пустой результат.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-collections-distinct-word-set:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/HistoricalContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Одно слово в разных регистрах
+        test: PublicExamplesTest#normal
+        state: one, ONE! two
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Состав {one,two}, порядок свободен
+      - id: boundary
+        name: Локаль с иным правилом буквы I
+        test: PublicExamplesTest#boundary
+        state: I I, i; tr-TR
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Единственный элемент i
+      feedback:
+        requirement: Устранение повторов после преобразования регистра. Независимость состава от языка среды.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-collections-elimination-circle:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/HistoricalContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Переход через начало круга
+        test: PublicExamplesTest#normal
+        state: N=5
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Для обеих:2,4,1,5; остаётся3
+      - id: boundary
+        name: Один участник
+        test: PublicExamplesTest#boundary
+        state: N=1
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Для обеих:удалений нет, остаётся1
+      feedback:
+        requirement: Одинаковый порядок двух реализаций. Завершение без удаления последнего.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-collections-partition-list:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/HistoricalContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Две группы с повторяющимся значением
+        test: PublicExamplesTest#normal
+        state: '[3,1,4,2,3]; X=2'
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Сначала {1,2}, затем {3,3,4}; порядок внутри групп свободен
+      - id: boundary
+        name: Пустой список
+        test: PublicExamplesTest#boundary
+        state: '[]; X=0'
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Тот же пустой список
+      feedback:
+        requirement: Сохранение объекта, размера, кратностей и границы <=X. Сохранение допустимого пустого состояния.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-collections-graph-model:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/HistoricalContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Симметрия и сохранение вершин
+        test: PublicExamplesTest#normal
+        state: Graph(3); дважды добавить0—1, удалить, повторно удалить
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Соседи после добавления:[{1},{0},{}]; после удаления:[{},{},{}]
+      - id: boundary
+        name: Ноль вершин
+        test: PublicExamplesTest#boundary
+        state: Graph(0)
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Конструктор завершён; пустое хранение также проверяет преподаватель по исходнику
+      feedback:
+        requirement: Наблюдение рёбер и соседей при изменениях. Создание при n=0 без вызова операций с индексами.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-collections-nearest-value:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/HistoricalContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: По обе стороны и на равном расстоянии
+        test: PublicExamplesTest#normal
+        state: Добавить2,8; запросы3,7,5
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: OptionalDouble2,8,2
+      - id: boundary
+        name: Равенство расстояний после округления
+        test: PublicExamplesTest#boundary
+        state: -100,0,100; запрос1e150
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: OptionalDouble[-100]
+      feedback:
+        requirement: Выбор ближайшего и обычная ничья. Ничья среди всех значений по вычисленному Math.abs.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-collections-polynomial-list-multiplication:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/HistoricalContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Совпадающие суммы степеней
+        test: PublicExamplesTest#normal
+        state: '[1,2] и [3,4]'
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Самостоятельный список[3,10,8], длина3, входы прежние; допуск из условия
+      - id: boundary
+        name: Один пустой множитель
+        test: PublicExamplesTest#boundary
+        state: '[1,0] и []'
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Пустой результат, входы прежние
+      feedback:
+        requirement: Коэффициенты произведения и сохранение входов. Пустое представление нулевого многочлена.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
@@ -5332,3 +5618,183 @@ project-materialization:
       - source: test-support/shared/09a0048d487f/public-scenarios.md
         target: student/PUBLIC.md
         audience: student
+    exr-collections-digit-stack:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/collections/digit-stack/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+    exr-collections-word-frequency:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/collections/word-frequency/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+    exr-collections-poem-line-order:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/collections/poem-line-order/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+    exr-collections-distinct-word-set:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/collections/distinct-word-set/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+    exr-collections-elimination-circle:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/collections/elimination-circle/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+    exr-collections-partition-list:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/collections/partition-list/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+    exr-collections-graph-model:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/collections/graph-model/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+    exr-collections-nearest-value:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/collections/nearest-value/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+    exr-collections-polynomial-list-multiplication:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/collections/polynomial-list-multiplication/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading

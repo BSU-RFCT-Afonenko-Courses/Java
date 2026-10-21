@@ -1,0 +1,1 @@
+import java.util.*;class TaskBinding{static List<Integer>removed(int n,int kind){throw new UnsupportedOperationException("Подготовьте вызов своего решения");}static int survivor(int n,int kind){throw new UnsupportedOperationException("Подготовьте вызов своего решения");}}
