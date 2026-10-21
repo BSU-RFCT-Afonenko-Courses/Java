@@ -517,6 +517,193 @@ project-checks:
       feedback:
         requirement: Максимум и минимум всей последовательности. Нулевое количество отклоняется.
         what-check: Сопоставьте результат с условием и открытыми примерами.
+    java-reverse-array:
+      source-profile: java-main
+      additional-java-sources:
+        archive: additional-sources.zip
+        max-files: 128
+        max-file-bytes: 1048576
+        max-total-bytes: 4194304
+        max-archive-bytes: 2097152
+      tests:
+      - tests/junit/**/*.java
+      api-precheck:
+        files:
+        - tests/junit/api/CliPrecheck.java
+        entry: CliPrecheck
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Обратный порядок с повторением
+        test: PublicScenarioTest#normal
+        input: 'Без аргументов; stdin: 4 7 -2 7 0; EOF.'
+        expected: 0 7 -2 7
+      - id: boundary
+        name: Пустой массив
+        test: PublicScenarioTest#boundary
+        input: 'Без аргументов; stdin: 0; EOF.'
+        expected: Нет чисел и другого текста; допустимо пробельное оформление.
+      feedback:
+        requirement: Обратный порядок и сохранение повторного значения. Массив длины ноль не даёт элементов вывода.
+        what-check: Сопоставьте результат с условием и показанным открытым сценарием.
+    java-subtract-array-average:
+      source-profile: java-main
+      additional-java-sources:
+        archive: additional-sources.zip
+        max-files: 128
+        max-file-bytes: 1048576
+        max-total-bytes: 4194304
+        max-archive-bytes: 2097152
+      tests:
+      - tests/junit/**/*.java
+      api-precheck:
+        files:
+        - tests/junit/api/CliPrecheck.java
+        entry: CliPrecheck
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Обязательная матрица с дробными средними
+        test: PublicScenarioTest#normal
+        input: Без аргументов; пустой stdin, сразу EOF.
+        expected: 'Три строки: -3 0 3; 5/3 -4/3 -1/3; 1/3 7/3 -8/3, допуск 1e-8.'
+      - id: boundary
+        name: Постоянные строки и крайние значения
+        test: PublicScenarioTest#boundary
+        input: 'Без аргументов; stdin: 3 3 3\n-3 -3 -3\n0 0 0; EOF.'
+        expected: Три строки по три нуля.
+      feedback:
+        requirement: При пустом stdin выбран обязательный пример; вычитается среднее каждой строки. Вычитание среднего постоянной строки даёт нулевую строку.
+        what-check: Сопоставьте результат с условием и показанным открытым сценарием.
+    java-sort-matrix-rows:
+      source-profile: java-main
+      additional-java-sources:
+        archive: additional-sources.zip
+        max-files: 128
+        max-file-bytes: 1048576
+        max-total-bytes: 4194304
+        max-archive-bytes: 2097152
+      tests:
+      - tests/junit/**/*.java
+      api-precheck:
+        files:
+        - tests/junit/api/CliPrecheck.java
+        entry: CliPrecheck
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Переставленные строки обязательного примера
+        test: PublicScenarioTest#normal
+        input: 'Без аргументов; stdin: 1 3 -2\n-3 0 3\n2 -1 0; EOF.'
+        expected: 'Три строки: -3 0 3; 2 -1 0; 1 3 -2.'
+      - id: boundary
+        name: Разные строки с равной суммой
+        test: PublicScenarioTest#boundary
+        input: 'Без аргументов; stdin: 2 -1 0\n0 1 0\n0 0 0; EOF.'
+        expected: 'Три строки: 0 0 0; 2 -1 0; 0 1 0.'
+      feedback:
+        requirement: Строки упорядочены по сумме целиком. Разные строки с равной суммой сохраняют взаимный порядок.
+        what-check: Сопоставьте результат с условием и показанным открытым сценарием.
+    java-replace-word-letter:
+      source-profile: java-main
+      additional-java-sources:
+        archive: additional-sources.zip
+        max-files: 128
+        max-file-bytes: 1048576
+        max-total-bytes: 4194304
+        max-archive-bytes: 2097152
+      tests:
+      - tests/junit/**/*.java
+      api-precheck:
+        files:
+        - tests/junit/api/CliPrecheck.java
+        entry: CliPrecheck
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Замена и короткое слово
+        test: PublicScenarioTest#normal
+        input: 'Аргументы: "кот, я!", "2", "*"; stdin не используется.'
+        expected: Точный текст к*т, я! и завершающий LF либо CRLF.
+      - id: boundary
+        name: Пустой текст
+        test: PublicScenarioTest#boundary
+        input: 'Аргументы: "", "2", "*"; stdin не используется.'
+        expected: Только один завершающий LF либо CRLF.
+      feedback:
+        requirement: k-я буква длинного слова заменяется; короткое слово и разделители сохранены. Переданный пустой текст остаётся пустым.
+        what-check: Сопоставьте результат с условием и показанным открытым сценарием.
+    java-word-length-extrema:
+      source-profile: java-main
+      additional-java-sources:
+        archive: additional-sources.zip
+        max-files: 128
+        max-file-bytes: 1048576
+        max-total-bytes: 4194304
+        max-archive-bytes: 2097152
+      tests:
+      - tests/junit/**/*.java
+      api-precheck:
+        files:
+        - tests/junit/api/CliPrecheck.java
+        entry: CliPrecheck
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Разные длины и повторное вхождение
+        test: PublicScenarioTest#normal
+        input: 'Аргумент: "кот, дом и кот!"; stdin не используется.'
+        expected: 'Максимумы: кот дом кот\nМинимумы: и; после последней строки LF/CRLF необязателен.'
+      - id: boundary
+        name: Все слова равной длины
+        test: PublicScenarioTest#boundary
+        input: 'Аргумент: "кот дом кот"; stdin не используется.'
+        expected: 'Максимумы: кот дом кот\nМинимумы: кот дом кот; после последней строки LF/CRLF необязателен.'
+      feedback:
+        requirement: Оба экстремума, исходный порядок и повтор слова сохранены. Оба списка совпадают, повторное вхождение сохранено.
+        what-check: Сопоставьте результат с условием и показанным открытым сценарием.
+    java-compress-character-runs:
+      source-profile: java-main
+      additional-java-sources:
+        archive: additional-sources.zip
+        max-files: 128
+        max-file-bytes: 1048576
+        max-total-bytes: 4194304
+        max-archive-bytes: 2097152
+      tests:
+      - tests/junit/**/*.java
+      api-precheck:
+        files:
+        - tests/junit/api/CliPrecheck.java
+        entry: CliPrecheck
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Регистр и последняя одиночная буква
+        test: PublicScenarioTest#normal
+        input: 'Аргумент: "aaBBa"; stdin не используется.'
+        expected: Точный текст a2B2a и завершающий LF либо CRLF.
+      - id: boundary
+        name: Многозначная длина серии
+        test: PublicScenarioTest#boundary
+        input: 'Аргумент: двенадцать букв a; stdin не используется.'
+        expected: Точный текст a12 и завершающий LF либо CRLF.
+      feedback:
+        requirement: Серии различают регистр; последняя одиночная буква сохранена. Полная длина последней серии записана десятичным числом.
+        what-check: Сопоставьте результат с условием и показанным открытым сценарием.
+
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
@@ -580,23 +767,29 @@ project-materialization:
         audience: grading
     exr-text-compress-character-runs:
       common-files:
-      - source: test-support/api/CliPrecheck.java
-        target: student/src/test/java/api/CliPrecheck.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+      - audience: student
+        source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+      - audience: student
+        source: test-support/src/main/java/coursesupport/OutputNumbers.java
         target: student/src/test/java/coursesupport/OutputNumbers.java
-        audience: student
-      - source: test-support/api/CliPrecheck.java
-        target: tests/junit/api/CliPrecheck.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+      - audience: grading
+        source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: tests/junit/coursesupport/JavaProcess.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+      - audience: grading
+        source: test-support/src/main/java/coursesupport/OutputNumbers.java
         target: tests/junit/coursesupport/OutputNumbers.java
+      - audience: grading
+        source: test-support/api/CliPrecheck.java
+        target: tests/junit/api/CliPrecheck.java
+      - audience: grading
+        source: projects/text/compress-character-runs/student/src/test/java/PublicChecks.java
+        target: tests/junit/PublicChecks.java
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/PublicScenarioTest.java
         audience: grading
     exr-numbers-console-greeting:
       common-files:
@@ -850,43 +1043,55 @@ project-materialization:
         audience: grading
     exr-text-replace-word-letter:
       common-files:
-      - source: test-support/api/CliPrecheck.java
-        target: student/src/test/java/api/CliPrecheck.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+      - audience: student
+        source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+      - audience: student
+        source: test-support/src/main/java/coursesupport/OutputNumbers.java
         target: student/src/test/java/coursesupport/OutputNumbers.java
-        audience: student
-      - source: test-support/api/CliPrecheck.java
-        target: tests/junit/api/CliPrecheck.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+      - audience: grading
+        source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: tests/junit/coursesupport/JavaProcess.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+      - audience: grading
+        source: test-support/src/main/java/coursesupport/OutputNumbers.java
         target: tests/junit/coursesupport/OutputNumbers.java
+      - audience: grading
+        source: test-support/api/CliPrecheck.java
+        target: tests/junit/api/CliPrecheck.java
+      - audience: grading
+        source: projects/text/replace-word-letter/student/src/test/java/PublicChecks.java
+        target: tests/junit/PublicChecks.java
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/PublicScenarioTest.java
         audience: grading
     exr-arrays-reverse-array:
       common-files:
-      - source: test-support/api/CliPrecheck.java
-        target: student/src/test/java/api/CliPrecheck.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+      - audience: student
+        source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+      - audience: student
+        source: test-support/src/main/java/coursesupport/OutputNumbers.java
         target: student/src/test/java/coursesupport/OutputNumbers.java
-        audience: student
-      - source: test-support/api/CliPrecheck.java
-        target: tests/junit/api/CliPrecheck.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+      - audience: grading
+        source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: tests/junit/coursesupport/JavaProcess.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+      - audience: grading
+        source: test-support/src/main/java/coursesupport/OutputNumbers.java
         target: tests/junit/coursesupport/OutputNumbers.java
+      - audience: grading
+        source: test-support/api/CliPrecheck.java
+        target: tests/junit/api/CliPrecheck.java
+      - audience: grading
+        source: projects/arrays/reverse-array/student/src/test/java/PublicChecks.java
+        target: tests/junit/PublicChecks.java
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/PublicScenarioTest.java
         audience: grading
     exr-numbers-short-circuit-and:
       common-files:
@@ -910,43 +1115,55 @@ project-materialization:
         audience: grading
     exr-arrays-sort-matrix-rows:
       common-files:
-      - source: test-support/api/CliPrecheck.java
-        target: student/src/test/java/api/CliPrecheck.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+      - audience: student
+        source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+      - audience: student
+        source: test-support/src/main/java/coursesupport/OutputNumbers.java
         target: student/src/test/java/coursesupport/OutputNumbers.java
-        audience: student
-      - source: test-support/api/CliPrecheck.java
-        target: tests/junit/api/CliPrecheck.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+      - audience: grading
+        source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: tests/junit/coursesupport/JavaProcess.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+      - audience: grading
+        source: test-support/src/main/java/coursesupport/OutputNumbers.java
         target: tests/junit/coursesupport/OutputNumbers.java
+      - audience: grading
+        source: test-support/api/CliPrecheck.java
+        target: tests/junit/api/CliPrecheck.java
+      - audience: grading
+        source: projects/arrays/sort-matrix-rows/student/src/test/java/PublicChecks.java
+        target: tests/junit/PublicChecks.java
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/PublicScenarioTest.java
         audience: grading
     exr-arrays-subtract-array-average:
       common-files:
-      - source: test-support/api/CliPrecheck.java
-        target: student/src/test/java/api/CliPrecheck.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+      - audience: student
+        source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+      - audience: student
+        source: test-support/src/main/java/coursesupport/OutputNumbers.java
         target: student/src/test/java/coursesupport/OutputNumbers.java
-        audience: student
-      - source: test-support/api/CliPrecheck.java
-        target: tests/junit/api/CliPrecheck.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+      - audience: grading
+        source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: tests/junit/coursesupport/JavaProcess.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+      - audience: grading
+        source: test-support/src/main/java/coursesupport/OutputNumbers.java
         target: tests/junit/coursesupport/OutputNumbers.java
+      - audience: grading
+        source: test-support/api/CliPrecheck.java
+        target: tests/junit/api/CliPrecheck.java
+      - audience: grading
+        source: projects/arrays/subtract-array-average/student/src/test/java/PublicChecks.java
+        target: tests/junit/PublicChecks.java
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/PublicScenarioTest.java
         audience: grading
     exr-control-toggle-console-case:
       common-files:
@@ -970,23 +1187,29 @@ project-materialization:
         audience: grading
     exr-text-word-length-extrema:
       common-files:
-      - source: test-support/api/CliPrecheck.java
-        target: student/src/test/java/api/CliPrecheck.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+      - audience: student
+        source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+      - audience: student
+        source: test-support/src/main/java/coursesupport/OutputNumbers.java
         target: student/src/test/java/coursesupport/OutputNumbers.java
-        audience: student
-      - source: test-support/api/CliPrecheck.java
-        target: tests/junit/api/CliPrecheck.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+      - audience: grading
+        source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: tests/junit/coursesupport/JavaProcess.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+      - audience: grading
+        source: test-support/src/main/java/coursesupport/OutputNumbers.java
         target: tests/junit/coursesupport/OutputNumbers.java
+      - audience: grading
+        source: test-support/api/CliPrecheck.java
+        target: tests/junit/api/CliPrecheck.java
+      - audience: grading
+        source: projects/text/word-length-extrema/student/src/test/java/PublicChecks.java
+        target: tests/junit/PublicChecks.java
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/PublicScenarioTest.java
         audience: grading
     exr-files-gradeapp-report:
       common-files:
