@@ -10,7 +10,7 @@ default-exercise-statement-visibility: open
 Байтовое и символьное чтение, кодировка и границы файловой операции:
 @theory:sec-j25-theory-io.
 
-:::: {#exr-files-byte-file-copy difficulty="introductory" time="45" project="/projects/files/byte-file-copy"}
+:::: {#exr-files-byte-file-copy target="prairielearn" project="/projects/files/byte-file-copy" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-byte-file-copy"}
 ## Копирование файла: байтовые потоки
 
 Напишите консольную программу, которая получает два аргумента — пути
@@ -25,28 +25,28 @@ default-exercise-statement-visibility: open
 перезаписывается. Если оба пути обозначают один существующий файл,
 отклоните операцию до открытия выхода и сохраните вход; учитывайте
 идентичность файла, включая разные записи пути к нему. Во время проверки
-файлы не меняются извне. Отсутствие входа сохраняет прежний выход.
+файлы не меняются извне. Отсутствие входа сохраняет прежний выход и не создаёт новый.
 При отказе записи возможен частичный результат. Сообщите причину отказа;
 сообщение об успешном копировании допустимо только после успешного завершения.
 
 Закрывайте каждый успешно открытый ресурс явным вызовом `close()`,
 включая выход по исключению и случай отказа при закрытии другого ресурса.
 Допустимо читать по одному байту или порциями в буфер. Имена классов и вспомогательных
-методов, текст диагностики и коды завершения выберите самостоятельно.
+методов, текст и канал диагностики, а также коды завершения выберите самостоятельно.
 
 Для входа `Java text\nвторая строка` результат — `Java-text\nвторая-строка`;
 здесь `\n` обозначает перевод строки, после последнего слова его нет.
 Покажите также пустой файл, табуляцию, разные разделители строк,
 отсутствующий вход при существующем выходе и отказ самокопирования.
 Предъявите исходник с явным закрытием и оба файла для сравнения.
-Подготовка: @handbook:sec-j25-api-files-operations,
-@theory:sec-j25-theory-resources-manual. [@bib-task-byte-file-copy]
+Подготовка: @handbook:sec-api-files-operations,
+@theory:sec-theory-resources-manual.
 
 {{< project-download exr-files-byte-file-copy kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
-:::: {#exr-files-character-file-copy difficulty="introductory" time="30" project="/projects/files/character-file-copy"}
+:::: {#exr-files-character-file-copy target="prairielearn" project="/projects/files/character-file-copy" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-character-file-copy"}
 ## Копирование файла: символьные потоки
 
 Напишите консольную программу, которая получает два аргумента — пути
@@ -61,20 +61,20 @@ default-exercise-statement-visibility: open
 перезаписывается. Если оба пути обозначают один существующий файл,
 отклоните операцию до открытия выхода и сохраните вход; учитывайте
 идентичность файла, включая разные записи пути к нему. Во время проверки
-файлы не меняются извне. Отсутствие входа сохраняет прежний выход.
+файлы не меняются извне. Отсутствие входа сохраняет прежний выход и не создаёт новый.
 При отказе записи возможен частичный результат. Сообщите причину отказа;
 сообщение об успешном копировании допустимо только после успешного завершения.
 
 Допустимо читать по одному символу или порциями в буфер. Имена классов и вспомогательных
-методов, текст диагностики и коды завершения выберите самостоятельно.
+методов, текст и канал диагностики, а также коды завершения выберите самостоятельно.
 
 Для входа `Java text\nвторая строка` результат — `Java-text\nвторая-строка`;
 здесь `\n` обозначает перевод строки, после последнего слова его нет.
 Покажите также пустой файл, табуляцию, разные разделители строк,
 отсутствующий вход при существующем выходе и отказ самокопирования.
 Предъявите исходник с try-with-resources и оба файла для сравнения.
-Подготовка: @handbook:sec-j25-api-files-operations,
-@theory:sec-j25-theory-resources-autocloseable. [@bib-task-character-file-copy]
+Подготовка: @handbook:sec-api-files-operations,
+@theory:sec-theory-resources-autocloseable.
 
 {{< project-download exr-files-character-file-copy kind="starter" text="Скачать стартовый проект" >}}
 
@@ -294,7 +294,7 @@ ASCII-пробелами, табуляциями либо переводами �
 
 ::::
 
-:::: {#exr-files-gradeapp-report difficulty="intermediate" time="120" target="manual" project="/projects/files/gradeapp-report"}
+:::: {#exr-files-gradeapp-report target="prairielearn" project="/projects/files/gradeapp-report" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="false"}
 ## Отчёт по студентам: завершение gradeapp
 
 Завершите предоставленное консольное приложение `gradeapp`.
@@ -389,17 +389,36 @@ Stdout содержит по одной строке `id;name;score` на выб
 
 ### Сборка и демонстрация
 
-Из корня распакованной заготовки с `pom.xml` выполните
-`sh ./build.sh test package` в POSIX либо `.\build.cmd test package`
-в Windows. Скрипты и Maven Wrapper предоставлены. До начала работы
-подготовьте JDK 25 и загрузку зависимостей по
-@handbook:sec-j25-api-project-wrapper. Проверки поведения должны проходить
-после реализации TODO. Запустите готовый JAR из другого рабочего каталога,
-подставив реальные абсолютные пути:
+Нужны установленный Gradle 9.8.0 и JDK 25; `JAVA_HOME` указывает каталог JDK.
+Из каталога с `build.gradle` один раз подготовьте зависимости через сеть:
 
-```bash
-java -jar /absolute/path/target/gradeapp.jar /absolute/path/input.txt 80
+```console
+gradle prepareDependencies
 ```
+
+До реализации TODO проверьте компиляцию и сборку JAR без выполнения
+проверок поведения:
+
+```console
+gradle --offline assemble testClasses
+```
+
+После реализации выполните сборку с публичными проверками и запустите пример:
+
+```console
+gradle --offline clean build
+java -jar build/libs/gradeapp.jar samples/students.txt 80
+```
+
+Для запуска из другого рабочего каталога подставьте абсолютные пути:
+
+```console
+java -jar /absolute/path/student/build/libs/gradeapp.jar /absolute/path/student/samples/students.txt 80
+```
+
+Пути с пробелами заключайте в кавычки. Аргументов приложения два: путь входа
+и порог. Заготовка с TODO компилируется; её проверки поведения должны пройти
+после реализации пяти методов.
 
 Для строк `s2;Lin;70`, `s3;Ann;90`, `s10;Ada;90` и порога 80 или 90
 stdout содержит `s10;Ada;90`, затем `s3;Ann;90`. При равных баллах
@@ -412,8 +431,8 @@ stdout содержит `s10;Ada;90`, затем `s3;Ann;90`. При равны�
 JAR из другого каталога. Объясните проверку уникальности, самостоятельную
 структуру результата `selected` и границу начала вывода.
 
-Подготовка: @theory:sec-j25-theory-application-behavior,
-@handbook:sec-j25-api-project-wrapper, @practice:sec-j25-practice-files.
+Подготовка: @theory:sec-theory-application-behavior,
+@handbook:sec-api-project-contract, @practice:sec-practice-files.
 
 {{< project-download exr-files-gradeapp-report kind="starter" text="Скачать стартовый проект" >}}
 

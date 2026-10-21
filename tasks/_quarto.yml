@@ -1323,6 +1323,101 @@ project-checks:
       feedback:
         requirement: Собственный интерфейс и лямбда вычисляют конечный b²−4ac с допуском 1e-8+1e-12*abs(r).
         what-check: Сопоставьте фактический результат с открытым ожиданием. Предъявите исходник и объясните обязательные приёмы.
+    java-files-byte-file-copy:
+      source-profile: java-main
+      tests:
+      - tests/junit/private/CopyContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/CopySupport.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Кириллица без последнего перевода строки
+        test: PublicExamplesTest#normal
+        state: UTF-8 Java text\nвторая строка, LF внутри и без LF в конце; выход отсутствует
+        action: Запустить с двумя путями
+        expected: Java-text\nвторая-строка, вход прежний; успех лишь после завершения
+      - id: boundary
+        name: Отсутствующий вход при прежнем выходе
+        test: PublicExamplesTest#boundary
+        state: Вход отсутствует; выход UTF-8 Сохранить без LF
+        action: Передать два пути программе
+        expected: Причина отказа сообщена; прежний выход и отсутствие входа сохранены; успех не заявлен
+      feedback:
+        requirement: Только байт 0x20 заменяется на 0x2D; сохранность файлов и отказ до усечения. Байтовые потоки, явный close каждого открытого ресурса и смысл диагностики проверяются вручную.
+        what-check: Сопоставьте фактическое наблюдение с опубликованным ожиданием. Предъявите исходник, обязательные приёмы и объяснение преподавателю.
+    java-files-character-file-copy:
+      source-profile: java-main
+      tests:
+      - tests/junit/private/CopyContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/CopySupport.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Пробел, TAB, NBSP и CRLF
+        test: PublicExamplesTest#normal
+        state: UTF-8 A B\tC\u00A0D\r\nE F без LF в конце; выход отсутствует
+        action: Запустить с двумя путями
+        expected: Точные UTF-8 A-B\tC\u00A0D\r\nE-F; вход прежний
+      - id: boundary
+        name: Две записи пути к одному файлу
+        test: PublicExamplesTest#boundary
+        state: text.txt содержит A B без LF; ./text.txt обозначает тот же файл
+        action: Запустить с аргументами text.txt и ./text.txt из этого cwd
+        expected: Объяснённый отказ до усечения; содержимое A B прежнее; успех не заявлен
+      feedback:
+        requirement: Только U+0020 заменяется на U+002D в UTF-8; сохранность данных и отказ самокопирования до усечения. Reader/Writer, UTF-8 и TWR проверяются вручную.
+        what-check: Сопоставьте фактическое наблюдение с опубликованным ожиданием. Предъявите исходник, обязательные приёмы и объяснение преподавателю.
+    java-files-gradeapp-report:
+      source-profile: java-main
+      tests:
+      - tests/bindings/fixed-api/grade/TaskBinding.java
+      - tests/junit/private/grade/GradeAppBoundaryTest.java
+      - tests/junit/private/grade/GradeAppContractTest.java
+      - tests/junit/private/grade/GradeAppEmptyContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Отбор и строковый порядок кодов
+        test: PublicExamplesTest#normal
+        state: UTF-8 s2;Lin;70\ns3;Ann;90\ns10;Ada;90\n; порог 80
+        action: Запустить настоящий JAR по абсолютному пути из другого cwd с абсолютным путём входа
+        expected: Код 0, stdout s10;Ada;90 и s3;Ann;90 с платформенным переводом после каждой строки; stderr пуст, вход прежний
+      - id: boundary
+        name: Поздний повтор после пропущенной строки
+        test: PublicExamplesTest#boundary
+        state: UTF-8 s1;Ada;90\n   \n s1 ;Other;80\n; порог 80
+        action: Запустить настоящий JAR с этим входом
+        expected: 'Код 3, stdout пуст; stderr ошибка данных: строка 3: повтор кода s1 плюс платформенный перевод; вход прежний'
+      feedback:
+        requirement: Пять опубликованных методов, полный проверенный каталог до stdout, независимые неизменяемые списки, точные строки и коды; настоящий Gradle JAR вне проекта.
+        what-check: Сопоставьте фактическое наблюдение с опубликованным ожиданием. Предъявите исходник, обязательные приёмы и объяснение преподавателю.
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
@@ -1832,12 +1927,36 @@ project-materialization:
         audience: grading
     exr-files-gradeapp-report:
       common-files:
+      - source: projects/files/gradeapp-report/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
       - source: common/src/main/java/grade/Student.java
         target: student/src/main/java/grade/Student.java
         audience: student
       - source: common/src/main/java/grade/Student.java
         target: reference/src/main/java/grade/Student.java
         audience: grading
+      - source: projects/files/gradeapp-report/student/src/main/java/grade/DataFormatException.java
+        target: reference/src/main/java/grade/DataFormatException.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: student/src/test/java/PublicExamplesTest.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/jar/coursesupport/JavaProcess.java
+        audience: grading
+      - source: projects/files/gradeapp-report/student/src/main/java/grade/DataFormatException.java
+        target: student/src/main/java/grade/DataFormatException.java
+        audience: student
     exr-collections-views-snapshots:
       common-files:
       - source: test-support/shared/0ef2834a44f4/Main.java
@@ -2453,4 +2572,106 @@ project-materialization:
         audience: grading
       - source: test-support/junit/DirectPublicExamplesTest.java
         target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-exceptions-exception-flow-errors:
+      common-files: []
+    exr-files-byte-file-copy:
+      common-files:
+      - source: test-support/shared/019b9411bebb/TaskBinding.java
+        target: student/src/test/java/TaskBinding.java
+        audience: student
+      - source: projects/files/byte-file-copy/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: student/src/test/java/CopySupport.java
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: tests/junit/support/CopySupport.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/e3b0c44298fc/public-empty-expected.txt
+        target: student/samples/public-empty-expected.txt
+        audience: student
+      - source: test-support/shared/e3b0c44298fc/public-empty-input.txt
+        target: student/samples/public-empty-input.txt
+        audience: student
+      - source: test-support/shared/fc42bcd53061/public-text-expected.txt
+        target: student/samples/public-text-expected.txt
+        audience: student
+      - source: test-support/shared/5d5dd16075d4/public-text-input.txt
+        target: student/samples/public-text-input.txt
+        audience: student
+      - source: test-support/shared/cef6a543b1be/public-whitespace-expected.txt
+        target: student/samples/public-whitespace-expected.txt
+        audience: student
+      - source: test-support/shared/06eb54225794/public-whitespace-input.txt
+        target: student/samples/public-whitespace-input.txt
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: tests/jdk/CopySupport.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/jdk/coursesupport/JavaProcess.java
+        audience: grading
+    exr-files-character-file-copy:
+      common-files:
+      - source: test-support/shared/019b9411bebb/TaskBinding.java
+        target: student/src/test/java/TaskBinding.java
+        audience: student
+      - source: projects/files/character-file-copy/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: student/src/test/java/CopySupport.java
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: tests/junit/support/CopySupport.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/e3b0c44298fc/public-empty-expected.txt
+        target: student/samples/public-empty-expected.txt
+        audience: student
+      - source: test-support/shared/e3b0c44298fc/public-empty-input.txt
+        target: student/samples/public-empty-input.txt
+        audience: student
+      - source: test-support/shared/fc42bcd53061/public-text-expected.txt
+        target: student/samples/public-text-expected.txt
+        audience: student
+      - source: test-support/shared/5d5dd16075d4/public-text-input.txt
+        target: student/samples/public-text-input.txt
+        audience: student
+      - source: test-support/shared/cef6a543b1be/public-whitespace-expected.txt
+        target: student/samples/public-whitespace-expected.txt
+        audience: student
+      - source: test-support/shared/06eb54225794/public-whitespace-input.txt
+        target: student/samples/public-whitespace-input.txt
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: tests/jdk/CopySupport.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/jdk/coursesupport/JavaProcess.java
         audience: grading
