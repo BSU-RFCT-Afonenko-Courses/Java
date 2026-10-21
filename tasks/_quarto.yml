@@ -1041,6 +1041,90 @@ project-checks:
       feedback:
         requirement: IGenStack<T> использует переданный T[]; новый стек пуст, LIFO возвращает помещённые ссылки, отказы сохраняют состояние.
         what-check: Сопоставьте полученные значения и состояние с открытым ожиданием; предъявите исходник и объясните обязательные приёмы.
+    java-collections-set-union-intersection:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Общий элемент двух множеств
+        test: PublicExamplesTest#normal
+        action: Множества {1,2} и {2,3}; вызвать отдельно объединение и пересечение, проверить оба входа после каждого метода
+        expected: Объединение {1,2,3}, пересечение {2}, оба входа сохранены
+      - id: boundary
+        name: Пустой вход и независимость результата
+        test: PublicExamplesTest#boundary
+        action: Изменяемые пустое множество и {4}; получить результаты, затем добавить 5 во второй вход
+        expected: Прежние результаты {4} и пустое; второй вход {4,5}
+      feedback:
+        requirement: Отдельные методы дают самостоятельные по составу объединение и пересечение и сохраняют оба входа.
+        what-check: Сопоставьте наблюдение с опубликованным ожиданием и предъявите исходник и объяснение преподавателю.
+    java-collections-balanced-brackets:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Вложенные пары разных видов
+        test: PublicExamplesTest#normal
+        action: Проверить строку ([]{}).
+        expected: true; строка сохранена
+      - id: boundary
+        name: Пустое состояние и лишняя закрывающая
+        test: PublicExamplesTest#boundary
+        action: Проверить отдельно пустую строку и )
+        expected: Соответственно true и false
+      feedback:
+        requirement: Стек проверяет виды и вложенность пар для строки из шести допустимых скобок; пустая строка допустима.
+        what-check: Сопоставьте наблюдение с опубликованным ожиданием и предъявите исходник и объяснение преподавателю.
+    java-collections-polynomial-map-addition:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Общая степень с нулевой суммой
+        test: PublicExamplesTest#normal
+        action: Сложить HashMap {0:1,2:3} и {1:2,2:-3}
+        expected: Самостоятельная HashMap, коэффициенты 1,2,0; явный ноль допустим; входы прежние
+      - id: boundary
+        name: Два нулевых многочлена
+        test: PublicExamplesTest#boundary
+        action: Сложить две пустые HashMap
+        expected: Самостоятельный нулевой многочлен; явные нули допустимы; входы пусты
+      feedback:
+        requirement: Самостоятельная HashMap складывает коэффициенты и сохраняет входы; abs(a-r)<=1e-9+1e-12*abs(r), отсутствующая пара означает ноль.
+        what-check: Сопоставьте наблюдение с опубликованным ожиданием и предъявите исходник и объяснение преподавателю.
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
@@ -1558,11 +1642,35 @@ project-materialization:
         audience: grading
     exr-collections-views-snapshots:
       common-files:
+      - source: test-support/shared/0ef2834a44f4/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/collections/views-snapshots/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
       - source: common/src/main/java/course/examples/objects/Book.java
-        target: student/src/course/examples/objects/Book.java
+        target: student/src/main/java/course/examples/objects/Book.java
         audience: student
       - source: common/src/main/java/course/examples/objects/Book.java
         target: reference/course/examples/objects/Book.java
+        audience: grading
+      - source: common/src/main/java/course/examples/objects/Book.java
+        target: tests/fixtures/valid-alternate/course/examples/objects/Book.java
+        audience: grading
+      - source: common/src/main/java/course/examples/objects/Book.java
+        target: tests/fixtures/wrong/course/examples/objects/Book.java
+        audience: grading
+      - source: common/src/main/java/course/examples/objects/Book.java
+        target: tests/fixtures/valid-free/course/examples/objects/Book.java
+        audience: grading
+      - source: common/src/main/java/course/examples/objects/Book.java
+        target: tests/fixtures/public-pair-only/course/examples/objects/Book.java
+        audience: grading
+      - source: common/src/main/java/course/examples/objects/Book.java
+        target: tests/fixtures/compile-error/course/examples/objects/Book.java
+        audience: grading
+      - source: common/src/main/java/course/examples/objects/Book.java
+        target: tests/fixtures/manual-source-reject/course/examples/objects/Book.java
         audience: grading
     exr-generics-generic-queue:
       common-files:
@@ -1930,4 +2038,90 @@ project-materialization:
         audience: grading
       - source: projects/generics/generic-stack/student/src/test/java/PublicChecks.java
         target: tests/junit/support/PublicChecks.java
+        audience: grading
+    exr-collections-set-union-intersection:
+      common-files:
+      - source: test-support/shared/0ef2834a44f4/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/collections/set-union-intersection/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: projects/collections/set-union-intersection/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-collections-balanced-brackets:
+      common-files:
+      - source: test-support/shared/0ef2834a44f4/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/collections/balanced-brackets/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: projects/collections/balanced-brackets/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-collections-polynomial-map-addition:
+      common-files:
+      - source: test-support/shared/0ef2834a44f4/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/collections/polynomial-map-addition/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: projects/collections/polynomial-map-addition/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-collections-object-hash:
+      common-files:
+      - source: test-support/shared/0ef2834a44f4/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/collections/object-hash/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: common/src/main/java/grade/Student.java
+        target: student/src/main/java/grade/Student.java
+        audience: student
+      - source: common/src/main/java/grade/Student.java
+        target: reference/grade/Student.java
+        audience: grading
+      - source: common/src/main/java/grade/Student.java
+        target: tests/fixtures/valid-alternate/grade/Student.java
+        audience: grading
+      - source: common/src/main/java/grade/Student.java
+        target: tests/fixtures/wrong/grade/Student.java
+        audience: grading
+      - source: common/src/main/java/grade/Student.java
+        target: tests/fixtures/valid-free/grade/Student.java
+        audience: grading
+      - source: common/src/main/java/grade/Student.java
+        target: tests/fixtures/public-pair-only/grade/Student.java
+        audience: grading
+      - source: common/src/main/java/grade/Student.java
+        target: tests/fixtures/compile-error/grade/Student.java
+        audience: grading
+      - source: common/src/main/java/grade/Student.java
+        target: tests/fixtures/manual-source-reject/grade/Student.java
+        audience: grading
+      - source: common/src/main/java/grade/Student.java
+        target: teacher-demonstration/grade/Student.java
         audience: grading
