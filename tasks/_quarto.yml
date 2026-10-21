@@ -925,6 +925,122 @@ project-checks:
       feedback:
         requirement: Перенос только put/get сохраняет FIFO и объекты, опустошает источник; count0 не требует места.
         what-check: Сопоставьте фактические действия и состояние с открытым ожиданием; предъявите исходники и объяснение обязательной ручной части.
+    java-generics-range-maximum:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/RangeSignTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Максимум внутри выбранного диапазона
+        test: PublicExamplesTest#normal
+        action: Integer[99,2,7,4], [1,4)
+        expected: Сам Integer из позиции2:7; массив сохранён.
+      - id: boundary
+        name: Диапазон из одной строки
+        test: PublicExamplesTest#boundary
+        action: String[я,б,в], [1,2)
+        expected: Сама String из позиции1:б; массив сохранён.
+      feedback:
+        requirement: Один обобщённый метод возвращает исходный максимальный элемент полуоткрытого диапазона и сохраняет массив.
+        what-check: Сопоставьте полученные значения и состояние с открытым ожиданием; предъявите исходник и объясните обязательные приёмы.
+    java-generics-property-count:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/PropertySelectionTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Два переданных свойства
+        test: PublicExamplesTest#normal
+        action: Integer[1,2,3], нечётность; String[one,four,пустая строка], длина>3
+        expected: 2 и1, массивы сохранены.
+      - id: boundary
+        name: Пустые массивы двух типов
+        test: PublicExamplesTest#boundary
+        action: Пустые Integer[] и String[], те же свойства
+        expected: 0 и0; массивы сохранены.
+      feedback:
+        requirement: Количество определяется переданным объектом свойства; массив сохранён, пустой даёт0.
+        what-check: Сопоставьте полученные значения и состояние с открытым ожиданием; предъявите исходник и объясните обязательные приёмы.
+    java-generics-generic-queue:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/QueueContractTest.java
+      - tests/junit/private/QueueSequenceTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: FIFO и освободившееся место
+        test: PublicExamplesTest#normal
+        action: GenericQueue<String>, String[2]:put Лист/Ветка,get,put Плод,get/get
+        expected: Лист,Ветка,Плод — прежние ссылки, все операции успешны.
+      - id: boundary
+        name: Ёмкость один и оба отказа
+        test: PublicExamplesTest#boundary
+        action: 'GenericQueue<Integer>, Integer[1] содержит42 до передачи: get,put7,put8,get,get,put9,get'
+        expected: QueueEmptyException,QueueFullException,7,QueueEmptyException,9; обе возвращённые ссылки прежние.
+      feedback:
+        requirement: Переданный T[] задаёт вместимость; новая очередь пуста, FIFO возвращает помещённые ссылки, отказы сохраняют состояние.
+        what-check: Сопоставьте полученные значения и состояние с открытым ожиданием; предъявите исходник и объясните обязательные приёмы.
+    java-generics-generic-stack:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/StackSequenceTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: LIFO и освободившееся место
+        test: PublicExamplesTest#normal
+        action: IGenStack<String>, String[2]:push Лист/Ветка,pop,push Плод,pop/pop
+        expected: Ветка,Плод,Лист — прежние ссылки, все операции успешны.
+      - id: boundary
+        name: Ёмкость один и оба отказа
+        test: PublicExamplesTest#boundary
+        action: IGenStack<Integer>, Integer[1] содержит42 до передачи:pop,push7,push8,pop,pop,push9,pop
+        expected: StackEmptyException,StackFullException,7,StackEmptyException,9; обе возвращённые ссылки прежние.
+      feedback:
+        requirement: IGenStack<T> использует переданный T[]; новый стек пуст, LIFO возвращает помещённые ссылки, отказы сохраняют состояние.
+        what-check: Сопоставьте полученные значения и состояние с открытым ожиданием; предъявите исходник и объясните обязательные приёмы.
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
@@ -1450,17 +1566,29 @@ project-materialization:
         audience: grading
     exr-generics-generic-queue:
       common-files:
-      - source: projects/generics/generic-queue/support/api/QueueApi.java
-        target: student/src/test/java/api/QueueApi.java
+      - source: test-support/shared/5e353144fa49/Main.java
+        target: student/src/main/java/Main.java
         audience: student
-      - source: projects/generics/generic-queue/support/api/QueueApi.java
-        target: tests/junit/api/QueueApi.java
+      - source: projects/generics/generic-queue/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+      - source: projects/generics/generic-queue/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
         audience: grading
       - source: projects/generics/generic-queue/support/queuecheck/QueueAccess.java
         target: student/src/test/java/queuecheck/QueueAccess.java
         audience: student
       - source: projects/generics/generic-queue/support/queuecheck/QueueAccess.java
-        target: tests/junit/queuecheck/QueueAccess.java
+        target: tests/api/queuecheck/QueueAccess.java
+        audience: grading
+      - source: projects/generics/generic-queue/support/api/QueueApi.java
+        target: tests/api/QueueApi.java
         audience: grading
     exr-objects-variadic-sum:
       common-files:
@@ -1716,3 +1844,90 @@ project-materialization:
       - source: test-support/shared/1c76d22d4e1b/FixedQueue.java
         target: student/src/main/java/FixedQueue.java
         audience: student
+    exr-generics-range-maximum:
+      common-files:
+      - source: test-support/shared/5e353144fa49/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/generics/range-maximum/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+      - source: projects/generics/range-maximum/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+    exr-generics-property-count:
+      common-files:
+      - source: test-support/shared/5e353144fa49/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/generics/property-count/student/src/main/java/Property.java
+        target: reference/Property.java
+        audience: grading
+      - source: projects/generics/property-count/student/src/main/java/Property.java
+        target: tests/fixtures/public-pair-only/Property.java
+        audience: grading
+      - source: projects/generics/property-count/student/src/main/java/Property.java
+        target: tests/fixtures/wrong/Property.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+      - source: projects/generics/property-count/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+    exr-generics-generic-stack:
+      common-files:
+      - source: test-support/shared/5e353144fa49/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/generics/generic-stack/student/src/main/java/IGenStack.java
+        target: reference/IGenStack.java
+        audience: grading
+      - source: projects/generics/generic-stack/student/src/main/java/IGenStack.java
+        target: tests/fixtures/manual-wrong-cloned-storage/IGenStack.java
+        audience: grading
+      - source: projects/generics/generic-stack/student/src/main/java/IGenStack.java
+        target: tests/fixtures/public-pair-only/IGenStack.java
+        audience: grading
+      - source: projects/generics/generic-stack/student/src/main/java/IGenStack.java
+        target: tests/fixtures/valid-extra-overload/IGenStack.java
+        audience: grading
+      - source: projects/generics/generic-stack/student/src/main/java/IGenStack.java
+        target: tests/fixtures/valid-tail-noarg/IGenStack.java
+        audience: grading
+      - source: projects/generics/generic-stack/student/src/main/java/StackEmptyException.java
+        target: tests/fixtures/valid-tail-noarg/StackEmptyException.java
+        audience: grading
+      - source: projects/generics/generic-stack/student/src/main/java/StackFullException.java
+        target: tests/fixtures/valid-tail-noarg/StackFullException.java
+        audience: grading
+      - source: projects/generics/generic-stack/student/src/main/java/IGenStack.java
+        target: tests/fixtures/wrong/IGenStack.java
+        audience: grading
+      - source: projects/generics/generic-stack/student/src/main/java/IGenStack.java
+        target: tests/fixtures/wrong-extra-overload/IGenStack.java
+        audience: grading
+      - source: projects/generics/generic-stack/student/src/main/java/IGenStack.java
+        target: tests/fixtures/wrong-initial-count/IGenStack.java
+        audience: grading
+      - source: projects/generics/generic-stack/student/src/main/java/IGenStack.java
+        target: tests/fixtures/wrong-unchecked-full/IGenStack.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+      - source: projects/generics/generic-stack/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
