@@ -8,9 +8,22 @@ default-exercise-statement-visibility: open
 # Работа с файлами {#sec-j25-bank-files}
 
 Байтовое и символьное чтение, кодировка и границы файловой операции:
-@theory:sec-j25-theory-io.
+@theory:sec-j25-theory-io. Закрытие ресурсов:
+@theory:sec-j25-theory-resources. Состав работы:
+@tasks:sec-j25-lab-files; введение — @practice:sec-j25-practice-files.
 
-:::: {#exr-files-byte-file-copy target="prairielearn" project="/projects/files/byte-file-copy" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-byte-file-copy"}
+В лабораторной обязательны все четыре задания: «Ошибки в обработке
+и генерации исключений», обе версии копирования и завершение gradeapp.
+Предъявите исходники, входные данные и короткую демонстрацию обычных
+и граничных случаев из условий. Для gradeapp предъявите также работающий
+JAR и его запуск из другого каталога. Обязательные средства проверяются
+по исходнику, объяснение — в беседе с преподавателем.
+
+Нужен JDK 25; для gradeapp — также установленный Gradle.
+Команды находятся в README соответствующего комплекта.
+Дополнительный письменный отчёт не требуется.
+
+:::: {#exr-files-byte-file-copy project="/projects/files/byte-file-copy" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-byte-file-copy" target="prairielearn"}
 ## Копирование файла: байтовые потоки
 
 Напишите консольную программу, которая получает два аргумента — пути
@@ -39,14 +52,14 @@ default-exercise-statement-visibility: open
 Покажите также пустой файл, табуляцию, разные разделители строк,
 отсутствующий вход при существующем выходе и отказ самокопирования.
 Предъявите исходник с явным закрытием и оба файла для сравнения.
-Подготовка: @handbook:sec-api-files-operations,
-@theory:sec-theory-resources-manual.
+Подготовка: @handbook:sec-j25-api-files-operations,
+@theory:sec-j25-theory-resources-manual.
 
 {{< project-download exr-files-byte-file-copy kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
-:::: {#exr-files-character-file-copy target="prairielearn" project="/projects/files/character-file-copy" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-character-file-copy"}
+:::: {#exr-files-character-file-copy project="/projects/files/character-file-copy" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-character-file-copy" target="prairielearn"}
 ## Копирование файла: символьные потоки
 
 Напишите консольную программу, которая получает два аргумента — пути
@@ -73,14 +86,14 @@ default-exercise-statement-visibility: open
 Покажите также пустой файл, табуляцию, разные разделители строк,
 отсутствующий вход при существующем выходе и отказ самокопирования.
 Предъявите исходник с try-with-resources и оба файла для сравнения.
-Подготовка: @handbook:sec-api-files-operations,
-@theory:sec-theory-resources-autocloseable.
+Подготовка: @handbook:sec-j25-api-files-operations,
+@theory:sec-j25-theory-resources-autocloseable.
 
 {{< project-download exr-files-character-file-copy kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
-:::: {#exr-files-transpose-file-matrix difficulty="intermediate" time="45" target="prairielearn" project="/projects/files/transpose-file-matrix" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-transpose-file-matrix"}
+:::: {#exr-files-transpose-file-matrix difficulty="intermediate" time="45" project="/projects/files/transpose-file-matrix" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-transpose-file-matrix" target="prairielearn"}
 ## Матрица из файла и транспонирование
 
 Для вывода результатов создайте новый каталог и файл средствами класса `File`.
@@ -113,7 +126,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-files-poem-word-frequency difficulty="intermediate" time="60" target="prairielearn" project="/projects/files/poem-word-frequency" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-poem-word-frequency"}
+:::: {#exr-files-poem-word-frequency difficulty="intermediate" time="60" project="/projects/files/poem-word-frequency" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-poem-word-frequency" target="prairielearn"}
 ## Частота слов в строках стихотворения
 
 Прочитайте строки текстового файла; каждая строка может содержать несколько слов.
@@ -144,7 +157,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-files-poem-letter-word-frequency difficulty="intermediate" time="60" target="prairielearn" project="/projects/files/poem-letter-word-frequency" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-poem-letter-word-frequency"}
+:::: {#exr-files-poem-letter-word-frequency difficulty="intermediate" time="60" project="/projects/files/poem-letter-word-frequency" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-poem-letter-word-frequency" target="prairielearn"}
 ## Частота букв и слов в стихотворении
 
 Прочитайте строки текстового файла; каждая строка может содержать несколько слов.
@@ -170,7 +183,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-files-compare-files difficulty="introductory" time="45" target="prairielearn" project="/projects/files/compare-files" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-compare-files"}
+:::: {#exr-files-compare-files difficulty="introductory" time="45" project="/projects/files/compare-files" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-compare-files" target="prairielearn"}
 ## Утилита сравнения файлов
 
 Создайте утилиту `CompFiles`, предназначенную для сравнения двух файлов. При
@@ -201,7 +214,7 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-files-sort-file-numbers difficulty="intermediate" time="45" target="prairielearn" project="/projects/files/sort-file-numbers" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-sort-file-numbers"}
+:::: {#exr-files-sort-file-numbers difficulty="intermediate" time="45" project="/projects/files/sort-file-numbers" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-sort-file-numbers" target="prairielearn"}
 ## Сортировка чисел в файле
 
 Для вывода результатов создайте новый каталог и файл средствами класса `File`. В
@@ -228,7 +241,7 @@ ASCII-пробелами, табуляциями либо переводами �
 
 ::::
 
-:::: {#exr-files-final-line-words difficulty="intermediate" time="45" target="prairielearn" project="/projects/files/final-line-words" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-final-line-words"}
+:::: {#exr-files-final-line-words difficulty="intermediate" time="45" project="/projects/files/final-line-words" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-final-line-words" target="prairielearn"}
 ## Последние слова последних строк
 
 Для вывода результатов создайте новый каталог и файл средствами класса `File`.
@@ -257,7 +270,7 @@ ASCII-пробелами, табуляциями либо переводами �
 
 ::::
 
-:::: {#exr-files-remove-short-words difficulty="intermediate" time="45" target="prairielearn" project="/projects/files/remove-short-words" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-remove-short-words"}
+:::: {#exr-files-remove-short-words difficulty="intermediate" time="45" project="/projects/files/remove-short-words" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-remove-short-words" target="prairielearn"}
 ## Удаление чётного количества коротких слов
 
 Для вывода результатов создайте новый каталог и файл средствами класса `File`. Из
@@ -284,7 +297,7 @@ ASCII-пробелами, табуляциями либо переводами �
 
 ::::
 
-:::: {#exr-files-phone-owner-records difficulty="intermediate" time="45" target="prairielearn" project="/projects/files/phone-owner-records" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-phone-owner-records"}
+:::: {#exr-files-phone-owner-records difficulty="intermediate" time="45" project="/projects/files/phone-owner-records" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-phone-owner-records" target="prairielearn"}
 ## Телефоны и владельцы
 
 Для вывода результатов создайте новый каталог и файл средствами класса `File`.
@@ -314,7 +327,7 @@ ASCII-пробелами, табуляциями либо переводами �
 
 ::::
 
-:::: {#exr-files-matching-line-numbers difficulty="introductory" time="30" target="prairielearn" project="/projects/files/matching-line-numbers" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-matching-line-numbers"}
+:::: {#exr-files-matching-line-numbers difficulty="introductory" time="30" project="/projects/files/matching-line-numbers" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-matching-line-numbers" target="prairielearn"}
 ## Номера совпадающих строк
 
 Для вывода результатов создайте новый каталог и файл средствами класса `File`.
@@ -344,7 +357,7 @@ ASCII-пробелами, табуляциями либо переводами �
 
 ::::
 
-:::: {#exr-files-disk-help-menu difficulty="advanced" time="75" target="prairielearn" project="/projects/files/disk-help-menu" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-disk-help-menu"}
+:::: {#exr-files-disk-help-menu difficulty="advanced" time="75" project="/projects/files/disk-help-menu" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-disk-help-menu" target="prairielearn"}
 ## Справочная система, использующая диск
 
 Создайте справочную систему, которая хранит сведения в обычном текстовом файле
@@ -386,7 +399,7 @@ ASCII-пробелами, табуляциями либо переводами �
 
 ::::
 
-:::: {#exr-files-remove-java-comments difficulty="advanced" time="90" target="prairielearn" project="/projects/files/remove-java-comments" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-remove-java-comments"}
+:::: {#exr-files-remove-java-comments difficulty="advanced" time="90" project="/projects/files/remove-java-comments" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-files-remove-java-comments" target="prairielearn"}
 ## Удаление комментариев из Java-программы
 
 Для вывода результатов создайте новый каталог и файл средствами класса `File`. Из
@@ -421,7 +434,7 @@ ASCII-пробелами, табуляциями либо переводами �
 
 ::::
 
-:::: {#exr-files-gradeapp-report target="prairielearn" project="/projects/files/gradeapp-report" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="false"}
+:::: {#exr-files-gradeapp-report project="/projects/files/gradeapp-report" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="false" target="prairielearn"}
 ## Отчёт по студентам: завершение gradeapp
 
 Завершите предоставленное консольное приложение `gradeapp`.
@@ -558,8 +571,8 @@ stdout содержит `s10;Ada;90`, затем `s3;Ann;90`. При равны�
 JAR из другого каталога. Объясните проверку уникальности, самостоятельную
 структуру результата `selected` и границу начала вывода.
 
-Подготовка: @theory:sec-theory-application-behavior,
-@handbook:sec-api-project-contract, @practice:sec-practice-files.
+Подготовка: @theory:sec-j25-theory-application-behavior,
+@handbook:sec-j25-api-project-contract, @practice:sec-j25-practice-files.
 
 {{< project-download exr-files-gradeapp-report kind="starter" text="Скачать стартовый проект" >}}
 

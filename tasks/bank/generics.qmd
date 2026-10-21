@@ -7,14 +7,31 @@ default-exercise-statement-visibility: open
 
 # Обобщённые типы {#sec-bank-generics}
 
-Обобщённый алгоритм сохраняет связь типов при смене данных. Для поиска максимума ему
-нужна операция сравнения, для подсчёта — переданное правило проверки элемента.
-Контейнер связывает тип помещаемого значения с типом извлечённого и дополнительно
-поддерживает порядок и состояние. Подготовка: @theory:sec-t-type-parameters и
-@theory:sec-t-type-relations. Основная подборка этих заданий —
-@tasks:sec-lab-generics.
+Обобщённый алгоритм сохраняет связь типов при смене данных. Поиск
+максимума получает сравнение через границу параметра, подсчёт —
+проверку свойства через переданный объект. Контейнер связывает
+тип помещаемого значения с типом результата и сохраняет порядок.
 
-:::: {#exr-generics-range-maximum target="prairielearn" project="/projects/generics/range-maximum" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-generics-range-maximum"}
+Подготовка: @theory:sec-t-type-parameters и @theory:sec-t-type-relations.
+Для переданного массива нужны @theory:sec-t-type-relations-runtime-limits
+и @handbook:sec-h-generic-classes-array, для проверяемых отказов —
+@theory:sec-j25-theory-exceptions-early-checked.
+Формы объявлений: @handbook:sec-h-generic-classes и
+@handbook:sec-h-generic-methods. Введение: @practice:sec-p-generics.
+Основная подборка — @tasks:sec-lab-generics.
+
+Выполните «Максимальный элемент диапазона» и «Подсчёт элементов
+с заданным свойством», затем **один** контейнер: очередь либо стек.
+Оба варианта доступны; выбор делает студент.
+
+Предъявите исходные Java-файлы и консольную демонстрацию случаев
+из условия. Объясните связь типов и предпосылки о данных.
+Обязательные приёмы проверяются по исходнику, объяснение — в беседе.
+Устройство программы свободно в пределах условия. Нужен JDK 25;
+команды компиляции находятся в README комплекта.
+Дополнительный письменный отчёт не требуется.
+
+:::: {#exr-generics-range-maximum project="/projects/generics/range-maximum" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-generics-range-maximum" target="prairielearn"}
 ## Максимальный элемент диапазона
 
 Напишите обобщённый метод, возвращающий максимальный элемент
@@ -40,7 +57,7 @@ default-exercise-statement-visibility: open
 {{< project-download exr-generics-range-maximum kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-generics-property-count target="prairielearn" project="/projects/generics/property-count" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-generics-property-count"}
+:::: {#exr-generics-property-count project="/projects/generics/property-count" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-generics-property-count" target="prairielearn"}
 ## Подсчёт элементов с заданным свойством
 
 Напишите обобщённый метод подсчёта элементов массива, удовлетворяющих
@@ -70,7 +87,7 @@ default-exercise-statement-visibility: open
 {{< project-download exr-generics-property-count kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-generics-generic-queue target="prairielearn" project="/projects/generics/generic-queue" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-generics-generic-queue"}
+:::: {#exr-generics-generic-queue project="/projects/generics/generic-queue" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-generics-generic-queue" target="prairielearn"}
 ## Обобщённая очередь
 
 Это один из двух вариантов обязательного выбора: выполните очередь
@@ -111,12 +128,12 @@ default-exercise-statement-visibility: open
 него, повторное добавление после извлечения из заполненной очереди.
 Объясните связь типов и почему исходное содержимое переданного
 массива не означает заполненность новой очереди.
-Подготовка к отказам: @theory:sec-theory-exceptions-early-checked.
+Подготовка к отказам: @theory:sec-j25-theory-exceptions-early-checked.
 
 {{< project-download exr-generics-generic-queue kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-generics-generic-stack target="prairielearn" project="/projects/generics/generic-stack" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-generics-generic-stack"}
+:::: {#exr-generics-generic-stack project="/projects/generics/generic-stack" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-generics-generic-stack" target="prairielearn"}
 ## Обобщённый стек
 
 Это один из двух вариантов обязательного выбора: выполните стек
@@ -149,7 +166,7 @@ default-exercise-statement-visibility: open
 него, повторное добавление после извлечения из заполненного стека.
 Объясните связь типов и почему исходное содержимое переданного
 массива не означает заполненность нового стека.
-Подготовка к отказам: @theory:sec-theory-exceptions-early-checked.
+Подготовка к отказам: @theory:sec-j25-theory-exceptions-early-checked.
 
 {{< project-download exr-generics-generic-stack kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
@@ -159,7 +176,7 @@ default-exercise-statement-visibility: open
 Каждое следующее задание можно выбрать для отдельной тренировки. Основной состав
 лабораторной работы указан в @sec-lab-generics.
 
-:::: {#exr-generics-generic-circular-queue difficulty="advanced" target="prairielearn" project="/projects/generics/generic-circular-queue" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-generics-generic-circular-queue"}
+:::: {#exr-generics-generic-circular-queue difficulty="advanced" project="/projects/generics/generic-circular-queue" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-generics-generic-circular-queue" target="prairielearn"}
 ## Обобщённая кольцевая очередь
 
 Реализуйте `CircularQueue<T>` с операциями `void put(T value)` и `T get()`
@@ -190,7 +207,7 @@ default-exercise-statement-visibility: open
 {{< project-download exr-generics-generic-circular-queue kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-generics-generic-dynamic-queue difficulty="advanced" target="prairielearn" project="/projects/generics/generic-dynamic-queue" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-generics-generic-dynamic-queue"}
+:::: {#exr-generics-generic-dynamic-queue difficulty="advanced" project="/projects/generics/generic-dynamic-queue" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-generics-generic-dynamic-queue" target="prairielearn"}
 ## Обобщённая растущая очередь
 
 Реализуйте `DynQueue<T>` с методами `void put(T value)` и `T get()`
@@ -222,7 +239,7 @@ default-exercise-statement-visibility: open
 {{< project-download exr-generics-generic-dynamic-queue kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-generics-generic-interface difficulty="introductory" target="prairielearn" project="/projects/generics/generic-interface" prairielearn-grading="manual" prairielearn-submission="upload" project-check="false"}
+:::: {#exr-generics-generic-interface difficulty="introductory" project="/projects/generics/generic-interface" prairielearn-grading="manual" prairielearn-submission="upload" project-check="false" target="prairielearn"}
 ## Реализация обобщённого интерфейса
 
 Дан интерфейс `IGenIF<T, V extends T>` без методов. Его исходный файл

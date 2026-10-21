@@ -7,13 +7,29 @@ default-exercise-statement-visibility: open
 
 # Классы {#sec-j25-bank-objects}
 
-Задачи используют классы, передачу аргументов и массивы объектов:
-@theory:sec-j25-theory-objects, @theory:sec-j25-theory-classes.
-Каждая карточка задаёт отдельную модель. Имена и сигнатуры, явно приведённые
-в условии, входят в её договор; остальные части API и устройство программы
-выбирает студент.
+Классы хранят состояние и выполняют действия над ним. При передаче
+ссылок проследите, какие объекты видит вызывающий код после операции.
+Подготовка: @theory:sec-j25-theory-objects, @theory:sec-j25-theory-classes,
+@handbook:sec-j25-api-classes и @practice:sec-j25-practice-objects.
 
-:::: {#exr-objects-variadic-sum target="prairielearn" project="/projects/objects/variadic-sum" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-variadic-sum"}
+Каждая карточка задаёт отдельную модель. Имена и сигнатуры, прямо
+названные в условии, входят в её договор. Остальные имена, пакеты,
+вспомогательные методы, способ задания данных и устройство программы
+выбирайте самостоятельно.
+
+В обязательную работу входят «Метод sum() с аргументом переменной длины»,
+«Обмен содержимым двух объектов Test», «Стек символов Stack»
+и **один** вариант: «Book: отбор книг» либо «Car: отбор автомобилей».
+Оба варианта доступны для выбора студентом.
+
+Предъявите исходные Java-файлы и консольную демонстрацию обычных
+и существенных граничных случаев из условия. Среда — JDK 25;
+инструкции компиляции входят в README комплекта каждой задачи.
+Обязательные приёмы проверяются по исходнику, объяснение — в беседе.
+Выберите одно содержательное решение для обсуждения на защите.
+Дополнительный письменный отчёт не требуется.
+
+:::: {#exr-objects-variadic-sum project="/projects/objects/variadic-sum" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-variadic-sum" target="prairielearn"}
 ## Метод sum() с аргументом переменной длины
 
 Создайте метод `int sum(int... values)`, суммирующий переданные значения
@@ -33,7 +49,7 @@ default-exercise-statement-visibility: open
 {{< project-download exr-objects-variadic-sum kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-objects-swap-object-fields target="prairielearn" project="/projects/objects/swap-object-fields" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-swap-object-fields"}
+:::: {#exr-objects-swap-object-fields project="/projects/objects/swap-object-fields" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-swap-object-fields" target="prairielearn"}
 ## Обмен содержимым двух объектов Test
 
 Создайте класс `Test` с полем `int a` и конструктором `Test(int i)`,
@@ -56,7 +72,7 @@ default-exercise-statement-visibility: open
 {{< project-download exr-objects-swap-object-fields kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-objects-character-stack target="prairielearn" project="/projects/objects/character-stack" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-character-stack"}
+:::: {#exr-objects-character-stack project="/projects/objects/character-stack" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-character-stack" target="prairielearn"}
 ## Стек символов Stack
 
 Создайте класс `Stack` с открытым конструктором `Stack(int capacity)`
@@ -88,7 +104,7 @@ default-exercise-statement-visibility: open
 {{< project-download exr-objects-character-stack kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-objects-book-selection target="prairielearn" project="/projects/objects/book-selection" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-book-selection"}
+:::: {#exr-objects-book-selection project="/projects/objects/book-selection" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-book-selection" target="prairielearn"}
 ## Book: отбор книг
 
 Это один из двух вариантов обязательного выбора: выполните эту задачу
@@ -141,7 +157,7 @@ default-exercise-statement-visibility: open
 {{< project-download exr-objects-book-selection kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-objects-car-selection target="prairielearn" project="/projects/objects/car-selection" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-car-selection"}
+:::: {#exr-objects-car-selection project="/projects/objects/car-selection" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-car-selection" target="prairielearn"}
 ## Car: отбор автомобилей
 
 Это один из двух вариантов обязательного выбора: выполните эту задачу
@@ -193,7 +209,7 @@ n — целое в диапазоне 0..9999. Наборы параметро�
 {{< project-download exr-objects-car-selection kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-objects-customer-registry target="prairielearn" project="/projects/objects/customer-registry" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-customer-registry"}
+:::: {#exr-objects-customer-registry project="/projects/objects/customer-registry" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-customer-registry" target="prairielearn"}
 ## Customer: покупатели и номера карточек
 
 Создайте класс `Customer` со свойствами: id, фамилия, имя, отчество, адрес, номер кредитной карточки, номер банковского счёта. Поля класса закрытые. Предусмотрите два конструктора с разными наборами параметров, методы чтения и изменения свойств и `toString()`. Отбор оформите отдельными методами для массива объектов. Строковые критерии сравнивайте целиком с учётом регистра; покажите полученную подборку, включая случай без совпадений.
@@ -214,7 +230,7 @@ n — целое в диапазоне 0..9999. Наборы параметро�
 
 ::::
 
-:::: {#exr-objects-patient-registry target="prairielearn" project="/projects/objects/patient-registry" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-patient-registry"}
+:::: {#exr-objects-patient-registry project="/projects/objects/patient-registry" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-patient-registry" target="prairielearn"}
 ## Patient: пациенты по диагнозу и номеру карты
 
 Создайте класс `Patient` со свойствами: id, фамилия, имя, отчество, адрес, телефон, номер медицинской карты, диагноз. Поля класса закрытые. Предусмотрите два конструктора с разными наборами параметров, методы чтения и изменения свойств и `toString()`. Отбор оформите отдельными методами для массива объектов. Строковые критерии сравнивайте целиком с учётом регистра; покажите полученную подборку, включая случай без совпадений.
@@ -236,7 +252,7 @@ n — целое в диапазоне 0..9999. Наборы параметро�
 
 ::::
 
-:::: {#exr-objects-rational-fractions target="prairielearn" project="/projects/objects/rational-fractions" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-rational-fractions"}
+:::: {#exr-objects-rational-fractions project="/projects/objects/rational-fractions" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-rational-fractions" target="prairielearn"}
 ## Рациональная дробь и массив дробей
 
 Создайте класс для представления рациональной дроби парой чисел m и n. Реализуйте методы сложения, вычитания, умножения и деления объектов. Объявите и инициализируйте массив из k дробей, организуйте ввод и вывод его элементов. Передайте массив в метод, который прибавляет к каждому элементу с чётным индексом следующий за ним элемент.
@@ -253,7 +269,7 @@ n — целое в диапазоне 0..9999. Наборы параметро�
 
 ::::
 
-:::: {#exr-objects-complex-values target="prairielearn" project="/projects/objects/complex-values" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-complex-values"}
+:::: {#exr-objects-complex-values project="/projects/objects/complex-values" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-complex-values" target="prairielearn"}
 ## Комплексные числа
 
 Создайте класс для представления комплексного числа. Реализуйте методы сложения, вычитания, умножения и деления объектов. Создайте массив из n комплексных чисел и передайте его в метод для вычисления суммы и произведения элементов.
@@ -269,7 +285,7 @@ n — целое в диапазоне 0..9999. Наборы параметро�
 
 ::::
 
-:::: {#exr-objects-recursive-string-reversal target="prairielearn" project="/projects/objects/recursive-string-reversal" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-recursive-string-reversal"}
+:::: {#exr-objects-recursive-string-reversal project="/projects/objects/recursive-string-reversal" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-objects-recursive-string-reversal" target="prairielearn"}
 ## Рекурсивный вывод строки в обратном направлении
 
 Напишите рекурсивный метод, печатающий строку в обратном порядке. Вход ненулевой, длиной от 0 до 256 `char`; каждый символ представлен одним `char`, суррогатных кодовых единиц нет. Пробелы и знаки препинания сохраняются. Для `"Java 25!"` получается `"!52 avaJ"`; пустая строка даёт пустой текст. Завершающий перевод строки допускается. Имя и сигнатуру метода выбирайте самостоятельно; построение обратного порядка должно использовать рекурсивные вызовы. Готовые операции обращения строки не применяются.

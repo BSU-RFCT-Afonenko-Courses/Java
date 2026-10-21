@@ -7,12 +7,29 @@ default-exercise-statement-visibility: open
 
 # Полиморфизм {#sec-j25-bank-polymorphism}
 
-Теория: @theory:sec-j25-theory-inheritance и @theory:sec-j25-theory-interfaces.
-Общие операции позволяют клиенту работать с разными реализациями. Явно
-названный API входит в договор задачи; вспомогательные методы и имена пакетов
-свободны, кроме отдельной задачи о пакете `qpack`.
+Общие операции позволяют работать с разными реализациями через базовый
+тип или интерфейс. Теория: @theory:sec-j25-theory-inheritance и
+@theory:sec-j25-theory-interfaces. API: @handbook:sec-j25-api-inheritance,
+@handbook:sec-j25-api-interfaces. Введение: @practice:sec-j25-practice-polymorphism.
 
-:::: {#exr-polymorphism-circle-subclass target="prairielearn" project="/projects/polymorphism/circle-subclass" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-circle-subclass"}
+Явно названные классы, интерфейсы и сигнатуры входят в договор задачи.
+Имена пакетов свободны, кроме отдельной задачи о пакете `qpack`.
+Вспомогательные методы и остальные свободные части программы
+выбирайте самостоятельно. Для очередей действует полный
+@tasks:sec-j25-bank-character-queues.
+
+Обязательны «Подкласс Circle», «Интерфейс IVehicle» и «Иерархия животных».
+Дополнительно выполните **один** доступный вариант: «Сброс очередей
+через ICharQ» либо «Перенос между очередями разных типов».
+Вариант выбирает студент.
+
+Предъявите исходные Java-файлы и консольную демонстрацию обычных
+и существенных граничных случаев из условий. Среда — JDK 25;
+команды компиляции находятся в README комплекта. Обязательные приёмы
+проверяются по исходнику, объяснение — в беседе с преподавателем.
+Дополнительный письменный отчёт не требуется.
+
+:::: {#exr-polymorphism-circle-subclass project="/projects/polymorphism/circle-subclass" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-circle-subclass" target="prairielearn"}
 ## Подкласс Circle
 
 Объявите абстрактный `TwoDShape` с закрытыми полями `double width`,
@@ -41,7 +58,7 @@ default-exercise-statement-visibility: open
 {{< project-download exr-polymorphism-circle-subclass kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-polymorphism-vehicle-interface target="prairielearn" project="/projects/polymorphism/vehicle-interface" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-vehicle-interface"}
+:::: {#exr-polymorphism-vehicle-interface project="/projects/polymorphism/vehicle-interface" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-vehicle-interface" target="prairielearn"}
 ## Интерфейс IVehicle
 
 Создайте класс `Vehicle` с закрытыми целочисленными характеристиками
@@ -86,7 +103,7 @@ double fuelNeeded(int miles);
 {{< project-download exr-polymorphism-vehicle-interface kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-polymorphism-animal-hierarchy target="prairielearn" project="/projects/polymorphism/animal-hierarchy" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-animal-hierarchy"}
+:::: {#exr-polymorphism-animal-hierarchy project="/projects/polymorphism/animal-hierarchy" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-animal-hierarchy" target="prairielearn"}
 ## Иерархия животных
 
 Создайте иерархию `Animal` → `Dog` → `Puppy`.
@@ -103,7 +120,7 @@ double fuelNeeded(int miles);
 `equals`, `hashCode`, `toString`. Равенство с `null` ложно;
 равные объекты имеют одинаковый хеш. `toString()` позволяет увидеть
 класс и имя, его оформление свободно.
-Определение равенства и связь с хешем: @theory:sec-theory-data-classes-value.
+Определение равенства и связь с хешем: @theory:sec-j25-theory-data-classes-value.
 
 Предъявите исходники и консольную демонстрацию голосов трёх видов через
 ссылки `Animal`, а также действий собаки и щенка. Сравните двух собак
@@ -148,13 +165,13 @@ double fuelNeeded(int miles);
 этому договору либо используйте свои ранее написанные реализации.
 Требования общей части применяются вместе с выбранной карточкой.
 
-:::: {#exr-polymorphism-reset-character-queues target="prairielearn" project="/projects/polymorphism/reset-character-queues" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-reset-character-queues"}
+:::: {#exr-polymorphism-reset-character-queues project="/projects/polymorphism/reset-character-queues" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-reset-character-queues" target="prairielearn"}
 ## Сброс очередей через ICharQ
 
 Это один из двух вариантов обязательного выбора: выполните эту задачу
 либо «Перенос между очередями разных типов».
 
-Используйте полный @tasks:sec-bank-character-queues. Каждая задача
+Используйте полный @tasks:sec-j25-bank-character-queues. Каждая задача
 самостоятельна: создайте три реализации по этому договору
 либо используйте собственные ранее написанные реализации.
 
@@ -181,10 +198,10 @@ double fuelNeeded(int miles);
 {{< project-download exr-polymorphism-reset-character-queues kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-polymorphism-queue-package target="prairielearn" project="/projects/polymorphism/queue-package" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-queue-package"}
+:::: {#exr-polymorphism-queue-package project="/projects/polymorphism/queue-package" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-queue-package" target="prairielearn"}
 ## Пакет qpack
 
-Поместите `ICharQ` и три реализации из @tasks:sec-bank-character-queues в пакет `qpack`. Демонстрационный класс `IQDemo` оставьте в безымянном пакете.
+Поместите `ICharQ` и три реализации из @tasks:sec-j25-bank-character-queues в пакет `qpack`. Демонстрационный класс `IQDemo` оставьте в безымянном пакете.
 
 Сделайте необходимые типы, конструкторы и операции доступными извне пакета. Покажите импорт, создание всех трёх очередей и вызовы через `ICharQ`. Представьте структуру Java-файлов и команды компиляции и запуска.
 
@@ -195,7 +212,7 @@ double fuelNeeded(int miles);
 
 ::::
 
-:::: {#exr-polymorphism-truck-subclass target="prairielearn" project="/projects/polymorphism/truck-subclass" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-truck-subclass"}
+:::: {#exr-polymorphism-truck-subclass project="/projects/polymorphism/truck-subclass" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-truck-subclass" target="prairielearn"}
 ## Расширение класса Vehicle: Truck
 
 Создайте `Vehicle` с закрытыми целочисленными полями `passengers`, `fuelcap`, `mpg`: число пассажиров неотрицательно, запас топлива в галлонах и пробег в милях на галлон положительны. Предусмотрите конструктор, чтение и изменение характеристик с проверкой этих ограничений, `range()` для дальности и `fuelNeeded(int miles)` для расхода топлива типа `double`. Расстояние неотрицательно; произведения помещаются в `int`. Для базовых операций используйте открытые сигнатуры из @tasks:exr-polymorphism-vehicle-interface; дальность равна `fuelcap * mpg`, топливо — отношению `miles` к `mpg` с абсолютной погрешностью не больше `1e-6`. Реализация самого интерфейса `IVehicle` в этой карточке необязательна.
@@ -213,10 +230,10 @@ double fuelNeeded(int miles);
 
 ::::
 
-:::: {#exr-polymorphism-circular-dynamic-queue target="prairielearn" project="/projects/polymorphism/circular-dynamic-queue" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-circular-dynamic-queue"}
+:::: {#exr-polymorphism-circular-dynamic-queue project="/projects/polymorphism/circular-dynamic-queue" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-circular-dynamic-queue" target="prairielearn"}
 ## Кольцевая версия DynQueue
 
-Создайте реализацию `ICharQ` из @tasks:sec-bank-character-queues, сочетающую кольцевое хранение с увеличением массива при заполнении. Освобождённые позиции используются повторно; увеличение сохраняет FIFO-порядок.
+Создайте реализацию `ICharQ` из @tasks:sec-j25-bank-character-queues, сочетающую кольцевое хранение с увеличением массива при заполнении. Освобождённые позиции используются повторно; увеличение сохраняет FIFO-порядок.
 
 Покажите переход индексов через конец массива, затем увеличение при расположении элементов по обе стороны этой границы. Извлечённая последовательность должна совпасть с порядком оставшихся помещённых символов.
 
@@ -228,13 +245,13 @@ double fuelNeeded(int miles);
 
 ::::
 
-:::: {#exr-polymorphism-copy-character-queues target="prairielearn" project="/projects/polymorphism/copy-character-queues" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-copy-character-queues"}
+:::: {#exr-polymorphism-copy-character-queues project="/projects/polymorphism/copy-character-queues" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-copy-character-queues" target="prairielearn"}
 ## Перенос между очередями разных типов
 
 Это один из двух вариантов обязательного выбора: выполните эту задачу
 либо «Сброс очередей через ICharQ».
 
-Используйте полный @tasks:sec-bank-character-queues. Каждая задача
+Используйте полный @tasks:sec-j25-bank-character-queues. Каждая задача
 самостоятельна: создайте три реализации по этому договору
 либо используйте собственные ранее написанные реализации.
 
@@ -270,7 +287,7 @@ double fuelNeeded(int miles);
 {{< project-download exr-polymorphism-copy-character-queues kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-polymorphism-fraction-number-subclass target="prairielearn" project="/projects/polymorphism/fraction-number-subclass" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-fraction-number-subclass"}
+:::: {#exr-polymorphism-fraction-number-subclass project="/projects/polymorphism/fraction-number-subclass" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-fraction-number-subclass" target="prairielearn"}
 ## Рациональное число
 
 Создайте абстрактный класс `NumberValue` и подкласс `Fraction` для рационального числа с целыми числителем и ненулевым знаменателем. Нормализуйте знак и сокращайте дробь; входы подбираются так, чтобы промежуточные результаты помещались в `long`.
@@ -287,10 +304,10 @@ double fuelNeeded(int miles);
 
 ::::
 
-:::: {#exr-polymorphism-compatible-queue-reset target="prairielearn" project="/projects/polymorphism/compatible-queue-reset" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-compatible-queue-reset"}
+:::: {#exr-polymorphism-compatible-queue-reset project="/projects/polymorphism/compatible-queue-reset" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-compatible-queue-reset" target="prairielearn"}
 ## Расширение интерфейса методом reset()
 
-Рассмотрите эволюцию интерфейса `ICharQ` из @tasks:sec-bank-character-queues. Нужно добавить `reset()`, сохранив возможность компиляции класса, который реализует только `put` и `get`.
+Рассмотрите эволюцию интерфейса `ICharQ` из @tasks:sec-j25-bank-character-queues. Нужно добавить `reset()`, сохранив возможность компиляции класса, который реализует только `put` и `get`.
 
 Добавьте метод по умолчанию `reset()`, который при вызове завершает
 операцию исключением `UnsupportedOperationException`: так клиент узнаёт,
