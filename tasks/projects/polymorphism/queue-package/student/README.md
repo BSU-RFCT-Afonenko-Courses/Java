@@ -5,7 +5,7 @@
 `FixedQueue`, `CircularQueue`, `DynQueue` в пакет `qpack`, а `IQDemo`
 оставьте в безымянном пакете. Вспомогательные объявления выберите сами.
 
-Общий договор — [QUEUE-CONTRACT.qmd](QUEUE-CONTRACT.qmd). Он задаёт
+Общий договор — [QUEUE-CONTRACT.md](QUEUE-CONTRACT.md). Он задаёт
 операции, хранение и отказы всех трёх очередей.
 
 Нужен JDK 25. Откройте терминал в каталоге с этим README и папкой `src`.
