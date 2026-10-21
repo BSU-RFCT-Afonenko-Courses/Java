@@ -2174,6 +2174,316 @@ project-checks:
       feedback:
         requirement: Порядок и состав массива. Короткие массивы без выхода за границы.
         what-check: Сопоставьте опубликованные данные и фактическое состояние; источник, приём и объяснение проверяет преподаватель. Свободный API требует подходящей привязки или демонстрации.
+    java-text-insert-substring:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Вставка между частями текста
+        test: PublicExamplesTest#normal
+        state: 'Вызвать выбранный метод: Java, !, k=2.'
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: Возвращено Ja!va; исходная строка Java сохранена.
+      - id: boundary
+        name: Края и пустой текст
+        test: PublicExamplesTest#boundary
+        state: Отдельно Java+! при k0 и4, пустой текст+код при k0.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: '!Java; Java!; код. Исходные значения сохранены; неверной позиции нет.'
+      feedback:
+        requirement: Вставка после указанного числа исходных char. Включённые границы позиции.
+        what-check: Сопоставьте опубликованные значения и состояние. Для свободного решения подготовьте подходящую привязку или демонстрацию; исходник, приём и объяснение проверяет преподаватель.
+    java-text-strong-password:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Все требования выполнены
+        test: PublicExamplesTest#normal
+        state: Проверить Abcdefghi1 выбранным способом.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: Булево true:10char, оба латинских регистра, цифра, допустимый состав.
+      - id: boundary
+        name: На один символ короче
+        test: PublicExamplesTest#boundary
+        state: Проверить Abcdefgh1.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: Булево false из-за длины. Остальные ветви проверяются отдельно.
+      feedback:
+        requirement: Совместное выполнение учебного формата. Девять символов при остальных выполненных условиях.
+        what-check: Сопоставьте опубликованные значения и состояние. Для свободного решения подготовьте подходящую привязку или демонстрацию; исходник, приём и объяснение проверяет преподаватель.
+    java-text-insert-after-word-ending:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Вставка перед исходными разделителями
+        test: PublicExamplesTest#normal
+        state: Текст кот, скот!; окончание кот; вставка дом.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: кот дом, скот дом!
+      - id: boundary
+        name: Регистр и вставленное совпадающее слово
+        test: PublicExamplesTest#boundary
+        state: Текст Кот кот!; окончание кот; вставка кот.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: 'Кот кот кот!: первое слово не совпало, после второго одна вставка.'
+      feedback:
+        requirement: Окончания исходных слов и сохранение пунктуации. Чувствительность к регистру и отсутствие повторной вставки.
+        what-check: Сопоставьте опубликованные значения и состояние. Для свободного решения подготовьте подходящую привязку или демонстрацию; исходник, приём и объяснение проверяет преподаватель.
+    java-text-remove-nonletters:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Удаление без слияния слов
+        test: PublicExamplesTest#normal
+        state: Удалить небуквенные из кот,дом  2я!; перед2 два U0020.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: Слова кот, дом, я в прежнем регистре/порядке; исходные два пробела сохранены; между кот и дом ≥1. Допустимы кот дом  я и кот   дом  я.
+      - id: boundary
+        name: Пустой текст
+        test: PublicExamplesTest#boundary
+        state: Та же операция на пустой строке.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: Пустая строка; без нового протокола ввода.
+      feedback:
+        requirement: Буквы, исходные U0020 и свобода добавленных пробелов. Нет символов и слов для преобразования.
+        what-check: Сопоставьте опубликованные значения и состояние. Для свободного решения подготовьте подходящую привязку или демонстрацию; исходник, приём и объяснение проверяет преподаватель.
+    java-text-longest-nonletter-substring:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Единственный самый длинный фрагмент
+        test: PublicExamplesTest#normal
+        state: Найти фрагмент в a12!б3.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: Строка12!, длина3; поздняя3 не склеивается через букву.
+      - id: boundary
+        name: Равные длины
+        test: PublicExamplesTest#boundary
+        state: Найти фрагмент в a12!б34?.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: Строка12!, а не поздняя34?.
+      feedback:
+        requirement: Непрерывный фрагмент между буквами. Первый фрагмент при равенстве.
+        what-check: Сопоставьте опубликованные значения и состояние. Для свободного решения подготовьте подходящую привязку или демонстрацию; исходник, приём и объяснение проверяет преподаватель.
+    java-text-sum-text-digits:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Каждая цифра отдельно
+        test: PublicExamplesTest#normal
+        state: Расчёт для a2b109.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: Точное целое12:2+1+0+9, буквы пропущены.
+      - id: boundary
+        name: Нет цифр
+        test: PublicExamplesTest#boundary
+        state: Тот же расчёт для пустой строки.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: Точное целое0; числовой тип и формат не навязываются.
+      feedback:
+        requirement: Сумма отдельных значений, включая соседние и0. Нулевое значение суммы.
+        what-check: Сопоставьте опубликованные значения и состояние. Для свободного решения подготовьте подходящую привязку или демонстрацию; исходник, приём и объяснение проверяет преподаватель.
+    java-text-count-normalized-word:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Пара е/ё и граница целого слова
+        test: PublicExamplesTest#normal
+        state: Ёлка, елка; елками / елка.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: 2; более длинное елками не учитывается, исходный текст сохранён.
+      - id: boundary
+        name: Пара и/й и более длинное слово
+        test: PublicExamplesTest#boundary
+        state: май МАЙ, маи; маий / МАИ.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: '3: май, МАЙ, маи; не маий. Исходный текст сохранён.'
+      feedback:
+        requirement: Регистр, предметное равенство и целое слово. Одинаковое правило с обеих сторон сравнения.
+        what-check: Сопоставьте опубликованные значения и состояние. Для свободного решения подготовьте подходящую привязку или демонстрацию; исходник, приём и объяснение проверяет преподаватель.
+    java-text-decompress-character-runs:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Счётчики, одиночная буква и регистр
+        test: PublicExamplesTest#normal
+        state: Распаковать a2B3c.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: СтрокаaaBBBc; B прописная, последняяc одна.
+      - id: boundary
+        name: Многозначная длина и пустая запись
+        test: PublicExamplesTest#boundary
+        state: Отдельно a12b и пустая строка.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: 'Двенадцатьa иb: aaaaaaaaaaaab; отдельно пустая строка. Повреждённых записей нет.'
+      feedback:
+        requirement: Несколько корректных серий. Полный счётчик и отсутствие серий.
+        what-check: Сопоставьте опубликованные значения и состояние. Для свободного решения подготовьте подходящую привязку или демонстрацию; исходник, приём и объяснение проверяет преподаватель.
+    java-text-left-align-text:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Заполнение строки до ширины
+        test: PublicExamplesTest#normal
+        state: one   two с LF передthree; width7.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: Строки one two и three; без краевых пробелов, первая длины7.
+      - id: boundary
+        name: Только разделители
+        test: PublicExamplesTest#boundary
+        state: Пробел, TAB, LF, пробел; width1.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: Пустой текст без пустых строк результата; другой формат не навязывается.
+      feedback:
+        requirement: Порядок слов и перенос целиком. Отсутствие слов при положительной ширине.
+        what-check: Сопоставьте опубликованные значения и состояние. Для свободного решения подготовьте подходящую привязку или демонстрацию; исходник, приём и объяснение проверяет преподаватель.
+    java-text-bubble-sort-strings:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Естественный порядок и повторы
+        test: PublicExamplesTest#normal
+        state: Массив beta,alpha,beta,Gamma; выполнить выбранную сортировку.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: В исходном массиве Gamma,alpha,beta,beta; обаbeta сохранены. Пузырьковый приём дополнительно по коду.
+      - id: boundary
+        name: Пустой и уже отсортированный массивы
+        test: PublicExamplesTest#boundary
+        state: Отдельно пустой массив и Gamma,alpha,beta,beta.
+        action: Наблюдать соответствующую операцию выбранной реализации через подготовленную привязку либо демонстрацию.
+        expected: Пустой остаётся пустым; упорядоченный сохраняет последовательность. Число сравнений и identity равных строк не фиксируются.
+      feedback:
+        requirement: String.compareTo и состояние данного массива. Короткий и упорядоченный случаи.
+        what-check: Сопоставьте опубликованные значения и состояние. Для свободного решения подготовьте подходящую привязку или демонстрацию; исходник, приём и объяснение проверяет преподаватель.
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
@@ -3950,6 +4260,296 @@ project-materialization:
         audience: grading
       - source: projects/arrays/sort-array/student/src/test/java/PublicChecks.java
         target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-text-insert-substring:
+      common-files:
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/4ab44395b686/preamble.qmd
+        target: student/condition/text-preamble.qmd
+        audience: student
+      - source: test-support/shared/ef2263b3b879/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/8b85daacb624/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/text/insert-substring/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/text/insert-substring/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-text-strong-password:
+      common-files:
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/4ab44395b686/preamble.qmd
+        target: student/condition/text-preamble.qmd
+        audience: student
+      - source: test-support/shared/ef2263b3b879/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/8b85daacb624/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/text/strong-password/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/text/strong-password/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-text-insert-after-word-ending:
+      common-files:
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/4ab44395b686/preamble.qmd
+        target: student/condition/text-preamble.qmd
+        audience: student
+      - source: test-support/shared/ef2263b3b879/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/8b85daacb624/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/text/insert-after-word-ending/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/text/insert-after-word-ending/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-text-remove-nonletters:
+      common-files:
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/4ab44395b686/preamble.qmd
+        target: student/condition/text-preamble.qmd
+        audience: student
+      - source: test-support/shared/ef2263b3b879/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/8b85daacb624/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/text/remove-nonletters/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/text/remove-nonletters/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-text-longest-nonletter-substring:
+      common-files:
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/4ab44395b686/preamble.qmd
+        target: student/condition/text-preamble.qmd
+        audience: student
+      - source: test-support/shared/ef2263b3b879/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/8b85daacb624/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/text/longest-nonletter-substring/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/text/longest-nonletter-substring/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-text-sum-text-digits:
+      common-files:
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/4ab44395b686/preamble.qmd
+        target: student/condition/text-preamble.qmd
+        audience: student
+      - source: test-support/shared/ef2263b3b879/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/8b85daacb624/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/text/sum-text-digits/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/text/sum-text-digits/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-text-count-normalized-word:
+      common-files:
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/4ab44395b686/preamble.qmd
+        target: student/condition/text-preamble.qmd
+        audience: student
+      - source: test-support/shared/ef2263b3b879/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/8b85daacb624/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/text/count-normalized-word/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/text/count-normalized-word/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-text-decompress-character-runs:
+      common-files:
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/4ab44395b686/preamble.qmd
+        target: student/condition/text-preamble.qmd
+        audience: student
+      - source: test-support/shared/ef2263b3b879/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/8b85daacb624/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/text/decompress-character-runs/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/text/decompress-character-runs/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-text-left-align-text:
+      common-files:
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/4ab44395b686/preamble.qmd
+        target: student/condition/text-preamble.qmd
+        audience: student
+      - source: test-support/shared/ef2263b3b879/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/8b85daacb624/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/text/left-align-text/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/text/left-align-text/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-text-bubble-sort-strings:
+      common-files:
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/4ab44395b686/preamble.qmd
+        target: student/condition/text-preamble.qmd
+        audience: student
+      - source: test-support/shared/ef2263b3b879/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/8b85daacb624/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/text/bubble-sort-strings/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/text/bubble-sort-strings/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
         audience: grading
       - source: test-support/junit/DirectPublicExamplesTest.java
         target: tests/junit/public/PublicExamplesTest.java
