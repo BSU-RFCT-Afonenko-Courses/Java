@@ -1,0 +1,19 @@
+import java.util.*;
+public class PublicChecks {
+public record Observation(String actual,boolean passed){}
+static final String NORMAL_NAME="Равенство и четыре операции";
+static final String NORMAL_WHAT="Нормализация, равенство/хеш/null и сохранение операндов.";
+static final String NORMAL_INPUT="1/2,2/4; арифметика1/3 и1/6";
+static final String NORMAL_EXPECTED="Равны, равные хеши, не равна null; результаты1/2,1/6,1/18,2/1; исходные значения прежние.";
+static final String BOUNDARY_NAME="Ноль и недопустимый делитель";
+static final String BOUNDARY_WHAT="Канонический ноль и два ArithmeticException без изменения операндов.";
+static final String BOUNDARY_INPUT="0/-5; создание1/0; деление3/4 на ноль";
+static final String BOUNDARY_EXPECTED="Ноль0/1; два ArithmeticException; операнды сохранены.";
+static String lf(String s){return s.replace("\r\n","\n");}
+public static Observation observeNormal(){Object h=TaskBinding.value(1,2),h2=TaskBinding.value(2,4),a=TaskBinding.value(1,3),b=TaskBinding.value(1,6);long[][] expected={{1,2},{1,6},{1,18},{2,1}};boolean ok=h.equals(h2)&&h2.equals(h)&&h.hashCode()==h2.hashCode()&&!h.equals(null);StringBuilder actual=new StringBuilder("Равенство="+h.equals(h2)+", хеши="+(h.hashCode()==h2.hashCode())+", equals(null)="+h.equals(null));for(int i=0;i<4;i++){Object r=TaskBinding.operation(a,b,i);long[] parts=TaskBinding.parts(r);ok&=Arrays.equals(parts,expected[i]);actual.append("; операция").append(i+1).append("=").append(Arrays.toString(parts)).append(", текст=").append(PublicOutput.escaped(TaskBinding.text(r)));}long[] ap=TaskBinding.parts(a),bp=TaskBinding.parts(b);ok&=Arrays.equals(ap,new long[]{1,3})&&Arrays.equals(bp,new long[]{1,6});return new Observation(actual+"; операнды="+Arrays.toString(ap)+","+Arrays.toString(bp),ok);}
+public static Observation observeBoundary(){Object zero=TaskBinding.value(0,-5),a=TaskBinding.value(3,4);boolean badConstructor=false,badDivision=false;try{TaskBinding.value(1,0);}catch(ArithmeticException e){badConstructor=true;}try{TaskBinding.operation(a,zero,3);}catch(ArithmeticException e){badDivision=true;}long[] zp=TaskBinding.parts(zero),ap=TaskBinding.parts(a);return new Observation("Ноль="+Arrays.toString(zp)+"; ArithmeticException="+badConstructor+","+badDivision+"; операнд="+Arrays.toString(ap),badConstructor&&badDivision&&Arrays.equals(zp,new long[]{0,1})&&Arrays.equals(ap,new long[]{3,4}));}
+public static void checkNormal(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте обычное наблюдение с условием.");}
+public static void checkBoundary(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте опубликованную границу с условием.");}
+static int example(boolean normal){System.out.println("Сценарий: "+(normal?NORMAL_NAME:BOUNDARY_NAME));System.out.println("Что наблюдаем: "+(normal?NORMAL_WHAT:BOUNDARY_WHAT));System.out.println("Вход/действие: "+(normal?NORMAL_INPUT:BOUNDARY_INPUT));System.out.println("Ожидается: "+(normal?NORMAL_EXPECTED:BOUNDARY_EXPECTED));try{var o=normal?observeNormal():observeBoundary();System.out.println("Получено: "+o.actual());System.out.println(o.passed()?"Статус: наблюдаемое свойство соответствует; исходник и объяснение оценивает преподаватель.":"Статус: наблюдаемое свойство не соответствует.");return o.passed()?0:1;}catch(LinkageError e){System.out.println("Статус: привязка или среда не подготовлена; требуется ручная проверка, оценки нет.");return 2;}catch(RuntimeException e){System.out.println("Статус: операция или пример привязки не завершены корректно. Тип: "+e.getClass().getSimpleName());return 1;}catch(Error e){System.out.println("Статус: ошибка выполнения операции. Тип: "+e.getClass().getSimpleName());return 1;}}
+public static void main(String[] args){int status=Math.max(example(true),example(false));if(status!=0)System.exit(status);}
+}

@@ -3677,6 +3677,165 @@ project-checks:
       feedback:
         requirement: Сопоставить фактические значения и состояние с принятым предметным условием.
         what-check: Проверьте показанный публичный случай и соответствие клиента выбранному API; обязательный приём и объяснение предъявите преподавателю.
+    java-polymorphism-queue-package:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/CharactersTest.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Три очереди из другого пакета
+        test: PublicExamplesTest#normal
+        state: FixedQueue(2), CircularQueue(2), DynQueue(2); put A,B; get,get
+        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
+        expected: Для каждой A,B; вывод операций пуст.
+      - id: boundary
+        name: Освободившееся линейное место
+        test: PublicExamplesTest#boundary
+        state: 'Для каждой: put A,B; get A; put C; извлечь остаток и пустой get'
+        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
+        expected: 'Fixed: отказ C, B; другие: B,C; пустой get печатает Очередь пуста и даёт U+0000.'
+      feedback:
+        requirement: FIFO и молчание успешных операций всех трёх очередей. Различие FixedQueue и двух остальных после частичного извлечения.
+        what-check: Сопоставьте результат с опубликованными действиями. Исходник, приёмы и объяснение предъявите преподавателю; законный иной API требует подготовленной ordinary binding либо ручного предъявления.
+    java-polymorphism-truck-subclass:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/StateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Унаследованные характеристики
+        test: PublicExamplesTest#normal
+        state: Vehicle(2,10,25), Truck(2,10,25,100); range, fuelNeeded(50), getCargo
+        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
+        expected: 250 и 2.0 у обоих; cargo100; абсолютная погрешность 1e-6.
+      - id: boundary
+        name: Отказ до записи
+        test: PublicExamplesTest#boundary
+        state: Vehicle.setFuelcap(0), fuelNeeded(-1); Truck.putCargo(-1)
+        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
+        expected: Все три IllegalArgumentException; базовое состояние2,10,25/range250, cargo100.
+      feedback:
+        requirement: Дальность и расход Vehicle/Truck и грузоподъёмность. Три IllegalArgumentException и прежнее состояние после отказов.
+        what-check: Сопоставьте результат с опубликованными действиями. Исходник, приёмы и объяснение предъявите преподавателю; законный иной API требует подготовленной ordinary binding либо ручного предъявления.
+    java-polymorphism-circular-dynamic-queue:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/CharactersTest.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: 'Переход и рост: FIFO'
+        test: PublicExamplesTest#normal
+        state: 'DynQueue(3): put A,B,C; get A,B; put D,E,F; get4'
+        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
+        expected: A,B затем C,D,E,F; операции молчат. Физический splitgrowth предъявляется отдельно.
+      - id: boundary
+        name: Пустая очередь и заполнение
+        test: PublicExamplesTest#boundary
+        state: 'DynQueue(1): get; put Q; get'
+        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
+        expected: Очередь пуста и U+0000; затем Q без сообщения.
+      feedback:
+        requirement: Фиксированная последовательность сохраняет оставшиеся C,D,E,F. Отказ get сохраняет возможность продолжить работу.
+        what-check: Сопоставьте результат с опубликованными действиями. Исходник, приёмы и объяснение предъявите преподавателю; законный иной API требует подготовленной ordinary binding либо ручного предъявления.
+    java-polymorphism-fraction-number-subclass:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/SignsTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Равенство и четыре операции
+        test: PublicExamplesTest#normal
+        state: 1/2,2/4; арифметика1/3 и1/6
+        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
+        expected: Равны, равные хеши, не равна null; результаты1/2,1/6,1/18,2/1; исходные значения прежние.
+      - id: boundary
+        name: Ноль и недопустимый делитель
+        test: PublicExamplesTest#boundary
+        state: 0/-5; создание1/0; деление3/4 на ноль
+        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
+        expected: Ноль0/1; два ArithmeticException; операнды сохранены.
+      feedback:
+        requirement: Нормализация, равенство/хеш/null и сохранение операндов. Канонический ноль и два ArithmeticException без изменения операндов.
+        what-check: Сопоставьте результат с опубликованными действиями. Исходник, приёмы и объяснение предъявите преподавателю; законный иной API требует подготовленной ordinary binding либо ручного предъявления.
+    java-polymorphism-compatible-queue-reset:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Поддерживаемый сброс
+        test: PublicExamplesTest#normal
+        state: 'Новая: put A,B; get A; reset; get; put C; get'
+        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
+        expected: 'Пустой get: Очередь пуста/U+0000; затем C, успешные put/get молчат; вывод/reset-return свободен.'
+      - id: boundary
+        name: Старая реализация без сброса
+        test: PublicExamplesTest#boundary
+        state: 'Старая только put/get: put A; reset; get'
+        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
+        expected: UnsupportedOperationException; затем A без сообщения. Совместимость исходника отдельно по реальной компиляции.
+      feedback:
+        requirement: B исчезает, новая очередь принимает C после сброса. Унаследованный default отказывает без удаления A.
+        what-check: Сопоставьте результат с опубликованными действиями. Исходник, приёмы и объяснение предъявите преподавателю; законный иной API требует подготовленной ordinary binding либо ручного предъявления.
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
@@ -6742,4 +6901,140 @@ project-materialization:
         audience: grading
       - source: projects/objects/recursive-string-reversal/student/src/test/java/TaskBinding.java
         target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+    exr-polymorphism-queue-package:
+      common-files:
+      - source: projects/polymorphism/queue-package/student/src/main/java/qpack/ICharQ.java
+        target: reference/alternate/qpack/ICharQ.java
+        audience: grading
+      - source: projects/polymorphism/queue-package/student/src/main/java/qpack/ICharQ.java
+        target: reference/primary/qpack/ICharQ.java
+        audience: grading
+      - source: projects/polymorphism/queue-package/student/src/main/java/qpack/ICharQ.java
+        target: tests/api-wrong/qpack/ICharQ.java
+        audience: grading
+      - source: projects/polymorphism/queue-package/student/src/main/java/qpack/ICharQ.java
+        target: tests/fixtures/historical-wrong/qpack/ICharQ.java
+        audience: grading
+      - source: projects/polymorphism/queue-package/student/src/main/java/qpack/ICharQ.java
+        target: tests/public-pair-only/qpack/ICharQ.java
+        audience: grading
+      - source: test-support/shared/56590fc46555/Решение.java
+        target: student/src/main/java/Решение.java
+        audience: student
+      - source: test-support/shared/d086641fede1/character-queues.qmd
+        target: student/QUEUE-CONTRACT.qmd
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/polymorphism/queue-package/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+    exr-polymorphism-truck-subclass:
+      common-files:
+      - source: test-support/shared/56590fc46555/Решение.java
+        target: student/src/main/java/Решение.java
+        audience: student
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/polymorphism/truck-subclass/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+    exr-polymorphism-circular-dynamic-queue:
+      common-files:
+      - source: test-support/shared/56590fc46555/Решение.java
+        target: student/src/main/java/Решение.java
+        audience: student
+      - source: test-support/shared/d086641fede1/character-queues.qmd
+        target: student/QUEUE-CONTRACT.qmd
+        audience: student
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/polymorphism/circular-dynamic-queue/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+    exr-polymorphism-fraction-number-subclass:
+      common-files:
+      - source: test-support/shared/56590fc46555/Решение.java
+        target: student/src/main/java/Решение.java
+        audience: student
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/polymorphism/fraction-number-subclass/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+    exr-polymorphism-compatible-queue-reset:
+      common-files:
+      - source: test-support/shared/56590fc46555/Решение.java
+        target: student/src/main/java/Решение.java
+        audience: student
+      - source: test-support/shared/d086641fede1/character-queues.qmd
+        target: student/QUEUE-CONTRACT.qmd
+        audience: student
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/polymorphism/compatible-queue-reset/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
         audience: grading

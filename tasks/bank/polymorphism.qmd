@@ -181,38 +181,48 @@ double fuelNeeded(int miles);
 {{< project-download exr-polymorphism-reset-character-queues kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-polymorphism-queue-package difficulty="intermediate" project="/projects/polymorphism/queue-package"}
+:::: {#exr-polymorphism-queue-package target="prairielearn" project="/projects/polymorphism/queue-package" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-queue-package"}
 ## Пакет qpack
 
-Поместите `ICharQ` и три реализации из @tasks:sec-j25-bank-character-queues в пакет `qpack`. Демонстрационный класс `IQDemo` оставьте в безымянном пакете.
+Поместите `ICharQ` и три реализации из @tasks:sec-bank-character-queues в пакет `qpack`. Демонстрационный класс `IQDemo` оставьте в безымянном пакете.
 
-Сделайте необходимые типы, конструкторы и операции доступными извне пакета. Покажите импорт, создание всех трёх очередей и вызовы через `ICharQ`. Представьте структуру Java-файлов и команды компиляции и запуска. [@bib-task-queue-package]
+Сделайте необходимые типы, конструкторы и операции доступными извне пакета. Покажите импорт, создание всех трёх очередей и вызовы через `ICharQ`. Представьте структуру Java-файлов и команды компиляции и запуска.
+
+Предъявите исходники и объясните, какие объявления делают очереди доступными
+для `IQDemo`. Общий договор очередей входит в стартовый комплект.
 
 {{< project-download exr-polymorphism-queue-package kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
-:::: {#exr-polymorphism-truck-subclass difficulty="introductory" project="/projects/polymorphism/truck-subclass"}
+:::: {#exr-polymorphism-truck-subclass target="prairielearn" project="/projects/polymorphism/truck-subclass" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-truck-subclass"}
 ## Расширение класса Vehicle: Truck
 
 Создайте `Vehicle` с закрытыми целочисленными полями `passengers`, `fuelcap`, `mpg`: число пассажиров неотрицательно, запас топлива в галлонах и пробег в милях на галлон положительны. Предусмотрите конструктор, чтение и изменение характеристик с проверкой этих ограничений, `range()` для дальности и `fuelNeeded(int miles)` для расхода топлива типа `double`. Расстояние неотрицательно; произведения помещаются в `int`. Для базовых операций используйте открытые сигнатуры из @tasks:exr-polymorphism-vehicle-interface; дальность равна `fuelcap * mpg`, топливо — отношению `miles` к `mpg` с абсолютной погрешностью не больше `1e-6`. Реализация самого интерфейса `IVehicle` в этой карточке необязательна.
 
-Подкласс `Truck` добавляет закрытое поле `cargocap` — неотрицательную грузоподъёмность в фунтах. Реализуйте конструктор `Truck(int p, int f, int m, int c)`, методы `int getCargo()` и `void putCargo(int c)`. Покажите использование унаследованных операций без открытия базовых полей. [@bib-task-truck-subclass]
+Подкласс `Truck` добавляет закрытое поле `cargocap` — неотрицательную грузоподъёмность в фунтах. Реализуйте конструктор `Truck(int p, int f, int m, int c)`, методы `int getCargo()` и `void putCargo(int c)`. Покажите использование унаследованных операций без открытия базовых полей.
 
 Неверные параметры конструктора, метода изменения или отрицательное расстояние отклоняются через `IllegalArgumentException`. Метод изменения проверяет значение до записи: после отказа все характеристики прежние.
 
 Покажите обычный `Vehicle(2, 10, 25)`: дальность 250, топливо для 50 миль 2.0; отказ изменения `fuelcap` на `0` сохраняет дальность 250, отрицательное расстояние вызывает исключение. Для `Truck` отдельно покажите отказ отрицательной грузоподъёмности.
 
+Предъявите исходники и объясните, как подкласс использует закрытое состояние
+базового класса и почему отказ изменения оставляет характеристики прежними.
+
 {{< project-download exr-polymorphism-truck-subclass kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
-:::: {#exr-polymorphism-circular-dynamic-queue difficulty="advanced" project="/projects/polymorphism/circular-dynamic-queue"}
+:::: {#exr-polymorphism-circular-dynamic-queue target="prairielearn" project="/projects/polymorphism/circular-dynamic-queue" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-circular-dynamic-queue"}
 ## Кольцевая версия DynQueue
 
-Создайте реализацию `ICharQ` из @tasks:sec-j25-bank-character-queues, сочетающую кольцевое хранение с увеличением массива при заполнении. Освобождённые позиции используются повторно; увеличение сохраняет FIFO-порядок.
+Создайте реализацию `ICharQ` из @tasks:sec-bank-character-queues, сочетающую кольцевое хранение с увеличением массива при заполнении. Освобождённые позиции используются повторно; увеличение сохраняет FIFO-порядок.
 
-Покажите переход индексов через конец массива, затем увеличение при расположении элементов по обе стороны этой границы. Извлечённая последовательность должна совпасть с порядком оставшихся помещённых символов. [@bib-task-circular-dynamic-queue]
+Покажите переход индексов через конец массива, затем увеличение при расположении элементов по обе стороны этой границы. Извлечённая последовательность должна совпасть с порядком оставшихся помещённых символов.
+
+Предъявите исходник. На своей демонстрации объясните переход через конец
+массива и порядок переноса оставшихся элементов при увеличении.
+Общий договор очередей входит в стартовый комплект.
 
 {{< project-download exr-polymorphism-circular-dynamic-queue kind="starter" text="Скачать стартовый проект" >}}
 
@@ -260,27 +270,35 @@ double fuelNeeded(int miles);
 {{< project-download exr-polymorphism-copy-character-queues kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-polymorphism-fraction-number-subclass difficulty="advanced" project="/projects/polymorphism/fraction-number-subclass"}
+:::: {#exr-polymorphism-fraction-number-subclass target="prairielearn" project="/projects/polymorphism/fraction-number-subclass" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-fraction-number-subclass"}
 ## Рациональное число
 
 Создайте абстрактный класс `NumberValue` и подкласс `Fraction` для рационального числа с целыми числителем и ненулевым знаменателем. Нормализуйте знак и сокращайте дробь; входы подбираются так, чтобы промежуточные результаты помещались в `long`.
 
 Определите сложение, вычитание, умножение и деление дробей с возвращением нового значения. Нулевой знаменатель конструктора и деление на нулевую дробь отклоняются через `ArithmeticException`. Ноль нормализуется как `0/1`, знаменатель нормализованного значения положителен. Операнды ненулевые и после операции сохраняются.
 
-Обоснуйте, какие операции принадлежат базовому классу, реализуйте `equals`, `hashCode`, `toString` по значению и покажите, что `1/2` равно `2/4`. Имена методов арифметики, сигнатуры конструкторов и представление базовой операции выбирайте самостоятельно; сравнение с `null` ложно. `NumberValue` — собственный учебный класс, независимый от `java.lang.Number`. [@bib-task-fraction-number-subclass]
+Обоснуйте, какие операции принадлежат базовому классу, реализуйте `equals`, `hashCode`, `toString` по значению и покажите, что `1/2` равно `2/4`. Имена методов арифметики, сигнатуры конструкторов и представление базовой операции выбирайте самостоятельно; сравнение с `null` ложно. `NumberValue` — собственный учебный класс, независимый от `java.lang.Number`.
+
+Предъявите исходники и четыре арифметические операции. Объясните
+нормализацию, сохранение операндов и согласованность `equals` и `hashCode`;
+покажите предусмотренные отказы.
 
 {{< project-download exr-polymorphism-fraction-number-subclass kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
-:::: {#exr-polymorphism-compatible-queue-reset difficulty="intermediate" project="/projects/polymorphism/compatible-queue-reset"}
+:::: {#exr-polymorphism-compatible-queue-reset target="prairielearn" project="/projects/polymorphism/compatible-queue-reset" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-polymorphism-compatible-queue-reset"}
 ## Расширение интерфейса методом reset()
 
-Рассмотрите эволюцию интерфейса `ICharQ` из @tasks:sec-j25-bank-character-queues. Нужно добавить `reset()`, сохранив возможность компиляции класса, который реализует только `put` и `get`.
+Рассмотрите эволюцию интерфейса `ICharQ` из @tasks:sec-bank-character-queues. Нужно добавить `reset()`, сохранив возможность компиляции класса, который реализует только `put` и `get`.
 
 Добавьте метод по умолчанию `reset()`, который при вызове завершает
 операцию исключением `UnsupportedOperationException`: так клиент узнаёт,
-что старая реализация не поддерживает сброс. В одной новой реализации переопределите `reset()` настоящим сбросом. Сравните результаты и объясните различие совместимости исходного кода и поддержки операции. [@bib-task-compatible-queue-reset]
+что старая реализация не поддерживает сброс. В одной новой реализации переопределите `reset()` настоящим сбросом. Сравните результаты и объясните различие совместимости исходного кода и поддержки операции.
+
+Предъявите исходники старой и новой реализаций. Покажите компиляцию старого
+класса с расширенным интерфейсом, его отказ при сбросе и повторное заполнение
+новой очереди после настоящего сброса. Общий договор очередей входит в комплект.
 
 {{< project-download exr-polymorphism-compatible-queue-reset kind="starter" text="Скачать стартовый проект" >}}
 
