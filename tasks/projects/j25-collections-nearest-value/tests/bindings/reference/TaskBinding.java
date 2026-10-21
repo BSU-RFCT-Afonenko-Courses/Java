@@ -1,1 +1,0 @@
-import java.util.*;class TaskBinding{static Object create(){return new Nearby();}static void add(Object s,double v){((Nearby)s).add(v);}static void remove(Object s,double v){((Nearby)s).remove(v);}static OptionalDouble nearest(Object s,double q){return ((Nearby)s).nearest(q);}}

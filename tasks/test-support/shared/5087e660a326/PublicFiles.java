@@ -1,0 +1,7 @@
+/** Сгенерированные PUBLIC bytes. Не редактировать: единственные источники — exact original220 txt из provenance. */
+public final class PublicFiles {
+ private PublicFiles(){}
+ public static byte[] help(){return java.util.Base64.getDecoder().decode("I2lmCmlmICjRg9GB0LvQvtCy0LjQtSkg0L7Qv9C10YDQsNGC0L7RgDsKCiNzd2l0Y2gKc3dpdGNoICjQt9C90LDRh9C10L3QuNC1KSB7IGNhc2Ug0LrQvtC90YHRgtCw0L3RgtCwIC0+INC+0L/QtdGA0LDRgtC+0YA7IH0KCiNmb3IKZm9yICjQuNC90LjRhtC40LDQu9C40LfQsNGG0LjRjzsg0YPRgdC70L7QstC40LU7INGI0LDQsykg0L7Qv9C10YDQsNGC0L7RgDsKCiN3aGlsZQp3aGlsZSAo0YPRgdC70L7QstC40LUpINC+0L/QtdGA0LDRgtC+0YA7CgojZG8KZG8g0L7Qv9C10YDQsNGC0L7RgDsgd2hpbGUgKNGD0YHQu9C+0LLQuNC1KTsKCiNicmVhawpicmVhayDQt9Cw0LLQtdGA0YjQsNC10YIg0YbQuNC60Lsg0LjQu9C4IHN3aXRjaC4KCiNjb250aW51ZQpjb250aW51ZSDQv9C10YDQtdGF0L7QtNC40YIg0Log0YHQu9C10LTRg9GO0YnQtdC5INC40YLQtdGA0LDRhtC40LguCgo=");}
+ public static byte[] commentInput(){return java.util.Base64.getDecoder().decode("Y2xhc3MgRGVtbyB7IGludC8qKi94OyBTdHJpbmcgcyA9ICIvKiB0ZXh0ICovIjsgLy8g0YXQstC+0YHRgg0KLyoqZG9jKi8gY2hhciBzbGFzaD0nLyc7IH0NCg==");}
+ public static byte[] commentExpected(){return java.util.Base64.getDecoder().decode("Y2xhc3MgRGVtbyB7IGludCB4OyBTdHJpbmcgcyA9ICIvKiB0ZXh0ICovIjsgDQogIGNoYXIgc2xhc2g9Jy8nOyB9DQo=");}
+}

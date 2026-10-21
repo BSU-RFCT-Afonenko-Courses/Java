@@ -1,0 +1,2 @@
+// Редактируемый обычный пример привязки только двух PUBLIC сценариев.
+class TaskBinding {static Object publicQueue(int kind,Object[] storage){throw new UnsupportedOperationException("Подготовьте привязку своего API");}static void put(Object q,Object value){throw new UnsupportedOperationException("Подготовьте привязку своего API");}static Object get(Object q){throw new UnsupportedOperationException("Подготовьте привязку своего API");}}

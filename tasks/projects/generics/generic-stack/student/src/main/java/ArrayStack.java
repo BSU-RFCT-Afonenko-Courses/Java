@@ -1,0 +1,1 @@
+public class ArrayStack<T> implements IGenStack<T>{private final T[]data;public ArrayStack(T[]data){this.data=data;}public void push(T value)throws StackFullException{throw new UnsupportedOperationException("TODO: LIFO-помещение");}public T pop()throws StackEmptyException{throw new UnsupportedOperationException("TODO: LIFO-извлечение");}}

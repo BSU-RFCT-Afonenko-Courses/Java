@@ -1,0 +1,18 @@
+import java.util.*;import java.nio.file.*;import java.nio.charset.StandardCharsets;import java.io.*;
+public class PublicChecks {
+public record Observation(String actual,boolean passed){}
+static final String NORMAL_NAME="LIFO двух символов";
+static final String NORMAL_WHAT="Последним помещённый извлекается первым.";
+static final String NORMAL_INPUT="Стек ёмкости2; push A,Б; pop,pop";
+static final String NORMAL_EXPECTED="Б, A";
+static final String BOUNDARY_NAME="Нулевой char и повторное использование";
+static final String BOUNDARY_WHAT="Оба отказа сохраняют состояние, освобождённое место используется снова.";
+static final String BOUNDARY_INPUT="Ёмкость1; push \\0; push X; pop; pop; push Я; pop";
+static final String BOUNDARY_EXPECTED="StackFullException; \\0; StackEmptyException; Я";
+public static Observation observeNormal()throws Exception{var value=TaskBinding.create(2);var bytes=new ByteArrayOutputStream();var before=System.out;char a,b;try(var out=new PrintStream(bytes,true,StandardCharsets.UTF_8)){System.setOut(out);TaskBinding.put(value,'A');TaskBinding.put(value,'Б');a=TaskBinding.get(value);b=TaskBinding.get(value);}finally{System.setOut(before);}String actual="Извлечено: "+a+", "+b+"; вывод операций="+PublicOutput.escaped(bytes.toString(StandardCharsets.UTF_8));return new Observation(actual,a=='Б'&&b=='A');}
+public static Observation observeBoundary()throws Exception{var value=TaskBinding.create(1);TaskBinding.put(value,'\0');boolean full=false,empty=false;try{TaskBinding.put(value,'X');}catch(Exception e){if(!TaskBinding.full(e))throw e;full=true;}char zero=TaskBinding.get(value);try{TaskBinding.get(value);}catch(Exception e){if(!TaskBinding.empty(e))throw e;empty=true;}TaskBinding.put(value,'Я');char last=TaskBinding.get(value);return new Observation("StackFullException="+full+"; первый char U+"+String.format(java.util.Locale.ROOT,"%04X",(int)zero)+"; StackEmptyException="+empty+"; повторное извлечение="+last,full&&empty&&zero=='\0'&&last=='Я');}
+public static void checkNormal(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте обычное наблюдение с условием.");}
+public static void checkBoundary(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте опубликованную границу с условием.");}
+static int example(boolean normal){System.out.println("Сценарий: "+(normal?NORMAL_NAME:BOUNDARY_NAME));System.out.println("Что наблюдаем: "+(normal?NORMAL_WHAT:BOUNDARY_WHAT));System.out.println("Вход/действие: "+(normal?NORMAL_INPUT:BOUNDARY_INPUT));System.out.println("Ожидается: "+(normal?NORMAL_EXPECTED:BOUNDARY_EXPECTED));try{var o=normal?observeNormal():observeBoundary();System.out.println("Получено: "+o.actual());System.out.println(o.passed()?"Статус: наблюдаемое свойство соответствует; исходник и объяснение оценивает преподаватель.":"Статус: наблюдаемое свойство не соответствует.");return o.passed()?0:1;}catch(UnsupportedOperationException e){System.out.println("Статус: заготовка или привязка ещё не подготовлена; предъявите реализацию преподавателю.");return 1;}catch(LinkageError e){System.out.println("Статус: привязка или среда не подготовлена; требуется ручная проверка, оценки нет.");return 2;}catch(Exception e){System.out.println("Статус: ошибка выполнения операции. Тип: "+e.getClass().getSimpleName());return 1;}catch(Error e){System.out.println("Статус: ошибка выполнения операции. Тип: "+e.getClass().getSimpleName());return 1;}}
+public static void main(String[] args){int status=Math.max(example(true),example(false));if(status!=0)System.exit(status);}
+}

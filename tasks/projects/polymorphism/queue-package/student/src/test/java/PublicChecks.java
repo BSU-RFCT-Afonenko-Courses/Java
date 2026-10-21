@@ -1,0 +1,19 @@
+import java.util.*;
+public class PublicChecks {
+public record Observation(String actual,boolean passed){}
+static final String NORMAL_NAME="Три очереди из другого пакета";
+static final String NORMAL_WHAT="FIFO и молчание успешных операций всех трёх очередей.";
+static final String NORMAL_INPUT="FixedQueue(2), CircularQueue(2), DynQueue(2); put A,B; get,get";
+static final String NORMAL_EXPECTED="Для каждой A,B; вывод операций пуст.";
+static final String BOUNDARY_NAME="Освободившееся линейное место";
+static final String BOUNDARY_WHAT="Различие FixedQueue и двух остальных после частичного извлечения.";
+static final String BOUNDARY_INPUT="Для каждой: put A,B; get A; put C; извлечь остаток и пустой get";
+static final String BOUNDARY_EXPECTED="Fixed: отказ C, B; другие: B,C; пустой get печатает Очередь пуста и даёт U+0000.";
+static String lf(String s){return s.replace("\r\n","\n");}
+public static Observation observeNormal(){var values=new StringBuilder();boolean[] ok={true};String printed=PublicOutput.capture(()->{for(int k=0;k<3;k++){Object q=TaskBinding.queue(k,2);TaskBinding.put(q,'A');TaskBinding.put(q,'B');char a=TaskBinding.get(q),b=TaskBinding.get(q);values.append(k).append(":").append(a).append(b).append("; ");ok[0]&=a=='A'&&b=='B';}});return new Observation("Извлечено="+values+"; вывод="+PublicOutput.escaped(printed),ok[0]&&printed.isEmpty());}
+public static Observation observeBoundary(){boolean ok=true;StringBuilder actual=new StringBuilder();for(int k=0;k<3;k++){Object q=TaskBinding.queue(k,2);char[] got=new char[k==0?3:4];String begin=PublicOutput.capture(()->{TaskBinding.put(q,'A');TaskBinding.put(q,'B');got[0]=TaskBinding.get(q);});String put=PublicOutput.capture(()->TaskBinding.put(q,'C'));String end=PublicOutput.capture(()->{got[1]=TaskBinding.get(q);if(got.length==4)got[2]=TaskBinding.get(q);});String empty=PublicOutput.capture(()->got[got.length-1]=TaskBinding.get(q));ok&=got[0]=='A'&&got[1]=='B'&&(k==0||got[2]=='C')&&got[got.length-1]==0&&begin.isEmpty()&&end.isEmpty()&&lf(empty).equals("Очередь пуста\n")&&lf(put).equals(k==0?"Очередь переполнена\n":"");actual.append("тип").append(k).append(": коды=").append(Arrays.toString(new String(got).chars().toArray())).append(", put=").append(PublicOutput.escaped(put)).append(", пустой get=").append(PublicOutput.escaped(empty)).append("; ");}return new Observation(actual.toString(),ok);}
+public static void checkNormal(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте обычное наблюдение с условием.");}
+public static void checkBoundary(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте опубликованную границу с условием.");}
+static int example(boolean normal){System.out.println("Сценарий: "+(normal?NORMAL_NAME:BOUNDARY_NAME));System.out.println("Что наблюдаем: "+(normal?NORMAL_WHAT:BOUNDARY_WHAT));System.out.println("Вход/действие: "+(normal?NORMAL_INPUT:BOUNDARY_INPUT));System.out.println("Ожидается: "+(normal?NORMAL_EXPECTED:BOUNDARY_EXPECTED));try{var o=normal?observeNormal():observeBoundary();System.out.println("Получено: "+o.actual());System.out.println(o.passed()?"Статус: наблюдаемое свойство соответствует; исходник и объяснение оценивает преподаватель.":"Статус: наблюдаемое свойство не соответствует.");return o.passed()?0:1;}catch(LinkageError e){System.out.println("Статус: привязка или среда не подготовлена; требуется ручная проверка, оценки нет.");return 2;}catch(RuntimeException e){System.out.println("Статус: операция или пример привязки не завершены корректно. Тип: "+e.getClass().getSimpleName());return 1;}catch(Error e){System.out.println("Статус: ошибка выполнения операции. Тип: "+e.getClass().getSimpleName());return 1;}}
+public static void main(String[] args){int status=Math.max(example(true),example(false));if(status!=0)System.exit(status);}
+}

@@ -1,0 +1,2 @@
+/** Редактируемый пример клиента; API решения выбираете вы. */
+class TaskBinding {static java.util.function.IntUnaryOperator addition(int n){throw new UnsupportedOperationException("Подготовьте получение функции сложения");}static java.util.function.Predicate<String> matcher(String regex){throw new UnsupportedOperationException("Подготовьте получение проверки строки");}static java.util.function.Function<String,String[]> splitter(String regex){throw new UnsupportedOperationException("Подготовьте получение функции разбиения");}}

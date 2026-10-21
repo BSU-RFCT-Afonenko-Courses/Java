@@ -4,14 +4,14 @@
 
 ```sh
 python3 tasks/test-support/check-java-project.py \
-  --project tasks/projects/ИМЯ --sources tasks/projects/ИМЯ/reference \
-  --binding tasks/projects/ИМЯ/tests/bindings/reference \
+  --project tasks/projects/ТЕМА/ИМЯ --sources /teacher/java/projects/ТЕМА/ИМЯ/reference \
+  --binding /teacher/java/projects/ТЕМА/ИМЯ/tests/bindings/reference \
   --work /новый/отдельный/каталог --platform /checkout/platform
 ```
 
-`--backend container` использует локальный image966c, `--pull never`, `--network none`, отдельный пустой DOCKER_CONFIG, 512MiB/0.9CPU и штатные sbuser/Landlock. Другой локальный кандидат задают только exact `--image sha256:…`. Наличие image и Docker проверяется фактическим запуском; pull/login/публикации нет.
+`--backend container` использует точный локальный candidate image, указанный в константе IMAGE, `--pull never`, `--network none`, отдельный пустой DOCKER_CONFIG, 512MiB/0.9CPU и штатные sbuser/Landlock. Другой локальный кандидат задают только exact `--image sha256:…`. Наличие image и Docker проверяется фактическим запуском; pull/login/публикации нет.
 
-Источники — все `.java` внутри `--sources` с сохранением относительных путей. `--binding` содержит обычный teacher Java, связывающий **конкретное** решение с тестом. Это не обязательный класс/метод студента. Для иной структуры преподаватель пишет другую привязку; private/nested недоступное решение сохраняет ручную защиту. Не используйте подавление доступа и чтение private fields. Ошибка binding/dependent compilation обозначается `binding-setup-failure`, `manualRequired=true`, без score и без поведения. По ней нельзя автоматически решить, виноват ли студент или тест. Исходный Platform receipt сохраняется как `rawPlatformResult` и в `job/results/results.json`.
+Источники — все `.java` внутри `--sources` с сохранением относительных путей. `--binding` содержит обычный teacher Java, связывающий **конкретное** решение с тестом. Это не обязательный класс/метод студента. Для иной структуры преподаватель пишет другую привязку; private/nested недоступное решение сохраняет ручную защиту. Не используйте подавление доступа и чтение private fields. Ошибка binding/dependent compilation обозначается `binding-setup-failure`, `manualRequired=true`, без score и без поведения. По ней нельзя автоматически решить, виноват ли студент или тест. Это доверенная операторская команда: она явно передаёт существующий `--verification`; descriptor, student upload и штатный native entrypoint этот флаг не включают. Work, raw-логи и отчёты держите вне public source, сайта, native output и student ZIP. Состояние привязки выводится только из структурированных стадий studentCompilation/trustedCompilation/dependentExecution; таймаут либо сбой compiler остаётся инфраструктурной ошибкой. Исходный Platform receipt сохраняется как `rawPlatformResult` и в `job/results/results.json`.
 
 Файлы тестов: `tests/junit/public/*.java`, `private/*.java`; обычные teacher helpers — `support/*.java`. `--public` включает только public suites. `--only public/ExampleTest.java` повторяется, выбирает **файлы**, не методы; неизвестные имена, пустая область и unsafe paths отказывают до создания work. Support/binding не отфильтровываются. Нужен как минимум один реально выполненный JUnit test, disabled/aborted/incomplete — штатный infrastructure failure. Все assertions задают условие, а не точное совпадение с reference.
 

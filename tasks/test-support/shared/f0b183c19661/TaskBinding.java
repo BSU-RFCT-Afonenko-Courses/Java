@@ -1,0 +1,2 @@
+/** Редактируемый пример привязки, не требуемый API решения. */
+class TaskBinding {static Object create(int capacity){throw new UnsupportedOperationException();}static void put(Object value,char c)throws Exception{throw new UnsupportedOperationException();}static char get(Object value)throws Exception{throw new UnsupportedOperationException();}static boolean full(Throwable e){throw new UnsupportedOperationException();}static boolean empty(Throwable e){throw new UnsupportedOperationException();}}

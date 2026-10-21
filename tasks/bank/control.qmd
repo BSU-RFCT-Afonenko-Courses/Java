@@ -15,11 +15,10 @@ default-exercise-statement-visibility: open
 вспомогательные методы и разбиение программы выбирайте самостоятельно.
 Имена классов, пакеты и форма запуска свободны, если условие их не фиксирует.
 
-Консольная программа выводит результат без приглашений к вводу.
-Числа разделяются пробельными символами; десятичный разделитель — точка.
+{{< include ../test-support/shared/39f0ce0b2a11/console-io.md >}}
 Формы чтения и вывода: @handbook:sec-api-console.
 
-:::: {#exr-j25-control-month-name difficulty="introductory" target="prairielearn" project="/projects/month-name" project-check="java-cli"}
+:::: {#exr-control-month-name difficulty="introductory" project="/projects/control/month-name" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-control-month-name" target="prairielearn"}
 ## Название месяца
 
 Введите число от 1 до 12 и выведите русское название соответствующего месяца. Проверьте корректность ввода.
@@ -28,13 +27,14 @@ default-exercise-statement-visibility: open
 
 Точка входа — `Main.main(String[] args)`.
 
-{{< project-download exr-j25-control-month-name kind="starter" text="Скачать стартовый проект" >}}
+Покажите границы диапазона, неверный токен и пустой завершённый ввод.
+Объясните, как различаются корректный номер и ошибка ввода.
 
-[@bib-task-month-name]
+{{< project-download exr-control-month-name kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
-:::: {#exr-j25-control-multiplication-table difficulty="introductory" target="prairielearn" project="/projects/multiplication-table" project-check="java-cli"}
+:::: {#exr-control-multiplication-table difficulty="introductory" project="/projects/control/multiplication-table" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-control-multiplication-table" target="prairielearn"}
 ## Таблица умножения
 
 Выведите таблицу умножения для множителей от 1 до 10 включительно.
@@ -43,28 +43,38 @@ default-exercise-statement-visibility: open
 
 Точка входа — `Main.main(String[] args)`.
 
-{{< project-download exr-j25-control-multiplication-table kind="starter" text="Скачать стартовый проект" >}}
+Покажите таблицу целиком и объясните, как формируются строка, столбец
+и значение на их пересечении, включая границы от 1 до 10.
 
-[@bib-task-multiplication-table]
+{{< project-download exr-control-multiplication-table kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
-:::: {#exr-j25-control-count-console-spaces difficulty="intermediate" target="prairielearn" project="/projects/count-console-spaces" project-check="java-cli"}
+:::: {#exr-control-count-console-spaces difficulty="intermediate" target="prairielearn" project="/projects/control/count-console-spaces" project-check="java-count-console-spaces" prairielearn-grading="mixed" prairielearn-submission="upload"}
 ## Подсчёт пробелов
 
-Читайте символы из стандартного ввода до первой точки или конца ввода и подсчитайте обычные пробелы U+0020. Точка завершает обработку и не учитывается; всё после неё игнорируется. Табуляция и переводы строки не считаются пробелами. Допустимо объявить `throws IOException` в `main`.
+Читайте текст из стандартного ввода до первой точки или конца ввода
+и подсчитайте обычные пробелы U+0020. Точка завершает обработку
+и не учитывается; всё после неё игнорируется. Табуляция и переводы
+строки не считаются пробелами.
 
-Вход и результат: стандартный ввод — текст в UTF-8; выведите только целое количество пробелов. Например, `a b c.after dot  ` даёт `2`, немедленная точка или пустой ввод — `0`.
+Входной текст имеет кодировку UTF-8. Выведите только целое количество
+пробелов. Например, `a b c.after dot  ` даёт `2`, немедленная точка
+или пустой ввод — `0`.
 
-Точка входа — `Main.main(String[] args)`.
+Используйте JDK 25. Точка входа — `Main.main(String[] args)`;
+в ней допустимо объявить `throws IOException`. Способ чтения,
+форму цикла и вспомогательные методы выберите самостоятельно.
 
-{{< project-download exr-j25-control-count-console-spaces kind="starter" text="Скачать стартовый проект" >}}
+Представьте исходники и команды запуска. Покажите точку в начале,
+пробелы рядом с табуляцией, завершение по концу ввода и данные
+после точки. Объясните, что хранит счётчик после выбранного шага
+и к какой части входа относится его значение.
 
-[@bib-task-count-console-spaces]
-
+{{< project-download exr-control-count-console-spaces kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 ::::
 
-:::: {#exr-j25-control-toggle-console-case difficulty="intermediate" target="prairielearn" project="/projects/toggle-console-case" project-check="java-cli"}
+:::: {#exr-control-toggle-console-case difficulty="intermediate" project="/projects/control/toggle-console-case" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-control-toggle-console-case" target="prairielearn"}
 ## Изменение регистра символов
 
 Читайте текст из стандартного ввода до первой точки или конца ввода. Замените ASCII A–Z на a–z, а a–z на A–Z, используя разницу кодов 32. Остальные символы сохраните без изменения: цифры, знаки, пробелы, переводы строк, кириллицу и эмодзи. Точка не входит в результат; всё после неё игнорируется. Подсчитайте каждую изменённую ASCII-букву. Допустимо объявить `throws IOException` в `main`.
@@ -73,28 +83,49 @@ default-exercise-statement-visibility: open
 
 Точка входа — `Main.main(String[] args)`.
 
-{{< project-download exr-j25-control-toggle-console-case kind="starter" text="Скачать стартовый проект" >}}
+Покажите ASCII-буквы рядом с кириллицей и эмодзи, точку в начале,
+завершение по EOF и данные после точки. Объясните изменение счётчика
+и применение разницы кодов только внутри указанных ASCII-диапазонов.
 
-[@bib-task-toggle-console-case]
+{{< project-download exr-control-toggle-console-case kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
-:::: {#exr-j25-control-number-extrema difficulty="intermediate" target="prairielearn" project="/projects/number-extrema" project-check="java-cli"}
+:::: {#exr-control-number-extrema difficulty="intermediate" target="prairielearn" project="/projects/control/number-extrema" project-check="java-number-extrema" prairielearn-grading="mixed" prairielearn-submission="upload"}
 ## Наибольшее и наименьшее число
 
-Сначала введите положительное целое `n`, затем ровно `n` значений типа `int`. Найдите наибольшее и наименьшее значение; при `n = 1` они совпадают. Нулевое или отрицательное `n` отклоните, не читая последовательность: пустая последовательность не имеет экстремумов.
+Сначала прочитайте целое количество `n`. Если оно положительно,
+прочитайте ровно `n` значений типа `int` и найдите наибольшее
+и наименьшее. При `n = 1` оба результата совпадают.
+Нулевое или отрицательное `n` отклоните, не читая последовательность:
+пустая последовательность не имеет экстремумов.
 
-Вход и результат: числа стандартного ввода разделены пробельными символами. Для допустимого набора выведите `Максимум: <значение>`, затем `Минимум: <значение>`. Например, `4 7 -3 0 7` даёт `Максимум: 7` и `Минимум: -3`. Для `n <= 0` выведите `Количество должно быть положительным`. Для положительного `n` гарантирован полный корректный набор чисел.
+Числа стандартного ввода разделены пробельными символами.
+Для положительного `n` гарантирован полный корректный набор чисел.
+Выведите `Максимум: <значение>`, затем `Минимум: <значение>`.
+Например, ввод `4 7 -3 0 7` даёт:
 
-Точка входа — `Main.main(String[] args)`.
+```text
+Максимум: 7
+Минимум: -3
+```
 
-{{< project-download exr-j25-control-number-extrema kind="starter" text="Скачать стартовый проект" >}}
+Для `n <= 0` выведите `Количество должно быть положительным`.
+Приглашения к вводу не печатайте.
 
-[@bib-task-number-extrema]
+Используйте JDK 25. Точка входа — `Main.main(String[] args)`.
+Способ чтения, форму цикла и вспомогательные методы выберите
+самостоятельно; для чтения допустим `Scanner`.
 
+Представьте исходники и команды запуска. Покажите одно значение,
+набор только из отрицательных значений и `n = 0`.
+Объясните выбор начальных экстремумов и их связь с уже обработанными
+числами после выбранного шага.
+
+{{< project-download exr-control-number-extrema kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 ::::
 
-:::: {#exr-j25-control-inch-conversion-table difficulty="introductory"}
+:::: {#exr-control-inch-conversion-table difficulty="introductory" project="/projects/control/inch-conversion-table" prairielearn-grading="manual" prairielearn-submission="upload" project-check="false" target="prairielearn"}
 ## Таблица преобразования дюймов в метры
 
 Выведите таблицу перевода целого количества дюймов в метры для значений
@@ -102,21 +133,35 @@ default-exercise-statement-visibility: open
 один метр — примерно 39,37 дюйма. Каждая строка содержит число дюймов
 и соответствующую длину в метрах; порядок строк — по возрастанию дюймов.
 После каждой группы из 12 строк выведите пустую строку. Точность отображения
-и выравнивание колонок выберите самостоятельно. [@bib-task-inch-conversion-table]
+и выравнивание колонок выберите самостоятельно.
+
+Покажите первую группу и конец таблицы. Объясните перевод единиц,
+выбранную точность отображения и условие вывода пустой строки.
+
+{{< include ../test-support/shared/39f0ce0b2a11/console-io.md >}}
+
+{{< project-download exr-control-inch-conversion-table kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
-:::: {#exr-j25-control-primes-to-hundred difficulty="intermediate"}
+:::: {#exr-control-primes-to-hundred difficulty="intermediate" project="/projects/control/primes-to-hundred" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-control-primes-to-hundred" target="prairielearn"}
 ## Простые числа от 2 до 100
 
 Выведите по возрастанию все простые числа от 2 до 100 включительно.
 Простое число — целое больше единицы, имеющее только два положительных
 делителя: единицу и себя. Ввод не требуется; каждое найденное число
-выведите один раз. [@bib-task-primes-to-hundred]
+выведите один раз.
+
+Покажите полученную последовательность и объясните проверку простоты
+на выбранном простом и составном числе, а также границы диапазона.
+
+{{< include ../test-support/shared/39f0ce0b2a11/console-io.md >}}
+
+{{< project-download exr-control-primes-to-hundred kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
-:::: {#exr-j25-control-distinct-three-digits difficulty="intermediate"}
+:::: {#exr-control-distinct-three-digits difficulty="intermediate" project="/projects/control/distinct-three-digits" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-control-distinct-three-digits" target="prairielearn"}
 ## Трёхзначные числа с разными цифрами
 
 Сначала введите неотрицательное целое `n`, затем ровно `n` чисел типа `int`.
@@ -124,11 +169,17 @@ default-exercise-statement-visibility: open
 десятичной записи модуля: подходят и `123`, и `-123`; знак не является
 цифрой. Сохраняйте знак и повторные вхождения. Если подходящих чисел нет,
 в том числе при `n = 0`, выведите «Подходящих чисел нет».
-[@bib-task-distinct-three-digits]
+
+Покажите отрицательное число, повторное вхождение и пустой набор.
+Объясните проверку количества и различия цифр без учёта знака.
+
+{{< include ../test-support/shared/39f0ce0b2a11/console-io.md >}}
+
+{{< project-download exr-control-distinct-three-digits kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
-:::: {#exr-j25-control-numeric-palindromes difficulty="advanced" project="/projects/j25-control-numeric-palindromes"}
+:::: {#exr-control-numeric-palindromes difficulty="advanced" project="/projects/control/numeric-palindromes" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-control-numeric-palindromes" target="prairielearn"}
 ## Числа-палиндромы
 
 Сначала введите неотрицательное целое `n`, затем ровно `n` чисел типа `int`.
@@ -136,13 +187,18 @@ default-exercise-statement-visibility: open
 одинакова при чтении слева направо и справа налево. Знак не учитывается;
 `-121`, `121`, `7` и `0` подходят, `10` — нет. Сохраняйте знак и все
 повторные вхождения. Если подходящих чисел нет, в том числе при `n = 0`,
-выведите «Подходящих чисел нет». [@bib-task-numeric-palindromes]
+выведите «Подходящих чисел нет».
 
-{{< project-download exr-j25-control-numeric-palindromes kind="starter" text="Скачать стартовый проект" >}}
+Покажите отрицательное число, повторные вхождения, нуль и пустой набор.
+Объясните сравнение цифр модуля и сохранение исходного порядка.
+
+{{< include ../test-support/shared/39f0ce0b2a11/console-io.md >}}
+
+{{< project-download exr-control-numeric-palindromes kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
-:::: {#exr-j25-control-increasing-digits difficulty="advanced"}
+:::: {#exr-control-increasing-digits difficulty="advanced" project="/projects/control/increasing-digits" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-control-increasing-digits" target="prairielearn"}
 ## Строгий порядок возрастания цифр
 
 Сначала введите неотрицательное целое `n`, затем ровно `n` чисел типа `int`.
@@ -150,15 +206,30 @@ default-exercise-statement-visibility: open
 направо в строго возрастающем порядке. Знак не учитывается: `-128`
 подходит, `122` — нет. Одноцифровые числа, включая `0`, также подходят.
 Выведите найденное число с исходным знаком; если его нет, в том числе
-при `n = 0`, выведите «Подходящих чисел нет». [@bib-task-increasing-digits]
+при `n = 0`, выведите «Подходящих чисел нет».
+
+Покажите отрицательное подходящее число, равные соседние цифры,
+одноцифровое число и пустой набор. Объясните, как выбирается первое
+подходящее значение и почему равные цифры не подходят.
+
+{{< include ../test-support/shared/39f0ce0b2a11/console-io.md >}}
+
+{{< project-download exr-control-increasing-digits kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
 
-:::: {#exr-j25-control-control-help-menu difficulty="intermediate"}
+:::: {#exr-control-control-help-menu difficulty="intermediate" project="/projects/control/control-help-menu" prairielearn-grading="manual" prairielearn-submission="upload" project-check="false" target="prairielearn"}
 ## Справочная система по управляющим операторам
 
 Создайте простую справочную систему, отображающую синтаксис управляющих операторов Java. Первая версия выводит меню с операторами if и традиционным switch, ожидает выбора и отображает синтаксис выбранного оператора.
 
-Затем расширьте программу: добавьте сведения о синтаксисе циклов for, while и do-while. Проверяйте выбор меню пользователем, организуя цикл до тех пор, пока не будет введён правильный вариант. [@bib-task-control-help-menu]
+Затем расширьте программу: добавьте сведения о синтаксисе циклов for, while и do-while. Проверяйте выбор меню пользователем, организуя цикл до тех пор, пока не будет введён правильный вариант.
+
+Текст меню, обозначения вариантов и оформление справки выберите
+самостоятельно. Покажите правильный выбор и повторный запрос после
+неправильного выбора. Объясните расширение начальной версии и условие
+завершения цикла проверки.
+
+{{< project-download exr-control-control-help-menu kind="starter" text="Скачать стартовый проект" >}}
 
 ::::
