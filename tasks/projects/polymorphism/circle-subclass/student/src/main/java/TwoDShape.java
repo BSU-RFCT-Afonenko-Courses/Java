@@ -1,0 +1,1 @@
+public abstract class TwoDShape {private double width,height;private String name;protected TwoDShape(double width,double height,String name){throw new UnsupportedOperationException("TODO: состояние базового класса");}public double getWidth(){return width;}public double getHeight(){return height;}public String getName(){return name;}public abstract double area();}

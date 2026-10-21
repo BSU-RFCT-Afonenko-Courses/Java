@@ -1,0 +1,1 @@
+class TaskBinding {static Object queue(int kind,int n){return switch(kind){case 0->new FixedQueue(n);case 1->new CircularQueue(n);default->new DynQueue(n);};}static void put(Object x,char c){((ICharQ)x).put(c);}static char get(Object x){return ((ICharQ)x).get();}static void reset(Object x){((ICharQ)x).reset();}}

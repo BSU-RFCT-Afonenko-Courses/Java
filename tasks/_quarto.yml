@@ -782,6 +782,149 @@ project-checks:
       feedback:
         requirement: Три отбора Car, параметр текущего года, строгие возраст/цена, порядок/кратность и вход сохранены.
         what-check: Сопоставьте полученные значения и состояние с открытым сценарием; предъявите исходник и объяснение по условию.
+    java-polymorphism-circle-subclass:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Размеры и площадь через базовую ссылку
+        test: PublicExamplesTest#normal
+        action: Circle(2), ссылка TwoDShape; чтение размеров/имени/area
+        expected: 4,4,circle; площадь12.566370614359172 в допуске.
+      - id: boundary
+        name: Максимальный допустимый радиус
+        test: PublicExamplesTest#boundary
+        action: Circle(1e150), вызов через TwoDShape
+        expected: 2e150,2e150,circle; конечная площадьπ*10^300 в допуске.
+      feedback:
+        requirement: Диаметр и имя одного радиуса; конечная площадь с допуском max(1e-9,1e-12*|πr²|).
+        what-check: Сопоставьте фактические действия и состояние с открытым ожиданием; предъявите исходники и объяснение обязательной ручной части.
+    java-polymorphism-vehicle-interface:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Чтение и допустимое изменение характеристик
+        test: PublicExamplesTest#normal
+        action: Vehicle(2,10,25):50миль; затем setters(0,12,30),90миль
+        expected: (2,10,25),250,2.0; затем(0,12,30),360,3.0; допуск1e-6.
+      - id: boundary
+        name: Отказ изменения и отрицательного расстояния
+        test: PublicExamplesTest#boundary
+        action: Новый Vehicle(2,10,25):setFuelcap(0),fuelNeeded(-1),fuelNeeded(0)
+        expected: Два IllegalArgumentException; прежние(2,10,25),range250; fuelNeeded(0)=0.0.
+      feedback:
+        requirement: Чтение/изменение через IVehicle, вещественное топливо, отказ до записи с сохранением состояния.
+        what-check: Сопоставьте фактические действия и состояние с открытым ожиданием; предъявите исходники и объяснение обязательной ручной части.
+    java-polymorphism-animal-hierarchy:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Переопределённые голоса и действия
+        test: PublicExamplesTest#normal
+        action: Animal(Зверь),Dog(Рекс),Puppy(Луч); голос через Animal, действия Dog/Puppy
+        expected: Вид и имя различимы, действия доступны, имена сохранены.
+      - id: boundary
+        name: Одно имя у разных классов
+        test: PublicExamplesTest#boundary
+        action: Два Dog(Рекс),Puppy(Рекс),Dog(Иной),null; equals/hash/toString
+        expected: Dog равны и хеши равны; Dog/Puppy в обе стороны false; иной/null false; вид/имя видны в toString.
+      feedback:
+        requirement: Animal→Dog→Puppy; голоса различают вид/имя; имя сохранено; equals точного класса/имени и согласованный хеш.
+        what-check: Сопоставьте фактические действия и состояние с открытым ожиданием; предъявите исходники и объяснение обязательной ручной части.
+    java-polymorphism-reset-character-queues:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/CharDomainTest.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Сброс после частичного извлечения
+        test: PublicExamplesTest#normal
+        action: Fixed/Circular/Dyn(2):put A/B,get A,reset,put X/Y,get/get
+        expected: 'Все три дают X/Y, старый B удалён; успешные операции молчат. Ёмкость: отдельное чтение.'
+      - id: boundary
+        name: Пустой сброс и уже выросшая очередь
+        test: PublicExamplesTest#boundary
+        action: Fixed/Circular(1) пусты; Dyn(1) содержит A/B/C; reset, повторный пустой reset Dyn,put X,get,get пустой
+        expected: 'Все дают X, затем0 и строку Очередь пуста. Пустые reset молчат. Dyn сохраняет фактическое k>=3: отдельное чтение.'
+      feedback:
+        requirement: FIFO после reset всех трёх; текущая ёмкость сохраняется и проверяется по исходнику отдельно.
+        what-check: Сопоставьте фактические действия и состояние с открытым ожиданием; предъявите исходники и объяснение обязательной ручной части.
+    java-polymorphism-copy-character-queues:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/CharDomainTest.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/ZeroTransferStateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Выросший источник и кольцевой приёмник
+        test: PublicExamplesTest#normal
+        action: Dyn(2) содержит A/B/C; Circular(3) пуст; transfer3, чтение приёмника и пустого источника
+        expected: Transfer молчит; приёмник A/B/C; get источника после transfer даёт0 и строку Очередь пуста.
+      - id: boundary
+        name: Нулевой перенос в исчерпанный линейный приёмник
+        test: PublicExamplesTest#boundary
+        action: Circular(1) пуст; Fixed(1) послеput/get Q пуст, линейное место исчерпано; transfer0
+        expected: Сам transfer молчит; обе прежние очереди пусты, без reset или новых помещений.
+      feedback:
+        requirement: Перенос только put/get сохраняет FIFO и объекты, опустошает источник; count0 не требует места.
+        what-check: Сопоставьте фактические действия и состояние с открытым ожиданием; предъявите исходники и объяснение обязательной ручной части.
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
@@ -1413,3 +1556,163 @@ project-materialization:
       - source: projects/objects/car-selection/student/src/test/java/PublicChecks.java
         target: tests/junit/support/PublicChecks.java
         audience: grading
+    exr-polymorphism-circle-subclass:
+      common-files:
+      - source: test-support/shared/c3c75aca2bf0/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/polymorphism/circle-subclass/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: projects/polymorphism/circle-subclass/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-polymorphism-vehicle-interface:
+      common-files:
+      - source: test-support/shared/c3c75aca2bf0/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/polymorphism/vehicle-interface/student/src/main/java/IVehicle.java
+        target: reference/IVehicle.java
+        audience: grading
+      - source: projects/polymorphism/vehicle-interface/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/polymorphism/vehicle-interface/student/src/main/java/IVehicle.java
+        target: tests/fixtures/public-pair-only/IVehicle.java
+        audience: grading
+      - source: projects/polymorphism/vehicle-interface/student/src/main/java/IVehicle.java
+        target: tests/fixtures/wrong/IVehicle.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: projects/polymorphism/vehicle-interface/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-polymorphism-animal-hierarchy:
+      common-files:
+      - source: test-support/shared/c3c75aca2bf0/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/polymorphism/animal-hierarchy/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: projects/polymorphism/animal-hierarchy/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-polymorphism-reset-character-queues:
+      common-files:
+      - source: test-support/shared/c3c75aca2bf0/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/polymorphism/reset-character-queues/student/src/main/java/ICharQ.java
+        target: reference/ICharQ.java
+        audience: grading
+      - source: projects/polymorphism/reset-character-queues/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/polymorphism/reset-character-queues/student/src/main/java/ICharQ.java
+        target: tests/fixtures/manual-wrong-shrinks-capacity/ICharQ.java
+        audience: grading
+      - source: projects/polymorphism/reset-character-queues/student/src/main/java/ICharQ.java
+        target: tests/fixtures/public-pair-only/ICharQ.java
+        audience: grading
+      - source: projects/polymorphism/reset-character-queues/student/src/main/java/ICharQ.java
+        target: tests/fixtures/valid-crlf/ICharQ.java
+        audience: grading
+      - source: projects/polymorphism/reset-character-queues/student/src/main/java/ICharQ.java
+        target: tests/fixtures/valid-growth-replacement/ICharQ.java
+        audience: grading
+      - source: projects/polymorphism/reset-character-queues/student/src/main/java/ICharQ.java
+        target: tests/fixtures/wrong/ICharQ.java
+        audience: grading
+      - source: projects/polymorphism/reset-character-queues/student/src/main/java/ICharQ.java
+        target: tests/fixtures/wrong-message-whitespace/ICharQ.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: projects/polymorphism/reset-character-queues/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+      - source: test-support/shared/d086641fede1/character-queues.qmd
+        target: student/QUEUE-CONTRACT.qmd
+        audience: student
+      - source: test-support/shared/27174f3f1a9d/CircularQueue.java
+        target: student/src/main/java/CircularQueue.java
+        audience: student
+      - source: test-support/shared/9740026eafd3/DynQueue.java
+        target: student/src/main/java/DynQueue.java
+        audience: student
+      - source: test-support/shared/1c76d22d4e1b/FixedQueue.java
+        target: student/src/main/java/FixedQueue.java
+        audience: student
+    exr-polymorphism-copy-character-queues:
+      common-files:
+      - source: test-support/shared/c3c75aca2bf0/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/polymorphism/copy-character-queues/student/src/main/java/ICharQ.java
+        target: reference/ICharQ.java
+        audience: grading
+      - source: projects/polymorphism/copy-character-queues/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/polymorphism/copy-character-queues/student/src/main/java/ICharQ.java
+        target: tests/fixtures/public-pair-only/ICharQ.java
+        audience: grading
+      - source: projects/polymorphism/copy-character-queues/student/src/main/java/ICharQ.java
+        target: tests/fixtures/valid-crlf/ICharQ.java
+        audience: grading
+      - source: projects/polymorphism/copy-character-queues/student/src/main/java/ICharQ.java
+        target: tests/fixtures/valid-manual-only/ICharQ.java
+        audience: grading
+      - source: projects/polymorphism/copy-character-queues/student/src/main/java/ICharQ.java
+        target: tests/fixtures/wrong/ICharQ.java
+        audience: grading
+      - source: projects/polymorphism/copy-character-queues/student/src/main/java/ICharQ.java
+        target: tests/fixtures/wrong-api/ICharQ.java
+        audience: grading
+      - source: projects/polymorphism/copy-character-queues/student/src/main/java/ICharQ.java
+        target: tests/fixtures/wrong-message-whitespace/ICharQ.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: projects/polymorphism/copy-character-queues/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+      - source: test-support/shared/d086641fede1/character-queues.qmd
+        target: student/QUEUE-CONTRACT.qmd
+        audience: student
+      - source: test-support/shared/27174f3f1a9d/CircularQueue.java
+        target: student/src/main/java/CircularQueue.java
+        audience: student
+      - source: test-support/shared/9740026eafd3/DynQueue.java
+        target: student/src/main/java/DynQueue.java
+        audience: student
+      - source: test-support/shared/1c76d22d4e1b/FixedQueue.java
+        target: student/src/main/java/FixedQueue.java
+        audience: student
