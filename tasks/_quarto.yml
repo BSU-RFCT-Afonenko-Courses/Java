@@ -1125,6 +1125,204 @@ project-checks:
       feedback:
         requirement: Самостоятельная HashMap складывает коэффициенты и сохраняет входы; abs(a-r)<=1e-9+1e-12*abs(r), отсутствующая пара означает ноль.
         what-check: Сопоставьте наблюдение с опубликованным ожиданием и предъявите исходник и объяснение преподавателю.
+    java-pipelines-divisibility-function:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/PrivateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Кратное и соседнее число
+        test: PublicExamplesTest#normal
+        action: '`31` и `32`.; вызвать метод через переменную собственного функционального интерфейса для каждого аргумента.'
+        expected: соответственно `true` и `false`.
+      - id: boundary
+        name: Ноль и отрицательное кратное
+        test: PublicExamplesTest#boundary
+        action: '`0` и `-31`.; вызвать тот же метод интерфейса для каждого аргумента.'
+        expected: оба результата `true`.
+      feedback:
+        requirement: Собственный интерфейс и лямбда проверяют делимость int на 31, включая ноль и отрицательные.
+        what-check: Сопоставьте фактический результат с открытым ожиданием. Предъявите исходник и объясните обязательные приёмы.
+    java-pipelines-filter-string-array:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/PrivateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Строгая длина и повтор
+        test: PublicExamplesTest#normal
+        action: массив `{"a", "bb", "bb", "ccc"}`, порог `1`.; выполнить фильтрацию и сравнить вход с исходным состоянием.
+        expected: новый `String[]` с последовательностью `{"bb", "bb", "ccc"}`; исходный массив прежний.
+      - id: boundary
+        name: Пустой вход при нулевом пороге
+        test: PublicExamplesTest#boundary
+        action: пустой `String[]`, порог `0`.; выполнить фильтрацию.
+        expected: пустой `String[]`, отличный от входного объекта; вход сохраняется пустым.
+      feedback:
+        requirement: Stream получает новый String[] по строгому порогу char-длины, сохраняя порядок, повторы и вход.
+        what-check: Сопоставьте фактический результат с открытым ожиданием. Предъявите исходник и объясните обязательные приёмы.
+    java-pipelines-order-points:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/PrivateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Геометрическая удалённость
+        test: PublicExamplesTest#normal
+        action: упорядоченный список точек `(1:10)`, `(2:0)`.; выполнить обработку и вывести отсортированные точки.
+        expected: '`(2:0) (1:10)`; исходный список и точки прежние.'
+      - id: boundary
+        name: Равные расстояния и повтор
+        test: PublicExamplesTest#boundary
+        action: упорядоченный список `(3:4)`, `(0:5)`, `(3:4)`.; выполнить ту же обработку и вывести результат.
+        expected: '`(3:4) (0:5) (3:4)` в этом порядке; исходный список и точки прежние. Разделители допустимы как выше.'
+      feedback:
+        requirement: Stream и лямбда-компаратор устойчиво выводят точки (X:Y) по геометрическому расстоянию, сохраняя вход.
+        what-check: Сопоставьте фактический результат с открытым ожиданием. Предъявите исходник и объясните обязательные приёмы.
+    java-pipelines-count-selected-words:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/PrivateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Регистр, отсутствие и повтор запроса
+        test: PublicExamplesTest#normal
+        action: текст `"one, two two; One"`, запросы `[one, two, absent, one]`.; получить и вывести отчёт, проверить сохранность входных данных.
+        expected: '`[one-1, two-2, absent-0, one-1]`; входные данные прежние.'
+      - id: boundary
+        name: Пустой текст с повторяющимся запросом
+        test: PublicExamplesTest#boundary
+        action: текст `""`, запросы `[One, One]`.; выполнить тот же подсчёт и вывести отчёт.
+        expected: '`[One-0, One-0]`; входы прежние. Завершающий перевод строки допустим, но не обязателен.'
+      feedback:
+        requirement: Stream выводит точный отчёт частот латинских слов с регистром, порядком и повторами запросов.
+        what-check: Сопоставьте фактический результат с открытым ожиданием. Предъявите исходник и объясните обязательные приёмы.
+    java-pipelines-conditional-function:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/PrivateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Создание, обе ветви и повторный apply
+        test: PublicExamplesTest#normal
+        action: условие проверяет пустоту ненулевой строки; истинная ветвь возвращает `0`, ложная — длину. Наблюдения вызовов этих трёх функций до создания результата пусты.; создать функцию, затем последовательно применить её к `""`, `"abc"`, `"abc"`.
+        expected: создание не вызывает переданные функции. Результаты apply — `0`, `3`, `3`. Для первого apply вызваны condition и истинная ветвь; для второго и третьего — condition и ложная ветвь. В каждом apply обе вызванные функции получают тот же аргумент ровно по одному разу. Всего condition вызван 3 раза, истинная ветвь — 1, ложная — 2.
+      - id: boundary
+        name: Допустимый null и невыбранный отказ
+        test: PublicExamplesTest#boundary
+        action: ненулевое условие принимает null и возвращает true; ненулевая истинная ветвь принимает null и возвращает null; ненулевая ложная ветвь при вызове выбросила бы IllegalStateException.; создать функцию и один раз вызвать apply с аргументом null.
+        expected: при создании вызовов нет. В apply условие и истинная ветвь получают null ровно по одному разу, ложная ветвь не вызвана; возвращается null, исключения нет.
+      feedback:
+        requirement: Точная обобщённая сигнатура ternaryOperator и отложенный выбор с одним condition и одной выбранной ветвью на apply.
+        what-check: Сопоставьте фактический результат с открытым ожиданием. Предъявите исходник и объясните обязательные приёмы.
+    java-pipelines-count-characters:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/PrivateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Буквы и пробел
+        test: PublicExamplesTest#normal
+        action: строка `"ab a"`.; получить коллекцию частот через выбранный API решения.
+        expected: 'ровно три ключа: `a` (97) → `2`, `b` (98) → `1`, пробел (32) → `1`.'
+      - id: boundary
+        name: Одна суррогатная пара
+        test: PublicExamplesTest#boundary
+        action: строка, задаваемая Java-литералом `"\uD83D\uDE00"`.; получить коллекцию частот тем же способом.
+        expected: ровно два ключа со значениями кодовых единиц `55357` и `56832`, частота каждого `1`.
+      feedback:
+        requirement: Stream считает каждую кодовую единицу char, включая пробел и суррогаты; коллекция и тип точной частоты свободны.
+        what-check: Сопоставьте фактический результат с открытым ожиданием. Предъявите исходник и объясните обязательные приёмы.
+    java-pipelines-discriminant-function:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/PrivateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Ненулевые коэффициенты
+        test: PublicExamplesTest#normal
+        action: '`(a, b, c) = (1, -3, 2)`.; вызвать метод через переменную собственного интерфейса.'
+        expected: конечное значение v с математическим эталоном r = `1`, удовлетворяющее `|v − r| ≤ 1e-8 + 1e-12 · |r|`.
+      - id: boundary
+        name: Нулевой a и край допустимых коэффициентов
+        test: PublicExamplesTest#boundary
+        action: '`(a, b, c) = (0, -1000, 1000)`.; вызвать тот же метод собственного интерфейса.'
+        expected: конечное значение v с r = `1000000`, удовлетворяющее тому же опубликованному смешанному допуску.
+      feedback:
+        requirement: Собственный интерфейс и лямбда вычисляют конечный b²−4ac с допуском 1e-8+1e-12*abs(r).
+        what-check: Сопоставьте фактический результат с открытым ожиданием. Предъявите исходник и объясните обязательные приёмы.
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
@@ -2124,4 +2322,135 @@ project-materialization:
         audience: grading
       - source: common/src/main/java/grade/Student.java
         target: teacher-demonstration/grade/Student.java
+        audience: grading
+    exr-pipelines-divisibility-function:
+      common-files:
+      - source: test-support/shared/bacc6dc37fce/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/pipelines/divisibility-function/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: projects/pipelines/divisibility-function/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-pipelines-filter-string-array:
+      common-files:
+      - source: test-support/shared/bacc6dc37fce/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/pipelines/filter-string-array/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: projects/pipelines/filter-string-array/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-pipelines-order-points:
+      common-files:
+      - source: test-support/shared/bacc6dc37fce/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/pipelines/order-points/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: projects/pipelines/order-points/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+    exr-pipelines-count-selected-words:
+      common-files:
+      - source: test-support/shared/bacc6dc37fce/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/pipelines/count-selected-words/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: projects/pipelines/count-selected-words/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+    exr-pipelines-conditional-function:
+      common-files:
+      - source: test-support/shared/bacc6dc37fce/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/pipelines/conditional-function/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: projects/pipelines/conditional-function/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-pipelines-count-characters:
+      common-files:
+      - source: test-support/shared/bacc6dc37fce/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/pipelines/count-characters/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: projects/pipelines/count-characters/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-pipelines-discriminant-function:
+      common-files:
+      - source: test-support/shared/bacc6dc37fce/Main.java
+        target: student/src/main/java/Main.java
+        audience: student
+      - source: projects/pipelines/discriminant-function/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: projects/pipelines/discriminant-function/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
         audience: grading

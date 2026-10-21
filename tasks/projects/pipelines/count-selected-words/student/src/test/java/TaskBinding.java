@@ -1,0 +1,1 @@
+class TaskBinding {static String run(String t,java.util.List<String>w){return PublicOutput.capture(()->Study.present(t,w));}}

@@ -1,11 +1,6 @@
 # Кодовые единицы строки
 
-В задаче учитывается каждая кодовая единица UTF-16. Сначала определите,
-какие значения выдаёт источник `chars()`, затем выбирайте тип ключа карты.
-
-## Справочник
-
-### Источник `chars()`
+## Кодовые единицы строки как источник
 
 `IntStream chars()` у `String` возвращает поток: каждое значение — беззнаково
 расширенная до `int` кодовая единица UTF-16. `Stream<Integer> boxed()`
@@ -34,12 +29,7 @@ System.out.println(symbol.codePoints().boxed().toList()); // [128512]
 [String.chars](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#chars()) и
 [String.codePoints](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#codePoints()).
 
-
-## Практика
-
-Сопоставьте число значений для ASCII-текста и суррогатной пары:
-
-### Два входных примера
+### Источник кодовых единиц
 
 ```java
 System.out.println("a a".chars().boxed().toList());
@@ -51,4 +41,3 @@ System.out.println("\uD83D\uDE00".chars().boxed().toList());
 `chars()` выдаёт `int`-значения кодовых единиц UTF-16.
 Суррогатная пара содержит две единицы; пробел учитывается.
 `boxed()` позволяет использовать обобщённые операции Stream.
-
