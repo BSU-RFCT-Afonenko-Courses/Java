@@ -3,6 +3,11 @@ import {basename,dirname,fromFileUrl,join,relative,resolve} from 'stdlib/path';
 import {diagnostic} from '../domain/diagnostics.ts';
 import {command,quartoExecutable} from './process.ts';
 import type {NativeRun,NativeRunPointer} from './native-run.ts';
+import {collectMetadataClosure,validateMetadataClosure,closureInputs,configIdentities,commonKey,metadataBytes,type MetadataClosure,type MetadataInputs,nativeExtensionRoots} from './metadata-closure.ts';
+import {inspectSources,sourceFile,sourceMetadata,sameSourceMetadata,type SourceIdentities} from './source-identities.ts';
+import {captureOwnedProfile,assertProducerProfileCurrent,readOwnedProfileEvidence,assertOwnedProfileCurrent} from './owned-export-profile.ts';
+import {storeInspection,checkInspectionStore,inspectionRefs,originalInspections} from './inspection-preimages.ts';
+import {completedExportRetirement,prepareRetiredRegularContext,checkRetiredRegularContext,validateCompletedExportScope} from './native-export-retirement.ts';
 const fail=(message:string):never=>{throw diagnostic('NATIVE.COMMON_PATH_BINDING_INVALID',message,{field:'project-materialization'})};
 export const stable=(value:unknown):string=>JSON.stringify(value,(_k,v)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.fromEntries(Object.entries(v).sort(([a],[b])=>a.localeCompare(b))):v);
 export async function digest(bytes:Uint8Array,algorithm='SHA-256'){return Array.from(new Uint8Array(await crypto.subtle.digest(algorithm,new Uint8Array(bytes).buffer)),x=>x.toString(16).padStart(2,'0')).join('')}
@@ -45,13 +50,6 @@ function section(raw:any):Section|null{
  }
  return raw;
 }
-function unsupported(raw:any){
- if(!raw||typeof raw!=='object')return;
- for(const [key,v] of Object.entries(raw)){
-  if(['metadata-file','metadata-files'].includes(key)&&v!=null)fail('Неподтверждённый metadata-file origin');
-  if(key!=='project-materialization')unsupported(v);
- }
-}
 function nestedDeclaration(raw:any,top=true):boolean{
  if(!raw||typeof raw!=='object')return false;
  return Object.entries(raw).some(([k,v])=>k==='project-materialization'?!top:nestedDeclaration(v,false));
@@ -77,26 +75,19 @@ async function extensionMetadata(roots:string[]){
   }
  }return files;
 }
-function extensionRoots(root:string,extensions:any[]){
- const roots=new Set<string>([join(root,'_extensions')]);
- for(const e of extensions){
-  if(typeof e.path!=='string'||!e.path.startsWith('/')&& !/^[A-Za-z]:[\\/]/.test(e.path))fail('Неизвестный native extension path');
-  let dir=e.path;while(basename(dir)!=='_extensions'){const next=dirname(dir);if(next===dir)fail('Неизвестный native extension namespace');dir=next}roots.add(dir);
- }return [...roots].sort();
-}
 export interface CommonPathWitness {
  schema:'course-common-files-path-binding-v1';projectRoot:string;runDirectory:string;profiles:string[];outputDirectory:string;renderAll:boolean;
  quartoVersion:string;ownerInspectionHash:string;documentInspectionHashes:Record<string,string>;
  configurationInputs:Record<string,string|false>;inputFiles:string[];sourceHashes:Record<string,string>;commonSourceHashes:Record<string,string>;
- nativeExtensionMetadata:{roots:string[];files:Record<string,string>};
+ nativeExtensionMetadata:{roots:string[];files:Record<string,string>};metadataClosure:MetadataClosure;sourceIdentities:SourceIdentities;
  canonicalOwnerDeclarations:Section|null;documents:{source:string;format:string;rawDeclarations:Section|null;effectiveDeclarations:Section|null;canonicalDeclarations:Section|null}[];
- temporaryExportProfile?:{profile:string;file:string;sha256:string;sha1:string};
+ temporaryExportProfile?:{profile:string;file:string;sha256:string;sha1:string};forcedWriter?:{kind:'owned-export-json'};
 }
 async function inventory(root:string,output:string){
  const result:Record<string,string>={};
  async function walk(dir:string){for await(const e of Deno.readDir(dir)){
   const path=join(dir,e.name);if(path===output||generatedPart(e.name))continue;
-  if(e.isSymlink)fail('Символическая ссылка в исходном inventory: '+path);
+  if(e.isSymlink){result[relative(root,path).replaceAll('\\','/')]='link:'+await Deno.readLink(path);continue;}
   if(e.isDirectory)await walk(path);else if(e.isFile)result[relative(root,path).replaceAll('\\','/')]=await digest(await Deno.readFile(path));else fail('Специальный файл в owner');
  }}await walk(root);return result;
 }
@@ -106,38 +97,52 @@ function canonicalFact(value:Section|null){
 }
 async function currentInputs(root:string,w:CommonPathWitness,p:NativeRunPointer){
  if(stable(await extensionMetadata(w.nativeExtensionMetadata.roots))!==stable(w.nativeExtensionMetadata.files))fail('Native extension metadata closure изменён');
- for(const [name,hash] of Object.entries({...w.configurationInputs,...w.sourceHashes,...w.commonSourceHashes})){
+ for(const [name,hash] of Object.entries({...w.configurationInputs,...w.commonSourceHashes})){
   const retired=p.commonPathRetirement;
   const expect=retired&&name===retired.file?false:hash;
   const bytes=await regular(root,name,true);if((bytes?await digest(bytes):false)!==expect)fail('Proof устарел: '+name);
  }
+ for(const [name,hash] of Object.entries(w.sourceHashes)){const bytes=w.inputFiles.includes(name)?(await sourceFile(root,name)).bytes:await regular(root,name,true);if(!bytes||await digest(bytes)!==hash)fail('Source proof устарел: '+name)}
 }
 export async function produceCommonPathBinding(p:NativeRunPointer){
  const root=p.projectRoot,before=await inventory(root,p.outputDirectory);
  const args=p.profiles.length?['--profile',p.profiles.join(',')]:[];
  const discovery=JSON.parse(await command(quartoExecutable(),['inspect',root,...args],root));
- const roots=extensionRoots(root,discovery.extensions??[]),extensionBefore=await extensionMetadata(roots);
- const ownerText=await command(quartoExecutable(),['inspect',root,...args],root),owner=JSON.parse(ownerText);
- if(stable(roots)!==stable(extensionRoots(root,owner.extensions??[]))||stable(extensionBefore)!==stable(await extensionMetadata(roots)))fail('Extension metadata drift во время authoritative inspect');
+ const roots=nativeExtensionRoots(root,discovery.extensions??[]),extensionBefore=await extensionMetadata(roots);
+ const selected:string[]=(p.initialInputFiles?.length?p.initialInputFiles:discovery.files.input).map((x:string)=>relative(root,resolve(root,x)).replaceAll('\\','/'));
+ if(new Set(selected).size!==selected.length)fail('Повторный input');
+ for(const source of selected){local(source);if(!before[source]||!discovery.files.input.includes(resolve(root,source)))fail('Input не принадлежит native inventory')}
+ const owned=await captureOwnedProfile(p,selected);
+ const stored=new Set<string>(),store=(text:string)=>storeInspection(p.directory,text,stored),check=async()=>{await assertProducerProfileCurrent(p,owned.context);if(stored.size)await checkInspectionStore(p.directory,stored)};
+ const sourceProof=await inspectSources(root,selected,p.profiles,undefined,undefined,{before:check,capture:store});
+ const sourceIdentities=sourceProof.identities;
+ const discoveryDocs:Record<string,any>={};
+ for(const source of selected){local(source);if(!before[source]||!discovery.files.input.includes(resolve(root,source)))fail('Input не принадлежит native inventory');await check();discoveryDocs[source]=JSON.parse(await command(quartoExecutable(),['inspect',resolve(root,source),...args],root));await check()}
+ const closureArguments=(inspection:any,docs:Record<string,any>):MetadataInputs=>({root,profiles:p.profiles,projectMetadata:inspection.config,validateCanonical:section,sourceIdentities,
+  nativeConfigFiles:{owner:configIdentities(root,inspection.files.config),documents:Object.fromEntries(selected.map(source=>[source,configIdentities(root,docs[source].project?.files?.config)]))},
+  documents:selected.flatMap(source=>(owned.forcedWriter?['json']:Object.keys(docs[source].formats??{})).map(format=>({source,format:['pdf','beamer'].includes(format)?'latex':format}))),
+  extensionFiles:Object.keys(extensionBefore),includeMaps:Object.fromEntries(selected.map(source=>[source,inspection.fileInformation[source]?.includeMap??[]]))});
+ const closureBefore=await collectMetadataClosure(closureArguments(discovery,discoveryDocs));
+ await check();const ownerText=await command(quartoExecutable(),['inspect',root,...args],root),owner=JSON.parse(ownerText);await store(ownerText);await check();
+ if(stable(roots)!==stable(nativeExtensionRoots(root,owner.extensions??[]))||stable(extensionBefore)!==stable(await extensionMetadata(roots)))fail('Extension metadata drift во время authoritative inspect');
  if(owner.dir!==root||!owner.files||!owner.fileInformation)fail('Не установлен native owner');
  const canonical=section(owner.config?.['project-materialization']);
- unsupported(owner.config);if(nestedDeclaration(owner.config))fail('Неподдерживаемая вложенная owner declaration');
+ if(nestedDeclaration(owner.config))fail('Неподдерживаемая вложенная owner declaration');
  for(const extension of owner.extensions??[])if(nestedDeclaration(extension,false))fail('Неподтверждённый extension origin');
  const names=['_quarto.yml','_quarto.yaml',...p.profiles.flatMap(x=>['_quarto-'+x+'.yml','_quarto-'+x+'.yaml'])];
  const config:Record<string,string|false>={};
  const sourceHashes:Record<string,string>={},commons:Record<string,string>={},documents:CommonPathWitness['documents']=[],docHashes:Record<string,string>={};
- const selected=(p.initialInputFiles?.length?p.initialInputFiles:owner.files.input).map((x:string)=>relative(root,resolve(root,x)).replaceAll('\\','/'));
- if(new Set(selected).size!==selected.length)fail('Повторный input');
- for(const name of owner.files.config??[]){const rel=relative(root,resolve(root,name)).replaceAll('\\','/');if(!names.includes(rel))fail('Неизвестный config origin: '+rel)}
+ const authoritativeDocs:Record<string,any>={};
  const record=(name:string,table:Record<string,string|false>)=>{local(name);table[name]=before[name]??false};
  for(const name of names)record(name,config);
  const collect=async(value:Section|null)=>{for(const e of Object.values(value?.projects??{}))for(const f of e['common-files']){const bytes=await regular(root,f.source);if(!bytes||before[f.source]!==await digest(bytes))fail('Common source drift во время inspect');commons[f.source]=before[f.source]}};
  await collect(canonical);
  for(const source of selected){
   local(source);if(!before[source]||!owner.files.input.includes(resolve(root,source)))fail('Input не принадлежит native inventory: '+source);
-  sourceHashes[source]=before[source];
+  sourceHashes[source]=sourceProof.sourceHashes[source];
   const information=owner.fileInformation[source];if(!information||typeof information.metadata!=='object'||!Array.isArray(information.includeMap))fail('Отсутствует raw native QMD metadata');
-  const raw=section(information.metadata['project-materialization']);unsupported(information.metadata);if(nestedDeclaration(information.metadata))fail('Неизвестный QMD declaration origin');
+  sameSourceMetadata(sourceMetadata(sourceProof.inspections[source],sourceIdentities.sources.find(x=>x.source===source)!.physicalPath),information);
+  const raw=section(information.metadata['project-materialization']);if(nestedDeclaration(information.metadata))fail('Неизвестный QMD declaration origin');
   const canonicalDocument=canonical||raw?{projects:{...canonical?.projects,...raw?.projects}}:null;
   for(const id of Object.keys(raw?.projects??{}))if(canonical?.projects[id])fail('Неоднозначный owner/QMD origin: '+id);
   await collect(raw);
@@ -145,42 +150,59 @@ export async function produceCommonPathBinding(p:NativeRunPointer){
   while(true){
    for(const file of ['_metadata.yml','_metadata.yaml',...(directory==='.'?[]:['_quarto.yml','_quarto.yaml'])]){
     const name=directory==='.'?file:directory+'/'+file;record(name,config);
-    if(config[name]&&canonicalDocument)fail('Неподтверждённый directory metadata/owner origin: '+name);
+
    }
    if(directory==='.')break;directory=dirname(directory);
   }
   for(const include of information.includeMap){
    if(!include||typeof include.source!=='string'||typeof include.target!=='string')fail('Неизвестный native include closure');
    const original=resolve(root,include.source),target=resolve(dirname(original),include.target);
-   for(const file of [original,target]){const name=relative(root,file).replaceAll('\\','/');local(name);if(!before[name])fail('Неполный include closure');sourceHashes[name]=before[name]}
+   for(const file of [original,target]){const name=relative(root,file).replaceAll('\\','/');local(name);if(name===source)continue;const bytes=await regular(root,name);if(!bytes||before[name]!==await digest(bytes))fail('Неполный include closure');sourceHashes[name]=before[name]}
   }
-  const text=await command(quartoExecutable(),['inspect',resolve(root,source),...args],root),doc=JSON.parse(text);
+  await check();const text=await command(quartoExecutable(),['inspect',resolve(root,source),...args],root),doc=JSON.parse(text);await store(text);await check();
+  authoritativeDocs[source]=doc;
   docHashes[source]=await digest(new TextEncoder().encode(text));
   if(doc.project?.dir!==root||!doc.formats)fail('Чужой native document owner: '+source);
-  if(stable(doc.fileInformation?.[source]?.metadata??doc.fileInformation?.[resolve(root,source)]?.metadata)!==stable(information.metadata))fail('Raw QMD metadata drift');
-  for(const [format,details] of Object.entries(doc.formats) as [string,any][]){
-   const effective=details.metadata?.['project-materialization']??null;
+  if(stable(sourceMetadata(doc,resolve(root,source),source).metadata)!==stable(information.metadata))fail('Raw QMD metadata drift');
+  const actualFormats=owned.forcedWriter?[['json',null]]:Object.entries(doc.formats);
+  for(const [format,details] of actualFormats as [string,any][]){
+   if(details&&(nestedDeclaration(details.metadata)||closureBefore.noCommon&&commonKey(details.metadata)))fail('Effective common metadata без подтверждённого raw origin');
+   let effective=details?.metadata?.['project-materialization']??null;
    const predicted=canonicalDocument?structuredClone(canonicalDocument):null;
    if(predicted&&canonical)for(const id of Object.keys(canonical.projects))for(const f of predicted.projects[id]['common-files'])f.source=ownerEffectiveSource(root,source,f.source);
+   if(owned.forcedWriter)effective=predicted;
    if(stable(predicted)!==stable(effective))fail('Необъяснённая effective materialization секция: '+source+'/'+format);
    documents.push({source,format:['pdf','beamer'].includes(format)?'latex':format,rawDeclarations:raw,effectiveDeclarations:effective,canonicalDeclarations:canonicalDocument});
   }
  }
+ const metadataClosure=await collectMetadataClosure(closureArguments(owner,authoritativeDocs));
+ if(stable(closureBefore)!==stable(metadataClosure))fail('Metadata closure drift во время authoritative inspect');
+ if(commonKey(owner.config)&&metadataClosure.noCommon)fail('Effective owner common без raw origin');
+ Object.assign(config,closureInputs(root,metadataClosure));
  const after=await inventory(root,p.outputDirectory);
  if(stable(extensionBefore)!==stable(await extensionMetadata(roots)))fail('Extension metadata drift во время document inspect');
- for(const [name,hash] of Object.entries({...config,...sourceHashes,...commons}))if((after[name]??false)!==hash)fail('Input/config/common drift во время inspect: '+name);
- const witness:CommonPathWitness={schema:'course-common-files-path-binding-v1',projectRoot:root,runDirectory:p.directory,profiles:p.profiles,outputDirectory:p.outputDirectory,renderAll:p.renderAll,quartoVersion:owner.quarto?.version,ownerInspectionHash:await digest(new TextEncoder().encode(ownerText)),documentInspectionHashes:docHashes,configurationInputs:config,inputFiles:selected,sourceHashes,commonSourceHashes:commons,canonicalOwnerDeclarations:canonical,documents,nativeExtensionMetadata:{roots,files:extensionBefore}};
- const profile=p.profiles[0],name='_quarto-'+profile+'.yml';
- if(/^course-export-[0-9a-f-]{36}$/.test(profile??'')){
-  const bytes=await regular(root,name);let value;try{value=JSON.parse(new TextDecoder().decode(bytes))}catch{fail('Export profile должен быть private generated JSON')}
-  const pr=value.project,extension=dirname(dirname(fromFileUrl(import.meta.url)));
-  if(!pr||Object.keys(pr).sort().join(',')!=='output-dir,post-render,pre-render,render,type'||pr['pre-render']!==join(extension,'entrypoints/pre.ts')||pr['post-render']!==join(extension,'entrypoints/post.ts'))fail('Не подтверждены owned export hooks');
-  if(Object.keys(value).sort().join(',')!=='course,course-export-context,crossref,filters,format,project'||value['course-export-context']!==true||value.course?.view!=='full'||stable(value.filters)!==stable(['course-core'])||stable(value.format)!==stable({json:{}})||stable(value.crossref)!==stable({})||pr?.type!=='default'||resolve(root,pr['output-dir'])!==p.outputDirectory||p.outputDirectory!==join(root,'_generated/course-spec/export-output',profile)||!Array.isArray(pr.render)||pr.render.length!==selected.length||new Set(pr.render).size!==selected.length||pr.render.some((x:string)=>!selected.includes(x)))fail('Не подтверждён generated export profile');
-  witness.temporaryExportProfile={profile,file:name,sha256:await digest(bytes!),sha1:await digest(bytes!,'SHA-1')};
- }
+ for(const [name,hash] of Object.entries({...config,...sourceHashes,...commons})){const row=sourceIdentities.sources.find(x=>x.source===name),key=row?relative(root,row.physicalPath).replaceAll('\\','/'):name;if((after[key]??false)!==hash)fail('Input/config/common drift во время inspect: '+name)}
+ const witness:CommonPathWitness={schema:'course-common-files-path-binding-v1',projectRoot:root,runDirectory:p.directory,profiles:p.profiles,outputDirectory:p.outputDirectory,renderAll:p.renderAll,quartoVersion:owner.quarto?.version,ownerInspectionHash:await digest(new TextEncoder().encode(ownerText)),documentInspectionHashes:docHashes,configurationInputs:config,inputFiles:selected,sourceHashes,commonSourceHashes:commons,canonicalOwnerDeclarations:canonical,documents,nativeExtensionMetadata:{roots,files:extensionBefore},metadataClosure,sourceIdentities,...(owned.forcedWriter?{forcedWriter:owned.forcedWriter,temporaryExportProfile:owned.temporaryExportProfile}:{})};
+ const originals=await validateOriginalInspections(witness);
+ const finalSources=await inspectSources(root,selected,p.profiles,sourceIdentities,undefined,{originals:originals.physical,before:check});if(stable(finalSources.sourceHashes)!==stable(sourceProof.sourceHashes))fail('Input drift после inspect');
+ if(stable(await collectMetadataClosure(closureArguments(owner,authoritativeDocs)))!==stable(metadataClosure))fail('Metadata closure drift после final source inspect');
+ await currentInputs(root,witness,p);await validateOriginalInspections(witness);await check();
  const bytes=new TextEncoder().encode(JSON.stringify(witness));
  await Deno.writeFile(join(p.directory,'common-files-path-binding.json'),bytes,{createNew:true,mode:0o600});
  return {file:'common-files-path-binding.json' as const,sha1:await digest(bytes,'SHA-1'),sha256:await digest(bytes)};
+}
+async function validateOriginalInspections(w:CommonPathWitness){
+ const original=await originalInspections(w);
+ if(stable(section(original.owner.config?.['project-materialization']))!==stable(w.canonicalOwnerDeclarations)||nestedDeclaration(original.owner.config))fail('Original canonical owner mismatch');
+ const owned=await readOwnedProfileEvidence(w);
+ if(owned&&(original.owner.config.course?.id!==owned.value.course.id||original.owner.config.course?.view!=='full'||original.owner.config['course-export-context']!==true))fail('Original owned profile/owner context mismatch');
+ if(stable(nativeExtensionRoots(w.projectRoot,original.owner.extensions??[]))!==stable(w.nativeExtensionMetadata.roots))fail('Original native extension roots mismatch');
+ for(const row of w.documents){
+  const doc=original.lexical[row.source],info=sourceMetadata(doc,resolve(w.projectRoot,row.source));
+  const format=Object.entries(doc.formats).find(([f])=>(['pdf','beamer'].includes(f)?'latex':f)===row.format)?.[1] as any;
+  if(nestedDeclaration(info.metadata)||stable(section(info.metadata['project-materialization']))!==stable(row.rawDeclarations)||(!owned&&(!format||nestedDeclaration(format.metadata)||stable(format.metadata?.['project-materialization']??null)!==stable(row.effectiveDeclarations))))fail('Original raw/effective declaration mismatch');
+ }
+ return original;
 }
 export async function readCommonPathBinding(p:NativeRunPointer):Promise<CommonPathWitness>{
  const ref=p.commonPathBinding;if(!ref||Object.keys(ref).sort().join(',')!=='file,sha1,sha256'||ref.file!=='common-files-path-binding.json')fail('Отсутствует private witness ref');
@@ -189,15 +211,24 @@ export async function readCommonPathBinding(p:NativeRunPointer):Promise<CommonPa
  if(w.schema!=='course-common-files-path-binding-v1'||w.projectRoot!==p.projectRoot||w.runDirectory!==p.directory||w.outputDirectory!==p.outputDirectory||w.renderAll!==p.renderAll||stable(w.profiles)!==stable(p.profiles))fail('Witness принадлежит другому native run');
  if(p.commonPathRetirement){const r=p.commonPathRetirement;if(!w.temporaryExportProfile||stable(r)!==stable(w.temporaryExportProfile))fail('Чужое retirement record')}
 
- const required=['schema','projectRoot','runDirectory','profiles','outputDirectory','renderAll','quartoVersion','ownerInspectionHash','documentInspectionHashes','configurationInputs','inputFiles','sourceHashes','commonSourceHashes','canonicalOwnerDeclarations','documents','nativeExtensionMetadata'];
- if(required.some(k=>!Object.hasOwn(w,k))||Object.keys(w).some(k=>![...required,'temporaryExportProfile'].includes(k))||typeof w.quartoVersion!=='string'||!Array.isArray(w.inputFiles)||!Array.isArray(w.documents)||!w.configurationInputs||!w.sourceHashes||!w.commonSourceHashes||!w.documentInspectionHashes)fail('Некорректная closed witness schema');
+ const required=['schema','projectRoot','runDirectory','profiles','outputDirectory','renderAll','quartoVersion','ownerInspectionHash','documentInspectionHashes','configurationInputs','inputFiles','sourceHashes','commonSourceHashes','canonicalOwnerDeclarations','documents','nativeExtensionMetadata','metadataClosure','sourceIdentities'];
+ if(required.some(k=>!Object.hasOwn(w,k))||Object.keys(w).some(k=>![...required,'temporaryExportProfile','forcedWriter'].includes(k))||typeof w.quartoVersion!=='string'||!Array.isArray(w.inputFiles)||!Array.isArray(w.documents)||!w.configurationInputs||!w.sourceHashes||!w.commonSourceHashes||!w.documentInspectionHashes)fail('Некорректная closed witness schema');
  const em=w.nativeExtensionMetadata;if(!em||Object.keys(em).sort().join(',')!=='files,roots'||!Array.isArray(em.roots)||!em.roots.includes(join(p.projectRoot,'_extensions'))||em.roots.some(r=>typeof r!=='string'||basename(r)!=='_extensions')||!em.files||Object.entries(em.files).some(([path,hash])=>typeof hash!=='string'||!/^[a-f0-9]{64}$/.test(hash)||!em.roots.some(root=>{const rel=relative(root,path).replaceAll('\\','/');return !!rel&&rel!=='..'&&!rel.startsWith('../')&&!rel.startsWith('/')&&!/^[A-Za-z]:/.test(rel)})||!['_extension.yml','_extension.yaml'].includes(basename(path))))fail('Неполный native extension metadata inventory');
  const initial=(p.initialInputFiles??[]).map(x=>relative(p.projectRoot,resolve(p.projectRoot,x)).replaceAll('\\','/'));
  if(initial.length&&stable(initial)!==stable(w.inputFiles))fail('Witness input scope изменён');
  for(const name of w.inputFiles){local(name);if(!Object.hasOwn(w.sourceHashes,name)||!w.documents.some(d=>d.source===name)||!Object.hasOwn(w.documentInspectionHashes,name))fail('Неполный source proof')}
  const configNames=['_quarto.yml','_quarto.yaml',...p.profiles.flatMap(x=>['_quarto-'+x+'.yml','_quarto-'+x+'.yaml'])];
  for(const source of w.inputFiles){let dir=dirname(source);while(true){for(const name of ['_metadata.yml','_metadata.yaml',...(dir==='.'?[]:['_quarto.yml','_quarto.yaml'])])configNames.push(dir==='.'?name:dir+'/'+name);if(dir==='.')break;dir=dirname(dir)}}
- if(new Set(configNames).size!==Object.keys(w.configurationInputs).length||configNames.some(n=>!Object.hasOwn(w.configurationInputs,n)))fail('Неполный config/absence closure');
+ const originals=await validateOriginalInspections(w);
+ const retirement=await completedExportRetirement(p,w),check=async()=>{await checkInspectionStore(p.directory,inspectionRefs(w));await assertOwnedProfileCurrent(p,w,retirement);await currentInputs(p.projectRoot,w,p)};await check();
+ const retiredContext=retirement?await prepareRetiredRegularContext(p,w,originals,retirement,check):undefined;
+ const active=w.profiles.filter(x=>!p.commonPathRetirement||'_quarto-'+x+'.yml'!==p.commonPathRetirement.file);
+ const sources=await inspectSources(p.projectRoot,w.inputFiles,active,w.sourceIdentities,retirement,{originals:originals.physical,retiredContext,before:check});
+ for(const name of w.inputFiles){if(sources.inspections[name].quarto?.version!==w.quartoVersion)fail('Quarto source identity изменена');if(sources.sourceHashes[name]!==w.sourceHashes[name])fail('Source bytes устарели: '+name)}
+ const closure=await validateMetadataClosure(p.projectRoot,w.profiles,w.documents,Object.keys(em.files),em.roots,w.metadataClosure,section,w.sourceIdentities,sources.inspections,retirement,{check,retiredContext,owner:native=>{if(stable(section(native.config?.['project-materialization']))!==stable(w.canonicalOwnerDeclarations))fail('Live canonical owner изменён')}});
+ const expectedConfig=closureInputs(p.projectRoot,closure);
+ if(stable(expectedConfig)!==stable(w.configurationInputs)||configNames.some(n=>!Object.hasOwn(expectedConfig,n)))fail('Неполный config/absence closure');
+ if(closure.noCommon&&(w.canonicalOwnerDeclarations!==null||w.documents.some(d=>d.rawDeclarations!==null||d.canonicalDeclarations!==null||d.effectiveDeclarations!==null)||Object.keys(w.commonSourceHashes).length))fail('No-common proof содержит materialization');
  for(const [name,h] of Object.entries({...w.configurationInputs,...w.sourceHashes,...w.commonSourceHashes})){local(name);if(h!==false&&!/^[a-f0-9]{64}$/.test(h))fail('Некорректный source hash')}
  const owner=section(w.canonicalOwnerDeclarations),commonNames=new Set<string>(),seenDocs=new Set();
  for(const row of w.documents){
@@ -209,13 +240,28 @@ export async function readCommonPathBinding(p:NativeRunPointer):Promise<CommonPa
   if(effective&&owner)for(const id of Object.keys(owner.projects))for(const file of effective.projects[id]['common-files'])file.source=ownerEffectiveSource(p.projectRoot,row.source,file.source);
   if(stable(effective)!==stable(row.effectiveDeclarations))fail('Effective witness не соответствует raw source binding');
   for(const entry of Object.values(expected?.projects??{}))for(const file of entry['common-files'])commonNames.add(file.source);
-  if(expected)for(const name of configNames)if(/(?:^|\/)_metadata\.ya?ml$/.test(name)&&w.configurationInputs[name]!==false)fail('Неподтверждённый directory metadata origin');
+
  }
  if(commonNames.size!==Object.keys(w.commonSourceHashes).length||[...commonNames].some(n=>!Object.hasOwn(w.commonSourceHashes,n)))fail('Неполный canonical common source inventory');
  if(w.temporaryExportProfile){const t=w.temporaryExportProfile;if(Object.keys(t).sort().join(',')!=='file,profile,sha1,sha256'||!/^course-export-[0-9a-f-]{36}$/.test(t.profile)||t.profile!==p.profiles[0]||t.file!=='_quarto-'+t.profile+'.yml'||t.sha256!==w.configurationInputs[t.file]||!/^[a-f0-9]{40}$/.test(t.sha1))fail('Некорректный generated profile identity')}
- await currentInputs(p.projectRoot,w,p);return w;
+ const finalSources=await inspectSources(p.projectRoot,w.inputFiles,active,w.sourceIdentities,retirement,{originals:originals.physical,retiredContext,before:check});if(stable(finalSources.sourceHashes)!==stable(sources.sourceHashes))fail('Source drift во время currentness');
+ const finalClosure=await collectMetadataClosure({root:p.projectRoot,profiles:w.profiles,projectMetadata:originals.owner.config,sourceIdentities:w.sourceIdentities,documents:w.documents,nativeConfigFiles:w.metadataClosure.nativeConfigFiles,extensionFiles:Object.keys(em.files),includeMaps:Object.fromEntries(w.inputFiles.map(s=>[s,originals.owner.fileInformation[s].includeMap])),validateCanonical:section},retirement,w.metadataClosure);
+ if(stable(finalClosure)!==stable(w.metadataClosure))fail('Metadata closure drift после final source inspect');
+ if(retiredContext)await checkRetiredRegularContext(retiredContext,check);await currentInputs(p.projectRoot,w,p);await validateOriginalInspections(w);await check();if(retirement)await validateCompletedExportScope(p,w);return w;
 }
-export function validateCapturedCommon(run:NativeRun,w:CommonPathWitness){
+export async function validateCapturedCommon(run:NativeRun,w:CommonPathWitness){
+ const owned=await readOwnedProfileEvidence(w);
+ if(owned){
+  const equalSet=(a:string[],b:string[])=>Array.isArray(a)&&Array.isArray(b)&&new Set(a).size===a.length&&new Set(b).size===b.length&&stable([...a].sort())===stable([...b].sort());
+  if(!w.inputFiles.length||run.projectRoot!==w.projectRoot||run.outputDirectory!==w.outputDirectory||run.renderAll!==w.renderAll||stable(run.profiles)!==stable(w.profiles)||!equalSet(run.inputFiles,w.inputFiles.map(s=>resolve(w.projectRoot,s)))||!equalSet(run.documents.map(d=>d.source),w.inputFiles))fail('Неполный actual owned JSON source scope');
+  const outputs:string[]=[];
+  for(const d of run.documents){
+   if(d.scope!=='document'||d.document.source!==d.source||d.document.format!=='json'||d.document.exportContext!==true||stable(d.document.profiles)!==stable(w.profiles)||d.course.view!=='full'||d.course.id!==owned.value.course.id)fail('Нет actual owned JSON writer event');
+   const file=resolve(w.outputDirectory,d.document.output),rel=relative(w.outputDirectory,file);if(!rel||rel==='..'||rel.startsWith('../')||rel.startsWith('..\\')||!await metadataBytes(file))fail('Нет actual owned JSON output');outputs.push(file);
+  }
+  if(!equalSet(outputs,run.outputFiles))fail('Owned JSON output inventory изменён');
+ }
+
  for(const d of run.documents){
   const proof=w.documents.filter(x=>x.source===d.source&&x.format===d.document.format);if(proof.length!==1)fail('Неверный source/format capture');
   const expected=canonicalFact(proof[0].canonicalDeclarations);

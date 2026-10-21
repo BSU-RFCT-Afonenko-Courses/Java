@@ -1,5 +1,43 @@
 # Происхождение технической поставки Java
 
+## Актуальная поставка расширений8.0.0/8.0.0/3.2.0
+
+Три согласованных расширения установлены из фактических опубликованных
+immutable Releases. Теги, exact commits и sourceZip закреплены в
+`providers.json`; области установки и хеши генерирует штатный
+`tools/materialize-providers.py`. Активные candidate blocks не используются.
+
+| Владелец | Выпуск | Коммит |
+| --- | --- | --- |
+| Afonenko-Course-Tools/quarto-course | v8.0.0 | `5ee77e0e64d24c03ff6f3d384a890d69aa13f267` |
+| Afonenko-Course-Tools/quarto-project-publish | v5.1.1 | `4a1d7d19f5a232d8ff91ea91a02097e0acf7d9c0` |
+| Afonenko-Course-Tools/quarto-reference-catalog | v3.1.0 | `3df2110e9f525f03f3ecb4926b5d55718e955c4c` |
+| Afonenko-Course-Tools/quarto-course-prairielearn | v8.0.0 | `66f5401d20febf9dea3c873373186c64c781039d` |
+| Afonenko-Course-Tools/quarto-project-download | v3.2.0 | `2dd97d8ce28c4ad514e869fe86d25dbc19f79def` |
+
+Site и QRC сохраняют прежние версии и байты этого курса. Все пакеты
+восстанавливаются существующей командой, без локального изменения реализации:
+
+```sh
+python3 tools/materialize-providers.py --providers-root /absolute/release-checkouts --write
+python3 tools/materialize-providers.py --check
+```
+
+Сохраняются17 областей Core/Exporter/Download; Site/QRC не обновляются.
+Три активных candidate patches удалены из текущей поставки; их точные
+байты и прежние manifests сохраняются в истории Git.
+
+Exporter8 использует delivery v3 с Core8; прежний delivery v2 reader
+не объявляется совместимым. Body package остаётся v2. Эти опубликованные
+расширения не обновляют Platform/Gateway, сервисные OCI pins или production.
+Готовность учебных исходников, capture, архивов, экспорта, импорта и
+студенческого/преподавательского интерфейса подтверждается отдельно.
+
+## История прежней статической поставки
+
+Следующие сведения относятся к прежнему выпуску и его фактическим проверкам.
+Они сохранены как история и не описывают новую готовность курса.
+
 Поставка от 18 октября 2026 года использует точные опубликованные версии.
 Активных локальных кандидатов и поправок в установленных пакетах нет.
 
