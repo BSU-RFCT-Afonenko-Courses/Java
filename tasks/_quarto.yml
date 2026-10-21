@@ -1986,6 +1986,194 @@ project-checks:
       feedback:
         requirement: Сопоставьте результат и опубликованные границы задачи.
         what-check: Проверьте исходник и объяснение; для свободного решения используйте соответствующую привязку, для ручного показа — предметную оценку преподавателя.
+    java-arrays-array-average:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/coursesupport/JavaProcess.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicScenarioTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Дробное среднее десяти чисел
+        test: PublicScenarioTest#normal
+        state: stdin 1 2 3 4 5 6 7 8 9 10, затем EOF.
+        action: Выполнить опубликованное наблюдение; не добавлять новый вход или обязательный API.
+        expected: Одно число 5.5; абсолютный допуск 1e-8.
+      - id: boundary
+        name: Нижняя граница значений
+        test: PublicScenarioTest#boundary
+        state: 'stdin: десять значений -1000000, затем EOF.'
+        action: Выполнить опубликованное наблюдение; не добавлять новый вход или обязательный API.
+        expected: Одно число -1000000; абсолютный допуск 1e-8.
+      feedback:
+        requirement: Участие десяти значений в среднем. Отрицательное среднее на разрешённой границе.
+        what-check: Сопоставьте опубликованные данные и фактическое состояние; источник, приём и объяснение проверяет преподаватель. Свободный API требует подходящей привязки или демонстрации.
+      api-precheck:
+        files:
+        - tests/api/CliPrecheck.java
+        entry: CliPrecheck$StringArrayMain
+    java-arrays-move-row-zeros:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/coursesupport/JavaProcess.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicScenarioTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Обязательная матрица при пустом вводе
+        test: PublicScenarioTest#normal
+        state: stdin пуст и завершён EOF.
+        action: Выполнить опубликованное наблюдение; не добавлять новый вход или обязательный API.
+        expected: Строки -3 3 0 / 2 -1 0 / 1 3 -2, по три целых числа.
+      - id: boundary
+        name: Три состояния строки
+        test: PublicScenarioTest#boundary
+        state: stdin 0 0 -3 / 3 -1 2 / 0 0 0, затем EOF.
+        action: Выполнить опубликованное наблюдение; не добавлять новый вход или обязательный API.
+        expected: Строки -3 0 0 / 3 -1 2 / 0 0 0.
+      feedback:
+        requirement: Опубликованный пример и устойчивый порядок ненулевых. Нули в начале, отсутствие нулей, полностью нулевая строка.
+        what-check: Сопоставьте опубликованные данные и фактическое состояние; источник, приём и объяснение проверяет преподаватель. Свободный API требует подходящей привязки или демонстрации.
+      api-precheck:
+        files:
+        - tests/api/CliPrecheck.java
+        entry: CliPrecheck$StringArrayMain
+    java-arrays-cyclic-matrix-shift:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Четыре направления
+        test: PublicExamplesTest#normal
+        state: Фиксированная матрица; k=1, каждое направление от исходного состояния.
+        action: Выполнить опубликованное наблюдение; не добавлять новый вход или обязательный API.
+        expected: Вправо [[3,-3,0],[0,2,-1],[-2,1,3]]; влево [[0,3,-3],[-1,0,2],[3,-2,1]]; вверх [[2,-1,0],[1,3,-2],[-3,0,3]]; вниз [[1,3,-2],[-3,0,3],[2,-1,0]]. Размеры3×3.
+      - id: boundary
+        name: Нулевой сдвиг и полные обороты
+        test: PublicExamplesTest#boundary
+        state: 'Та же матрица, вправо: отдельно k=0,3,4.'
+        action: Выполнить опубликованное наблюдение; не добавлять новый вход или обязательный API.
+        expected: 'k0 и3: [[-3,0,3],[2,-1,0],[1,3,-2]]; k4 вправо: [[3,-3,0],[0,2,-1],[-2,1,3]].'
+      feedback:
+        requirement: Сдвиг и возвращение через противоположный край. Произвольное неотрицательное k.
+        what-check: Сопоставьте опубликованные данные и фактическое состояние; источник, приём и объяснение проверяет преподаватель. Свободный API требует подходящей привязки или демонстрации.
+    java-arrays-rotate-matrix:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Три угла против часовой стрелки
+        test: PublicExamplesTest#normal
+        state: Фиксированная матрица; 90,180,270 относительно исходной.
+        action: Выполнить опубликованное наблюдение; не добавлять новый вход или обязательный API.
+        expected: '90: [[3,0,-2],[0,-1,3],[-3,2,1]]; 180: [[-2,3,1],[0,-1,2],[3,0,-3]]; 270: [[1,2,-3],[3,-1,0],[-2,0,3]].'
+      - id: boundary
+        name: Исходное состояние после поворотов
+        test: PublicExamplesTest#boundary
+        state: Та же исходная матрица после трёх поворотов.
+        action: Выполнить опубликованное наблюдение; не добавлять новый вход или обязательный API.
+        expected: Исходник после вычислений [[-3,0,3],[2,-1,0],[1,3,-2]], каждый результат в новом массиве. Места создания дополнительно проследить по коду; нет нового общего aliasing-требования.
+      feedback:
+        requirement: Направление и угол поворота. Наблюдение сохранённого объекта после вычислений.
+        what-check: Сопоставьте опубликованные данные и фактическое состояние; источник, приём и объяснение проверяет преподаватель. Свободный API требует подходящей привязки или демонстрации.
+    java-arrays-remove-max-rows-columns:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Все позиции общего максимума
+        test: PublicExamplesTest#normal
+        state: Фиксированная матрица с максимумом3 в (0,2) и (2,1).
+        action: Выполнить опубликованное наблюдение; не добавлять новый вход или обязательный API.
+        expected: Размер1×1, единственное значение2.
+      - id: boundary
+        name: Пустые результаты с разными размерностями
+        test: PublicExamplesTest#boundary
+        state: Отдельно {{9,1},{9,2}} и {{9,9},{1,2}}.
+        action: Выполнить опубликованное наблюдение; не добавлять новый вход или обязательный API.
+        expected: Первая даёт0×1, вторая1×0; элементов нет, размеры самостоятельны.
+      feedback:
+        requirement: Совместное исключение строк и столбцов по исходным позициям. Отсутствие строк и отсутствие столбцов.
+        what-check: Сопоставьте опубликованные данные и фактическое состояние; источник, приём и объяснение проверяет преподаватель. Свободный API требует подходящей привязки или демонстрации.
+    java-arrays-sort-array:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Повторы и отрицательные элементы
+        test: PublicExamplesTest#normal
+        state: Исходный массив 7,-2,7,0,3,-5; сортировка по возрастанию.
+        action: Выполнить опубликованное наблюдение; не добавлять новый вход или обязательный API.
+        expected: Исходный порядок показан, результат -5,-2,0,3,7,7. Пузырьковый способ проверить по коду.
+      - id: boundary
+        name: Пустой и одноэлементный массивы
+        test: PublicExamplesTest#boundary
+        state: Отдельно пустой массив и {7}.
+        action: Выполнить опубликованное наблюдение; не добавлять новый вход или обязательный API.
+        expected: Пустой остаётся пустым, одноэлементный содержит7; исключений нет.
+      feedback:
+        requirement: Порядок и состав массива. Короткие массивы без выхода за границы.
+        what-check: Сопоставьте опубликованные данные и фактическое состояние; источник, приём и объяснение проверяет преподаватель. Свободный API требует подходящей привязки или демонстрации.
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
@@ -2009,23 +2197,26 @@ project-materialization:
   projects:
     exr-arrays-array-average:
       common-files:
-      - source: test-support/api/CliPrecheck.java
-        target: student/src/test/java/api/CliPrecheck.java
+      - source: test-support/shared/6ab6e9265673/preamble.qmd
+        target: student/condition/arrays-preamble.qmd
+        audience: student
+      - source: test-support/shared/395ca30411c9/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
         audience: student
       - source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: student/src/test/java/coursesupport/JavaProcess.java
         audience: student
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
-        target: student/src/test/java/coursesupport/OutputNumbers.java
-        audience: student
-      - source: test-support/api/CliPrecheck.java
-        target: tests/junit/api/CliPrecheck.java
+      - source: projects/arrays/array-average/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/public/PublicScenarioTest.java
         audience: grading
       - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/coursesupport/JavaProcess.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
-        target: tests/junit/coursesupport/OutputNumbers.java
+        target: tests/bindings/reference/coursesupport/JavaProcess.java
         audience: grading
     exr-numbers-boolean-truth-table:
       common-files:
@@ -2301,23 +2492,26 @@ project-materialization:
         audience: grading
     exr-arrays-move-row-zeros:
       common-files:
-      - source: test-support/api/CliPrecheck.java
-        target: student/src/test/java/api/CliPrecheck.java
+      - source: test-support/shared/6ab6e9265673/preamble.qmd
+        target: student/condition/arrays-preamble.qmd
+        audience: student
+      - source: test-support/shared/395ca30411c9/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
         audience: student
       - source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: student/src/test/java/coursesupport/JavaProcess.java
         audience: student
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
-        target: student/src/test/java/coursesupport/OutputNumbers.java
-        audience: student
-      - source: test-support/api/CliPrecheck.java
-        target: tests/junit/api/CliPrecheck.java
+      - source: projects/arrays/move-row-zeros/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/public/PublicScenarioTest.java
         audience: grading
       - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/coursesupport/JavaProcess.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
-        target: tests/junit/coursesupport/OutputNumbers.java
+        target: tests/bindings/reference/coursesupport/JavaProcess.java
         audience: grading
     exr-control-multiplication-table:
       common-files:
@@ -3627,4 +3821,136 @@ project-materialization:
         audience: grading
       - source: projects/control/control-help-menu/student/src/test/java/PublicChecks.java
         target: tests/presentation/PublicChecks.java
+        audience: grading
+    exr-arrays-cyclic-matrix-shift:
+      common-files:
+      - source: test-support/shared/6ab6e9265673/preamble.qmd
+        target: student/condition/arrays-preamble.qmd
+        audience: student
+      - source: test-support/shared/395ca30411c9/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/01d617fe3bb6/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/arrays/cyclic-matrix-shift/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/arrays/cyclic-matrix-shift/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-arrays-rotate-matrix:
+      common-files:
+      - source: test-support/shared/6ab6e9265673/preamble.qmd
+        target: student/condition/arrays-preamble.qmd
+        audience: student
+      - source: test-support/shared/395ca30411c9/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/01d617fe3bb6/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/arrays/rotate-matrix/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/arrays/rotate-matrix/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-arrays-remove-max-rows-columns:
+      common-files:
+      - source: test-support/shared/6ab6e9265673/preamble.qmd
+        target: student/condition/arrays-preamble.qmd
+        audience: student
+      - source: test-support/shared/395ca30411c9/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/01d617fe3bb6/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/arrays/remove-max-rows-columns/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/arrays/remove-max-rows-columns/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
+        audience: grading
+    exr-arrays-saddle-points:
+      common-files:
+      - source: test-support/shared/6ab6e9265673/preamble.qmd
+        target: student/condition/arrays-preamble.qmd
+        audience: student
+      - source: test-support/shared/395ca30411c9/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/shared/e0cdb138a39c/RunExample.java
+        target: student/src/main/java/RunExample.java
+        audience: student
+      - source: test-support/shared/c5ffbc7c680f/PublicBinding.java
+        target: student/src/test/java/PublicBinding.java
+        audience: student
+      - source: test-support/shared/bd2b5bcd2ea2/PRESENTATION.md
+        target: student/PRESENTATION.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+    exr-arrays-matrix-local-minima:
+      common-files:
+      - source: test-support/shared/6ab6e9265673/preamble.qmd
+        target: student/condition/arrays-preamble.qmd
+        audience: student
+      - source: test-support/shared/395ca30411c9/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/shared/e0cdb138a39c/RunExample.java
+        target: student/src/main/java/RunExample.java
+        audience: student
+      - source: test-support/shared/c5ffbc7c680f/PublicBinding.java
+        target: student/src/test/java/PublicBinding.java
+        audience: student
+      - source: test-support/shared/bd2b5bcd2ea2/PRESENTATION.md
+        target: student/PRESENTATION.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+    exr-arrays-sort-array:
+      common-files:
+      - source: test-support/shared/6ab6e9265673/preamble.qmd
+        target: student/condition/arrays-preamble.qmd
+        audience: student
+      - source: test-support/shared/395ca30411c9/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/01d617fe3bb6/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/arrays/sort-array/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/arrays/sort-array/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/DirectPublicExamplesTest.java
+        target: tests/junit/public/PublicExamplesTest.java
         audience: grading
