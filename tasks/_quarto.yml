@@ -3900,6 +3900,102 @@ project-checks:
       feedback:
         requirement: Короткая трасса сохраняет оставшиеся элементы; несколько ростов предъявляются отдельно. Предзаполненный массив задаёт пустую очередь, рост сохраняет7,8.
         what-check: Сопоставьте опубликованные действия с реальным результатом; исходник, приёмы и объяснение предъявите преподавателю. Законный иной API требует подходящей обычной привязки или собственного доступного примера.
+    java-projects-airline-persistence-project:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/PrivateBinding.java
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/CopySupport.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Парк до и после сохранения
+        test: PublicExamplesTest#normal
+        state: Пассажирский150мест/12т/3000км/2400лч;грузовой2/20/4500/3000;пассажирский80/6/1800/1500. Уникальные ID; выбранные направление/сериализация/файлы.
+        action: Суммы, сортировка, поиск[1500,2400], сохранение, загрузка, изменение мест третьего на100 через коннектор и новая загрузка.
+        expected: 232места и38т; выбранный порядок1800/3000/4500 или обратный;один либо несколько подходящих;виды/параметры после загрузки сохранены, новое значение100 после обновления.
+      - id: boundary
+        name: Включённые границы поиска
+        test: PublicExamplesTest#boundary
+        state: Тот же исходный парк независимо от обновления первого случая.
+        action: Поиск[1500,1500], [2400,2400], [4000,4100].
+        expected: Первый/второй поиск находят пассажирский самолёт с соответствующим концом диапазона;последний не имеет совпадения, форма результата свободна.
+      feedback:
+        requirement: Парк до и после сохранения; Включённые границы поиска
+        what-check: Сопоставьте фактическую модель с опубликованными данными; проверьте подготовленную привязку и объявленный выбор. Приёмы и объяснение предъявите преподавателю.
+    java-projects-timetable-interfaces-project:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/PrivateBinding.java
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Выборки после изменения расписания
+        test: PublicExamplesTest#normal
+        state: Два предметаS1/S2,преподавателяT1/T2,группыG1/G2;L1:19.10,09,S1,T1,G1,101;L2:19.10,10,S2,T2,G1,102;L3:20.10,09,S1,T1,G2,101;L4:20.10,10,S2,T2,G2,102. Год/названия/идентификаторы выбраны.
+        action: Выборки/числаT1,G1; отменаL1; переносL3 в выбранную аудиториюC.
+        expected: T1:L1/L3 и2→L3 и1;G1:L1/L2 и2→L2 и1;L3 новаяаудитория, принадлежностьT1/G2 сохранена. Порядок выборок свободен.
+      - id: boundary
+        name: Политики и специализации
+        test: PublicExamplesTest#boundary
+        state: Независимые исходные состояния PUBLIC1; заранее выбранные политики удаления/выходных,пределшколы и модельавтомобилей.
+        action: УдалениеT1;выходной20.10;школа на объявленном пределе и после превышения;теория/практика и наличие/отсутствие автомобиля.
+        expected: Состояние соответствует выбранной политике;выходной исключаетL3/L4,выборки/числа согласованы;предел отличим от превышения;отсутствие учебного автомобиля для практики выявляется.
+      feedback:
+        requirement: Выборки после изменения расписания; Политики и специализации
+        what-check: Сопоставьте фактическую модель с опубликованными данными; проверьте подготовленную привязку и объявленный выбор. Приёмы и объяснение предъявите преподавателю.
+    java-projects-huffman-word-coding-project:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Частоты, коды и девять битов
+        test: PublicExamplesTest#normal
+        state: one two two three three three; объявленное воспроизводимое правило равных весов, включая внутренние узлы.
+        action: Построить таблицу слово/частота/код и биты исходной последовательности.
+        expected: Частоты1/2/3;двоичные префиксные коды;взвешенная длина9;конкатенация кодов соответствует порядку шести слов. Конкретные дерево/коды/порядок таблицы свободны.
+      - id: boundary
+        name: Пустой, однословный и равновесный вход
+        test: PublicExamplesTest#boundary
+        state: 'Независимые тексты: пустой;one one one;red blue green.'
+        action: Закодировать каждый;последний повторить с тем же выбранным правилом.
+        expected: Пустые таблица/биты;единственный код0 и000;равныечастоты1/1/1,оптимальная длина5;повтор воспроизводит свой результат. Другие допустимые коды законны.
+      feedback:
+        requirement: Частоты, коды и девять битов; Пустой, однословный и равновесный вход
+        what-check: Сопоставьте фактическую модель с опубликованными данными; проверьте подготовленную привязку и объявленный выбор. Приёмы и объяснение предъявите преподавателю.
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
@@ -7182,4 +7278,121 @@ project-materialization:
         audience: grading
       - source: projects/generics/generic-interface/student/src/main/java/IGenIF.java
         target: tests/fixtures/public-pair-only/IGenIF.java
+        audience: grading
+    exr-projects-airline-persistence-project:
+      common-files:
+      - source: test-support/shared/31c47b2cdd02/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/shared/b42bf4ab370d/build.gradle
+        target: student/build.gradle
+        audience: student
+      - source: test-support/shared/c97ee801571b/settings.gradle
+        target: student/settings.gradle
+        audience: student
+      - source: test-support/shared/34195aba8c92/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: student/src/test/java/CopySupport.java
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: tests/junit/support/CopySupport.java
+        audience: grading
+      - source: projects/projects/airline-persistence-project/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+    exr-projects-timetable-interfaces-project:
+      common-files:
+      - source: test-support/shared/31c47b2cdd02/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/shared/b42bf4ab370d/build.gradle
+        target: student/build.gradle
+        audience: student
+      - source: test-support/shared/c97ee801571b/settings.gradle
+        target: student/settings.gradle
+        audience: student
+      - source: test-support/shared/34195aba8c92/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: projects/projects/timetable-interfaces-project/student/src/main/java/DrivingAPI.java
+        target: reference/primary/DrivingAPI.java
+        audience: grading
+      - source: projects/projects/timetable-interfaces-project/student/src/main/java/ScheduleAPI.java
+        target: reference/primary/ScheduleAPI.java
+        audience: grading
+      - source: projects/projects/timetable-interfaces-project/student/src/main/java/SchoolAPI.java
+        target: reference/primary/SchoolAPI.java
+        audience: grading
+      - source: projects/projects/timetable-interfaces-project/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/projects/timetable-interfaces-project/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: projects/projects/timetable-interfaces-project/student/src/main/java/DrivingAPI.java
+        target: tests/fixtures/public-pair-only/DrivingAPI.java
+        audience: grading
+      - source: projects/projects/timetable-interfaces-project/student/src/main/java/ScheduleAPI.java
+        target: tests/fixtures/public-pair-only/ScheduleAPI.java
+        audience: grading
+      - source: projects/projects/timetable-interfaces-project/student/src/main/java/SchoolAPI.java
+        target: tests/fixtures/public-pair-only/SchoolAPI.java
+        audience: grading
+      - source: projects/projects/timetable-interfaces-project/student/src/main/java/DrivingAPI.java
+        target: tests/fixtures/wrong/DrivingAPI.java
+        audience: grading
+      - source: projects/projects/timetable-interfaces-project/student/src/main/java/ScheduleAPI.java
+        target: tests/fixtures/wrong/ScheduleAPI.java
+        audience: grading
+      - source: projects/projects/timetable-interfaces-project/student/src/main/java/SchoolAPI.java
+        target: tests/fixtures/wrong/SchoolAPI.java
+        audience: grading
+    exr-projects-huffman-word-coding-project:
+      common-files:
+      - source: test-support/shared/31c47b2cdd02/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/shared/b42bf4ab370d/build.gradle
+        target: student/build.gradle
+        audience: student
+      - source: test-support/shared/c97ee801571b/settings.gradle
+        target: student/settings.gradle
+        audience: student
+      - source: test-support/shared/34195aba8c92/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: projects/projects/huffman-word-coding-project/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: projects/projects/huffman-word-coding-project/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
         audience: grading
