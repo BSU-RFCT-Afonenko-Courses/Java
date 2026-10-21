@@ -3836,6 +3836,70 @@ project-checks:
       feedback:
         requirement: B исчезает, новая очередь принимает C после сброса. Унаследованный default отказывает без удаления A.
         what-check: Сопоставьте результат с опубликованными действиями. Исходник, приёмы и объяснение предъявите преподавателю; законный иной API требует подготовленной ordinary binding либо ручного предъявления.
+    java-generics-generic-circular-queue:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicMessages.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Порядок и повторное место
+        test: PublicExamplesTest#normal
+        state: 'String[3]: А,Б,В/get2/Г,Д/get3; Integer[2]:10,20/get/30/get2'
+        action: Обычная привязка вызывает реальные операции выбранной реализации; свободный API и поток сообщения не ограничиваются клиентом.
+        expected: А,Б,В,Г,Д;10,20,30; новые добавления успешны.
+      - id: boundary
+        name: Вместимость один и отказы
+        test: PublicExamplesTest#boundary
+        state: Integer[]{99}:get/put7/put8/get/put8/get/get
+        action: Обычная привязка вызывает реальные операции выбранной реализации; свободный API и поток сообщения не ограничиваются клиентом.
+        expected: null с сообщением; отказ put8 с сообщением;7;8;null с сообщением; исходное99 не извлекается.
+      feedback:
+        requirement: FIFO и два типа после извлечения из полной очереди. Начальная пустота на массиве99, отказ полной очереди сохраняет7.
+        what-check: Сопоставьте опубликованные действия с реальным результатом; исходник, приёмы и объяснение предъявите преподавателю. Законный иной API требует подходящей обычной привязки или собственного доступного примера.
+    java-generics-generic-dynamic-queue:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicMessages.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: 'FIFO при росте: два типа'
+        test: PublicExamplesTest#normal
+        state: 'String[2]: А,Б,В/get/Г/get3; Integer[2]:10,20,30/get/40/get3'
+        action: Обычная привязка вызывает реальные операции выбранной реализации; свободный API и поток сообщения не ограничиваются клиентом.
+        expected: А,Б,В,Г;10,20,30,40; размеры/текст свободны.
+      - id: boundary
+        name: Начальная длина один
+        test: PublicExamplesTest#boundary
+        state: Integer[]{99}:get/put7/put8/get/get/get
+        action: Обычная привязка вызывает реальные операции выбранной реализации; свободный API и поток сообщения не ограничиваются клиентом.
+        expected: null с сообщением;7,8;null с сообщением; исходное99 не извлекается.
+      feedback:
+        requirement: Короткая трасса сохраняет оставшиеся элементы; несколько ростов предъявляются отдельно. Предзаполненный массив задаёт пустую очередь, рост сохраняет7,8.
+        what-check: Сопоставьте опубликованные действия с реальным результатом; исходник, приёмы и объяснение предъявите преподавателю. Законный иной API требует подходящей обычной привязки или собственного доступного примера.
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
@@ -7037,4 +7101,85 @@ project-materialization:
         audience: student
       - source: test-support/shared/bbc996150b38/PublicOutput.java
         target: tests/junit/support/PublicOutput.java
+        audience: grading
+    exr-generics-generic-circular-queue:
+      common-files:
+      - source: test-support/shared/a88ab666f724/Решение.java
+        target: student/src/main/java/Решение.java
+        audience: student
+      - source: test-support/shared/ce2c5860478e/TaskBinding.java
+        target: student/src/test/java/TaskBinding.java
+        audience: student
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/generics/generic-circular-queue/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/9eb59a1aa27d/PublicMessages.java
+        target: student/src/test/java/PublicMessages.java
+        audience: student
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+      - source: test-support/shared/9eb59a1aa27d/PublicMessages.java
+        target: tests/junit/support/PublicMessages.java
+        audience: grading
+    exr-generics-generic-dynamic-queue:
+      common-files:
+      - source: test-support/shared/a88ab666f724/Решение.java
+        target: student/src/main/java/Решение.java
+        audience: student
+      - source: test-support/shared/ce2c5860478e/TaskBinding.java
+        target: student/src/test/java/TaskBinding.java
+        audience: student
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/generics/generic-dynamic-queue/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/9eb59a1aa27d/PublicMessages.java
+        target: student/src/test/java/PublicMessages.java
+        audience: student
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+      - source: test-support/shared/9eb59a1aa27d/PublicMessages.java
+        target: tests/junit/support/PublicMessages.java
+        audience: grading
+    exr-generics-generic-interface:
+      common-files:
+      - source: projects/generics/generic-interface/student/src/main/java/IGenIF.java
+        target: reference/extra-arity/IGenIF.java
+        audience: grading
+      - source: projects/generics/generic-interface/student/src/main/java/IGenIF.java
+        target: reference/primary/IGenIF.java
+        audience: grading
+      - source: projects/generics/generic-interface/student/src/main/java/IGenIF.java
+        target: reference/private-placement/IGenIF.java
+        audience: grading
+      - source: projects/generics/generic-interface/student/src/main/java/IGenIF.java
+        target: tests/fixtures/raw-interface/IGenIF.java
+        audience: grading
+      - source: projects/generics/generic-interface/student/src/main/java/IGenIF.java
+        target: tests/fixtures/public-pair-only/IGenIF.java
         audience: grading
