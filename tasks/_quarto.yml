@@ -1418,6 +1418,341 @@ project-checks:
       feedback:
         requirement: Пять опубликованных методов, полный проверенный каталог до stdout, независимые неизменяемые списки, точные строки и коды; настоящий Gradle JAR вне проекта.
         what-check: Сопоставьте фактическое наблюдение с опубликованным ожиданием. Предъявите исходник, обязательные приёмы и объяснение преподавателю.
+    java-numbers-lunar-weight:
+      source-profile: java-main
+      tests:
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicScenarioTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      - tests/junit/support/coursesupport/OutputNumbers.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Дробная исходная сила
+        test: PublicScenarioTest#normal
+        state: Новый процесс; аргументов нет; stdin содержит `7.5`, затем EOF.
+        action: Запустить решение и прочитать stdout.
+        expected: Одно конечное число `1.275` с допуском `max(1e-8, 1e-12*1.275)`. Десятичная и экспоненциальная запись допустимы.
+      - id: boundary
+        name: Нулевая сила
+        test: PublicScenarioTest#boundary
+        state: Новый процесс; аргументов нет; stdin содержит `0`, затем EOF.
+        action: Запустить решение и прочитать stdout.
+        expected: Одно конечное число, отличающееся от `0` не больше чем на `1e-8`. Числовой нуль не включает режим пустого ввода.
+      feedback:
+        requirement: Проверьте опубликованный результат и границы задачи.
+        what-check: Сопоставьте наблюдаемые значения с условием; исходник, обязательные приёмы и объяснение предъявляются преподавателю.
+      api-precheck:
+        files:
+        - tests/api/CliPrecheck.java
+        entry: CliPrecheck$StringArrayMain
+    java-numbers-lightning-distance:
+      source-profile: java-main
+      tests:
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicScenarioTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      - tests/junit/support/coursesupport/OutputNumbers.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Расстояние по заданной задержке
+        test: PublicScenarioTest#normal
+        state: Константы находятся в решении; аргументов и входных данных нет.
+        action: Запустить решение и найти первую непустую строку stdout.
+        expected: В этой строке только число `2412` с абсолютной погрешностью не больше `1e-8`.
+      - id: boundary
+        name: Граница обязательного результата
+        test: PublicScenarioTest#boundary
+        state: То же допустимое состояние и запуск без данных; дополнительная часть может отсутствовать или быть выполнена студентом.
+        action: Наблюдать границу первой непустой строки. Не требовать вывода для эхо и не считать последующий допустимый вывод лишним результатом задачи.
+        expected: Первая непустая строка содержит только расстояние `2412` с тем же допуском. Отсутствие последующих строк допустимо; их наличие не меняет результат для молнии. Значение эхо не является автоматическим критерием.
+      feedback:
+        requirement: Проверьте опубликованный результат и границы задачи.
+        what-check: Сопоставьте наблюдаемые значения с условием; исходник, обязательные приёмы и объяснение предъявляются преподавателю.
+      api-precheck:
+        files:
+        - tests/api/CliPrecheck.java
+        entry: CliPrecheck$StringArrayMain
+    java-numbers-boolean-truth-table:
+      source-profile: java-main
+      tests:
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicScenarioTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      - tests/junit/support/coursesupport/OutputNumbers.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Разные значения P и Q
+        test: PublicScenarioTest#normal
+        state: Запуск без входных данных и аргументов.
+        action: Найти строку сочетания true,false после заголовка.
+        expected: Заголовок — `P\tQ\tAND\tOR\tXOR\tNOT`, где `\t` обозначает настоящую табуляцию. Строка содержит `true\tfalse\tfalse\ttrue\ttrue\tfalse` с настоящими табуляциями.
+      - id: boundary
+        name: Оба операнда ложны
+        test: PublicScenarioTest#boundary
+        state: Тот же предусмотренный запуск без данных.
+        action: Найти строку false,false; убедиться, что в таблице представлены ровно четыре различные пары P,Q.
+        expected: Строка `false\tfalse\tfalse\tfalse\tfalse\ttrue` с настоящими табуляциями. Четыре пары встречаются по одному разу, в любом порядке; требование первого или последнего места для этой строки отсутствует.
+      feedback:
+        requirement: Проверьте опубликованный результат и границы задачи.
+        what-check: Сопоставьте наблюдаемые значения с условием; исходник, обязательные приёмы и объяснение предъявляются преподавателю.
+      api-precheck:
+        files:
+        - tests/api/CliPrecheck.java
+        entry: CliPrecheck$StringArrayMain
+    java-numbers-short-circuit-and:
+      source-profile: java-main
+      tests:
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicScenarioTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      - tests/junit/support/coursesupport/OutputNumbers.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Положительное частное
+        test: PublicScenarioTest#normal
+        state: Аргументов нет; stdin `7 2`, затем EOF.
+        action: Запустить решение и наблюдать логический результат.
+        expected: '`true`.'
+      - id: boundary
+        name: Нулевой делитель
+        test: PublicScenarioTest#boundary
+        state: Аргументов нет; stdin `7 0`, затем EOF.
+        action: Запустить решение и наблюдать результат и отсутствие необработанной ошибки деления.
+        expected: '`false`, без исключения деления на нуль.'
+      feedback:
+        requirement: Проверьте опубликованный результат и границы задачи.
+        what-check: Сопоставьте наблюдаемые значения с условием; исходник, обязательные приёмы и объяснение предъявляются преподавателю.
+      api-precheck:
+        files:
+        - tests/api/CliPrecheck.java
+        entry: CliPrecheck$StringArrayMain
+    java-numbers-gallon-conversion:
+      source-profile: java-main
+      tests:
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicScenarioTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      - tests/junit/support/coursesupport/OutputNumbers.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Дробный результат преобразования
+        test: PublicScenarioTest#normal
+        state: В решении заданы 10 галлонов и 3,7854 литра на галлон; входных данных и аргументов нет.
+        action: Запустить решение и сопоставить вторую выведенную величину.
+        expected: Вторая величина — `37.854` литра с абсолютной погрешностью не больше `1e-8`.
+      - id: boundary
+        name: Полный результат без ввода
+        test: PublicScenarioTest#boundary
+        state: Тот же запуск; stdin завершён без данных, список аргументов пуст. Константы не меняются.
+        action: Прочитать полный stdout. Новые параметры не передавать.
+        expected: Два числа в порядке `10 37.854`, с допустимыми пробельными разделителями и абсолютным допуском `1e-8` для вещественных результатов. Требовать ввод исходного объёма для этого запуска не нужно.
+      feedback:
+        requirement: Проверьте опубликованный результат и границы задачи.
+        what-check: Сопоставьте наблюдаемые значения с условием; исходник, обязательные приёмы и объяснение предъявляются преподавателю.
+      api-precheck:
+        files:
+        - tests/api/CliPrecheck.java
+        entry: CliPrecheck$StringArrayMain
+    java-numbers-random-console-values:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/PublicBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicScenarioTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      - tests/junit/support/coursesupport/OutputNumbers.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Десять ограниченных значений
+        test: PublicScenarioTest#normal
+        state: 'Исходное состояние генератора: seed 42. Получены десять значений nextInt(100); отдельный протокол передачи seed не задаётся.'
+        action: Запустить выбранную демонстрацию и прочитать горизонтальное представление.
+        expected: В одной строке десять целых значений; каждое от `0` до `99` включительно. Соответствие конкретному генератору устанавливается вместе с исходником; одних границ значений для этого недостаточно.
+      - id: boundary
+        name: Сохранение последовательности при смене формы
+        test: PublicScenarioTest#boundary
+        state: Та же последовательность и тот же запуск; новые случайные данные или другой seed не подаются.
+        action: Сопоставить десять вертикальных строк с десятью значениями горизонтального представления по позициям; порядок двух представлений может быть любым.
+        expected: В каждой вертикальной строке одно число. Все десять значений совпадают с горизонтальным представлением в том же порядке. Наличие 0 или 99 среди этих десяти не требуется; `100` вне разрешённого диапазона.
+      feedback:
+        requirement: Проверьте опубликованный результат и границы задачи.
+        what-check: Сопоставьте наблюдаемые значения с условием; исходник, обязательные приёмы и объяснение предъявляются преподавателю.
+    java-numbers-argument-sum-product:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/PublicBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicScenarioTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      - tests/junit/support/coursesupport/OutputNumbers.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Несколько целых аргументов
+        test: PublicScenarioTest#normal
+        state: 'Аргументы запуска: `3`, `-2`, `4`; стандартный ввод не используется.'
+        action: Запустить фактически выбранный класс и прочитать смысловые результаты.
+        expected: Сумма `5`, произведение `-24`. Допустимы подписи и выбранное студентом оформление, позволяющее различить результаты.
+      - id: boundary
+        name: Пустой набор
+        test: PublicScenarioTest#boundary
+        state: Список аргументов пуст; stdin не используется.
+        action: Запустить решение и сопоставить сумму и произведение.
+        expected: Сумма `0`, произведение `1`; формат свободен по условию.
+      feedback:
+        requirement: Проверьте опубликованный результат и границы задачи.
+        what-check: Сопоставьте наблюдаемые значения с условием; исходник, обязательные приёмы и объяснение предъявляются преподавателю.
+    java-numbers-quadratic-roots:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/PublicBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicScenarioTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      - tests/junit/support/coursesupport/OutputNumbers.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Два различных корня
+        test: PublicScenarioTest#normal
+        state: 'Три аргумента: `1`, `-3`, `2`.'
+        action: Запустить выбранный класс; сопоставить смысловые числовые результаты.
+        expected: Два корня `1` и `2` в любом порядке. Для каждого корня x допустимо отклонение `1e-8 + 1e-12*abs(x)`; оформление свободно.
+      - id: boundary
+        name: Нулевой дискриминант
+        test: PublicScenarioTest#boundary
+        state: 'Три аргумента: `1`, `-2`, `1`.'
+        action: Запустить решение и наблюдать количество и значение корней.
+        expected: Один корень `1` с допуском `1e-8 + 1e-12`. Не требуются два одинаковых числа или определённая фраза.
+      feedback:
+        requirement: Проверьте опубликованный результат и границы задачи.
+        what-check: Сопоставьте наблюдаемые значения с условием; исходник, обязательные приёмы и объяснение предъявляются преподавателю.
+    java-numbers-radix-conversion:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/PublicBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicScenarioTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      - tests/junit/support/coursesupport/OutputNumbers.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Шестнадцатеричная запись
+        test: PublicScenarioTest#normal
+        state: 'Аргументы: `31`, `16`.'
+        action: Запустить выбранный класс и сопоставить позиционную запись результата.
+        expected: '`1F` либо `1f`; ведущих нулей нет.'
+      - id: boundary
+        name: Нуль при наибольшем основании
+        test: PublicScenarioTest#boundary
+        state: 'Аргументы: `0`, `36`.'
+        action: Запустить решение и прочитать запись числа.
+        expected: '`0`, а не пустая строка и не несколько нулей.'
+      feedback:
+        requirement: Проверьте опубликованный результат и границы задачи.
+        what-check: Сопоставьте наблюдаемые значения с условием; исходник, обязательные приёмы и объяснение предъявляются преподавателю.
+    java-numbers-binary-truth-table:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/PublicBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicScenarioTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      - tests/junit/support/coursesupport/OutputNumbers.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Разные числовые значения истинности
+        test: PublicScenarioTest#normal
+        state: Демонстрация таблицы без новых входных параметров.
+        action: Найти строку для P=1,Q=0 под заголовком P,Q,AND,OR,XOR,NOT.
+        expected: Значения строки — `1 0 0 1 1 0` в порядке колонок. Допустимое оформление колонок выбирает студент; табуляция не обязательна.
+      - id: boundary
+        name: Оба значения ложны
+        test: PublicScenarioTest#boundary
+        state: Та же демонстрация таблицы.
+        action: Найти строку P=0,Q=0 и проверить наличие всех четырёх сочетаний по одному разу.
+        expected: Значения строки — `0 0 0 0 0 1`. Всего заголовок и четыре строки значений в любом порядке; обязательного точного разделителя заголовка нет.
+      feedback:
+        requirement: Проверьте опубликованный результат и границы задачи.
+        what-check: Сопоставьте наблюдаемые значения с условием; исходник, обязательные приёмы и объяснение предъявляются преподавателю.
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
@@ -1461,23 +1796,32 @@ project-materialization:
         audience: grading
     exr-numbers-boolean-truth-table:
       common-files:
-      - source: test-support/api/CliPrecheck.java
-        target: student/src/test/java/api/CliPrecheck.java
+      - source: test-support/shared/1abc2c40b568/preamble.qmd
+        target: student/condition/numbers-preamble.qmd
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
         audience: student
       - source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: student/src/test/java/coursesupport/JavaProcess.java
         audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
       - source: test-support/src/main/java/coursesupport/OutputNumbers.java
         target: student/src/test/java/coursesupport/OutputNumbers.java
         audience: student
-      - source: test-support/api/CliPrecheck.java
-        target: tests/junit/api/CliPrecheck.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/coursesupport/JavaProcess.java
-        audience: grading
       - source: test-support/src/main/java/coursesupport/OutputNumbers.java
-        target: tests/junit/coursesupport/OutputNumbers.java
+        target: tests/junit/support/coursesupport/OutputNumbers.java
+        audience: grading
+      - source: projects/numbers/boolean-truth-table/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/public/PublicScenarioTest.java
+        audience: grading
+      - source: test-support/api/CliPrecheck.java
+        target: tests/api/CliPrecheck.java
         audience: grading
     exr-text-compress-character-runs:
       common-files:
@@ -1559,23 +1903,32 @@ project-materialization:
         audience: grading
     exr-numbers-gallon-conversion:
       common-files:
-      - source: test-support/api/CliPrecheck.java
-        target: student/src/test/java/api/CliPrecheck.java
+      - source: test-support/shared/1abc2c40b568/preamble.qmd
+        target: student/condition/numbers-preamble.qmd
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
         audience: student
       - source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: student/src/test/java/coursesupport/JavaProcess.java
         audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
       - source: test-support/src/main/java/coursesupport/OutputNumbers.java
         target: student/src/test/java/coursesupport/OutputNumbers.java
         audience: student
-      - source: test-support/api/CliPrecheck.java
-        target: tests/junit/api/CliPrecheck.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/coursesupport/JavaProcess.java
-        audience: grading
       - source: test-support/src/main/java/coursesupport/OutputNumbers.java
-        target: tests/junit/coursesupport/OutputNumbers.java
+        target: tests/junit/support/coursesupport/OutputNumbers.java
+        audience: grading
+      - source: projects/numbers/gallon-conversion/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/public/PublicScenarioTest.java
+        audience: grading
+      - source: test-support/api/CliPrecheck.java
+        target: tests/api/CliPrecheck.java
         audience: grading
     exr-numbers-image-size:
       common-files:
@@ -1631,43 +1984,61 @@ project-materialization:
         audience: grading
     exr-numbers-lightning-distance:
       common-files:
-      - source: test-support/api/CliPrecheck.java
-        target: student/src/test/java/api/CliPrecheck.java
+      - source: test-support/shared/1abc2c40b568/preamble.qmd
+        target: student/condition/numbers-preamble.qmd
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
         audience: student
       - source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: student/src/test/java/coursesupport/JavaProcess.java
         audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
       - source: test-support/src/main/java/coursesupport/OutputNumbers.java
         target: student/src/test/java/coursesupport/OutputNumbers.java
         audience: student
-      - source: test-support/api/CliPrecheck.java
-        target: tests/junit/api/CliPrecheck.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/coursesupport/JavaProcess.java
-        audience: grading
       - source: test-support/src/main/java/coursesupport/OutputNumbers.java
-        target: tests/junit/coursesupport/OutputNumbers.java
+        target: tests/junit/support/coursesupport/OutputNumbers.java
+        audience: grading
+      - source: projects/numbers/lightning-distance/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/public/PublicScenarioTest.java
+        audience: grading
+      - source: test-support/api/CliPrecheck.java
+        target: tests/api/CliPrecheck.java
         audience: grading
     exr-numbers-lunar-weight:
       common-files:
-      - source: test-support/api/CliPrecheck.java
-        target: student/src/test/java/api/CliPrecheck.java
+      - source: test-support/shared/1abc2c40b568/preamble.qmd
+        target: student/condition/numbers-preamble.qmd
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
         audience: student
       - source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: student/src/test/java/coursesupport/JavaProcess.java
         audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
       - source: test-support/src/main/java/coursesupport/OutputNumbers.java
         target: student/src/test/java/coursesupport/OutputNumbers.java
         audience: student
-      - source: test-support/api/CliPrecheck.java
-        target: tests/junit/api/CliPrecheck.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/coursesupport/JavaProcess.java
-        audience: grading
       - source: test-support/src/main/java/coursesupport/OutputNumbers.java
-        target: tests/junit/coursesupport/OutputNumbers.java
+        target: tests/junit/support/coursesupport/OutputNumbers.java
+        audience: grading
+      - source: projects/numbers/lunar-weight/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/public/PublicScenarioTest.java
+        audience: grading
+      - source: test-support/api/CliPrecheck.java
+        target: tests/api/CliPrecheck.java
         audience: grading
     exr-control-month-name:
       common-files:
@@ -1809,23 +2180,32 @@ project-materialization:
         audience: grading
     exr-numbers-short-circuit-and:
       common-files:
-      - source: test-support/api/CliPrecheck.java
-        target: student/src/test/java/api/CliPrecheck.java
+      - source: test-support/shared/1abc2c40b568/preamble.qmd
+        target: student/condition/numbers-preamble.qmd
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
         audience: student
       - source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: student/src/test/java/coursesupport/JavaProcess.java
         audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
       - source: test-support/src/main/java/coursesupport/OutputNumbers.java
         target: student/src/test/java/coursesupport/OutputNumbers.java
         audience: student
-      - source: test-support/api/CliPrecheck.java
-        target: tests/junit/api/CliPrecheck.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/coursesupport/JavaProcess.java
-        audience: grading
       - source: test-support/src/main/java/coursesupport/OutputNumbers.java
-        target: tests/junit/coursesupport/OutputNumbers.java
+        target: tests/junit/support/coursesupport/OutputNumbers.java
+        audience: grading
+      - source: projects/numbers/short-circuit-and/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/public/PublicScenarioTest.java
+        audience: grading
+      - source: test-support/api/CliPrecheck.java
+        target: tests/api/CliPrecheck.java
         audience: grading
     exr-arrays-sort-matrix-rows:
       common-files:
@@ -2674,4 +3054,149 @@ project-materialization:
         audience: grading
       - source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: tests/jdk/coursesupport/JavaProcess.java
+        audience: grading
+    exr-numbers-random-console-values:
+      common-files:
+      - source: test-support/shared/1abc2c40b568/preamble.qmd
+        target: student/condition/numbers-preamble.qmd
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/e0cdb138a39c/RunExample.java
+        target: student/src/main/java/RunExample.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+        target: student/src/test/java/coursesupport/OutputNumbers.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+        target: tests/junit/support/coursesupport/OutputNumbers.java
+        audience: grading
+      - source: projects/numbers/random-console-values/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/public/PublicScenarioTest.java
+        audience: grading
+    exr-numbers-argument-sum-product:
+      common-files:
+      - source: test-support/shared/1abc2c40b568/preamble.qmd
+        target: student/condition/numbers-preamble.qmd
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/e0cdb138a39c/RunExample.java
+        target: student/src/main/java/RunExample.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+        target: student/src/test/java/coursesupport/OutputNumbers.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+        target: tests/junit/support/coursesupport/OutputNumbers.java
+        audience: grading
+      - source: projects/numbers/argument-sum-product/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/public/PublicScenarioTest.java
+        audience: grading
+    exr-numbers-quadratic-roots:
+      common-files:
+      - source: test-support/shared/1abc2c40b568/preamble.qmd
+        target: student/condition/numbers-preamble.qmd
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/e0cdb138a39c/RunExample.java
+        target: student/src/main/java/RunExample.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+        target: student/src/test/java/coursesupport/OutputNumbers.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+        target: tests/junit/support/coursesupport/OutputNumbers.java
+        audience: grading
+      - source: projects/numbers/quadratic-roots/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/public/PublicScenarioTest.java
+        audience: grading
+    exr-numbers-radix-conversion:
+      common-files:
+      - source: test-support/shared/1abc2c40b568/preamble.qmd
+        target: student/condition/numbers-preamble.qmd
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/e0cdb138a39c/RunExample.java
+        target: student/src/main/java/RunExample.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+        target: student/src/test/java/coursesupport/OutputNumbers.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+        target: tests/junit/support/coursesupport/OutputNumbers.java
+        audience: grading
+      - source: projects/numbers/radix-conversion/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/public/PublicScenarioTest.java
+        audience: grading
+    exr-numbers-binary-truth-table:
+      common-files:
+      - source: test-support/shared/1abc2c40b568/preamble.qmd
+        target: student/condition/numbers-preamble.qmd
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/e0cdb138a39c/RunExample.java
+        target: student/src/main/java/RunExample.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+        target: student/src/test/java/coursesupport/OutputNumbers.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+        target: tests/junit/support/coursesupport/OutputNumbers.java
+        audience: grading
+      - source: projects/numbers/binary-truth-table/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/junit/PublicScenarioTest.java
+        target: tests/junit/public/PublicScenarioTest.java
         audience: grading
