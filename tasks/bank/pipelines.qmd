@@ -125,99 +125,140 @@ default-exercise-statement-visibility: open
 
 ::::
 
-:::: {#exr-pipelines-longer-string difficulty="introductory" project="/projects/pipelines/longer-string"}
+:::: {#exr-pipelines-longer-string difficulty="introductory" target="prairielearn" project="/projects/pipelines/longer-string" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-pipelines-longer-string"}
 ## Выбор более длинной строки
 
 Определите собственный функциональный интерфейс с одним абстрактным методом из двух `String` в `String`. Реализуйте его лямбдой, выбирающей более длинную строку; длина измеряется кодовыми единицами `char` через `String.length()`.
 
-Оба аргумента ненулевые, пустые строки допустимы. При равной длине верните значение первой строки. Например, для `"ab"` и `"XYZ"` результат `"XYZ"`, для `"ab"` и `"cd"` — `"ab"`, для двух пустых строк — пустая строка. Имена интерфейса и метода свободны. [@bib-task-longer-string]
+Оба аргумента ненулевые, пустые строки допустимы. При равной длине верните значение первой строки. Например, для `"ab"` и `"XYZ"` результат `"XYZ"`, для `"ab"` и `"cd"` — `"ab"`, для двух пустых строк — пустая строка. Имена интерфейса и метода свободны.
 
-{{< project-download exr-pipelines-longer-string kind="starter" text="Скачать стартовый проект" >}}
+Предъявите собственный интерфейс и лямбду. Объясните выбор при равной
+длине и покажите работу с пустыми строками.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-pipelines-longer-string kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::
 
-:::: {#exr-pipelines-remove-even-values difficulty="intermediate" project="/projects/pipelines/remove-even-values"}
+:::: {#exr-pipelines-remove-even-values difficulty="intermediate" target="prairielearn" project="/projects/pipelines/remove-even-values" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-pipelines-remove-even-values"}
 ## Удаление чётных элементов массива
 
 В переданном ненулевом `int[]` оставьте нечётные элементы в исходном порядке, а оставшийся хвост заполните нулями. Отбор выполните через Stream API. Вход может быть пустым и содержать любые значения `int`, включая отрицательные и ноль; все повторы нечётных значений сохраняются.
 
-Измените тот же массив, сохранив его размер. Временный массив или коллекция допустимы. `{2, 3, 4, 3}` превращается в `{3, 3, 0, 0}`, `{-3, 0, -2, -1}` — в `{-3, -1, 0, 0}`. Пустой массив остаётся пустым; массив без нечётных элементов заполняется нулями целиком. [@bib-task-remove-even-values]
+Измените тот же массив, сохранив его размер. Временный массив или коллекция допустимы. `{2, 3, 4, 3}` превращается в `{3, 3, 0, 0}`, `{-3, 0, -2, -1}` — в `{-3, -1, 0, 0}`. Пустой массив остаётся пустым; массив без нечётных элементов заполняется нулями целиком.
 
-{{< project-download exr-pipelines-remove-even-values kind="starter" text="Скачать стартовый проект" >}}
+Предъявите массив до и после вызова. Покажите сохранение его объекта
+и размера, объясните отбор отрицательных нечётных чисел и заполнение хвоста.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-pipelines-remove-even-values kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::
 
-:::: {#exr-pipelines-descending-array difficulty="introductory" project="/projects/pipelines/descending-array"}
+:::: {#exr-pipelines-descending-array difficulty="introductory" target="prairielearn" project="/projects/pipelines/descending-array" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-pipelines-descending-array"}
 ## Сортировка массива по убыванию
 
 Отсортируйте переданный `Integer[]` по убыванию числовых значений, используя лямбда-компаратор. Массив и его элементы ненулевые; допустим весь диапазон `int`, пустой массив и повторы.
 
-Результат записывается в исходный массив. Все элементы и число их повторений сохраняются. Для `{2, -1, 2, 0}` результат `{2, 2, 0, -1}`. Проверьте также крайние значения `Integer.MIN_VALUE` и `Integer.MAX_VALUE`. [@bib-task-descending-array]
+Результат записывается в исходный массив. Все элементы и число их повторений сохраняются. Для `{2, -1, 2, 0}` результат `{2, 2, 0, -1}`. Проверьте также крайние значения `Integer.MIN_VALUE` и `Integer.MAX_VALUE`.
 
-{{< project-download exr-pipelines-descending-array kind="starter" text="Скачать стартовый проект" >}}
+Предъявите массив до и после сортировки. Объясните сравнение
+крайних значений int и сохранение повторов.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-pipelines-descending-array kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::
 
-:::: {#exr-pipelines-vowels-before-consonants difficulty="intermediate" project="/projects/pipelines/vowels-before-consonants"}
+:::: {#exr-pipelines-vowels-before-consonants difficulty="intermediate" target="prairielearn" project="/projects/pipelines/vowels-before-consonants" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-pipelines-vowels-before-consonants"}
 ## Сначала гласные, затем согласные
 
 Через Stream API преобразуйте ненулевую строку из латинских букв нижнего регистра: сначала расположите все её гласные в возрастающем порядке, затем все согласные в возрастающем порядке. Гласные — `a`, `e`, `i`, `o`, `u`; остальные допустимые буквы считаются согласными.
 
-Сохраните каждое вхождение буквы. Для `"java"` результат `"aajv"`; пустая строка даёт пустую. Строка только из одной группы сортируется внутри этой группы. [@bib-task-vowels-before-consonants]
+Сохраните каждое вхождение буквы. Для `"java"` результат `"aajv"`; пустая строка даёт пустую. Строка только из одной группы сортируется внутри этой группы.
 
-{{< project-download exr-pipelines-vowels-before-consonants kind="starter" text="Скачать стартовый проект" >}}
+Предъявите исходную и полученную строки. Объясните границу двух
+групп, порядок букв внутри них и сохранение повторов.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-pipelines-vowels-before-consonants kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::
 
-:::: {#exr-pipelines-first-primes difficulty="advanced" project="/projects/pipelines/first-primes"}
+:::: {#exr-pipelines-first-primes difficulty="advanced" target="prairielearn" project="/projects/pipelines/first-primes" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-pipelines-first-primes"}
 ## Первые `N` простых чисел
 
 Выведите первые `N` простых чисел в возрастающем порядке. Вход `N` — целое число от `0` до `10000` включительно. Простое число — целое больше единицы, имеющее ровно два положительных делителя: единицу и себя.
 
-Используйте последовательный Stream API и генератор последовательности (`iterate`, `generate` или их варианты для примитивных потоков). Способ проверки простоты выберите самостоятельно. Для `N = 5` результат `2 3 5 7 11`, для `N = 0` вывод пуст. Между числами допустимы пробелы или переводы строк. [@bib-task-first-primes]
+Используйте последовательный Stream API и генератор последовательности (`iterate`, `generate` или их варианты для примитивных потоков). Способ проверки простоты выберите самостоятельно. Для `N = 5` результат `2 3 5 7 11`, для `N = 0` вывод пуст. Между числами допустимы пробелы или переводы строк.
 
-{{< project-download exr-pipelines-first-primes kind="starter" text="Скачать стартовый проект" >}}
+Предъявите вывод для обычного N и для нуля. Объясните генератор,
+проверку простоты и ограничение числа результатов.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-pipelines-first-primes kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::
 
-:::: {#exr-pipelines-price-transformation difficulty="introductory" project="/projects/pipelines/price-transformation"}
+:::: {#exr-pipelines-price-transformation difficulty="introductory" target="prairielearn" project="/projects/pipelines/price-transformation" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-pipelines-price-transformation"}
 ## Преобразование списка цен
 
 Через Stream API преобразуйте список цен без налога в новый список цен с налогом. Ставка — отдельный входной параметр от `0` до `1` включительно; `0.20` означает 20%. Цены конечны и находятся в диапазоне от `0` до `1000000`. Список ненулевой, без элементов `null`, может быть пустым.
 
 Для каждой цены вычисляется `цена × (1 + ставка)`, затем результат округляется до двух десятичных знаков. Выберите денежный тип и одно из правил округления к ближайшему: при точной середине округлять вверх (`HALF_UP`) либо к чётной последней сохраняемой цифре (`HALF_EVEN`). До демонстрации явно укажите выбранные представление и правило; по ним объясняются случаи округления. Сохраните порядок, повторы и исходный список. Для цены `100` и ставки `0.20` результат `120.00`; нулевая цена остаётся нулевой, пустой список даёт пустой новый список.
 
-Покажите случай точной середины на выбранном представлении чисел и объясните результат. Проверка учитывает опубликованный в решении выбор типа и округления. [@bib-task-price-transformation]
+Покажите случай точной середины на выбранном представлении чисел и объясните результат. Проверка учитывает опубликованный в решении выбор типа и округления.
 
-{{< project-download exr-pipelines-price-transformation kind="starter" text="Скачать стартовый проект" >}}
+До демонстрации назовите денежный тип и правило округления.
+Предъявите исходный и новый списки, случай точной середины
+в выбранном представлении и объяснение результата.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-pipelines-price-transformation kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::
 
-:::: {#exr-pipelines-distinct-object-array difficulty="intermediate" project="/projects/pipelines/distinct-object-array"}
+:::: {#exr-pipelines-distinct-object-array difficulty="intermediate" target="prairielearn" project="/projects/pipelines/distinct-object-array" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-pipelines-distinct-object-array"}
 ## Массив объектов без дубликатов
 
 Разработайте метод, который через Stream API получает массив объектов и возвращает новый массив без дубликатов. Используйте лямбду или ссылку на конструктор массива при получении результата.
 
 Выберите собственную модель с полями `int id` и ненулевым `String name`. Два объекта равны, когда совпадают оба поля; регистр имени значим. Обеспечьте согласованные `equals` и `hashCode`: можно реализовать их в обычном классе либо использовать подходящий `record`.
 
-Массив и его элементы ненулевые. Сохраните порядок первого появления и ссылку на первый объект из каждой группы равных. Для отдельных объектов `(1, "A")`, `(2, "B")`, `(1, "A")` результат содержит первые два объекта. Исходный массив и объекты не меняются; пустой массив даёт новый пустой массив. [@bib-task-distinct-object-array]
+Массив и его элементы ненулевые. Сохраните порядок первого появления и ссылку на первый объект из каждой группы равных. Для отдельных объектов `(1, "A")`, `(2, "B")`, `(1, "A")` результат содержит первые два объекта. Исходный массив и объекты не меняются; пустой массив даёт новый пустой массив.
 
-{{< project-download exr-pipelines-distinct-object-array kind="starter" text="Скачать стартовый проект" >}}
+Предъявите модель и правило равенства. Покажите, какие именно ссылки
+из исходного массива остаются в новом результате, включая случай пустого входа.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-pipelines-distinct-object-array kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::
 
-:::: {#exr-pipelines-select-initial-length difficulty="introductory" project="/projects/pipelines/select-initial-length"}
+:::: {#exr-pipelines-select-initial-length difficulty="introductory" target="prairielearn" project="/projects/pipelines/select-initial-length" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-pipelines-select-initial-length"}
 ## Строки на заданную букву длины `N`
 
 Через Stream API получите новый массив всех строк, которые начинаются на заданную букву и имеют длину `N`. Вход — ненулевой `String[]` без `null`; строки состоят из латинских букв `A`–`Z`, `a`–`z` и могут быть пустыми. Начальная буква принадлежит тому же алфавиту, `N` — неотрицательный `int`, сравнение чувствительно к регистру.
 
-Сохраните исходный порядок и повторы, исходный массив не меняйте. Пустая строка не начинается ни с какой буквы, поэтому при `N = 0` результат пуст. Для `{"Ab", "ac", "Ab", "A", ""}`, буквы `'A'` и `N = 2` результат `{"Ab", "Ab"}`. Пустой вход и отсутствие совпадений дают новый пустой `String[]`. [@bib-task-select-initial-length]
+Сохраните исходный порядок и повторы, исходный массив не меняйте. Пустая строка не начинается ни с какой буквы, поэтому при `N = 0` результат пуст. Для `{"Ab", "ac", "Ab", "A", ""}`, буквы `'A'` и `N = 2` результат `{"Ab", "Ab"}`. Пустой вход и отсутствие совпадений дают новый пустой `String[]`.
 
-{{< project-download exr-pipelines-select-initial-length kind="starter" text="Скачать стартовый проект" >}}
+Предъявите исходный и новый массивы. Объясните чувствительность
+к регистру, сохранение повторов и отсутствие совпадений при N = 0.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-pipelines-select-initial-length kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::
 
-:::: {#exr-pipelines-curried-functions difficulty="advanced" project="/projects/pipelines/curried-functions"}
+:::: {#exr-pipelines-curried-functions difficulty="advanced" target="prairielearn" project="/projects/pipelines/curried-functions" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-pipelines-curried-functions"}
 ## Каррирование функций
 
 Каррированная функция принимает первый аргумент и возвращает функцию, которая принимает второй. Реализуйте лямбдами три таких операции; выбор имён и вспомогательных методов свободен.
@@ -226,8 +267,14 @@ default-exercise-statement-visibility: open
 2. Проверка строки по регулярному выражению: первый аргумент — корректное ненулевое регулярное выражение Java, второй — ненулевая строка. Проверяется совпадение всей строки, как у `String.matches`. Для шаблона `[A-Z]+` строка `"ABC"` подходит, `"Ab"` — нет.
 3. Разбиение строки: первый аргумент — корректное ненулевое регулярное выражение Java, второй — ненулевая строка. Результат соответствует `String.split(regex, -1)`, включая сохранение пустых частей в конце. Для `","` и `"a,,b,"` результат `{"a", "", "b", ""}`.
 
-Во всех трёх случаях сохраните полученную после первого аргумента функцию и примените её к нескольким вторым аргументам. Пустые строки допустимы; некорректные регулярные выражения за пределами входного договора. [@bib-task-curried-functions]
+Во всех трёх случаях сохраните полученную после первого аргумента функцию и примените её к нескольким вторым аргументам. Пустые строки допустимы; некорректные регулярные выражения за пределами входного договора.
 
-{{< project-download exr-pipelines-curried-functions kind="starter" text="Скачать стартовый проект" >}}
+Предъявите три лямбда-операции. Для каждой сохраните функцию после
+первого аргумента, покажите несколько её вызовов со вторыми аргументами
+и объясните данные и результат обоих этапов.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-pipelines-curried-functions kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::

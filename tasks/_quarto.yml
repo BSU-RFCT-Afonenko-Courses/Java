@@ -3124,6 +3124,299 @@ project-checks:
       feedback:
         requirement: Коэффициенты произведения и сохранение входов. Пустое представление нулевого многочлена.
         what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-pipelines-longer-string:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/HistoricalPrivateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Разные длины
+        test: PublicExamplesTest#normal
+        state: ab и XYZ
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: XYZ
+      - id: boundary
+        name: Равные длины
+        test: PublicExamplesTest#boundary
+        state: ab и cd
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: ab
+      feedback:
+        requirement: Значение более длинной строки. Значение первой строки при ничьей; идентичность не требуется.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-pipelines-remove-even-values:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/HistoricalPrivateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Повторы нечётного значения
+        test: PublicExamplesTest#normal
+        state: '[2,3,4,3]'
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: '[3,3,0,0]'
+      - id: boundary
+        name: Отрицательные нечётные
+        test: PublicExamplesTest#boundary
+        state: '[-3,0,-2,-1]'
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: '[-3,-1,0,0]'
+      feedback:
+        requirement: Порядок, повторы и нулевой хвост в том же массиве. Нечётность отрицательных значений.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-pipelines-descending-array:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/HistoricalPrivateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Повторы и отрицательное число
+        test: PublicExamplesTest#normal
+        state: '[2,-1,2,0]'
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: '[2,2,0,-1]'
+      - id: boundary
+        name: Крайние значения int
+        test: PublicExamplesTest#boundary
+        state: '[MIN_VALUE,0,MAX_VALUE]'
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: '[MAX_VALUE,0,MIN_VALUE]'
+      feedback:
+        requirement: Убывающий числовой порядок в исходном массиве. Правильный порядок без переполнения сравнения.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-pipelines-vowels-before-consonants:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/HistoricalPrivateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Две группы и повтор гласной
+        test: PublicExamplesTest#normal
+        state: java
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: aajv
+      - id: boundary
+        name: Только согласные
+        test: PublicExamplesTest#boundary
+        state: zyb
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: byz
+      feedback:
+        requirement: Порядок групп и сохранение каждой буквы. Сортировка при отсутствии гласных; y согласная.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-pipelines-first-primes:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/HistoricalPrivateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      - tests/junit/support/coursesupport/OutputNumbers.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Первые пять простых
+        test: PublicExamplesTest#normal
+        state: N=5
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: 2,3,5,7,11; пробелы или переводы строк
+      - id: boundary
+        name: Ноль результатов
+        test: PublicExamplesTest#boundary
+        state: N=0
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Пустой вывод последовательности
+      feedback:
+        requirement: Реальный вывод первых пяти простых. Реальный пустой вывод последовательности.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-pipelines-price-transformation:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/HistoricalPrivateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Ставка, нулевая цена и повтор
+        test: PublicExamplesTest#normal
+        state: '[100,0,100], ставка0.20; заранее выбранные тип и HALF_UP/HALF_EVEN'
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: '[120.00,0.00,120.00] в новом списке, исходник прежний'
+      - id: boundary
+        name: Пустой список при верхней границе ставки
+        test: PublicExamplesTest#boundary
+        state: Пустой список, ставка1
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Другой пустой список
+      feedback:
+        requirement: Новый список, значения с налогом, порядок и сохранение входа. Новый пустой список без изменения исходного.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-pipelines-distinct-object-array:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/HistoricalPrivateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Отдельные равные объекты
+        test: PublicExamplesTest#normal
+        state: A=(1,A),B=(2,B),C=(1,A); отдельные объекты[A,B,C]
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Новый массив[A,B] с исходными ссылками
+      - id: boundary
+        name: Пустой массив объектов
+        test: PublicExamplesTest#boundary
+        state: Пустой массив модели
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Новый пустой массив
+      feedback:
+        requirement: Первые реальные ссылки, новый массив и сохранность входа. Другой массив для пустого результата.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-pipelines-select-initial-length:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/HistoricalPrivateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Регистр и повтор совпадения
+        test: PublicExamplesTest#normal
+        state: '[Ab,ac,Ab,A,пустая]; A,N=2'
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Новый String[][Ab,Ab]
+      - id: boundary
+        name: Нулевая длина
+        test: PublicExamplesTest#boundary
+        state: '[пустая,A,пустая]; A,N=0'
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: Новый пустой String[]
+      feedback:
+        requirement: Совместный отбор, порядок, повторы и сохранение входа. Пустая строка не начинается с буквы.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-pipelines-curried-functions:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/HistoricalPrivateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Повторное применение сохранённых функций
+        test: PublicExamplesTest#normal
+        state: '+7: -2,3; [A-Z]+: ABC,Ab; split comma: a,,b, и x,y'
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: 5,10; true,false; [a,пустая,b,пустая] и[x,y]
+      - id: boundary
+        name: Крайние целые и пустые части
+        test: PublicExamplesTest#boundary
+        state: '-1000000: -1000000,1000000; .*: пустая,A; split comma: пустая,comma'
+        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
+        expected: -2000000,0; true,true; длины частей1 и2
+      feedback:
+        requirement: Три операции, по одной сохранённой функции на два вторых аргумента. Границы суммы и различимые конечные пустые части.
+        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
@@ -5797,4 +6090,214 @@ project-materialization:
         audience: grading
       - source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+    exr-pipelines-longer-string:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/pipelines/longer-string/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+    exr-pipelines-remove-even-values:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/pipelines/remove-even-values/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+    exr-pipelines-descending-array:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/pipelines/descending-array/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+    exr-pipelines-vowels-before-consonants:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/pipelines/vowels-before-consonants/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+    exr-pipelines-first-primes:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/pipelines/first-primes/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+        target: student/src/test/java/coursesupport/OutputNumbers.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
+        target: tests/junit/support/coursesupport/OutputNumbers.java
+        audience: grading
+    exr-pipelines-price-transformation:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/pipelines/price-transformation/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+    exr-pipelines-distinct-object-array:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/pipelines/distinct-object-array/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+    exr-pipelines-select-initial-length:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/pipelines/select-initial-length/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+    exr-pipelines-curried-functions:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: projects/pipelines/curried-functions/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
         audience: grading
