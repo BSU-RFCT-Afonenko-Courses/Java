@@ -1,6 +1,6 @@
 # Происхождение технической поставки Java
 
-## Актуальная поставка расширений8.0.0/8.0.0/3.2.0
+## Актуальная поставка расширений 8.0.0/8.0.0/3.2.0
 
 Три согласованных расширения установлены из фактических опубликованных
 immutable Releases. Теги, exact commits и sourceZip закреплены в
@@ -23,11 +23,11 @@ python3 tools/materialize-providers.py --providers-root /absolute/release-checko
 python3 tools/materialize-providers.py --check
 ```
 
-Сохраняются17 областей Core/Exporter/Download; Site/QRC не обновляются.
+Сохраняются 17 областей Core/Exporter/Download; Site/QRC не обновляются.
 Три активных candidate patches удалены из текущей поставки; их точные
 байты и прежние manifests сохраняются в истории Git.
 
-Exporter8 использует delivery v3 с Core8; прежний delivery v2 reader
+Exporter 8 использует delivery v3 с Core 8; прежний delivery v2 reader
 не объявляется совместимым. Body package остаётся v2. Эти опубликованные
 расширения не обновляют Platform/Gateway, сервисные OCI pins или production.
 Готовность учебных исходников, capture, архивов, экспорта, импорта и
