@@ -1,0 +1,3 @@
+class TaskBinding {
+record Observation(java.util.List<String> lines,java.util.List<Integer> numbers){}static void run(java.nio.file.Path a,java.nio.file.Path b,String q)throws Exception{Study.process(a,b,q);}static Observation read(java.nio.file.Path p)throws Exception{var a=java.nio.file.Files.readAllLines(p);if(a.size()<3||!a.get(0).equals("# Строки")||!a.get(a.size()-2).equals("# Номера"))throw new IllegalArgumentException("Формат этой привязки");var values=a.get(a.size()-1);var n=new java.util.ArrayList<Integer>();if(!values.equals("[]"))for(String s:values.substring(1,values.length()-1).split(",\\s*"))n.add(Integer.parseInt(s));return new Observation(a.subList(1,a.size()-2),n);}
+}

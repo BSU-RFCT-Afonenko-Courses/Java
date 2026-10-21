@@ -2484,6 +2484,360 @@ project-checks:
       feedback:
         requirement: String.compareTo и состояние данного массива. Короткий и упорядоченный случаи.
         what-check: Сопоставьте опубликованные значения и состояние. Для свободного решения подготовьте подходящую привязку или демонстрацию; исходник, приём и объяснение проверяет преподаватель.
+    java-files-transpose-file-matrix:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/CopySupport.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Строки становятся столбцами
+        test: PublicExamplesTest#normal
+        state: UTF-8 1 2 3 / 4 5 6 / 7 8 9, новый каталог и результат.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: Сохранены исходная и транспонированная матрицы 1 4 7 / 2 5 8 / 3 6 9 с различимыми подписями.
+      - id: boundary
+        name: Матрица из одного элемента
+        test: PublicExamplesTest#boundary
+        state: Одна строка -7, новый выход.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: Обе обозначенные матрицы равны [[-7]].
+      feedback:
+        requirement: Обе матрицы и обмен индексов. Минимальный допустимый размер.
+        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого API/формата подготовьте подходящую обычную привязку или демонстрацию.
+    java-files-poem-word-frequency:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/CopySupport.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Нулевая частота и равные частоты
+        test: PublicExamplesTest#normal
+        state: Зорка Вэнэра ўзыйшла над зямлёю; зорка, няма, зямлёю. Unicode-буквы, нижний регистр.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: няма:0; зорка:1; зямлёю:1.
+      - id: boundary
+        name: Строка без совпадений
+        test: PublicExamplesTest#boundary
+        state: Та же строка; светлыя, згадкі; те же объявленные правила.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: светлыя:0; згадкі:0; строка не пропущена.
+      feedback:
+        requirement: Все слова списка, устойчивый порядок по частоте. Нули и порядок списка при равенстве.
+        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого API/формата подготовьте подходящую обычную привязку или демонстрацию.
+    java-files-poem-letter-word-frequency:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/CopySupport.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Общий подсчёт двух строк
+        test: PublicExamplesTest#normal
+        state: Polały się łzy me czyste, rzęsiste, / Na me dzieciństwo sielskie, anielskie,; Unicode-буквы, нижний регистр, первое появление.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: 11 вхождений слов, me=2; 60 букв; точные публичные пары и порядок из PUBLIC.md.
+      - id: boundary
+        name: Пустой файл
+        test: PublicExamplesTest#boundary
+        state: Пустой UTF-8-файл; те же объявленные правила.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: Два пустых набора частот; оформление свободно.
+      feedback:
+        requirement: Общие наборы букв и слов, повтор me в разных строках. Отсутствие данных без выдуманных частот.
+        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого API/формата подготовьте подходящую обычную привязку или демонстрацию.
+    java-files-compare-files:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/CopySupport.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Одинаковые файлы
+        test: PublicExamplesTest#normal
+        state: Два UTF-8-файла Java text без LF; CompFiles получает два пути.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: Сообщено совпадение; входы неизменны.
+      - id: boundary
+        name: Одинаковое начало, разная длина
+        test: PublicExamplesTest#boundary
+        state: Java и Java text без LF; два пути.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: Сообщено различие, не файловый отказ; входы неизменны.
+      feedback:
+        requirement: Соответствующие байты и сохранность входов. EOF одного файла не заменяет равенство.
+        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого API/формата подготовьте подходящую обычную привязку или демонстрацию.
+    java-files-sort-file-numbers:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/CopySupport.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Отрицательные числа и повтор
+        test: PublicExamplesTest#normal
+        state: Файл 7 -2 7 0 3 -5; новый каталог и результат.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: -5 -2 0 3 7 7, ровно один пробел, необязательный конечный перевод строки.
+      - id: boundary
+        name: Границы int
+        test: PublicExamplesTest#boundary
+        state: 2147483647\t-2147483648\n2147483647; новый выход.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: -2147483648 2147483647 2147483647; конечный перевод строки необязателен.
+      feedback:
+        requirement: Порядок и кратность int. Порядок крайних допустимых значений.
+        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого API/формата подготовьте подходящую обычную привязку или демонстрацию.
+    java-files-final-line-words:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/CopySupport.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Суффиксы строк и слов
+        test: PublicExamplesTest#normal
+        state: one two three / four five / six seven eight nine; m=2,n=2.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: Две строки four five / eight nine.
+      - id: boundary
+        name: Ноль слов в двух выбранных строках
+        test: PublicExamplesTest#boundary
+        state: Тот же вход; m=0,n=2.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: Ровно две пустые физические строки.
+      feedback:
+        requirement: Последние строки, затем последние слова. Пустые физические строки отличаются от пустого файла.
+        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого API/формата подготовьте подходящую обычную привязку или демонстрацию.
+    java-files-remove-short-words:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/CopySupport.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Чётное и нечётное число кандидатов
+        test: PublicExamplesTest#normal
+        state: one two elephant four / a cat dog bee house.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: Две строки elephant four / a.
+      - id: boundary
+        name: Три кодовые точки вне BMP
+        test: PublicExamplesTest#boundary
+        state: Одна UTF-8-строка 😀😀😀 cat.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: Одна пустая физическая строка.
+      feedback:
+        requirement: Максимальное чётное удаление и порядок оставшихся. Длина в кодовых точках и очищенная строка.
+        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого API/формата подготовьте подходящую обычную привязку или демонстрацию.
+    java-files-phone-owner-records:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/CopySupport.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Объединение двух префиксов
+        test: PublicExamplesTest#normal
+        state: 291234567;Анна / 331234567;Борис / 441234567;Вера; k=29,j=33.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: Первые две записи в исходном формате и порядке.
+      - id: boundary
+        name: Одинаковые префиксы и повтор записи
+        test: PublicExamplesTest#boundary
+        state: 291234567;Анна дважды / 441234567;Вера; k=29,j=29.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: Ровно два вхождения 291234567;Анна.
+      feedback:
+        requirement: Отбор и исходный порядок. Повтор входа отличается от двойного совпадения.
+        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого API/формата подготовьте подходящую обычную привязку или демонстрацию.
+    java-files-matching-line-numbers:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/CopySupport.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Два полных совпадения
+        test: PublicExamplesTest#normal
+        state: alpha / beta / alpha; поиск alpha одним аргументом.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: Сохранены все три строки и отдельный список 1,3.
+      - id: boundary
+        name: Пустая строка поиска
+        test: PublicExamplesTest#boundary
+        state: alpha\n\n alpha\n; пустой поиск одним аргументом.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: Все три строки сохранены; совпал только номер 2.
+      feedback:
+        requirement: Все строки и номера совпадений. Пустая физическая строка и краевой пробел.
+        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого API/формата подготовьте подходящую обычную привязку или демонстрацию.
+    java-files-disk-help-menu:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/CopySupport.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicFiles.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Два последовательных запроса
+        test: PublicExamplesTest#normal
+        state: Открытый helpfile.txt; выбор if, затем for через getSelection().
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: Оба helpOn дают true, напечатаны соответствующие разделы; System.in не закрыт.
+      - id: boundary
+        name: Неизвестная тема и ошибка чтения
+        test: PublicExamplesTest#boundary
+        state: 'Существующий файл: If; отсутствующий файл: if.'
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: Оба false; сообщения различают отсутствие темы и файловый отказ.
+      feedback:
+        requirement: Поиск тем, порядок текста, доступность общего ввода. Разные причины false.
+        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого API/формата подготовьте подходящую обычную привязку или демонстрацию.
+    java-files-remove-java-comments:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/CopySupport.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicFiles.java
+      - tests/junit/support/coursesupport/JavaProcess.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Комментарии и литералы
+        test: PublicExamplesTest#normal
+        state: Точные bytes examples/publicInput.txt из original220.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: Точные bytes examples/publicExpected.txt, включая хвостовой пробел и два CRLF.
+      - id: boundary
+        name: Пустой комментарий между токенами
+        test: PublicExamplesTest#boundary
+        state: class Demo { int/**/x; }\n с LF.
+        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
+        expected: class Demo { int x; }\n с прежним LF.
+      feedback:
+        requirement: Три вида комментариев и сохранение литералов. Сохранение границы токенов.
+        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого API/формата подготовьте подходящую обычную привязку или демонстрацию.
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
@@ -4554,3 +4908,427 @@ project-materialization:
       - source: test-support/junit/DirectPublicExamplesTest.java
         target: tests/junit/public/PublicExamplesTest.java
         audience: grading
+    exr-files-transpose-file-matrix:
+      common-files:
+      - source: test-support/shared/6d20f243095e/Study.java
+        target: student/src/main/java/Study.java
+        audience: student
+      - source: projects/files/transpose-file-matrix/student/src/main/java/RunFile.java
+        target: reference/primary/RunFile.java
+        audience: grading
+      - source: projects/files/transpose-file-matrix/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: student/src/test/java/CopySupport.java
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: tests/junit/support/CopySupport.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: projects/files/transpose-file-matrix/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/shared/1674f7b27392/preamble.qmd
+        target: student/condition/files-preamble.qmd
+        audience: student
+      - source: test-support/shared/09a0048d487f/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+    exr-files-poem-word-frequency:
+      common-files:
+      - source: projects/files/poem-word-frequency/student/src/main/java/RunFile.java
+        target: reference/primary/RunFile.java
+        audience: grading
+      - source: projects/files/poem-word-frequency/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: student/src/test/java/CopySupport.java
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: tests/junit/support/CopySupport.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: projects/files/poem-word-frequency/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/shared/1674f7b27392/preamble.qmd
+        target: student/condition/files-preamble.qmd
+        audience: student
+      - source: test-support/shared/09a0048d487f/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+    exr-files-poem-letter-word-frequency:
+      common-files:
+      - source: test-support/shared/d840576b2096/RunFile.java
+        target: student/src/main/java/RunFile.java
+        audience: student
+      - source: test-support/shared/d840576b2096/RunFile.java
+        target: reference/primary/RunFile.java
+        audience: grading
+      - source: projects/files/poem-letter-word-frequency/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: student/src/test/java/CopySupport.java
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: tests/junit/support/CopySupport.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: projects/files/poem-letter-word-frequency/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/shared/1674f7b27392/preamble.qmd
+        target: student/condition/files-preamble.qmd
+        audience: student
+      - source: test-support/shared/09a0048d487f/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+    exr-files-compare-files:
+      common-files:
+      - source: projects/files/compare-files/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: student/src/test/java/CopySupport.java
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: tests/junit/support/CopySupport.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: projects/files/compare-files/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/shared/1674f7b27392/preamble.qmd
+        target: student/condition/files-preamble.qmd
+        audience: student
+      - source: test-support/shared/09a0048d487f/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+    exr-files-sort-file-numbers:
+      common-files:
+      - source: test-support/shared/d840576b2096/RunFile.java
+        target: student/src/main/java/RunFile.java
+        audience: student
+      - source: test-support/shared/6d20f243095e/Study.java
+        target: student/src/main/java/Study.java
+        audience: student
+      - source: test-support/shared/d840576b2096/RunFile.java
+        target: reference/primary/RunFile.java
+        audience: grading
+      - source: test-support/shared/616b4653d02d/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/shared/616b4653d02d/TaskBinding.java
+        target: student/src/test/java/TaskBinding.java
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: student/src/test/java/CopySupport.java
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: tests/junit/support/CopySupport.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: projects/files/sort-file-numbers/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/shared/1674f7b27392/preamble.qmd
+        target: student/condition/files-preamble.qmd
+        audience: student
+      - source: test-support/shared/09a0048d487f/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+    exr-files-final-line-words:
+      common-files:
+      - source: projects/files/final-line-words/student/src/main/java/RunFile.java
+        target: reference/primary/RunFile.java
+        audience: grading
+      - source: projects/files/final-line-words/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: student/src/test/java/CopySupport.java
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: tests/junit/support/CopySupport.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: projects/files/final-line-words/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/shared/1674f7b27392/preamble.qmd
+        target: student/condition/files-preamble.qmd
+        audience: student
+      - source: test-support/shared/09a0048d487f/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+    exr-files-remove-short-words:
+      common-files:
+      - source: test-support/shared/d840576b2096/RunFile.java
+        target: student/src/main/java/RunFile.java
+        audience: student
+      - source: test-support/shared/6d20f243095e/Study.java
+        target: student/src/main/java/Study.java
+        audience: student
+      - source: test-support/shared/d840576b2096/RunFile.java
+        target: reference/primary/RunFile.java
+        audience: grading
+      - source: test-support/shared/616b4653d02d/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/shared/616b4653d02d/TaskBinding.java
+        target: student/src/test/java/TaskBinding.java
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: student/src/test/java/CopySupport.java
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: tests/junit/support/CopySupport.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: projects/files/remove-short-words/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/shared/1674f7b27392/preamble.qmd
+        target: student/condition/files-preamble.qmd
+        audience: student
+      - source: test-support/shared/09a0048d487f/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+    exr-files-phone-owner-records:
+      common-files:
+      - source: projects/files/phone-owner-records/student/src/main/java/RunFile.java
+        target: reference/primary/RunFile.java
+        audience: grading
+      - source: projects/files/phone-owner-records/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: student/src/test/java/CopySupport.java
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: tests/junit/support/CopySupport.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: projects/files/phone-owner-records/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/shared/1674f7b27392/preamble.qmd
+        target: student/condition/files-preamble.qmd
+        audience: student
+      - source: test-support/shared/09a0048d487f/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+    exr-files-matching-line-numbers:
+      common-files:
+      - source: projects/files/matching-line-numbers/student/src/main/java/RunFile.java
+        target: reference/primary/RunFile.java
+        audience: grading
+      - source: projects/files/matching-line-numbers/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: student/src/test/java/CopySupport.java
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: tests/junit/support/CopySupport.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: projects/files/matching-line-numbers/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/shared/1674f7b27392/preamble.qmd
+        target: student/condition/files-preamble.qmd
+        audience: student
+      - source: test-support/shared/09a0048d487f/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+    exr-files-disk-help-menu:
+      common-files:
+      - source: projects/files/disk-help-menu/student/src/test/java/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: student/src/test/java/CopySupport.java
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: tests/junit/support/CopySupport.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: projects/files/disk-help-menu/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/5087e660a326/PublicFiles.java
+        target: student/src/test/java/PublicFiles.java
+        audience: student
+      - source: test-support/shared/5087e660a326/PublicFiles.java
+        target: tests/junit/support/PublicFiles.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/shared/1674f7b27392/preamble.qmd
+        target: student/condition/files-preamble.qmd
+        audience: student
+      - source: test-support/shared/09a0048d487f/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
+    exr-files-remove-java-comments:
+      common-files:
+      - source: test-support/shared/d840576b2096/RunFile.java
+        target: student/src/main/java/RunFile.java
+        audience: student
+      - source: test-support/shared/6d20f243095e/Study.java
+        target: student/src/main/java/Study.java
+        audience: student
+      - source: test-support/shared/d840576b2096/RunFile.java
+        target: reference/primary/RunFile.java
+        audience: grading
+      - source: test-support/shared/616b4653d02d/TaskBinding.java
+        target: tests/bindings/reference/TaskBinding.java
+        audience: grading
+      - source: test-support/shared/616b4653d02d/TaskBinding.java
+        target: student/src/test/java/TaskBinding.java
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: student/src/test/java/CopySupport.java
+        audience: student
+      - source: test-support/shared/854d2b3c9a77/CopySupport.java
+        target: tests/junit/support/CopySupport.java
+        audience: grading
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: student/src/test/java/coursesupport/JavaProcess.java
+        audience: student
+      - source: test-support/src/main/java/coursesupport/JavaProcess.java
+        target: tests/junit/support/coursesupport/JavaProcess.java
+        audience: grading
+      - source: projects/files/remove-java-comments/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/5087e660a326/PublicFiles.java
+        target: student/src/test/java/PublicFiles.java
+        audience: student
+      - source: test-support/shared/5087e660a326/PublicFiles.java
+        target: tests/junit/support/PublicFiles.java
+        audience: grading
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/shared/1674f7b27392/preamble.qmd
+        target: student/condition/files-preamble.qmd
+        audience: student
+      - source: test-support/shared/09a0048d487f/public-scenarios.md
+        target: student/PUBLIC.md
+        audience: student
