@@ -3417,6 +3417,102 @@ project-checks:
       feedback:
         requirement: Три операции, по одной сохранённой функции на два вторых аргумента. Границы суммы и различимые конечные пустые части.
         what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
+    java-exceptions-queue-exceptions:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: FIFO после заполнения
+        test: PublicExamplesTest#normal
+        state: FixedQueue(2), put A, put Б, get, get
+        action: Выполнить опубликованные операции обычной привязкой фактического API.
+        expected: A, Б; без исключений и вывода операций
+      - id: boundary
+        name: Исчерпание линейных позиций
+        test: PublicExamplesTest#boundary
+        state: 'FixedQueue(2): put A,Б; get; put В; get; get'
+        action: Выполнить опубликованные операции обычной привязкой фактического API.
+        expected: A; QueueFullException; Б; QueueEmptyException
+      feedback:
+        requirement: Успешные операции молчат, A затем Б. Частичное извлечение не освобождает позицию; отказы сохраняют состояние.
+        what-check: Сопоставьте опубликованное наблюдение и исходник. Для другого законного размещения подготовьте ordinary binding или предъявление; неподготовленная проверка не даёт оценки.
+    java-exceptions-locale-number-errors:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/private/HistoricalAdditionalTest.java
+      - tests/junit/private/HistoricalPrivateTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/LocaleExample.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: Два числовых формата
+        test: PublicExamplesTest#normal
+        state: 'PUBLIC valid.txt: 1,5 TAB ru-BY; 2.5 TAB en-US'
+        action: Выполнить опубликованные операции обычной привязкой фактического API.
+        expected: Исходные поля сохранены; сумма4.0, среднее2.0
+      - id: boundary
+        name: Пустой файл
+        test: PublicExamplesTest#boundary
+        state: Существующий файл0байтов
+        action: Выполнить опубликованные операции обычной привязкой фактического API.
+        expected: Нет данных; среднее не вычислено
+      feedback:
+        requirement: Исходные поля чтения и числовые сумма/среднее. Нет записей; сообщение об отсутствии данных, без среднего.
+        what-check: Сопоставьте опубликованное наблюдение и исходник. Для другого законного размещения подготовьте ordinary binding или предъявление; неподготовленная проверка не даёт оценки.
+    java-exceptions-stack-exceptions:
+      source-profile: java-main
+      tests:
+      - tests/bindings/reference/TaskBinding.java
+      - tests/junit/private/ContractTest.java
+      - tests/junit/public/PublicExamplesTest.java
+      - tests/junit/support/PublicChecks.java
+      - tests/junit/support/PublicOutput.java
+      references:
+      - name: default
+        root: reference/primary
+        optional: false
+      scoring:
+        mode: all-pass
+      verification-tests: []
+      public-cases:
+      - id: normal
+        name: LIFO двух символов
+        test: PublicExamplesTest#normal
+        state: Стек ёмкости2; push A,Б; pop,pop
+        action: Выполнить опубликованные операции обычной привязкой фактического API.
+        expected: Б, A
+      - id: boundary
+        name: Нулевой char и повторное использование
+        test: PublicExamplesTest#boundary
+        state: Ёмкость1; push \0; push X; pop; pop; push Я; pop
+        action: Выполнить опубликованные операции обычной привязкой фактического API.
+        expected: StackFullException; \0; StackEmptyException; Я
+      feedback:
+        requirement: Последним помещённый извлекается первым. Оба отказа сохраняют состояние, освобождённое место используется снова.
+        what-check: Сопоставьте опубликованное наблюдение и исходник. Для другого законного размещения подготовьте ordinary binding или предъявление; неподготовленная проверка не даёт оценки.
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
@@ -6300,4 +6396,101 @@ project-materialization:
         audience: student
       - source: test-support/shared/bbc996150b38/PublicOutput.java
         target: tests/junit/support/PublicOutput.java
+        audience: grading
+    exr-exceptions-queue-exceptions:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/shared/f0b183c19661/TaskBinding.java
+        target: student/src/test/java/TaskBinding.java
+        audience: student
+      - source: projects/exceptions/queue-exceptions/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+    exr-exceptions-locale-number-errors:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: projects/exceptions/locale-number-errors/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+      - source: projects/exceptions/locale-number-errors/student/src/test/java/LocaleExample.java
+        target: tests/junit/support/LocaleExample.java
+        audience: grading
+      - source: projects/exceptions/locale-number-errors/student/examples/valid.txt
+        target: tests/data/valid.txt
+        audience: grading
+    exr-exceptions-stack-exceptions:
+      common-files:
+      - source: test-support/shared/1a8395c8b04d/Start.java
+        target: student/src/main/java/Start.java
+        audience: student
+      - source: test-support/CHECKS.md
+        target: student/CHECKS.md
+        audience: student
+      - source: test-support/shared/497dae667482/BINDING.md
+        target: student/BINDING.md
+        audience: student
+      - source: test-support/shared/f0b183c19661/TaskBinding.java
+        target: student/src/test/java/TaskBinding.java
+        audience: student
+      - source: projects/exceptions/stack-exceptions/student/src/test/java/PublicChecks.java
+        target: tests/junit/support/PublicChecks.java
+        audience: grading
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: student/src/test/java/PublicOutput.java
+        audience: student
+      - source: test-support/shared/bbc996150b38/PublicOutput.java
+        target: tests/junit/support/PublicOutput.java
+        audience: grading
+    exr-exceptions-constructor-checked-exception:
+      common-files:
+      - source: test-support/shared/1f7dc911ea31/Решение.java
+        target: student/version1/src/main/java/Решение.java
+        audience: student
+      - source: test-support/shared/1f7dc911ea31/Решение.java
+        target: student/version2/src/main/java/Решение.java
+        audience: student
+      - source: projects/exceptions/constructor-checked-exception/student/examples/original.java.txt
+        target: tests/data/original.java.txt
+        audience: grading
+    exr-exceptions-override-exceptions:
+      common-files:
+      - source: test-support/shared/1f7dc911ea31/Решение.java
+        target: student/version1/src/main/java/Решение.java
+        audience: student
+      - source: test-support/shared/1f7dc911ea31/Решение.java
+        target: student/version2/src/main/java/Решение.java
+        audience: student
+      - source: test-support/shared/1f7dc911ea31/Решение.java
+        target: student/version3/src/main/java/Решение.java
+        audience: student
+      - source: projects/exceptions/override-exceptions/student/examples/original.java.txt
+        target: tests/data/original.java.txt
         audience: grading
