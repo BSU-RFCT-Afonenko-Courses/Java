@@ -7,6 +7,8 @@ import json
 import os
 import re
 import subprocess
+import urllib.parse
+import urllib.request
 
 ROOT=Path(__file__).resolve().parents[1]
 REPO='Afonenko-Course-Tools/prairielearn-platform'
@@ -61,6 +63,55 @@ def assembly(data,root,registry):
     for role,key in [('java','javaGrader'),('fish','fishGrader')]:require(context.images[key]['localImageId']==p[role+'ImageConfig'],'Наблюдённый config отличается: '+role)
     require(context.registry['profiles']['java25-junit-v1']['runnerSha256']==publication['runnerSourceHash'],'Runner отличается от course pins')
     context.recheck()
+
+# OCI config identity и Docker local ID имеют разные domains; публичный CLI не меняется.
+def _manifest_config(p,role,raw):
+    require(len(raw)<=2097152 and 'sha256:'+hashlib.sha256(raw).hexdigest()==p[role+'Image'].split('@')[1],'OCI manifest bytes отличаются')
+    manifest=json.loads(raw);require(manifest.get('schemaVersion')==2 and manifest.get('mediaType') in ('application/vnd.docker.distribution.manifest.v2+json','application/vnd.oci.image.manifest.v1+json'),'Нужен pinned single-image manifest')
+    config=manifest['config'];require(config['digest']==p[role+'ImageConfig'] and type(config['size']) is int and 0<config['size']<=8388608 and config['mediaType'] in ('application/vnd.docker.container.image.v1+json','application/vnd.oci.image.config.v1+json'),'OCI config descriptor отличается')
+    return config
+
+def _verify_image_metadata(p,role,manifest_raw,config_raw,observed):
+    descriptor=_manifest_config(p,role,manifest_raw)
+    require(len(config_raw)==descriptor['size'] and 'sha256:'+hashlib.sha256(config_raw).hexdigest()==descriptor['digest'],'OCI config bytes отличаются')
+    config=json.loads(config_raw);source='https://github.com/'+p['repository'];labels=config['config']['Labels']
+    require(config['os']=='linux' and config['architecture']=='amd64' and labels['org.opencontainers.image.source']==source and labels['org.opencontainers.image.revision']==p['commit'],'OCI platform/source/revision отличаются')
+    require(isinstance(observed,dict) and set(observed)=={'Id','RepoDigests','Descriptor','Os','Architecture','RootFS','Source','Revision'},'Нужна закрытая Docker metadata projection')
+    manifest_digest=p[role+'Image'].split('@')[1]
+    require(observed['Id'] in (descriptor['digest'],manifest_digest),'Docker ID вне authenticated config/manifest domains')
+    require(isinstance(observed['RepoDigests'],list) and len(observed['RepoDigests'])<=64 and p[role+'Image'] in observed['RepoDigests'],'Docker RepoDigests не связывает exact image')
+    local_descriptor=observed['Descriptor']
+    require(local_descriptor is None or isinstance(local_descriptor,dict) and local_descriptor.get('digest')==manifest_digest and local_descriptor.get('size')==len(manifest_raw) and local_descriptor.get('mediaType')==json.loads(manifest_raw)['mediaType'],'Docker descriptor отличается')
+    require(observed['Os']==config['os'] and observed['Architecture']==config['architecture'] and observed['Source']==source and observed['Revision']==p['commit'],'Docker platform/source/revision отличаются')
+    require(observed['RootFS']=={'Type':config['rootfs']['type'],'Layers':config['rootfs']['diff_ids']},'Docker rootfs отличается от authenticated config')
+    return descriptor['digest']
+
+class _HttpsMetadataRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self,req,fp,code,msg,headers,newurl):
+        require(urllib.parse.urlsplit(newurl).scheme=='https','OCI metadata redirect требует HTTPS')
+        redirected=super().redirect_request(req,fp,code,msg,headers,newurl)
+        if urllib.parse.urlsplit(newurl).netloc!='ghcr.io':redirected.remove_header('Authorization')
+        return redirected
+
+def _read_metadata(url,limit,token=None):
+    require(url.startswith('https://ghcr.io/'),'Нужен GHCR metadata endpoint')
+    headers={'Accept':'application/vnd.oci.image.manifest.v1+json,application/vnd.docker.distribution.manifest.v2+json'}
+    if token:headers['Authorization']='Bearer '+token
+    opener=urllib.request.build_opener(_HttpsMetadataRedirect())
+    with opener.open(urllib.request.Request(url,headers=headers),timeout=30) as response:
+        require(response.status==200,'OCI metadata HTTP refusal');raw=response.read(limit+1)
+    require(len(raw)<=limit,'OCI metadata bytes превышают лимит')
+    return raw
+
+def _published_image_config(p,role,observed):
+    image=p[role+'Image'];match=re.fullmatch(r'ghcr\.io/(afonenko-course-tools/(?:java25-grader|fish-git-grader))@(sha256:[a-f0-9]{64})',image)
+    require(match is not None and role in ('java','fish'),'Нужен exact published Java/fish image')
+    repo,digest=match.groups();payload=json.loads(_read_metadata('https://ghcr.io/token?service=ghcr.io&scope=repository:'+repo+':pull',65536));token=payload.get('token') or payload.get('access_token')
+    require(isinstance(token,str) and re.fullmatch(r'[A-Za-z0-9._~+/=-]+',token),'Неверный anonymous pull token')
+    manifest=_read_metadata('https://ghcr.io/v2/'+repo+'/manifests/'+digest,2097152,token)
+    descriptor=_manifest_config(p,role,manifest)
+    config=_read_metadata('https://ghcr.io/v2/'+repo+'/blobs/'+descriptor['digest'],descriptor['size'],token)
+    return _verify_image_metadata(p,role,manifest,config,observed)
 
 def main():
     try:

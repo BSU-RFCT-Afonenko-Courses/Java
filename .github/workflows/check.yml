@@ -65,7 +65,7 @@ jobs:
           set -euo pipefail
           umask 022
           python3 - <<'PY'
-          import hashlib,json,os,shutil,subprocess,sys,urllib.request
+          import hashlib,importlib.util,json,os,shutil,subprocess,sys,urllib.request
           from pathlib import Path
           t=json.loads(Path('CI/toolchain.json').read_text());p=t['platform'];publication=t['imagePublication']
           temp=Path(os.environ['RUNNER_TEMP']);raw=temp/'platform-source';assembly=temp/'platform-assembly';assets=temp/'platform-assets'
@@ -87,18 +87,20 @@ jobs:
           shutil.copyfile(assets/'published-runtime-profiles.json',assembly/'runtime-profiles.json')
           shutil.copyfile(assets/'published-toolchain-lock.json',assembly/'runtime/gradle-jar-v1/toolchain-lock.json')
           docker_config=temp/'java-anonymous-ghcr';docker_config.mkdir(mode=0o700);os.environ['DOCKER_CONFIG']=str(docker_config)
+          spec=importlib.util.spec_from_file_location('course_pins',Path('CI/check-production-pins.py'));pins_module=importlib.util.module_from_spec(spec);spec.loader.exec_module(pins_module)
           configs={}
           for role in ('java','fish'):
               subprocess.run(['docker','pull',p[role+'Image']],check=True)
-              configs[role]=subprocess.check_output(['docker','image','inspect',p[role+'Image'],'--format','{{.Id}}'],text=True).strip()
-              if configs[role]!=p[role+'ImageConfig']:
-                  print(json.dumps({'diagnostic':'pulled-image-identity-mismatch','role':role,'actualDockerId':configs[role][:256],'expectedOciConfigDigest':p[role+'ImageConfig'],'expectedManifestDigest':p[role+'Image'].split('@')[1]},sort_keys=True),flush=True)
-                  raise SystemExit('Pulled config отличается от observed pin: '+role)
+              projection='{"Id":{{json .Id}},"RepoDigests":{{json .RepoDigests}},"Descriptor":{{json .Descriptor}},"Os":{{json .Os}},"Architecture":{{json .Architecture}},"RootFS":{{json .RootFS}},"Source":{{json (index .Config.Labels "org.opencontainers.image.source")}},"Revision":{{json (index .Config.Labels "org.opencontainers.image.revision")}}}'
+              observed_raw=subprocess.check_output(['docker','image','inspect',p[role+'Image'],'--format',projection],timeout=30)
+              if len(observed_raw)>65536:raise SystemExit('Docker metadata projection превышает лимит')
+              observed=json.loads(observed_raw);configs[role]=pins_module._published_image_config(p,role,observed)
+              print(json.dumps({'role':role,'actualDockerId':observed['Id'],'authenticatedOciConfigDigest':configs[role],'authenticatedManifestDigest':p[role+'Image'].split('@')[1]},sort_keys=True),flush=True)
           images=json.loads((raw/'images.lock.json').read_text())
           for role,key in [('java','javaGrader'),('fish','fishGrader'),('community','communityGateway')]:
               images[key].update(image=p[role+'Image'],sourceCommit=p['commit'],version=p['version'])
               if 'localImage' in images[key]:images[key]['localImage']=p[role+'Image'].split('@')[0]+':'+p['version']
-              # Сохранить canonical fields, заменив старые IDs фактическими pull IDs.
+              # Сохранить canonical fields: config identity отдельно от Docker local ID.
               if 'localImageId' in images[key]:images[key]['localImageId']=configs[role]
           images['releaseAssembly']={'schema':'pl-platform-release-assets-v1','repository':repository,'sourceCommit':p['commit'],'sourceTree':p['sourceTree'],'version':p['version'],'tag':p['tag'],'assets':{n:x['sha256'] for n,x in publication['assets'].items()}}
           view=assets/'images.lock.json';view.touch(mode=0o600,exist_ok=False);view.write_text(json.dumps(images,indent=2)+'\n')
