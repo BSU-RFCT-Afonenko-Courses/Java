@@ -91,7 +91,9 @@ jobs:
           for role in ('java','fish'):
               subprocess.run(['docker','pull',p[role+'Image']],check=True)
               configs[role]=subprocess.check_output(['docker','image','inspect',p[role+'Image'],'--format','{{.Id}}'],text=True).strip()
-              if configs[role]!=p[role+'ImageConfig']:raise SystemExit('Pulled config отличается от observed pin: '+role)
+              if configs[role]!=p[role+'ImageConfig']:
+                  print(json.dumps({'diagnostic':'pulled-image-identity-mismatch','role':role,'actualDockerId':configs[role][:256],'expectedOciConfigDigest':p[role+'ImageConfig'],'expectedManifestDigest':p[role+'Image'].split('@')[1]},sort_keys=True),flush=True)
+                  raise SystemExit('Pulled config отличается от observed pin: '+role)
           images=json.loads((raw/'images.lock.json').read_text())
           for role,key in [('java','javaGrader'),('fish','fishGrader'),('community','communityGateway')]:
               images[key].update(image=p[role+'Image'],sourceCommit=p['commit'],version=p['version'])
