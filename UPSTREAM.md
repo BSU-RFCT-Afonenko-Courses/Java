@@ -24,8 +24,9 @@ python3 tools/materialize-providers.py --providers-root /absolute/release-checko
 python3 tools/materialize-providers.py --check
 ```
 
-Существующие области установки сохранены: 17 для Core/Exporter/Download,
-24 вместе с Site/QRC. Новые области установки не добавлены.
+Области установки составляют 18 для Core/Exporter/Download и 25 вместе
+с Site/QRC. Корневая копия project-download предоставляет ZIP-модуль полной
+композиции Site; прежняя копия в tasks сохранена. Другие области не изменены.
 Три прежние поправки и manifests сохранены в истории Git.
 
 Exporter использует delivery v3 с Core; Body package остаётся v2.
