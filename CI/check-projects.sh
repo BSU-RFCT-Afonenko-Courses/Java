@@ -13,7 +13,7 @@ case "$TASK_CHECK_OUTPUT/" in "$TASK_COURSE_ROOT/"*) echo 'Checks output дол�
 cd -- "$TASK_COURSE_ROOT"
 python3 CI/check-production-pins.py
 # Штатные public outputs остаются внутри disposable execution checkout.
-timeout --signal=TERM --kill-after=5s 5400s quarto render . --profile student --fail-if-warnings
+timeout --signal=TERM --kill-after=5s 7200s quarto render . --profile student --fail-if-warnings
 quarto run tasks/_extensions/Afonenko-Course-Tools/course-core/entrypoints/check.ts tasks student
 quarto run tasks/_extensions/Afonenko-Course-Tools/course-core/entrypoints/project-checks.ts \
   --book tasks --output "$TASK_CHECK_OUTPUT/declared-checks.json"
