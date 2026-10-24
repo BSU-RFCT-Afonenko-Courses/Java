@@ -14,13 +14,21 @@
 
 `providers.json` закрепляет тег, версию, коммит и архив каждого владельца.
 `installed-packages.json` содержит точные области установки, Git tree пакетов
-и SHA-256 каждого файла. Установлены 24 области семи пакетов:
+и SHA-256 каждого файла. Установлены 25 областей семи пакетов:
 
 - Core и Presentation — корень, `theory`, `tasks`, `lectures`, `practice`, `handbook`;
 - Navigation — `lectures`, `practice`, `tasks`;
 - Site — корень;
 - QRC — корень и все пять подпроектов;
-- PrairieLearn и Download — `tasks`.
+- PrairieLearn — `tasks`;
+- Download — корень и `tasks`.
+
+Корневая копия Download необходима Site для финализации ZIP с условиями:
+Site импортирует `project-download/domain/zip.ts` из соседнего пакета в том же
+namespace. Обе копии целиком взяты из опубликованного Download `v3.2.2`,
+коммит `10cb38f2ba5c88e585a0ff6800adf5fc2b77597e`, и имеют одинаковый инвентарь.
+Эта техническая зависимость не включает фильтры или hooks Download в корневой
+конфигурации.
 
 Полные копии воспроизводятся штатным материализатором из checkout владельцев,
 в которых точные теги доступны локально:
