@@ -20,6 +20,24 @@ public final class JavaProcess {
 
     public record Result(String stdout, String stderr, int exitCode) {}
 
+    /** Наблюдённое необработанное исключение в запущенной программе. */
+    public static final class UncaughtStudentException extends AssertionError {
+        private UncaughtStudentException(String stderr) {
+            super("Программа завершила поток необработанным исключением:\n" + stderr);
+        }
+    }
+
+    /** Истечение времени именно вложенного процесса или захвата его вывода. */
+    public static final class StudentTimeout extends AssertionError {
+        private StudentTimeout() { super("Программа не завершилась в пределах времени проверки"); }
+    }
+
+    /** Превышение совокупного бюджета stdout и stderr вложенного процесса. */
+    public static final class StudentOutputLimit extends AssertionError {
+        private StudentOutputLimit(int limit) { super("Превышено ограничение вывода " + limit + " байт"); }
+    }
+
+
     public static Result run(Class<?> entryPoint, String input, String... arguments) throws Exception {
         Path classes = Path.of(entryPoint.getProtectionDomain().getCodeSource().getLocation().toURI());
         return run(classes, entryPoint.getName(), input, List.of(arguments), null,
@@ -63,8 +81,7 @@ public final class JavaProcess {
                 throw new IOException("Не удалось подготовить проверку исключений в JDK 25:\n" + result.stderr());
             }
             if (observed.length > 1) {
-                throw new AssertionError("Программа завершила поток необработанным исключением:\n"
-                    + result.stderr());
+                throw new UncaughtStudentException(result.stderr());
             }
             return result;
         } finally {
@@ -217,8 +234,8 @@ public final class JavaProcess {
         if (problem != null) throw new IOException("Ошибка процесса", problem);
     }
 
-    private static AssertionError timedOut() {
-        return new AssertionError("Программа не завершилась в пределах времени проверки");
+    private static StudentTimeout timedOut() {
+        return new StudentTimeout();
     }
 
     private static final class OutputBudget {
@@ -227,7 +244,7 @@ public final class JavaProcess {
         OutputBudget(int limit) { this.limit = limit; }
         synchronized void add(int count) {
             used += count;
-            if (used > limit) throw new AssertionError("Превышено ограничение вывода " + limit + " байт");
+            if (used > limit) throw new StudentOutputLimit(limit);
         }
     }
 }

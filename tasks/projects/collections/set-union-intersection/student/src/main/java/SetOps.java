@@ -1,0 +1,1 @@
+import java.util.*; public class SetOps { public static Set<Integer> union(Set<Integer>a,Set<Integer>b){throw new UnsupportedOperationException("Допишите объединение");} public static Set<Integer> intersection(Set<Integer>a,Set<Integer>b){throw new UnsupportedOperationException("Допишите пересечение");}}

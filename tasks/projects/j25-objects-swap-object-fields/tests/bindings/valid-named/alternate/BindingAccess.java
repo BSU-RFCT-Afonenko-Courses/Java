@@ -1,1 +1,0 @@
-package alternate;public class BindingAccess { public static Object create(int a){return new alternate.Test(a);} public static int value(Object x){return ((alternate.Test)x).a;} public static void swap(Object a,Object b){new alternate.Test(0).swap((alternate.Test)a,(alternate.Test)b);} }

@@ -1,1 +1,0 @@
-package alternate;public abstract class TwoDShape {private double width,height;private String name;public TwoDShape(double w,double h,String n){width=w;height=h;name=n;}public double getWidth(){return width;}public double getHeight(){return height;}public String getName(){return name;}public abstract double area();}

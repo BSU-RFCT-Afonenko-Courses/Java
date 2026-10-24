@@ -1,0 +1,2 @@
+/** Класс утилиты задан условием; вспомогательные методы здесь только пример. */
+public class CompFiles {public static boolean equal(java.nio.file.Path a,java.nio.file.Path b)throws java.io.IOException {throw new UnsupportedOperationException("Реализуйте сравнение байтов");}public static void main(String[] args)throws java.io.IOException {System.out.println(equal(java.nio.file.Path.of(args[0]),java.nio.file.Path.of(args[1])));}}

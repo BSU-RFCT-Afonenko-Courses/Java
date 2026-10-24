@@ -47,7 +47,7 @@ format:
 
 Удаление комментариев Java зависит от того, находится ли текст внутри строки или символьного литерала. Последовательность `//` внутри строки не начинает комментарий.
 
-Разбор должен учитывать состояние литералов и комментариев: @tasks:exr-j25-files-remove-java-comments.
+Разбор должен учитывать состояние литералов и комментариев: @tasks:exr-files-remove-java-comments.
 
 ### Выбор задачи по предпосылкам {#sec-j25-practice-reserve-data-route}
 
@@ -74,7 +74,7 @@ System.out.println(enough.test(4));
 System.out.println(enough.test(5));
 ```
 **Первый вызов выбирает порог; второй проверяет число.**
-Для @tasks:exr-j25-pipelines-curried-functions разберите такую же последовательность
+Для @tasks:exr-pipelines-curried-functions разберите такую же последовательность
 аргументов без смешения создания и применения: @theory:sec-j25-theory-functions-returned.
 
 ::: {.notes}
@@ -117,7 +117,7 @@ try {
 
 Файл содержит три строки; последняя не имеет завершающего перевода.
 Печатается `3`. Для `alpha` номера совпадений — `1` и `3`:
-@tasks:exr-j25-files-matching-line-numbers.
+@tasks:exr-files-matching-line-numbers.
 
 `Files.writeString` и `Files.readAllLines` закрывают свои ресурсы.
 `finally` выполняет попытку удалить временный файл, в том числе после
@@ -136,7 +136,7 @@ try {
 
 @handbook:sec-j25-api-functions, @handbook:sec-j25-api-streams, @handbook:sec-j25-api-optional — передача поведения и результата.
 
-@tasks:exr-j25-pipelines-curried-functions требует объяснить возвращаемую функцию; вложенная лямбда не запускает все этапы сразу.
+@tasks:exr-pipelines-curried-functions требует объяснить возвращаемую функцию; вложенная лямбда не запускает все этапы сразу.
 
 ### Файлы и ресурсы {#sec-j25-practice-reserve-data-s5 .continuation}
 
@@ -150,13 +150,13 @@ try {
 
 ### Выбор файловой задачи {#sec-j25-practice-reserve-data-s6}
 
-@tasks:exr-j25-files-transpose-file-matrix требует сохранить структуру данных. @tasks:exr-j25-files-matching-line-numbers связывает обработку с номерами исходных строк.
+@tasks:exr-files-transpose-file-matrix требует сохранить структуру данных. @tasks:exr-files-matching-line-numbers связывает обработку с номерами исходных строк.
 
-@tasks:exr-j25-files-compare-files различает первый несовпадающий байт и конец одного из файлов.
+@tasks:exr-files-compare-files различает первый несовпадающий байт и конец одного из файлов.
 
 ### Размеры и состояние результата {#sec-j25-practice-reserve-data-matrix-form}
 
-@tasks:exr-j25-files-transpose-file-matrix связывает позиции двухмерных данных.
+@tasks:exr-files-transpose-file-matrix связывает позиции двухмерных данных.
 По условию матрица квадратная. Возьмите несимметричный вход,
 чтобы обмен строк и столбцов был виден. Допустимый вход содержит одинаковое
 число строк и чисел в каждой строке. Чтение чисел, проверка формы и запись — разные этапы.
@@ -170,7 +170,7 @@ try {
 
 ### Сравнение байтов и длины {#sec-j25-practice-reserve-data-byte-eof}
 
-Для @tasks:exr-j25-files-compare-files одинаковый префикс ещё не означает равенства.
+Для @tasks:exr-files-compare-files одинаковый префикс ещё не означает равенства.
 После него один поток может закончиться, а другой дать очередной байт.
 Сравните пары равных файлов, разных байтов и разных длин.
 
@@ -182,7 +182,7 @@ try {
 
 ### Проект сохранения {#sec-j25-practice-reserve-data-s7 .continuation}
 
-@tasks:exr-airline-persistence-project соединяет предметную модель, поиск и сохранение.
+@tasks:exr-projects-airline-persistence-project соединяет предметную модель, поиск и сохранение.
 
 Согласуйте отдельный срок. На опубликованных трёх самолётах получите
 суммарную вместимость, грузоподъёмность, порядок по дальности и отбор
@@ -198,7 +198,7 @@ String text = "// не комментарий";
 // настоящий комментарий
 ```
 **Одинаковая последовательность символов имеет разный смысл по состоянию разбора.**
-Для @tasks:exr-j25-files-remove-java-comments нужны состояния литералов,
+Для @tasks:exr-files-remove-java-comments нужны состояния литералов,
 комментариев и экранирования. Текстовые блоки и экранирующие последовательности Unicode исключены условием.
 
 

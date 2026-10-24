@@ -1,7 +1,7 @@
 """Canary/selection guards для специализированного checker копирования."""
 import hashlib,json,os,shutil,subprocess,sys,tempfile,unittest
 from pathlib import Path
-SCRIPT=Path(__file__).with_name('check-copy.py');PROJECT=SCRIPT.parents[1]/'projects/byte-file-copy'
+SCRIPT=Path(__file__).with_name('check-copy.py');PROJECT=SCRIPT.parents[1]/'projects/files/byte-file-copy'
 class GuardTests(unittest.TestCase):
  def setUp(self):self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.root=Path(self.tmp.name)
  def call(self,work,*extra,project=PROJECT,sources=None):

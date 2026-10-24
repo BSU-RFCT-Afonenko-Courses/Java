@@ -1,0 +1,18 @@
+plugins { id 'java' }
+java { sourceCompatibility = JavaVersion.VERSION_25; targetCompatibility = JavaVersion.VERSION_25 }
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8'; options.release = 25 }
+tasks.register('publicChecks', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'PublicChecks'
+}
+tasks.register('demo', JavaExec) {
+    dependsOn classes
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = providers.gradleProperty('demoClass').orElse('Start')
+    standardInput = System.in
+}
+
+// Открытые проверки — обычный Java-клиент, JUnit здесь не подключён.
+tasks.named('test') { enabled = false }
+tasks.named('check') { dependsOn tasks.named('publicChecks') }

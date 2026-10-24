@@ -1,1 +1,0 @@
-class TaskBinding { static int[] run(int[][] a){var g=new variant.Example().remaining(a);int[] r=new int[2+g.values().size()];r[0]=g.rows();r[1]=g.columns();for(int i=0;i<g.values().size();i++)r[i+2]=g.values().get(i);return r;} }

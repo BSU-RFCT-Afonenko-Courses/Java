@@ -1,0 +1,18 @@
+import java.util.*;import java.nio.file.*;import java.nio.charset.StandardCharsets;import java.io.*;
+public class PublicChecks {
+public record Observation(String actual,boolean passed){}
+static final String NORMAL_NAME="FIFO после заполнения";
+static final String NORMAL_WHAT="Успешные операции молчат, A затем Б.";
+static final String NORMAL_INPUT="FixedQueue(2), put A, put Б, get, get";
+static final String NORMAL_EXPECTED="A, Б; без исключений и вывода операций";
+static final String BOUNDARY_NAME="Исчерпание линейных позиций";
+static final String BOUNDARY_WHAT="Частичное извлечение не освобождает позицию; отказы сохраняют состояние.";
+static final String BOUNDARY_INPUT="FixedQueue(2): put A,Б; get; put В; get; get";
+static final String BOUNDARY_EXPECTED="A; QueueFullException; Б; QueueEmptyException";
+public static Observation observeNormal()throws Exception{var value=TaskBinding.create(2);var bytes=new ByteArrayOutputStream();var before=System.out;char a,b;try(var out=new PrintStream(bytes,true,StandardCharsets.UTF_8)){System.setOut(out);TaskBinding.put(value,'A');TaskBinding.put(value,'Б');a=TaskBinding.get(value);b=TaskBinding.get(value);}finally{System.setOut(before);}String actual="Извлечено: "+a+", "+b+"; вывод операций="+PublicOutput.escaped(bytes.toString(StandardCharsets.UTF_8));return new Observation(actual,a=='A'&&b=='Б'&&bytes.size()==0);}
+public static Observation observeBoundary()throws Exception{var value=TaskBinding.create(2);TaskBinding.put(value,'A');TaskBinding.put(value,'Б');char a=TaskBinding.get(value);boolean full=false,empty=false;try{TaskBinding.put(value,'В');}catch(Exception e){if(!TaskBinding.full(e))throw e;full=true;}char b=TaskBinding.get(value);try{TaskBinding.get(value);}catch(Exception e){if(!TaskBinding.empty(e))throw e;empty=true;}return new Observation("Извлечено="+a+","+b+"; QueueFullException="+full+"; QueueEmptyException="+empty,a=='A'&&b=='Б'&&full&&empty);}
+public static void checkNormal(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте обычное наблюдение с условием.");}
+public static void checkBoundary(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте опубликованную границу с условием.");}
+static int example(boolean normal){System.out.println("Сценарий: "+(normal?NORMAL_NAME:BOUNDARY_NAME));System.out.println("Что наблюдаем: "+(normal?NORMAL_WHAT:BOUNDARY_WHAT));System.out.println("Вход/действие: "+(normal?NORMAL_INPUT:BOUNDARY_INPUT));System.out.println("Ожидается: "+(normal?NORMAL_EXPECTED:BOUNDARY_EXPECTED));try{var o=normal?observeNormal():observeBoundary();System.out.println("Получено: "+o.actual());System.out.println(o.passed()?"Статус: наблюдаемое свойство соответствует; исходник и объяснение оценивает преподаватель.":"Статус: наблюдаемое свойство не соответствует.");return o.passed()?0:1;}catch(UnsupportedOperationException e){System.out.println("Статус: заготовка или привязка ещё не подготовлена; предъявите реализацию преподавателю.");return 1;}catch(LinkageError e){System.out.println("Статус: привязка или среда не подготовлена; требуется ручная проверка, оценки нет.");return 2;}catch(Exception e){System.out.println("Статус: ошибка выполнения операции. Тип: "+e.getClass().getSimpleName());return 1;}catch(Error e){System.out.println("Статус: ошибка выполнения операции. Тип: "+e.getClass().getSimpleName());return 1;}}
+public static void main(String[] args){int status=Math.max(example(true),example(false));if(status!=0)System.exit(status);}
+}

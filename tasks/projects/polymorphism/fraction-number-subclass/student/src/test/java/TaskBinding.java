@@ -1,0 +1,2 @@
+// Обычный редактируемый пример привязки к своему API; только два PUBLIC сценария.
+class TaskBinding{static UnsupportedOperationException pending(){return new UnsupportedOperationException("Привязка примера ещё не подготовлена");}static Object value(long m,long n){throw pending();}static long[] parts(Object f){throw pending();}static Object operation(Object a,Object b,int op){throw pending();}static String text(Object f){throw pending();}}

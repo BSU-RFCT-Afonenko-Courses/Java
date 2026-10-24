@@ -1,1 +1,0 @@
-public class GenericQueue<T> extends Base<T,QueueFullException,QueueEmptyException> {public GenericQueue(T[] data){super(data,()->new QueueFullException(7),()->new QueueEmptyException("empty"));}}

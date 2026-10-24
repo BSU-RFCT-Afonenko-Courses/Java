@@ -1,0 +1,1 @@
+public class Dog extends Animal {public Dog(String name){super(name);}public String voice(){throw new UnsupportedOperationException("TODO: голос собаки");}public String run(){throw new UnsupportedOperationException("TODO: бег");}public String bite(){throw new UnsupportedOperationException("TODO: укус");}}

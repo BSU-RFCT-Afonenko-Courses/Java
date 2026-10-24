@@ -1,3 +1,0 @@
-class TaskBinding {
-record Summary(long count,double sum,java.util.OptionalDouble average){}static Summary run(java.nio.file.Path p)throws Throwable{var reader=new variant.ReaderApp();var r=reader.calculate(reader.load(p));return new Summary(r.size(),r.total().doubleValue(),r.mean().isEmpty()?java.util.OptionalDouble.empty():java.util.OptionalDouble.of(r.mean().get().doubleValue()));}static java.util.List<java.util.List<String>> read(java.nio.file.Path p)throws java.io.IOException{return new variant.ReaderApp().load(p).stream().map(variant.ReaderApp.Entry::original).toList();}static boolean recordError(Throwable t){return t instanceof variant.ReaderApp.RecordProblem;}static long line(Throwable t){return ((variant.ReaderApp.RecordProblem)t).physicalRow();}
-}

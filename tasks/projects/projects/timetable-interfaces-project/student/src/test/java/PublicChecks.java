@@ -1,0 +1,24 @@
+import java.util.*;import java.nio.file.*;
+/** Только два опубликованных наблюдения; API заготовки заменяется обычной привязкой. */
+public class PublicChecks {
+ public record Observation(String actual,boolean passed){}
+
+ public static Observation observeNormal()throws Exception{Object s=TaskBinding.create();var initialT=TaskBinding.teacherIds(s,"t1");var initialG=TaskBinding.groupIds(s,"g1");boolean ok=initialT.equals(Set.of("l1","l3"))&&initialG.equals(Set.of("l1","l2"))&&TaskBinding.teacherCount(s,"t1")==2&&TaskBinding.groupCount(s,"g1")==2;TaskBinding.cancelFirst(s);ok&=TaskBinding.teacherIds(s,"t1").equals(Set.of("l3"))&&TaskBinding.groupIds(s,"g1").equals(Set.of("l2"))&&TaskBinding.teacherCount(s,"t1")==1&&TaskBinding.groupCount(s,"g1")==1;TaskBinding.moveThird(s);ok&=TaskBinding.thirdRoom(s).equals("C")&&TaskBinding.teacherIds(s,"t1").equals(Set.of("l3"))&&TaskBinding.groupIds(s,"g2").contains("l3");return new Observation("до: T1="+initialT+",G1="+initialG+"; после отмены: T1="+TaskBinding.teacherIds(s,"t1")+",G1="+TaskBinding.groupIds(s,"g1")+"; аудитория L3="+TaskBinding.thirdRoom(s),ok);}
+ public static Observation observeBoundary()throws Exception{Object s=TaskBinding.create();boolean deleted=TaskBinding.deleteT1(s);boolean policy=TaskBinding.deletionPolicy().equals("cascade")?deleted&&!TaskBinding.teachers(s).containsKey("t1")&&TaskBinding.teacherIds(s,"t1").isEmpty():!deleted&&TaskBinding.teachers(s).containsKey("t1")&&TaskBinding.teacherIds(s,"t1").equals(Set.of("l1","l3"));Object holiday=TaskBinding.create();TaskBinding.secondDayOff(holiday);boolean day=TaskBinding.teacherIds(holiday,"t1").equals(Set.of("l1"))&&TaskBinding.teacherIds(holiday,"t2").equals(Set.of("l2"))&&TaskBinding.groupIds(holiday,"g2").isEmpty()&&TaskBinding.teacherCount(holiday,"t1")==1&&TaskBinding.groupCount(holiday,"g2")==0;Object school=TaskBinding.school();boolean limit=TaskBinding.classSize(school)==TaskBinding.schoolLimit()&&TaskBinding.schoolValid(school);TaskBinding.extra(school);limit&=!TaskBinding.schoolValid(school);Object driving=TaskBinding.driving();boolean cars=TaskBinding.theory(driving)==2&&TaskBinding.practice(driving)==1&&TaskBinding.car(driving,"c1")&&!TaskBinding.car(driving,"absent")&&TaskBinding.practiceWithoutCarRejected();return new Observation("политика="+TaskBinding.deletionPolicy()+", удалён="+deleted+"; выходной: G2="+TaskBinding.groupIds(holiday,"g2")+"; предел="+TaskBinding.schoolLimit()+", соблюдение/превышение="+limit+"; теория="+TaskBinding.theory(driving)+",практика="+TaskBinding.practice(driving)+",автомобили="+cars,policy&&day&&limit&&cars); }
+ public static void checkNormal(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте обычный результат с условием.");}
+ public static void checkBoundary(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте граничный результат с условием.");}
+ static int example(boolean normal){
+  System.out.println("Сценарий: "+(normal?"Выборки после изменения расписания":"Политики и специализации"));
+  System.out.println("Вход и действие: "+(normal?"Опубликованные4занятия19/20октября: выборкиT1/G1, отменаL1, аудиторияL3=C.":"Независимые исходные состояния: удалениеT1, выходной20.10, объявленный предел школы и наличие автомобиля."));
+  System.out.println("Ожидаемый результат: "+(normal?"T1:L1/L3→L3, G1:L1/L2→L2;2→1;L3 остаётсяT1/G2.":"Объявленные политики;L3/L4исключены;предел отличим от превышения;нет автомобиля для практики выявляется."));
+  try{var o=normal?observeNormal():observeBoundary();System.out.println("Получено: "+o.actual());if(normal)checkNormal(o);else checkBoundary(o);System.out.println("Статус: наблюдаемое свойство соответствует; исходник, обязательные средства, политика и объяснение оценивает преподаватель.");return 0;}
+  catch(coursesupport.JavaProcess.UncaughtStudentException e){System.out.println("Статус: необработанная ошибка программы.");return 1;}
+  catch(coursesupport.JavaProcess.StudentTimeout e){System.out.println("Статус: время выполнения превышено.");return 1;}
+  catch(coursesupport.JavaProcess.StudentOutputLimit e){System.out.println("Статус: превышен объём вывода.");return 1;}
+  catch(UnsupportedOperationException e){System.out.println("Статус: выбранная заготовка ещё не завершена.");return 1;}
+  catch(AssertionError e){System.out.println("Статус: наблюдаемый результат не соответствует опубликованному случаю.");return 1;}
+  catch(LinkageError e){System.out.println("Статус: привязка или среда не подготовлена; ручная проверка, оценки нет.");return 2;}
+  catch(Exception e){System.out.println("Статус: ошибка операции; проверьте реализацию, файлы и подготовленную привязку. Тип: "+e.getClass().getSimpleName());return 1;}
+ }
+ public static void main(String[]args){int status=Math.max(example(true),example(false));if(status!=0)System.exit(status);}
+}

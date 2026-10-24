@@ -1,8 +1,14 @@
+---
+exercise-bank: true
+default-exercise-target: manual
+default-exercise-course-role: independent-study
+default-exercise-statement-visibility: open
+---
 # Исследования по теме «Работа с файлами» {#sec-research-files}
 
 Общие требования: @tasks:sec-research-program.
 
-:::: {#exr-research-resource-failure-preservation difficulty="intermediate" time="240"}
+:::: {#exr-files-research-resource-failure-preservation difficulty="intermediate" time="240"}
 ## Сохранение ошибки при закрытии ресурса
 
 Как завершить работу с ресурсом и сохранить информацию о первоначальной неудаче?
@@ -13,13 +19,13 @@
 
 **Подготовка.** Разделы @theory:sec-j25-theory-interfaces и @theory:sec-j25-theory-exceptions, @theory:sec-j25-theory-resources и @theory:sec-j25-theory-io; контракт интерфейса — @handbook:sec-j25-api-resources.
 
-Связанные задания: @tasks:exr-j25-files-byte-file-copy и @tasks:exr-j25-files-character-file-copy — переход от явного закрытия к `try-with-resources`. При сравнении для реферата зафиксируйте один тип ресурса: сами задачи одновременно меняют и способ закрытия, и байтовый/символьный API.
+Связанные задания: @tasks:exr-files-byte-file-copy и @tasks:exr-files-character-file-copy — переход от явного закрытия к `try-with-resources`. При сравнении для реферата зафиксируйте один тип ресурса: сами задачи одновременно меняют и способ закрытия, и байтовый/символьный API.
 
 [@bib-research-resource-failure-preservation-1; @bib-research-resource-failure-preservation-2]
 
 ::::
 
-:::: {#exr-research-utf8-byte-text-boundary difficulty="intermediate" time="240"}
+:::: {#exr-files-research-utf8-byte-text-boundary difficulty="intermediate" time="240"}
 ## Граница байтов и символов
 
 Когда обработка текстового файла как набора байтов сохраняет его смысл, а когда требуется декодирование?
@@ -28,9 +34,9 @@
 
 Сохраните исходные байты повреждённого примера и сопоставьте их с результатом каждой выбранной операции; один символ замены может соответствовать разным исходным последовательностям.
 
-**Подготовка.** Разделы @theory:sec-theory-text, @theory:sec-j25-theory-exceptions, @theory:sec-j25-theory-io; основные единицы Unicode из чтения к {{< xref tasks exr-research-unicode-units-equivalence "Строки Unicode: кодовые точки и нормализация" >}}. Используйте определения кодовой единицы и кодовой точки при объяснении наблюдений.
+**Подготовка.** Разделы @theory:sec-theory-text, @theory:sec-j25-theory-exceptions, @theory:sec-j25-theory-io; основные единицы Unicode из чтения к {{< xref tasks exr-text-research-unicode-units-equivalence "Строки Unicode: кодовые точки и нормализация" >}}. Используйте определения кодовой единицы и кодовой точки при объяснении наблюдений.
 
-Связанные задания: @tasks:exr-j25-files-byte-file-copy и @tasks:exr-j25-files-character-file-copy — байтовые и символьные потоки; @tasks:exr-j25-files-poem-word-frequency — продолжение цепочки обработки слов из файла. Отдельно объясните, почему замена байта ASCII-пробела сохраняет остальные символы допустимого UTF-8-текста, и приведите преобразование, для которого уже требуется декодирование.
+Связанные задания: @tasks:exr-files-byte-file-copy и @tasks:exr-files-character-file-copy — байтовые и символьные потоки; @tasks:exr-files-poem-word-frequency — продолжение цепочки обработки слов из файла. Отдельно объясните, почему замена байта ASCII-пробела сохраняет остальные символы допустимого UTF-8-текста, и приведите преобразование, для которого уже требуется декодирование.
 
 [@bib-research-utf8-byte-text-boundary-1; @bib-research-utf8-byte-text-boundary-2; @bib-korneev-io-exceptions]
 
