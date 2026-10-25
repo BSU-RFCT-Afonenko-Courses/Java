@@ -6,16 +6,16 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-35fc0813589bbfbfa0b8ec974497eeb2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
 <link href="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.11.6">
+  <meta name="generator" content="quarto-1.11.5">
 
   <title>Введения к лабораторным Java – Полиморфизм</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
   <style>
@@ -123,7 +123,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-836333b27002cb1bbca9e7698ee01091.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-3ce18430e1250f8c2f6f98be2c9c7b18.css">
   <link rel="stylesheet" href="assets/lesson.css">
   
   <style>.task-items li:has(.course-assignment-omitted):not(:has(a)){display:none}</style>
@@ -441,7 +441,7 @@
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb8-1"><a aria-label="1"></a>IVehicle vehicle <span class="op">=</span> <span class="kw">new</span> <span class="fu">Vehicle</span><span class="op">(</span><span class="dv">2</span><span class="op">,</span> <span class="dv">10</span><span class="op">,</span> <span class="dv">25</span><span class="op">);</span></span>
 <span id="cb8-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>vehicle<span class="op">.</span><span class="fu">range</span><span class="op">());</span>         <span class="co">// 250</span></span>
 <span id="cb8-3"><a aria-label="3"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>vehicle<span class="op">.</span><span class="fu">fuelNeeded</span><span class="op">(</span><span class="dv">100</span><span class="op">));</span> <span class="co">// 4.0</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Методы реализации имеют доступ <code>public</code>. <code>setFuelcap(0)</code> выбрасывает <code>IllegalArgumentException</code> и оставляет прежний запас топлива и дальность <code>250</code>: проверка выполняется до изменения состояния. Полный договор: <a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-polymorphism-vehicle-interface" data-qrc-style="default" class="qrc-link" href="../tasks/bank/polymorphism.html#exr-j25-polymorphism-vehicle-interface">Упражнение&nbsp;<span>22.2</span></a>.</p>
+<p>Методы реализации имеют доступ <code>public</code>. <code>setFuelcap(0)</code> выбрасывает <code>IllegalArgumentException</code> и оставляет прежний запас топлива и дальность <code>250</code>: проверка выполняется до изменения состояния. Полный договор: <a data-qrc-custom="false" data-qrc-ref="tasks:exr-polymorphism-vehicle-interface" data-qrc-style="default" class="qrc-link" href="../tasks/bank/polymorphism.html#exr-polymorphism-vehicle-interface">Упражнение&nbsp;<span>22.2</span></a>.</p>
 <aside class="notes">
 <p>Сопоставить объявление интерфейса с доступными вызовами. Попросить указать два наблюдения при неверном изменении: тип исключения и прежнее значение при следующем чтении.</p>
 <style type="text/css">
@@ -602,7 +602,7 @@
 <h1>Сброс и перенос</h1>
 <p><code>reset()</code> делает очередь пустой и возвращает индексы в начальное состояние. Текущая ёмкость сохраняется, включая уже увеличенную ёмкость <code>DynQueue</code>. После <code>A</code>, <code>B</code>, извлечения <code>A</code>, сброса и помещения <code>C</code> извлекается только <code>C</code>.</p>
 <p><code>transfer(source, destination, count)</code> переносит все <code>count</code> элементов в другую пустую очередь. Клиент знает число элементов, поскольку заполнял источник. Приёмник должен допускать столько успешных помещений; для линейной очереди важны ещё не использованные позиции. После переноса источник пуст, приёмник сохраняет порядок.</p>
-<p>Варианты работы: <a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-polymorphism-reset-character-queues" data-qrc-style="default" class="qrc-link" href="../tasks/bank/polymorphism.html#exr-j25-polymorphism-reset-character-queues">Упражнение&nbsp;<span>22.4</span></a>, <a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-polymorphism-copy-character-queues" data-qrc-style="default" class="qrc-link" href="../tasks/bank/polymorphism.html#exr-j25-polymorphism-copy-character-queues">Упражнение&nbsp;<span>22.8</span></a>.</p>
+<p>Варианты работы: <a data-qrc-custom="false" data-qrc-ref="tasks:exr-polymorphism-reset-character-queues" data-qrc-style="default" class="qrc-link" href="../tasks/bank/polymorphism.html#exr-polymorphism-reset-character-queues">Упражнение&nbsp;<span>22.4</span></a>, <a data-qrc-custom="false" data-qrc-ref="tasks:exr-polymorphism-copy-character-queues" data-qrc-style="default" class="qrc-link" href="../tasks/bank/polymorphism.html#exr-polymorphism-copy-character-queues">Упражнение&nbsp;<span>22.8</span></a>.</p>
 <aside class="notes">
 <p>Для сброса предложить очередь, которая уже увеличивалась, и найти сохраняемую ёмкость. Для переноса спросить, какие чтения из обеих очередей подтвердят требуемый результат. Рассмотреть <code>count = 0</code>.</p>
 <style type="text/css">

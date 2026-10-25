@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.11.6">
+<meta name="generator" content="quarto-1.11.5">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -95,15 +95,14 @@ div.csl-indent {
 <link href="../chapters/functions.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-35fc0813589bbfbfa0b8ec974497eeb2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-752eb067b69f457d87b717766944ae1e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-fdaad8ba610d67e7f99a63523cddd8f8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
 <script src="../site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
 <link href="../site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation">
@@ -562,7 +561,7 @@ div.csl-indent {
 <h2 data-number="20.3" class="anchored" data-anchor-id="sec-j25-theory-streams-outcomes"><span class="header-section-number">20.3</span> Отсутствие и ошибка в результате обработки</h2>
 <p>Пустой список прошедших порог — успешный результат. Отсутствие максимального элемента на пустом каталоге тоже ожидаемо и представляется <code>Optional&lt;Student&gt;</code>. Неверный балл входной записи имеет другую причину: данные не соответствуют формату. Если представить оба случая <code>Optional.empty()</code>, вызывающий код уже не сможет отличить «никого нет» от «запись не удалось разобрать».</p>
 <p>В <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-exceptions-typed-result" data-qrc-style="default" class="qrc-link" href="exceptions.html#sec-j25-theory-exceptions-typed-result">Типизированный результат проверки балла</a> для разбора балла использован <code>ScoreResult</code> с отдельными вариантами успеха и ошибки. Для поиска лучшего участника здесь достаточно <code>Optional</code>: поиск даёт ноль или одно значение. Диагностику нарушенного формата хранит отдельный тип результата разбора. Ошибка чтения файла остаётся ещё одним исходом и учитывается на файловой границе. Ожидаемое отсутствие описывает <code>Optional</code>, а причину неверного формата сохраняет результат разбора с диагностикой.</p>
-<p>При обработке набора ошибок появляется дополнительный выбор. Можно остановиться при первом неверном поле, собрать все диагностики или пропустить строку. Сбор <code>ScoreResult</code> в список сохраняет исходы, но ещё не выбирает эту политику. Два приложения используют разные договоры. В проекте «Ведомость» (<a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-files-gradeapp-report" data-qrc-style="default" class="qrc-link" href="../../tasks/bank/files.html#exr-j25-files-gradeapp-report">Упражнение&nbsp;<span>27.14</span></a>) <code>grade.Main input threshold</code> получает два аргумента. Загрузчик целиком проверяет файл и уникальность нормализованных кодов; неверная запись останавливает загрузку. Только успешная загрузка допускает вычисление и публикацию строк <code>id;name;score</code>. Пустой успешный отчёт даёт пустой стандартный вывод; CLI различает исходы кодами 0/2/3/4.</p>
+<p>При обработке набора ошибок появляется дополнительный выбор. Можно остановиться при первом неверном поле, собрать все диагностики или пропустить строку. Сбор <code>ScoreResult</code> в список сохраняет исходы, но ещё не выбирает эту политику. Два приложения используют разные договоры. В проекте «Ведомость» (<a data-qrc-custom="false" data-qrc-ref="tasks:exr-files-gradeapp-report" data-qrc-style="default" class="qrc-link" href="../../tasks/bank/files.html#exr-files-gradeapp-report">Упражнение&nbsp;<span>27.14</span></a>) <code>grade.Main input threshold</code> получает два аргумента. Загрузчик целиком проверяет файл и уникальность нормализованных кодов; неверная запись останавливает загрузку. Только успешная загрузка допускает вычисление и публикацию строк <code>id;name;score</code>. Пустой успешный отчёт даёт пустой стандартный вывод; CLI различает исходы кодами 0/2/3/4.</p>
 <p>В <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-application" data-qrc-style="default" class="qrc-link" href="application.html#sec-j25-theory-application"><span>Глава 24</span></a> программа <code>deliveries.Main</code> получает один аргумент — путь к файлу поставок. Она суммирует положительные количества по названиям товаров. Неверная строка сохраняется как диагностика с физическим номером, а обработка следующих строк продолжается. Готовый результат содержит и суммы принятых строк, и список проблем; переполнение суммы также становится проблемой строки. Ошибка чтения или закрытия файла прерывает получение этого результата. Поэтому выбор между циклом и Stream следует делать после выбора политики ошибок: тип конвейера сам её не устанавливает.</p>
 </section>
 <section id="sec-j25-theory-streams-lazy" class="level2" data-number="20.4">
@@ -1549,9 +1548,6 @@ div.csl-indent {
       }
     }
   });
-  </script>
-  <script type="application/javascript">
-  window.quartoScrollableRegionsLabels = {"code":"Прокручиваемый код","output":"Прокручиваемый вывод"};
   </script>
 <nav class="page-navigation" aria-label="Страница">
   <div class="nav-page nav-page-previous">

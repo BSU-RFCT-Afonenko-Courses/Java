@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.11.6">
+<meta name="generator" content="quarto-1.11.5">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -95,15 +95,14 @@ div.csl-indent {
 <link href="../entries/optional.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-35fc0813589bbfbfa0b8ec974497eeb2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-752eb067b69f457d87b717766944ae1e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-fdaad8ba610d67e7f99a63523cddd8f8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
 <script src="../site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
 <link href="../site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation">
@@ -643,7 +642,7 @@ div.csl-indent {
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="fl">2.5</span><span class="op">);</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">printf</span><span class="op">(</span>java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">Locale</span><span class="op">.</span><span class="fu">ROOT</span><span class="op">,</span> <span class="st">"</span><span class="sc">%.2f%n</span><span class="st">"</span><span class="op">,</span> <span class="fl">2.5</span><span class="op">);</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Получаются три строки: <code>AB</code>, <code>2.5</code>, <code>2.50</code>. <code>%n</code> добавляет окончание строки платформы; <code>\t</code> в строке — табуляцию. В <code>printf</code> локаль выбрана для этого вызова, поэтому десятичный разделитель — точка. У <code>println(double)</code> разделитель в строковом представлении числа от локали не зависит. Формат <code>%.2f</code> задаёт два знака после разделителя и округляет: он подходит, когда такой точности достаточно для задачи. <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/PrintStream.html">PrintStream Java 25</a>.</p>
-<p>Протоколы первых лабораторных допускают точку и экспоненциальную форму и не требуют фиксированного числа знаков. Численный критерий задаёт карточка: в <a data-qrc-custom="false" data-qrc-ref="tasks:exr-numbers-image-size" data-qrc-style="default" class="qrc-link" href="../../tasks/bank/numbers.html#exr-numbers-image-size">Упражнение&nbsp;<span>17.2</span></a> указан абсолютный допуск <code>1e-8</code>, в <a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-numbers-lunar-weight" data-qrc-style="default" class="qrc-link" href="../../tasks/bank/numbers.html#exr-j25-numbers-lunar-weight">Упражнение&nbsp;<span>17.3</span></a> предел ошибки зависит также от величины результата.</p>
+<p>Протоколы первых лабораторных допускают точку и экспоненциальную форму и не требуют фиксированного числа знаков. Численный критерий задаёт карточка: в <a data-qrc-custom="false" data-qrc-ref="tasks:exr-numbers-image-size" data-qrc-style="default" class="qrc-link" href="../../tasks/bank/numbers.html#exr-numbers-image-size">Упражнение&nbsp;<span>17.2</span></a> указан абсолютный допуск <code>1e-8</code>, в <a data-qrc-custom="false" data-qrc-ref="tasks:exr-numbers-lunar-weight" data-qrc-style="default" class="qrc-link" href="../../tasks/bank/numbers.html#exr-numbers-lunar-weight">Упражнение&nbsp;<span>17.3</span></a> предел ошибки зависит также от величины результата.</p>
 <p>Проверяющая программа читает значения по условию. Приглашение <code>Введите число:</code> стало бы лишним выводом, поэтому в подключённых числовых проектах печатают только требуемый результат. Табуляцию и порядок колонок задаёт протокол вывода. <code>System.err</code> служит отдельной диагностике там, где это разрешено условием. Заимствованные <code>System.in</code> и <code>System.out</code> не закрывают; правила обработки отказа вывода рассматриваются вместе с ресурсами.</p>
 
 
@@ -1265,9 +1264,6 @@ div.csl-indent {
       }
     }
   });
-  </script>
-  <script type="application/javascript">
-  window.quartoScrollableRegionsLabels = {"code":"Прокручиваемый код","output":"Прокручиваемый вывод"};
   </script>
 <nav class="page-navigation" aria-label="Страница">
   <div class="nav-page nav-page-previous">

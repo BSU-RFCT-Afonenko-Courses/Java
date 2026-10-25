@@ -6,16 +6,16 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-35fc0813589bbfbfa0b8ec974497eeb2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
 <link href="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.11.6">
+  <meta name="generator" content="quarto-1.11.5">
 
   <title>Введения к лабораторным Java – Практика: Функциональная обработка</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
   <style>
@@ -123,7 +123,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-836333b27002cb1bbca9e7698ee01091.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-3ce18430e1250f8c2f6f98be2c9c7b18.css">
   <link rel="stylesheet" href="assets/lesson.css">
   
   <style>.task-items li:has(.course-assignment-omitted):not(:has(a)){display:none}</style>
@@ -528,8 +528,8 @@
 </section>
 <section id="sec-j25-practice-pipelines-s6" class="slide level2">
 <h2>Отбор и сортировка</h2>
-<p><a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-pipelines-filter-string-array" data-qrc-style="default" class="qrc-link" href="../tasks/bank/pipelines.html#exr-j25-pipelines-filter-string-array">Упражнение&nbsp;<span>25.2</span></a> требует длину строго больше порога и новый массив с прежним порядком подходящих строк.</p>
-<p><a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-pipelines-order-points" data-qrc-style="default" class="qrc-link" href="../tasks/bank/pipelines.html#exr-j25-pipelines-order-points">Упражнение&nbsp;<span>25.3</span></a> задаёт целые координаты <code>[-10000, 10000]</code>. Квадрат расстояния точно помещается в <code>int</code>. Для равных геометрических расстояний сохраняется исходный порядок.</p>
+<p><a data-qrc-custom="false" data-qrc-ref="tasks:exr-pipelines-filter-string-array" data-qrc-style="default" class="qrc-link" href="../tasks/bank/pipelines.html#exr-pipelines-filter-string-array">Упражнение&nbsp;<span>25.2</span></a> требует длину строго больше порога и новый массив с прежним порядком подходящих строк.</p>
+<p><a data-qrc-custom="false" data-qrc-ref="tasks:exr-pipelines-order-points" data-qrc-style="default" class="qrc-link" href="../tasks/bank/pipelines.html#exr-pipelines-order-points">Упражнение&nbsp;<span>25.3</span></a> задаёт целые координаты <code>[-10000, 10000]</code>. Квадрат расстояния точно помещается в <code>int</code>. Для равных геометрических расстояний сохраняется исходный порядок.</p>
 <aside class="notes">
 <p>Предложить пару (1:10), (2:0) и спросить, какой признак определит порядок. Затем пару (3:4), (0:5): они равноудалены.</p>
 <style type="text/css">
@@ -564,7 +564,7 @@
 </section>
 <section id="sec-j25-practice-pipelines-s7" class="slide level2 continuation">
 <h2>Передача поведения</h2>
-<p><a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-pipelines-conditional-function" data-qrc-style="default" class="qrc-link" href="../tasks/bank/pipelines.html#exr-j25-pipelines-conditional-function">Упражнение&nbsp;<span>25.5</span></a> получает условие и две функции, затем возвращает <code>Function&lt;T, R&gt;</code>.</p>
+<p><a data-qrc-custom="false" data-qrc-ref="tasks:exr-pipelines-conditional-function" data-qrc-style="default" class="qrc-link" href="../tasks/bank/pipelines.html#exr-pipelines-conditional-function">Упражнение&nbsp;<span>25.5</span></a> получает условие и две функции, затем возвращает <code>Function&lt;T, R&gt;</code>.</p>
 <p><code>Predicate&lt;? super T&gt;</code> получает аргумент <code>T</code>. <code>Function&lt;? super T, ? extends R&gt;</code> принимает тот же аргумент и выдаёт результат, подходящий для <code>R</code>. Созданной функции аргумент передадут позже.</p>
 <aside class="notes">
 <p>Нарисовать путь <code>T</code> к предикату и выбранной ветви, затем путь результата к <code>R</code>. Раскрыть смысл границ <code>? super T</code> и <code>? extends R</code>; класс и наличие <code>static</code> остаются выбором автора программы.</p>
@@ -667,8 +667,8 @@
 </section>
 <section id="sec-j25-practice-pipelines-count-model" class="slide level2">
 <h2>Счётчик и форма входа</h2>
-<p>В <a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-pipelines-count-selected-words" data-qrc-style="default" class="qrc-link" href="../tasks/bank/pipelines.html#exr-j25-pipelines-count-selected-words">Упражнение&nbsp;<span>25.4</span></a> слово состоит из латинских букв, регистр значим, остальные единицы разделяют слова. Отчёт сохраняет порядок и повторы запросов; отсутствующему слову соответствует ноль.</p>
-<p>В <a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-pipelines-count-characters" data-qrc-style="default" class="qrc-link" href="../tasks/bank/pipelines.html#exr-j25-pipelines-count-characters">Упражнение&nbsp;<span>25.6</span></a> учитывается каждый <code>char</code> готовой строки, включая пробел и суррогаты. Из этой пары выполните одну задачу.</p>
+<p>В <a data-qrc-custom="false" data-qrc-ref="tasks:exr-pipelines-count-selected-words" data-qrc-style="default" class="qrc-link" href="../tasks/bank/pipelines.html#exr-pipelines-count-selected-words">Упражнение&nbsp;<span>25.4</span></a> слово состоит из латинских букв, регистр значим, остальные единицы разделяют слова. Отчёт сохраняет порядок и повторы запросов; отсутствующему слову соответствует ноль.</p>
+<p>В <a data-qrc-custom="false" data-qrc-ref="tasks:exr-pipelines-count-characters" data-qrc-style="default" class="qrc-link" href="../tasks/bank/pipelines.html#exr-pipelines-count-characters">Упражнение&nbsp;<span>25.6</span></a> учитывается каждый <code>char</code> готовой строки, включая пробел и суррогаты. Из этой пары выполните одну задачу.</p>
 <aside class="notes">
 <p>Для текста “one, One” запросить one, absent, one и получить 1, 0, 1. Для второй задачи взять пустой текст и строку с пробелом. Сопоставить разные формы источника, сохранив общий смысл частот.</p>
 <style type="text/css">

@@ -6,16 +6,16 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-35fc0813589bbfbfa0b8ec974497eeb2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
 <link href="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.11.6">
+  <meta name="generator" content="quarto-1.11.5">
 
   <title>Введения к лабораторным Java – Практика: коллекции</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
   <style>
@@ -123,7 +123,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-836333b27002cb1bbca9e7698ee01091.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-3ce18430e1250f8c2f6f98be2c9c7b18.css">
   <link rel="stylesheet" href="assets/lesson.css">
   
   <style>.task-items li:has(.course-assignment-omitted):not(:has(a)){display:none}</style>
@@ -638,8 +638,8 @@
 </section>
 <section id="sec-j25-practice-collections-s6" class="slide level2">
 <h2>Учёт обращений и выдача списков</h2>
-<p><a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-collections-object-hash" data-qrc-style="default" class="qrc-link" href="../tasks/bank/collections.html#exr-j25-collections-object-hash">Упражнение&nbsp;<span>24.13</span></a>: обработайте весь массив кодов своим типом ключа; получите множество посещённых записей и все частоты.</p>
-<p><a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-collections-views-snapshots" data-qrc-style="default" class="qrc-link" href="../tasks/bank/collections.html#exr-j25-collections-views-snapshots">Упражнение&nbsp;<span>24.14</span></a>: создайте владельца списка книг с добавлением и тремя способами выдачи состава. Класс сохраняет независимость от первоначального списка клиента.</p>
+<p><a data-qrc-custom="false" data-qrc-ref="tasks:exr-collections-object-hash" data-qrc-style="default" class="qrc-link" href="../tasks/bank/collections.html#exr-collections-object-hash">Упражнение&nbsp;<span>24.13</span></a>: обработайте весь массив кодов своим типом ключа; получите множество посещённых записей и все частоты.</p>
+<p><a data-qrc-custom="false" data-qrc-ref="tasks:exr-collections-views-snapshots" data-qrc-style="default" class="qrc-link" href="../tasks/bank/collections.html#exr-collections-views-snapshots">Упражнение&nbsp;<span>24.14</span></a>: создайте владельца списка книг с добавлением и тремя способами выдачи состава. Класс сохраняет независимость от первоначального списка клиента.</p>
 <aside class="notes">
 <p>Попросите сформулировать результат каждого задания до выбора имён классов. Для учёта нужна обработка произвольного входа, для владельца — повторные вызовы его операций с наблюдением ранее выданных списков.</p>
 <style type="text/css">
@@ -661,7 +661,7 @@
 <span id="cb9-3"><a aria-label="3"></a>result<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="dv">3</span><span class="op">);</span></span>
 <span id="cb9-4"><a aria-label="4"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>original<span class="op">.</span><span class="fu">size</span><span class="op">());</span> <span class="co">// 2</span></span>
 <span id="cb9-5"><a aria-label="5"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>result<span class="op">.</span><span class="fu">size</span><span class="op">());</span>   <span class="co">// 3</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
-<p><a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-collections-set-union-intersection" data-qrc-style="default" class="qrc-link" href="../tasks/bank/collections.html#exr-j25-collections-set-union-intersection">Упражнение&nbsp;<span>24.2</span></a> требует самостоятельных результатов двух операций. Изменяемая копия позволяет сохранить вход. Сигнатуры <code>addAll</code>/<code>retainAll</code>: <a data-qrc-custom="false" data-qrc-ref="handbook:sec-j25-api-sets-maps-bulk" data-qrc-style="default" class="qrc-link" href="../handbook/entries/sets-maps.html#sec-j25-api-sets-maps-bulk">Групповые операции множеств</a>.</p>
+<p><a data-qrc-custom="false" data-qrc-ref="tasks:exr-collections-set-union-intersection" data-qrc-style="default" class="qrc-link" href="../tasks/bank/collections.html#exr-collections-set-union-intersection">Упражнение&nbsp;<span>24.2</span></a> требует самостоятельных результатов двух операций. Изменяемая копия позволяет сохранить вход. Сигнатуры <code>addAll</code>/<code>retainAll</code>: <a data-qrc-custom="false" data-qrc-ref="handbook:sec-j25-api-sets-maps-bulk" data-qrc-style="default" class="qrc-link" href="../handbook/entries/sets-maps.html#sec-j25-api-sets-maps-bulk">Групповые операции множеств</a>.</p>
 <aside class="notes">
 <p>Попросите определить, какой объект изменяет addAll и что возвращает метод. Затем сравните задачу пересечения с показанным простым добавлением одного элемента.</p>
 <style type="text/css">
@@ -726,7 +726,7 @@
 <span id="cb10-3"><a aria-label="3"></a>work<span class="op">.</span><span class="fu">push</span><span class="op">(</span><span class="st">"second"</span><span class="op">);</span></span>
 <span id="cb10-4"><a aria-label="4"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>work<span class="op">.</span><span class="fu">pop</span><span class="op">());</span> <span class="co">// second</span></span>
 <span id="cb10-5"><a aria-label="5"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>work<span class="op">.</span><span class="fu">peek</span><span class="op">());</span> <span class="co">// first</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>push</code>/<code>pop</code> работают по LIFO. Перед извлечением нужно учесть пустоту. В скобочном алгоритме стек хранит незавершённые открывающие скобки. Дополнительная тренировка: <a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-collections-digit-stack" data-qrc-style="default" class="qrc-link" href="../tasks/bank/collections.html#exr-j25-collections-digit-stack">Упражнение&nbsp;<span>24.1</span></a>.</p>
+<p><code>push</code>/<code>pop</code> работают по LIFO. Перед извлечением нужно учесть пустоту. В скобочном алгоритме стек хранит незавершённые открывающие скобки. Дополнительная тренировка: <a data-qrc-custom="false" data-qrc-ref="tasks:exr-collections-digit-stack" data-qrc-style="default" class="qrc-link" href="../tasks/bank/collections.html#exr-collections-digit-stack">Упражнение&nbsp;<span>24.1</span></a>.</p>
 <aside class="notes">
 <p>Проследите вершину после каждой операции. Для скобок предложите закрывающую скобку при пустом стеке и попросите назвать результат алгоритма до pop.</p>
 <style type="text/css">
@@ -743,8 +743,8 @@
 </section>
 <section id="sec-j25-practice-collections-s7" class="slide level2 continuation">
 <h2>Скобки и сложение многочленов</h2>
-<p><a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-collections-balanced-brackets" data-qrc-style="default" class="qrc-link" href="../tasks/bank/collections.html#exr-j25-collections-balanced-brackets">Упражнение&nbsp;<span>24.4</span></a>: вложенность требует закрывать последнюю незавершённую пару первой.</p>
-<p><a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-collections-polynomial-map-addition" data-qrc-style="default" class="qrc-link" href="../tasks/bank/collections.html#exr-j25-collections-polynomial-map-addition">Упражнение&nbsp;<span>24.5</span></a>: степень является ключом; при совпадении степеней складываются коэффициенты, входные карты сохраняются.</p>
+<p><a data-qrc-custom="false" data-qrc-ref="tasks:exr-collections-balanced-brackets" data-qrc-style="default" class="qrc-link" href="../tasks/bank/collections.html#exr-collections-balanced-brackets">Упражнение&nbsp;<span>24.4</span></a>: вложенность требует закрывать последнюю незавершённую пару первой.</p>
+<p><a data-qrc-custom="false" data-qrc-ref="tasks:exr-collections-polynomial-map-addition" data-qrc-style="default" class="qrc-link" href="../tasks/bank/collections.html#exr-collections-polynomial-map-addition">Упражнение&nbsp;<span>24.5</span></a>: степень является ключом; при совпадении степеней складываются коэффициенты, входные карты сохраняются.</p>
 <aside class="notes">
 <p>Попросите выбрать одну альтернативу и назвать её вход, результат и обязательную структуру. Проверьте понимание различия степени и коэффициента.</p>
 <style type="text/css">

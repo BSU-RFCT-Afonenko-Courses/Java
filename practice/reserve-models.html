@@ -6,16 +6,16 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-35fc0813589bbfbfa0b8ec974497eeb2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
 <link href="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.11.6">
+  <meta name="generator" content="quarto-1.11.5">
 
   <title>Введения к лабораторным Java – Резервные задачи по объектной модели</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
   <style>
@@ -123,7 +123,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-836333b27002cb1bbca9e7698ee01091.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-3ce18430e1250f8c2f6f98be2c9c7b18.css">
   <link rel="stylesheet" href="assets/lesson.css">
   
   <style>.task-items li:has(.course-assignment-omitted):not(:has(a)){display:none}</style>
@@ -261,7 +261,7 @@
 <section id="sec-j25-practice-reserve-models-recap" class="title-slide slide level1 center">
 <h1>Значение дроби и её представление</h1>
 <p>Для задач о дробях нужны классы и массивы.</p>
-<p>Для <a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-polymorphism-fraction-number-subclass" data-qrc-style="default" class="qrc-link" href="../tasks/bank/polymorphism.html#exr-j25-polymorphism-fraction-number-subclass">Упражнение&nbsp;<span>22.9</span></a> <code>1/2</code>, <code>2/4</code> и <code>-1/-2</code> обозначают одно значение. Нормализация сокращает дробь и переносит знак в числитель; <code>0/5</code> приводится к <code>0/1</code>.</p>
+<p>Для <a data-qrc-custom="false" data-qrc-ref="tasks:exr-polymorphism-fraction-number-subclass" data-qrc-style="default" class="qrc-link" href="../tasks/bank/polymorphism.html#exr-polymorphism-fraction-number-subclass">Упражнение&nbsp;<span>22.9</span></a> <code>1/2</code>, <code>2/4</code> и <code>-1/-2</code> обозначают одно значение. Нормализация сокращает дробь и переносит знак в числитель; <code>0/5</code> приводится к <code>0/1</code>.</p>
 <p>Равенство и хеш должны использовать согласованное представление. Нулевой знаменатель и деление на нулевую дробь вызывают <code>ArithmeticException</code>. Промежуточные результаты по условию помещаются в <code>long</code>.</p>
 <p>Автоматически созданный <code>equals</code> у <code>record</code> сравнивает компоненты. Правила нормализации дроби задаются в коде класса. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-data-classes" data-qrc-style="default" class="qrc-link" href="../theory/chapters/data-classes.html#sec-j25-theory-data-classes"><span>Глава 14</span></a>; <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-equality" data-qrc-style="default" class="qrc-link" href="../theory/chapters/equality.html#sec-j25-theory-equality"><span>Глава 17</span></a>.</p>
 <aside class="notes">
@@ -280,7 +280,7 @@
 </section>
 <section id="sec-j25-practice-reserve-models-fractions" class="slide level2 continuation">
 <h2>Значения элементов после преобразования</h2>
-<p>В <a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-objects-rational-fractions" data-qrc-style="default" class="qrc-link" href="../tasks/bank/objects.html#exr-j25-objects-rational-fractions">Упражнение&nbsp;<span>21.8</span></a> дробь на чётном индексе складывается со следующей. Для массива значений</p>
+<p>В <a data-qrc-custom="false" data-qrc-ref="tasks:exr-objects-rational-fractions" data-qrc-style="default" class="qrc-link" href="../tasks/bank/objects.html#exr-objects-rational-fractions">Упражнение&nbsp;<span>21.8</span></a> дробь на чётном индексе складывается со следующей. Для массива значений</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a aria-label="1"></a>[1/2, 1/3, 1/4, 1/4, 2/5] → [5/6, 1/3, 1/2, 1/4, 2/5]</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>меняются элементы <code>0</code> и <code>2</code>. У последнего элемента нет пары, поэтому индекс <code>4</code> сохраняет значение; нечётные элементы тоже остаются прежними.</p>
 <p>Если операция возвращает новую дробь, нужно заменить элемент массива; один вызов без сохранения ответа его не изменит. Если несколько позиций ссылаются на одну дробь, изменение этого объекта видно в каждой из них. Условие сохраняет значения нечётных элементов, поэтому выбор мутации или нового объекта должен учитывать эти связи.</p>
@@ -302,7 +302,7 @@
 <section id="sec-j25-practice-reserve-models-reference" class="title-slide slide level1 center">
 <h1>Логический порядок и физические позиции</h1>
 <p>Для символьной очереди нужны классы и массивы; обобщённые очереди требуют также параметров типов.</p>
-<p>В <a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-polymorphism-circular-dynamic-queue" data-qrc-style="default" class="qrc-link" href="../tasks/bank/polymorphism.html#exr-j25-polymorphism-circular-dynamic-queue">Упражнение&nbsp;<span>22.7</span></a> при ёмкости <code>4</code> пусть <code>head = 3</code>, число элементов <code>3</code>, а позиции содержат:</p>
+<p>В <a data-qrc-custom="false" data-qrc-ref="tasks:exr-polymorphism-circular-dynamic-queue" data-qrc-style="default" class="qrc-link" href="../tasks/bank/polymorphism.html#exr-polymorphism-circular-dynamic-queue">Упражнение&nbsp;<span>22.7</span></a> при ёмкости <code>4</code> пусть <code>head = 3</code>, число элементов <code>3</code>, а позиции содержат:</p>
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -346,7 +346,7 @@
 <span id="cb2-3"><a aria-label="3"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">Arrays</span><span class="op">.</span><span class="fu">toString</span><span class="op">(</span>grown<span class="op">));</span></span>
 <span id="cb2-4"><a aria-label="4"></a><span class="co">// [B, C, null, A, null, null, null, null]</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>При прежнем <code>head = 3</code> следующий индекс по новой ёмкости равен <code>(3 + 1) % 8 = 4</code>: там находится <code>null</code>, хотя следующим нужен <code>B</code>. Нужно перенести <strong>оставшиеся логические элементы</strong> и согласовать новые индексы так, чтобы извлечение по-прежнему давало <code>A, B, C</code>.</p>
-<p>Для <a data-qrc-custom="false" data-qrc-ref="tasks:exr-generic-dynamic-queue" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-generic-dynamic-queue">Упражнение&nbsp;<span>23.6</span></a> сначала определите своё размещение. Правила индексации и роста должны соответствовать выбранному линейному или кольцевому размещению элементов. <a data-qrc-custom="false" data-qrc-ref="handbook:sec-api-arrays-copy-of" data-qrc-style="default" class="qrc-link" href="../handbook/entries/arrays.html#sec-api-arrays-copy-of">Arrays.copyOf для ссылочных компонентов</a>; <a data-qrc-custom="false" data-qrc-ref="handbook:sec-h-generic-classes" data-qrc-style="default" class="qrc-link" href="../handbook/entries/generic-classes.html#sec-h-generic-classes"><span>Глава 11</span></a>.</p>
+<p>Для <a data-qrc-custom="false" data-qrc-ref="tasks:exr-generics-generic-dynamic-queue" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-generics-generic-dynamic-queue">Упражнение&nbsp;<span>23.6</span></a> сначала определите своё размещение. Правила индексации и роста должны соответствовать выбранному линейному или кольцевому размещению элементов. <a data-qrc-custom="false" data-qrc-ref="handbook:sec-api-arrays-copy-of" data-qrc-style="default" class="qrc-link" href="../handbook/entries/arrays.html#sec-api-arrays-copy-of">Arrays.copyOf для ссылочных компонентов</a>; <a data-qrc-custom="false" data-qrc-ref="handbook:sec-h-generic-classes" data-qrc-style="default" class="qrc-link" href="../handbook/entries/generic-classes.html#sec-h-generic-classes"><span>Глава 11</span></a>.</p>
 <aside class="notes">
 <p>Сравните получившийся массив с логической последовательностью A, B, C. Копирование сохранило физические позиции; сохранение FIFO после роста требует согласовать новый порядок и индексы.</p>
 <style type="text/css">
@@ -384,7 +384,7 @@
 </section>
 <section id="хранение-вершин-и-соседей" class="slide level2 continuation">
 <h2>Хранение вершин и соседей</h2>
-<p>Для <a data-qrc-custom="false" data-qrc-ref="tasks:exr-j25-collections-graph-model" data-qrc-style="default" class="qrc-link" href="../tasks/bank/collections.html#exr-j25-collections-graph-model">Упражнение&nbsp;<span>24.10</span></a> нужны операции коллекций: <code>List</code> хранит последовательность, <code>Set</code> — множество без повторов, <code>Map</code> связывает ключ с соответствующим значением.</p>
+<p>Для <a data-qrc-custom="false" data-qrc-ref="tasks:exr-collections-graph-model" data-qrc-style="default" class="qrc-link" href="../tasks/bank/collections.html#exr-collections-graph-model">Упражнение&nbsp;<span>24.10</span></a> нужны операции коллекций: <code>List</code> хранит последовательность, <code>Set</code> — множество без повторов, <code>Map</code> связывает ключ с соответствующим значением.</p>
 <p>Если хранить только найденные рёбра, сведения об изолированной <code>C</code> будут потеряны. Модель должна сохранять и вершины без соседей. Совпадение списков смежности также не определяет равенство вершин: после удаления <code>A—B</code> все три списка пусты, а вершин по-прежнему три.</p>
 <p>При выборе хранения учитывают идентификаторы вершин и допустимость повторных связей. Операции коллекций: <a data-qrc-custom="false" data-qrc-ref="handbook:sec-j25-api-lists" data-qrc-style="default" class="qrc-link" href="../handbook/entries/lists.html#sec-j25-api-lists"><span>Глава 16</span></a>; <a data-qrc-custom="false" data-qrc-ref="handbook:sec-j25-api-sets-maps" data-qrc-style="default" class="qrc-link" href="../handbook/entries/sets-maps.html#sec-j25-api-sets-maps"><span>Глава 17</span></a>.</p>
 <aside class="notes">
@@ -405,7 +405,7 @@
 <section id="sec-j25-practice-reserve-models-projects" class="title-slide slide level1 center">
 <h1>Текущее состояние расписания</h1>
 <p>Для задачи о расписании нужны коллекции и интерфейсы.</p>
-<p>В <a data-qrc-custom="false" data-qrc-ref="tasks:exr-timetable-interfaces-project" data-qrc-style="default" class="qrc-link" href="../tasks/bank/projects.html#exr-timetable-interfaces-project">Упражнение&nbsp;<span>28.2</span></a> занятие связывает дату и время с предметом, преподавателем, группой и аудиторией. Обозначим преподавателей <code>T1</code>, <code>T2</code>, группы <code>G1</code>, <code>G2</code>, предметы <code>S1</code>, <code>S2</code>.</p>
+<p>В <a data-qrc-custom="false" data-qrc-ref="tasks:exr-projects-timetable-interfaces-project" data-qrc-style="default" class="qrc-link" href="../tasks/bank/projects.html#exr-projects-timetable-interfaces-project">Упражнение&nbsp;<span>28.2</span></a> занятие связывает дату и время с предметом, преподавателем, группой и аудиторией. Обозначим преподавателей <code>T1</code>, <code>T2</code>, группы <code>G1</code>, <code>G2</code>, предметы <code>S1</code>, <code>S2</code>.</p>
 <table class="caption-top" style="width:100%;">
 <colgroup>
 <col style="width: 16%">
@@ -606,7 +606,7 @@
 </section>
 <section id="границы-кодирования" class="slide level2 continuation">
 <h2>Границы кодирования</h2>
-<p>В <a data-qrc-custom="false" data-qrc-ref="tasks:exr-huffman-word-coding-project" data-qrc-style="default" class="qrc-link" href="../tasks/bank/projects.html#exr-huffman-word-coding-project">Упражнение&nbsp;<span>28.3</span></a> единицы кодирования — слова с сохранением регистра. Для реализации нужны классы, коллекции и <code>PriorityQueue</code>.</p>
+<p>В <a data-qrc-custom="false" data-qrc-ref="tasks:exr-projects-huffman-word-coding-project" data-qrc-style="default" class="qrc-link" href="../tasks/bank/projects.html#exr-projects-huffman-word-coding-project">Упражнение&nbsp;<span>28.3</span></a> единицы кодирования — слова с сохранением регистра. Для реализации нужны классы, коллекции и <code>PriorityQueue</code>.</p>
 <table class="caption-top">
 <colgroup>
 <col style="width: 50%">
