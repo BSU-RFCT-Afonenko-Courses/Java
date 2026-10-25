@@ -1,8 +1,8 @@
 # Происхождение технической поставки Java
 
-## Подготовленная техническая поставка 8.2.7/8.2.1/3.2.1
+## Подготовленная техническая поставка 8.2.7/8.2.5/3.2.1
 
-Core 8.2.7, Exporter 8.2.1, Site 5.1.3, QRC 3.1.0 и Download 3.2.1
+Core 8.2.7, Exporter 8.2.5, Site 5.1.3, QRC 3.1.0 и Download 3.2.1
 закреплены точными версиями и коммитами исходников. Факт удалённой публикации
 и готовность курса подтверждаются отдельными внешними доказательствами.
 Точные теги, коммиты и sourceZip закреплены в `providers.json`;
@@ -14,7 +14,7 @@ Core 8.2.7 опубликован с неизменяемым тегом и пр
 и проверяет актуальность native-операции на границах BEGIN/END вместо повторного
 полного чтения owner на каждом документе. Проверки выбранного документа,
 восстановления source и итогового закрытого набора сохраняются. Ветка Performance
-не интегрировалась; остальные провайдеры сохранены на прежних версиях. Полная
+не интегрировалась; Site, QRC и Download сохранены на прежних версиях. Полная
 CI и новая фактическая квалификация курса подтверждаются отдельно.
 
 | Владелец | Выпуск | Коммит |
@@ -22,7 +22,7 @@ CI и новая фактическая квалификация курса по
 | Afonenko-Course-Tools/quarto-course | v8.2.7 | `069251845a1803f1993ff2b09b30a2e0e275b04a` |
 | Afonenko-Course-Tools/quarto-project-publish | v5.1.3 | `425f042d5a5e07e57a28bb40b3c46a5ebdd17460` |
 | Afonenko-Course-Tools/quarto-reference-catalog | v3.1.0 | `3df2110e9f525f03f3ecb4926b5d55718e955c4c` |
-| Afonenko-Course-Tools/quarto-course-prairielearn | v8.2.1 | `b1aa5373d62da1e3fc1aaa5f0c21cb21aad903c8` |
+| Afonenko-Course-Tools/quarto-course-prairielearn | v8.2.5 | `12396ac13349421f0bc820c55db88f1f58bc39d3` |
 | Afonenko-Course-Tools/quarto-project-download | v3.2.1 | `498b1d89c159548c0eb1d706438178be16ddb082` |
 
 Поставка восстанавливается из проверенных локальных Git checkout без сетевых загрузок:
@@ -36,6 +36,11 @@ python3 tools/materialize-providers.py --check
 с Site/QRC. Корневая копия project-download предоставляет ZIP-модуль полной
 композиции Site; прежняя копия в tasks сохранена. Другие области не изменены.
 Три прежние поправки и manifests сохранены в истории Git.
+
+Exporter 8.2.5 опубликован с проверенным sourceZip. Его Lua consumer принимает
+`commonPathDocuments` актуального owned pointer Core 8.2.7; direct starter не
+публикует raw `.git`, а ZIP сохраняет исходную Git-историю. Свежие capture, M
+и экспорт курса на этом source commit ещё не выполнены.
 
 Exporter использует delivery v3 с Core; Body package остаётся v2.
 Подключение расширений не меняет Platform/Gateway, сервисные OCI pins или production.
