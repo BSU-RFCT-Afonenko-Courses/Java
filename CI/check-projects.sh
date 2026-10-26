@@ -15,15 +15,21 @@ python3 CI/check-production-pins.py
 # Штатные public outputs остаются внутри disposable execution checkout.
 timeout --signal=TERM --kill-after=5s 7200s quarto render . --profile student --fail-if-warnings
 quarto run tasks/_extensions/Afonenko-Course-Tools/course-core/entrypoints/check.ts tasks student
+# Следующий native pass удаляет course.json; сохранить проверенную модель приватно.
+TASK_CHECK_MODEL=$(mktemp "${RUNNER_TEMP:-/tmp}/java-course-model-XXXXXXXX")
+trap 'rm -f -- "$TASK_CHECK_MODEL"' EXIT
+TASK_CHECK_MODEL_PATH=$(realpath -- "$TASK_CHECK_MODEL")
+case "$TASK_CHECK_MODEL_PATH" in "$TASK_COURSE_ROOT/"*|"$TASK_CHECK_OUTPUT/"*) echo 'Model snapshot должен быть вне source/artifact output' >&2; exit 2;; esac
+cp -- tasks/_generated/course-spec/course.json "$TASK_CHECK_MODEL"
 quarto run tasks/_extensions/Afonenko-Course-Tools/course-core/entrypoints/project-checks.ts \
   -- --book tasks --profile ci-checks --output "$TASK_CHECK_OUTPUT/declared-checks.json"
 python3 "$PL_PLATFORM_ROOT/tools/check-course.py" inventory \
   --manifest "$TASK_CHECK_OUTPUT/declared-checks.json" --scope declared \
   --runtime-registry "$PL_RUNTIME_REGISTRY" --output "$TASK_CHECK_OUTPUT/inventory.json"
-python3 - "$TASK_CHECK_OUTPUT" <<'PY'
+python3 - "$TASK_CHECK_OUTPUT" "$TASK_CHECK_MODEL" <<'PY'
 import json,sys,os
 from pathlib import Path
-output=Path(sys.argv[1]);manifest=json.loads((output/'declared-checks.json').read_text());report=json.loads((output/'inventory.json').read_text());model=json.loads(Path('tasks/_generated/course-spec/course.json').read_text())
+output=Path(sys.argv[1]);manifest=json.loads((output/'declared-checks.json').read_text());report=json.loads((output/'inventory.json').read_text());model=json.loads(Path(sys.argv[2]).read_text())
 facts=[p for p in model.get('projects',[]) if p.get('check')];projects=manifest['projects'];ids=[p['exerciseId'] for p in projects]
 expected={p['exerciseId']:p for p in facts}
 if len(expected)!=len(facts) or len(set(ids))!=len(ids) or set(ids)!=set(expected):raise SystemExit('Core model и declared manifest имеют разные/повторные active IDs')
