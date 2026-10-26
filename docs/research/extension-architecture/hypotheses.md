@@ -64,7 +64,7 @@ T — разработка, установка, CI и выпуск. Для ка�
 | H32 | SHA всего NativeRun ради receipt не нужен обычному успешному маршруту | Реальные readers и гарантии receipt; run identity, artifact integrity и диагностическое происхождение отдельно | R/E/T |
 | H33 | Resource selection повторно обходит каталоги и создаёт Git-процессы | Повторные ресурсы/проекты, gitignore semantics, размер списка и process startup на каждый вызов | R/E |
 | H34 | PrairieLearn повторно materialize/render/hash один вопрос для нескольких работ | Цена по числу memberships против unique question; проверка конфликтов повторных payload должна сохраняться | E |
-| H35 | Проверки inventory/export заново рендерят уже полученный банк | API lifetime, source selection, required full/closed data, reuse collected model и границы доверия | E/T |
+| H35 | Раздельные CLI-фазы inventory/export заново собирают уже полученные факты | Внутри stock exporter уже есть reuse одного collected; исследовать границы команд, lifetime, повторные inputs и full-scope до отбора | E/T |
 | H36 | Print/Moodle дважды валидируют неизменённый Body AST | Список predicates и преобразований между validations, наличие асинхронной границы | E |
 | H37 | Print или exporter узнаёт дешёвый input/destination конфликт после дорогой работы | Earliest available facts против фактического порядка render/compile/validate/write | E |
 | H38 | Moodle оплачивает процесс на каждый маленький fragment/choice | Число процессов Q+C и эквивалентная native обработка с меньшим startup | E |
@@ -122,7 +122,41 @@ T — разработка, установка, CI и выпуск. Для ка�
 | A11 | Docker/host и локальные кандидаты образовали конкурирующие маршруты | Владельцы execution/sandbox, запускаемые процессы и instances, public/private inputs, image source, условия pull/offline и единая политика |
 | A12 | Баллы зависят от инфраструктурных деталей вместо учебной политики | Test scoring → auto/manual weights → work points/pass/gradebook, failure classes и защита от двойного начисления |
 
-## Правила закрытия всех пунктов
+## Дополнение: выпуск, отказы и восстановление
+
+Новые публичные свидетельства собраны в
+[обновлении от 27 октября](publication-evidence-2026-10-27.md). B01–B16 не
+заменяют A/H: они проверяют недостающие условия реального выпуска. Указанные
+там refs являются evidence, а не выбранной базой будущего исследования.
+
+Перепроверка прежних пунктов обязательна: `commonPathDocuments` и подмножества
+public `input/state/action` имеют опубликованные исправления; они остаются
+историческими примерами, а не автоматически текущими дефектами. Для H07–H17
+нужно различать selected boundaries новой публикационной линии и actual-writer
+fix другой линии. Для H34/H35 нельзя предполагать full render на каждую работу,
+если stock entrypoint передаёт уже собранную модель. H54 использует новые
+числовые данные, сохраняя их ограничения.
+
+| ID | Предположение для проверки | Различающее свидетельство |
+| --- | --- | --- |
+| B01 | SemVer/latest скрывают разные линии capabilities и исправлений | Lineage/merge-base и матрица fix/capability/observability; реальная включённость, а не максимум номера |
+| B02 | Source release, runtime, host tools и assembly связаны жёстче необходимого | Независимые владельцы, проверяемая compatibility tuple, штатный source→assets derivation и возможность обновить один компонент |
+| B03 | Фактический выпуск расходится с текстом PR/README и видимостью готовности | Source tag/PR/CI/assets/OCI/Native/qualification/admission/server показаны как разные состояния с provenance |
+| B04 | Условия исторической версии прячутся в интеграционных pins и отрицательных тестах | Actual consumer graph, работающий negative mutation с изменившимся входом, переиспользование теста на совместимом producer |
+| B05 | Embedded/standalone схемы и грамматики ID снова расходятся | Actual prepare_job/host validator плюс producer fixtures для feedback/publicCases и digit-first instance до дорогого выпуска |
+| B06 | Starter selection, свободный ответ, fixed API и UI смешаны | Optional-primary/legacy true/absent, реальная primary+ZIP union, nested packages, editor/upload и независимые reference/public checks |
+| B07 | Численные знаменатели скрывают иной scope проверки | Отдельные множества bank exercises/canonical QMD/workspace QMD/checks/works/scenarios и обоснование включений/исключений |
+| B08 | Workspace QMD создают повторные identities на обычном пути, хотя CI их исключает | Native input selection и capture membership для author/page/preview/full/ci-checks при одинаковом нужном результате |
+| B09 | Срок жизни промежуточного native результата не согласован с consumers | Produce/use/delete graph модели, capture/profiles и helper calls; ранний отказ или передача принятой модели вместо случайного файла |
+| B10 | Source inventory требует дополнительного физического overlay common files | Source view против assembled view, placement/audience guards, чистота disposable checkout, восстановление и цена повторного копирования |
+| B11 | Временный admission создаёт неявную подмену qualification | Strict/deferred state machine, реальные failed/human/privacy документы, route binding, отсутствие fake verified receipt и видимость NOT_VERIFIED |
+| B12 | После exceptional admission не определено закрытие долга и recovery | Deadline/expiry, смена Native/source, повторный stage, последующая qualification, rollback и сохранение результатов; без продления старого разрешения |
+| B13 | Дорогой отказ можно обнаружить до render/build/publisher | Earliest sufficient check для schema/API/input/lifetime/runtime; сохранённая цепочка failures и исключение no-op test controls |
+| B14 | Qualification заново проверяет неизменённые runtime/dependency деревья внутри каждого сценария | Число Git/FS/hash/container/public jobs и scopes доверия; фазовая гарантия сравнивается с нужной fresh проверкой |
+| B15 | Restart после отказа повторяет доказанную работу или использует stale evidence | Валидные checkpoints, изменившийся input closure, критический путь до рабочего результата и статус частичного выполнения |
+| B16 | Существующие perf данные и новая release-линия дают несопоставимые выводы | Cybersecurity matrix, четыре изменённых владельца, raw locality, hardware и coverage; Java author/render/export/qualification измеряются раздельно |
+
+## Правила закрытия всех пунктов A/H/B
 
 Итог связывает ID гипотезы с ledger, требованиями, конкретным evidence и
 выбранным или отклонённым вариантом. Подтверждённый лишний callsite не означает
@@ -130,7 +164,7 @@ T — разработка, установка, CI и выпуск. Для ка�
 текущей частоты. Вывод по JSON export не переносится на обычный HTML.
 
 Микроопыт допускается только для различения сформулированных объяснений.
-Нет необходимости исполнять шестьдесят независимых benchmark suites:
+Нет необходимости исполнять отдельную benchmark suite для каждой гипотезы:
 один корректный сценарий может закрывать группу гипотез при явной связи.
 
 Этот реестр не заменяет механический inventory всего собственного кода.

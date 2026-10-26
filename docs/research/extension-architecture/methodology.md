@@ -29,18 +29,32 @@ auto/manual points → итог. Для Docker указываются actual cal
 
 ## Единицы учёта и полнота
 
+Дополнение к авторской карте — [хронология новых отказов и выпусков](publication-evidence-2026-10-27.md).
+Её ссылки обозначают исторические evidence, не выбранную базу. В T00/R01
+сопоставляются normal/emergency route, исходники, локальный итог чата и CI.
+Отдельно помечаются прочитанный лог, утверждение PR, отсутствующий local receipt
+и проверенная функциональная гарантия. Количество QMD, уникальных checks,
+файлов, ZIP, jobs и контейнеров не взаимозаменяемо.
+
 Различаются функция, место вызова, фактическое выполнение и внешняя реализация.
 Одна необходимая функция может вызываться избыточно; один callsite может
 исполняться на каждом документе или внутри вложенного цикла. Обоснование
 функции не заменяет обоснование её частоты и области чтения.
 
-Учитываются собственные TS/JS/Lua функции, методы, локальные функции,
+Учитываются собственные TS/JS/Lua/Python функции, методы, локальные функции,
 анонимные callbacks, closures и фабрики, top-level действия, динамические
 imports/dispatch и вызовы системных/стандартных API. Каждая точка вызова
 связывается с операцией. Для чистых однотипных вызовов допустимо общее
 обоснование, но сохраняется список всех callsites. Чтение, запись, удаление,
 публикация, FFI, внешние процессы, изменение env и межпакетные границы всегда
 видны отдельно.
+
+Python Platform и integration tooling входят наравне с расширениями; shell
+функции и top-level команды образуют собственные операции/места вызова.
+Учитываются import/decorator эффекты и запуск внешних программ. Для Python
+используется доступный AST parser; для shell — доступный parser либо ручной
+учёт с проверенным списком файлов/команд и явными unresolved связями. Нехватка
+парсера не исключает язык из denominator и не превращает regex в полный AST.
 
 Инвентарь извлекается доступными парсерами и средствами Performance. Поиск
 текста помогает разведке, но regex-перечень не считается полным AST inventory.
@@ -67,6 +81,14 @@ source spans и identities заполняются после задачи зак
 | references | id, upstream_project, API_or_pattern, relation, source, applicable_constraints, differences, license_if_copied, evidence_ids |
 | alternatives | id, problem, mechanism, preserved_invariants, changed_contracts, cost_model, complexity, risks, required_evidence |
 | decisions | id, hypothesis_ids, alternative_ids, result, rationale, evidence_ids, unresolved_questions |
+
+Для release/recovery используется тот же ledger, а не вторая система учёта.
+В `results/release-and-recovery.md` добавляются timeline и таблица переходов:
+attempt/input tuple, stage, owner, result, evidence scope, earliest detection,
+retry/cleanup, qualification debt и неизвестные. Минимально различаются
+source release, runtime publication, render/export, qualification, admission
+и server import. `DEFERRED_BY_USER / NOT_VERIFIED` не переводится в verified
+или grading PASS при переносе между отчётами.
 
 Для наблюдавшихся выполнений используются отдельные данные Performance:
 сценарий, invocation/parent/process/executor, phase, размер входа, число
@@ -118,6 +140,18 @@ inode, permissions, активного run или только public payload; �
 механизм → последующие расширения области → сегодняшние callers и ограничения.
 На финально выбранных refs проверяются code, docs, tests, commits, PR и
 сохранённые evidence. Старый отчёт не доказывает поведение новой линии.
+
+До нового опыта строится lineage/capability/fix matrix. Номер SemVer и
+`releases/latest` недостаточны: выбранный source может не содержать fix другой
+линии. Раздельно фиксируются runtime, host-tools, registry/lock, raw source,
+raw release assets и assembled output с разрешёнными overlay. Состав и
+контракты важнее искусственного совпадения номеров. Непроверенный гибрид
+веток не становится baseline молча; status docs сверяются с фактом CI/release.
+
+Данные human/privacy/failed-report и срок исторической policy выясняются по
+первичным доступным источникам. Наличие SHA поля не доказывает содержание
+решения. Исследование не запускает stage/publisher/server и не продлевает
+допуск; R03 описывает требуемое восстановление как предложение.
 
 Для references различать: реальное заимствование; использованный public API;
 похожий независимый подход; внешний аналог для сравнения; происхождение не
@@ -184,6 +218,12 @@ server и внешних сервисов не изображается выпо
 Окончательный размер определяется полнотой ветвей; семь QMD — ориентир,
 не жёсткий предел и не обещание покрытия.
 
+В выбранные малые случаи включаются canonical и materialized QMD рядом,
+сохранность модели между helper/native фазами, common inputs в source и
+assembled workspace, optional-primary/ZIP и fixed API. Это отдельные ветви,
+не дополнительный полный курс. Qualification использует только собственные
+малые данные и предусмотренный sandbox; этот опыт не допускает реальный банк.
+
 ## Сценарии и оси масштаба
 
 Сначала одиночная обычная страница, страница банка и Reveal; затем preview
@@ -223,6 +263,10 @@ overhead. Непосредственно comparable варианты сохра�
 
 - До новых запусков прочитать имеющиеся Performance/CI evidence и определить,
   какой недостающий вопрос действительно требует нового наблюдения.
+- Матрица Cybersecurity из нового evidence note уже содержит сравнительные
+  серии и traces. Проверить доступность raw data, версии и metrics domains;
+  четырёхкомпонентное сравнение не локализует причину регрессии. Неполный
+  старый результат не заменяет более поздний, но остаётся частью истории.
 - Одновременно выполняется одна тяжёлая очередь: render, export, CPU profile,
   browser suite, compilation или benchmark. Аналитические агенты читают код.
 - Не останавливать чужие процессы и не менять governor, caches ОС и настройки
@@ -247,6 +291,10 @@ overhead. Непосредственно comparable варианты сохра�
   сохраняются в результате. Они не становятся нулевыми затратами или PASS.
 - Непредусмотренное повторное выполнение большого Java запрещено. Сначала
   анализ raw data, затем один минимальный различающий опыт.
+- Для отказов отдельно считать стоимость до ошибки, cleanup и повторяемые
+  этапы. Gradle/toolchain hashing, контейнеры и assembly recheck учитывать
+  только в тех сценариях, где они реально вызываются. При reuse указать,
+  какие inputs/контракты делают evidence устаревшим; cold/warm не угадывать.
 
 ## Корректность и применимость
 
