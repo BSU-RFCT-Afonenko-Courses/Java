@@ -16,7 +16,7 @@ python3 CI/check-production-pins.py
 timeout --signal=TERM --kill-after=5s 7200s quarto render . --profile student --fail-if-warnings
 quarto run tasks/_extensions/Afonenko-Course-Tools/course-core/entrypoints/check.ts tasks student
 quarto run tasks/_extensions/Afonenko-Course-Tools/course-core/entrypoints/project-checks.ts \
-  --book tasks --output "$TASK_CHECK_OUTPUT/declared-checks.json"
+  -- --book tasks --profile ci-checks --output "$TASK_CHECK_OUTPUT/declared-checks.json"
 python3 "$PL_PLATFORM_ROOT/tools/check-course.py" inventory \
   --manifest "$TASK_CHECK_OUTPUT/declared-checks.json" --scope declared \
   --runtime-registry "$PL_RUNTIME_REGISTRY" --output "$TASK_CHECK_OUTPUT/inventory.json"
