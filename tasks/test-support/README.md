@@ -4,12 +4,28 @@
 данные заданий и ожидаемые значения находятся в соответствующих наборах.
 Материализация в проекты и проверка целевой поставки выполняются отдельно.
 
-Список проектов задаёт `projects.json`. После проверки изменений выполните
-`python3 tasks/test-support/materialize.py --write`, затем `--check`.
-`materialized.json` фиксирует hashes обеих поставок. Неожиданная локальная
-правка останавливает обновление до первой записи; символические ссылки и
-пути вне корня отвергаются. Удаление ранее поставленных файлов требует
-отдельного рассмотрения. Сам каталог `test-support/` исключён из ресурсов сайта.
+Общие зависимости задаются в captured metadata Core `project-materialization.projects`.
+`source` указывает единственный файл относительно owner `tasks`, `target` — путь
+в выбранном проекте; публичные mappings включаются также в grading stage.
+Курсовой adapter вызывает установленный Core и не копирует файлы в исходные проекты:
+
+```bash
+python3 tasks/test-support/materialize.py --root tasks \
+  --model tasks/_generated/course-spec/native-run.json \
+  --output-root /absolute/fresh/student-stage --audience student \
+  --task exr-example --write
+```
+
+Замените `exr-example` действующим ID проекта. Перед сборкой нужен текущий native capture всего owner.
+`--check` вместо `--write` только сверяет ранее созданный stage и receipt.
+Для grading укажите `--audience grading --teacher-root /absolute/private/java`.
+Выход должен быть новым и находиться вне source/teacher; закрытые файлы никогда
+не включаются в student. Единственный алгоритм отбора, guards и hash receipt
+принадлежит Core. Каталог `test-support/` исключён из ресурсов сайта.
+
+Старые `projects.json` и `materialized.json` выведены из активного состава.
+Тематические проекты не содержат копий общего кода: dependencies объявлены
+в `project-materialization.projects`, а receipt генерируется Core для новой сборки.
 
 `coursesupport.JavaProcess.run(Main.class, input, args...)` запускает новую JVM
 с JDK текущего процесса, UTF-8, памятью 128 МиБ, временем 10 секунд и общим
@@ -54,12 +70,24 @@ JVM, `System.exit`, UTF-8, аргументы и рабочий каталог, 
 python3 -m unittest discover -s tasks/test-support -p test_materialize.py -v
 ```
 
-`api/CliPrecheck.java` — отдельный общий API precheck Platform. Материализатор
-поставляет его в `api/` обеих тестовых частей вместе с библиотекой и фиксирует
-в том же hash manifest. Профиль `java-cli` выбирает этот файл отдельным subset:
+`api/CliPrecheck.java` — отдельный общий API precheck Platform. Явный common mapping
+поставляет его в `api/` нужной тестовой части и фиксирует в Core receipt. Профиль `java-cli` выбирает этот файл отдельным subset:
 он компилируется без student classpath и проверяет только наличие загрузочного
 класса `Main` без инициализации. Модификаторы, конструктор и форма `main`
 не ограничиваются; фактический Java 25 launcher проверяется поведенческими
 тестами. Канонический файл находится вне `src/`, поэтому JDK-only `check.py`
 не требует Platform helper. При самостоятельном JUnit-запуске не включайте
 `api/` в зависимую компиляцию: precheck выполняется отдельной стадией Platform.
+
+`runCheckingUncaught` различает наблюдённое необработанное исключение
+(`JavaProcess.UncaughtStudentException`), истечение срока ожидания вложенного процесса
+(`StudentTimeout`) и превышение общего объёма вывода (`StudentOutputLimit`).
+Все три типа — final наследники `AssertionError`; прежние run/Result signatures
+и catchability сохраняются. Ненулевой exitCode сам по себе не означает исключение.
+Студенческая диагностика внешней проверки использует типы и проверенное trusted
+происхождение классов, а не текст ошибки или stderr.
+
+Общая инструкция открытых JDK-проверок — `CHECKS.md`. Она генерируется рядом
+с README выбранной задачи. `junit/PublicScenarioTest.java` — общий адаптер
+только явно публичных сценариев для grading; он не входит в JDK-комплект.
+Закрытые ContractTest, данные и эталоны находятся во внешнем teacher root.

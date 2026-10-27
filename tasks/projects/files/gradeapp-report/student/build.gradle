@@ -1,0 +1,30 @@
+plugins { id 'java' }
+
+repositories { mavenCentral() }
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.13.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.13.4'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 25
+    options.encoding = 'UTF-8'
+}
+
+test { useJUnitPlatform() }
+
+jar {
+    archiveFileName = 'gradeapp.jar'
+    manifest { attributes 'Main-Class': 'grade.Main' }
+}
+
+tasks.register('prepareDependencies') {
+    doLast {
+        configurations.testCompileClasspath.files
+        configurations.testRuntimeClasspath.files
+    }
+}
+
+// Открытые JDK/JUnit наблюдения запускают настоящий собранный JAR.
+test.dependsOn tasks.named('jar')

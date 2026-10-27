@@ -11,11 +11,13 @@ permissions:
 concurrency:
   group: course-check-${{ github.ref }}
   cancel-in-progress: true
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
 jobs:
   render:
-    name: Сборка и согласованность
+    name: Публичная сборка и согласованность
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 360
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -26,14 +28,30 @@ jobs:
       - uses: cue-lang/setup-cue@b0e30e540a2dae47304ebf16586a5b2db023b61c
         with:
           version: v0.17.1
-      - name: Student → full → student через owner hooks
-        run: bash CI/render.sh
+      - name: Student → full → student в disposable checkout
+        run: |
+          set -euo pipefail
+          umask 022
+          TASK_HEAD=$(git rev-parse HEAD)
+          git clone --no-hardlinks --no-checkout "$GITHUB_WORKSPACE" "$RUNNER_TEMP/course-render"
+          git -C "$RUNNER_TEMP/course-render" checkout --detach "$TASK_HEAD"
+          test "$(git -C "$RUNNER_TEMP/course-render" rev-parse HEAD)" = "$TASK_HEAD"
+          cd "$RUNNER_TEMP/course-render"
+          export CI_LOG_DIR="$RUNNER_TEMP/course-render-logs"
+          mkdir -m 700 "$CI_LOG_DIR"
+          bash CI/render.sh
+      - name: Сохранить финальный student-сайт
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: java-student-site-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/course-render/_site-student
+          include-hidden-files: false
+          if-no-files-found: error
+          retention-days: 14
   projects:
-    name: Явно подключённые проекты и полная выбранная поставка
-    permissions:
-      contents: read
+    name: Публичные source/student и declared inventory
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -48,49 +66,69 @@ jobs:
         with:
           distribution: temurin
           java-version: '25'
-      - name: Проверить границу local candidate перед production grading
+      - name: Проверить фактические production pins
         run: python3 CI/check-production-pins.py
-      - name: Exact released Platform и проверяемые runtime pins
+      - name: Exact source, три authenticated assets и штатная release assembly
         run: |
+          set -euo pipefail
+          umask 022
           python3 - <<'PY'
-          import json, os, re
+          import hashlib,importlib.util,json,os,shutil,subprocess,sys,urllib.request
           from pathlib import Path
-          platform = json.loads(Path('CI/toolchain.json').read_text())['platform']
-          if platform['repository'] != 'Afonenko-Course-Tools/prairielearn-platform':
-              raise SystemExit('Unexpected Platform repository')
-          if not re.fullmatch(r'v[0-9]+\.[0-9]+\.[0-9]+', platform['tag'] or ''):
-              raise SystemExit('Actual published Platform tag is required')
-          if not re.fullmatch(r'[a-f0-9]{40}', platform['commit'] or ''):
-              raise SystemExit('Actual published Platform commit is required')
-          for key in ('javaImage', 'communityImage'):
-              if not re.fullmatch(r'ghcr\.io/[^\s]+@sha256:[a-f0-9]{64}', platform[key] or ''):
-                  raise SystemExit('Actual published repository digest is required')
-          with open(os.environ['GITHUB_ENV'], 'a') as env:
-              env.write('TASK_PLATFORM_COMMIT=' + platform['commit'] + '\n')
-              env.write('TASK_PLATFORM_TAG=' + platform['tag'] + '\n')
-              env.write('TASK_PLATFORM_JAVA_IMAGE=' + platform['javaImage'] + '\n')
+          t=json.loads(Path('CI/toolchain.json').read_text());p=t['platform'];publication=t['imagePublication']
+          temp=Path(os.environ['RUNNER_TEMP']);raw=temp/'platform-source';assembly=temp/'platform-assembly';assets=temp/'platform-assets'
+          repository='https://github.com/'+p['repository']
+          def git(root,*args):return subprocess.check_output(['git','-c','core.hooksPath=/dev/null',*args],cwd=root,text=True).strip()
+          raw.mkdir();git(raw,'init');git(raw,'remote','add','origin',repository)
+          git(raw,'fetch','--depth=1','origin','refs/tags/'+p['tag']+':refs/tags/'+p['tag'])
+          if git(raw,'cat-file','-t',p['tag'])!='tag' or git(raw,'rev-parse',p['tag'])!=p['tagObject'] or git(raw,'rev-parse',p['tag']+'^{commit}')!=p['commit']:raise SystemExit('Published tag object/commit отличается')
+          git(raw,'checkout','--detach',p['commit'])
+          if git(raw,'rev-parse','HEAD^{tree}')!=p['sourceTree'] or git(raw,'status','--porcelain=v1','--untracked-files=all'):raise SystemExit('Platform source tree не совпадает/не clean')
+          subprocess.run(['git','clone','--no-hardlinks',str(raw),str(assembly)],check=True)
+          git(assembly,'remote','set-url','origin',repository)
+          assets.mkdir(mode=0o700)
+          for name,pin in publication['assets'].items():
+              with urllib.request.urlopen(pin['url'],timeout=120) as response:data=response.read(pin['bytes']+1)
+              if len(data)!=pin['bytes'] or hashlib.sha256(data).hexdigest()!=pin['sha256']:raise SystemExit('Asset bytes отличаются: '+name)
+              target=assets/name;target.touch(mode=0o600,exist_ok=False);target.write_bytes(data)
+          # Имена штатных overlays; исходный raw checkout остаётся clean.
+          shutil.copyfile(assets/'published-runtime-profiles.json',assembly/'runtime-profiles.json')
+          shutil.copyfile(assets/'published-toolchain-lock.json',assembly/'runtime/gradle-jar-v1/toolchain-lock.json')
+          docker_config=temp/'java-anonymous-ghcr';docker_config.mkdir(mode=0o700);os.environ['DOCKER_CONFIG']=str(docker_config)
+          spec=importlib.util.spec_from_file_location('course_pins',Path('CI/check-production-pins.py'));pins_module=importlib.util.module_from_spec(spec);spec.loader.exec_module(pins_module)
+          configs={}
+          for role in ('java','fish'):
+              subprocess.run(['docker','pull',p[role+'Image']],check=True)
+              projection='{"Id":{{json .Id}},"RepoDigests":{{json .RepoDigests}},"Descriptor":{{json .Descriptor}},"Os":{{json .Os}},"Architecture":{{json .Architecture}},"RootFS":{{json .RootFS}},"Source":{{json (index .Config.Labels "org.opencontainers.image.source")}},"Revision":{{json (index .Config.Labels "org.opencontainers.image.revision")}}}'
+              observed_raw=subprocess.check_output(['docker','image','inspect',p[role+'Image'],'--format',projection],timeout=30)
+              if len(observed_raw)>65536:raise SystemExit('Docker metadata projection превышает лимит')
+              observed=json.loads(observed_raw);configs[role]=pins_module._published_image_config(p,role,observed)
+              print(json.dumps({'role':role,'actualDockerId':observed['Id'],'authenticatedOciConfigDigest':configs[role],'authenticatedManifestDigest':p[role+'Image'].split('@')[1]},sort_keys=True),flush=True)
+          images=json.loads((raw/'images.lock.json').read_text())
+          for role,key in [('java','javaGrader'),('fish','fishGrader'),('community','communityGateway')]:
+              images[key].update(image=p[role+'Image'],sourceCommit=p['commit'],version=p['version'])
+              if 'localImage' in images[key]:images[key]['localImage']=p[role+'Image'].split('@')[0]+':'+p['version']
+              # Сохранить canonical fields: config identity отдельно от Docker local ID.
+              if 'localImageId' in images[key]:images[key]['localImageId']=configs[role]
+          images['releaseAssembly']={'schema':'pl-platform-release-assets-v1','repository':repository,'sourceCommit':p['commit'],'sourceTree':p['sourceTree'],'version':p['version'],'tag':p['tag'],'assets':{n:x['sha256'] for n,x in publication['assets'].items()}}
+          view=assets/'images.lock.json';view.touch(mode=0o600,exist_ok=False);view.write_text(json.dumps(images,indent=2)+'\n')
+          # Existing Context проверяет source-derived registry/lock и полный inventory.
+          env=dict(os.environ,PL_PLATFORM_ROOT=str(assembly),PL_RUNTIME_REGISTRY=str(assets/'published-runtime-profiles.json'))
+          subprocess.run([sys.executable,'CI/check-production-pins.py'],env=env,check=True)
+          if git(raw,'status','--porcelain=v1','--untracked-files=all'):raise SystemExit('Raw source изменился')
+          subprocess.run([sys.executable,'-m','pip','install','--requirement',str(raw/'requirements.txt')],check=True)
+          with open(os.environ['GITHUB_ENV'],'a') as output:
+              for key in ('PL_PLATFORM_ROOT','PL_RUNTIME_REGISTRY','DOCKER_CONFIG'):output.write(key+'='+env[key]+'\n')
           PY
-      - name: Получить точный owner tag и pre-pull image вне timed jobs
+      - name: Публичный inventory; private qualification обязательна отдельно
         run: |
-          TASK_PLATFORM_DIR="$RUNNER_TEMP/java-platform"
-          git init "$TASK_PLATFORM_DIR"
-          git -C "$TASK_PLATFORM_DIR" remote add origin https://github.com/Afonenko-Course-Tools/prairielearn-platform.git
-          git -C "$TASK_PLATFORM_DIR" fetch --depth=1 origin "refs/tags/$TASK_PLATFORM_TAG"
-          test "$(git -C "$TASK_PLATFORM_DIR" rev-parse 'FETCH_HEAD^{commit}')" = "$TASK_PLATFORM_COMMIT"
-          git -C "$TASK_PLATFORM_DIR" checkout --detach "$TASK_PLATFORM_COMMIT"
-          TASK_PLATFORM_DIR="$TASK_PLATFORM_DIR" python3 - <<'PY'
-          import json, os
-          from pathlib import Path
-          expected = json.loads(Path('CI/toolchain.json').read_text())['platform']['javaImage']
-          registry = json.loads((Path(os.environ['TASK_PLATFORM_DIR'])/'runtime-profiles.json').read_text())
-          if any(registry.get('profiles', {}).get(name, {}).get('image') != expected for name in ('java25-junit-v1', 'java25-mutation-v1')):
-              raise SystemExit('Released runtime registry differs from recorded digest')
-          PY
-          export DOCKER_CONFIG="$RUNNER_TEMP/java-anonymous-ghcr"
-          mkdir -p "$DOCKER_CONFIG"
-          printf 'DOCKER_CONFIG=%s\n' "$DOCKER_CONFIG" >> "$GITHUB_ENV"
-          docker pull "$TASK_PLATFORM_JAVA_IMAGE"
-          python3 -m pip install --requirement "$TASK_PLATFORM_DIR/requirements.txt"
-          echo "PL_PLATFORM_ROOT=$TASK_PLATFORM_DIR" >> "$GITHUB_ENV"
-      - name: Owner inventory и полная выбранная поставка
-        run: bash CI/check-projects.sh
+          set -euo pipefail
+          umask 022
+          TASK_HEAD=$(git rev-parse HEAD)
+          git clone --no-hardlinks --no-checkout "$GITHUB_WORKSPACE" "$RUNNER_TEMP/course-projects"
+          git -C "$RUNNER_TEMP/course-projects" checkout --detach "$TASK_HEAD"
+          test "$(git -C "$RUNNER_TEMP/course-projects" rev-parse HEAD)" = "$TASK_HEAD"
+          cd "$RUNNER_TEMP/course-projects"
+          export CI_CHECK_OUTPUT="$RUNNER_TEMP/course-project-inventory"
+          mkdir -m 700 "$CI_CHECK_OUTPUT"
+          bash CI/check-projects.sh

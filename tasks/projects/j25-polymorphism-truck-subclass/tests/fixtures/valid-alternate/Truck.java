@@ -1,1 +1,0 @@
-package alternate;public class Truck extends Vehicle{private int cargocap;public Truck(int p,int f,int m,int c){super(p,f,m);if(c<0)throw new IllegalArgumentException();cargocap=c;}public int getCargo(){return cargocap;}public void putCargo(int c){if(c<0)throw new IllegalArgumentException();cargocap=c;}}

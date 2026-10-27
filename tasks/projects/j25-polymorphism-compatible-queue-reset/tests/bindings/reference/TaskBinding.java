@@ -1,1 +1,0 @@
-class TaskBinding{static Object oldQueue(){return new LegacyQueue(2);}static Object newQueue(){return new ResetQueue(2);}static void put(Object q,char c){((ICharQ)q).put(c);}static char get(Object q){return ((ICharQ)q).get();}static void reset(Object q){((ICharQ)q).reset();}}

@@ -1,8 +1,14 @@
+---
+exercise-bank: true
+default-exercise-target: manual
+default-exercise-course-role: independent-study
+default-exercise-statement-visibility: open
+---
 # Исследования по теме «Исключения» {#sec-research-exceptions}
 
 Общие требования: @tasks:sec-research-program.
 
-:::: {#exr-research-failure-reporting-boundaries difficulty="intermediate" time="240"}
+:::: {#exr-exceptions-research-failure-reporting-boundaries difficulty="intermediate" time="240"}
 ## Интерфейс отказа операции
 
 Какая информация об отказе нужна вызывающему коду и где имеет смысл его обрабатывать?
@@ -21,13 +27,13 @@
 
 **Подготовка.** Разделы @theory:sec-j25-theory-classes, @theory:sec-j25-theory-interfaces и @theory:sec-j25-theory-exceptions. Для варианта чтения самостоятельно объявите интерфейс источника с операцией чтения одной текстовой записи. Выберите и объясните тип результата и способ сообщения об отказе; реализуйте источник небольшим массивом строк `"12"`, `"ошибка"`, `"7"`. Различите окончание массива и отказ преобразования записи в число. Массив позволяет воспроизвести те же исходы без зависимости от файловой системы.
 
-Связанные задания: @tasks:exr-j25-exceptions-queue-exceptions — исключения очереди; альтернативный материал @tasks:exr-j25-exceptions-locale-number-errors — записи чисел с локалями. В {{< xref tasks exr-research-optional-fallback-evaluation "Optional: отсутствие результата и отложенные вычисления" >}} исследуется обычное отсутствие результата; интерфейс отказа требует сохранить причину неудачи и выбрать уровень обработки.
+Связанные задания: @tasks:exr-exceptions-queue-exceptions — исключения очереди; альтернативный материал @tasks:exr-exceptions-locale-number-errors — записи чисел с локалями. В {{< xref tasks exr-pipelines-research-optional-fallback-evaluation "Optional: отсутствие результата и отложенные вычисления" >}} исследуется обычное отсутствие результата; интерфейс отказа требует сохранить причину неудачи и выбрать уровень обработки.
 
 [@bib-research-failure-reporting-boundaries-1; @bib-research-failure-reporting-boundaries-2; @bib-korneev-io-exceptions]
 
 ::::
 
-:::: {#exr-research-failed-transfer-invariants difficulty="advanced" time="240"}
+:::: {#exr-exceptions-research-failed-transfer-invariants difficulty="advanced" time="240"}
 ## Состояние после неудачной операции
 
 Какие свойства состояния объекта сохраняются после операции, завершившейся исключением?
@@ -47,7 +53,7 @@
 
 **Подготовка.** Разделы @theory:sec-theory-arrays, @theory:sec-j25-theory-classes и @theory:sec-j25-theory-exceptions; для варианта с интерфейсом очереди — @theory:sec-j25-theory-interfaces. Для варианта ссылочного `arraycopy` также наследование и совместимость типов.
 
-Связанные задания: @tasks:exr-j25-exceptions-queue-exceptions даёт интерфейс отказа очереди, @tasks:exr-j25-polymorphism-copy-character-queues — знакомый контекст взаимодействия очередей. Для исследования добавьте составную операцию переноса, способную изменить обе очереди до обнаружения отказа. Используйте собственные готовые очереди либо самостоятельно создайте небольшую модель с ограниченной вместимостью для демонстрации отказа; для опыта достаточно одной реализации с явно описанными операциями и инвариантами.
+Связанные задания: @tasks:exr-exceptions-queue-exceptions даёт интерфейс отказа очереди, @tasks:exr-polymorphism-copy-character-queues — знакомый контекст взаимодействия очередей. Для исследования добавьте составную операцию переноса, способную изменить обе очереди до обнаружения отказа. Используйте собственные готовые очереди либо самостоятельно создайте небольшую модель с ограниченной вместимостью для демонстрации отказа; для опыта достаточно одной реализации с явно описанными операциями и инвариантами.
 
 [@bib-research-failed-transfer-invariants-1; @bib-research-failed-transfer-invariants-2; @bib-research-failed-transfer-invariants-3]
 

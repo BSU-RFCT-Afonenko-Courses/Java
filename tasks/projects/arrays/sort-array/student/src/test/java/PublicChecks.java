@@ -1,0 +1,29 @@
+import java.util.Arrays;
+/** Только опубликованные данные. TaskBinding — редактируемый клиент, не обязательный API студента. */
+public class PublicChecks {
+    private static final String NORMAL_NAME = "Повторы и отрицательные элементы";
+    private static final String NORMAL_WHAT = "Порядок и состав массива.";
+    private static final String NORMAL_INPUT = "Исходный массив 7,-2,7,0,3,-5; сортировка по возрастанию.";
+    private static final String NORMAL_EXPECTED = "Исходный порядок показан, результат -5,-2,0,3,7,7. Пузырьковый способ проверить по коду.";
+    private static final String BOUNDARY_NAME = "Пустой и одноэлементный массивы";
+    private static final String BOUNDARY_WHAT = "Короткие массивы без выхода за границы.";
+    private static final String BOUNDARY_INPUT = "Отдельно пустой массив и {7}.";
+    private static final String BOUNDARY_EXPECTED = "Пустой остаётся пустым, одноэлементный содержит7; исключений нет.";
+    public static Observation observeNormal(){int[] a={7,-2,7,0,3,-5};String before=Arrays.toString(a);int[] r=TaskBinding.run(a);return new Observation("исходное состояние до сортировки: "+before+"; результат: "+Arrays.toString(r),Arrays.equals(new int[]{-5,-2,0,3,7,7},r));}
+    public static Observation observeBoundary(){int[] a=TaskBinding.run(new int[0]),b=TaskBinding.run(new int[]{7});return new Observation("пустой: "+Arrays.toString(a)+"; один элемент: "+Arrays.toString(b),Arrays.equals(new int[0],a)&&Arrays.equals(new int[]{7},b));}
+    public record Observation(String actual,boolean passed) {}
+    public static void checkNormal(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте наблюдаемый результат с опубликованным обычным случаем.");}
+    public static void checkBoundary(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте состояние с опубликованной границей.");}
+    static int example(boolean normal){
+      System.out.println("Сценарий: "+(normal?NORMAL_NAME:BOUNDARY_NAME));
+      System.out.println("Что проверяется: "+(normal?NORMAL_WHAT:BOUNDARY_WHAT));
+      System.out.println("Вход и действие: "+(normal?NORMAL_INPUT:BOUNDARY_INPUT));
+      System.out.println("Ожидаемый результат: "+(normal?NORMAL_EXPECTED:BOUNDARY_EXPECTED));
+      try {var o=normal?observeNormal():observeBoundary();System.out.println("Получено: "+o.actual());if(normal)checkNormal(o);else checkBoundary(o);System.out.println("Статус: наблюдаемое свойство соответствует. Исходник, показ и объяснение оценивает преподаватель.");return 0;}
+      catch(UnsupportedOperationException e){System.out.println("Статус: реализация примера ещё не завершена; проверьте исходник и привязку.");return 1;}
+      catch(AssertionError e){System.out.println("Статус: неверный наблюдаемый результат; сопоставьте с опубликованным случаем.");return 1;}
+      catch(LinkageError e){System.out.println("Статус: привязка или среда не подготовлена; требуется ручная проверка, оценки нет.");return 2;}
+      catch(RuntimeException e){System.out.println("Статус: ошибка выполнения выбранного примера; проверьте реализацию и привязку, требуется разбор преподавателя.");return 1;}
+    }
+    public static void main(String[] args){int status=Math.max(example(true),example(false));if(status!=0)System.exit(status);}
+}

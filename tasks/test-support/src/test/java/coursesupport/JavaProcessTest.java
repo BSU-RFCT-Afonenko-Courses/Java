@@ -43,6 +43,7 @@ class JavaProcessTest {
     @Test void timesOutInsteadOfWaitingForever() {
         var failure = assertThrows(AssertionError.class,
             () -> run("hang", "", Duration.ofMillis(300), 65536));
+        assertInstanceOf(JavaProcess.StudentTimeout.class, failure);
         assertTrue(failure.getMessage().contains("времени"), failure::getMessage);
     }
 
@@ -68,6 +69,7 @@ class JavaProcessTest {
     @Test void boundsCombinedOutput() {
         var failure = assertThrows(AssertionError.class,
             () -> run("pipes", "", Duration.ofSeconds(5), 150000));
+        assertInstanceOf(JavaProcess.StudentOutputLimit.class, failure);
         assertTrue(failure.getMessage().contains("вывода"), failure::getMessage);
     }
 
@@ -91,8 +93,8 @@ class JavaProcessTest {
     }
 
     @Test void checkedLaunchRejectsCorrectPrintFollowedByUncaughtFailure() {
-        assertThrows(AssertionError.class,
-            () -> JavaProcess.runCheckingUncaught(Program.class, "", "print-then-throw"));
+        assertInstanceOf(JavaProcess.UncaughtStudentException.class, assertThrows(AssertionError.class,
+            () -> JavaProcess.runCheckingUncaught(Program.class, "", "print-then-throw")));
     }
 
     @Test void checkedLaunchPreservesJava25InstanceMainSelection() throws Exception {

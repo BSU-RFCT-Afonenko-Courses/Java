@@ -1,0 +1,1 @@
+public class Study {public static <T,R>java.util.function.Function<T,R> ternaryOperator(java.util.function.Predicate<? super T> condition,java.util.function.Function<? super T,? extends R> ifTrue,java.util.function.Function<? super T,? extends R> ifFalse){throw new UnsupportedOperationException("Допишите отложенный выбор");}}

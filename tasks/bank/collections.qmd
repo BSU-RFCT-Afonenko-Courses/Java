@@ -1,19 +1,33 @@
 ---
 categories: [java, java-core, java-collections]
 exercise-bank: true
-default-exercise-target: manual
+default-exercise-target: false
 default-exercise-statement-visibility: open
 ---
 
 # Коллекции {#sec-j25-bank-collections}
 
-Коллекция хранит выбранные отношения между данными: последовательность,
+Коллекция хранит отношения между данными: последовательность,
 уникальность, соответствие ключа значению или порядок обработки.
 Теория: @theory:sec-j25-theory-collections. Основная подборка:
-@tasks:sec-j25-lab-collections. В задачах без заданной сигнатуры самостоятельно
-выбирайте имена методов, классы для их объявления и способ передачи входных данных.
+@tasks:sec-j25-lab-collections. Введение: @practice:sec-j25-practice-collections.
+В задачах без заданной сигнатуры имена методов, классы для их объявления,
+пакеты и способ передачи данных выбирайте самостоятельно.
 
-:::: {#exr-j25-collections-digit-stack difficulty="introductory"}
+Обязательны «Учёт обращений по устойчивому коду», «Список книг
+для текущего просмотра и отчёта» и «Пересечение и объединение множеств».
+Затем выполните **один** вариант: «Правильность расстановки скобок»
+либо «Сложение многочленов в HashMap». Оба варианта доступны;
+выбор делает студент.
+
+Предъявите исходные Java-файлы и консольную демонстрацию обычных
+и граничных случаев из условия. Обязательные средства проверяются
+по исходнику, объяснение — в беседе с преподавателем.
+Формат показа результатов свободен в пределах условия.
+Нужен JDK 25; команды компиляции находятся в README комплекта.
+Дополнительный письменный отчёт не требуется.
+
+:::: {#exr-collections-digit-stack difficulty="introductory" project="/projects/collections/digit-stack" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-collections-digit-stack" target="prairielearn"}
 ## Цифры числа в стеке
 
 Получите неотрицательное целое число из диапазона `0..Long.MAX_VALUE`,
@@ -23,30 +37,44 @@ default-exercise-statement-visibility: open
 
 Результат — последовательность цифр без промежутков, с сохранением нулей:
 `120` → `021`, `0` → `0`. Для нуля в стеке должна оказаться одна цифра.
-Способ выделения цифр выберите самостоятельно. [@bib-task-digit-stack]
+Способ выделения цифр выберите самостоятельно.
+
+Предъявите исходник и результат для обычного числа и нуля. Покажите
+использование стека и объясните, почему нули не теряются при выводе.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-collections-digit-stack kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::
 
-:::: {#exr-j25-collections-set-union-intersection difficulty="intermediate" project="/projects/j25-collections-set-union-intersection"}
+:::: {#exr-collections-set-union-intersection project="/projects/collections/set-union-intersection" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-collections-set-union-intersection" target="prairielearn" difficulty="introductory"}
 ## Пересечение и объединение множеств
 
-Напишите отдельные методы пересечения и объединения двух множеств `Integer`.
-Входные множества отличны от `null`, их элементы также отличны от `null`; пустое
-множество допустимо. Каждый результат имеет самостоятельный состав;
-оба входа после вызова сохраняются. Объединение содержит все различные
-элементы обоих входов, пересечение — только общие.
+Напишите отдельные методы пересечения и объединения двух множеств
+`Integer`. Входные множества и их элементы отличны от `null`;
+пустое множество допустимо. Каждый результат имеет самостоятельный
+состав; оба входа после вызова сохраняются.
 
-Для `{1, 2}` и `{2, 3}` результаты — `{1, 2, 3}` и `{2}`. Покажите также
-одинаковые, пустые и непересекающиеся множества. Сравнивайте состав через
-равенство множеств: порядок вывода не задан. Допустимы изменяемая копия с
-`addAll`/`retainAll` и явный обход с `contains`/`add`.
-[@bib-task-set-union-intersection]
+Объединение содержит все различные элементы обоих входов,
+пересечение — только общие. Для `{1, 2}` и `{2, 3}` результаты
+равны `{1, 2, 3}` и `{2}`. Сравнивайте состав через равенство множеств:
+порядок перечисления не задан. Допустимы изменяемая копия
+с `addAll`/`retainAll` и явный обход с `contains`/`add`.
+Поддержка последующего изменения результата не требуется.
 
-{{< project-download exr-j25-collections-set-union-intersection kind="starter" text="Скачать стартовый проект" >}}
+Предъявите исходники и консольную демонстрацию обычного случая,
+одинаковых, пустых и непересекающихся множеств.
+После каждого метода покажите сохранность обоих входов.
+Объясните, почему состав результата независим от входов.
+Имена методов, классы, пакеты и способ запуска свободны.
+Справка: @handbook:sec-j25-api-sets-maps-set и
+@handbook:sec-j25-api-sets-maps-bulk.
 
+{{< project-download exr-collections-set-union-intersection kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-j25-collections-word-frequency difficulty="intermediate"}
+:::: {#exr-collections-word-frequency difficulty="intermediate" project="/projects/collections/word-frequency" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-collections-word-frequency" target="prairielearn"}
 ## Частота встречаемости слов
 
 Для готовой строки, отличной от `null`, подсчитайте частоту каждого английского слова
@@ -58,54 +86,78 @@ default-exercise-statement-visibility: open
 Для `Java java, code! Code code` частоты равны `Java → 1`, `java → 1`,
 `code → 2`, `Code → 1`. Пустая строка и строка без английских букв дают
 пустую карту. Способ выделения слов и формат предъявления пар выберите
-самостоятельно. [@bib-task-word-frequency]
+самостоятельно.
+
+Предъявите исходник и карту частот. Объясните границы слова, сохранение
+регистра и обновление счётчика в HashMap; покажите строку без английских букв.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-collections-word-frequency kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::
 
-:::: {#exr-j25-collections-balanced-brackets difficulty="advanced" project="/projects/j25-collections-balanced-brackets"}
+:::: {#exr-collections-balanced-brackets project="/projects/collections/balanced-brackets" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-collections-balanced-brackets" target="prairielearn" difficulty="intermediate"}
 ## Правильность расстановки скобок
 
-Получите строку, отличную от `null` и состоящую только из `(`, `)`, `[`, `]`, `{`, `}`.
-Определите, можно ли сопоставить каждой открывающей скобке закрывающую того
-же вида с правильной вложенностью. Закрывающая скобка завершает последнюю
-ещё не закрытую пару. Результат — `boolean`; вход сохраняется.
+Это один из двух вариантов обязательного выбора: выполните эту задачу
+либо «Сложение многочленов в HashMap».
 
-Используйте стек: допустимы `Deque`/`ArrayDeque` или собственная реализация.
-Пустая строка и `([]{})` корректны; `([)]`, `)` и `((` некорректны.
-Покажите эти границы и строку с несколькими соседними парами.
-[@bib-task-balanced-brackets]
+Получите строку, отличную от `null` и состоящую только из
+`(`, `)`, `[`, `]`, `{`, `}`. Определите, можно ли сопоставить
+каждой открывающей скобке закрывающую того же вида с правильной
+вложенностью. Закрывающая скобка завершает последнюю ещё не закрытую
+пару. Результат — `boolean`; вход сохраняется.
 
-{{< project-download exr-j25-collections-balanced-brackets kind="starter" text="Скачать стартовый проект" >}}
+Используйте стек: допустимы `Deque`/`ArrayDeque` или собственная
+реализация. Пустая строка и `([]{})` корректны;
+`([)]`, `)` и `((` некорректны.
 
+Предъявите исходники и консольную демонстрацию этих границ
+и строки с несколькими соседними парами. Проследите состояние стека
+до первой ошибки вложенности и при завершении корректной строки.
+Имена методов, классы, пакеты и способ запуска свободны.
+Справка: @handbook:sec-j25-api-sets-maps-queue.
+
+{{< project-download exr-collections-balanced-brackets kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-j25-collections-polynomial-map-addition difficulty="advanced" project="/projects/j25-collections-polynomial-map-addition"}
+:::: {#exr-collections-polynomial-map-addition project="/projects/collections/polynomial-map-addition" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-collections-polynomial-map-addition" target="prairielearn" difficulty="intermediate"}
 ## Сложение многочленов в HashMap
+
+Это один из двух вариантов обязательного выбора: выполните эту задачу
+либо «Правильность расстановки скобок».
 
 Сложите два многочлена, представленные `HashMap<Integer, Double>`.
 Ключ — неотрицательная целая степень, значение — конечный коэффициент.
-Карты, ключи и значения отличны от `null`. Отсутствующая степень имеет
-коэффициент ноль; пустая карта представляет нулевой многочлен.
-Для входов гарантируется, что математическая сумма двух коэффициентов
-каждой степени по модулю не превосходит `Double.MAX_VALUE`.
+Карты, ключи и значения отличны от `null`. Отсутствующая степень
+имеет коэффициент ноль; пустая карта представляет нулевой многочлен.
+Гарантируется, что математическая сумма двух коэффициентов каждой
+степени по модулю не превосходит `Double.MAX_VALUE`.
 
-Результат — самостоятельная `HashMap` с суммой коэффициентов для каждой
-степени; исходные карты сохраняются. Нулевые коэффициенты можно хранить
-явно или удалять. Для проверки чисел пусть `r` — математическая сумма двух
-входных коэффициентов этой степени, `a` — полученный коэффициент. Допустима
-погрешность `abs(a - r) <= 1e-9 + 1e-12 * abs(r)`. Отсутствующий коэффициент
-результата при сравнении считается нулём. Порядок обхода карты свободен.
+Результат — самостоятельная `HashMap` с суммой коэффициентов
+для каждой степени; исходные карты сохраняются.
+Нулевые коэффициенты можно хранить явно или удалять.
+Пусть `r` — математическая сумма входных коэффициентов данной степени,
+`a` — полученный коэффициент. Допустима погрешность
+`abs(a - r) <= 1e-9 + 1e-12 * abs(r)`.
+Отсутствующий коэффициент результата при сравнении считается нулём.
+Порядок обхода карты свободен.
 
-Для `{0: 1, 2: 3}` и `{1: 2, 2: -3}` получается `{0: 1, 1: 2}`; также
-допустима пара `2: 0`. Покажите пустой вход и степени, встречающиеся только
-в одной карте. Допустимы `merge` или явный `getOrDefault`/`put`.
-[@bib-task-polynomial-map-addition]
+Для `{0: 1, 2: 3}` и `{1: 2, 2: -3}` получается `{0: 1, 1: 2}`;
+пара `2: 0` также допустима. Используйте `HashMap`;
+допустимы `merge` или явный `getOrDefault`/`put`.
 
-{{< project-download exr-j25-collections-polynomial-map-addition kind="starter" text="Скачать стартовый проект" >}}
+Предъявите исходники и консольную демонстрацию: общая степень,
+степени только одного входа, взаимное уничтожение коэффициентов
+и пустой вход. Покажите сохранность исходных карт и сравнение
+по допуску из условия. Имена методов, классы, пакеты и формат
+показа результатов выбирайте самостоятельно.
 
+{{< project-download exr-collections-polynomial-map-addition kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-j25-collections-poem-line-order difficulty="introductory" project="/projects/j25-collections-poem-line-order"}
+:::: {#exr-collections-poem-line-order difficulty="introductory" project="/projects/collections/poem-line-order" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-collections-poem-line-order" target="prairielearn"}
 ## Строки стихотворения по длине
 
 Поместите строки короткого стихотворения из общественного достояния в список;
@@ -116,13 +168,18 @@ default-exercise-statement-visibility: open
 
 Все строки отличны от `null`; пустые строки допустимы. Алгоритм должен работать
 также для пустого списка. Покажите исходную и полученную последовательности.
-[@bib-task-poem-line-order]
 
-{{< project-download exr-j25-collections-poem-line-order kind="starter" text="Скачать стартовый проект" >}}
+Предъявите выбранный текст с автором, названием и источником, исходный
+список и результат. Объясните получение копии и сохранение порядка строк
+одинаковой длины.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-collections-poem-line-order kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::
 
-:::: {#exr-j25-collections-distinct-word-set difficulty="introductory" project="/projects/j25-collections-distinct-word-set"}
+:::: {#exr-collections-distinct-word-set difficulty="introductory" project="/projects/collections/distinct-word-set" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-collections-distinct-word-set" target="prairielearn"}
 ## Различные слова в HashSet
 
 Для готовой строки, отличной от `null`, получите `HashSet` различных английских слов
@@ -134,13 +191,18 @@ default-exercise-statement-visibility: open
 
 Для `one, ONE! two` множество содержит `one` и `two`. Пустая строка и строка
 без английских букв дают пустое множество. Исходный текст сохраняется;
-порядок вывода множества свободен. [@bib-task-distinct-word-set]
+порядок вывода множества свободен.
 
-{{< project-download exr-j25-collections-distinct-word-set kind="starter" text="Скачать стартовый проект" >}}
+Предъявите исходник и состав множества. Объясните выделение английских
+слов и преобразование регистра, не зависящее от языка среды запуска.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-collections-distinct-word-set kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::
 
-:::: {#exr-j25-collections-elimination-circle difficulty="advanced" project="/projects/j25-collections-elimination-circle"}
+:::: {#exr-collections-elimination-circle difficulty="advanced" project="/projects/collections/elimination-circle" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-collections-elimination-circle" target="prairielearn"}
 ## Вычеркивание каждого второго
 
 В круге стоят `N` человек с номерами от `1` до `N`, где `1 <= N <= 10000`.
@@ -157,13 +219,19 @@ default-exercise-statement-visibility: open
 прогрева. Вывод результатов исключите из измерения; укажите, входит ли
 создание списка в измеряемый участок. Объясните стоимость удаления и поиска
 следующей позиции в своём алгоритме. Фиксированные времена и преимущество
-конкретной реализации условием не задаются. [@bib-task-elimination-circle]
+конкретной реализации условием не задаются.
 
-{{< project-download exr-j25-collections-elimination-circle kind="starter" text="Скачать стартовый проект" >}}
+Предъявите обе реализации и одинаковый порядок выбывания. Покажите
+границы измеряемого участка и объясните отдельно поиск следующей позиции
+и удаление элемента.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-collections-elimination-circle kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::
 
-:::: {#exr-j25-collections-partition-list difficulty="intermediate" project="/projects/j25-collections-partition-list"}
+:::: {#exr-collections-partition-list difficulty="intermediate" project="/projects/collections/partition-list" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-collections-partition-list" target="prairielearn"}
 ## Разделение списка по значению X
 
 Получите изменяемый список `Integer` и значение `int X`.
@@ -176,13 +244,18 @@ default-exercise-statement-visibility: open
 Работайте без методов сортировки и дополнительных массивов или коллекций.
 Допустимы отдельные переменные для индексов, ссылок и временно переставляемого
 значения. Покажите случай с обеими группами и случаи, когда одна группа пуста.
-[@bib-task-partition-list]
 
-{{< project-download exr-j25-collections-partition-list kind="starter" text="Скачать стартовый проект" >}}
+Предъявите исходник и состояние того же списка до и после перестановки.
+Покажите сохранение повторов и объясните работу без сортировки
+и дополнительных контейнеров.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-collections-partition-list kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::
 
-:::: {#exr-j25-collections-graph-model difficulty="advanced" project="/projects/j25-collections-graph-model"}
+:::: {#exr-collections-graph-model difficulty="advanced" project="/projects/collections/graph-model" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-collections-graph-model" target="prairielearn"}
 ## Класс Graph
 
 Реализуйте `Graph` — простой неориентированный граф. Конструктор получает
@@ -199,13 +272,18 @@ default-exercise-statement-visibility: open
 всех рёбер графа. Объясните стоимость операций для своего представления,
 например матрицы смежности или набора множеств соседей. Покажите изолированную
 вершину, повторное добавление, удаление и симметрию соседства.
-[@bib-task-graph-model]
 
-{{< project-download exr-j25-collections-graph-model kind="starter" text="Скачать стартовый проект" >}}
+Предъявите исходник Graph и наблюдение ребра с обеих сторон до и после
+удаления. Покажите сохранение изолированных вершин и объясните стоимость
+операций выбранного хранения.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-collections-graph-model kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::
 
-:::: {#exr-j25-collections-nearest-value difficulty="advanced" project="/projects/j25-collections-nearest-value"}
+:::: {#exr-collections-nearest-value difficulty="advanced" project="/projects/collections/nearest-value" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-collections-nearest-value" target="prairielearn"}
 ## Число, ближайшее к заданному
 
 На базе коллекций реализуйте хранение чисел с добавлением, удалением
@@ -224,13 +302,18 @@ default-exercise-statement-visibility: open
 выбранное число в `OptionalDouble`. Покажите поиск по обе стороны от запроса,
 равные расстояния и отсутствие элементов. Имена методов и устройство
 хранилища свободны; ограничение стоимости поиска не задаётся.
-[@bib-task-nearest-value]
 
-{{< project-download exr-j25-collections-nearest-value kind="starter" text="Скачать стартовый проект" >}}
+Предъявите исходник и наблюдения поиска. Объясните сравнение вычисленных
+расстояний, правило ничьей через Double.compare и результат
+для пустого хранилища.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-collections-nearest-value kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::
 
-:::: {#exr-j25-collections-polynomial-list-multiplication difficulty="advanced" project="/projects/j25-collections-polynomial-list-multiplication"}
+:::: {#exr-collections-polynomial-list-multiplication difficulty="advanced" project="/projects/collections/polynomial-list-multiplication" prairielearn-grading="mixed" prairielearn-submission="upload" project-check="java-collections-polynomial-list-multiplication" target="prairielearn"}
 ## Умножение многочленов в списках
 
 Умножьте многочлены, заданные двумя списками `Double`: элемент с индексом `i`
@@ -247,47 +330,56 @@ default-exercise-statement-visibility: open
 
 Например, `[1, 2]` и `[3, 4]` дают `[3, 10, 8]`. Покажите также пустой вход,
 нулевые коэффициенты и взаимное уничтожение слагаемых.
-[@bib-task-polynomial-list-multiplication]
 
-{{< project-download exr-j25-collections-polynomial-list-multiplication kind="starter" text="Скачать стартовый проект" >}}
+Предъявите исходники, входные списки и результат. Сопоставьте степени
+с индексами; объясните длину результата и суммирование произведений
+для одного коэффициента.
+
+Используйте JDK 25. Компиляция и запуск описаны в README комплекта.
+
+{{< project-download exr-collections-polynomial-list-multiplication kind="starter" text="Скачать заготовку и инструкцию запуска" >}}
 
 ::::
 
-:::: {#exr-j25-collections-object-hash difficulty="intermediate" target="manual" project="/projects/j25-collections-object-hash"}
+:::: {#exr-collections-object-hash project="/projects/collections/object-hash" prairielearn-grading="manual" prairielearn-submission="upload" target="prairielearn" difficulty="intermediate"}
 ## Учёт обращений по устойчивому коду
 
 Программа получает произвольный массив строк-кодов, в том числе пустой.
-Сам массив и его элементы должны отличаться от `null`. Каждый элемент — одно обращение; повторный код означает
-новое обращение к той же записи. Коды сравниваются с учётом регистра, без
-обрезки пробелов и иной нормализации.
+Массив и его элементы отличны от `null`. Каждый элемент — одно
+обращение; повторный код означает новое обращение к той же записи.
+Коды сравниваются с учётом регистра, без обрезки пробелов
+и иной нормализации.
 
-Создайте собственный обычный класс ключа с неизменяемым строковым кодом,
-согласованными `equals` и `hashCode`. Имя класса и способы чтения данных
-выберите самостоятельно. Используйте его экземпляры в `HashSet` для
-множества посещённых записей и в `HashMap` для числа обращений к каждой
-записи. Состав множества и все частоты должны соответствовать всему массиву;
+Создайте собственный обычный класс ключа с неизменяемым строковым
+кодом, согласованными `equals` и `hashCode`. Используйте его экземпляры
+в `HashSet` для посещённых записей и в `HashMap` для числа обращений
+к каждой записи. Состав множества и частоты соответствуют всему массиву;
 вход сохраняется. Для пустого массива оба результата пусты.
+Готовые строки и `record` не заменяют собственный обычный класс ключа.
 
-Покажите вход `s17, s18, s17`: различных записей 2, частоты `s17 → 2`,
-`s18 → 1`. Создавайте отдельные объекты ключей для повторных вхождений.
-Поиск новым равным ключом должен находить прежнюю частоту. Добавьте также
-разные коды `Aa` и `BB`: оба ключа должны сохраниться. У строк этих кодов
-одинаковые хеши; собственный класс вправе выбирать любой согласованный хеш.
-Порядок перечисления результатов и формат вывода свободны. Допустимы
-`getOrDefault`/`put` и `merge`.
+Покажите `s17, s18, s17`: различных записей 2,
+частоты `s17 → 2`, `s18 → 1`. Для повторных вхождений создавайте
+отдельные объекты ключей. Поиск новым равным ключом находит прежнюю
+частоту. Добавьте разные коды `Aa` и `BB`: оба ключа сохраняются.
+У строк этих кодов одинаковые хеши; собственный класс вправе
+выбирать любой согласованный хеш.
+Допустимы `getOrDefault`/`put` и `merge`.
+Порядок перечисления и формат вывода свободны.
 
-Объясните, почему создание новой версии с другим `score` для
-`grade.Student(String id, String name, int score)` даёт другое полное значение,
-сохраняя его код каталога. Тип ключа в этой задаче выражает равенство по коду;
-готовые строки и `record` не заменяют требуемый собственный обычный класс.
+Предъявите исходники и консольную демонстрацию, включая пустой вход.
+Объясните согласование `equals`/`hashCode` и устойчивость кода ключа
+во время хранения. Для готового `grade.Student(String id, String name,
+int score)` объясните, почему новая версия с другим `score`
+имеет другое полное значение, сохраняя код каталога.
+Ваш ключ выражает равенство именно по коду. Имя класса, пакеты,
+чтение данных и способ запуска выбирайте самостоятельно.
 Подготовка: @theory:sec-j25-theory-equality-domain,
 @theory:sec-j25-theory-equality-hash, @handbook:sec-j25-api-sets-maps-map.
 
-{{< project-download exr-j25-collections-object-hash kind="starter" text="Скачать стартовый проект" >}}
-
+{{< project-download exr-collections-object-hash kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::
 
-:::: {#exr-j25-collections-views-snapshots difficulty="intermediate" target="manual" project="/projects/j25-collections-views-snapshots"}
+:::: {#exr-collections-views-snapshots project="/projects/collections/views-snapshots" prairielearn-grading="manual" prairielearn-submission="upload" target="prairielearn" difficulty="advanced"}
 ## Список книг для текущего просмотра и отчёта
 
 Используйте готовый `course.examples.objects.Book` из
@@ -295,37 +387,39 @@ default-exercise-statement-visibility: open
 методы `title()`, `borrowed()`, `borrow()`. Новая книга доступна;
 повторный `borrow` бросает `IllegalStateException`, сохраняя состояние.
 
-Общий принцип защиты состояния: @theory:sec-j25-theory-classes-invariant.
-
 Создайте собственный класс, владеющий закрытым изменяемым списком книг.
 Конструктор получает `List<Book>` и сохраняет независимую копию
-его состава. Список и его элементы должны отличаться от `null`.
+его состава. Список и элементы отличны от `null`.
 Пустой список и повторные ссылки допустимы.
-Предоставьте добавление книги по ссылке, отличной от `null`,
-в конец списка и три способа получения `List<Book>`;
-имена класса и методов выберите самостоятельно:
+Предоставьте добавление ненулевой ссылки на книгу в конец списка
+и три способа получения `List<Book>`:
 
 - живое представление текущего состава, запрещающее изменения через себя;
 - самостоятельную изменяемую копию состава на момент вызова;
 - снимок состава на момент вызова, запрещающий изменения через себя.
 
-Используйте `Collections.unmodifiableList`, `new ArrayList<>(...)` и
-`List.copyOf` по их назначению. Копируется состав списков; объекты `Book`
-остаются общими. Изменение первоначального входного списка после создания
-владельца не меняет его состав. Добавление через владельца отражается
-в ранее полученном живом представлении; прежние копия и снимок сохраняют
-состав. Изменяемая копия допускает независимые добавление и удаление.
+Используйте по назначению `Collections.unmodifiableList`,
+`new ArrayList<>(...)` и `List.copyOf`. Копируется состав списков;
+объекты `Book` остаются общими. Изменение первоначального входного
+списка после создания владельца не меняет его состав.
+Добавление через владельца отражается в прежнем живом представлении;
+прежние копия и снимок сохраняют состав. Изменяемая копия допускает
+независимые добавление и удаление.
 
-Начните с одной книги, получите все три результата, добавьте вторую через
+Начните с одной книги, получите три результата, добавьте вторую через
 владельца: размеры текущего списка/view/copy/snapshot равны `2/2/1/1`.
-Затем вызовите `borrow()` у первой книги и наблюдайте `borrowed() == true`
-через все списки, которые её содержат. Попытки добавить книгу через view
-и snapshot должны завершиться `UnsupportedOperationException`.
-Объясните, кто владеет составом и какие ссылки остаются общими. Устройство
-демонстрации свободно; новая идентичность объекта результата `List.copyOf` не требуется.
-Подготовка: @theory:sec-j25-theory-collections-snapshots,
-@handbook:sec-j25-api-lists-factories.
+Вызовите `borrow()` у первой книги: `borrowed() == true` наблюдается
+во всех списках, которые её содержат. Попытки добавить книгу через
+view и snapshot завершаются `UnsupportedOperationException`.
+Новая идентичность объекта результата `List.copyOf` не требуется.
 
-{{< project-download exr-j25-collections-views-snapshots kind="starter" text="Скачать стартовый проект" >}}
+Предъявите исходники и консольную демонстрацию. Последовательно
+покажите изменение входного списка, добавление через владельца
+и выдачу общей книги. Разделите на схеме составы списков и общие книги;
+объясните владение составом и сохранённые ссылки.
+Имена класса и методов, пакеты и устройство демонстрации свободны.
+Подготовка: @theory:sec-j25-theory-classes-invariant,
+@theory:sec-j25-theory-collections-snapshots, @handbook:sec-j25-api-lists-factories.
 
+{{< project-download exr-collections-views-snapshots kind="starter" text="Скачать комплект для решения задачи" >}}
 ::::

@@ -1,1 +1,0 @@
-class BrokenCopy { broken Java }

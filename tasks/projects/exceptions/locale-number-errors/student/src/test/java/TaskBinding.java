@@ -1,0 +1,2 @@
+/** Редактируемый пример, не требуемое API. Вызовите фактические чтение, анализ и предъявление. */
+class TaskBinding {record Summary(long count,double sum,java.util.OptionalDouble average){}static Summary run(java.nio.file.Path p)throws Exception{throw new UnsupportedOperationException();}static java.util.List<java.util.List<String>> read(java.nio.file.Path p)throws java.io.IOException{throw new UnsupportedOperationException();}static void present(java.nio.file.Path p)throws Exception{throw new UnsupportedOperationException();}}
