@@ -2,7 +2,9 @@
 
 Отчёт от 27 октября 2026 года подготовлен по [исследовательскому поручению PR №24](https://github.com/BSU-RFCT-Afonenko-Courses/Java/pull/24). Он описывает фактические исходники, авторскую модель всех подпроектов, состояние выпуска и направления упрощения. Содержательная часть дополнена требованиями к интерфейсу PrairieLearn и System Practice.
 
-Начать с [основного отчёта](report.md), затем читать [предложение рефакторинга](refactoring-proposal.md) и [очередь дальнейшей работы](next-work.md). Отдельные разборы: [авторская модель](authoring-model.md), [System Practice](system-practice.md), [контракты](contracts.md), [выпуск и восстановление](release-and-recovery.md), [измерения](performance-findings.md).
+Начать с [основного отчёта](report.md), затем читать [предложение рефакторинга](refactoring-proposal.md) и [очередь дальнейшей работы](next-work.md). Новый предметный разбор: [условия, стартеры и границы оценки всех 128 задач](assessment-contract-audit.md), включая 5.4 Book/Car и проверку сообщения о двух публичных тестах.
+
+Отдельные разборы: [авторская модель](authoring-model.md), [System Practice](system-practice.md), [контракты](contracts.md), [выпуск и восстановление](release-and-recovery.md), [измерения](performance-findings.md).
 
 ## Как использовать отчёт
 

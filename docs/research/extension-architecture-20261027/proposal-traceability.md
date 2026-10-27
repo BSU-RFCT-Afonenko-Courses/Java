@@ -10,6 +10,7 @@
 | Понятные labs/training/reserve | RQ01/RQ14/RQ15/RQ23, IN10–IN12 | A06, 10labs+87units, Homework set | Actual student view/order/access, choice одинраз, optionalweight0 и история |
 | Читаемые баллы и попытки | RQ14–RQ17/RQ24, IN10–IN12 | A12, Native70/3 и attempts3 vs8А | Точный итог70/30/100, равенствоslots, best/unlimited, manualpending, gradebook |
 | System conditions + checks + Workspace | RQ25/RQ05/RQ09/RQ13, IN03/IN08–IN09 | system-practice-static,7manual/58fileinputs, oldcheckers | Local/workspace equivalence, .git/index/refs/worktree, submit/persistence/reset, real external/Windows отдельно |
+| Согласованный API и явная граница оценки | RQ26–RQ28, IN01/IN08/IN10 | [Аудит 128 задач](assessment-contract-audit.md), Book adapted/fixed, девять стартеров, public-pair-only контроль | EDU-06: свойства/рубрика/вес по ID; обязательное отдельно от примера; реальный starter-negative и допустимый другой API; manual status не PASS |
 | Малые actual producer/consumer contracts | RQ10/RQ12/RQ18, IN03/IN05/IN14 | H41–H44/B04–B06/B13; known selectedfixes | Actual decoder +positive/negative currentcandidate, privacy, capability/ID/schema доexpensivework |
 | Фазовый reuse и local indexing | RQ07/RQ10/RQ20, IN05–IN07 | H07–H20/H31–H38/B14; staticcalls, existingreuse отмечен | C-02/C-03/C-07/PL-M02; mutationcontrols, pairedtiming толькоmatchedcapabilities |
 | Active instrumentation separation | RQ20, IN05/IN14 | H50–H54/B16; activeCorebranch/cache; direct/off5pairs | C-10counts/outputs передoverheadclaim; отдельныеclockdomains/setup/tool/outer |
