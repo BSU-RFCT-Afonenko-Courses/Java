@@ -1,0 +1,31 @@
+# Native project/format; course-project — предлагаемый типизированный вход. Точные ключи/мост не реализованы.
+project:
+  type: default
+  render:
+  - bank/arrays.qmd
+format: html
+course-project:
+  components:
+    java-process:
+      sources: components/java/process
+    numeric-output:
+      sources: components/java/numbers
+    pl-observations:
+      sources: components/adapters/prairielearn/observations
+    pl-cli-api:
+      sources: components/adapters/prairielearn/api
+  build-profiles:
+    java-junit:
+      files:
+      - source: components/gradle/java-junit/build.gradle
+        target: build.gradle
+      - source: components/gradle/java-junit/settings.gradle
+        target: settings.gradle
+    java-junit-author:
+      files:
+      - source: components/gradle/java-junit/build.gradle
+        target: build.gradle
+      - source: components/gradle/java-junit/settings.gradle
+        target: settings.gradle
+      - source: components/gradle/java-junit/author-contexts.gradle
+        target: gradle/author-contexts.gradle

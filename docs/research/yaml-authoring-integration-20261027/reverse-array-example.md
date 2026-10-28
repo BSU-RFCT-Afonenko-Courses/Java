@@ -7,6 +7,8 @@
 Точные ключи, схемы, технический мост, обработка native rebasing и реализация ещё не утверждены.
 Уточнение от 28 октября: выбраны обычный Java/JUnit, короткое пояснение и подключаемый исходник; fixtures/параметризация — по необходимости.
 Новые карточки сценариев и сценарный DSL исключены. Эскиз раскладки и метаданных от 27 октября сохраняется ниже; его точные поля и привязки ещё не утверждены.
+Позднее пользователь выбрал обобщение необязательной самопроверки через JUnit, общие библиотеки и готовый Gradle-проект (пункт 32 плана), а затем одобрил показанную картину одного канона по типам данных и обычного Gradle-комплекта (пункт 33). Принято направление; точная структура модулей, поля и привязка общего build ещё не утверждены.
+Технические YAML-блоки разделов 2–4 сохранены как исторический эскиз 27 октября: их `libraries`, runners и прежняя JDK/JAR-форма не задают новый Gradle-контракт. Полное условие раздела 1 сохраняется.
 Новые учебные ограничения и сценарии не добавлены. Продуктовые файлы не создаются и не изменяются.
 
 ## Что уже существует
@@ -25,7 +27,49 @@
 - [References и ожидания стартера](../../../tasks/_quarto.yml#L406) уже существуют.
   Прежний [teacher root](../../../tasks/test-support/README.md) — факт действующей поставки; будущий канон проектов, тестов и решений находится в общем Git.
 
-## Предлагаемое дерево
+## Предложение обычного Gradle-комплекта от 28 октября
+
+**Направление принято пользователем**: для малого reverse-array — обычный самостоятельный **выходной** проект, без обязательного отдельного модуля ради двух helper. Внутренние канонические каталоги этим деревом не утверждаются; имя demo-теста иллюстративно, его код и новые случаи не создаются.
+
+```text
+reverse-array/                         # полученный студенческий комплект
+├── README.md                          # полное условие из QMD и запуск
+├── build.gradle                       # настоящий канонический Gradle-код
+├── settings.gradle                    # настоящий канонический Gradle-код
+└── src/
+    ├── main/java/Main.java
+    └── test/
+        ├── java/
+        │   ├── ReverseArrayDemoTest.java   # выбранный обычный JUnit demo
+        │   └── coursesupport/
+        │       ├── JavaProcess.java       # только если нужен этому demo
+        │       └── OutputNumbers.java     # только если нужен этому demo
+        └── resources/                     # только реально нужные данные
+```
+
+Канонические источники и производный состав разделены:
+
+| Канон | Что автор задаёт | Чего не дублируем / что производно |
+| --- | --- | --- |
+| QMD | Полное условие и необязательный краткий указатель к самопроверке | Текст не превращается в описание внешних build-зависимостей |
+| Локальный `_metadata.yml` и native наследование Quarto | Свойства курса, выбор компонентов/наборов/выдачи и их объявленное замыкание | Это граф выбранных course-файлов, не второй внешний Gradle-граф; Gradle не выводит предметные demo по Java imports |
+| Настоящие Gradle build/settings | Внешние зависимости, repositories, scopes, версии и tasks | Gradle не читает course YAML; мы не разбираем Groovy и не строим второй внешний граф зависимостей |
+| Общие helper и build-файлы | Один канон; для типовых проектов — настоящие общие `build.gradle`/`settings.gradle` | Существующий producer переносит их в корень student, а не генерирует скрипт из YAML; отдельный канонический build каждой задачи не обязателен |
+| Производные artifact inventory и receipt | Автор не ведёт их вручную: producer фиксирует состав, source→target, origin/hash | Проверяемые копии выдачи допустимы, но не становятся вторым вручную редактируемым каноном |
+
+Такой перенос уже имеет файловую основу: [common mappings build/settings](../../../tasks/_quarto.yml#L7846), [producer/origins/конфликты](../../../tasks/_extensions/Afonenko-Course-Tools/course-core/artifacts/materialize.ts#L137) и [receipt](../../../tasks/_extensions/Afonenko-Course-Tools/course-core/artifacts/materialize.ts#L194). Это не готовый новый JUnit-шаблон: нынешний [shared build](../../../tasks/test-support/shared/b42bf4ab370d/build.gradle#L4) запускает `PublicChecks.main` и отключает `test`.
+Специальный [GradeApp](../../../tasks/projects/files/gradeapp-report/student/build.gradle#L1) сохраняет собственный настоящий Gradle build как канон. Повтор `grade.Main`/`gradeapp.jar` в [build](../../../tasks/projects/files/gradeapp-report/student/build.gradle#L18) и [course config](../../../tasks/_quarto.yml#L1595) — конкретное место будущего согласования native convention/производного значения либо equality-check, не повод писать Groovy parser.
+
+[Convention plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_convention.html), [buildSrc/shared build logic](https://docs.gradle.org/current/userguide/sharing_build_logic_between_subprojects.html), [composite builds](https://docs.gradle.org/current/userguide/composite_builds.html), [version catalogs](https://docs.gradle.org/current/userguide/version_catalogs.html) и [test fixtures](https://docs.gradle.org/current/userguide/java_testing.html#sec:java_test_fixtures) — готовые кандидаты при оправданном объёме, не обязательный каркас малого Main-проекта. Пока версии принадлежат реальному общему Gradle-коду; catalog не предписан.
+Если build действительно использует catalog/build logic/локальный helper-модуль, нужные файлы и настройки входят в самостоятельный ZIP либо зависимость реально доступна. Соседний авторский checkout не является скрытой runtime-зависимостью; included build не наследует чужие repositories/catalog автоматически.
+
+После первоначальной настройки JDK/установленного Gradle и разрешения внешних зависимостей — `gradle test` или IDE. Полный offline на чистой машине не обещан; базовое написание/сдача одного `Main.java` не обязывают пользоваться Gradle или demo. Путь `src/main/java/Main.java`→ответ `Main.java` уже задаётся нынешним source profile; скачанный student ZIP не равен Java-only архиву дополнительных исходников ответа.
+PL может повторно использовать те же канонические JUnit-файлы/helper, но его исполнение не объявляется локальным Gradle-запуском: закреплённый [gradle-jar build](https://github.com/Afonenko-Course-Tools/prairielearn-platform/blob/1cab18c5e693210b2b52930cacb00ceb5acd9797/runtime/gradle-jar-v1/build.gradle#L1) использует native-config и отключает tests; [grader recipe](https://github.com/Afonenko-Course-Tools/prairielearn-platform/blob/1cab18c5e693210b2b52930cacb00ceb5acd9797/images/java25-grader/grade.py#L776) не является student `build.gradle`. Classpath/scoring/API-precheck/feedback/observations требуют отдельной приёмки; это source pin, не допуск живого сервера.
+
+Связь code-project metadata с native input/origins остаётся открытой: `bank/arrays.qmd` не наследует `_metadata.yml` соседнего `projects/arrays/reverse-array` по одной ссылке `project`. Gradle-проект эту границу не решает; сохранённое ниже исследование моста применимо.
+Нужны проверка автономного состава/запуска, точного student inventory сайта/PL, пути ответа и проверки полной авторской выдачи. Время подготовки/Gradle/исполнения не измерено; новая схема и реализация не выбраны. Полный IDE-комплект включает фактические проверки и решения в раздельных контекстах, а не набор student-профилей.
+
+## Эскиз канонических каталогов от 27 октября
 
 Корень владельца здесь — `tasks/_quarto.yml`; внешний Quarto-проект Java не подставляется вместо него.
 Имя локального `_metadata.yml` принято; перемещённые пути и внутреннее устройство ниже остаются эскизом. Отдельной страницы задачи нет.
@@ -59,7 +103,7 @@ tasks/
 Общие файлы получают смысловые каталоги вместо каталогов по хешам и не копируются в каждый канонический проект.
 `tests/full/…` означает перенос фактических предметных тестов, без материализованных копий общей инфраструктуры.
 Имена этих файлов и их дополнительные зависимости уточняются по исходникам полного набора, а не угадываются.
-Данные `normal`/`boundary` остаются в `PublicChecks.java`; новые `cases.yml` или тестовые сценарии не вводятся.
+В эскизе 27 октября данные `normal`/`boundary` оставались в `PublicChecks.java`; эта прежняя форма не задаёт будущий JUnit-тест. Новые `cases.yml` и сценарный DSL не вводятся.
 Если тесту действительно нужны отдельные данные, они находятся рядом и объявляются его ресурсами.
 
 ## 1 Учебный QMD
@@ -148,10 +192,8 @@ course-project:
 ```
 
 Определить компонент не значит включить его во все проекты или выдачи.
-`junit-jupiter` и `platform-api` — разные внешние зависимости; точное сопоставление закреплённым артефактам toolchain ещё открыто.
-Самостоятельный авторский IDE-комплект с закреплённым JUnit JAR в `lib` и инструкцией — предлагаемая цель; JDK остаётся требуемым установленным инструментом.
-Нынешний Download [по умолчанию исключает `**/*.jar`](../../../tasks/_extensions/Afonenko-Course-Tools/project-download/domain/config.ts#L7), поэтому автоматически такой архив не обещан.
-Нужно проверить явный отбор этой зависимости toolchain существующим механизмом, без второго архиватора и общего разрешения любых JAR.
+`junit-jupiter`/`platform-api` и runners здесь — имена исторического эскиза 27 октября, не утверждённый YAML-граф внешних Gradle-зависимостей. По пункту 32 версии и разрешение стандартных зависимостей принадлежат настоящему Gradle-коду.
+Прежний кандидат JUnit JAR в `lib` не выбран как общий путь. Download [исключает `**/*.jar`](../../../tasks/_extensions/Afonenko-Course-Tools/project-download/domain/config.ts#L7), но это условная граница возможной предсобранной бинарной выдачи, не первая обязательная задача Gradle-managed пути; новый архиватор и глобальное разрешение JAR не предлагаются.
 Текущий материализатор `student`/`grading` ещё не реализует новый договор `student`/`full`/IDE.
 PL precheck использует отдельную стадию платформы и сохраняет нынешний [CliPrecheck$StringArrayMain](../../../tasks/_quarto.yml#L655),
 а не более широкий общий `CliPrecheck.check`. Договор `Main.main(String[] args)` не меняется.
@@ -224,7 +266,7 @@ course-project:
 `junit-scenarios` выбирается только контекстами IDE/PL полного набора, а `pl-cli-api` — только контекстом PL.
 JUnit-обёртка сама использует обычный JUnit; `public-case`/`actual` — соглашение обратной связи PL, не зависимость числовых проверок от платформы.
 Поле `scenarios` в эскизе от 27 октября отсылало к нынешним `normal`/`boundary`; это прежняя привязка, а не утверждённая новая декларация сценариев.
-`show-demo: source` обозначает показ канонического исходника; новые карточки сняты с рассмотрения.
+`show-demo: source` — прежний эскиз показа, не утверждённое обязательство inline: по пункту 31 основные demo выдаются файлами, краткого указателя достаточно; фрагмент/подробная проза необязательны, карточки сняты с рассмотрения.
 Обычный Java/JUnit с коротким пояснением и подключаемым исходником — принятая база без descriptor для показа кода.
 Существующий протокол результатов PL [описан как факт для аудита](public-tests.md), а не целевая модель новых карточек; этот CLI-эскиз не навязывает YAML-формат другим тестам.
 Точный способ включения и выбора фрагментов для PL ещё нужно доказать.
@@ -235,7 +277,7 @@ JUnit-обёртка сама использует обычный JUnit; `public
 но завершает проверку поведенческим провалом и оценкой менее единицы. Сбой инфраструктуры не становится ожидаемым провалом стартера.
 Новая платформа для этого не создаётся; поля, адаптация входа и команда ещё не реализованы.
 
-У этой задачи уже есть `starter/src/Main.java`. Основной файл сдаётся как `Main.java`, при необходимости дополняется `additional-sources.zip`.
+В эскизе 27 октября использован `starter/src/Main.java`; нынешний канонический стартер находится в `student/src/main/java/Main.java`, выходной Gradle-комплект выше сохраняет `src/main/java/Main.java`. Основной файл сдаётся как `Main.java`, при необходимости дополняется `additional-sources.zip`.
 Разрешённые вспомогательные классы, файлы и пакеты сохраняются; фиксирован только опубликованный `Main.main(String[] args)`.
 `package` в стартер не добавляется; пакет `coursesupport` общей инфраструктуры сохраняется.
 
@@ -243,15 +285,15 @@ JUnit-обёртка сама использует обычный JUnit; `public
 
 | Выдача | Состав и запуск | Граница |
 | --- | --- | --- |
-| PL | Полное условие; пример из `starter/src/Main.java`; основной `Main.java` и при необходимости `additional-sources.zip`; явно выбранный показ demo из канона | Встроенный IDE не обязателен; полный набор тестов и решения не показываются как студенческая выдача |
-| Pages student ZIP | README, `src/Main.java`, явно выбранный demo и все его транзитивные зависимости | Без `pages.testsets: [demo]` тесты по умолчанию отсутствуют; full, решения и PL precheck исключены |
-| Авторский IDE full | README, стартер, оба набора с фактическими ресурсами/зависимостями, закреплённый JUnit, варианты решений с раздельными конфигурациями | PL precheck — отдельный tooling-вход с Platform API, не часть обычной JUnit-компиляции |
+| PL | Полное условие, простой базовый файл и необязательный canonical student-комплект; ответ `Main.java` и при необходимости `additional-sources.zip` | Краткий указатель/файлы demo не требуют полного inline-показа; скачивание ZIP не обязывает сдавать ZIP; выполнение grader проверяется отдельно |
+| Pages student ZIP | README, настоящий build/settings, `src/main/java/Main.java`, явно выбранные ordinary JUnit demo/helper/ресурсы | Внешние зависимости разрешает Gradle; full, решения и Platform API-precheck не добавляются автоматически; точный inventory ещё проверяется |
+| Авторский IDE full | README, полный фактический набор проверок/ресурсов/зависимостей и варианты решений с раздельными контекстами | Не студентский комплект с несколькими профилями; PL precheck — отдельная стадия с Platform API, не обычная JUnit-компиляция |
 
 Принято: README каждого самостоятельного ZIP/IDE-комплекта содержит полное условие из канонического QMD без ручного дублирования.
 Преобразование должно сохранить ссылки, ресурсы и нужное оформление; точный способ ещё проверяется, сырое копирование QMD в README не обещано.
 
-Минимальное замыкание demo — ровно четыре исходника: `Main.java`, `PublicChecks.java`, `coursesupport/JavaProcess.java`, `coursesupport/OutputNumbers.java`.
-JUnit и Platform API ему не нужны. Выбранный demo без нужной транзитивной зависимости — ошибка подготовки, а не неполный самостоятельный архив.
+У нынешней JDK-only самопроверки минимальное замыкание — четыре исходника: `Main.java`, `PublicChecks.java`, `coursesupport/JavaProcess.java`, `coursesupport/OutputNumbers.java`.
+JUnit и Platform API этой прежней форме не нужны; это не будущее замыкание ordinary JUnit demo, для которого стандартные зависимости разрешает Gradle. Выбранный demo без нужной объявленной зависимости не становится самостоятельным комплектом.
 Состав полного IDE-комплекта окончательно фиксируется после проверки реальных full sources и инструментов.
 Общий Git доступен для исходников, но не определяет состав студенческих ZIP. Миграционная политика прежних результатов не меняется.
 
@@ -259,26 +301,50 @@ JUnit и Platform API ему не нужны. Выбранный demo без н�
 
 Штатное [наследование Quarto](https://quarto.org/docs/projects/quarto-projects.html#shared-metadata)
 объединяет `_quarto.yml`, directory `_metadata.yml` и метаданные **входного документа**; это не автоматический обработчик папки Java.
-Предлагаемая цепочка для выбранного входа в каталоге задачи:
+Принятая авторская цепочка для выбранного входа в каталоге задачи:
 `tasks/_quarto.yml → projects/_metadata.yml → arrays/_metadata.yml → reverse-array/_metadata.yml`.
 Тематический уровень необязателен. `_metadata.yml` не создаёт вложенный Quarto-проект.
 
-В pin 1.11.5 directory inspect возвращает owner config/inventory, а не effective metadata произвольного каталога.
-Java/YAML не являются Markdown input. README исключён из стандартного input inventory текущего book-owner:
-его прямое чтение может уйти в single-file context и потерять родительское наследование.
-Путь к условию `bank/arrays.qmd` также не даёт метаданные соседнего `projects/arrays`.
+Статическое исследование 27 октября дополнено пятью опытами 28 октября на закреплённом Quarto **1.11.5**
+(исходный коммит `87d1078002991c4ba9cc2baa1f401a80402148af`). Во всех опытах владелец — **`project.type: default`**, не нынешний Java `book`.
+Выполнен только [inspect](https://quarto.org/docs/cli/inspect.html), без render, execute и pre-render.
+Поскольку создание контекста затрагивает `.quarto/cache/temp`, опыты проведены в изолированном временном дереве без hooks, filters, extensions, кода и настроек окружения; авторский репозиторий не инспектировался.
 
-Технический кандидат — изолированный выбранный служебный input в правильном owner и каталоге задачи с native inspect и картой происхождения.
-Автор не сопровождает дополнительную QMD-страницу; временный input не становится второй редакцией задачи.
-Input в `/tmp` вне owner не решает задачу. Конкретный мост и его побочные действия ещё требуют ограниченной проверки; собственного resolver не выбираем.
-В Core уже есть [metadata closure](../../../tasks/_extensions/Afonenko-Course-Tools/course-core/infrastructure/metadata-closure.ts#L27)
-и [owned overlays](../../../tasks/_extensions/Afonenko-Course-Tools/course-core/infrastructure/owned-config-overlay.ts#L35),
-но их нынешние listed-input/top-level-origin ограничения требуют адаптации, а не только нового имени YAML.
+| Случай | Наблюдение | Граница вывода |
+| --- | --- | --- |
+| `bank/arrays.qmd` | Получены root + bank + document metadata | Ссылка на кодовый проект не добавляет его `_metadata.yml` |
+| Каталог только с кодом | Возвращены root config/inventory: `dir=ROOT`, только root research, input `bank/arrays.qmd`, `files.config` только root `_quarto.yml` | Это не эффективные метаданные кодового каталога |
+| Настоящий `probe.qmd` в кодовом каталоге, вход владельца | Получена цепочка root → projects → theme → task + document | Вход в правильном контексте использует native наследование |
+| `README.md` по умолчанию | Вход не включён в inventory владельца; fallback даёт `project.dir=task` и только локальные metadata | Прямой inspect README сам по себе теряет родительскую цепочку |
+| Тот же README, явно включённый через `project.render` | `project.dir=root`, inputs bank + README, полная цепочка root/projects/theme/task | Проверена возможность native-контекста у default owner; не публикация README/страницы задачи и не квалификация Java book |
 
-Официальный интерфейс — [inspect](https://quarto.org/docs/cli/inspect.html); статически проверена установка 1.11.5 (`/home/tolya/course-tools/local-tools/quarto-1.11.5/bin/quarto.js:164770`).
-В её `bin/quarto.js`: `inspectConfig` 164770, `projectContext` 92317–92320,
-`directoryMetadataForInputFile` 76984, README exclusion 92671, `singleFileProjectContext` 142673.
-Доступный локально 1.11.6 не подменяет закреплённый 1.11.5. Здесь команды inspect/render не запускались.
+Различие directory/document inspect видно в [ветках команды][inspect-project] и [single-file fallback][inspect-fallback].
+[Допуск входа и исключение README][inspect-inputs] объясняют разные результаты одной и той же Markdown-записи.
+Авторский договор не меняется: **один локальный `_metadata.yml`, без нового обязательного QMD или другого файла**.
+README с внутренним допуском либо выбранный служебный input — варианты технического адаптера, а не новый выбор автора.
+Для Java book ещё нужно доказать корректный owner/input, жизненный цикл изоляции и отсутствие побочной публикации; собственного resolver не выбираем.
+
+Проверено и [native rebasing существующих относительных строк][inspect-rebase]: унаследованное `localLiteral: src`
+при наличии `projects/src` и собственного task `src` стало `../../src`, то есть сохранило родительский источник.
+`commonExisting` стало `../../shared/Helper.java`; отсутствующий путь и glob остались прежними, CSS перебазирован.
+Это **не** реализация принятого project-relative смысла `starter`: базу определяет тип поля, происхождение каждого значения нужно сохранять отдельно.
+В результате эффективные значения находятся в `formats.html.metadata`; [fileInformation.metadata][inspect-frontmatter] содержит только исходный front matter.
+[JSON-договор inspect][inspect-json] не даёт per-value origins, а `files.config` не перечисляет directory contributors.
+Сверка raw/effective, происхождение и типизированное перебазирование ещё не решены; уже изменённую строку нельзя вслепую трактовать заново.
+
+В Core уже есть [native metadata closure с memo](../../../tasks/_extensions/Afonenko-Course-Tools/course-core/infrastructure/metadata-closure.ts#L27),
+[инвентаризация цепочки каталогов](../../../tasks/_extensions/Afonenko-Course-Tools/course-core/infrastructure/metadata-closure.ts#L169)
+и [owned overlays](../../../tasks/_extensions/Afonenko-Course-Tools/course-core/infrastructure/owned-config-overlay.ts#L35).
+Это основания адаптации, а не готовый мост Java book: listed-input/materialization-origin ограничения сохраняются.
+Native raw reader в этих опытах не запускался. Локальные свидетельства — `summary.json` и `readme-explicit-summary.json` в `/tmp/quarto115-code-metadata-2p7330ob/`; закреплённые исходники ниже сохраняют проверяемую основу вне временных файлов.
+Доступный локально Quarto 1.11.6 не подменяет pin 1.11.5. Выполнение и выдача самого Java этим исследованием не проверены.
+
+[inspect-project]: https://github.com/quarto-dev/quarto-cli/blob/87d1078002991c4ba9cc2baa1f401a80402148af/src/inspect/inspect.ts#L70
+[inspect-fallback]: https://github.com/quarto-dev/quarto-cli/blob/87d1078002991c4ba9cc2baa1f401a80402148af/src/inspect/inspect.ts#L155
+[inspect-inputs]: https://github.com/quarto-dev/quarto-cli/blob/87d1078002991c4ba9cc2baa1f401a80402148af/src/project/project-context.ts#L882
+[inspect-rebase]: https://github.com/quarto-dev/quarto-cli/blob/87d1078002991c4ba9cc2baa1f401a80402148af/src/project/project-shared.ts#L138
+[inspect-frontmatter]: https://github.com/quarto-dev/quarto-cli/blob/87d1078002991c4ba9cc2baa1f401a80402148af/src/project/project-shared.ts#L447
+[inspect-json]: https://github.com/quarto-dev/quarto-cli/blob/87d1078002991c4ba9cc2baa1f401a80402148af/src/inspect/inspect-types.ts#L24
 
 ## Наследование привязка и ранние проверки
 
@@ -304,5 +370,5 @@ Input в `/tmp` вне owner не решает задачу. Конкретны�
    provenance и путь при metadata rebasing; отдельно — demo closure и full с другими зависимостями, API entry,
    references/starter/discovery и три выдачи. Положительный разбор YAML не заменяет эту проверку.
 
-Сейчас согласуется авторский вид четырёх записей: QMD, root configuration, directory defaults и local project input.
+Четыре course-записи — QMD, root configuration, directory defaults и local project input — описывают учебный выбор; настоящий Gradle build/settings остаётся отдельным native-каноном внешних build-зависимостей, не новой секцией YAML. Направление комплекта от 28 октября принято; точные имена/пути, схема, модульная структура и техническая реализация ещё требуют проработки и согласования.
 Имя `_metadata.yml`, native наследование и разграничение баз путей приняты; точные поля, схема, мост и реализация остаются предложениями.

@@ -1,0 +1,121 @@
+{
+  "sourceCommit": "c08563e4dab1c62f20338393a7f3ddf79a4851c1",
+  "status": "research-snapshots-not-production-api",
+  "files": [
+    {
+      "source": "tasks/bank/arrays.qmd",
+      "sourceLines": [
+        62,
+        85
+      ],
+      "target": "canon/bank/arrays.qmd",
+      "sha256": "1fdc612020e8a7cc55a917310be339639b19e174e370a937995bfa4f17f2ca63",
+      "fragmentSha256": "6d79a5327c8e6bed54ed3392e7e5bfd24a3e864b0de962895fa8d616ac7afeb6",
+      "transformation": "Точный снимок Div задачи; исследовательский frontmatter добавлен вне Div.",
+      "reason": "Единственный полный текст условия для обеих редакций metadata и выходных README."
+    },
+    {
+      "source": "tasks/projects/arrays/reverse-array/student/src/main/java/Main.java",
+      "target": "canon/projects/arrays/reverse-array/starter/src/main/java/Main.java",
+      "sha256": "129d4e4213d64a9c4e59c6be54681c74242c6165a81d9602c61b43fbbd019add",
+      "transformation": "byte-identical",
+      "reason": "Неизменённый студенческий стартер без package."
+    },
+    {
+      "source": "tasks/test-support/src/main/java/coursesupport/JavaProcess.java",
+      "target": "canon/components/java/process/coursesupport/JavaProcess.java",
+      "sha256": "4e0e3d55d57e732c6988155cf3f5273f61f794841ba6a6330b0f06054cee75e0",
+      "transformation": "byte-identical",
+      "reason": "Общий helper отдельных JVM для двух существующих demo."
+    },
+    {
+      "source": "tasks/test-support/src/main/java/coursesupport/OutputNumbers.java",
+      "target": "canon/components/java/numbers/coursesupport/OutputNumbers.java",
+      "sha256": "31a171d379194ee57e205f800baf7712aece9012aef76fa5f07391450e3f8798",
+      "transformation": "byte-identical",
+      "reason": "Числовое сравнение существующих demo без изменения допуска."
+    },
+    {
+      "source": "tasks/test-support/junit/PublicScenarioTest.java",
+      "target": "canon/components/adapters/prairielearn/observations/PublicScenarioTest.java",
+      "sha256": "21d0415bd8341768ae15aa60e9b862d4882c77e266012a3aa41474ed3d3c41b3",
+      "transformation": "byte-identical",
+      "reason": "Фактический отдельный PL observations adapter; не обязателен для IDE demo."
+    },
+    {
+      "source": "tasks/test-support/api/CliPrecheck.java",
+      "target": "canon/components/adapters/prairielearn/api/CliPrecheck.java",
+      "sha256": "7cafb64b1b543b9295e72943414411c3f3f431d8db4acc03fdf663f2d9eadba2",
+      "transformation": "byte-identical",
+      "reason": "Фактический отдельный API-precheck; Platform API не включён в student test classpath."
+    },
+    {
+      "source": "tasks/projects/arrays/reverse-array/student/src/test/java/PublicChecks.java",
+      "sourceLines": [
+        13,
+        22
+      ],
+      "target": "canon/projects/arrays/reverse-array/tests/demo/PublicChecks.java",
+      "sha256": "8a6490fdfa2e2f984d38bd13af9aa403e93f2a0eb8ae877253df4098c7452c5d",
+      "transformation": "Механически извлечены неизменённые методы observe/check; main runner и константы показа исключены.",
+      "reason": "Предметная логика двух прежних сценариев; обычный JUnit вызывает её напрямую."
+    },
+    {
+      "source": "tasks/test-support/junit/PublicScenarioTest.java",
+      "sourceLines": [
+        7,
+        15
+      ],
+      "target": "canon/projects/arrays/reverse-array/tests/demo/ReverseArrayDemoTest.java",
+      "sha256": "b81510183bc935d1cc5d76c72307ce4654c51998de578337fe3cded980224a7e",
+      "transformation": "Механическая JUnit-проекция вызовов observe/check normal/boundary; TestReporter исключён, прежние имена сохранены как DisplayName.",
+      "reason": "Две обычные JUnit-проверки без нового сценария или требования."
+    },
+    {
+      "source": "tasks/projects/files/gradeapp-report/student/build.gradle",
+      "sourceLines": [
+        1,
+        15
+      ],
+      "target": "canon/components/gradle/java-junit/build.gradle",
+      "sha256": "15184e55bf7281cc813859a925792f89fc2117b10afdc30acc4c4befc674bb71",
+      "transformation": "Извлечены native Gradle-блоки GradeApp; добавлено подключение author-contexts.gradle при наличии файла. prepareDependencies не переносится: обычный gradle test разрешает dependencies.",
+      "reason": "Один настоящий общий Gradle build; существующие Jupiter/launcher pins, useJUnitPlatform и prepareDependencies."
+    },
+    {
+      "source": "tasks/test-support/shared/c97ee801571b/settings.gradle",
+      "target": "canon/components/gradle/java-junit/settings.gradle",
+      "sha256": "c97ee801571b6641cd4e2627b5e01c43f9938583d2e14a539708513d6fc821d3",
+      "transformation": "byte-identical",
+      "reason": "Один настоящий общий settings; не генерируется из YAML."
+    },
+    {
+      "source": "/home/tolya/JavaBooks/java-release-20261018/Java/tasks/projects/reverse-array/reference/Main.java",
+      "target": "canon/projects/arrays/reverse-array/solutions/reference/src/main/java/Main.java",
+      "sha256": "ba0b85599b792a16c249c0447f603546e04b646339a70a102cf62150b82d4072",
+      "transformation": "byte-identical",
+      "reason": "Исторический образец авторского решения из выпуска18октября; НЕ выбранный финальный teacher input. Новое решение не написано."
+    },
+    {
+      "source": "research-example-native-gradle",
+      "target": "canon/components/gradle/java-junit/author-contexts.gradle",
+      "sha256": "da6f43612cf6dfcd86a322c9235affe09cbb5049bcb9d7e203f627b907288f04",
+      "transformation": "Небольшой настоящий Gradle-script исследовательского примера, не генерируемый из YAML.",
+      "reason": "Раздельные compilation/test contexts starter/reference; общие внешние dependencies остаются в одном build.gradle."
+    },
+    {
+      "source": "canon/bank/arrays.qmd",
+      "target": "derived/statement-body.md",
+      "sha256": "a888ccb43677dd89b1fc6a7045e142c0cde23ac0cf228ca53a3be46b0bfe4bcd",
+      "transformation": "Механически извлечено тело единственного task Div без Header/обрамления; полное условие и shortcode сохранены.",
+      "reason": "Производный snapshot, не второй авторский канон и не обязательный fragment будущего формата."
+    },
+    {
+      "source": "canon/bank/arrays.qmd",
+      "target": "views/target/bank/arrays.qmd",
+      "sha256": "4a4b1d89b7fab4f96c565b3b6552dee0f130f14b4d939c687745d0ee0aae879a",
+      "transformation": "Общий для A/B предлагаемый вид: короткий Div, прежний первый Header, служебный YAML, include производного тела.",
+      "reason": "Оценка будущей QMD-записи, не новая задача/схема/работающий parser."
+    }
+  ]
+}
