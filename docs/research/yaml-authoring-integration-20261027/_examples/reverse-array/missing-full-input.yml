@@ -1,0 +1,46 @@
+# Фактический пробел исследования, вынесенный из авторского local YAML. Не утверждение об утрате исторических материалов.
+status: MISSING_SELECTED_FULL_INPUT_NOT_GRADER_EQUIVALENT
+scope: Полноценный standalone IDE-контекст starter/reference с demo. Это НЕ полный фактический проверяющий
+  набор PrairieLearn.
+knownCurrentDeclaration:
+  source: /home/tolya/Java/tasks/_quarto.yml
+  profile: java-reverse-array
+  tests:
+  - tests/junit/**/*.java
+  apiPrecheck:
+    files:
+    - tests/junit/api/CliPrecheck.java
+    entry: CliPrecheck$StringArrayMain
+  scoring:
+    mode: all-pass
+  references:
+  - name: default
+    root: reference
+    optional: false
+missing:
+- Выбранные для текущего teacher input файлы tests/junit, включая полный предметный набор и данные.
+- Подтверждение, что исторический reference совпадает с выбранным финальным teacher input.
+- Закреплённый Platform API/runtime для отдельного API-precheck и observations boundary; совместимость
+  с IDE Gradle classpath.
+available:
+  reference: solutions/reference/src/main/java/Main.java
+  referenceOrigin: Исторический выпуск18октября; не selected teacher input.
+  ordinaryTests:
+  - src/test/java/ReverseArrayDemoTest.java
+  prairielearnTools:
+  - assessment/prairielearn/PublicScenarioTest.java
+  - assessment/prairielearn/api/CliPrecheck.java
+alternatives: Новый альтернативный авторский исходник не найден и не сочинён. Редакции A/B — альтернативы
+  metadata, не решений.
+compileContexts:
+  starter:
+    sources: src/main/java
+    ordinaryTask: test
+  reference:
+    sources: solutions/reference/src/main/java
+    ordinaryTask: referenceTest
+  prairielearn: Отдельные tooling-файлы вне src; не включены в test/referenceTest.
+graderParity: NOT_VERIFIED
+declaredMissingSourceDirectory: canon/projects/arrays/reverse-array/tests/full
+declaredUnknownClosure: Для выбранного full input ещё не установлены дополнительные helpers/resources;
+  demo не доказывает замыкание full.

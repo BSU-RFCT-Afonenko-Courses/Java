@@ -1,0 +1,25 @@
+// Два класса Main имеют отдельные выходы компиляции и classpath тестов.
+// Оба контекста используют один обычный набор demo; полного grader suite здесь нет.
+sourceSets {
+    reference {
+        java.setSrcDirs(['solutions/reference/src/main/java'])
+    }
+    referenceTest {
+        java.setSrcDirs(['src/test/java'])
+        compileClasspath = sourceSets.reference.output + configurations.testCompileClasspath
+        runtimeClasspath = output + compileClasspath + configurations.testRuntimeClasspath
+    }
+}
+
+configurations {
+    referenceTestImplementation.extendsFrom testImplementation
+    referenceTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+tasks.register('referenceTest', Test) {
+    dependsOn tasks.named('referenceTestClasses')
+    testClassesDirs = sourceSets.referenceTest.output.classesDirs
+    classpath = sourceSets.referenceTest.runtimeClasspath
+    useJUnitPlatform()
+    description = 'Проверить исторический образец авторского решения только выбранным demo.'
+}

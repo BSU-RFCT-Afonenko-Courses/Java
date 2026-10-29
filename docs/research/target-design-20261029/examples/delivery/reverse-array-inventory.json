@@ -1,0 +1,79 @@
+{
+  "status": "НЕ ПРИНЯТО: статическое исследование, не receipt producer",
+  "sourceRoot": "Java repository",
+  "files": [
+    {
+      "source": "docs/research/yaml-authoring-integration-20261027/_examples/reverse-array/canon/projects/arrays/reverse-array/starter/src/main/java/Main.java",
+      "proposedTarget": "src/main/java/Main.java",
+      "role": "starter",
+      "bytes": 529,
+      "sha256": "129d4e4213d64a9c4e59c6be54681c74242c6165a81d9602c61b43fbbd019add",
+      "reason": "student и отдельный starter-контекст author-full"
+    },
+    {
+      "source": "docs/research/yaml-authoring-integration-20261027/_examples/reverse-array/canon/projects/arrays/reverse-array/tests/demo/ReverseArrayDemoTest.java",
+      "proposedTarget": "src/test/java/ReverseArrayDemoTest.java",
+      "role": "historical-demo-wrapper",
+      "bytes": 586,
+      "sha256": "b81510183bc935d1cc5d76c72307ce4654c51998de578337fe3cded980224a7e",
+      "reason": "Переходная JUnit-адаптация; не объявлена целевым API"
+    },
+    {
+      "source": "docs/research/yaml-authoring-integration-20261027/_examples/reverse-array/canon/projects/arrays/reverse-array/tests/demo/PublicChecks.java",
+      "proposedTarget": "src/test/java/PublicChecks.java",
+      "role": "historical-observe-helper",
+      "bytes": 1250,
+      "sha256": "8a6490fdfa2e2f984d38bd13af9aa403e93f2a0eb8ae877253df4098c7452c5d",
+      "reason": "Прежняя предметная логика normal/boundary; не full и не новый runner"
+    },
+    {
+      "source": "docs/research/yaml-authoring-integration-20261027/_examples/reverse-array/canon/components/java/process/coursesupport/JavaProcess.java",
+      "proposedTarget": "src/test/java/coursesupport/JavaProcess.java",
+      "role": "portable-support-candidate",
+      "bytes": 14150,
+      "sha256": "4e0e3d55d57e732c6988155cf3f5273f61f794841ba6a6330b0f06054cee75e0",
+      "reason": "Явная зависимость выбранного demo; JDK25"
+    },
+    {
+      "source": "docs/research/yaml-authoring-integration-20261027/_examples/reverse-array/canon/components/java/numbers/coursesupport/OutputNumbers.java",
+      "proposedTarget": "src/test/java/coursesupport/OutputNumbers.java",
+      "role": "portable-support-candidate",
+      "bytes": 1972,
+      "sha256": "31a171d379194ee57e205f800baf7712aece9012aef76fa5f07391450e3f8798",
+      "reason": "Явная зависимость выбранного demo"
+    },
+    {
+      "source": "docs/research/yaml-authoring-integration-20261027/_examples/reverse-array/canon/projects/arrays/reverse-array/solutions/reference/src/main/java/Main.java",
+      "proposedTarget": "contexts/reference/src/main/java/Main.java",
+      "role": "historical-reference-not-final",
+      "bytes": 581,
+      "sha256": "ba0b85599b792a16c249c0447f603546e04b646339a70a102cf62150b82d4072",
+      "reason": "Только отдельный авторский контекст; не student"
+    },
+    {
+      "source": "docs/research/yaml-authoring-integration-20261027/_examples/reverse-array/canon/bank/arrays.qmd",
+      "proposedTarget": "README.md:condition",
+      "role": "canonical-baseline-qmd",
+      "bytes": 2066,
+      "sha256": "1fdc612020e8a7cc55a917310be339639b19e174e370a937995bfa4f17f2ca63",
+      "reason": "Полный канон текста; target README требует native projection, не byte copy"
+    }
+  ],
+  "fullAssessment": {
+    "status": "SOURCE_UNAVAILABLE_IN_PREVIOUS_EXAMPLE",
+    "consequence": "Нельзя материализовать или квалифицировать полный author-full/PL только из этих файлов",
+    "evidence": "docs/research/yaml-authoring-integration-20261027/_examples/reverse-array/missing-full-input.yml"
+  },
+  "targetComposition": {
+    "student": "starter + явно выбранные demo + их объявленный support + настоящий build + полный разрешённый README/resources",
+    "authorFull": "весь selected full + все объявленные решения в отдельных compilation contexts; здесь не материализован",
+    "submission": {
+      "downloaded": "src/main/java/Main.java",
+      "uploaded": "Main.java",
+      "staged": "submission/src/main/java/Main.java",
+      "status": "Предлагаемый явный mapping, не вывод из basename"
+    }
+  },
+  "nativeBuildExample": "profiles/java-junit/build.gradle",
+  "executed": false
+}

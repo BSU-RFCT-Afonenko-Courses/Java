@@ -10,7 +10,7 @@
 | Course Site | v5.1.0 | 62f8c4a01a5fd9af11f5f66abba2bb48c2ef2631 |
 | Reference Catalog | v3.1.0 | 3df2110e9f525f03f3ecb4926b5d55718e955c4c |
 
-[Core 7.1.0](https://github.com/Afonenko-Course-Tools/quarto-course/releases/tag/v7.1.0) разрешает отсутствие оценки времени банковской задачи. Заданное время остаётся положительным целым числом; при любом кандидате без оценки вся сводка времени отсутствует, включая необязательные позиции. Это опубликованное поведение владельца. [Поправка пилота Core 6](tools/provider-patches/core-optional-time/README.md) сохранена как история и больше не участвует в установке.
+[Core 7.1.0](https://github.com/Afonenko-Course-Tools/quarto-course/releases/tag/v7.1.0) разрешает отсутствие оценки времени банковской задачи. Заданное время остаётся положительным целым числом; при любом кандидате без оценки вся сводка времени отсутствует, включая необязательные позиции. Это опубликованное поведение владельца. [Поправка пилота Core 6](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/tools/provider-patches/core-optional-time/README.md) сохранена как история и больше не участвует в установке.
 
 Core, Presentation и QRC устанавливаются в корне и пяти учебных частях. Course Site находится в корне; Download и exporter — в tasks; Navigation — в lectures, practice и tasks. Всего 24 экземпляра семи пакетов. Подготовьте owner repositories с соответствующими tags из `providers.json`, затем выполните:
 
@@ -23,7 +23,7 @@ python3 tools/sync-providers.py --providers-root /absolute/provider/repositories
 ## Локальные поправки 16 октября 2026 года
 
 Текущее дерево содержит опубликованную базу и 16 изменённых файлов
-установленных расширений. [Манифест локальных поправок](docs/local-extension-patches.json)
+установленных расширений. [Манифест локальных поправок](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/local-extension-patches.json)
 фиксирует пути, исходные и текущие SHA256, владельца и соответствующий
 коммит. `providers.json` и `installed-packages.json` по-прежнему описывают
 опубликованную базу; эти поправки в неё не включены.
@@ -38,7 +38,7 @@ python3 tools/sync-providers.py --providers-root /absolute/provider/repositories
 сохранена в отдельном дереве Core коммитом
 `5d0a5f339a10d7505ded9af8e46ce2d7c9c82dad` после браузерной проверки
 и независимой приёмки обычных переходов. Состав и свидетельства описаны в
-[журнале редакции](docs/lectures-1-2-5-editorial-revision.md).
+[журнале редакции](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/lectures-1-2-5-editorial-revision.md).
 
 Обычный `sync-providers.py` заменит эти файлы опубликованными версиями.
 Для воспроизведения нынешнего состояния после установки базы нужны
@@ -69,8 +69,8 @@ Digest образов и свидетельства публикации зак�
 проверяется отдельно.
 
 Полный локальный цикл рендеринга редакции лекций 1, 2 и 5 завершён;
-свидетельства и пределы находятся в [её журнале](docs/lectures-1-2-5-editorial-revision.md).
+свидетельства и пределы находятся в [её журнале](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/lectures-1-2-5-editorial-revision.md).
 Новая выбранная поставка и полная контейнерная приёмка этим редакционным
 этапом не подтверждаются. Установка пакетов не является приёмкой курса.
 Среда проверки: Quarto 1.11.5, CUE 0.17.1, Java 25. Порядок подготовки
-лабораторных описан в [документации](docs/prairielearn-labs.md).
+лабораторных описан в [документации](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/prairielearn-labs.md).
