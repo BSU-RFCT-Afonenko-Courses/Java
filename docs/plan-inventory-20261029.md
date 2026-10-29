@@ -1,12 +1,12 @@
 # Инвентаризация согласованного плана: 29 октября 2026 года
 
-Проверка готовности документов к будущему запуску на другой машине. Это отчёт об инвентаризации, **не новый план, реестр решений или PASS реализации**. Нормативны [решения 1–74](refactoring-plan.md#уже-принятые-решения-и-сохраняемые-требования); полномочия, приоритеты и календарь заданы [регламентом](release-execution-regulation-20261103.md). Здесь исполнение не начинается.
+Проверка готовности документов к будущему запуску на другой машине. Это отчёт об инвентаризации, **не новый план, реестр решений или PASS реализации**. Нормативны [решения 1–74](refactoring-plan.md#уже-принятые-решения-и-сохраняемые-требования); полномочия, приоритеты и календарь заданы [регламентом](release-execution-regulation-20261103.md). Чистка исторической документации разрешена и выполнена; продуктовая реализация, сборки и публикация здесь не начинаются.
 
 ## Проверенный корпус
 
 Сопоставлены [AGENTS.md](../AGENTS.md), текущий вход [docs/README.md](README.md), весь реестр 1–74 и его повестка, регламент, [стартовое поручение](refactoring-start-20261030.md), применимые нормы [методики](authoring-methodology.md) и [образцов](authoring-examples.md). Адресно проверены прежние планы, куда ведёт действующая методика, и технические основания [авторского пути](research/target-design-20261029/authoring-and-pipeline.md), [выдачи/исполнения](research/target-design-20261029/delivery-and-execution.md), [архитектуры](research/target-design-20261029/architecture.md) и [скрытых углов](research/target-design-20261029/pitfalls.md).
 
-Прежние планы и исполненные опыты сохраняют свои датированные границы. [Матрица моделей](agent-execution-proposal-20261029.md) остаётся предложением; её отличие от AGENTS не признано ошибкой. Прямые требования 72–74 действуют отдельно. Доступы, фактический сервер и инструменты другой машины проверяются при запуске там.
+Прежние планы и исполненные опыты сохраняют свои датированные границы. [Модельная матрица](agent-execution-proposal-20261029.md) принята с полным исключением `gpt-6-sol`; действующие роли задаются ею и последними прямыми указаниями. Прямые требования 72–74 действуют отдельно. ОС и окружение целевой машины совпадают с этим ПК по прямому указанию пользователя; фактические доступы, серверное состояние и результаты проверок устанавливаются при запуске там.
 
 ## Подтверждённые находки и результат
 
@@ -20,30 +20,48 @@
 | В исследовании native effective назывался единственным допустимым значением, но нормализация путей/непутевых скаляров использовала raw: риск противоречивой реализации | Только Quarto выбирает активные объявления и merge; доказанно связанные raw/effective — входы одной типизированной нормализации владельца. Raw не второй канон/merge; неустановленное происхождение не угадывается | Исправлено описание; общая реализация не доказана |
 | Четыре ранние задачи могли превратиться в четыре простых успешных запуска: дорогие native/межпакетные границы остались бы до массового переноса | В START/регламент добавлен критерий различающего сквозного среза ниже | Критерий будущего исполнения |
 
-Точечные исправления дают ближайшую согласованность входов. Против повторения предложено убрать завершённые планы и журналы из актуального checkout после сохранения их точных версий в Git и переноса живых правил; папка `archive` с теми же файлами не решает помех поиску. Политика и точный состав ещё требуют согласования, здесь ничего не удаляется. Незакоммиченные байты нельзя считать сохранёнными в истории. Подготовка проверяемого состава чистки относится к началу будущего запуска, не к массовому удалению в этой сессии.
+## Выполненная чистка исторических документов
 
-## Предлагаемый состав чистки исторических документов
+По прямому разрешению пользователя из рабочего состава удалены **10 групп / 20 файлов**.
+Все текущие байты до чистки сохранены Git-checkpoint
+[`f5d97be630c92f187f78ac9903b3c48ec03f9c99`](https://github.com/BSU-RFCT-Afonenko-Courses/Java/tree/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs).
+Исторические документы доступны по точным ссылкам ниже; папка `archive` не создаётся.
+Удаление заменённой очереди не означает, что все перечисленные в старых отчётах проверки выполнены.
 
-Инвентаризация выделила **10 групп / 20 файлов-кандидатов**. Это предложение для удаления из checkout после переноса живых норм и сохранения точных редакций в Git; оно не означает, что все описанные исторические работы выполнены. Здесь файлы не удаляются, политика и точный состав ещё не приняты.
-
-| Группа | Файлы в `docs/` | Число |
+| Группа | Исторические файлы | Число |
 | --- | --- | --- |
-| Прежний план курса | [course-revision-plan.md](course-revision-plan.md) | 1 |
-| Журнал полной редакции | [full-revision-progress.md](full-revision-progress.md) | 1 |
-| Чтение полной редакции | [full-revision-reading.md](full-revision-reading.md) | 1 |
-| Прежний пилот | [java-course-pilot.md](java-course-pilot.md) | 1 |
-| Лекции 1–2 | [lectures-1-2-editorial-revision.md](lectures-1-2-editorial-revision.md), [independent-review](lectures-1-2-independent-review.md), [reading](lectures-1-2-reading.md) | 3 |
-| Лекции 1–2–5 | [lectures-1-2-5-editorial-revision.md](lectures-1-2-5-editorial-revision.md), [independent-review](lectures-1-2-5-independent-review.md), [reading](lectures-1-2-5-reading.md) | 3 |
-| Публикация 20 октября | [task-publication-plan.md](task-publication-plan.md) | 1 |
-| Прежний старт | [task-publication-start.md](task-publication-start.md) | 1 |
-| Дополнение к публикации | [task-publication-feedback-identity-addendum.md](task-publication-feedback-identity-addendum.md) | 1 |
-| Передача 15 октября | `handoff/2026-10-15/`: [START](handoff/2026-10-15/START.md), [PR-AUDIT](handoff/2026-10-15/PR-AUDIT.md), [PLAN](handoff/2026-10-15/PLAN.md), [METHODOLOGY](handoff/2026-10-15/METHODOLOGY.md), [EXTERNAL-DEPENDENCIES](handoff/2026-10-15/EXTERNAL-DEPENDENCIES.md), [CONTEXT](handoff/2026-10-15/CONTEXT.md), [BOOTSTRAP](handoff/2026-10-15/BOOTSTRAP.md) | 7 |
+| Прежний план курса | [course-revision-plan.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/course-revision-plan.md) | 1 |
+| Журнал полной редакции | [full-revision-progress.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/full-revision-progress.md) | 1 |
+| Чтение полной редакции | [full-revision-reading.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/full-revision-reading.md) | 1 |
+| Прежний пилот | [java-course-pilot.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/java-course-pilot.md) | 1 |
+| Лекции 1–2 | [lectures-1-2-editorial-revision.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/lectures-1-2-editorial-revision.md), [lectures-1-2-independent-review.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/lectures-1-2-independent-review.md), [lectures-1-2-reading.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/lectures-1-2-reading.md) | 3 |
+| Лекции 1–2–5 | [lectures-1-2-5-editorial-revision.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/lectures-1-2-5-editorial-revision.md), [lectures-1-2-5-independent-review.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/lectures-1-2-5-independent-review.md), [lectures-1-2-5-reading.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/lectures-1-2-5-reading.md) | 3 |
+| Публикация 20 октября | [task-publication-plan.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/task-publication-plan.md) | 1 |
+| Прежний старт | [task-publication-start.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/task-publication-start.md) | 1 |
+| Дополнение к публикации | [task-publication-feedback-identity-addendum.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/task-publication-feedback-identity-addendum.md) | 1 |
+| Передача 15 октября | [handoff/2026-10-15/BOOTSTRAP.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/handoff/2026-10-15/BOOTSTRAP.md), [handoff/2026-10-15/CONTEXT.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/handoff/2026-10-15/CONTEXT.md), [handoff/2026-10-15/EXTERNAL-DEPENDENCIES.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/handoff/2026-10-15/EXTERNAL-DEPENDENCIES.md), [handoff/2026-10-15/METHODOLOGY.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/handoff/2026-10-15/METHODOLOGY.md), [handoff/2026-10-15/PLAN.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/handoff/2026-10-15/PLAN.md), [handoff/2026-10-15/PR-AUDIT.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/handoff/2026-10-15/PR-AUDIT.md), [handoff/2026-10-15/START.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs/handoff/2026-10-15/START.md) | 7 |
 
-Исследования 27–29 октября, текущие план/обсуждение/регламент/START, методика, образцы, `sources.md` и документ поставки остаются: они нужны предстоящей работе. Папка `archive` с теми же файлами не создаётся.
+Живые нормы сохранены в актуальных документах:
 
-У `course-revision-plan.md` и `full-revision-progress.md` отмечены незакоммиченные изменения: Git пока **не содержит нужные текущие байты**. Снимок `fedf0fd…` сохраняет только уже закоммиченное, а не эту редакцию. Перед удалением нужен точный Git-checkpoint всех сохраняемых редакций. Затем действующие нормы переносятся в актуальные документы: в частности, переносимая процедура допуска должна получить отдельный действующий документ без прежней таблицы моделей. Входящие ссылки заменяются, включая AGENTS, корневой README, tasks/README, sources и prairielearn-labs; проверяется отсутствие ссылок на удаляемые пути. Необходимые исторические ссылки получают permalink на точный commit. Это подготовительный шаг будущего запуска, не самостоятельный новый проект.
+- [Модельный допуск](model-admission.md): собственные первичные метаданные,
+  исходные ID чата/хода, полный неизменный интервал после возобновления и перед приёмкой,
+  точное соответствие роли и остановка при отсутствии подтверждения.
+- [Методика](authoring-methodology.md) и [поставка](prairielearn-labs.md):
+  учебный контракт, отдельная компиляция/API-допуск, предметные отрицательные контроли,
+  единый канон и самостоятельная выдача, связанная проверка исходников и реального выхода.
+  У этих норм явно отмечены будущие target-проверки; старые модели, очереди и машинные пути не перенесены.
+- [Регламент](release-execution-regulation-20261103.md): устойчивый UID по Moodle→Gateway→PL,
+  ФИО не ключ, повторный вход сохраняет запись, результаты двух разрешённых тестовых
+  студентов разделены, переатрибуция только по доказанному основанию после сверки.
+  Портал здесь не проверялся; старые предписания feedback/demo читаются по поздним решениям.
 
-**Уже перенесённая живая норма:** свойства идентичности из пунктов 4–5 прежнего дополнения кратко закреплены в регламенте и START как будущий критерий сохранности: устойчивый UID по маршруту Moodle→Gateway→PL, ФИО не ключ, повторный вход сохраняет запись, результаты двух разрешённых тестовых студентов разделены, переатрибуция только по доказанному основанию после сверки. Портал здесь не проверялся. Пункты 2–3 дополнения автоматически не переносятся: feedback/demo и открытый Git уже уточнены последующими решениями. Нового сервиса или правила оценки не вводится.
+Входящие действующие ссылки ведут к новым нормам, исторические — к checkpoint.
+Исследования 27–29 октября, текущие план/обсуждение/регламент/START,
+методика, образцы, `sources.md` и поставка остаются: они нужны будущей работе.
+Зафиксированная ранее незакоммиченная редакция старых файлов уже включена в checkpoint;
+прежнее предупреждение о несохранённых байтах снято. Нового человеческого выбора
+для этой чистки не требуется. Доступы, публикация и runtime-проверки остаются
+действиями целевой исполнительной сессии.
 
 ## Охват единственной повестки
 
@@ -68,4 +86,4 @@
 
 Для данных сохраняются уже описанные проверки [административного переноса](research/target-design-20261029/delivery-and-execution.md#11-разовый-административный-перенос) и [подробного обсуждения](refactoring-discussion.md#10-перенос-результатов-prairielearn): начисление, частные вложения, новая попытка/переназначение, согласованность PL/Gateway/Moodle и восстановление с сохранностью новых ответов после переключения. Точный механизм — техническая работа исполнителя, а не новое правило оценивания.
 
-В этом проходе выполнены только редакционные изменения и статическая проверка документов. Продукт, учебные исходники, CI, сервер, зависимости и прежние evidence не менялись; runtime/сборки не запускались. Решения 1–74 сохранены дословно.
+В этом проходе выполнены чистка исторических документов, редакционные изменения и статическая проверка ссылок. Продукт, учебные исходники, CI, сервер, зависимости и прежние evidence не менялись; runtime/сборки не запускались. Решения 1–74 сохранены дословно.
