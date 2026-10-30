@@ -1,0 +1,1 @@
+package display;public class LengthTable {void main(){for(int inches=1;inches<=144;inches++){System.out.printf(java.util.Locale.ROOT,"%4d %3.0f\r\n",inches,inches/39.37);if(inches%12==0)System.out.print("\r\n");}}}
