@@ -1,0 +1,1 @@
+public class Main { public static void main(String[] args) { var s=new java.util.Scanner(System.in); int n=s.nextInt(); if(n<=0){System.out.print("Количество должно быть положительным");return;} int[] a=new int[n]; for(int i=0;i<n;i++)a[i]=s.nextInt();System.out.print(helper.Bounds.text(a)); } }

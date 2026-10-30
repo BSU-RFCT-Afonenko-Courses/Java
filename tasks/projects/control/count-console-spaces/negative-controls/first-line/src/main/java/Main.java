@@ -1,0 +1,1 @@
+public class Main { public static void main(String[] a) throws Exception {String s=new java.io.BufferedReader(new java.io.InputStreamReader(System.in)).readLine();int n=0;if(s!=null)for(char c:s.toCharArray()){if(c=='.')break;if(c==' ')n++;}System.out.print(n); } }

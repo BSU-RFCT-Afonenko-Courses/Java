@@ -1,0 +1,1 @@
+public class Main { public static void main(String[] args) throws Exception { String text=new String(System.in.readAllBytes(),java.nio.charset.StandardCharsets.UTF_8); System.out.print(helper.Count.beforePoint(text)); } }
