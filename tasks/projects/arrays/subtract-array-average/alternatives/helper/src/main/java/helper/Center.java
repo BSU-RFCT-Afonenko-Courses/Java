@@ -1,0 +1,1 @@
+package helper;public class Center{public static double[][] apply(int[][] a){double[][] b=new double[3][];for(int r=0;r<3;r++){double mean=java.util.Arrays.stream(a[r]).average().orElseThrow();b[r]=java.util.Arrays.stream(a[r]).mapToDouble(v->v-mean).toArray();}return b;}}
