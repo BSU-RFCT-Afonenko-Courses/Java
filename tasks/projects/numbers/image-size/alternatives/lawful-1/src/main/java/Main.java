@@ -1,0 +1,1 @@
+public class Main { public static void main(String[] args) { var s = new java.util.Scanner(System.in); var b = helper.Size.bytes(s.nextInt(),s.nextInt(),s.nextInt()); System.out.printf(java.util.Locale.ROOT,"%s\t%.18e", b, b.doubleValue()/1048576.0); } }
