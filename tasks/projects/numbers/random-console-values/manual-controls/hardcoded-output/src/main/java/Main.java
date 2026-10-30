@@ -1,0 +1,1 @@
+public class Main {public static void main(String[] args) {int[] values={30,63,48,84,70,25,5,18,19,93};for(int v:values)System.out.print(v+" ");System.out.println();for(int v:values)System.out.println(v);}}

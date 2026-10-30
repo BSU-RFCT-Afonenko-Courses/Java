@@ -1,0 +1,2 @@
+class Main extends Launcher {}
+class Launcher {public static void main(String[] args){long a=Long.parseLong(args[0]),b=Long.parseLong(args[1]),c=Long.parseLong(args[2]);long d=b*b-4*a*c;if(d<0)System.out.print("Действительных корней нет.");else if(d==0)System.out.print(""+(-b/(2.0*a)));else{double root=Math.sqrt(d);System.out.print(""+((-b-root)/(2*a))+" "+((-b+root)/(2*a)));}}}

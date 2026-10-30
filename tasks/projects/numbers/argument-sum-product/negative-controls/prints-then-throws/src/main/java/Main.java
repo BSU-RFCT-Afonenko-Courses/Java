@@ -1,0 +1,1 @@
+public class Main {public static void main(String[] args){try {long[] r=Study.compute(args);System.out.println(r[0]+" "+r[1]);} finally {throw new IllegalStateException("Контроль ошибки после вывода");}}}

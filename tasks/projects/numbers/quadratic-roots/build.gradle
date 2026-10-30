@@ -1,0 +1,51 @@
+plugins { id 'java' }
+repositories { mavenCentral() }
+sourceSets { api { java.srcDir 'src/api/java' } }
+dependencies {
+    apiImplementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.14.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+java { toolchain { languageVersion = JavaLanguageVersion.of(25) } }
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8'; options.release = 25 }
+tasks.register('apiCheck', JavaExec) {
+    dependsOn tasks.classes, tasks.apiClasses
+    classpath = sourceSets.api.runtimeClasspath
+    mainClass = 'org.prairielearn.api.PlatformApiPrecheck'
+    def apiWork = layout.buildDirectory.dir('api-check')
+    doFirst {
+        def work = apiWork.get().asFile
+        delete work
+        work.mkdirs()
+        def scratch = new File(work, 'scratch')
+        scratch.mkdirs()
+        def result = new File(work, 'result.json')
+        def parameters = new File(work, 'parameters.json')
+        parameters.text = groovy.json.JsonOutput.toJson([
+            signature: 'local-ide-api', entry: 'ApiContract',
+            classes: sourceSets.main.output.classesDirs.singleFile.absolutePath,
+            scratch: scratch.absolutePath, result_file: result.absolutePath
+        ])
+        setArgs([parameters.absolutePath])
+    }
+    doLast {
+        def result = new groovy.json.JsonSlurper().parse(new File(apiWork.get().asFile, 'result.json'))
+        if (result.status != 'success') {
+            throw new GradleException("API: ${result.status}: ${result.message}")
+        }
+        logger.lifecycle('Объявленный API доступен')
+    }
+}
+tasks.compileTestJava { dependsOn tasks.apiCheck }
+test {
+    useJUnitPlatform()
+    testLogging { events 'failed', 'skipped'; exceptionFormat = 'full' }
+}
+tasks.register('run', JavaExec) {
+    dependsOn tasks.classes
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = providers.gradleProperty('mainClass').orElse('Main')
+    standardInput = System.in
+}
+
+tasks.named('apiCheck', JavaExec) { jvmArgs '--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED' }

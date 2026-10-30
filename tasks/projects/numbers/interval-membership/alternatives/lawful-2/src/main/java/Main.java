@@ -1,0 +1,1 @@
+public class Main { public static void main(String[] args) { var s=new java.util.Scanner(System.in); long n=s.nextInt(),m=s.nextInt(),k=s.nextInt(); System.out.printf("%b\t%b\n%b  %b",k-n>0 && m-k>=0,k-n>=0 && m-k>0,k-n>0 && m-k>0,k-n>=0 && m-k>=0); } }
