@@ -1,0 +1,1 @@
+class Show { void main() { for(int direction=0;direction<4;direction++) { int[][] input={{-3,0,3},{2,-1,0},{1,3,-2}}; System.out.println(java.util.Arrays.deepToString(input)); System.out.println(java.util.Arrays.deepToString(Study.shift(input,4,direction))); } } }

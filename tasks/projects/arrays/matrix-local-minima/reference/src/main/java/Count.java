@@ -1,0 +1,2 @@
+class Count {static int count(int[][] a){int result=0;for(int i=0;i<a.length;i++)for(int j=0;j<a[i].length;j++){boolean least=true;for(int di=-1;di<=1;di++)for(int dj=-1;dj<=1;dj++){if(di==0&&dj==0)continue;int x=i+di,y=j+dj;if(x>=0&&x<a.length&&y>=0&&y<a[x].length&&a[i][j]>=a[x][y])least=false;}if(least)result++;}return result;}
+void main(){int[][] a={{-3,0,3},{2,-1,0},{1,3,-2}};System.out.println(count(a));}}
