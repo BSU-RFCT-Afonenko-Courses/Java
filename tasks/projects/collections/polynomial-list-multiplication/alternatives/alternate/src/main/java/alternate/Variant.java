@@ -1,0 +1,1 @@
+package alternate;import java.util.*;public class Variant {public List<Double> apply(List<Double>a,List<Double>b){var result=new LinkedList<Double>();if(a.isEmpty()||b.isEmpty())return result;for(int k=0;k<a.size()+b.size()-1;k++){double sum=0;for(int i=Math.max(0,k-b.size()+1);i<=Math.min(k,a.size()-1);i++)sum+=a.get(i)*b.get(k-i);result.add(sum);}return result;}}

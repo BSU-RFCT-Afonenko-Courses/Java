@@ -1,0 +1,31 @@
+course-project:
+  starter: {path: starter}
+  instructions:
+    gradle: {path: ../../common/java/gradle.md}
+    local: {path: README.local.md}
+  solutions:
+    reference: {path: reference}
+    flexible: {path: alternatives/flexible}
+    copied-values: {path: alternatives/copied-values}
+  components:
+    apiSupport: {path: ../../common/java/api-support}
+    observations: {path: observations}
+  testsets:
+    api:
+      path: api
+      requires: {apiSupport: true}
+    demo:
+      path: demo
+      requires: {api: true, observations: true}
+    contract:
+      path: checks
+      requires: {api: true, observations: true}
+  build:
+    files:
+      build.gradle: build.gradle
+      settings.gradle: ../../common/java/settings.gradle
+  delivery:
+    student:
+      testsets: {api: true, demo: true}
+  verification:
+    testsets: {api: true, contract: true}

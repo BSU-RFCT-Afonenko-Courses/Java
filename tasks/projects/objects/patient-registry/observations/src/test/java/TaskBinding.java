@@ -1,0 +1,12 @@
+import java.lang.AssertionError;
+import java.lang.FunctionalInterface;
+import java.lang.Long;
+import java.lang.Object;
+import java.lang.RuntimeException;
+import java.lang.String;
+import java.lang.SuppressWarnings;
+import java.lang.Throwable;
+import java.util.List;
+import java.util.*;import java.io.*;import java.nio.charset.StandardCharsets;
+/** Проверяющий клиент: передаёт те же объекты и массивы входам Study. */
+class TaskBinding {@FunctionalInterface private interface Invocation<T>{T run()throws Throwable;}private static <T>T invoke(Invocation<T> call){try{return call.run();}catch(Throwable failure){return TaskBinding.<RuntimeException,T>raise(failure);}}@SuppressWarnings("unchecked")private static <E extends Throwable,T>T raise(Throwable failure)throws E{throw(E)failure;}static Object patient(long id,long card,String diagnosis){return invoke(()->Study.patient(id,"Учебный","Иван","Иванович","Учебный адрес","00123",card,diagnosis));}static Object shortValue(long id,String s){Object c=invoke(()->Study.secondConstructor());validRecord(c);return c;}static Object[]array(Object...v){Object[]a=invoke(()->Study.array(v));typed(a,v);return a;}static Object[]diagnosis(Object[]a,String d){return invoke(()->Study.withDiagnosis(a,d));}static Object[]range(Object[]a,long l,long h){return invoke(()->Study.inCardRange(a,l,h));}static List<?>value(Object x){return invoke(()->Study.values(x));}static void edit(Object c,long id,String l,String f,String m,String a,String phone,long card,String d){invoke(()->{Study.edit(c,id,l,f,m,a,phone,card,d);return null;});}static String text(Object c){return invoke(()->Study.text(c));}static void validRecord(Object c){List<?>v=invoke(()->Study.values(c));if(v.size()!=8||!(v.get(0) instanceof Long id)||id<=0||!(v.get(6) instanceof Long card)||card<=0)throw new AssertionError("Недопустимая запись второго конструктора");for(int i:new int[]{1,2,3,4,5,7})if(!(v.get(i) instanceof String s)||s.isEmpty())throw new AssertionError("Пустое свойство");}static void typed(Object[]a,Object[]values){if(a==null||a.getClass().getComponentType()==Object.class||a.length!=values.length)throw new AssertionError("Требуется массив класса модели");if(a.length==0&&!a.getClass().getComponentType().isInstance(invoke(()->Study.patient(41,"Учебный","Иван","Иванович","Учебный адрес","00123",101,"Грипп"))))throw new AssertionError("Компонент пустого массива не относится к модели");for(int i=0;i<a.length;i++)if(a[i]!=values[i])throw new AssertionError("Ссылки и порядок массива");}}

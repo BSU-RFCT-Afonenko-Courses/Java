@@ -1,0 +1,6 @@
+import java.lang.Double;
+import java.lang.Math;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import org.junit.jupiter.api.Test;import static org.junit.jupiter.api.Assertions.*;import java.util.*;import java.math.*;import java.io.*;import java.nio.charset.StandardCharsets;class HistoricalContractTest{@Test void zeroHighTermsCancellationAndIndependentInputs(){List<Double>a=new ArrayList<>(List.of(1.0,1.0,0.0)),b=new ArrayList<>(List.of(1.0,-1.0));List<Double>out=TaskBinding.multiply(a,b);assertEquals(4,out.size());assertEquals(4,out.size());double[]expectedSmall={1,0,-1,0};for(int i=0;i<4;i++)assertEquals(expectedSmall[i],out.get(i),1e-6+1e-12*Math.abs(expectedSmall[i]));a.set(0,9.0);b.set(0,8.0);for(int i=0;i<4;i++)assertEquals(expectedSmall[i],out.get(i),1e-6+1e-12*Math.abs(expectedSmall[i]));List<Double>x=new ArrayList<>(Collections.nCopies(64,1000.0)),y=new ArrayList<>(Collections.nCopies(64,-1000.0));List<Double>z=TaskBinding.multiply(x,y);assertEquals(127,z.size());for(int k=0;k<127;k++){double expected=-(k<64?k+1:127-k)*1e6;assertEquals(expected,z.get(k),1e-6+1e-12*Math.abs(expected));}assertEquals(Collections.nCopies(64,1000.0),x);assertEquals(Collections.nCopies(64,-1000.0),y);}}
