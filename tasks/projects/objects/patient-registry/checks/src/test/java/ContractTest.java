@@ -1,5 +1,31 @@
 import java.lang.Object;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
-import org.junit.jupiter.api.Test;import static org.junit.jupiter.api.Assertions.*;import java.util.*;import java.math.*;import java.io.*;import java.nio.charset.StandardCharsets;class ContractTest{static void values(Object[]expected,Object[]actual){assertNotNull(actual);assertEquals(Arrays.stream(expected).map(TaskBinding::value).toList(),Arrays.stream(actual).map(TaskBinding::value).toList());}static Object[]select(Object[]input,Supplier<Object[]>call){Object[]refs=input.clone();var before=Arrays.stream(input).map(TaskBinding::value).toList();Object[]out=call.get();for(int i=0;i<input.length;i++)assertSame(refs[i],input[i]);assertEquals(before,Arrays.stream(input).map(TaskBinding::value).toList());return out;}@Test void emptyNoMatchesSameBoundaryAndProperties(){Object a=TaskBinding.patient(1,1,"Flu"),b=TaskBinding.patient(2,2,"flu");Object[]in=TaskBinding.array(a,b,a);values(new Object[]{b},select(in,()->TaskBinding.range(in,2,2)));values(new Object[0],select(in,()->TaskBinding.diagnosis(in,"FLU")));values(new Object[0],select(in,()->TaskBinding.range(in,10,20)));Object[]empty=TaskBinding.array();values(new Object[0],select(empty,()->TaskBinding.diagnosis(empty,"x")));Object p=TaskBinding.shortValue(9,"Short");assertFalse(TaskBinding.text(p).isBlank());TaskBinding.edit(p,7,"L","F","M","A","007",7,"D");assertEquals(List.of(7L,"L","F","M","A","007",7L,"D"),TaskBinding.value(p));}}
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+class ContractTest {
+ static void select(Object[] input, Object[] expected, Supplier<Object[]> call) {
+  Object[] refs = input.clone();
+  List<?> before = PublicChecks.values(input);
+  List<?> expectedValues = PublicChecks.values(expected);
+  Object[] out = call.get();
+  List<?> actual = PublicChecks.values(out);
+  assertNotNull(out);
+  for (int i = 0; i < input.length; i++) assertSame(refs[i], input[i]);
+  assertEquals(before, PublicChecks.values(input));
+  assertEquals(expectedValues, actual);
+ }
+ @Test void emptyNoMatchesSameBoundaryAndProperties() {
+  Object a = TaskBinding.patient(1,1,"Flu"), b = TaskBinding.patient(2,2,"flu");
+  Object[] in = TaskBinding.array(a,b,a);
+  select(in, new Object[]{b}, () -> TaskBinding.range(in,2,2));
+  select(in, new Object[0], () -> TaskBinding.diagnosis(in,"FLU"));
+  select(in, new Object[0], () -> TaskBinding.range(in,10,20));
+  Object[] empty = TaskBinding.array();
+  select(empty, new Object[0], () -> TaskBinding.diagnosis(empty,"x"));
+  Object p = TaskBinding.shortValue(9,"Short");
+  assertFalse(TaskBinding.text(p).isBlank());
+  TaskBinding.edit(p,7,"L","F","M","A","007",7,"D");
+  assertEquals(List.of(7L,"L","F","M","A","007",7L,"D"), PublicChecks.value(p));
+ }
+}
