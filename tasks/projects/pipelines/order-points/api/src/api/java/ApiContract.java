@@ -1,0 +1,5 @@
+import java.lang.Exception;
+import java.util.List;
+import java.util.*;import java.util.function.*;import java.nio.file.Path;
+import org.prairielearn.api.PlatformApiPrecheck;import java.lang.reflect.Modifier;
+public class ApiContract {public static void check(PlatformApiPrecheck.Api api)throws Exception{api.method("Study","point",Object.class,Modifier.PUBLIC|Modifier.STATIC,0,int.class,int.class);api.method("Study","x",int.class,Modifier.PUBLIC|Modifier.STATIC,0,Object.class);api.method("Study","y",int.class,Modifier.PUBLIC|Modifier.STATIC,0,Object.class);api.method("Study","printOrdered",void.class,Modifier.PUBLIC|Modifier.STATIC,0,List.class);api.compiles("Inputs","import java.lang.Object;\nimport java.lang.Throwable;\nimport java.util.List;\nimport java.util.*;import java.util.function.*;import java.nio.file.Path;\nclass Inputs {static  void call0(int x,int y) {Object _apiValue=Study.point(x,y);}static  void call1(Object point) {int _apiValue=Study.x(point);}static  void call2(Object point) {int _apiValue=Study.y(point);}static  void call3(List<?> points) {Study.printOrdered(points);}}",true);}}

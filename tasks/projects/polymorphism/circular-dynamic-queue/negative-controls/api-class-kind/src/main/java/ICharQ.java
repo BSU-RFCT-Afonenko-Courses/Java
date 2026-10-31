@@ -1,0 +1,1 @@
+public abstract class ICharQ {public abstract void put(char c);public abstract char get();}

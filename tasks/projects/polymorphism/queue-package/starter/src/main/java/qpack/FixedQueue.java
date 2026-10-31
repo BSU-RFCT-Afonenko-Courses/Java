@@ -1,0 +1,2 @@
+package qpack;
+public class FixedQueue implements ICharQ {public FixedQueue(int capacity){throw new UnsupportedOperationException("TODO: очередь");}public void put(char c){throw new UnsupportedOperationException("TODO");}public char get(){throw new UnsupportedOperationException("TODO");}}

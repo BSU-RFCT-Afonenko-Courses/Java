@@ -1,0 +1,6 @@
+import java.lang.Object;
+import java.lang.String;
+import java.util.Arrays;
+import java.util.*;import java.util.function.*;import java.nio.file.Path;
+import java.util.stream.*;
+public class Study{record Item(int id,String name){}public static Object create(int id,String name){return new Item(id,name);}public static Object[]array(Object...values){return Arrays.copyOf(values,values.length,Item[].class);}public static Object[]distinct(Object[]input){return Arrays.stream((Item[])input).distinct().toArray(Item[]::new);}public static int id(Object value){return ((Item)value).id();}public static String name(Object value){return ((Item)value).name();}}

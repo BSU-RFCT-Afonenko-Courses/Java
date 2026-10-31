@@ -1,0 +1,2 @@
+package qpack;public class CircularQueue implements ICharQ {private final char[]data;private int head,size;public CircularQueue(int n){data=new char[n];}public void put(char c){if(size==data.length){System.out.println("Очередь переполнена");return;}data[(head+size++)%data.length]=c;}public char get(){if(size==0){System.out.println("Очередь пуста");return '\0';}char c=data[head];head=(head+1)%data.length;size--;return c;}public void reset(){head=size=0;}}
+
