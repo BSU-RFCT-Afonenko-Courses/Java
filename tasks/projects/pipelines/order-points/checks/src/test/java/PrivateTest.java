@@ -1,0 +1,2 @@
+import org.junit.jupiter.api.Test;import static org.junit.jupiter.api.Assertions.*;import java.util.List;
+class PrivateTest {@Test void stableBoundariesAndInput(){int[][] a={{10000,10000},{3,4},{-3,-4},{0,0},{3,4},{-10000,10000}};assertEquals(List.of("(0:0)","(3:4)","(-3:-4)","(3:4)","(10000:10000)","(-10000:10000)"),PublicChecks.tokens(TaskBinding.run(a)));assertEquals(List.of(),PublicChecks.tokens(TaskBinding.run(new int[0][])));}}

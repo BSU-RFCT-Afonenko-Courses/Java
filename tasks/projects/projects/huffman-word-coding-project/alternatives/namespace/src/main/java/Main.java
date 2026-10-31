@@ -1,0 +1,4 @@
+import java.lang.Object;
+import java.lang.String;
+import java.lang.System;
+public class Main {public static void main(String[]args){Object r=Study.encode(args.length==0?"one two two three three three":String.join(" ",args));Study.frequencies(r).forEach((word,count)->System.out.println(word+" — "+count+" — "+Study.codes(r).get(word)));System.out.println(Study.bits(r));}}
