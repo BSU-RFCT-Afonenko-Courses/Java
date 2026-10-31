@@ -16,7 +16,7 @@ class ContractTest {
     @Test void left(TestReporter publicReporter) throws Exception { intervals(publicReporter, new String[]{"boundary"}, -2,4,-2); }
     @Test void right(TestReporter publicReporter) throws Exception { intervals(publicReporter, new String[]{"demo-right"}, -2,4,4); }
     @Test void inside(TestReporter publicReporter) throws Exception {
-        publicOutput(publicReporter, new String[]{"normal"}, JavaProcess.runCheckingUncaught(Main.class, "-2 4 0").stdout());
+        assertArrayEquals(new String[]{"true","true","true","true"}, tokens(publicOutput(publicReporter, new String[]{"normal"}, JavaProcess.runCheckingUncaught(Main.class, "-2 4 0").stdout())));
  intervals(null, null, -17,23,6); }
     @Test void before() throws Exception { intervals(null, null, -17,23,-18); }
     @Test void after() throws Exception { intervals(null, null, -17,23,24); }

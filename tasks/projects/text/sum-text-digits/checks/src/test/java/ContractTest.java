@@ -12,7 +12,7 @@ class ContractTest {
   @DisplayName("sum-text-digits-01 — Соседние цифры и ноль; public normal")
   void case01(TestReporter publicReporter) {
     var publicActual = Study.sum("a2b109");
-    publicReporter.publishEntry(Map.of("public-case", "sum-text-digits-01", "actual", Arrays.deepToString(new Object[]{publicActual})));
+    publicReporter.publishEntry(Map.of("public-case", "sum-text-digits-01", "actual", "result=" + publicActual));
 
     assertEquals(12L, publicActual, "Соседние цифры и ноль; public normal");
   }
@@ -21,7 +21,7 @@ class ContractTest {
   @DisplayName("sum-text-digits-02 — Пустая сумма; public boundary")
   void case02(TestReporter publicReporter) {
     var publicActual = Study.sum("");
-    publicReporter.publishEntry(Map.of("public-case", "sum-text-digits-02", "actual", Arrays.deepToString(new Object[]{publicActual})));
+    publicReporter.publishEntry(Map.of("public-case", "sum-text-digits-02", "actual", "result=" + publicActual));
 
     assertEquals(0L, publicActual, "Пустая сумма; public boundary");
   }

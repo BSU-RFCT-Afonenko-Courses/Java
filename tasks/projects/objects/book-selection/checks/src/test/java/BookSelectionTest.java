@@ -90,12 +90,22 @@ class BookSelectionTest {
 
     @Test @DisplayName("Отбор по автору: порядок и повторное вхождение")
     void authorOrderAndMultiplicity(TestReporter publicReporter) {
-        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] selected=Book.author(new Book[]{b1,b2,b1,b3},"Ann"); publicReporter.publishEntry(Map.of("public-case","normal-author","actual", selected==null?"null":Arrays.toString(Arrays.stream(selected).map(b->b==null?null:b.id()).toArray()))); }
+        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] publicBooks = new Book[]{b1,b2,b1,b3};
+          selection(publicBooks, a -> { Book[] selected = Book.author(a, "Ann");
+            publicReporter.publishEntry(Map.of("public-case", "normal-author", "actual", selected == null ? "null" : Arrays.toString(Arrays.stream(selected).map(b -> b == null ? null : b.id()).toArray())));
+            return selected;
+          }, 0, 1, 2);
+        }
  selection(catalog(), a -> Book.author(a, "Анна"), 0, 1, 2); }
 
     @Test @DisplayName("Автор не первый в списке")
     void nonFirstAuthor(TestReporter publicReporter) {
-        { Book first = new Book(1, "Массивы", new String[]{"Анна", "Борис"}, "Свет", 2024, 120, 10, "Мягкий"); Book second = new Book(2, "Объекты", "Вера", "Мир", 2025, 200, 15, "Твёрдый"); Book[] selected=Book.author(new Book[]{first,second},"Борис"); publicReporter.publishEntry(Map.of("public-case","demo-example","actual", selected==null?"null":Arrays.toString(Arrays.stream(selected).map(b->b==null?null:b.id()).toArray()))); }
+        { Book first = new Book(1, "Массивы", new String[]{"Анна", "Борис"}, "Свет", 2024, 120, 10, "Мягкий"); Book second = new Book(2, "Объекты", "Вера", "Мир", 2025, 200, 15, "Твёрдый"); Book[] publicBooks = new Book[]{first,second};
+          selection(publicBooks, a -> { Book[] selected = Book.author(a, "Борис");
+            publicReporter.publishEntry(Map.of("public-case", "demo-example", "actual", selected == null ? "null" : Arrays.toString(Arrays.stream(selected).map(b -> b == null ? null : b.id()).toArray())));
+            return selected;
+          }, 0);
+        }
 
         Book[] books = {new Book(2, "Двое", new String[] {"Первый", "Искомый"}, "Печать", 2001, 20, 3, "Мягкий")};
         selection(books, a -> Book.author(a, "Искомый"), 0);
@@ -106,7 +116,12 @@ class BookSelectionTest {
 
     @Test @DisplayName("Неизвестный автор")
     void unknownAuthor(TestReporter publicReporter) {
-        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] selected=Book.author(new Book[]{b3},"Ann"); publicReporter.publishEntry(Map.of("public-case","boundary-author","actual", selected==null?"null":Arrays.toString(Arrays.stream(selected).map(b->b==null?null:b.id()).toArray()))); }
+        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] publicBooks = new Book[]{b3};
+          selection(publicBooks, a -> { Book[] selected = Book.author(a, "Ann");
+            publicReporter.publishEntry(Map.of("public-case", "boundary-author", "actual", selected == null ? "null" : Arrays.toString(Arrays.stream(selected).map(b -> b == null ? null : b.id()).toArray())));
+            return selected;
+          });
+        }
  selection(catalog(), a -> Book.author(a, "Ан")); }
 
     @Test @DisplayName("Автор: пустой массив")
@@ -114,7 +129,12 @@ class BookSelectionTest {
 
     @Test @DisplayName("Отбор по издательству: порядок и повторное вхождение")
     void publisherOrderAndMultiplicity(TestReporter publicReporter) {
-        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] selected=Book.publisher(new Book[]{b1,b2,b1,b3},"Север"); publicReporter.publishEntry(Map.of("public-case","normal-publisher","actual", selected==null?"null":Arrays.toString(Arrays.stream(selected).map(b->b==null?null:b.id()).toArray()))); }
+        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] publicBooks = new Book[]{b1,b2,b1,b3};
+          selection(publicBooks, a -> { Book[] selected = Book.publisher(a, "Север");
+            publicReporter.publishEntry(Map.of("public-case", "normal-publisher", "actual", selected == null ? "null" : Arrays.toString(Arrays.stream(selected).map(b -> b == null ? null : b.id()).toArray())));
+            return selected;
+          }, 0, 2, 3);
+        }
  selection(catalog(), a -> Book.publisher(a, "Свет"), 0, 1, 2); }
 
     @Test @DisplayName("Издательство: точное совпадение с учётом регистра")
@@ -122,7 +142,12 @@ class BookSelectionTest {
 
     @Test @DisplayName("Неизвестное издательство")
     void unknownPublisher(TestReporter publicReporter) {
-        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] selected=Book.publisher(new Book[]{b3},"север"); publicReporter.publishEntry(Map.of("public-case","boundary-publisher","actual", selected==null?"null":Arrays.toString(Arrays.stream(selected).map(b->b==null?null:b.id()).toArray()))); }
+        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] publicBooks = new Book[]{b3};
+          selection(publicBooks, a -> { Book[] selected = Book.publisher(a, "север");
+            publicReporter.publishEntry(Map.of("public-case", "boundary-publisher", "actual", selected == null ? "null" : Arrays.toString(Arrays.stream(selected).map(b -> b == null ? null : b.id()).toArray())));
+            return selected;
+          });
+        }
  selection(catalog(), a -> Book.publisher(a, "Св")); }
 
     @Test @DisplayName("Издательство: пустой массив")
@@ -130,12 +155,22 @@ class BookSelectionTest {
 
     @Test @DisplayName("Отбор после года: порядок и повторное вхождение")
     void yearOrderAndMultiplicity(TestReporter publicReporter) {
-        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] selected=Book.after(new Book[]{b1,b2,b1,b3},2010); publicReporter.publishEntry(Map.of("public-case","normal-after","actual", selected==null?"null":Arrays.toString(Arrays.stream(selected).map(b->b==null?null:b.id()).toArray()))); }
+        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] publicBooks = new Book[]{b1,b2,b1,b3};
+          selection(publicBooks, a -> { Book[] selected = Book.after(a, 2010);
+            publicReporter.publishEntry(Map.of("public-case", "normal-after", "actual", selected == null ? "null" : Arrays.toString(Arrays.stream(selected).map(b -> b == null ? null : b.id()).toArray())));
+            return selected;
+          }, 1, 3);
+        }
  selection(catalog(), a -> Book.after(a, 2024), 0, 2, 4); }
 
     @Test @DisplayName("Год равен границе")
     void yearEqualBoundary(TestReporter publicReporter) {
-        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] selected=Book.after(new Book[]{b3},2020); publicReporter.publishEntry(Map.of("public-case","boundary-after","actual", selected==null?"null":Arrays.toString(Arrays.stream(selected).map(b->b==null?null:b.id()).toArray()))); }
+        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] publicBooks = new Book[]{b3};
+          selection(publicBooks, a -> { Book[] selected = Book.after(a, 2020);
+            publicReporter.publishEntry(Map.of("public-case", "boundary-after", "actual", selected == null ? "null" : Arrays.toString(Arrays.stream(selected).map(b -> b == null ? null : b.id()).toArray())));
+            return selected;
+          });
+        }
 
         Book[] books = {new Book(1, "Граница", "Автор", "Печать", 2024, 1, 0, "Мягкий")};
         selection(books, a -> Book.after(a, 2024));

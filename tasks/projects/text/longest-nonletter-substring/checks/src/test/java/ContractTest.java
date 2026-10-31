@@ -12,7 +12,7 @@ class ContractTest {
   @DisplayName("longest-nonletter-substring-01 — Непрерывность, уникальный максимум; public normal")
   void case01(TestReporter publicReporter) {
     var publicActual = Study.longest("a12!б3");
-    publicReporter.publishEntry(Map.of("public-case", "longest-nonletter-substring-01", "actual", Arrays.deepToString(new Object[]{publicActual})));
+    publicReporter.publishEntry(Map.of("public-case", "longest-nonletter-substring-01", "actual", "result=" + publicActual));
 
     assertEquals(
         "12!", publicActual, "Непрерывность, уникальный максимум; public normal");
@@ -22,7 +22,7 @@ class ContractTest {
   @DisplayName("longest-nonletter-substring-02 — Первый из равных максимумов; public boundary")
   void case02(TestReporter publicReporter) {
     var publicActual = Study.longest("a12!б34?");
-    publicReporter.publishEntry(Map.of("public-case", "longest-nonletter-substring-02", "actual", Arrays.deepToString(new Object[]{publicActual})));
+    publicReporter.publishEntry(Map.of("public-case", "longest-nonletter-substring-02", "actual", "result=" + publicActual));
 
     assertEquals("12!", publicActual, "Первый из равных максимумов; public boundary");
   }

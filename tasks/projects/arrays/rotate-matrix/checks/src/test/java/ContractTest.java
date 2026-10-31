@@ -27,6 +27,16 @@ class ContractTest {
         assertArrayEquals(new int[][]{{-3,0,3},{2,-1,0},{1,3,-2}}, source);
     }
     @Test void rotate_270(TestReporter publicReporter) throws Throwable {
+        // Прежний опубликованный boundary: один исходник после всех трёх вызовов.
+        {
+            int[][] publicSource = {{-3,0,3},{2,-1,0},{1,3,-2}};
+            Study.rotate(publicSource, 90);
+            Study.rotate(publicSource, 180);
+            Study.rotate(publicSource, 270);
+            publicReporter.publishEntry(Map.of("public-case", "boundary", "actual", "source after 90/180/270=" + Arrays.deepToString(publicSource)));
+            assertArrayEquals(new int[][]{{-3,0,3},{2,-1,0},{1,3,-2}}, publicSource);
+        }
+
         int[][] source = new int[][]{{-3,0,3},{2,-1,0},{1,3,-2}};
     var publicActual = Study.rotate(source, 270);
     publicReporter.publishEntry(Map.of("public-case", "normal-270", "actual", Arrays.deepToString(publicActual) + "; source=" + Arrays.deepToString(source) + "; same=" + (source == publicActual)));

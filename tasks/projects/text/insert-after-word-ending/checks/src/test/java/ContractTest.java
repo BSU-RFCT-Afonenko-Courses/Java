@@ -14,7 +14,7 @@ class ContractTest {
   void
   case01(TestReporter publicReporter) {
     var publicActual = Study.insert("кот, скот!", "кот", "дом");
-    publicReporter.publishEntry(Map.of("public-case", "insert-after-word-ending-01", "actual", Arrays.deepToString(new Object[]{publicActual})));
+    publicReporter.publishEntry(Map.of("public-case", "insert-after-word-ending-01", "actual", "result=" + publicActual));
 
     assertEquals("кот дом, скот дом!", publicActual,
         "Суффикс, целое слово и исходная пунктуация; public normal");
@@ -26,7 +26,7 @@ class ContractTest {
   void
   case02(TestReporter publicReporter) {
     var publicActual = Study.insert("Кот кот!", "кот", "кот");
-    publicReporter.publishEntry(Map.of("public-case", "insert-after-word-ending-02", "actual", Arrays.deepToString(new Object[]{publicActual})));
+    publicReporter.publishEntry(Map.of("public-case", "insert-after-word-ending-02", "actual", "result=" + publicActual));
 
     assertEquals("Кот кот кот!", publicActual,
         "Регистр и вставка совпадающего слова без повторной обработки; public boundary");

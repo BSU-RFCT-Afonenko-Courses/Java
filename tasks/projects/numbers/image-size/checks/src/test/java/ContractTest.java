@@ -20,10 +20,20 @@ class ContractTest {
         assertEquals(bytes/1048576.0,actual,1e-8,"МиБ и абсолютный допуск");
     }
     @Test void normal(TestReporter publicReporter) throws Exception {
-        publicOutput(publicReporter, new String[]{"normal"}, JavaProcess.runCheckingUncaught(Main.class, "1024 1024 4").stdout());
+        String[] publicValues = tokens(publicOutput(publicReporter, new String[]{"normal"}, JavaProcess.runCheckingUncaught(Main.class, "1024 1024 4").stdout()));
+        assertEquals(2, publicValues.length, "Нужны байты и МиБ");
+        assertEquals(4194304L, Long.parseLong(publicValues[0]), "Точное целое количество байтов");
+        double publicMiB = Double.parseDouble(publicValues[1]);
+        assertTrue(Double.isFinite(publicMiB));
+        assertEquals(4194304/1048576.0, publicMiB, 1e-8, "МиБ и абсолютный допуск");
  image(publicReporter, new String[]{"demo-normal"}, 1024,1024,4); }
     @Test void pixel(TestReporter publicReporter) throws Exception {
-        publicOutput(publicReporter, new String[]{"boundary"}, JavaProcess.runCheckingUncaught(Main.class, "1 1 1").stdout());
+        String[] publicValues = tokens(publicOutput(publicReporter, new String[]{"boundary"}, JavaProcess.runCheckingUncaught(Main.class, "1 1 1").stdout()));
+        assertEquals(2, publicValues.length, "Нужны байты и МиБ");
+        assertEquals(1L, Long.parseLong(publicValues[0]), "Точное целое количество байтов");
+        double publicMiB = Double.parseDouble(publicValues[1]);
+        assertTrue(Double.isFinite(publicMiB));
+        assertEquals(1/1048576.0, publicMiB, 1e-8, "МиБ и абсолютный допуск");
  image(publicReporter, new String[]{"demo-pixel"}, 1,1,1); }
     @Test void large() throws Exception { image(null, null, 50000,50000,3); }
     @Test void maximum() throws Exception { image(null, null, 100000,100000,8); }

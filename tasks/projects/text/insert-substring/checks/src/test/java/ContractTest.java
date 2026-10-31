@@ -12,7 +12,7 @@ class ContractTest {
   @DisplayName("insert-substring-01 — Внутренняя граница исходных частей; public normal")
   void case01(TestReporter publicReporter) {
     var publicActual = Study.insert("Java", "!", 2);
-    publicReporter.publishEntry(Map.of("public-case", "insert-substring-01", "actual", Arrays.deepToString(new Object[]{publicActual})));
+    publicReporter.publishEntry(Map.of("public-case", "insert-substring-01", "actual", "result=" + publicActual));
 
     assertEquals(
         "Ja!va", publicActual, "Внутренняя граница исходных частей; public normal");
@@ -22,7 +22,7 @@ class ContractTest {
   @DisplayName("insert-substring-02 — Вставка перед первым; public boundary, условие")
   void case02(TestReporter publicReporter) {
     var publicActual = Study.insert("Java", "!", 0);
-    publicReporter.publishEntry(Map.of("public-case", "insert-substring-02", "actual", Arrays.deepToString(new Object[]{publicActual})));
+    publicReporter.publishEntry(Map.of("public-case", "insert-substring-02", "actual", "result=" + publicActual));
 
     assertEquals(
         "!Java", publicActual, "Вставка перед первым; public boundary, условие");
@@ -32,7 +32,7 @@ class ContractTest {
   @DisplayName("insert-substring-03 — Вставка после последнего; public boundary, условие")
   void case03(TestReporter publicReporter) {
     var publicActual = Study.insert("Java", "!", 4);
-    publicReporter.publishEntry(Map.of("public-case", "insert-substring-03", "actual", Arrays.deepToString(new Object[]{publicActual})));
+    publicReporter.publishEntry(Map.of("public-case", "insert-substring-03", "actual", "result=" + publicActual));
 
     assertEquals("Java!", publicActual,
         "Вставка после последнего; public boundary, условие");
@@ -44,7 +44,7 @@ class ContractTest {
   void
   case04(TestReporter publicReporter) {
     var publicActual = Study.insert("", "код", 0);
-    publicReporter.publishEntry(Map.of("public-case", "insert-substring-04", "actual", Arrays.deepToString(new Object[]{publicActual})));
+    publicReporter.publishEntry(Map.of("public-case", "insert-substring-04", "actual", "result=" + publicActual));
 
     assertEquals("код", publicActual,
         "Единственная позиция пустого текста; public boundary, условие");

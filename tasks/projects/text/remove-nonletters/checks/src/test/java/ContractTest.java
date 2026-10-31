@@ -60,7 +60,7 @@ class ContractTest {
   void case01(TestReporter publicReporter) {
     String input = "кот,дом  2я!";
     var publicActual = Study.remove(input);
-    publicReporter.publishEntry(Map.of("public-case", "remove-nonletters-01", "actual", Arrays.deepToString(new Object[]{publicActual})));
+    publicReporter.publishEntry(Map.of("public-case", "remove-nonletters-01", "actual", "result=" + publicActual));
 
     checkResult(input, publicActual);
   }
@@ -70,7 +70,7 @@ class ContractTest {
   void case02(TestReporter publicReporter) {
     String input = "";
     var publicActual = Study.remove(input);
-    publicReporter.publishEntry(Map.of("public-case", "remove-nonletters-02", "actual", Arrays.deepToString(new Object[]{publicActual})));
+    publicReporter.publishEntry(Map.of("public-case", "remove-nonletters-02", "actual", "result=" + publicActual));
 
     checkResult(input, publicActual);
   }

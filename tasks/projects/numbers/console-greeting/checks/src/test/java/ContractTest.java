@@ -14,10 +14,12 @@ class ContractTest {
         assertTrue(value.equals(expected)||value.equals(expected+"\n"),"Сохраните сообщение, имя и одну строку без лишнего вывода");
     }
     @Test void normal(TestReporter publicReporter) throws Exception {
-        publicOutput(publicReporter, new String[]{"normal"}, JavaProcess.runCheckingUncaught(Main.class, "", "Анна").stdout());
+        String publicActual = publicOutput(publicReporter, new String[]{"normal"}, JavaProcess.runCheckingUncaught(Main.class, "", "Анна").stdout()).replace("\r\n", "\n").replace("\r", "\n");
+        assertTrue(publicActual.equals("Здравствуйте, Анна!") || publicActual.equals("Здравствуйте, Анна!\n"), "Сохраните прежнее открытое сообщение");
  greeting(publicReporter, new String[]{"demo-normal"}, "Здравствуйте, Анна!","Анна"); }
     @Test void absent(TestReporter publicReporter) throws Exception {
-        publicOutput(publicReporter, new String[]{"boundary"}, JavaProcess.runCheckingUncaught(Main.class, "").stdout());
+        String publicActual = publicOutput(publicReporter, new String[]{"boundary"}, JavaProcess.runCheckingUncaught(Main.class, "").stdout()).replace("\r\n", "\n").replace("\r", "\n");
+        assertTrue(publicActual.equals("Укажите имя.") || publicActual.equals("Укажите имя.\n"), "Сохраните прежнее открытое сообщение");
  greeting(publicReporter, new String[]{"demo-absent"}, "Укажите имя."); }
     @Test void empty_present() throws Exception { greeting(null, null, "Здравствуйте, !",""); }
     @Test void unicode_edges() throws Exception { greeting(null, null, "Здравствуйте,  Ёж 🦔  !"," Ёж 🦔  "); }

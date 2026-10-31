@@ -12,7 +12,7 @@ class ContractTest {
   @DisplayName("count-normalized-word-01 — е/ё, регистр, целое слово; public normal")
   void case01(TestReporter publicReporter) {
     var publicActual = Study.count("Ёлка, елка; елками", "елка");
-    publicReporter.publishEntry(Map.of("public-case", "count-normalized-word-01", "actual", Arrays.deepToString(new Object[]{publicActual})));
+    publicReporter.publishEntry(Map.of("public-case", "count-normalized-word-01", "actual", "result=" + publicActual));
 
     assertEquals(
         2L, publicActual, "е/ё, регистр, целое слово; public normal");
@@ -22,7 +22,7 @@ class ContractTest {
   @DisplayName("count-normalized-word-02 — и/й, регистр и более длинное слово; public boundary")
   void case02(TestReporter publicReporter) {
     var publicActual = Study.count("май МАЙ, маи; маий", "МАИ");
-    publicReporter.publishEntry(Map.of("public-case", "count-normalized-word-02", "actual", Arrays.deepToString(new Object[]{publicActual})));
+    publicReporter.publishEntry(Map.of("public-case", "count-normalized-word-02", "actual", "result=" + publicActual));
 
     assertEquals(3L, publicActual,
         "и/й, регистр и более длинное слово; public boundary");
