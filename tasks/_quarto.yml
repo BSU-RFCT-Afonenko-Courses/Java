@@ -1401,19 +1401,28 @@ project-checks:
         what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
           входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-polymorphism-circle-subclass:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Размеры и площадь через базовую ссылку
@@ -1427,23 +1436,31 @@ project-checks:
         expected: 2e150,2e150,circle; конечная площадьπ*10^300 в допуске.
       feedback:
         requirement: Диаметр и имя одного радиуса; конечная площадь с допуском max(1e-9,1e-12*|πr²|).
-        what-check: Сопоставьте фактические действия и состояние с открытым ожиданием; предъявите исходники и объяснение обязательной
-          ручной части.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-polymorphism-vehicle-interface:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Чтение и допустимое изменение характеристик
@@ -1457,23 +1474,31 @@ project-checks:
         expected: Два IllegalArgumentException; прежние(2,10,25),range250; fuelNeeded(0)=0.0.
       feedback:
         requirement: Чтение/изменение через IVehicle, вещественное топливо, отказ до записи с сохранением состояния.
-        what-check: Сопоставьте фактические действия и состояние с открытым ожиданием; предъявите исходники и объяснение обязательной
-          ручной части.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-polymorphism-animal-hierarchy:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Переопределённые голоса и действия
@@ -1486,26 +1511,32 @@ project-checks:
         action: Два Dog(Рекс),Puppy(Рекс),Dog(Иной),null; equals/hash/toString
         expected: Dog равны и хеши равны; Dog/Puppy в обе стороны false; иной/null false; вид/имя видны в toString.
       feedback:
-        requirement: Animal→Dog→Puppy; голоса различают вид/имя; имя сохранено; equals точного класса/имени и согласованный
-          хеш.
-        what-check: Сопоставьте фактические действия и состояние с открытым ожиданием; предъявите исходники и объяснение обязательной
-          ручной части.
-      contract-cases: tests/contract-cases.json
+        requirement: Animal→Dog→Puppy; голоса различают вид/имя; имя сохранено; equals точного класса/имени и согласованный хеш.
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-polymorphism-reset-character-queues:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/CharDomainTest.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Сброс после частичного извлечения
@@ -1516,29 +1547,34 @@ project-checks:
         name: Пустой сброс и уже выросшая очередь
         test: PublicExamplesTest#boundary
         action: Fixed/Circular(1) пусты; Dyn(1) содержит A/B/C; reset, повторный пустой reset Dyn,put X,get,get пустой
-        expected: 'Все дают X, затем0 и строку Очередь пуста. Пустые reset молчат. Dyn сохраняет фактическое k>=3: отдельное
-          чтение.'
+        expected: 'Все дают X, затем0 и строку Очередь пуста. Пустые reset молчат. Dyn сохраняет фактическое k>=3: отдельное чтение.'
       feedback:
         requirement: FIFO после reset всех трёх; текущая ёмкость сохраняется и проверяется по исходнику отдельно.
-        what-check: Сопоставьте фактические действия и состояние с открытым ожиданием; предъявите исходники и объяснение обязательной
-          ручной части.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-polymorphism-copy-character-queues:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/CharDomainTest.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/ZeroTransferStateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Выросший источник и кольцевой приёмник
@@ -1552,9 +1588,8 @@ project-checks:
         expected: Сам transfer молчит; обе прежние очереди пусты, без reset или новых помещений.
       feedback:
         requirement: Перенос только put/get сохраняет FIFO и объекты, опустошает источник; count0 не требует места.
-        what-check: Сопоставьте фактические действия и состояние с открытым ожиданием; предъявите исходники и объяснение обязательной
-          ручной части.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-generics-range-maximum:
       source-profile: java-gradle
       tests:
@@ -1889,19 +1924,28 @@ project-checks:
         what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
           входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-pipelines-divisibility-function:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/PrivateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Кратное и соседнее число
@@ -1915,22 +1959,31 @@ project-checks:
         expected: оба результата `true`.
       feedback:
         requirement: Собственный интерфейс и лямбда проверяют делимость int на 31, включая ноль и отрицательные.
-        what-check: Сопоставьте фактический результат с открытым ожиданием. Предъявите исходник и объясните обязательные приёмы.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-pipelines-filter-string-array:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/PrivateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Строгая длина и повтор
@@ -1944,23 +1997,31 @@ project-checks:
         expected: пустой `String[]`, отличный от входного объекта; вход сохраняется пустым.
       feedback:
         requirement: Stream получает новый String[] по строгому порогу char-длины, сохраняя порядок, повторы и вход.
-        what-check: Сопоставьте фактический результат с открытым ожиданием. Предъявите исходник и объясните обязательные приёмы.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-pipelines-order-points:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/PrivateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/PublicOutput.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Геометрическая удалённость
@@ -1974,23 +2035,31 @@ project-checks:
         expected: '`(3:4) (0:5) (3:4)` в этом порядке; исходный список и точки прежние. Разделители допустимы как выше.'
       feedback:
         requirement: Stream и лямбда-компаратор устойчиво выводят точки (X:Y) по геометрическому расстоянию, сохраняя вход.
-        what-check: Сопоставьте фактический результат с открытым ожиданием. Предъявите исходник и объясните обязательные приёмы.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-pipelines-count-selected-words:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/PrivateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/PublicOutput.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Регистр, отсутствие и повтор запроса
@@ -2005,22 +2074,31 @@ project-checks:
         expected: '`[One-0, One-0]`; входы прежние. Завершающий перевод строки допустим, но не обязателен.'
       feedback:
         requirement: Stream выводит точный отчёт частот латинских слов с регистром, порядком и повторами запросов.
-        what-check: Сопоставьте фактический результат с открытым ожиданием. Предъявите исходник и объясните обязательные приёмы.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-pipelines-conditional-function:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/PrivateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Создание, обе ветви и повторный apply
@@ -2029,35 +2107,44 @@ project-checks:
           этих трёх функций до создания результата пусты.; создать функцию, затем последовательно применить её к `""`, `"abc"`,
           `"abc"`.
         expected: создание не вызывает переданные функции. Результаты apply — `0`, `3`, `3`. Для первого apply вызваны condition
-          и истинная ветвь; для второго и третьего — condition и ложная ветвь. В каждом apply обе вызванные функции получают
-          тот же аргумент ровно по одному разу. Всего condition вызван 3 раза, истинная ветвь — 1, ложная — 2.
+          и истинная ветвь; для второго и третьего — condition и ложная ветвь. В каждом apply обе вызванные функции получают тот
+          же аргумент ровно по одному разу. Всего condition вызван 3 раза, истинная ветвь — 1, ложная — 2.
       - id: boundary
         name: Допустимый null и невыбранный отказ
         test: PublicExamplesTest#boundary
         action: ненулевое условие принимает null и возвращает true; ненулевая истинная ветвь принимает null и возвращает null;
-          ненулевая ложная ветвь при вызове выбросила бы IllegalStateException.; создать функцию и один раз вызвать apply
-          с аргументом null.
+          ненулевая ложная ветвь при вызове выбросила бы IllegalStateException.; создать функцию и один раз вызвать apply с аргументом
+          null.
         expected: при создании вызовов нет. В apply условие и истинная ветвь получают null ровно по одному разу, ложная ветвь
           не вызвана; возвращается null, исключения нет.
       feedback:
         requirement: Точная обобщённая сигнатура ternaryOperator и отложенный выбор с одним condition и одной выбранной ветвью
           на apply.
-        what-check: Сопоставьте фактический результат с открытым ожиданием. Предъявите исходник и объясните обязательные приёмы.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-pipelines-count-characters:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/PrivateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Буквы и пробел
@@ -2070,24 +2157,32 @@ project-checks:
         action: строка, задаваемая Java-литералом `"\uD83D\uDE00"`.; получить коллекцию частот тем же способом.
         expected: ровно два ключа со значениями кодовых единиц `55357` и `56832`, частота каждого `1`.
       feedback:
-        requirement: Stream считает каждую кодовую единицу char, включая пробел и суррогаты; коллекция и тип точной частоты
-          свободны.
-        what-check: Сопоставьте фактический результат с открытым ожиданием. Предъявите исходник и объясните обязательные приёмы.
-      contract-cases: tests/contract-cases.json
+        requirement: Stream считает каждую кодовую единицу char, включая пробел и суррогаты; коллекция и тип точной частоты свободны.
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-pipelines-discriminant-function:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/PrivateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Ненулевые коэффициенты
@@ -2101,30 +2196,31 @@ project-checks:
         expected: конечное значение v с r = `1000000`, удовлетворяющее тому же опубликованному смешанному допуску.
       feedback:
         requirement: Собственный интерфейс и лямбда вычисляют конечный b²−4ac с допуском 1e-8+1e-12*abs(r).
-        what-check: Сопоставьте фактический результат с открытым ожиданием. Предъявите исходник и объясните обязательные приёмы.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-files-byte-file-copy:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/junit/private/CopyContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/CopySupport.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Кириллица без последнего перевода строки
@@ -2141,31 +2237,31 @@ project-checks:
       feedback:
         requirement: Только байт 0x20 заменяется на 0x2D; сохранность файлов и отказ до усечения. Байтовые потоки, явный close
           каждого открытого ресурса и смысл диагностики проверяются вручную.
-        what-check: Сопоставьте фактическое наблюдение с опубликованным ожиданием. Предъявите исходник, обязательные приёмы
-          и объяснение преподавателю.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-files-character-file-copy:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/junit/private/CopyContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/CopySupport.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Пробел, TAB, NBSP и CRLF
@@ -2182,35 +2278,32 @@ project-checks:
       feedback:
         requirement: Только U+0020 заменяется на U+002D в UTF-8; сохранность данных и отказ самокопирования до усечения. Reader/Writer,
           UTF-8 и TWR проверяются вручную.
-        what-check: Сопоставьте фактическое наблюдение с опубликованным ожиданием. Предъявите исходник, обязательные приёмы
-          и объяснение преподавателю.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-files-gradeapp-report:
       runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
       java-build:
         kind: gradle-jar-v1
-        main-class: grade.Main
         artifact: gradeapp.jar
-      limits:
-        compile-seconds: 60
-        outer-seconds: 180
-      source-profile: java-main
+        main-class: grade.Main
       tests:
-      - tests/bindings/fixed-api/grade/TaskBinding.java
-      - tests/junit/binding/jar/TaskBinding.java
-      - tests/junit/private/grade/GradeAppBoundaryTest.java
-      - tests/junit/private/grade/GradeAppContractTest.java
-      - tests/junit/private/grade/GradeAppEmptyContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/src/main/java
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Отбор и строковый порядок кодов
@@ -2227,9 +2320,8 @@ project-checks:
       feedback:
         requirement: Пять опубликованных методов, полный проверенный каталог до stdout, независимые неизменяемые списки, точные
           строки и коды; настоящий Gradle JAR вне проекта.
-        what-check: Сопоставьте фактическое наблюдение с опубликованным ожиданием. Предъявите исходник, обязательные приёмы
-          и объяснение преподавателю.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-numbers-lunar-weight:
       source-profile: java-gradle
       tests:
@@ -3973,28 +4065,28 @@ project-checks:
         expected: '[Gamma,alpha,beta,beta]; число сравнений и identity равных строк не фиксируются.'
         test: ContractTest#case03
     java-files-transpose-file-matrix:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/CopySupport.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Строки становятся столбцами
@@ -4010,25 +4102,31 @@ project-checks:
         expected: Обе обозначенные матрицы равны [[-7]].
       feedback:
         requirement: Обе матрицы и обмен индексов. Минимальный допустимый размер.
-        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого
-          API/формата подготовьте подходящую обычную привязку или демонстрацию.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-files-poem-word-frequency:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/CopySupport.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Нулевая частота и равные частоты
@@ -4044,31 +4142,37 @@ project-checks:
         expected: светлыя:0; згадкі:0; строка не пропущена.
       feedback:
         requirement: Все слова списка, устойчивый порядок по частоте. Нули и порядок списка при равенстве.
-        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого
-          API/формата подготовьте подходящую обычную привязку или демонстрацию.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-files-poem-letter-word-frequency:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/CopySupport.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Общий подсчёт двух строк
         test: PublicExamplesTest#normal
-        state: Polały się łzy me czyste, rzęsiste, / Na me dzieciństwo sielskie, anielskie,; Unicode-буквы, нижний регистр,
-          первое появление.
+        state: Polały się łzy me czyste, rzęsiste, / Na me dzieciństwo sielskie, anielskie,; Unicode-буквы, нижний регистр, первое
+          появление.
         action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
         expected: 11 вхождений слов, me=2; 60 букв; точные публичные пары и порядок из PUBLIC.md.
       - id: boundary
@@ -4079,25 +4183,31 @@ project-checks:
         expected: Два пустых набора частот; оформление свободно.
       feedback:
         requirement: Общие наборы букв и слов, повтор me в разных строках. Отсутствие данных без выдуманных частот.
-        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого
-          API/формата подготовьте подходящую обычную привязку или демонстрацию.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-files-compare-files:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/CopySupport.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Одинаковые файлы
@@ -4113,32 +4223,31 @@ project-checks:
         expected: Сообщено различие, не файловый отказ; входы неизменны.
       feedback:
         requirement: Соответствующие байты и сохранность входов. EOF одного файла не заменяет равенство.
-        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого
-          API/формата подготовьте подходящую обычную привязку или демонстрацию.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-files-sort-file-numbers:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/CopySupport.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Отрицательные числа и повтор
@@ -4154,32 +4263,31 @@ project-checks:
         expected: -2147483648 2147483647 2147483647; конечный перевод строки необязателен.
       feedback:
         requirement: Порядок и кратность int. Порядок крайних допустимых значений.
-        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого
-          API/формата подготовьте подходящую обычную привязку или демонстрацию.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-files-final-line-words:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/CopySupport.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Суффиксы строк и слов
@@ -4195,32 +4303,31 @@ project-checks:
         expected: Ровно две пустые физические строки.
       feedback:
         requirement: Последние строки, затем последние слова. Пустые физические строки отличаются от пустого файла.
-        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого
-          API/формата подготовьте подходящую обычную привязку или демонстрацию.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-files-remove-short-words:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/CopySupport.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Чётное и нечётное число кандидатов
@@ -4236,32 +4343,31 @@ project-checks:
         expected: Одна пустая физическая строка.
       feedback:
         requirement: Максимальное чётное удаление и порядок оставшихся. Длина в кодовых точках и очищенная строка.
-        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого
-          API/формата подготовьте подходящую обычную привязку или демонстрацию.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-files-phone-owner-records:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/CopySupport.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Объединение двух префиксов
@@ -4277,32 +4383,31 @@ project-checks:
         expected: Ровно два вхождения 291234567;Анна.
       feedback:
         requirement: Отбор и исходный порядок. Повтор входа отличается от двойного совпадения.
-        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого
-          API/формата подготовьте подходящую обычную привязку или демонстрацию.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-files-matching-line-numbers:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/CopySupport.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Два полных совпадения
@@ -4318,26 +4423,31 @@ project-checks:
         expected: Все три строки сохранены; совпал только номер 2.
       feedback:
         requirement: Все строки и номера совпадений. Пустая физическая строка и краевой пробел.
-        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого
-          API/формата подготовьте подходящую обычную привязку или демонстрацию.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-files-disk-help-menu:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/CopySupport.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/PublicFiles.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Два последовательных запроса
@@ -4353,33 +4463,31 @@ project-checks:
         expected: Оба false; сообщения различают отсутствие темы и файловый отказ.
       feedback:
         requirement: Поиск тем, порядок текста, доступность общего ввода. Разные причины false.
-        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого
-          API/формата подготовьте подходящую обычную привязку или демонстрацию.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-files-remove-java-comments:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/CopySupport.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/PublicFiles.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Комментарии и литералы
@@ -4395,9 +4503,8 @@ project-checks:
         expected: class Demo { int x; }\n с прежним LF.
       feedback:
         requirement: Три вида комментариев и сохранение литералов. Сохранение границы токенов.
-        what-check: Сопоставьте содержимое файлов, опубликованную границу и выбранные заранее правила. Для другого допустимого
-          API/формата подготовьте подходящую обычную привязку или демонстрацию.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-collections-digit-stack:
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -4790,29 +4897,28 @@ project-checks:
         what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
           входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-pipelines-longer-string:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HistoricalPrivateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/PublicOutput.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Разные длины
@@ -4828,32 +4934,31 @@ project-checks:
         expected: ab
       feedback:
         requirement: Значение более длинной строки. Значение первой строки при ничьей; идентичность не требуется.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-pipelines-remove-even-values:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HistoricalPrivateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Повторы нечётного значения
@@ -4869,32 +4974,31 @@ project-checks:
         expected: '[-3,-1,0,0]'
       feedback:
         requirement: Порядок, повторы и нулевой хвост в том же массиве. Нечётность отрицательных значений.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-pipelines-descending-array:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HistoricalPrivateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Повторы и отрицательное число
@@ -4910,33 +5014,31 @@ project-checks:
         expected: '[MAX_VALUE,0,MIN_VALUE]'
       feedback:
         requirement: Убывающий числовой порядок в исходном массиве. Правильный порядок без переполнения сравнения.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-pipelines-vowels-before-consonants:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HistoricalPrivateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/PublicOutput.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Две группы и повтор гласной
@@ -4952,34 +5054,31 @@ project-checks:
         expected: byz
       feedback:
         requirement: Порядок групп и сохранение каждой буквы. Сортировка при отсутствии гласных; y согласная.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-pipelines-first-primes:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HistoricalPrivateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/PublicOutput.java
-      - tests/junit/support/coursesupport/JavaProcess.java
-      - tests/junit/support/coursesupport/OutputNumbers.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Первые пять простых
@@ -4995,32 +5094,31 @@ project-checks:
         expected: Пустой вывод последовательности
       feedback:
         requirement: Реальный вывод первых пяти простых. Реальный пустой вывод последовательности.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-pipelines-price-transformation:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HistoricalPrivateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Ставка, нулевая цена и повтор
@@ -5036,32 +5134,31 @@ project-checks:
         expected: Другой пустой список
       feedback:
         requirement: Новый список, значения с налогом, порядок и сохранение входа. Новый пустой список без изменения исходного.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-pipelines-distinct-object-array:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HistoricalPrivateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Отдельные равные объекты
@@ -5077,32 +5174,31 @@ project-checks:
         expected: Новый пустой массив
       feedback:
         requirement: Первые реальные ссылки, новый массив и сохранность входа. Другой массив для пустого результата.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-pipelines-select-initial-length:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HistoricalPrivateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Регистр и повтор совпадения
@@ -5118,33 +5214,31 @@ project-checks:
         expected: Новый пустой String[]
       feedback:
         requirement: Совместный отбор, порядок, повторы и сохранение входа. Пустая строка не начинается с буквы.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-pipelines-curried-functions:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HistoricalPrivateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/PublicOutput.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Повторное применение сохранённых функций
@@ -5159,11 +5253,10 @@ project-checks:
         action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
         expected: -2000000,0; true,true; длины частей1 и2
       feedback:
-        requirement: Три операции, по одной сохранённой функции на два вторых аргумента. Границы суммы и различимые конечные
-          пустые части.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        requirement: Три операции, по одной сохранённой функции на два вторых аргумента. Границы суммы и различимые конечные пустые
+          части.
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-exceptions-queue-exceptions:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5559,28 +5652,28 @@ project-checks:
         what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
           входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-polymorphism-queue-package:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/CharactersTest.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/PublicOutput.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Три очереди из другого пакета
@@ -5597,32 +5690,31 @@ project-checks:
       feedback:
         requirement: FIFO и молчание успешных операций всех трёх очередей. Различие FixedQueue и двух остальных после частичного
           извлечения.
-        what-check: Сопоставьте результат с опубликованными действиями. Исходник, приёмы и объяснение предъявите преподавателю;
-          законный иной API требует подготовленной ordinary binding либо ручного предъявления.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-polymorphism-truck-subclass:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/StateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/PublicOutput.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Унаследованные характеристики
@@ -5637,34 +5729,33 @@ project-checks:
         action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
         expected: Все три IllegalArgumentException; базовое состояние2,10,25/range250, cargo100.
       feedback:
-        requirement: Дальность и расход Vehicle/Truck и грузоподъёмность. Три IllegalArgumentException и прежнее состояние
-          после отказов.
-        what-check: Сопоставьте результат с опубликованными действиями. Исходник, приёмы и объяснение предъявите преподавателю;
-          законный иной API требует подготовленной ordinary binding либо ручного предъявления.
-      contract-cases: tests/contract-cases.json
+        requirement: Дальность и расход Vehicle/Truck и грузоподъёмность. Три IllegalArgumentException и прежнее состояние после
+          отказов.
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-polymorphism-circular-dynamic-queue:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/CharactersTest.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/PublicOutput.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: 'Переход и рост: FIFO'
@@ -5681,32 +5772,31 @@ project-checks:
       feedback:
         requirement: Фиксированная последовательность сохраняет оставшиеся C,D,E,F. Отказ get сохраняет возможность продолжить
           работу.
-        what-check: Сопоставьте результат с опубликованными действиями. Исходник, приёмы и объяснение предъявите преподавателю;
-          законный иной API требует подготовленной ordinary binding либо ручного предъявления.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-polymorphism-fraction-number-subclass:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/SignsTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/PublicOutput.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Равенство и четыре операции
@@ -5721,33 +5811,33 @@ project-checks:
         action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
         expected: Ноль0/1; два ArithmeticException; операнды сохранены.
       feedback:
-        requirement: Нормализация, равенство/хеш/null и сохранение операндов. Канонический ноль и два ArithmeticException
-          без изменения операндов.
-        what-check: Сопоставьте результат с опубликованными действиями. Исходник, приёмы и объяснение предъявите преподавателю;
-          законный иной API требует подготовленной ordinary binding либо ручного предъявления.
-      contract-cases: tests/contract-cases.json
+        requirement: Нормализация, равенство/хеш/null и сохранение операндов. Канонический ноль и два ArithmeticException без
+          изменения операндов.
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-polymorphism-compatible-queue-reset:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/PublicOutput.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Поддерживаемый сброс
@@ -5763,9 +5853,8 @@ project-checks:
         expected: UnsupportedOperationException; затем A без сообщения. Совместимость исходника отдельно по реальной компиляции.
       feedback:
         requirement: B исчезает, новая очередь принимает C после сброса. Унаследованный default отказывает без удаления A.
-        what-check: Сопоставьте результат с опубликованными действиями. Исходник, приёмы и объяснение предъявите преподавателю;
-          законный иной API требует подготовленной ordinary binding либо ручного предъявления.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-generics-generic-circular-queue:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5893,39 +5982,38 @@ project-checks:
         what-check: Проверьте объявления опубликованного API и результат сборки submission.jar, затем сопоставьте наблюдение
           с указанными входными данными. Допустимые внутренние имена, пакеты и способы реализации сохраняются.
     java-projects-airline-persistence-project:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/PrivateBinding.java
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/CopySupport.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Парк до и после сохранения
         test: PublicExamplesTest#normal
         state: Пассажирский150мест/12т/3000км/2400лч;грузовой2/20/4500/3000;пассажирский80/6/1800/1500. Уникальные ID; выбранные
           направление/сериализация/файлы.
-        action: Суммы, сортировка, поиск[1500,2400], сохранение, загрузка, изменение мест третьего на100 через коннектор и
-          новая загрузка.
-        expected: 232места и38т; выбранный порядок1800/3000/4500 или обратный;один либо несколько подходящих;виды/параметры
-          после загрузки сохранены, новое значение100 после обновления.
+        action: Суммы, сортировка, поиск[1500,2400], сохранение, загрузка, изменение мест третьего на100 через коннектор и новая
+          загрузка.
+        expected: 232места и38т; выбранный порядок1800/3000/4500 или обратный;один либо несколько подходящих;виды/параметры после
+          загрузки сохранены, новое значение100 после обновления.
       - id: boundary
         name: Включённые границы поиска
         test: PublicExamplesTest#boundary
@@ -5935,32 +6023,31 @@ project-checks:
           форма результата свободна.
       feedback:
         requirement: Парк до и после сохранения; Включённые границы поиска
-        what-check: Сопоставьте фактическую модель с опубликованными данными; проверьте подготовленную привязку и объявленный
-          выбор. Приёмы и объяснение предъявите преподавателю.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-projects-timetable-interfaces-project:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/PrivateBinding.java
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Выборки после изменения расписания
@@ -5979,24 +6066,31 @@ project-checks:
           от превышения;отсутствие учебного автомобиля для практики выявляется.
       feedback:
         requirement: Выборки после изменения расписания; Политики и специализации
-        what-check: Сопоставьте фактическую модель с опубликованными данными; проверьте подготовленную привязку и объявленный
-          выбор. Приёмы и объяснение предъявите преподавателю.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
     java-projects-huffman-word-coding-project:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: namespace
+        root: author/namespace/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Частоты, коды и девять битов
@@ -6010,13 +6104,12 @@ project-checks:
         test: PublicExamplesTest#boundary
         state: 'Независимые тексты: пустой;one one one;red blue green.'
         action: Закодировать каждый;последний повторить с тем же выбранным правилом.
-        expected: Пустые таблица/биты;единственный код0 и000;равныечастоты1/1/1,оптимальная длина5;повтор воспроизводит свой
-          результат. Другие допустимые коды законны.
+        expected: Пустые таблица/биты;единственный код0 и000;равныечастоты1/1/1,оптимальная длина5;повтор воспроизводит свой результат.
+          Другие допустимые коды законны.
       feedback:
         requirement: Частоты, коды и девять битов; Пустой, однословный и равновесный вход
-        what-check: Сопоставьте фактическую модель с опубликованными данными; проверьте подготовленную привязку и объявленный
-          выбор. Приёмы и объяснение предъявите преподавателю.
-      contract-cases: tests/contract-cases.json
+        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+          задаются заранее преподавательской привязкой.
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
@@ -6037,1281 +6130,4 @@ course-navigation:
     href: /theory/index.html
     scope: course
 project-materialization:
-  projects:
-    exr-files-gradeapp-report:
-      common-files:
-      - source: projects/files/gradeapp-report/student/src/test/java/TaskBinding.java
-        target: tests/junit/binding/jar/TaskBinding.java
-        audience: grading
-      - source: projects/files/gradeapp-report/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: common/src/main/java/grade/Student.java
-        target: student/src/main/java/grade/Student.java
-        audience: student
-      - source: common/src/main/java/grade/Student.java
-        target: reference/src/main/java/grade/Student.java
-        audience: grading
-      - source: projects/files/gradeapp-report/student/src/main/java/grade/DataFormatException.java
-        target: reference/src/main/java/grade/DataFormatException.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: student/src/test/java/PublicExamplesTest.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/jar/coursesupport/JavaProcess.java
-        audience: grading
-    exr-polymorphism-circle-subclass:
-      common-files:
-      - source: test-support/shared/c3c75aca2bf0/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: projects/polymorphism/circle-subclass/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/polymorphism/circle-subclass/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-    exr-polymorphism-vehicle-interface:
-      common-files:
-      - source: test-support/shared/c3c75aca2bf0/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: projects/polymorphism/vehicle-interface/student/src/main/java/IVehicle.java
-        target: reference/IVehicle.java
-        audience: grading
-      - source: projects/polymorphism/vehicle-interface/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: projects/polymorphism/vehicle-interface/student/src/main/java/IVehicle.java
-        target: tests/fixtures/public-pair-only/IVehicle.java
-        audience: grading
-      - source: projects/polymorphism/vehicle-interface/student/src/main/java/IVehicle.java
-        target: tests/fixtures/wrong/IVehicle.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/polymorphism/vehicle-interface/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-    exr-polymorphism-animal-hierarchy:
-      common-files:
-      - source: test-support/shared/c3c75aca2bf0/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: projects/polymorphism/animal-hierarchy/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/polymorphism/animal-hierarchy/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-    exr-polymorphism-reset-character-queues:
-      common-files:
-      - source: test-support/shared/c3c75aca2bf0/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: projects/polymorphism/reset-character-queues/student/src/main/java/ICharQ.java
-        target: reference/ICharQ.java
-        audience: grading
-      - source: projects/polymorphism/reset-character-queues/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: projects/polymorphism/reset-character-queues/student/src/main/java/ICharQ.java
-        target: tests/fixtures/manual-wrong-shrinks-capacity/ICharQ.java
-        audience: grading
-      - source: projects/polymorphism/reset-character-queues/student/src/main/java/ICharQ.java
-        target: tests/fixtures/public-pair-only/ICharQ.java
-        audience: grading
-      - source: projects/polymorphism/reset-character-queues/student/src/main/java/ICharQ.java
-        target: tests/fixtures/valid-crlf/ICharQ.java
-        audience: grading
-      - source: projects/polymorphism/reset-character-queues/student/src/main/java/ICharQ.java
-        target: tests/fixtures/valid-growth-replacement/ICharQ.java
-        audience: grading
-      - source: projects/polymorphism/reset-character-queues/student/src/main/java/ICharQ.java
-        target: tests/fixtures/wrong/ICharQ.java
-        audience: grading
-      - source: projects/polymorphism/reset-character-queues/student/src/main/java/ICharQ.java
-        target: tests/fixtures/wrong-message-whitespace/ICharQ.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/polymorphism/reset-character-queues/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-      - source: test-support/shared/d086641fede1/character-queues.md
-        target: student/QUEUE-CONTRACT.md
-        audience: student
-      - source: test-support/shared/27174f3f1a9d/CircularQueue.java
-        target: student/src/main/java/CircularQueue.java
-        audience: student
-      - source: test-support/shared/9740026eafd3/DynQueue.java
-        target: student/src/main/java/DynQueue.java
-        audience: student
-      - source: test-support/shared/1c76d22d4e1b/FixedQueue.java
-        target: student/src/main/java/FixedQueue.java
-        audience: student
-    exr-polymorphism-copy-character-queues:
-      common-files:
-      - source: test-support/shared/c3c75aca2bf0/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: projects/polymorphism/copy-character-queues/student/src/main/java/ICharQ.java
-        target: reference/ICharQ.java
-        audience: grading
-      - source: projects/polymorphism/copy-character-queues/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: projects/polymorphism/copy-character-queues/student/src/main/java/ICharQ.java
-        target: tests/fixtures/public-pair-only/ICharQ.java
-        audience: grading
-      - source: projects/polymorphism/copy-character-queues/student/src/main/java/ICharQ.java
-        target: tests/fixtures/valid-crlf/ICharQ.java
-        audience: grading
-      - source: projects/polymorphism/copy-character-queues/student/src/main/java/ICharQ.java
-        target: tests/fixtures/valid-manual-only/ICharQ.java
-        audience: grading
-      - source: projects/polymorphism/copy-character-queues/student/src/main/java/ICharQ.java
-        target: tests/fixtures/wrong/ICharQ.java
-        audience: grading
-      - source: projects/polymorphism/copy-character-queues/student/src/main/java/ICharQ.java
-        target: tests/fixtures/wrong-api/ICharQ.java
-        audience: grading
-      - source: projects/polymorphism/copy-character-queues/student/src/main/java/ICharQ.java
-        target: tests/fixtures/wrong-message-whitespace/ICharQ.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/polymorphism/copy-character-queues/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-      - source: test-support/shared/d086641fede1/character-queues.md
-        target: student/QUEUE-CONTRACT.md
-        audience: student
-      - source: test-support/shared/27174f3f1a9d/CircularQueue.java
-        target: student/src/main/java/CircularQueue.java
-        audience: student
-      - source: test-support/shared/9740026eafd3/DynQueue.java
-        target: student/src/main/java/DynQueue.java
-        audience: student
-      - source: test-support/shared/1c76d22d4e1b/FixedQueue.java
-        target: student/src/main/java/FixedQueue.java
-        audience: student
-    exr-pipelines-divisibility-function:
-      common-files:
-      - source: test-support/shared/bacc6dc37fce/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: projects/pipelines/divisibility-function/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/pipelines/divisibility-function/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-    exr-pipelines-filter-string-array:
-      common-files:
-      - source: test-support/shared/bacc6dc37fce/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: projects/pipelines/filter-string-array/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/pipelines/filter-string-array/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-    exr-pipelines-order-points:
-      common-files:
-      - source: test-support/shared/bacc6dc37fce/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: projects/pipelines/order-points/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/pipelines/order-points/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: student/src/test/java/PublicOutput.java
-        audience: student
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: tests/junit/support/PublicOutput.java
-        audience: grading
-    exr-pipelines-count-selected-words:
-      common-files:
-      - source: test-support/shared/bacc6dc37fce/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: projects/pipelines/count-selected-words/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/pipelines/count-selected-words/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: student/src/test/java/PublicOutput.java
-        audience: student
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: tests/junit/support/PublicOutput.java
-        audience: grading
-    exr-pipelines-conditional-function:
-      common-files:
-      - source: test-support/shared/bacc6dc37fce/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: projects/pipelines/conditional-function/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/pipelines/conditional-function/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-    exr-pipelines-count-characters:
-      common-files:
-      - source: test-support/shared/bacc6dc37fce/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: projects/pipelines/count-characters/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/pipelines/count-characters/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-    exr-pipelines-discriminant-function:
-      common-files:
-      - source: test-support/shared/bacc6dc37fce/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: projects/pipelines/discriminant-function/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/pipelines/discriminant-function/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-    exr-files-byte-file-copy:
-      common-files:
-      - source: test-support/shared/019b9411bebb/TaskBinding.java
-        target: student/src/test/java/TaskBinding.java
-        audience: student
-      - source: projects/files/byte-file-copy/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: student/src/test/java/CopySupport.java
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: tests/junit/support/CopySupport.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/e3b0c44298fc/public-empty-expected.txt
-        target: student/samples/public-empty-expected.txt
-        audience: student
-      - source: test-support/shared/e3b0c44298fc/public-empty-input.txt
-        target: student/samples/public-empty-input.txt
-        audience: student
-      - source: test-support/shared/fc42bcd53061/public-text-expected.txt
-        target: student/samples/public-text-expected.txt
-        audience: student
-      - source: test-support/shared/5d5dd16075d4/public-text-input.txt
-        target: student/samples/public-text-input.txt
-        audience: student
-      - source: test-support/shared/cef6a543b1be/public-whitespace-expected.txt
-        target: student/samples/public-whitespace-expected.txt
-        audience: student
-      - source: test-support/shared/06eb54225794/public-whitespace-input.txt
-        target: student/samples/public-whitespace-input.txt
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: tests/jdk/CopySupport.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/jdk/coursesupport/JavaProcess.java
-        audience: grading
-    exr-files-character-file-copy:
-      common-files:
-      - source: test-support/shared/019b9411bebb/TaskBinding.java
-        target: student/src/test/java/TaskBinding.java
-        audience: student
-      - source: projects/files/character-file-copy/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: student/src/test/java/CopySupport.java
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: tests/junit/support/CopySupport.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/e3b0c44298fc/public-empty-expected.txt
-        target: student/samples/public-empty-expected.txt
-        audience: student
-      - source: test-support/shared/e3b0c44298fc/public-empty-input.txt
-        target: student/samples/public-empty-input.txt
-        audience: student
-      - source: test-support/shared/fc42bcd53061/public-text-expected.txt
-        target: student/samples/public-text-expected.txt
-        audience: student
-      - source: test-support/shared/5d5dd16075d4/public-text-input.txt
-        target: student/samples/public-text-input.txt
-        audience: student
-      - source: test-support/shared/cef6a543b1be/public-whitespace-expected.txt
-        target: student/samples/public-whitespace-expected.txt
-        audience: student
-      - source: test-support/shared/06eb54225794/public-whitespace-input.txt
-        target: student/samples/public-whitespace-input.txt
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: tests/jdk/CopySupport.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/jdk/coursesupport/JavaProcess.java
-        audience: grading
-    exr-files-transpose-file-matrix:
-      common-files:
-      - source: test-support/shared/6d20f243095e/Study.java
-        target: student/src/main/java/Study.java
-        audience: student
-      - source: projects/files/transpose-file-matrix/student/src/main/java/RunFile.java
-        target: reference/primary/RunFile.java
-        audience: grading
-      - source: projects/files/transpose-file-matrix/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: student/src/test/java/CopySupport.java
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: tests/junit/support/CopySupport.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: projects/files/transpose-file-matrix/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/shared/09a0048d487f/public-scenarios.md
-        target: student/PUBLIC.md
-        audience: student
-    exr-files-poem-word-frequency:
-      common-files:
-      - source: projects/files/poem-word-frequency/student/src/main/java/RunFile.java
-        target: reference/primary/RunFile.java
-        audience: grading
-      - source: projects/files/poem-word-frequency/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: student/src/test/java/CopySupport.java
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: tests/junit/support/CopySupport.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: projects/files/poem-word-frequency/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/shared/09a0048d487f/public-scenarios.md
-        target: student/PUBLIC.md
-        audience: student
-    exr-files-poem-letter-word-frequency:
-      common-files:
-      - source: test-support/shared/d840576b2096/RunFile.java
-        target: student/src/main/java/RunFile.java
-        audience: student
-      - source: test-support/shared/d840576b2096/RunFile.java
-        target: reference/primary/RunFile.java
-        audience: grading
-      - source: projects/files/poem-letter-word-frequency/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: student/src/test/java/CopySupport.java
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: tests/junit/support/CopySupport.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: projects/files/poem-letter-word-frequency/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/shared/09a0048d487f/public-scenarios.md
-        target: student/PUBLIC.md
-        audience: student
-    exr-files-compare-files:
-      common-files:
-      - source: projects/files/compare-files/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: student/src/test/java/CopySupport.java
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: tests/junit/support/CopySupport.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: projects/files/compare-files/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/shared/09a0048d487f/public-scenarios.md
-        target: student/PUBLIC.md
-        audience: student
-    exr-files-sort-file-numbers:
-      common-files:
-      - source: test-support/shared/d840576b2096/RunFile.java
-        target: student/src/main/java/RunFile.java
-        audience: student
-      - source: test-support/shared/6d20f243095e/Study.java
-        target: student/src/main/java/Study.java
-        audience: student
-      - source: test-support/shared/d840576b2096/RunFile.java
-        target: reference/primary/RunFile.java
-        audience: grading
-      - source: test-support/shared/616b4653d02d/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/shared/616b4653d02d/TaskBinding.java
-        target: student/src/test/java/TaskBinding.java
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: student/src/test/java/CopySupport.java
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: tests/junit/support/CopySupport.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: projects/files/sort-file-numbers/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/shared/09a0048d487f/public-scenarios.md
-        target: student/PUBLIC.md
-        audience: student
-    exr-files-final-line-words:
-      common-files:
-      - source: projects/files/final-line-words/student/src/main/java/RunFile.java
-        target: reference/primary/RunFile.java
-        audience: grading
-      - source: projects/files/final-line-words/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: student/src/test/java/CopySupport.java
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: tests/junit/support/CopySupport.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: projects/files/final-line-words/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/shared/09a0048d487f/public-scenarios.md
-        target: student/PUBLIC.md
-        audience: student
-    exr-files-remove-short-words:
-      common-files:
-      - source: test-support/shared/d840576b2096/RunFile.java
-        target: student/src/main/java/RunFile.java
-        audience: student
-      - source: test-support/shared/6d20f243095e/Study.java
-        target: student/src/main/java/Study.java
-        audience: student
-      - source: test-support/shared/d840576b2096/RunFile.java
-        target: reference/primary/RunFile.java
-        audience: grading
-      - source: test-support/shared/616b4653d02d/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/shared/616b4653d02d/TaskBinding.java
-        target: student/src/test/java/TaskBinding.java
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: student/src/test/java/CopySupport.java
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: tests/junit/support/CopySupport.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: projects/files/remove-short-words/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/shared/09a0048d487f/public-scenarios.md
-        target: student/PUBLIC.md
-        audience: student
-    exr-files-phone-owner-records:
-      common-files:
-      - source: projects/files/phone-owner-records/student/src/main/java/RunFile.java
-        target: reference/primary/RunFile.java
-        audience: grading
-      - source: projects/files/phone-owner-records/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: student/src/test/java/CopySupport.java
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: tests/junit/support/CopySupport.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: projects/files/phone-owner-records/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/shared/09a0048d487f/public-scenarios.md
-        target: student/PUBLIC.md
-        audience: student
-    exr-files-matching-line-numbers:
-      common-files:
-      - source: projects/files/matching-line-numbers/student/src/main/java/RunFile.java
-        target: reference/primary/RunFile.java
-        audience: grading
-      - source: projects/files/matching-line-numbers/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: student/src/test/java/CopySupport.java
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: tests/junit/support/CopySupport.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: projects/files/matching-line-numbers/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/shared/09a0048d487f/public-scenarios.md
-        target: student/PUBLIC.md
-        audience: student
-    exr-files-disk-help-menu:
-      common-files:
-      - source: projects/files/disk-help-menu/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: student/src/test/java/CopySupport.java
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: tests/junit/support/CopySupport.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: projects/files/disk-help-menu/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/shared/5087e660a326/PublicFiles.java
-        target: student/src/test/java/PublicFiles.java
-        audience: student
-      - source: test-support/shared/5087e660a326/PublicFiles.java
-        target: tests/junit/support/PublicFiles.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/shared/09a0048d487f/public-scenarios.md
-        target: student/PUBLIC.md
-        audience: student
-    exr-files-remove-java-comments:
-      common-files:
-      - source: test-support/shared/d840576b2096/RunFile.java
-        target: student/src/main/java/RunFile.java
-        audience: student
-      - source: test-support/shared/6d20f243095e/Study.java
-        target: student/src/main/java/Study.java
-        audience: student
-      - source: test-support/shared/d840576b2096/RunFile.java
-        target: reference/primary/RunFile.java
-        audience: grading
-      - source: test-support/shared/616b4653d02d/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/shared/616b4653d02d/TaskBinding.java
-        target: student/src/test/java/TaskBinding.java
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: student/src/test/java/CopySupport.java
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: tests/junit/support/CopySupport.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: projects/files/remove-java-comments/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/shared/5087e660a326/PublicFiles.java
-        target: student/src/test/java/PublicFiles.java
-        audience: student
-      - source: test-support/shared/5087e660a326/PublicFiles.java
-        target: tests/junit/support/PublicFiles.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/shared/09a0048d487f/public-scenarios.md
-        target: student/PUBLIC.md
-        audience: student
-    exr-pipelines-longer-string:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/pipelines/longer-string/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: student/src/test/java/PublicOutput.java
-        audience: student
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: tests/junit/support/PublicOutput.java
-        audience: grading
-    exr-pipelines-remove-even-values:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/pipelines/remove-even-values/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-    exr-pipelines-descending-array:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/pipelines/descending-array/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-    exr-pipelines-vowels-before-consonants:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/pipelines/vowels-before-consonants/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: student/src/test/java/PublicOutput.java
-        audience: student
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: tests/junit/support/PublicOutput.java
-        audience: grading
-    exr-pipelines-first-primes:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/pipelines/first-primes/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: student/src/test/java/PublicOutput.java
-        audience: student
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: tests/junit/support/PublicOutput.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
-        target: student/src/test/java/coursesupport/OutputNumbers.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/OutputNumbers.java
-        target: tests/junit/support/coursesupport/OutputNumbers.java
-        audience: grading
-    exr-pipelines-price-transformation:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/pipelines/price-transformation/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-    exr-pipelines-distinct-object-array:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/pipelines/distinct-object-array/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-    exr-pipelines-select-initial-length:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/pipelines/select-initial-length/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-    exr-pipelines-curried-functions:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/pipelines/curried-functions/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: student/src/test/java/PublicOutput.java
-        audience: student
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: tests/junit/support/PublicOutput.java
-        audience: grading
-    exr-polymorphism-queue-package:
-      common-files:
-      - source: projects/polymorphism/queue-package/student/src/main/java/qpack/ICharQ.java
-        target: reference/alternate/qpack/ICharQ.java
-        audience: grading
-      - source: projects/polymorphism/queue-package/student/src/main/java/qpack/ICharQ.java
-        target: reference/primary/qpack/ICharQ.java
-        audience: grading
-      - source: projects/polymorphism/queue-package/student/src/main/java/qpack/ICharQ.java
-        target: tests/api-wrong/qpack/ICharQ.java
-        audience: grading
-      - source: projects/polymorphism/queue-package/student/src/main/java/qpack/ICharQ.java
-        target: tests/fixtures/historical-wrong/qpack/ICharQ.java
-        audience: grading
-      - source: projects/polymorphism/queue-package/student/src/main/java/qpack/ICharQ.java
-        target: tests/public-pair-only/qpack/ICharQ.java
-        audience: grading
-      - source: test-support/shared/56590fc46555/Решение.java
-        target: student/src/main/java/Решение.java
-        audience: student
-      - source: test-support/shared/d086641fede1/character-queues.md
-        target: student/QUEUE-CONTRACT.md
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: projects/polymorphism/queue-package/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: student/src/test/java/PublicOutput.java
-        audience: student
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: tests/junit/support/PublicOutput.java
-        audience: grading
-    exr-polymorphism-truck-subclass:
-      common-files:
-      - source: test-support/shared/56590fc46555/Решение.java
-        target: student/src/main/java/Решение.java
-        audience: student
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: projects/polymorphism/truck-subclass/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: student/src/test/java/PublicOutput.java
-        audience: student
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: tests/junit/support/PublicOutput.java
-        audience: grading
-    exr-polymorphism-circular-dynamic-queue:
-      common-files:
-      - source: test-support/shared/56590fc46555/Решение.java
-        target: student/src/main/java/Решение.java
-        audience: student
-      - source: test-support/shared/d086641fede1/character-queues.md
-        target: student/QUEUE-CONTRACT.md
-        audience: student
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: projects/polymorphism/circular-dynamic-queue/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: student/src/test/java/PublicOutput.java
-        audience: student
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: tests/junit/support/PublicOutput.java
-        audience: grading
-    exr-polymorphism-fraction-number-subclass:
-      common-files:
-      - source: test-support/shared/56590fc46555/Решение.java
-        target: student/src/main/java/Решение.java
-        audience: student
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: projects/polymorphism/fraction-number-subclass/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: student/src/test/java/PublicOutput.java
-        audience: student
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: tests/junit/support/PublicOutput.java
-        audience: grading
-    exr-polymorphism-compatible-queue-reset:
-      common-files:
-      - source: test-support/shared/56590fc46555/Решение.java
-        target: student/src/main/java/Решение.java
-        audience: student
-      - source: test-support/shared/d086641fede1/character-queues.md
-        target: student/QUEUE-CONTRACT.md
-        audience: student
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: projects/polymorphism/compatible-queue-reset/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: student/src/test/java/PublicOutput.java
-        audience: student
-      - source: test-support/shared/bbc996150b38/PublicOutput.java
-        target: tests/junit/support/PublicOutput.java
-        audience: grading
-    exr-projects-airline-persistence-project:
-      common-files:
-      - source: test-support/shared/31c47b2cdd02/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/shared/b42bf4ab370d/build.gradle
-        target: student/build.gradle
-        audience: student
-      - source: test-support/shared/c97ee801571b/settings.gradle
-        target: student/settings.gradle
-        audience: student
-      - source: test-support/shared/34195aba8c92/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: student/src/test/java/CopySupport.java
-        audience: student
-      - source: test-support/shared/854d2b3c9a77/CopySupport.java
-        target: tests/junit/support/CopySupport.java
-        audience: grading
-      - source: projects/projects/airline-persistence-project/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-    exr-projects-timetable-interfaces-project:
-      common-files:
-      - source: test-support/shared/31c47b2cdd02/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/shared/b42bf4ab370d/build.gradle
-        target: student/build.gradle
-        audience: student
-      - source: test-support/shared/c97ee801571b/settings.gradle
-        target: student/settings.gradle
-        audience: student
-      - source: test-support/shared/34195aba8c92/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: projects/projects/timetable-interfaces-project/student/src/main/java/DrivingAPI.java
-        target: reference/primary/DrivingAPI.java
-        audience: grading
-      - source: projects/projects/timetable-interfaces-project/student/src/main/java/ScheduleAPI.java
-        target: reference/primary/ScheduleAPI.java
-        audience: grading
-      - source: projects/projects/timetable-interfaces-project/student/src/main/java/SchoolAPI.java
-        target: reference/primary/SchoolAPI.java
-        audience: grading
-      - source: projects/projects/timetable-interfaces-project/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: projects/projects/timetable-interfaces-project/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: projects/projects/timetable-interfaces-project/student/src/main/java/DrivingAPI.java
-        target: tests/fixtures/public-pair-only/DrivingAPI.java
-        audience: grading
-      - source: projects/projects/timetable-interfaces-project/student/src/main/java/ScheduleAPI.java
-        target: tests/fixtures/public-pair-only/ScheduleAPI.java
-        audience: grading
-      - source: projects/projects/timetable-interfaces-project/student/src/main/java/SchoolAPI.java
-        target: tests/fixtures/public-pair-only/SchoolAPI.java
-        audience: grading
-      - source: projects/projects/timetable-interfaces-project/student/src/main/java/DrivingAPI.java
-        target: tests/fixtures/wrong/DrivingAPI.java
-        audience: grading
-      - source: projects/projects/timetable-interfaces-project/student/src/main/java/ScheduleAPI.java
-        target: tests/fixtures/wrong/ScheduleAPI.java
-        audience: grading
-      - source: projects/projects/timetable-interfaces-project/student/src/main/java/SchoolAPI.java
-        target: tests/fixtures/wrong/SchoolAPI.java
-        audience: grading
-    exr-projects-huffman-word-coding-project:
-      common-files:
-      - source: test-support/shared/31c47b2cdd02/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/shared/b42bf4ab370d/build.gradle
-        target: student/build.gradle
-        audience: student
-      - source: test-support/shared/c97ee801571b/settings.gradle
-        target: student/settings.gradle
-        audience: student
-      - source: test-support/shared/34195aba8c92/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-      - source: projects/projects/huffman-word-coding-project/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: projects/projects/huffman-word-coding-project/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
+  projects: {}
