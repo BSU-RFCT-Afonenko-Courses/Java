@@ -1,3 +1,8 @@
+import java.lang.String;
+import java.util.List;
+import org.junit.jupiter.api.TestReporter;
+import java.util.Map;
+import java.util.Arrays;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -6,10 +11,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BookSelectionTest {
-    private record State(int id, String title, java.util.List<String> authors, String publisher,
+    private record State(int id, String title, List<String> authors, String publisher,
                          int year, int pages, double price, String binding) {
         static State of(Book b) {
-            return new State(b.id(), b.title(), java.util.List.copyOf(Arrays.asList(b.authors())),
+            return new State(b.id(), b.title(), List.copyOf(Arrays.asList(b.authors())),
                     b.publisher(), b.year(), b.pages(), b.price(), b.binding());
         }
     }
@@ -19,7 +24,7 @@ class BookSelectionTest {
     }
 
     private State baseline() {
-        return new State(17, "Массивы", java.util.List.of("Анна", "Борис"), "Свет", 2024, 312, 19.75, "Твёрдый");
+        return new State(17, "Массивы", List.of("Анна", "Борис"), "Свет", 2024, 312, 19.75, "Твёрдый");
     }
 
     private void change(Consumer<Book> update, State expected) {
@@ -56,38 +61,42 @@ class BookSelectionTest {
     @Test @DisplayName("Книга с одним автором")
     void singleAuthorConstructor() {
         Book book = new Book(1, "Начало", "Автор", "Исток", 1, 1, 0, "Мягкий");
-        assertEquals(new State(1, "Начало", java.util.List.of("Автор"), "Исток", 1, 1, 0, "Мягкий"), State.of(book));
+        assertEquals(new State(1, "Начало", List.of("Автор"), "Исток", 1, 1, 0, "Мягкий"), State.of(book));
     }
 
     @Test @DisplayName("Изменение id")
-    void changeId() { change(b -> b.id(88), new State(88, "Массивы", java.util.List.of("Анна", "Борис"), "Свет", 2024, 312, 19.75, "Твёрдый")); }
+    void changeId() { change(b -> b.id(88), new State(88, "Массивы", List.of("Анна", "Борис"), "Свет", 2024, 312, 19.75, "Твёрдый")); }
 
     @Test @DisplayName("Изменение названия")
-    void changeTitle() { change(b -> b.title("Объекты"), new State(17, "Объекты", java.util.List.of("Анна", "Борис"), "Свет", 2024, 312, 19.75, "Твёрдый")); }
+    void changeTitle() { change(b -> b.title("Объекты"), new State(17, "Объекты", List.of("Анна", "Борис"), "Свет", 2024, 312, 19.75, "Твёрдый")); }
 
     @Test @DisplayName("Изменение авторов")
-    void changeAuthors() { change(b -> b.authors(new String[] {"Вера", "Глеб"}), new State(17, "Массивы", java.util.List.of("Вера", "Глеб"), "Свет", 2024, 312, 19.75, "Твёрдый")); }
+    void changeAuthors() { change(b -> b.authors(new String[] {"Вера", "Глеб"}), new State(17, "Массивы", List.of("Вера", "Глеб"), "Свет", 2024, 312, 19.75, "Твёрдый")); }
 
     @Test @DisplayName("Изменение издательства")
-    void changePublisher() { change(b -> b.publisher("Мир"), new State(17, "Массивы", java.util.List.of("Анна", "Борис"), "Мир", 2024, 312, 19.75, "Твёрдый")); }
+    void changePublisher() { change(b -> b.publisher("Мир"), new State(17, "Массивы", List.of("Анна", "Борис"), "Мир", 2024, 312, 19.75, "Твёрдый")); }
 
     @Test @DisplayName("Изменение года")
-    void changeYear() { change(b -> b.year(9999), new State(17, "Массивы", java.util.List.of("Анна", "Борис"), "Свет", 9999, 312, 19.75, "Твёрдый")); }
+    void changeYear() { change(b -> b.year(9999), new State(17, "Массивы", List.of("Анна", "Борис"), "Свет", 9999, 312, 19.75, "Твёрдый")); }
 
     @Test @DisplayName("Изменение страниц")
-    void changePages() { change(b -> b.pages(1), new State(17, "Массивы", java.util.List.of("Анна", "Борис"), "Свет", 2024, 1, 19.75, "Твёрдый")); }
+    void changePages() { change(b -> b.pages(1), new State(17, "Массивы", List.of("Анна", "Борис"), "Свет", 2024, 1, 19.75, "Твёрдый")); }
 
     @Test @DisplayName("Изменение цены")
-    void changePrice() { change(b -> b.price(0), new State(17, "Массивы", java.util.List.of("Анна", "Борис"), "Свет", 2024, 312, 0, "Твёрдый")); }
+    void changePrice() { change(b -> b.price(0), new State(17, "Массивы", List.of("Анна", "Борис"), "Свет", 2024, 312, 0, "Твёрдый")); }
 
     @Test @DisplayName("Изменение переплёта")
-    void changeBinding() { change(b -> b.binding("Мягкий"), new State(17, "Массивы", java.util.List.of("Анна", "Борис"), "Свет", 2024, 312, 19.75, "Мягкий")); }
+    void changeBinding() { change(b -> b.binding("Мягкий"), new State(17, "Массивы", List.of("Анна", "Борис"), "Свет", 2024, 312, 19.75, "Мягкий")); }
 
     @Test @DisplayName("Отбор по автору: порядок и повторное вхождение")
-    void authorOrderAndMultiplicity() { selection(catalog(), a -> Book.author(a, "Анна"), 0, 1, 2); }
+    void authorOrderAndMultiplicity(TestReporter publicReporter) {
+        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] selected=Book.author(new Book[]{b1,b2,b1,b3},"Ann"); publicReporter.publishEntry(Map.of("public-case","normal-author","actual", selected==null?"null":Arrays.toString(Arrays.stream(selected).map(b->b==null?null:b.id()).toArray()))); }
+ selection(catalog(), a -> Book.author(a, "Анна"), 0, 1, 2); }
 
     @Test @DisplayName("Автор не первый в списке")
-    void nonFirstAuthor() {
+    void nonFirstAuthor(TestReporter publicReporter) {
+        { Book first = new Book(1, "Массивы", new String[]{"Анна", "Борис"}, "Свет", 2024, 120, 10, "Мягкий"); Book second = new Book(2, "Объекты", "Вера", "Мир", 2025, 200, 15, "Твёрдый"); Book[] selected=Book.author(new Book[]{first,second},"Борис"); publicReporter.publishEntry(Map.of("public-case","demo-example","actual", selected==null?"null":Arrays.toString(Arrays.stream(selected).map(b->b==null?null:b.id()).toArray()))); }
+
         Book[] books = {new Book(2, "Двое", new String[] {"Первый", "Искомый"}, "Печать", 2001, 20, 3, "Мягкий")};
         selection(books, a -> Book.author(a, "Искомый"), 0);
     }
@@ -96,28 +105,38 @@ class BookSelectionTest {
     void authorExactCase() { selection(catalog(), a -> Book.author(a, "анна"), 3); }
 
     @Test @DisplayName("Неизвестный автор")
-    void unknownAuthor() { selection(catalog(), a -> Book.author(a, "Ан")); }
+    void unknownAuthor(TestReporter publicReporter) {
+        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] selected=Book.author(new Book[]{b3},"Ann"); publicReporter.publishEntry(Map.of("public-case","boundary-author","actual", selected==null?"null":Arrays.toString(Arrays.stream(selected).map(b->b==null?null:b.id()).toArray()))); }
+ selection(catalog(), a -> Book.author(a, "Ан")); }
 
     @Test @DisplayName("Автор: пустой массив")
     void authorEmptyArray() { selection(new Book[0], a -> Book.author(a, "Анна")); }
 
     @Test @DisplayName("Отбор по издательству: порядок и повторное вхождение")
-    void publisherOrderAndMultiplicity() { selection(catalog(), a -> Book.publisher(a, "Свет"), 0, 1, 2); }
+    void publisherOrderAndMultiplicity(TestReporter publicReporter) {
+        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] selected=Book.publisher(new Book[]{b1,b2,b1,b3},"Север"); publicReporter.publishEntry(Map.of("public-case","normal-publisher","actual", selected==null?"null":Arrays.toString(Arrays.stream(selected).map(b->b==null?null:b.id()).toArray()))); }
+ selection(catalog(), a -> Book.publisher(a, "Свет"), 0, 1, 2); }
 
     @Test @DisplayName("Издательство: точное совпадение с учётом регистра")
     void publisherExactCase() { selection(catalog(), a -> Book.publisher(a, "свет"), 3); }
 
     @Test @DisplayName("Неизвестное издательство")
-    void unknownPublisher() { selection(catalog(), a -> Book.publisher(a, "Св")); }
+    void unknownPublisher(TestReporter publicReporter) {
+        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] selected=Book.publisher(new Book[]{b3},"север"); publicReporter.publishEntry(Map.of("public-case","boundary-publisher","actual", selected==null?"null":Arrays.toString(Arrays.stream(selected).map(b->b==null?null:b.id()).toArray()))); }
+ selection(catalog(), a -> Book.publisher(a, "Св")); }
 
     @Test @DisplayName("Издательство: пустой массив")
     void publisherEmptyArray() { selection(new Book[0], a -> Book.publisher(a, "Свет")); }
 
     @Test @DisplayName("Отбор после года: порядок и повторное вхождение")
-    void yearOrderAndMultiplicity() { selection(catalog(), a -> Book.after(a, 2024), 0, 2, 4); }
+    void yearOrderAndMultiplicity(TestReporter publicReporter) {
+        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] selected=Book.after(new Book[]{b1,b2,b1,b3},2010); publicReporter.publishEntry(Map.of("public-case","normal-after","actual", selected==null?"null":Arrays.toString(Arrays.stream(selected).map(b->b==null?null:b.id()).toArray()))); }
+ selection(catalog(), a -> Book.after(a, 2024), 0, 2, 4); }
 
     @Test @DisplayName("Год равен границе")
-    void yearEqualBoundary() {
+    void yearEqualBoundary(TestReporter publicReporter) {
+        { Book b1=new Book(1,"Первая",new String[]{"Ann","Bob"},"Север",2001,100,10,"Твёрдый"); Book b2=new Book(2,"Вторая","Ann","Юг",2020,100,10,"Твёрдый"); Book b3=new Book(3,"Третья","Bob","Север",2020,100,10,"Твёрдый"); Book[] selected=Book.after(new Book[]{b3},2020); publicReporter.publishEntry(Map.of("public-case","boundary-after","actual", selected==null?"null":Arrays.toString(Arrays.stream(selected).map(b->b==null?null:b.id()).toArray()))); }
+
         Book[] books = {new Book(1, "Граница", "Автор", "Печать", 2024, 1, 0, "Мягкий")};
         selection(books, a -> Book.after(a, 2024));
     }

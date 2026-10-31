@@ -1,3 +1,7 @@
+import java.lang.Object;
+import org.junit.jupiter.api.TestReporter;
+import java.util.Map;
+import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -8,8 +12,11 @@ class ContractTest {
   @DisplayName(
       "insert-after-word-ending-01 — Суффикс, целое слово и исходная пунктуация; public normal")
   void
-  case01() {
-    assertEquals("кот дом, скот дом!", Study.insert("кот, скот!", "кот", "дом"),
+  case01(TestReporter publicReporter) {
+    var publicActual = Study.insert("кот, скот!", "кот", "дом");
+    publicReporter.publishEntry(Map.of("public-case", "insert-after-word-ending-01", "actual", Arrays.deepToString(new Object[]{publicActual})));
+
+    assertEquals("кот дом, скот дом!", publicActual,
         "Суффикс, целое слово и исходная пунктуация; public normal");
   }
 
@@ -17,8 +24,11 @@ class ContractTest {
   @DisplayName("insert-after-word-ending-02 — Регистр и вставка совпадающего слова без повторной "
                + "обработки; public boundary")
   void
-  case02() {
-    assertEquals("Кот кот кот!", Study.insert("Кот кот!", "кот", "кот"),
+  case02(TestReporter publicReporter) {
+    var publicActual = Study.insert("Кот кот!", "кот", "кот");
+    publicReporter.publishEntry(Map.of("public-case", "insert-after-word-ending-02", "actual", Arrays.deepToString(new Object[]{publicActual})));
+
+    assertEquals("Кот кот кот!", publicActual,
         "Регистр и вставка совпадающего слова без повторной обработки; public boundary");
   }
 

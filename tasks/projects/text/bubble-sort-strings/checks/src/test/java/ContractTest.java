@@ -1,3 +1,7 @@
+import java.lang.String;
+import org.junit.jupiter.api.TestReporter;
+import java.util.Map;
+import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -8,26 +12,32 @@ class ContractTest {
   @DisplayName(
       "bubble-sort-strings-01 — Регистр, естественный порядок, повторы и мутация; public normal")
   void
-  case01() {
+  case01(TestReporter publicReporter) {
     String[] values = new String[] {"beta", "alpha", "beta", "Gamma"};
     Study.sort(values);
+    publicReporter.publishEntry(Map.of("public-case", "bubble-sort-strings-01", "actual", Arrays.toString(values)));
+
     assertArrayEquals(new String[] {"Gamma", "alpha", "beta", "beta"}, values,
         "Регистр, естественный порядок, повторы и мутация; public normal");
   }
 
   @Test
   @DisplayName("bubble-sort-strings-02 — Пустая граница; public boundary")
-  void case02() {
+  void case02(TestReporter publicReporter) {
     String[] values = new String[] {};
     Study.sort(values);
+    publicReporter.publishEntry(Map.of("public-case", "bubble-sort-strings-02", "actual", Arrays.toString(values)));
+
     assertArrayEquals(new String[] {}, values, "Пустая граница; public boundary");
   }
 
   @Test
   @DisplayName("bubble-sort-strings-03 — Уже упорядоченный массив; public boundary")
-  void case03() {
+  void case03(TestReporter publicReporter) {
     String[] values = new String[] {"Gamma", "alpha", "beta", "beta"};
     Study.sort(values);
+    publicReporter.publishEntry(Map.of("public-case", "bubble-sort-strings-03", "actual", Arrays.toString(values)));
+
     assertArrayEquals(new String[] {"Gamma", "alpha", "beta", "beta"}, values,
         "Уже упорядоченный массив; public boundary");
   }

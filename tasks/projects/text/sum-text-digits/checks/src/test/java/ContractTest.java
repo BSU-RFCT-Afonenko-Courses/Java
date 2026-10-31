@@ -1,3 +1,7 @@
+import java.lang.Object;
+import org.junit.jupiter.api.TestReporter;
+import java.util.Map;
+import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -6,14 +10,20 @@ import org.junit.jupiter.api.Test;
 class ContractTest {
   @Test
   @DisplayName("sum-text-digits-01 — Соседние цифры и ноль; public normal")
-  void case01() {
-    assertEquals(12L, Study.sum("a2b109"), "Соседние цифры и ноль; public normal");
+  void case01(TestReporter publicReporter) {
+    var publicActual = Study.sum("a2b109");
+    publicReporter.publishEntry(Map.of("public-case", "sum-text-digits-01", "actual", Arrays.deepToString(new Object[]{publicActual})));
+
+    assertEquals(12L, publicActual, "Соседние цифры и ноль; public normal");
   }
 
   @Test
   @DisplayName("sum-text-digits-02 — Пустая сумма; public boundary")
-  void case02() {
-    assertEquals(0L, Study.sum(""), "Пустая сумма; public boundary");
+  void case02(TestReporter publicReporter) {
+    var publicActual = Study.sum("");
+    publicReporter.publishEntry(Map.of("public-case", "sum-text-digits-02", "actual", Arrays.deepToString(new Object[]{publicActual})));
+
+    assertEquals(0L, publicActual, "Пустая сумма; public boundary");
   }
 
   @Test

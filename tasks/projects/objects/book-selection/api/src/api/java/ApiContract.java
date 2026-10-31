@@ -1,3 +1,7 @@
+import java.lang.Class;
+import java.lang.Exception;
+import java.lang.NoSuchMethodException;
+import java.util.Arrays;
 import java.lang.reflect.Modifier;
 import org.prairielearn.api.PlatformApiPrecheck;
 
@@ -13,7 +17,7 @@ public class ApiContract {
                 found = true;
             } catch (NoSuchMethodException ex) { found = false; }
             api.expect(found, "публичный полный конструктор Book с " + authors.getTypeName(),
-                    java.util.Arrays.toString(type.getConstructors()));
+                    Arrays.toString(type.getConstructors()));
         }
         String[] names = {"id", "title", "authors", "publisher", "year", "pages", "price", "binding"};
         Class<?>[] types = {int.class, String.class, String[].class, String.class, int.class, int.class,
@@ -27,6 +31,7 @@ public class ApiContract {
         api.method("Book", "publisher", type.arrayType(), Modifier.PUBLIC | Modifier.STATIC, 0, type.arrayType(), String.class);
         api.method("Book", "after", type.arrayType(), Modifier.PUBLIC | Modifier.STATIC, 0, type.arrayType(), int.class);
         api.compiles("BookApiClient", """
+                import java.lang.String;
                 class BookApiClient {
                     void use() {
                         Book book = new Book(1, "Название", new String[] {"Автор"}, "Издательство", 1, 1, 0, "Переплёт");

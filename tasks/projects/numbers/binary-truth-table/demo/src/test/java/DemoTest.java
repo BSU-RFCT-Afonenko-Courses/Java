@@ -1,3 +1,7 @@
+import java.lang.Exception;
+import java.lang.String;
+import java.util.HashMap;
+import java.util.Map;
 import coursesupport.JavaProcess;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -10,11 +14,11 @@ class DemoTest {
     private static String[] tokens(String text) {
         return text.isBlank()?new String[0]:text.strip().split("\\p{javaWhitespace}+");
     }
-    private static java.util.Map<String,String[]> table() throws Exception {
+    private static Map<String,String[]> table() throws Exception {
         String[] lines=run().lines().filter(s->!s.isBlank()).toArray(String[]::new);
         assertEquals(5,lines.length,"Заголовок и четыре строки");
         assertArrayEquals(new String[]{"P","Q","AND","OR","XOR","NOT"},tokens(lines[0]),"Шесть колонок, пробельные разделители");
-        var rows=new java.util.HashMap<String,String[]>();
+        var rows=new HashMap<String,String[]>();
         for(int i=1;i<5;i++) {
             String[] values=tokens(lines[i]);assertEquals(6,values.length,"Шесть значений в строке");
             for(String value:values)assertTrue(value.equals("0")||value.equals("1"),"Истина — 1, ложь — 0");

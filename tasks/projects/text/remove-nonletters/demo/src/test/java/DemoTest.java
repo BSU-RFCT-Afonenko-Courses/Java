@@ -1,18 +1,23 @@
+import java.lang.Integer;
+import java.lang.String;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class DemoTest {
-  private static java.util.List<String> words(String text) {
-    var result = new java.util.ArrayList<String>();
-    var matcher = java.util.regex.Pattern.compile("[A-Za-zА-Яа-яЁё]+").matcher(text);
+  private static List<String> words(String text) {
+    var result = new ArrayList<String>();
+    var matcher = Pattern.compile("[A-Za-zА-Яа-яЁё]+").matcher(text);
     while (matcher.find()) result.add(matcher.group());
     return result;
   }
-  private static java.util.List<Integer> spaces(String text) {
-    var result = new java.util.ArrayList<Integer>();
-    var matcher = java.util.regex.Pattern.compile("[A-Za-zА-Яа-яЁё]+").matcher(text);
+  private static List<Integer> spaces(String text) {
+    var result = new ArrayList<Integer>();
+    var matcher = Pattern.compile("[A-Za-zА-Яа-яЁё]+").matcher(text);
     int end = 0;
     while (matcher.find()) {
       int count = 0;
