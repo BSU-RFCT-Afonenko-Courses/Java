@@ -1,13 +1,68 @@
 package queuecheck;
-
-import java.lang.invoke.*;
-import java.lang.reflect.*;
-import java.nio.file.*;
-import java.util.*;
-import javax.tools.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.OutputStream;
+import java.lang.CharSequence;
+import java.lang.Class;
+import java.lang.ClassLoader;
+import java.lang.ClassNotFoundException;
+import java.lang.Error;
+import java.lang.Exception;
+import java.lang.IllegalArgumentException;
+import java.lang.IllegalStateException;
+import java.lang.Integer;
+import java.lang.LinkageError;
+import java.lang.Math;
+import java.lang.NoSuchMethodException;
+import java.lang.Number;
+import java.lang.Object;
+import java.lang.Override;
+import java.lang.ReflectiveOperationException;
+import java.lang.RuntimeException;
+import java.lang.String;
+import java.lang.StringBuilder;
+import java.lang.System;
+import java.lang.Throwable;
+import java.lang.TypeNotPresentException;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.MalformedParameterizedTypeException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.net.URI;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
-import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.jar.JarFile;
+import javax.tools.DiagnosticCollector;
+import javax.tools.FileObject;
+import javax.tools.ForwardingJavaFileManager;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileManager.Location;
+import javax.tools.JavaFileObject;
+import javax.tools.SimpleJavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
+
 
 /** Предоставляет доступ к открытому API GenericQueue для проверки операций очереди. */
 public final class QueueAccess {
@@ -121,13 +176,13 @@ public final class QueueAccess {
     public static synchronized QueueAccess select() throws Exception {
         if(selected!=null)return selected;
         var candidates=new TreeMap<String,Class<?>>();
-        var paths=new java.util.LinkedHashSet<String>(java.util.Arrays.asList(System.getProperty("java.class.path").split(java.io.File.pathSeparator)));
+        var paths=new LinkedHashSet<String>(Arrays.asList(System.getProperty("java.class.path").split(File.pathSeparator)));
         String explicit=System.getProperty("course.submission.jar");if(explicit!=null)paths.add(explicit);
-        for(ClassLoader loader=QueueAccess.class.getClassLoader();loader!=null;loader=loader.getParent())if(loader instanceof java.net.URLClassLoader urls)for(var url:urls.getURLs())if(url.getProtocol().equals("file"))paths.add(java.nio.file.Path.of(url.toURI()).toString());
+        for(ClassLoader loader=QueueAccess.class.getClassLoader();loader!=null;loader=loader.getParent())if(loader instanceof URLClassLoader urls)for(var url:urls.getURLs())if(url.getProtocol().equals("file"))paths.add(Path.of(url.toURI()).toString());
         for(String item:paths){Path root=Path.of(item);if(Files.isSymbolicLink(root))continue;
-            var names=new java.util.ArrayList<String>();
-            if(Files.isDirectory(root)){try(var stream=Files.walk(root)){for(Path path:stream.filter(p->Files.isRegularFile(p,LinkOption.NOFOLLOW_LINKS)).toList()){String leaf=path.getFileName().toString();if(leaf.equals("GenericQueue.class")||leaf.endsWith("$GenericQueue.class"))names.add(root.relativize(path).toString().replace(java.io.File.separatorChar,'.').replaceFirst("\\.class$",""));}}}
-            else if(Files.isRegularFile(root)&&item.endsWith(".jar")){try(var jar=new java.util.jar.JarFile(root.toFile())){var entries=jar.entries();while(entries.hasMoreElements()){String name=entries.nextElement().getName();if(name.endsWith("/GenericQueue.class")||name.equals("GenericQueue.class")||name.endsWith("$GenericQueue.class"))names.add(name.substring(0,name.length()-6).replace('/','.'));}}}
+            var names=new ArrayList<String>();
+            if(Files.isDirectory(root)){try(var stream=Files.walk(root)){for(Path path:stream.filter(p->Files.isRegularFile(p,LinkOption.NOFOLLOW_LINKS)).toList()){String leaf=path.getFileName().toString();if(leaf.equals("GenericQueue.class")||leaf.endsWith("$GenericQueue.class"))names.add(root.relativize(path).toString().replace(File.separatorChar,'.').replaceFirst("\\.class$",""));}}}
+            else if(Files.isRegularFile(root)&&item.endsWith(".jar")){try(var jar=new JarFile(root.toFile())){var entries=jar.entries();while(entries.hasMoreElements()){String name=entries.nextElement().getName();if(name.endsWith("/GenericQueue.class")||name.equals("GenericQueue.class")||name.endsWith("$GenericQueue.class"))names.add(name.substring(0,name.length()-6).replace('/','.'));}}}
             for(String binary:names){Class<?> type=Class.forName(binary,false,QueueAccess.class.getClassLoader());if(type.getSimpleName().equals("GenericQueue"))candidates.put(binary,type);}
         }
         var matching=new ArrayList<QueueAccess>();
