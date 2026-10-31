@@ -1,3 +1,8 @@
+import java.lang.Comparable;
+import java.lang.Integer;
+import java.lang.Object;
+import java.lang.String;
+import java.lang.Throwable;
 import org.junit.jupiter.api.Test;import org.junit.jupiter.api.DisplayName;import static org.junit.jupiter.api.Assertions.*;
 class DemoTest {
 static class Item implements Comparable<Item>{final int value;Item(int value){this.value=value;}public int compareTo(Item other){return Integer.compare(value,other.value);}}static class Token implements Comparable<Token>{final int value;Token(int value){this.value=value;}public int compareTo(Token other){return 23*(value-other.value);}}private static void kept(Object[] before,Object[] after){assertEquals(before.length,after.length);for(int i=0;i<before.length;i++)assertSame(before[i],after[i]);}

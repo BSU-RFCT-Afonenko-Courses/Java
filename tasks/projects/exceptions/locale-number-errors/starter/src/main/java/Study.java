@@ -5,4 +5,3 @@ public class Study {
  public static List<Raw> read(Path path)throws IOException {throw new UnsupportedOperationException("Самостоятельно прочитайте файл");}
  public static Summary analyze(List<Raw> rows)throws BadRecord {throw new UnsupportedOperationException("Реализуйте отдельный анализ");}
 }
-

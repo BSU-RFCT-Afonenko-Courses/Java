@@ -2,7 +2,7 @@ import org.prairielearn.api.PlatformApiPrecheck;import java.lang.reflect.*;impor
 public class ApiContract {public static void check(PlatformApiPrecheck.Api api)throws Exception {
 Class<?> study=api.type("Study");api.expect(Modifier.isPublic(study.getModifiers()),"открытый Study без пакета",study.toString());
 api.compiles("Operations","class Operations{void call(Study s)throws Study.StackFullException,Study.StackEmptyException{s.push('A');char value=s.pop();}}",true);
-api.compiles("Constructor","class Constructor{void call()throws Throwable{Study s=new Study(1);}}",true);
+api.compiles("Constructor","import java.lang.Throwable;class Constructor{void call()throws Throwable{Study s=new Study(1);}}",true);
 api.compiles("UncheckedPush","class UncheckedPush{void call(Study s){s.push('A');}}",false);
 api.compiles("UncheckedPop","class UncheckedPop{void call(Study s){s.pop();}}",false);
 Class<?> StackFullException=Arrays.stream(study.getClasses()).filter(c->c.getSimpleName().equals("StackFullException")).findFirst().orElse(null);api.expect(StackFullException!=null&&Exception.class.isAssignableFrom(StackFullException)&&!RuntimeException.class.isAssignableFrom(StackFullException),"checked StackFullException",""+StackFullException);

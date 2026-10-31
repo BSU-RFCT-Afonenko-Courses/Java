@@ -157,11 +157,13 @@ public final class QueueAccess {
         if(studentSource==null||helperSource==null)throw new IllegalStateException("Не удалось определить расположение классов очереди или средства проверки");
         Path student=Path.of(studentSource.getLocation().toURI()),helper=Path.of(helperSource.getLocation().toURI());
         if(!(Files.isDirectory(student)||Files.isRegularFile(student))||!Files.isDirectory(helper))throw new IllegalStateException("Для компиляции клиента нужны JAR или каталог очереди и доверенные helper classes");
-        String name=constructorBridgeName(),queue=type.getCanonicalName();
-        StringBuilder source=new StringBuilder("public final class "+name+" {");
+        String name=constructorBridgeName(),queue=type.getPackageName().isEmpty()?type.getCanonicalName():type.getSimpleName();
+        String imports=(type.getPackageName().isEmpty()?"":"import "+type.getCanonicalName()+";")
+            +"import java.lang.Object;import java.lang.String;import java.lang.Integer;import java.lang.Number;import java.lang.Throwable;import queuecheck.QueueAccess.Payload;";
+        StringBuilder source=new StringBuilder(imports+"public final class "+name+" {");
         Map<String,String> elements=new LinkedHashMap<>();
-        elements.put("strings","java.lang.String");elements.put("integers","java.lang.Integer");
-        elements.put("numbers","java.lang.Number");elements.put("payloads","queuecheck.QueueAccess.Payload");
+        elements.put("strings","String");elements.put("integers","Integer");
+        elements.put("numbers","Number");elements.put("payloads","Payload");
         for(var entry:elements.entrySet()) {
             String element=entry.getValue();
             source.append("public static Object ").append(entry.getKey()).append('(').append(element)
@@ -212,20 +214,24 @@ public final class QueueAccess {
     public record Client(String name,String source,boolean expected) {}
     public static List<Client> clients(QueueAccess q) {
         var clients=new ArrayList<Client>();
-        String type=q.type.getCanonicalName(),full=q.full.getCanonicalName(),empty=q.empty.getCanonicalName();
+        String type=q.type.getPackageName().isEmpty()?q.type.getCanonicalName():q.type.getSimpleName();
+        String full=q.full.getPackageName().isEmpty()?q.full.getCanonicalName():q.full.getSimpleName();
+        String empty=q.empty.getPackageName().isEmpty()?q.empty.getCanonicalName():q.empty.getSimpleName();
+        String imports="import java.lang.String;import java.lang.Integer;import java.lang.Number;";
+        for(Class<?> imported:List.of(q.type,q.full,q.empty))if(!imported.getPackageName().isEmpty())imports+="import "+imported.getCanonicalName()+";";
         String throwsBoth=" throws "+full+", "+empty;
-        clients.add(new Client("QueuePositive","class QueuePositive {static final class Payload {} void call()"+throwsBoth+" {"
+        clients.add(new Client("QueuePositive",imports+"class QueuePositive {static final class Payload {} void call()"+throwsBoth+" {"
             +type+"<String> strings=new "+type+"<>(new String[2]);strings.put(\"x\");String text=strings.get();"
             +type+"<Integer> ints=new "+type+"<>(new Integer[1]);ints.put(1);Integer number=ints.get();"
             +type+"<Number> numbers=new "+type+"<>(new Number[2]);numbers.put(1);numbers.put(2.5);Number n=numbers.get();"
             +type+"<Payload> objects=new "+type+"<>(new Payload[1]);objects.put(new Payload());Payload p=objects.get();}}",true));
-        clients.add(new Client("QueueConstructor","class QueueConstructor {static final class Payload {} void call(){"
+        clients.add(new Client("QueueConstructor",imports+"class QueueConstructor {static final class Payload {} void call(){"
             +type+"<String> s=new "+type+"<>(new String[1]);"+type+"<Integer> i=new "+type+"<>(new Integer[1]);"
             +type+"<Number> n=new "+type+"<>(new Number[1]);"+type+"<Payload> p=new "+type+"<>(new Payload[1]);}}",true));
-        clients.add(new Client("QueueWrongPut","class QueueWrongPut {void call("+type+"<String> q)"+throwsBoth+"{q.put(Integer.valueOf(1));}}",false));
-        clients.add(new Client("QueueWrongGet","class QueueWrongGet {void call("+type+"<String> q)"+throwsBoth+"{Integer value=q.get();}}",false));
-        clients.add(new Client("QueueUnhandledPut","class QueueUnhandledPut {void call("+type+"<String> q){q.put(\"x\");}}",false));
-        clients.add(new Client("QueueUnhandledGet","class QueueUnhandledGet {void call("+type+"<String> q){q.get();}}",false));
+        clients.add(new Client("QueueWrongPut",imports+"class QueueWrongPut {void call("+type+"<String> q)"+throwsBoth+"{q.put(Integer.valueOf(1));}}",false));
+        clients.add(new Client("QueueWrongGet",imports+"class QueueWrongGet {void call("+type+"<String> q)"+throwsBoth+"{Integer value=q.get();}}",false));
+        clients.add(new Client("QueueUnhandledPut",imports+"class QueueUnhandledPut {void call("+type+"<String> q){q.put(\"x\");}}",false));
+        clients.add(new Client("QueueUnhandledGet",imports+"class QueueUnhandledGet {void call("+type+"<String> q){q.get();}}",false));
         return List.copyOf(clients);
     }
 
