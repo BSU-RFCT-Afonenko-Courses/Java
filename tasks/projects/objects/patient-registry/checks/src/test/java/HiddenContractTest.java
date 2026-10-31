@@ -1,0 +1,4 @@
+import java.lang.Object;
+import java.util.Arrays;
+import java.util.List;
+import org.junit.jupiter.api.Test;import static org.junit.jupiter.api.Assertions.*;import java.util.*;class HiddenContractTest{@Test void sameBoundaryAndNoDedup(){Object a=TaskBinding.patient(97,707,"X"),b=TaskBinding.patient(98,708,"x");Object[]in=TaskBinding.array(a,b,a);Object[]before=in.clone();var state=Arrays.stream(in).map(TaskBinding::value).toList();assertEquals(List.of(TaskBinding.value(a),TaskBinding.value(a)),Arrays.stream(TaskBinding.range(in,707,707)).map(TaskBinding::value).toList());for(int k=0;k<in.length;k++)assertSame(before[k],in[k]);assertEquals(state,Arrays.stream(in).map(TaskBinding::value).toList());assertEquals(List.of(TaskBinding.value(a),TaskBinding.value(a)),Arrays.stream(TaskBinding.diagnosis(in,"X")).map(TaskBinding::value).toList());for(int k=0;k<in.length;k++)assertSame(before[k],in[k]);assertEquals(state,Arrays.stream(in).map(TaskBinding::value).toList());}}

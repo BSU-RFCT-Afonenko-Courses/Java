@@ -1,0 +1,1 @@
+import java.util.*; public class Audit { public record Result(HashSet<CodeKey> unique,HashMap<CodeKey,Integer> counts) {} public static Result count(String[] codes){throw new UnsupportedOperationException("Допишите учёт всех кодов");}}
