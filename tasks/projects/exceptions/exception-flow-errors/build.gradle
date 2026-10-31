@@ -1,0 +1,8 @@
+plugins { id 'java' }
+java { toolchain { languageVersion = JavaLanguageVersion.of(25) } }
+tasks.withType(JavaCompile).configureEach { options.encoding='UTF-8'; options.release=25 }
+// Независимые учебные программы компилируются раздельно: одинаковые A/B не смешиваются.
+def roots=[]
+for (base in ['cases','programs']) { def directory=file(base);if(directory.isDirectory()) directory.listFiles().findAll{it.isDirectory()}.sort{it.name}.each{roots.add(it)} }
+roots.eachWithIndex { directory,index -> def name='program'+index;sourceSets.create(name){java.srcDir new File(directory,'src/main/java')};tasks.named('classes'){dependsOn tasks.named(sourceSets[name].classesTaskName)} }
+// Здесь нет автоматической учебной оценки и фиктивных JUnit-критериев объяснения.

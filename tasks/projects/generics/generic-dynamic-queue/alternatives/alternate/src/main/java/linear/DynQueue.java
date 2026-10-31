@@ -1,0 +1,1 @@
+package linear;class DynQueue<T>{private T[] data;private int first,last;DynQueue(T[] input){data=input;}<U extends T>void put(U value){if(last==data.length){T[] next=java.util.Arrays.copyOfRange(data,first,data.length+first+1);last-=first;first=0;data=next;}data[last++]=value;}T get(){if(first==last){System.out.println("Очередь пуста");return null;}return data[first++];}}
