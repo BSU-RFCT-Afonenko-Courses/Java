@@ -915,96 +915,132 @@ project-checks:
         artifact: submission.jar
         main-class: Main
     java-objects-variadic-sum:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: inherited
+        root: author/inherited/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Сумма и сохранённый массив
         test: PublicExamplesTest#normal
         input: sum([3,-2,4])
-        expected: Возврат5, тот же массив [3,-2,4].
+        expected: Массив[3,-2,4] →5, значения массива прежние.
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
       - id: boundary
         name: Вызов без аргументов
         test: PublicExamplesTest#boundary
         input: sum()
-        expected: Возврат0.
+        expected: Вызов без аргументов →0.
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
       feedback:
         requirement: int сумма, пустой вызов0, переданный массив сохраняется.
-        what-check: Сопоставьте полученные значения и состояние с открытым сценарием; предъявите исходник и объяснение по
-          условию.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-objects-swap-object-fields:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: inherited
+        root: author/inherited/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Два объекта сохраняют свою идентичность
         test: PublicExamplesTest#normal
         input: Test(3), Test(8); swap(x,y)
-        expected: Прежние x/y содержат8/3.
+        expected: Два разных Test(3),Test(8); swap → значения8/3 через прежние ссылки.
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
       - id: boundary
         name: Две ссылки на один объект
         test: PublicExamplesTest#boundary
         input: Test(-2); swap(x,x)
-        expected: Прежний x содержит-2.
+        expected: Test(-2), swap(x,x) сохраняет -2.
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
       feedback:
         requirement: Обмен значений a существующих Test; самопередача сохраняет состояние.
-        what-check: Сопоставьте полученные значения и состояние с открытым сценарием; предъявите исходник и объяснение по
-          условию.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-objects-character-stack:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/OverflowStateTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: inherited
+        root: author/inherited/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Последний символ извлекается первым
         test: PublicExamplesTest#normal
         input: 'Stack(2): push A/B, pop/pop'
-        expected: Возвращены B,A; сообщений нет.
+        expected: 'Stack2: push A,B; pop B,A; сообщений операций нет.'
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
       - id: boundary
         name: Ёмкость один и сохранение после отказов
         test: PublicExamplesTest#boundary
         input: 'Stack(1): pop, push X/Y, pop/pop, push Z, pop'
-        expected: 'Возвраты0,X,0,Z; строки: Стек пуст; Стек переполнен; Стек пуст.'
+        expected: 'Stack1: pop, push X,Y, pop,pop,push Z,pop → char0,X,char0,Z. Ровно три строки сообщений: «Стек пуст», «Стек
+          переполнен», «Стек пуст»; успешные действия молчат.'
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
       feedback:
         requirement: LIFO; точные сообщения отказов, успешные операции молчат, отказ сохраняет состояние.
-        what-check: Сопоставьте полученные значения и состояние с открытым сценарием; предъявите исходник и объяснение по
-          условию.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-objects-book-selection:
       source-profile: java-gradle
       tests:
@@ -1029,37 +1065,55 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
     java-objects-car-selection:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: flexible
+        root: author/flexible/src/main/java
+        optional: false
+      - name: copied-values
+        root: author/copied-values/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Три отбора с сохранением повторов
         test: PublicExamplesTest#normal
         input: 'Car: C1=(id1,Вектор,M1,2010,Синий,цена10,A1); C2=(id2,Вектор,M1,2012,Синий,цена20,A2); C3=(id3,Линия,M2,2020,Синий,цена30,A3).
           Массив[C1,C2,C1,C3], текущий год2025. Отбор марки Вектор, модели M1 с возрастом>5, года2010 с ценой>5.'
-        expected: Подборки C1/C2/C1; C1/C2/C1; C1/C1, вход сохранён.
+        expected: C1=(1,Вектор,M1,2010,Синий,10,A1), C2=(2,Вектор,M1,2012,Синий,20,A2), C3=(3,Линия,M2,2020,Синий,30,A3);
+          вход[C1,C2,C1,C3]. make Вектор →[C1,C2,C1]; model M1,currentYear2025,age5 →[C1,C2,C1]; year2010,price5 →[C1,C1].
+          После каждого отбора входные ячейки и все свойства прежние.
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
       - id: boundary
         name: Равные возраст и цена
         test: PublicExamplesTest#boundary
         input: C4=(id4,Вектор,M1,2020,Синий,цена10,A4), массив[C4], текущий год2025; марка вектор, модельM1 с возрастом>5,
           год2020 с ценой>10.
-        expected: Все три подборки пусты, вход сохранён.
+        expected: C4=(4,Вектор,M1,2020,Синий,10,A4). make вектор, model M1/currentYear2025/age5, year2020/price10 → три пустые
+          подборки; вход прежний.
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
       feedback:
         requirement: Три отбора Car, параметр текущего года, строгие возраст/цена, порядок/кратность и вход сохранены.
-        what-check: Сопоставьте полученные значения и состояние с открытым сценарием; предъявите исходник и объяснение по
-          условию.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-polymorphism-circle-subclass:
       source-profile: java-main
       tests:
@@ -1424,93 +1478,130 @@ project-checks:
         what-check: Проверьте объявления опубликованного API и результат сборки submission.jar, затем сопоставьте наблюдение
           с указанными входными данными. Допустимые внутренние имена, пакеты и способы реализации сохраняются.
     java-collections-set-union-intersection:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: alternate
+        root: author/alternate/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Общий элемент двух множеств
         test: PublicExamplesTest#normal
-        action: Множества {1,2} и {2,3}; вызвать отдельно объединение и пересечение, проверить оба входа после каждого метода
-        expected: Объединение {1,2,3}, пересечение {2}, оба входа сохранены
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: 'A={1,2},B={2,3}: union={1,2,3}, intersection={2}; оба входа прежние.'
       - id: boundary
         name: Пустой вход и независимость результата
         test: PublicExamplesTest#boundary
-        action: Изменяемые пустое множество и {4}; получить результаты, затем добавить 5 во второй вход
-        expected: Прежние результаты {4} и пустое; второй вход {4,5}
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: 'A={}, B={4}: union={4}, intersection={}; после обоих вызовов входы прежние; добавление5 в B не меняет результаты.'
       feedback:
         requirement: Отдельные методы дают самостоятельные по составу объединение и пересечение и сохраняют оба входа.
-        what-check: Сопоставьте наблюдение с опубликованным ожиданием и предъявите исходник и объяснение преподавателю.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-balanced-brackets:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: alternate
+        root: author/alternate/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Вложенные пары разных видов
         test: PublicExamplesTest#normal
-        action: Проверить строку ([]{}).
-        expected: true; строка сохранена
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: ([]{}) → true.
       - id: boundary
         name: Пустое состояние и лишняя закрывающая
         test: PublicExamplesTest#boundary
-        action: Проверить отдельно пустую строку и )
-        expected: Соответственно true и false
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: Пустая строка → true, строка ) → false; это одна исходная граничная группа.
       feedback:
         requirement: Стек проверяет виды и вложенность пар для строки из шести допустимых скобок; пустая строка допустима.
-        what-check: Сопоставьте наблюдение с опубликованным ожиданием и предъявите исходник и объяснение преподавателю.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-polynomial-map-addition:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: alternate
+        root: author/alternate/src/main/java
+        optional: false
+      - name: relative-tolerance
+        root: author/relative-tolerance/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Общая степень с нулевой суммой
         test: PublicExamplesTest#normal
-        action: Сложить HashMap {0:1,2:3} и {1:2,2:-3}
-        expected: Самостоятельная HashMap, коэффициенты 1,2,0; явный ноль допустим; входы прежние
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: '{0:1,2:3}+{1:2,2:-3} → коэффициенты0:1,1:2, остальные0 в опубликованном допуске; нулевые записи можно оставить.
+          Входы прежние, отдельная HashMap.'
       - id: boundary
         name: Два нулевых многочлена
         test: PublicExamplesTest#boundary
-        action: Сложить две пустые HashMap
-        expected: Самостоятельный нулевой многочлен; явные нули допустимы; входы пусты
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: Две пустые HashMap → самостоятельная нулевая HashMap, возможны явные нули; входы прежние.
       feedback:
         requirement: Самостоятельная HashMap складывает коэффициенты и сохраняет входы; abs(a-r)<=1e-9+1e-12*abs(r), отсутствующая
           пара означает ноль.
-        what-check: Сопоставьте наблюдение с опубликованным ожиданием и предъявите исходник и объяснение преподавателю.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-pipelines-divisibility-function:
       source-profile: java-main
       tests:
@@ -3378,365 +3469,396 @@ project-checks:
           API/формата подготовьте подходящую обычную привязку или демонстрацию.
       contract-cases: tests/contract-cases.json
     java-collections-digit-stack:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: alternate
+        root: author/alternate/src/main/java
+        optional: false
+      - name: checked-boundary
+        root: author/checked-boundary/src/main/java
+        optional: false
+      - name: extra-study
+        root: author/extra-study/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Ноль в начале результата
         test: PublicExamplesTest#normal
         state: '120'
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: '021'
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: 120 → строка 021.
       - id: boundary
         name: Входной ноль
         test: PublicExamplesTest#boundary
         state: '0'
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: '0'
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: 0 → строка 0.
       feedback:
         requirement: Обратный порядок всех цифр без потери нуля. Одна цифра вместо пустого результата.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-word-frequency:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: alternate
+        root: author/alternate/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Повторы и значимый регистр
         test: PublicExamplesTest#normal
         state: Java java, code! Code code
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Java=1, java=1, code=2, Code=1; порядок свободен
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: Java java, code! Code code → {Java:1,java:1,code:2,Code:1}, порядок пар свободен.
       - id: boundary
         name: Нет английских букв
         test: PublicExamplesTest#boundary
         state: 123 — абв!
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Пустая карта
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: 123 — абв! → пустая карта.
       feedback:
         requirement: Состав слов и их частоты. Пустой результат без пустого ключа.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-poem-line-order:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HistoricalContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: alternate
+        root: author/alternate/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Равные длины и устойчивый порядок
         test: PublicExamplesTest#normal
         state: Четыре опубликованные строки Пушкина в порядке1,2,3,4
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Позиции2,3,1,4; исходник прежний
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: 'Вход по строкам: «Всё ходит по цепи кругом;», «Златая цепь на дубе том:», «У лукоморья дуб зелёный;», «И
+          днём и ночью кот учёный». Результат по исходным позициям2,3,1,4; вход прежний, копия. Это открытый фрагмент А. С.
+          Пушкина, не единственный разрешённый собственный текст.'
       - id: boundary
         name: Пустой список строк
         test: PublicExamplesTest#boundary
         state: Пустой список
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Пустая последовательность; исходник прежний
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: Пустой список → пустой результат; вход прежний.
       feedback:
         requirement: Копия по char-длине и сохранение исходного списка. Допустимый пустой результат.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-distinct-word-set:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HistoricalContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: alternate
+        root: author/alternate/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Одно слово в разных регистрах
         test: PublicExamplesTest#normal
         state: one, ONE! two
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Состав {one,two}, порядок свободен
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: one, ONE! two → состав{one,two}.
       - id: boundary
         name: Локаль с иным правилом буквы I
         test: PublicExamplesTest#boundary
         state: I I, i; tr-TR
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Единственный элемент i
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: При tr-TR строка I I, i → {i}; проверяющий код восстанавливает прежнюю локаль.
       feedback:
         requirement: Устранение повторов после преобразования регистра. Независимость состава от языка среды.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-elimination-circle:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HistoricalContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: alternate
+        root: author/alternate/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Переход через начало круга
         test: PublicExamplesTest#normal
         state: N=5
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Для обеих:2,4,1,5; остаётся3
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: 'N5: для обоих вариантов удаления[2,4,1,5], остаётся3; через входы результат[2,4,1,5,3].'
       - id: boundary
         name: Один участник
         test: PublicExamplesTest#boundary
         state: N=1
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Для обеих:удалений нет, остаётся1
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: 'N1: обе реализации без удалений, остаётся1; входы возвращают[1].'
       feedback:
         requirement: Одинаковый порядок двух реализаций. Завершение без удаления последнего.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-partition-list:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HistoricalContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: alternate
+        root: author/alternate/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Две группы с повторяющимся значением
         test: PublicExamplesTest#normal
         state: '[3,1,4,2,3]; X=2'
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Сначала {1,2}, затем {3,3,4}; порядок внутри групп свободен
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: '[3,1,4,2,3], X2: сначала мультимножество{1,2}, затем{3,3,4}, любой порядок внутри; тот же список/размер/кратности.'
       - id: boundary
         name: Пустой список
         test: PublicExamplesTest#boundary
         state: '[]; X=0'
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Тот же пустой список
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: Пустой список, X0 остаётся тем же пустым списком.
       feedback:
         requirement: Сохранение объекта, размера, кратностей и границы <=X. Сохранение допустимого пустого состояния.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-graph-model:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HistoricalContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: alternate
+        root: author/alternate/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Симметрия и сохранение вершин
         test: PublicExamplesTest#normal
         state: Graph(3); дважды добавить0—1, удалить, повторно удалить
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Соседи после добавления:[{1},{0},{}]; после удаления:[{},{},{}]
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: 'Graph3: дважды добавить0—1; соседи0{1},1{0},2{}, оба направления есть. Дважды удалить0—1: все три списка
+          соседей пусты, оба направления отсутствуют. Наблюдения до/после снимаются отдельно.'
       - id: boundary
         name: Ноль вершин
         test: PublicExamplesTest#boundary
         state: Graph(0)
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Конструктор завершён; пустое хранение также проверяет преподаватель по исходнику
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: Graph0 создаётся как реальный ненулевой объект; отсутствие хранения вершин/рёбер также проверяется прежней
+          ручной частью. Нет обращений к недопустимым индексам.
       feedback:
         requirement: Наблюдение рёбер и соседей при изменениях. Создание при n=0 без вызова операций с индексами.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-nearest-value:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HistoricalContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: alternate
+        root: author/alternate/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: По обе стороны и на равном расстоянии
         test: PublicExamplesTest#normal
         state: Добавить2,8; запросы3,7,5
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: OptionalDouble2,8,2
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: Добавить2,8; запросы3,7,5 → OptionalDouble2,8,2.
       - id: boundary
         name: Равенство расстояний после округления
         test: PublicExamplesTest#boundary
         state: -100,0,100; запрос1e150
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: OptionalDouble[-100]
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: Добавить-100,0,100; query=1e150 → OptionalDouble[-100], минимум среди ВСЕХ равных вычисленных расстояний.
       feedback:
         requirement: Выбор ближайшего и обычная ничья. Ничья среди всех значений по вычисленному Math.abs.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-polynomial-list-multiplication:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        primary-required: false
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HistoricalContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
-      - tests/junit/support/coursesupport/JavaProcess.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference/primary
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: alternate
+        root: author/alternate/src/main/java
+        optional: false
+      - name: relative-tolerance
+        root: author/relative-tolerance/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Совпадающие суммы степеней
         test: PublicExamplesTest#normal
         state: '[1,2] и [3,4]'
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Самостоятельный список[3,10,8], длина3, входы прежние; допуск из условия
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: '[1,2]×[3,4] → самостоятельный список[3,10,8], длина3 и прежние входы; смешанный допуск.'
       - id: boundary
         name: Один пустой множитель
         test: PublicExamplesTest#boundary
         state: '[1,0] и []'
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Пустой результат, входы прежние
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: '[1,0]×[] → пустой результат, оба входа прежние.'
       feedback:
         requirement: Коэффициенты произведения и сохранение входов. Пустое представление нулевого многочлена.
-        what-check: Сопоставьте опубликованное действие и наблюдаемый результат. Для другого законного API подготовьте подходящую
-          привязку или демонстрацию; исходник и объяснение оценивает преподаватель.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-pipelines-longer-string:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4273,20 +4395,31 @@ project-checks:
         what-check: Проверьте объявления опубликованного API и результат сборки submission.jar, затем сопоставьте наблюдение
           с указанными входными данными. Допустимые внутренние имена, пакеты и способы реализации сохраняются.
     java-objects-customer-registry:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HiddenContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: alternate
+        root: author/alternate/src/main/java
+        optional: false
+      - name: range-order-free
+        root: author/range-order-free/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Стабильный порядок имён и обе границы карточки
@@ -4294,35 +4427,46 @@ project-checks:
         input: В/Б/А из опубликованной таблицы; интервал карточек10..20
         state: А=(11,Иванов,Антон,Ильич,Учебный адрес,0000000000000010,Счёт11); Б=(12,Белов,Борис,Петрович,Учебный адрес,0000000000000020,Счёт12);
           В=(13,Иванов,Антон,Ильич,Учебный адрес,0000000000000030,Счёт13). Массив [В,Б,А], интервал 0000000000000010..0000000000000020.
-        action: Получить алфавитную подборку и отобрать карточки включительно; наблюдать исходный массив и записи.
-        expected: Б,В,А; карточкиАиБ в любом порядке; вход сохранён
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: 'A=(11,Иванов,Антон,Ильич,Учебный адрес,0000000000000010,Счёт11); Б=(12,Белов,Борис,Петрович,Учебный адрес,0000000000000020,Счёт12);
+          В=(13,Иванов,Антон,Ильич,Учебный адрес,0000000000000030,Счёт13). Вход[В,Б,А]: sorted=[Б,В,А] (стабильность общей
+          тройки); диапазон[...10,...20] содержит А и Б в любом порядке; вход прежний.'
       - id: boundary
         name: Пустой реестр
         test: PublicExamplesTest#boundary
         input: Пустой Customer[]
         state: Пустой ненулевой массив; тот же корректный интервал.
-        action: Получить алфавитную подборку и отобрать карточки включительно; наблюдать исходный массив и записи.
-        expected: Обе подборки пусты
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: 'Пустой массив: обе подборки пусты для того же диапазона.'
       feedback:
         requirement: Сопоставить фактические значения и состояние с принятым предметным условием.
-        what-check: Проверьте показанный публичный случай и соответствие клиента выбранному API; обязательный приём и объяснение
-          предъявите преподавателю.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-objects-patient-registry:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HiddenContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: alternate
+        root: author/alternate/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Точный диагноз, порядок и повторное вхождение
@@ -4330,124 +4474,160 @@ project-checks:
         input: '[В,А,Б,А], точный Грипп, карты101..102'
         state: 'А: id41,карта101,Грипп; Б:id42,карта102,грипп; В:id43,карта103,Грипп. У всех ФИО Учебный Иван Иванович, адрес
           Учебный адрес, телефон00123. Массив[В,А,Б,А] с общей ссылкойА.'
-        action: Отобрать точный диагноз Грипп и карты101..102 включительно; наблюдать порядок, кратность и исходные записи.
-        expected: В/А/А иА/Б/А; вход сохранён
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: 'A=(41,Учебный,Иван,Иванович,Учебный адрес,00123,101,Грипп), Б с id42/card102/диагнозом грипп, В с id43/card103/диагнозом
+          Грипп; прочие свойства те же. Вход[В,А,Б,А]: диагноз Грипп →[В,А,А], карты[101,102] →[А,Б,А]; после каждого вызова
+          вход прежний.'
       - id: boundary
         name: Пустой массив пациентов
         test: PublicExamplesTest#boundary
         input: Пустой Patient[]
         state: Пустой ненулевой Patient[], диагнозГрипп, интервал101..102.
-        action: Отобрать точный диагноз Грипп и карты101..102 включительно; наблюдать порядок, кратность и исходные записи.
-        expected: Обе подборки пусты
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: 'Пустой Patient[]: диагноз Грипп и диапазон[101,102] дают пустые подборки.'
       feedback:
         requirement: Сопоставить фактические значения и состояние с принятым предметным условием.
-        what-check: Проверьте показанный публичный случай и соответствие клиента выбранному API; обязательный приём и объяснение
-          предъявите преподавателю.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-objects-rational-fractions:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HiddenContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: alternate
+        root: author/alternate/src/main/java
+        optional: false
+      - name: mutable
+        root: author/mutable/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Четыре операции и непарный последний элемент
         test: PublicExamplesTest#normal
         input: 1/2,1/3 и[1/2,1/3,2/5]
         state: Для каждой операции отдельно исходные1/2 и1/3; массив[1/2,1/3,2/5] из разных объектов.
-        action: Предъявить четыре арифметические операции на свежих значениях; отдельно преобразовать массив.
-        expected: 5/6;1/6;1/6;3/2; массив[5/6,1/3,2/5]
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: 'На свежих аргументах1/2,1/3: сумма5/6, разность1/6, произведение1/6, частное3/2. Массив[1/2,1/3,2/5] →[5/6,1/3,2/5]
+          по рациональным значениям.'
       - id: boundary
         name: Одна дробь в четырёх позициях
         test: PublicExamplesTest#boundary
         input: '[x,x,x,x], x=1/2'
         state: Один объектx=1/2, массив[x,x,x,x].
-        action: Преобразовать массив общей ссылки и предъявить значения четырёх позиций; назвать договор операций.
-        expected: '[1,1/2,1,1/2] по значениям'
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: Один x=1/2 в [x,x,x,x] →[1,1/2,1,1/2] по значениям; тождество результирующих ссылок свободно.
       feedback:
         requirement: Сопоставить фактические значения и состояние с принятым предметным условием.
-        what-check: Проверьте показанный публичный случай и соответствие клиента выбранному API; обязательный приём и объяснение
-          предъявите преподавателю.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-objects-complex-values:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/private/HiddenContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: alternate
+        root: author/alternate/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Арифметика и сопряжённые значения
         test: PublicExamplesTest#normal
         input: 1+2i,3-4i; [1+i,1-i]
         state: Для каждой операции отдельно a=1+2i,b=3-4i; массив[1+i,1-i].
-        action: Предъявить четыре операции, затем сумму и произведение массива; наблюдать его элементы.
-        expected: 4-2i;-2+6i;11+2i;-0.2+0.4i; сумма и произведение2+0i
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: 'На свежих a=1+2i,b=3-4i: сумма4-2i; разность-2+6i; произведение11+2i; частное-0.2+0.4i. Массив[1+i,1-i]:
+          сумма и произведение2+0i; исходные компоненты прежние после каждого вызова. Все ошибки компонент<=1e-8.'
       - id: boundary
         name: Сумма и произведение пустого массива
         test: PublicExamplesTest#boundary
         input: Пустой массив
         state: Пустой ненулевой массив.
-        action: Предъявить сумму и произведение пустого массива.
-        expected: 0+0i и1+0i
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: 'Пустой массив: сумма0+0i, произведение1+0i.'
       feedback:
         requirement: Сопоставить фактические значения и состояние с принятым предметным условием.
-        what-check: Проверьте показанный публичный случай и соответствие клиента выбранному API; обязательный приём и объяснение
-          предъявите преподавателю.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-objects-recursive-string-reversal:
-      source-profile: java-main
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
       tests:
-      - tests/bindings/reference/TaskBinding.java
-      - tests/junit/private/ContractTest.java
-      - tests/junit/public/PublicExamplesTest.java
-      - tests/junit/support/PublicChecks.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      verification-tests: []
       references:
-      - name: default
-        root: reference
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      - name: alternate
+        root: author/alternate/src/main/java
         optional: false
       scoring:
-        mode: all-pass
-      verification-tests: []
+        mode: weighted
       public-cases:
       - id: normal
         name: Пробел и знак препинания
         test: PublicExamplesTest#normal
         input: Java 25!
         state: Строка Java 25! со значимым пробелом.
-        action: Вызвать выбранный метод и наблюдать его настоящую печать; рекурсивный приём отдельно проверяется по исходнику.
-        expected: '!52 avaJ, допускаетсяодинLF/CRLF'
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: Java 25! печатает !52 avaJ; необязателен один завершающий LF/CRLF.
       - id: boundary
         name: Пустая строка
         test: PublicExamplesTest#boundary
         input: Пустая строка
         state: Ненулевая пустая строка.
-        action: Вызвать выбранный метод и наблюдать его настоящую печать; рекурсивный приём отдельно проверяется по исходнику.
-        expected: Пустой текст, допускаетсяодинLF/CRLF
+        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
+          группы.
+        expected: 'Пустой вход: пустой вывод либо один LF/CRLF.'
       feedback:
         requirement: Сопоставить фактические значения и состояние с принятым предметным условием.
-        what-check: Проверьте показанный публичный случай и соответствие клиента выбранному API; обязательный приём и объяснение
-          предъявите преподавателю.
-      contract-cases: tests/contract-cases.json
+        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
+          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-polymorphism-queue-package:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4960,115 +5140,6 @@ project-materialization:
       - source: test-support/src/main/java/coursesupport/JavaProcess.java
         target: tests/jar/coursesupport/JavaProcess.java
         audience: grading
-    exr-collections-views-snapshots:
-      common-files:
-      - source: test-support/shared/0ef2834a44f4/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: projects/collections/views-snapshots/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: common/src/main/java/course/examples/objects/Book.java
-        target: student/src/main/java/course/examples/objects/Book.java
-        audience: student
-      - source: common/src/main/java/course/examples/objects/Book.java
-        target: reference/course/examples/objects/Book.java
-        audience: grading
-      - source: common/src/main/java/course/examples/objects/Book.java
-        target: tests/fixtures/valid-alternate/course/examples/objects/Book.java
-        audience: grading
-      - source: common/src/main/java/course/examples/objects/Book.java
-        target: tests/fixtures/wrong/course/examples/objects/Book.java
-        audience: grading
-      - source: common/src/main/java/course/examples/objects/Book.java
-        target: tests/fixtures/valid-free/course/examples/objects/Book.java
-        audience: grading
-      - source: common/src/main/java/course/examples/objects/Book.java
-        target: tests/fixtures/public-pair-only/course/examples/objects/Book.java
-        audience: grading
-      - source: common/src/main/java/course/examples/objects/Book.java
-        target: tests/fixtures/compile-error/course/examples/objects/Book.java
-        audience: grading
-      - source: common/src/main/java/course/examples/objects/Book.java
-        target: tests/fixtures/manual-source-reject/course/examples/objects/Book.java
-        audience: grading
-    exr-objects-variadic-sum:
-      common-files:
-      - source: test-support/shared/0d9c0184cd0a/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/shared/4f715181c620/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/objects/variadic-sum/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-      - source: projects/objects/variadic-sum/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-    exr-objects-swap-object-fields:
-      common-files:
-      - source: test-support/shared/0d9c0184cd0a/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/shared/4f715181c620/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/objects/swap-object-fields/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-      - source: projects/objects/swap-object-fields/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-    exr-objects-character-stack:
-      common-files:
-      - source: test-support/shared/0d9c0184cd0a/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/shared/4f715181c620/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/objects/character-stack/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-      - source: projects/objects/character-stack/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-    exr-objects-car-selection:
-      common-files:
-      - source: test-support/shared/0d9c0184cd0a/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/shared/4f715181c620/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-      - source: projects/objects/car-selection/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
     exr-polymorphism-circle-subclass:
       common-files:
       - source: test-support/shared/c3c75aca2bf0/Main.java
@@ -5229,92 +5300,6 @@ project-materialization:
       - source: test-support/shared/1c76d22d4e1b/FixedQueue.java
         target: student/src/main/java/FixedQueue.java
         audience: student
-    exr-collections-set-union-intersection:
-      common-files:
-      - source: test-support/shared/0ef2834a44f4/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: projects/collections/set-union-intersection/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/collections/set-union-intersection/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-    exr-collections-balanced-brackets:
-      common-files:
-      - source: test-support/shared/0ef2834a44f4/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: projects/collections/balanced-brackets/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/collections/balanced-brackets/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-    exr-collections-polynomial-map-addition:
-      common-files:
-      - source: test-support/shared/0ef2834a44f4/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: projects/collections/polynomial-map-addition/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: projects/collections/polynomial-map-addition/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-    exr-collections-object-hash:
-      common-files:
-      - source: test-support/shared/0ef2834a44f4/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: projects/collections/object-hash/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-      - source: common/src/main/java/grade/Student.java
-        target: student/src/main/java/grade/Student.java
-        audience: student
-      - source: common/src/main/java/grade/Student.java
-        target: reference/grade/Student.java
-        audience: grading
-      - source: common/src/main/java/grade/Student.java
-        target: tests/fixtures/valid-alternate/grade/Student.java
-        audience: grading
-      - source: common/src/main/java/grade/Student.java
-        target: tests/fixtures/wrong/grade/Student.java
-        audience: grading
-      - source: common/src/main/java/grade/Student.java
-        target: tests/fixtures/valid-free/grade/Student.java
-        audience: grading
-      - source: common/src/main/java/grade/Student.java
-        target: tests/fixtures/public-pair-only/grade/Student.java
-        audience: grading
-      - source: common/src/main/java/grade/Student.java
-        target: tests/fixtures/compile-error/grade/Student.java
-        audience: grading
-      - source: common/src/main/java/grade/Student.java
-        target: tests/fixtures/manual-source-reject/grade/Student.java
-        audience: grading
-      - source: common/src/main/java/grade/Student.java
-        target: tests/teacher-demonstration/grade/Student.java
-        audience: grading
     exr-pipelines-divisibility-function:
       common-files:
       - source: test-support/shared/bacc6dc37fce/Main.java
@@ -5937,186 +5922,6 @@ project-materialization:
       - source: test-support/shared/09a0048d487f/public-scenarios.md
         target: student/PUBLIC.md
         audience: student
-    exr-collections-digit-stack:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/collections/digit-stack/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-    exr-collections-word-frequency:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/collections/word-frequency/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-    exr-collections-poem-line-order:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/collections/poem-line-order/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-    exr-collections-distinct-word-set:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/collections/distinct-word-set/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-    exr-collections-elimination-circle:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/collections/elimination-circle/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-    exr-collections-partition-list:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/collections/partition-list/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-    exr-collections-graph-model:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/collections/graph-model/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-    exr-collections-nearest-value:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/collections/nearest-value/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
-    exr-collections-polynomial-list-multiplication:
-      common-files:
-      - source: test-support/shared/1a8395c8b04d/Start.java
-        target: student/src/main/java/Start.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/shared/497dae667482/BINDING.md
-        target: student/BINDING.md
-        audience: student
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: student/src/test/java/coursesupport/JavaProcess.java
-        audience: student
-      - source: projects/collections/polynomial-list-multiplication/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: test-support/src/main/java/coursesupport/JavaProcess.java
-        target: tests/junit/support/coursesupport/JavaProcess.java
-        audience: grading
     exr-pipelines-longer-string:
       common-files:
       - source: test-support/shared/1a8395c8b04d/Start.java
@@ -6326,91 +6131,6 @@ project-materialization:
         audience: student
       - source: test-support/shared/bbc996150b38/PublicOutput.java
         target: tests/junit/support/PublicOutput.java
-        audience: grading
-    exr-objects-customer-registry:
-      common-files:
-      - source: test-support/shared/37e2a5cd3e75/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-      - source: projects/objects/customer-registry/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: projects/objects/customer-registry/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-    exr-objects-patient-registry:
-      common-files:
-      - source: test-support/shared/37e2a5cd3e75/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-      - source: projects/objects/patient-registry/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: projects/objects/patient-registry/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-    exr-objects-rational-fractions:
-      common-files:
-      - source: test-support/shared/37e2a5cd3e75/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-      - source: projects/objects/rational-fractions/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: projects/objects/rational-fractions/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-    exr-objects-complex-values:
-      common-files:
-      - source: test-support/shared/37e2a5cd3e75/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-      - source: projects/objects/complex-values/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: projects/objects/complex-values/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
-        audience: grading
-    exr-objects-recursive-string-reversal:
-      common-files:
-      - source: test-support/shared/37e2a5cd3e75/Main.java
-        target: student/src/main/java/Main.java
-        audience: student
-      - source: test-support/CHECKS.md
-        target: student/CHECKS.md
-        audience: student
-      - source: test-support/junit/DirectPublicExamplesTest.java
-        target: tests/junit/public/PublicExamplesTest.java
-        audience: grading
-      - source: projects/objects/recursive-string-reversal/student/src/test/java/PublicChecks.java
-        target: tests/junit/support/PublicChecks.java
-        audience: grading
-      - source: projects/objects/recursive-string-reversal/student/src/test/java/TaskBinding.java
-        target: tests/bindings/reference/TaskBinding.java
         audience: grading
     exr-polymorphism-queue-package:
       common-files:
