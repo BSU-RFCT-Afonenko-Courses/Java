@@ -1,0 +1,13 @@
+import java.lang.AssertionError;
+import java.lang.Double;
+import java.lang.FunctionalInterface;
+import java.lang.Long;
+import java.lang.Object;
+import java.lang.RuntimeException;
+import java.lang.String;
+import java.lang.SuppressWarnings;
+import java.lang.Throwable;
+import java.util.List;
+import java.util.*;import java.io.*;import java.nio.charset.StandardCharsets;
+/** Проверяющий клиент: передаёт те же объекты и массивы входам Study. */
+class TaskBinding {@FunctionalInterface private interface Invocation<T>{T run()throws Throwable;}private static <T>T invoke(Invocation<T> call){try{return call.run();}catch(Throwable failure){return TaskBinding.<RuntimeException,T>raise(failure);}}@SuppressWarnings("unchecked")private static <E extends Throwable,T>T raise(Throwable failure)throws E{throw(E)failure;}static Object car(int id,String make,String model,int year,double price){return invoke(()->Study.car(id,make,model,year,"Синий",price,"A"+id));}static Object[] array(Object...v){Object[] a=invoke(()->Study.array(v));typed(a,v);return a;}static Object[]make(Object[]a,String s){return invoke(()->Study.byMake(a,s));}static Object[]older(Object[]a,String s,int y,int n){return invoke(()->Study.olderThan(a,s,y,n));}static Object[]dearer(Object[]a,int y,double p){return invoke(()->Study.dearerThan(a,y,p));}static List<?>value(Object x){return invoke(()->Study.values(x));}static String state(Object x){return String.join("|",invoke(()->Study.values(x)).stream().map(String::valueOf).toList());}static Object shortCar(){Object c=invoke(()->Study.secondConstructor());validRecord(c);return c;}static void edit(Object c){invoke(()->{Study.edit(c,7,"B","N",2025,"blue",3,"Y");return null;});}static String text(Object c){return invoke(()->Study.text(c));}static void validRecord(Object c){List<?>v=invoke(()->Study.values(c));if(v.size()!=7||!(v.get(0) instanceof Long id)||id<=0||!(v.get(3) instanceof Long y)||y<1||y>9999||!(v.get(5) instanceof Double p)||!Double.isFinite(p)||p<0)throw new AssertionError("Недопустимая запись второго конструктора");for(int i:new int[]{1,2,4,6})if(!(v.get(i) instanceof String s)||s.isEmpty())throw new AssertionError("Пустое свойство");}static void typed(Object[]a,Object[]values){if(a==null||a.getClass().getComponentType()==Object.class||a.length!=values.length)throw new AssertionError("Требуется массив класса модели");if(a.length==0&&!a.getClass().getComponentType().isInstance(invoke(()->Study.car(1,"Вектор","M1",2010,"Синий",10,"A1"))))throw new AssertionError("Компонент пустого массива не относится к модели");for(int i=0;i<a.length;i++)if(a[i]!=values[i])throw new AssertionError("Ссылки и порядок массива");}}

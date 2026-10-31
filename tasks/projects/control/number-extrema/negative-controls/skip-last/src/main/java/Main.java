@@ -1,0 +1,1 @@
+public class Main { public static void main(String[] a) {var s=new java.util.Scanner(System.in);int n=s.nextInt();if(n<=0){System.out.print("Количество должно быть положительным");return;}int max=s.nextInt(),min=max;for(int i=1;i<n-1;i++){int v=s.nextInt();max=Math.max(max,v);min=Math.min(min,v);}System.out.print("Максимум: "+max+" Минимум: "+min);} }

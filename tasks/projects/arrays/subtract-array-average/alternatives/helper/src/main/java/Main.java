@@ -1,0 +1,1 @@
+public class Main { public static void main(String[] args) {var s=new java.util.Scanner(System.in); int[][] a={{-3,0,3},{2,-1,0},{1,3,-2}};if(s.hasNextInt())for(int r=0;r<3;r++)for(int c=0;c<3;c++)a[r][c]=s.nextInt();for(double[] row:helper.Center.apply(a)){for(double v:row)System.out.print(v+"\t");System.out.println();}} }

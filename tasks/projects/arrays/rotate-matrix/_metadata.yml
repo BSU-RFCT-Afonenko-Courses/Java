@@ -1,0 +1,30 @@
+course-project:
+  starter: {path: starter}
+  instructions:
+    gradle: {path: ../../common/java/gradle.md}
+    local: {path: README.local.md}
+  solutions:
+    reference: {path: reference}
+    alternate: {path: alternatives/alternate}
+    inheritedChecked: {path: alternatives/inherited-checked}
+  components:
+    apiSupport: {path: ../../common/java/api-support}
+  testsets:
+    api:
+      path: api
+      requires: {apiSupport: true}
+    demo:
+      path: demo
+      requires: {api: true}
+    contract:
+      path: checks
+      requires: {api: true}
+  build:
+    files:
+      build.gradle: build.gradle
+      settings.gradle: ../../common/java/settings.gradle
+  delivery:
+    student:
+      testsets: {api: true, demo: true}
+  verification:
+    testsets: {api: true, contract: true}

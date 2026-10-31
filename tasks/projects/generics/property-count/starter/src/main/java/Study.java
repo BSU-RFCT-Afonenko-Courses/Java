@@ -1,0 +1,1 @@
+public class Study { public interface Property<T> { boolean test(T value); } public static <T> int count(T[] array,Property<T> property) { throw new UnsupportedOperationException("Реализуйте подсчёт"); }}

@@ -1,0 +1,2 @@
+package alternate;
+public class QExcDemo {void main()throws Exception {ICharQ q=new FixedQueue(2);q.put('A');q.put('Б');System.out.println(q.get());try{q.put('В');}catch(QueueFullException e){System.out.println("Обработано переполнение линейных позиций");}System.out.println(q.get());try{q.get();}catch(QueueEmptyException e){System.out.println("Обработана пустота");}}}

@@ -1,5 +1,3 @@
-# Конструктор подкласса и проверяемое исключение
+# constructor-checked-exception
 
-Данные, результаты и обязательные средства Java приведены в [условии
-задания](../../../bank/exceptions.qmd#exr-exceptions-constructor-checked-exception). [Инструкция к стартовому
-проекту](student/README.md) содержит порядок работы и требования к предъявлению решения.
+[Каноническое условие](../../../bank/exceptions.qmd#exr-exceptions-constructor-checked-exception). ORIGINAL manual: условие и рубрика не меняются. `student/` сохранён как историческая редакция; новая самостоятельная выдача выбирает `starter/` по `_metadata.yml`. Успех сборки не заменяет предметное предъявление.

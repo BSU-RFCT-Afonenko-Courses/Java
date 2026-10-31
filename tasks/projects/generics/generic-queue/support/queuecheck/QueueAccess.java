@@ -1,13 +1,68 @@
 package queuecheck;
-
-import java.lang.invoke.*;
-import java.lang.reflect.*;
-import java.nio.file.*;
-import java.util.*;
-import javax.tools.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.OutputStream;
+import java.lang.CharSequence;
+import java.lang.Class;
+import java.lang.ClassLoader;
+import java.lang.ClassNotFoundException;
+import java.lang.Error;
+import java.lang.Exception;
+import java.lang.IllegalArgumentException;
+import java.lang.IllegalStateException;
+import java.lang.Integer;
+import java.lang.LinkageError;
+import java.lang.Math;
+import java.lang.NoSuchMethodException;
+import java.lang.Number;
+import java.lang.Object;
+import java.lang.Override;
+import java.lang.ReflectiveOperationException;
+import java.lang.RuntimeException;
+import java.lang.String;
+import java.lang.StringBuilder;
+import java.lang.System;
+import java.lang.Throwable;
+import java.lang.TypeNotPresentException;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.MalformedParameterizedTypeException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.net.URI;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
-import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.jar.JarFile;
+import javax.tools.DiagnosticCollector;
+import javax.tools.FileObject;
+import javax.tools.ForwardingJavaFileManager;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileManager.Location;
+import javax.tools.JavaFileObject;
+import javax.tools.SimpleJavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
+
 
 /** Предоставляет доступ к открытому API GenericQueue для проверки операций очереди. */
 public final class QueueAccess {
@@ -121,17 +176,14 @@ public final class QueueAccess {
     public static synchronized QueueAccess select() throws Exception {
         if(selected!=null)return selected;
         var candidates=new TreeMap<String,Class<?>>();
-        for(String item:System.getProperty("java.class.path").split(java.io.File.pathSeparator)){
-            Path root=Path.of(item);if(!Files.isDirectory(root)||Files.isSymbolicLink(root))continue;
-            try(var stream=Files.walk(root)){
-                for(Path path:stream.filter(p->Files.isRegularFile(p,LinkOption.NOFOLLOW_LINKS)).toList()){
-                    String leaf=path.getFileName().toString();
-                    if(!leaf.equals("GenericQueue.class")&&!leaf.endsWith("$GenericQueue.class"))continue;
-                    String binary=root.relativize(path).toString().replace(java.io.File.separatorChar,'.').replaceFirst("\\.class$","");
-                    Class<?> type=Class.forName(binary,false,QueueAccess.class.getClassLoader());
-                    if(type.getSimpleName().equals("GenericQueue"))candidates.put(binary,type);
-                }
-            }
+        var paths=new LinkedHashSet<String>(Arrays.asList(System.getProperty("java.class.path").split(File.pathSeparator)));
+        String explicit=System.getProperty("course.submission.jar");if(explicit!=null)paths.add(explicit);
+        for(ClassLoader loader=QueueAccess.class.getClassLoader();loader!=null;loader=loader.getParent())if(loader instanceof URLClassLoader urls)for(var url:urls.getURLs())if(url.getProtocol().equals("file"))paths.add(Path.of(url.toURI()).toString());
+        for(String item:paths){Path root=Path.of(item);if(Files.isSymbolicLink(root))continue;
+            var names=new ArrayList<String>();
+            if(Files.isDirectory(root)){try(var stream=Files.walk(root)){for(Path path:stream.filter(p->Files.isRegularFile(p,LinkOption.NOFOLLOW_LINKS)).toList()){String leaf=path.getFileName().toString();if(leaf.equals("GenericQueue.class")||leaf.endsWith("$GenericQueue.class"))names.add(root.relativize(path).toString().replace(File.separatorChar,'.').replaceFirst("\\.class$",""));}}}
+            else if(Files.isRegularFile(root)&&item.endsWith(".jar")){try(var jar=new JarFile(root.toFile())){var entries=jar.entries();while(entries.hasMoreElements()){String name=entries.nextElement().getName();if(name.endsWith("/GenericQueue.class")||name.equals("GenericQueue.class")||name.endsWith("$GenericQueue.class"))names.add(name.substring(0,name.length()-6).replace('/','.'));}}}
+            for(String binary:names){Class<?> type=Class.forName(binary,false,QueueAccess.class.getClassLoader());if(type.getSimpleName().equals("GenericQueue"))candidates.put(binary,type);}
         }
         var matching=new ArrayList<QueueAccess>();
         for(Class<?> type:candidates.values()) {
@@ -159,12 +211,14 @@ public final class QueueAccess {
         var helperSource=QueueAccess.class.getProtectionDomain().getCodeSource();
         if(studentSource==null||helperSource==null)throw new IllegalStateException("Не удалось определить расположение классов очереди или средства проверки");
         Path student=Path.of(studentSource.getLocation().toURI()),helper=Path.of(helperSource.getLocation().toURI());
-        if(!Files.isDirectory(student)||!Files.isDirectory(helper))throw new IllegalStateException("Для компиляции вспомогательного класса требуются каталоги классов очереди и средства проверки");
-        String name=constructorBridgeName(),queue=type.getCanonicalName();
-        StringBuilder source=new StringBuilder("public final class "+name+" {");
+        if(!(Files.isDirectory(student)||Files.isRegularFile(student))||!Files.isDirectory(helper))throw new IllegalStateException("Для компиляции клиента нужны JAR или каталог очереди и доверенные helper classes");
+        String name=constructorBridgeName(),queue=type.getPackageName().isEmpty()?type.getCanonicalName():type.getSimpleName();
+        String imports=(type.getPackageName().isEmpty()?"":"import "+type.getCanonicalName()+";")
+            +"import java.lang.Object;import java.lang.String;import java.lang.Integer;import java.lang.Number;import java.lang.Throwable;import queuecheck.QueueAccess.Payload;";
+        StringBuilder source=new StringBuilder(imports+"public final class "+name+" {");
         Map<String,String> elements=new LinkedHashMap<>();
-        elements.put("strings","java.lang.String");elements.put("integers","java.lang.Integer");
-        elements.put("numbers","java.lang.Number");elements.put("payloads","queuecheck.QueueAccess.Payload");
+        elements.put("strings","String");elements.put("integers","Integer");
+        elements.put("numbers","Number");elements.put("payloads","Payload");
         for(var entry:elements.entrySet()) {
             String element=entry.getValue();
             source.append("public static Object ").append(entry.getKey()).append('(').append(element)
@@ -215,20 +269,24 @@ public final class QueueAccess {
     public record Client(String name,String source,boolean expected) {}
     public static List<Client> clients(QueueAccess q) {
         var clients=new ArrayList<Client>();
-        String type=q.type.getCanonicalName(),full=q.full.getCanonicalName(),empty=q.empty.getCanonicalName();
+        String type=q.type.getPackageName().isEmpty()?q.type.getCanonicalName():q.type.getSimpleName();
+        String full=q.full.getPackageName().isEmpty()?q.full.getCanonicalName():q.full.getSimpleName();
+        String empty=q.empty.getPackageName().isEmpty()?q.empty.getCanonicalName():q.empty.getSimpleName();
+        String imports="import java.lang.String;import java.lang.Integer;import java.lang.Number;";
+        for(Class<?> imported:List.of(q.type,q.full,q.empty))if(!imported.getPackageName().isEmpty())imports+="import "+imported.getCanonicalName()+";";
         String throwsBoth=" throws "+full+", "+empty;
-        clients.add(new Client("QueuePositive","class QueuePositive {static final class Payload {} void call()"+throwsBoth+" {"
+        clients.add(new Client("QueuePositive",imports+"class QueuePositive {static final class Payload {} void call()"+throwsBoth+" {"
             +type+"<String> strings=new "+type+"<>(new String[2]);strings.put(\"x\");String text=strings.get();"
             +type+"<Integer> ints=new "+type+"<>(new Integer[1]);ints.put(1);Integer number=ints.get();"
             +type+"<Number> numbers=new "+type+"<>(new Number[2]);numbers.put(1);numbers.put(2.5);Number n=numbers.get();"
             +type+"<Payload> objects=new "+type+"<>(new Payload[1]);objects.put(new Payload());Payload p=objects.get();}}",true));
-        clients.add(new Client("QueueConstructor","class QueueConstructor {static final class Payload {} void call(){"
+        clients.add(new Client("QueueConstructor",imports+"class QueueConstructor {static final class Payload {} void call(){"
             +type+"<String> s=new "+type+"<>(new String[1]);"+type+"<Integer> i=new "+type+"<>(new Integer[1]);"
             +type+"<Number> n=new "+type+"<>(new Number[1]);"+type+"<Payload> p=new "+type+"<>(new Payload[1]);}}",true));
-        clients.add(new Client("QueueWrongPut","class QueueWrongPut {void call("+type+"<String> q)"+throwsBoth+"{q.put(Integer.valueOf(1));}}",false));
-        clients.add(new Client("QueueWrongGet","class QueueWrongGet {void call("+type+"<String> q)"+throwsBoth+"{Integer value=q.get();}}",false));
-        clients.add(new Client("QueueUnhandledPut","class QueueUnhandledPut {void call("+type+"<String> q){q.put(\"x\");}}",false));
-        clients.add(new Client("QueueUnhandledGet","class QueueUnhandledGet {void call("+type+"<String> q){q.get();}}",false));
+        clients.add(new Client("QueueWrongPut",imports+"class QueueWrongPut {void call("+type+"<String> q)"+throwsBoth+"{q.put(Integer.valueOf(1));}}",false));
+        clients.add(new Client("QueueWrongGet",imports+"class QueueWrongGet {void call("+type+"<String> q)"+throwsBoth+"{Integer value=q.get();}}",false));
+        clients.add(new Client("QueueUnhandledPut",imports+"class QueueUnhandledPut {void call("+type+"<String> q){q.put(\"x\");}}",false));
+        clients.add(new Client("QueueUnhandledGet",imports+"class QueueUnhandledGet {void call("+type+"<String> q){q.get();}}",false));
         return List.copyOf(clients);
     }
 
@@ -239,7 +297,7 @@ public final class QueueAccess {
         var codeSource=q.type.getProtectionDomain().getCodeSource();
         if(codeSource==null)throw new IllegalStateException("Не удалось определить расположение классов решения");
         Path classes=Path.of(codeSource.getLocation().toURI());
-        if(!Files.isDirectory(classes))throw new IllegalStateException("Классы решения должны находиться в каталоге");
+        if(!(Files.isDirectory(classes)||Files.isRegularFile(classes)))throw new IllegalStateException("Классы решения должны находиться в JAR либо каталоге");
         for(Client client:clients(q)) {
             var diagnostics=new DiagnosticCollector<JavaFileObject>();
             JavaFileObject input=new SimpleJavaFileObject(URI.create("string:///"+client.name()+".java"),JavaFileObject.Kind.SOURCE) {

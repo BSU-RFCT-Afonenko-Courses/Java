@@ -1,0 +1,1 @@
+package alternate;import java.util.*;public class Variant {public void apply(List<Integer> values,int x){int next=0;for(int i=0;i<values.size();i++)if(values.get(i)<=x){Integer value=values.get(i);for(int j=i;j>next;j--)values.set(j,values.get(j-1));values.set(next++,value);}}}

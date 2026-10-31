@@ -1,0 +1,1 @@
+public class GenericQueue<T> { public GenericQueue(T[] storage) { throw new UnsupportedOperationException("Реализуйте создание"); } public void put(T value) throws QueueFullException { throw new UnsupportedOperationException("Реализуйте помещение"); } public T get() throws QueueEmptyException { throw new UnsupportedOperationException("Реализуйте извлечение"); }}

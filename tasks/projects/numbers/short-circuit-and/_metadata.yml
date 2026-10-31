@@ -1,0 +1,32 @@
+course-project:
+  starter: {path: starter}
+  instructions:
+    gradle: {path: ../../common/java/gradle.md}
+    local: {path: README.local.md}
+  solutions:
+    reference: {path: reference}
+    alternate: {path: alternatives/alternate}
+    validexplicitexit: {path: alternatives/valid-explicit-exit}
+    validinstancemain: {path: alternatives/valid-instance-main}
+  components:
+    apiSupport: {path: ../../common/java/api-support}
+    process: {path: ../../common/java/process}
+  testsets:
+    api:
+      path: api
+      requires: {apiSupport: true}
+    demo:
+      path: demo
+      requires: {api: true, process: true}
+    contract:
+      path: checks
+      requires: {api: true, process: true}
+  build:
+    files:
+      build.gradle: build.gradle
+      settings.gradle: ../../common/java/settings.gradle
+  delivery:
+    student:
+      testsets: {api: true, demo: true}
+  verification:
+    testsets: {api: true, contract: true}

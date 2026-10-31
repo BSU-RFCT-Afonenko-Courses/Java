@@ -1,0 +1,1 @@
+public class Stack { private final char[] data;private int size;public Stack(int capacity){data=new char[capacity];}public void push(char value){if(size==data.length){System.out.println("Стек переполнен");return;}data[size++]=value>127?'?':value;}public char pop(){if(size==0){System.out.println("Стек пуст");return '\0';}return data[--size];} }

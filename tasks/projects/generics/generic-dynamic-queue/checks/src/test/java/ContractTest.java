@@ -1,0 +1,39 @@
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.lang.Double;
+import java.lang.Integer;
+import java.lang.Number;
+import java.lang.Object;
+import java.lang.String;
+import java.lang.System;
+import java.lang.Throwable;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.TestReporter;
+import org.junit.jupiter.api.Test;import org.junit.jupiter.api.DisplayName;import static org.junit.jupiter.api.Assertions.*;
+class ContractTest {
+interface Throwing{void run()throws Throwable;}private static String capture(Throwing body)throws Throwable{var out=System.out;var err=System.err;var bytes=new ByteArrayOutputStream();try(var sink=new PrintStream(bytes,true,StandardCharsets.UTF_8)){System.setOut(sink);System.setErr(sink);body.run();}finally{System.setOut(out);System.setErr(err);}return bytes.toString(StandardCharsets.UTF_8);}record Payload(int value){}static class Box<T>{final Study<T> value;Box(T[] storage)throws Throwable{value=new Study<T>(storage);}void put(T v)throws Throwable{value.put(v);}T get()throws Throwable{return value.get();}}private static void empty(Box<?> b)throws Throwable{assertFalse(capture(()->assertNull(b.get())).isBlank(),"Отказ пустого контейнера должен сообщить о себе");}private static <T>void full(Box<T>b,T rejected)throws Throwable{assertFalse(capture(()->b.put(rejected)).isBlank(),"Полный контейнер должен сообщить об отказе");}
+@Test @DisplayName("dqa1") void dqa1(TestReporter reporter)throws Throwable {
+{var q=new Box<Integer>(new Integer[]{99});Object[] value=new Object[1];String output=capture(()->value[0]=q.get());reporter.publishEntry(Map.of("public-case","boundary-initial","actual","Извлечено="+value[0]+"; сообщение="+!output.isBlank()));assertNull(value[0]);assertFalse(output.isBlank());}
+var i=new Box<Integer>(new Integer[]{99});empty(i);Integer fresh=1000;i.put(fresh);assertSame(fresh,i.get());var s=new Box<String>(new String[]{"old","values"});empty(s);String x=new String("fresh");s.put(x);assertSame(x,s.get());
+}
+@Test @DisplayName("dqa2") void dqa2(TestReporter reporter)throws Throwable {
+{var s=new Box<String>(new String[2]);s.put("А");s.put("Б");s.put("В");var got=new ArrayList<Object>();got.add(s.get());s.put("Г");for(int k=0;k<3;k++)got.add(s.get());var i=new Box<Integer>(new Integer[2]);i.put(10);i.put(20);i.put(30);got.add(i.get());i.put(40);for(int k=0;k<3;k++)got.add(i.get());reporter.publishEntry(Map.of("public-case","normal","actual","Извлечено="+got));assertEquals(List.of("А","Б","В","Г",10,20,30,40),got);}{var q=new Box<Integer>(new Integer[]{99});q.put(7);q.put(8);Integer a=q.get(),b=q.get();reporter.publishEntry(Map.of("public-case","boundary-growth","actual","Извлечено="+a+","+b));assertEquals(7,a);assertEquals(8,b);}
+var s=new Box<String>(new String[2]);for(String v:new String[]{"А","Б","В"})s.put(v);assertEquals("А",s.get());s.put("Г");for(String v:new String[]{"Б","В","Г"})assertEquals(v,s.get());var i=new Box<Integer>(new Integer[2]);i.put(10);i.put(20);i.put(30);assertEquals(10,i.get());i.put(40);for(int v:new int[]{20,30,40})assertEquals(v,i.get());var p=new Box<Payload>(new Payload[1]);Payload[] values={new Payload(1),new Payload(2),new Payload(3)};for(Payload v:values)p.put(v);for(Payload v:values)assertSame(v,p.get());var v=new Box<Number>(new Number[1]);Number a=Integer.valueOf(17),b=Double.valueOf(2.5);v.put(a);v.put(b);assertSame(a,v.get());assertSame(b,v.get());var oneS=new Box<String>(new String[1]);String[] ss={new String("a"),new String("b"),new String("c")};for(String e:ss)oneS.put(e);for(String e:ss)assertSame(e,oneS.get());var oneI=new Box<Integer>(new Integer[1]);Integer[] ii={1000,1001,1002};for(Integer e:ii)oneI.put(e);for(Integer e:ii)assertSame(e,oneI.get());
+}
+@Test @DisplayName("dqa3") void dqa3()throws Throwable {
+
+var q=new Box<String>(new String[2]);q.put("A");q.put("B");assertEquals("A",q.get());q.put("C");q.put("D");for(String v:new String[]{"B","C","D"})assertEquals(v,q.get());for(int i=0;i<20;i++)q.put("V"+i);for(int i=0;i<20;i++)assertEquals("V"+i,q.get());var p=new Box<Payload>(new Payload[2]);var expected=new ArrayDeque<Payload>();for(int i=0;i<3;i++){Payload v=new Payload(i);p.put(v);expected.add(v);}assertSame(expected.remove(),p.get());for(int i=3;i<15;i++){Payload v=new Payload(i);p.put(v);expected.add(v);}while(!expected.isEmpty())assertSame(expected.remove(),p.get());
+}
+@Test @DisplayName("dqa4") void dqa4(TestReporter reporter)throws Throwable {
+{var q=new Box<Integer>(new Integer[]{99});q.put(7);q.put(8);q.get();q.get();Object[] value=new Object[1];String output=capture(()->value[0]=q.get());reporter.publishEntry(Map.of("public-case","boundary-empty","actual","Извлечено="+value[0]+"; сообщение="+!output.isBlank()));assertNull(value[0]);assertFalse(output.isBlank());}
+var q=new Box<String>(new String[1]);empty(q);empty(q);q.put("a");q.put("b");assertEquals("a",q.get());assertEquals("b",q.get());empty(q);q.put("c");assertEquals("c",q.get());
+}
+@Test @DisplayName("dqa5") void dqa5()throws Throwable {
+
+var a=new Box<String>(new String[1]);var b=new Box<String>(new String[1]);String x=new String("A"),y=new String("B");a.put(x);b.put(y);a.put("second");assertSame(x,a.get());assertEquals("second",a.get());empty(a);assertSame(y,b.get());
+}
+}

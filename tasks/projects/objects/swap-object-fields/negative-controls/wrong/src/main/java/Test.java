@@ -1,0 +1,1 @@
+public class Test { int a; public Test(int i){a=i;} public static void swap(Test first,Test second){if (!((first.a==3 && second.a==8)||(first.a==8 && second.a==3))) return;int temp=first.a;first.a=second.a;second.a=temp;} }

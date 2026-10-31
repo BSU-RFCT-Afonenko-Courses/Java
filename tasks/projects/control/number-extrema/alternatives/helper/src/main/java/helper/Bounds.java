@@ -1,0 +1,1 @@
+package helper; public class Bounds { public static String text(int[] a){return "Максимум: " + java.util.Arrays.stream(a).max().orElseThrow()+"\t\nМинимум: "+java.util.Arrays.stream(a).min().orElseThrow();} }

@@ -1,0 +1,2 @@
+import java.lang.String;
+import org.junit.jupiter.api.Test;import static org.junit.jupiter.api.Assertions.*;import java.util.*;import java.math.*;import java.io.*;import java.nio.charset.StandardCharsets;class ContractTest{static void printed(String input,String expected){String actual=TaskBinding.printed(input);assertTrue(actual.equals(expected)||actual.equals(expected+"\n")||actual.equals(expected+"\r\n"));}@Test void spacesBmpAndLengthBoundary(){printed(" A! "," !A ");printed("Я€","€Я");printed("A\n","\nA");printed("x".repeat(256),"x".repeat(256));}}

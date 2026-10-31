@@ -1,0 +1,1 @@
+public class Main { public static void main(String[] args) { var s=new java.util.Scanner(System.in); double b=s.nextDouble()*s.nextDouble()*s.nextDouble(); System.out.print((long)b + "\n\t" + b / 1048576d); } }

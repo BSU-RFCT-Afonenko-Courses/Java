@@ -1,0 +1,1 @@
+class Main {void main(){var in=new java.util.Scanner(System.in);int n=in.nextInt();for(int i=0;i<n;i++){int x=in.nextInt();long v=Math.abs((long)x);boolean ok=true;int right=10;do{int digit=(int)(v%10);if(digit>=right)ok=false;right=digit;v/=10;}while(v>0);if(ok){System.out.print(x);return;}}System.out.print("Подходящих чисел нет");}}

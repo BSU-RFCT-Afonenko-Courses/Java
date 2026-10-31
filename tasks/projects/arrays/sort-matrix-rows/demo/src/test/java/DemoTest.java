@@ -1,0 +1,31 @@
+import java.lang.Double;
+import java.lang.Exception;
+import java.lang.String;
+import coursesupport.JavaProcess;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
+import static org.junit.jupiter.api.Assertions.*;
+
+class DemoTest {
+    private void matrix(String input, double[][] expected) throws Exception {
+        String text = JavaProcess.runCheckingUncaught(Main.class, input).stdout().strip();
+        String[] lines = text.split("\\R");
+        assertEquals(3, lines.length, "Выведите три строки матрицы");
+        for (int r = 0; r < 3; r++) {
+            String[] values = lines[r].strip().split("\\p{javaWhitespace}+");
+            assertEquals(3, values.length, "Три числа в каждой строке без подписей");
+            for (int c = 0; c < 3; c++) {
+                assertTrue(values[c].matches("[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?"), "Числовая запись с точкой");
+                double value = Double.parseDouble(values[c]);
+                assertTrue(Double.isFinite(value), "Конечное значение");
+                assertEquals(expected[r][c], value, 1e-8, "Значение [" + r + "][" + c + "]");
+            }
+        }
+    }
+    @Test @DisplayName("Переставленные строки")
+    void permuted() throws Exception { matrix("1 3 -2\n-3 0 3\n2 -1 0", new double[][]{{-3,0,3},{2,-1,0},{1,3,-2}}); }
+
+    @Test @DisplayName("Равные суммы")
+    void stable() throws Exception { matrix("2 -1 0\n0 1 0\n0 0 0", new double[][]{{0,0,0},{2,-1,0},{0,1,0}}); }
+
+}

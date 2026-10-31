@@ -1,0 +1,1 @@
+class Display {void main(){int[] a={7,-2,7,0,3,-5};System.out.println(java.util.Arrays.toString(a));System.out.println(java.util.Arrays.toString(Study.sort(a)));for(int[] b:new int[][]{new int[0],{7}})System.out.println(java.util.Arrays.toString(Study.sort(b)));}}
