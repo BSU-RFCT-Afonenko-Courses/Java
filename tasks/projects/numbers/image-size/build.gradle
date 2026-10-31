@@ -8,8 +8,10 @@ dependencies {
 }
 java { toolchain { languageVersion = JavaLanguageVersion.of(25) } }
 tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8'; options.release = 25 }
+tasks.jar { archiveFileName = 'submission.jar' }
+
 tasks.register('apiCheck', JavaExec) {
-    dependsOn tasks.classes, tasks.apiClasses
+    dependsOn tasks.jar, tasks.apiClasses
     classpath = sourceSets.api.runtimeClasspath
     mainClass = 'org.prairielearn.api.PlatformApiPrecheck'
     def apiWork = layout.buildDirectory.dir('api-check')
@@ -23,7 +25,7 @@ tasks.register('apiCheck', JavaExec) {
         def parameters = new File(work, 'parameters.json')
         parameters.text = groovy.json.JsonOutput.toJson([
             signature: 'local-ide-api', entry: 'ApiContract',
-            classes: sourceSets.main.output.classesDirs.singleFile.absolutePath,
+            classes: tasks.jar.archiveFile.get().asFile.absolutePath,
             scratch: scratch.absolutePath, result_file: result.absolutePath
         ])
         setArgs([parameters.absolutePath])
@@ -48,4 +50,18 @@ tasks.register('run', JavaExec) {
     standardInput = System.in
 }
 
+// Зависимые проверки видят только тот JAR, который прошёл предварительный допуск.
+sourceSets.test.compileClasspath = files(tasks.jar.archiveFile) + configurations.testCompileClasspath
+sourceSets.test.runtimeClasspath = sourceSets.test.output + files(tasks.jar.archiveFile) + configurations.testRuntimeClasspath
 tasks.named('apiCheck', JavaExec) { jvmArgs '--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED' }
+tasks.test {
+    doFirst {
+        def submitted = tasks.jar.archiveFile.get().asFile
+        def apiParameters = new File(layout.buildDirectory.get().asFile, 'api-check/result.json')
+        def witness = [jar: submitted.absolutePath,
+            sha256: java.security.MessageDigest.getInstance('SHA-256').digest(submitted.bytes).encodeHex().toString(),
+            runtimeClasspath: classpath.files.collect { it.absolutePath },
+            apiStatus: new groovy.json.JsonSlurper().parse(apiParameters).status]
+        new File(layout.buildDirectory.get().asFile, 'jar-identity.json').text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(witness))
+    }
+}

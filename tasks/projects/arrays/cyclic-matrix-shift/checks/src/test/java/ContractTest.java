@@ -1,40 +1,66 @@
+import java.lang.Object;
+import java.lang.Throwable;
+import org.junit.jupiter.api.TestReporter;
+import java.util.Map;
+import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ContractTest {
-    @Test void shift_1_right() throws Throwable {
+    @Test void shift_1_right(TestReporter publicReporter) throws Throwable {
         int[][] source = new int[][]{{-3,0,3},{2,-1,0},{1,3,-2}};
-        int[][] result = Study.shift(source, 1, 0);
+    var publicActual = Study.shift(source, 1, 0);
+    publicReporter.publishEntry(Map.of("public-case", "normal-right", "actual", "matrix=" + Arrays.deepToString(publicActual)));
+
+        int[][] result = publicActual;
         assertArrayEquals(new int[][]{{3,-3,0},{0,2,-1},{-2,1,3}}, result);
     }
-    @Test void shift_1_left() throws Throwable {
+    @Test void shift_1_left(TestReporter publicReporter) throws Throwable {
         int[][] source = new int[][]{{-3,0,3},{2,-1,0},{1,3,-2}};
-        int[][] result = Study.shift(source, 1, 1);
+    var publicActual = Study.shift(source, 1, 1);
+    publicReporter.publishEntry(Map.of("public-case", "normal-left", "actual", "matrix=" + Arrays.deepToString(publicActual)));
+
+        int[][] result = publicActual;
         assertArrayEquals(new int[][]{{0,3,-3},{-1,0,2},{3,-2,1}}, result);
     }
-    @Test void shift_1_up() throws Throwable {
+    @Test void shift_1_up(TestReporter publicReporter) throws Throwable {
         int[][] source = new int[][]{{-3,0,3},{2,-1,0},{1,3,-2}};
-        int[][] result = Study.shift(source, 1, 2);
+    var publicActual = Study.shift(source, 1, 2);
+    publicReporter.publishEntry(Map.of("public-case", "normal-up", "actual", "matrix=" + Arrays.deepToString(publicActual)));
+
+        int[][] result = publicActual;
         assertArrayEquals(new int[][]{{2,-1,0},{1,3,-2},{-3,0,3}}, result);
     }
-    @Test void shift_1_down() throws Throwable {
+    @Test void shift_1_down(TestReporter publicReporter) throws Throwable {
         int[][] source = new int[][]{{-3,0,3},{2,-1,0},{1,3,-2}};
-        int[][] result = Study.shift(source, 1, 3);
+    var publicActual = Study.shift(source, 1, 3);
+    publicReporter.publishEntry(Map.of("public-case", "normal-down", "actual", "matrix=" + Arrays.deepToString(publicActual)));
+
+        int[][] result = publicActual;
         assertArrayEquals(new int[][]{{1,3,-2},{-3,0,3},{2,-1,0}}, result);
     }
-    @Test void shift_0_right() throws Throwable {
+    @Test void shift_0_right(TestReporter publicReporter) throws Throwable {
         int[][] source = new int[][]{{-3,0,3},{2,-1,0},{1,3,-2}};
-        int[][] result = Study.shift(source, 0, 0);
+    var publicActual = Study.shift(source, 0, 0);
+    publicReporter.publishEntry(Map.of("public-case", "boundary-0", "actual", "matrix=" + Arrays.deepToString(publicActual)));
+
+        int[][] result = publicActual;
         assertArrayEquals(new int[][]{{-3,0,3},{2,-1,0},{1,3,-2}}, result);
     }
-    @Test void shift_3_right() throws Throwable {
+    @Test void shift_3_right(TestReporter publicReporter) throws Throwable {
         int[][] source = new int[][]{{-3,0,3},{2,-1,0},{1,3,-2}};
-        int[][] result = Study.shift(source, 3, 0);
+    var publicActual = Study.shift(source, 3, 0);
+    publicReporter.publishEntry(Map.of("public-case", "boundary-3", "actual", "matrix=" + Arrays.deepToString(publicActual)));
+
+        int[][] result = publicActual;
         assertArrayEquals(new int[][]{{-3,0,3},{2,-1,0},{1,3,-2}}, result);
     }
-    @Test void shift_4_right() throws Throwable {
+    @Test void shift_4_right(TestReporter publicReporter) throws Throwable {
         int[][] source = new int[][]{{-3,0,3},{2,-1,0},{1,3,-2}};
-        int[][] result = Study.shift(source, 4, 0);
+    var publicActual = Study.shift(source, 4, 0);
+    publicReporter.publishEntry(Map.of("public-case", "boundary-4", "actual", "matrix=" + Arrays.deepToString(publicActual)));
+
+        int[][] result = publicActual;
         assertArrayEquals(new int[][]{{3,-3,0},{0,2,-1},{-2,1,3}}, result);
     }
     @Test void shift_2_right() throws Throwable {

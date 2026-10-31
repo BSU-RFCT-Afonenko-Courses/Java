@@ -1,3 +1,6 @@
+import java.lang.AssertionError;
+import java.lang.Exception;
+import java.lang.String;
 import static org.junit.jupiter.api.Assertions.*;
 
 import coursesupport.JavaProcess;

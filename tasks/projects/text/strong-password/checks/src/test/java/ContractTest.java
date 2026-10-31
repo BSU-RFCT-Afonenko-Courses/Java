@@ -1,3 +1,7 @@
+import java.lang.Object;
+import org.junit.jupiter.api.TestReporter;
+import java.util.Map;
+import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -6,16 +10,22 @@ import org.junit.jupiter.api.Test;
 class ContractTest {
   @Test
   @DisplayName("strong-password-01 — Все требования, длина ровно 10; public normal")
-  void case01() {
+  void case01(TestReporter publicReporter) {
+    var publicActual = Study.accepts("Abcdefghi1");
+    publicReporter.publishEntry(Map.of("public-case", "strong-password-01", "actual", "result=" + publicActual));
+
     assertEquals(
-        true, Study.accepts("Abcdefghi1"), "Все требования, длина ровно 10; public normal");
+        true, publicActual, "Все требования, длина ровно 10; public normal");
   }
 
   @Test
   @DisplayName("strong-password-02 — Только недостаточная длина 9; public boundary")
-  void case02() {
+  void case02(TestReporter publicReporter) {
+    var publicActual = Study.accepts("Abcdefgh1");
+    publicReporter.publishEntry(Map.of("public-case", "strong-password-02", "actual", "result=" + publicActual));
+
     assertEquals(
-        false, Study.accepts("Abcdefgh1"), "Только недостаточная длина 9; public boundary");
+        false, publicActual, "Только недостаточная длина 9; public boundary");
   }
 
   @Test

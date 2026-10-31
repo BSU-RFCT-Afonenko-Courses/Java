@@ -1,3 +1,5 @@
+import java.lang.Class;
+import java.lang.Exception;
 import java.lang.reflect.Modifier;
 import org.prairielearn.api.PlatformApiPrecheck;
 
@@ -12,6 +14,6 @@ public class ApiContract {
         api.method("MatrixResult", "rows", int.class, Modifier.PUBLIC, Modifier.STATIC);
         api.method("MatrixResult", "columns", int.class, Modifier.PUBLIC, Modifier.STATIC);
         api.method("MatrixResult", "values", int[][].class, Modifier.PUBLIC, Modifier.STATIC);
-        api.compiles("ComputeClient", "class ComputeClient { MatrixResult call() throws Throwable { return Study.remove(new int[1][1]); } }", true);
+        api.compiles("ComputeClient", "import java.lang.Throwable;\nclass ComputeClient { MatrixResult call() throws Throwable { return Study.remove(new int[1][1]); } }", true);
     }
 }

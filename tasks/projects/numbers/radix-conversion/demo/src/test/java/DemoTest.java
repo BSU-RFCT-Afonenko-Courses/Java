@@ -1,3 +1,6 @@
+import java.lang.Exception;
+import java.lang.String;
+import java.util.Locale;
 import coursesupport.JavaProcess;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +15,7 @@ class DemoTest {
     }
     private static void representation(String expected,String... args) throws Exception {
         String output=run(args).strip();
-        assertTrue(output.equals(expected)||output.equals(expected.toUpperCase(java.util.Locale.ROOT)),"Та же величина, единый регистр и отсутствие ведущих нулей: "+expected);
+        assertTrue(output.equals(expected)||output.equals(expected.toUpperCase(Locale.ROOT)),"Та же величина, единый регистр и отсутствие ведущих нулей: "+expected);
     }
     @Test @DisplayName("Буквенная цифра одного регистра. Вход: 31 16")
     void hex_letter() throws Exception { representation("1f","31","16"); }

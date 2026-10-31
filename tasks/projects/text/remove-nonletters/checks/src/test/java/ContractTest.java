@@ -1,18 +1,27 @@
+import java.lang.Integer;
+import java.lang.Object;
+import java.lang.String;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+import org.junit.jupiter.api.TestReporter;
+import java.util.Map;
+import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class ContractTest {
-  private static java.util.List<String> words(String text) {
-    var result = new java.util.ArrayList<String>();
-    var matcher = java.util.regex.Pattern.compile("[A-Za-zА-Яа-яЁё]+").matcher(text);
+  private static List<String> words(String text) {
+    var result = new ArrayList<String>();
+    var matcher = Pattern.compile("[A-Za-zА-Яа-яЁё]+").matcher(text);
     while (matcher.find()) result.add(matcher.group());
     return result;
   }
-  private static java.util.List<Integer> spaces(String text) {
-    var result = new java.util.ArrayList<Integer>();
-    var matcher = java.util.regex.Pattern.compile("[A-Za-zА-Яа-яЁё]+").matcher(text);
+  private static List<Integer> spaces(String text) {
+    var result = new ArrayList<Integer>();
+    var matcher = Pattern.compile("[A-Za-zА-Яа-яЁё]+").matcher(text);
     int end = 0;
     while (matcher.find()) {
       int count = 0;
@@ -48,16 +57,22 @@ class ContractTest {
   }
   @Test
   @DisplayName("remove-nonletters-01 — Удаление без слияния, исходные два пробела; public normal")
-  void case01() {
+  void case01(TestReporter publicReporter) {
     String input = "кот,дом  2я!";
-    checkResult(input, Study.remove(input));
+    var publicActual = Study.remove(input);
+    publicReporter.publishEntry(Map.of("public-case", "remove-nonletters-01", "actual", "result=" + publicActual));
+
+    checkResult(input, publicActual);
   }
 
   @Test
   @DisplayName("remove-nonletters-02 — Явное исключение для пустого входа; public boundary")
-  void case02() {
+  void case02(TestReporter publicReporter) {
     String input = "";
-    checkResult(input, Study.remove(input));
+    var publicActual = Study.remove(input);
+    publicReporter.publishEntry(Map.of("public-case", "remove-nonletters-02", "actual", "result=" + publicActual));
+
+    checkResult(input, publicActual);
   }
 
   @Test

@@ -1,11 +1,18 @@
+import java.lang.Exception;
+import java.lang.Integer;
+import java.lang.NumberFormatException;
+import java.lang.String;
+import org.junit.jupiter.api.TestReporter;
+import java.util.Map;
+import java.util.Arrays;
 import coursesupport.JavaProcess;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReverseArrayTest {
-    private void check(String input, int... expected) throws Exception {
-        String text = JavaProcess.runCheckingUncaught(Main.class, input).stdout().strip();
+    private void check(TestReporter publicReporter, String[] publicCaseIds, String input, int... expected) throws Exception {
+        String text = publicOutput(publicReporter, publicCaseIds, JavaProcess.runCheckingUncaught(Main.class, input).stdout()).strip();
         String[] tokens = text.isEmpty() ? new String[0] : text.split("\\s+");
         int[] actual = new int[tokens.length];
         for (int i = 0; i < tokens.length; i++) {
@@ -17,14 +24,24 @@ class ReverseArrayTest {
     }
 
     @Test @DisplayName("Обратный порядок с повторением")
-    void reverseWithDuplicates() throws Exception { check("4 7 -2 7 0\n", 0, 7, -2, 7); }
+    void reverseWithDuplicates(TestReporter publicReporter) throws Exception { check(publicReporter, new String[]{"normal"}, "4 7 -2 7 0\n", 0, 7, -2, 7); }
 
     @Test @DisplayName("Пустой массив")
-    void emptyArray() throws Exception { check("0\n"); }
+    void emptyArray(TestReporter publicReporter) throws Exception { check(publicReporter, new String[]{"boundary"}, "0\n"); }
 
     @Test @DisplayName("Один элемент")
-    void singleElement() throws Exception { check("1 -8\n", -8); }
+    void singleElement() throws Exception { check(null, null, "1 -8\n", -8); }
 
     @Test @DisplayName("Крайние значения int")
-    void integerLimits() throws Exception { check("3 -2147483648 0 2147483647\n", 2147483647, 0, -2147483648); }
+    void integerLimits() throws Exception { check(null, null, "3 -2147483648 0 2147483647\n", 2147483647, 0, -2147483648); }
+
+    /** Только прежние PUBLIC вызовы передают reporter; private-вызовы передают null. */
+    private static String publicOutput(TestReporter reporter, String[] ids, String actual) {
+        if (reporter != null) {
+            String visible = actual.replaceAll("[\\p{Cntrl}&&[^\n\t]]", "�");
+            if (visible.length() > 2000) visible = visible.substring(0, 2000) + "…";
+            for (String id : ids) reporter.publishEntry(Map.of("public-case", id, "actual", "stdout=" + visible));
+        }
+        return actual;
+    }
 }

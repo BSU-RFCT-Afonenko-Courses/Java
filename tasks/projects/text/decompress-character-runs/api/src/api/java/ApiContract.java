@@ -1,3 +1,6 @@
+import java.lang.Class;
+import java.lang.Exception;
+import java.lang.String;
 import java.lang.reflect.Modifier;
 import org.prairielearn.api.PlatformApiPrecheck;
 

@@ -1,3 +1,13 @@
+import java.lang.Class;
+import java.lang.Exception;
+import java.lang.IllegalStateException;
+import java.lang.Module;
+import java.lang.ModuleLayer;
+import java.lang.NoSuchMethodException;
+import java.lang.Object;
+import java.lang.Runtime;
+import java.lang.String;
+import java.util.Arrays;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import org.prairielearn.api.PlatformApiPrecheck;
@@ -34,7 +44,7 @@ public class ApiContract {
         api.expect(selected != null, "доступный для запуска main класса Main", "JDK 25 не выбрал main");
         if (stringArray)
             api.expect(selected.getReturnType() == void.class
-                    && java.util.Arrays.equals(selected.getParameterTypes(), new Class<?>[]{String[].class}),
+                    && Arrays.equals(selected.getParameterTypes(), new Class<?>[]{String[].class}),
                 "выбранный JDK 25 Main.main(String[] args) → void", selected.toGenericString());
         if (!Modifier.isStatic(selected.getModifiers())) {
             api.expect(!Modifier.isAbstract(main.getModifiers()), "конкретный класс Main для instance main", "абстрактный Main");

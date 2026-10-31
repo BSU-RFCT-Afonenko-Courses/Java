@@ -1,9 +1,16 @@
+import java.lang.Throwable;
+import org.junit.jupiter.api.TestReporter;
+import java.util.Map;
+import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ContractTest {
-    @Test void remove_main() throws Throwable {
-        MatrixResult result = Study.remove(new int[][]{{-3,0,3},{2,-1,0},{1,3,-2}});
+    @Test void remove_main(TestReporter publicReporter) throws Throwable {
+    var publicActual = Study.remove(new int[][]{{-3,0,3},{2,-1,0},{1,3,-2}});
+    publicReporter.publishEntry(Map.of("public-case", "normal", "actual", publicActual == null ? "null" : "rows=" + publicActual.rows() + "; columns=" + publicActual.columns() + "; values=" + Arrays.deepToString(publicActual.values())));
+
+        MatrixResult result = publicActual;
         assertNotNull(result);
         assertEquals(1, result.rows());
         assertEquals(1, result.columns());
@@ -22,8 +29,11 @@ class ContractTest {
         for (int[] row : result.values()) { assertNotNull(row); assertEquals(result.columns(), row.length); }
         assertArrayEquals(new int[][]{}, result.values());
     }
-    @Test void remove_0x1() throws Throwable {
-        MatrixResult result = Study.remove(new int[][]{{9,1},{9,2}});
+    @Test void remove_0x1(TestReporter publicReporter) throws Throwable {
+    var publicActual = Study.remove(new int[][]{{9,1},{9,2}});
+    publicReporter.publishEntry(Map.of("public-case", "boundary-0x1", "actual", publicActual == null ? "null" : "rows=" + publicActual.rows() + "; columns=" + publicActual.columns() + "; values=" + Arrays.deepToString(publicActual.values())));
+
+        MatrixResult result = publicActual;
         assertNotNull(result);
         assertEquals(0, result.rows());
         assertEquals(1, result.columns());
@@ -32,8 +42,11 @@ class ContractTest {
         for (int[] row : result.values()) { assertNotNull(row); assertEquals(result.columns(), row.length); }
         assertArrayEquals(new int[][]{}, result.values());
     }
-    @Test void remove_1x0() throws Throwable {
-        MatrixResult result = Study.remove(new int[][]{{9,9},{1,2}});
+    @Test void remove_1x0(TestReporter publicReporter) throws Throwable {
+    var publicActual = Study.remove(new int[][]{{9,9},{1,2}});
+    publicReporter.publishEntry(Map.of("public-case", "boundary-1x0", "actual", publicActual == null ? "null" : "rows=" + publicActual.rows() + "; columns=" + publicActual.columns() + "; values=" + Arrays.deepToString(publicActual.values())));
+
+        MatrixResult result = publicActual;
         assertNotNull(result);
         assertEquals(1, result.rows());
         assertEquals(0, result.columns());

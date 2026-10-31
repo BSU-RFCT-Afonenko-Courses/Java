@@ -1,3 +1,7 @@
+import java.lang.Object;
+import org.junit.jupiter.api.TestReporter;
+import java.util.Map;
+import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -8,8 +12,11 @@ class ContractTest {
   @DisplayName("decompress-character-runs-01 — Несколько серий, регистр и финальная одиночная; "
                + "public normal")
   void
-  case01() {
-    assertEquals("aaBBBc", Study.decompress("a2B3c"),
+  case01(TestReporter publicReporter) {
+    var publicActual = Study.decompress("a2B3c");
+    publicReporter.publishEntry(Map.of("public-case", "decompress-character-runs-01", "actual", "result=" + publicActual));
+
+    assertEquals("aaBBBc", publicActual,
         "Несколько серий, регистр и финальная одиночная; public normal");
   }
 
@@ -17,15 +24,21 @@ class ContractTest {
   @DisplayName(
       "decompress-character-runs-02 — Двузначный счётчик целиком; public boundary, условие")
   void
-  case02() {
-    assertEquals("a".repeat(12) + "b", Study.decompress("a12b"),
+  case02(TestReporter publicReporter) {
+    var publicActual = Study.decompress("a12b");
+    publicReporter.publishEntry(Map.of("public-case", "decompress-character-runs-02", "actual", "result=" + publicActual));
+
+    assertEquals("a".repeat(12) + "b", publicActual,
         "Двузначный счётчик целиком; public boundary, условие");
   }
 
   @Test
   @DisplayName("decompress-character-runs-03 — Пустая запись; public boundary")
-  void case03() {
-    assertEquals("", Study.decompress(""), "Пустая запись; public boundary");
+  void case03(TestReporter publicReporter) {
+    var publicActual = Study.decompress("");
+    publicReporter.publishEntry(Map.of("public-case", "decompress-character-runs-03", "actual", "result=" + publicActual));
+
+    assertEquals("", publicActual, "Пустая запись; public boundary");
   }
 
   @Test
