@@ -6,7 +6,6 @@ mkdir -p -- "$TASK_RENDER_LOG_DIR"
 cd -- "$TASK_COURSE_ROOT"
 python3 tools/materialize-providers.py --check
 quarto --version
-"${CUE:-cue}" version
 TASK_RENDER_PROFILES=("$@")
 if [ "${#TASK_RENDER_PROFILES[@]}" -eq 0 ]; then
   TASK_RENDER_PROFILES=(student full student)

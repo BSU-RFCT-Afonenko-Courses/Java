@@ -27,7 +27,7 @@ def pins(root):
     require(p['repository']==REPO,'Неизвестный Platform repository')
     require(re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+',p['version']) and p['tag']=='v'+p['version'],'Нужен фактический version tag')
     for key in ('commit','sourceTree','tagObject'):require(re.fullmatch(r'[a-f0-9]{40}',p[key]),'Нужен точный Git '+key)
-    for role,name in [('java','java25-grader'),('fish','fish-git-grader'),('community','prairielearn-community-gateway')]:
+    for role,name in [('java','java25-grader'),('fish','fish-git-grader'),('community','prairielearn-community-gateway'),('workspace','sp-git-workspace')]:
         require(re.fullmatch(r'ghcr\.io/afonenko-course-tools/'+name+r'@sha256:[a-f0-9]{64}',p[role+'Image']),'Нужен immutable image '+role)
     for role in ('java','fish'):require(re.fullmatch(r'sha256:[a-f0-9]{64}',p[role+'ImageConfig']),'Нужен наблюдённый config ID: '+role)
     require(publication['buildSource']==p['commit'],'Publisher source отличается от source pin')
@@ -59,7 +59,7 @@ def assembly(data,root,registry):
     require(context is not None,'Отсутствует release assembly context')
     expected={'schema':'pl-platform-release-assets-v1','repository':'https://github.com/'+REPO,'sourceCommit':p['commit'],'sourceTree':p['sourceTree'],'version':p['version'],'tag':p['tag'],'assets':{n:x['sha256'] for n,x in publication['assets'].items()}}
     require(context.images['releaseAssembly']==expected,'External descriptor отличается от course pins')
-    for role,key in [('java','javaGrader'),('fish','fishGrader'),('community','communityGateway')]:require(context.images[key]['image']==p[role+'Image'],'Image отличается от course pins: '+role)
+    for role,key in [('java','javaGrader'),('fish','fishGrader'),('community','communityGateway'),('workspace','spGitWorkspace')]:require(context.images[key]['image']==p[role+'Image'],'Image отличается от course pins: '+role)
     for role,key in [('java','javaGrader'),('fish','fishGrader')]:require(context.images[key]['localImageId']==p[role+'ImageConfig'],'Наблюдённый config отличается: '+role)
     require(context.registry['profiles']['java25-junit-v1']['runnerSha256']==publication['runnerSourceHash'],'Runner отличается от course pins')
     context.recheck()
