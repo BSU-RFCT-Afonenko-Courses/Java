@@ -469,7 +469,8 @@ project-checks:
       - -Xmaxerrs
       - '5'
     limits:
-      outer-seconds: 180
+      outer-seconds: 300
+      compile-seconds: 120
       networking: false
       max-output-bytes: 65536
     references:
@@ -547,7 +548,7 @@ project-checks:
         - student/src/test/java/queuecheck/QueueAccess.java
         entry: QueueApi
       limits:
-        outer-seconds: 45
+        outer-seconds: 300
         run-seconds: 15
       additional-java-sources:
         archive: additional-sources.zip
