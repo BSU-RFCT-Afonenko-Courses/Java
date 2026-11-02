@@ -5,8 +5,7 @@
 Источники этой копии задают [providers.json](providers.json),
 [installed-packages.json](installed-packages.json) и [CI/toolchain.json](CI/toolchain.json).
 Пять опубликованных провайдеров закреплены фактическими неизменяемыми тегами:
-Опубликованная база Core, Presentation и Navigation — 9.3.1; поверх неё установлен
-локальный неопубликованный Core candidate 9.3.3 (Source bee638dc); Navigation и Presentation остаются 9.3.2. Exporter 9.0.2, QRC 3.2.0,
+Опубликованный Core — 9.3.4; Navigation и Presentation в том же public Source bundle остаются9.3.2. Exporter9.0.5, QRC3.2.0,
 Download 3.5.0 и Publisher 6.0.1. Все области установки проверяются штатным
 `tools/materialize-providers.py --check` по точным bytes и Git executable mode.
 Теги, коммиты, sourceZip и области установки остаются в этих манифестах;
@@ -22,8 +21,8 @@ Download 3.5.0 и Publisher 6.0.1. Все области установки пр
 Эти проверки остаются отдельным обязательным qualified release gate после
 замораживания всех владельцев и независимой проверки.
 
-Локальный неопубликованный Core candidate 9.3.3 использует явную static source policy.
-Он не объявлен опубликованным выпуском; точные Source tree/archive/package hashes закреплены в candidate metadata. В tasks ранний Download
+Опубликованный Core9.3.4 использует явную static source policy и callback-local checkpoint.
+Точные public commit/tag/ZIP/package bytes задаются provenance metadata; исторические candidate patch-файлы сохранены. В tasks ранний Download
 pre-ast filter расположен перед Core; в post-hooks QRC и collect завершают
 изменения HTML до завершения native-операции Core. Download после Core использует текущую
 публичную операцию. В составной сборке Publisher откладывает child Download
