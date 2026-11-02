@@ -5,8 +5,8 @@
 Источники этой копии задают [providers.json](providers.json),
 [installed-packages.json](installed-packages.json) и [CI/toolchain.json](CI/toolchain.json).
 Пять опубликованных провайдеров закреплены фактическими неизменяемыми тегами:
-Core, Presentation и Navigation 9.1.1, Exporter 9.0.1, QRC 3.2.0,
-Download 3.3.1 и Publisher 5.3.0. Все области установки проверяются штатным
+Core, Presentation и Navigation 9.2.0, Exporter 9.0.1, QRC 3.2.0,
+Download 3.4.0 и Publisher 6.0.0. Все области установки проверяются штатным
 `tools/materialize-providers.py --check` по точным bytes и Git executable mode.
 Теги, коммиты, sourceZip и области установки остаются в этих манифестах;
 вторая ручная таблица коммитов здесь не создаётся.
@@ -21,8 +21,9 @@ Download 3.3.1 и Publisher 5.3.0. Все области установки пр
 Эти проверки остаются отдельным обязательным qualified release gate после
 замораживания всех владельцев и независимой проверки.
 
-В post-hooks дочерних проектов QRC и collect завершают изменения HTML
-до завершения native-операции Core. Download после Core использует текущую
+Core 9.2.0 использует явную static source policy. В tasks ранний Download
+pre-ast filter расположен перед Core; в post-hooks QRC и collect завершают
+изменения HTML до завершения native-операции Core. Download после Core использует текущую
 публичную операцию. В составной сборке Publisher откладывает child Download
 и выдаёт ZIP после назначения конечных адресов. Theme1.0.0 остаётся
 неиспользуемой возможностью producer и дополнительно не устанавливается.
