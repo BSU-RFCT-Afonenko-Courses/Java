@@ -6,7 +6,7 @@
 [installed-packages.json](installed-packages.json) и [CI/toolchain.json](CI/toolchain.json).
 Пять опубликованных провайдеров закреплены фактическими неизменяемыми тегами:
 Core, Presentation и Navigation 9.2.1, Exporter 9.0.1, QRC 3.2.0,
-Download 3.4.0 и Publisher 6.0.0. Все области установки проверяются штатным
+Download 3.4.0 и Publisher 6.0.1. Все области установки проверяются штатным
 `tools/materialize-providers.py --check` по точным bytes и Git executable mode.
 Теги, коммиты, sourceZip и области установки остаются в этих манифестах;
 вторая ручная таблица коммитов здесь не создаётся.
