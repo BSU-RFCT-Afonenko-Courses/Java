@@ -3,14 +3,14 @@ categories: [java, java-core, java-interfaces]
 pagetitle: Интерфейсы
 ---
 
-# Интерфейсы {#sec-j25-api-interfaces}
+# Интерфейсы {#sec-api-interfaces}
 
 `class C implements I` делает класс `C` подтипом интерфейса `I`.
 Переменная типа `I` может хранить ссылку на экземпляр `C`; доступные
 операции определяются типом `I`, а тело переопределяемого метода
 экземпляра выбирается по фактическому классу ненулевого получателя.
 Совпадение методов без объявленной связи типов не даёт такого подтипа.
-Объяснение: @theory:sec-j25-theory-interfaces.
+Объяснение: @theory:sec-theory-interfaces.
 
 ```java
 interface Sender {
@@ -35,7 +35,7 @@ sender.send("Java"); // Java
 и полей экземпляра; непосредственное `new Sender()` запрещено.
 [@bib-objects-schildt-interfaces]
 
-## Формы членов {#sec-j25-api-interfaces-members}
+## Формы членов {#sec-api-interfaces-members}
 
 | Объявление внутри интерфейса | Условие и действие |
 |---|---|
@@ -59,7 +59,7 @@ sender.send("Java"); // Java
 Константу читают через имя интерфейса; отношение подтипов для этого
 не требуется.
 
-## Несколько интерфейсов {#sec-j25-api-interfaces-multiple}
+## Несколько интерфейсов {#sec-api-interfaces-multiple}
 
 ```java
 interface Readable { String read(); }
@@ -79,7 +79,7 @@ interface Storage extends Readable, Writable {}
 Несовместимые результаты, например `int read()` и `String read()`,
 препятствуют такой реализации.
 
-## Выбор реализации по умолчанию {#sec-j25-api-interfaces-default}
+## Выбор реализации по умолчанию {#sec-api-interfaces-default}
 
 | Ситуация для одной операции | Результат |
 |---|---|
@@ -109,7 +109,7 @@ final class Both implements A, B {
 методам `Object`, тела `default` запрещены.
 [@bib-interfaces-jls-methods]
 
-## Контракт и делегирование {#sec-j25-api-interfaces-contract}
+## Контракт и делегирование {#sec-api-interfaces-contract}
 
 Документация операции определяет допустимость `null`, порядок,
 результат, исключения и изменение состояния. Типы параметров
@@ -124,9 +124,9 @@ final class Both implements A, B {
 Общее тело `default sendAll(String[])` из теории вызывает `send`
 в порядке массива. При первом исключении обход прекращается;
 предыдущие отправки сохраняются. Поведение на `{"A", null, "B"}`:
-@theory:sec-j25-theory-interfaces-default.
+@theory:sec-theory-interfaces-default.
 
-## Обобщённая и функциональная роль {#sec-j25-api-interfaces-generic}
+## Обобщённая и функциональная роль {#sec-api-interfaces-generic}
 
 ```java
 @FunctionalInterface
@@ -144,9 +144,9 @@ System.out.println(source.get()); // Java
 не увеличивают это число. `@FunctionalInterface` поручает компилятору
 проверить это свойство; для самой лямбды аннотация необязательна.
 Обобщённое объявление: @sec-h-generic-classes.
-Лямбда и её целевой тип: @theory:sec-j25-theory-functions.
+Лямбда и её целевой тип: @theory:sec-theory-functions.
 
-## Запускаемые примеры {#sec-j25-api-interfaces-examples}
+## Запускаемые примеры {#sec-api-interfaces-examples}
 
 Полные исходники и команды находятся в
 [инструкции к примерам](../examples/interfaces/README.md).
@@ -162,7 +162,7 @@ System.out.println(source.get()); // Java
 | [DefaultConflictDemo.java](../examples/interfaces/DefaultConflictDemo.java) | Конфликт тел, более конкретный интерфейс и метод суперкласса |
 | [InterfaceApiDemo.java](../examples/interfaces/InterfaceApiDemo.java) | Объединение ролей, поле интерфейса и `Source<String>` |
 
-## Примеры записей и вариантов данных {#sec-j25-api-records-examples}
+## Примеры записей и вариантов данных {#sec-api-records-examples}
 
 Программы создают и сравнивают записи, нормализуют компоненты,
 защищают массив копиями и различают варианты результата поиска.

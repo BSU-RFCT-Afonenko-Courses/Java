@@ -2,7 +2,7 @@
 
 Закрытая передача техническому исполнителю. ID: `exr-numbers-console-greeting`.
 Исходник: Java `220857b6deb3c98064ebc4da6409d9d3ba76e563`,
-`tasks/bank/numbers.qmd`, прежний ID `exr-j25-numbers-console-greeting`.
+`tasks/bank/numbers.qmd`, прежний ID `exr-numbers-console-greeting`.
 Публичная редакция для независимой рецензии:
 `author-drafts/java/batch1/numbers/console-greeting/statement.qmd`;
 SHA256 `108a1b72e23947ef669f713761529b8a2ade09bd09cb472514e1ce14bec8bd3d`.

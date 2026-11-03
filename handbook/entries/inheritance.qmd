@@ -3,15 +3,15 @@ categories: [java, java-core, java-inheritance]
 pagetitle: Наследование и переопределение
 ---
 
-# Наследование и переопределение {#sec-j25-api-inheritance}
+# Наследование и переопределение {#sec-api-inheritance}
 
 `class Child extends Parent` объявляет подкласс и делает `Child`
 подтипом `Parent`. Каждый класс, кроме `Object`, имеет один непосредственный
 суперкласс и может реализовать несколько интерфейсов. У обычного класса
 без `extends` суперкласс — `Object`. Разбор состояния и вызовов:
-@theory:sec-j25-theory-inheritance. [@bib-objects-schildt-inheritance]
+@theory:sec-theory-inheritance. [@bib-objects-schildt-inheritance]
 
-## Основные формы {#sec-j25-api-inheritance-forms}
+## Основные формы {#sec-api-inheritance-forms}
 
 ```java
 abstract class Item {
@@ -43,9 +43,9 @@ System.out.println(item.describe()); // Item: Java
 `private`-члены не наследуются. Закрытое поле базового класса остаётся
 в состоянии экземпляра подкласса; обращаться к нему позволяет код
 объявившего класса. Доступ `protected` из другого пакета имеет ограничения
-на тип получателя: @sec-j25-api-classes-access.
+на тип получателя: @sec-api-classes-access.
 
-## Конструкторы и порядок инициализации {#sec-j25-api-inheritance-construction}
+## Конструкторы и порядок инициализации {#sec-api-inheritance-construction}
 
 Конструкторы не наследуются. `super(args)` выбирает доступный конструктор
 непосредственного суперкласса; `this(args)` — другой конструктор
@@ -89,9 +89,9 @@ class Child extends Parent {
 экземпляра и передача `this` до `super(...)` запрещены. Явный вызов
 конструктора в теле может быть только один; помещать его в `if` нельзя.
 Трасса `prologue → parent → field → epilogue`:
-@theory:sec-j25-theory-inheritance-construction.
+@theory:sec-theory-inheritance-construction.
 
-## Переопределение, перегрузка и сокрытие {#sec-j25-api-inheritance-dispatch}
+## Переопределение, перегрузка и сокрытие {#sec-api-inheritance-dispatch}
 
 | Обращение | Правило выбора |
 |---|---|
@@ -105,7 +105,7 @@ class Child extends Parent {
 Внутренний вызов переопределяемого метода из базового тела тоже
 использует фактический класс получателя. Из конструктора такой вызов
 может попасть в подкласс до выполнения его инициализаторов:
-@theory:sec-j25-theory-inheritance-constructor-call.
+@theory:sec-theory-inheritance-constructor-call.
 
 Для метода без параметров типов сигнатура — имя и список типов
 параметров. Возвращаемый тип, имена параметров, доступ и `throws`
@@ -137,7 +137,7 @@ class Child extends Parent {
 замену. `final`-метод нельзя переопределить или скрыть; перегрузка
 с другой сигнатурой допускается.
 
-## Преобразование ссылки {#sec-j25-api-inheritance-casts}
+## Преобразование ссылки {#sec-api-inheritance-casts}
 
 ```java
 Object value = "Java";
@@ -155,7 +155,7 @@ if (value instanceof String text) {
 `false`. Приведение между заведомо несовместимыми классами,
 например `(Integer) "Java"`, отвергается уже при компиляции.
 
-## Ограничение расширения {#sec-j25-api-inheritance-sealed}
+## Ограничение расширения {#sec-api-inheritance-sealed}
 
 `final class` запрещает подклассы; `final` у метода запрещает
 его переопределение. Эти ограничения не делают состояние объекта
@@ -176,7 +176,7 @@ record Failure(String reason) implements Result {}
 модуле — в том же пакете. `non-sealed` открывает ветвь для дальнейшего
 расширения. [@bib-objects-jls-data-classes]
 
-## Условия подстановки {#sec-j25-api-inheritance-substitution}
+## Условия подстановки {#sec-api-inheritance-substitution}
 
 Для поведенческой подстановки переопределение должно сохранять
 допустимые для базовой операции входы, требуемые свойства результата
@@ -184,15 +184,15 @@ record Failure(String reason) implements Result {}
 возвращает ненулевую строку, реализация с `return null` нарушает это
 условие и приводит к `NullPointerException` при вызове `summary().length()`.
 Проверка сигнатуры такое нарушение не обнаруживает.
-Разбор подстановки: @theory:sec-j25-theory-inheritance-substitution.
+Разбор подстановки: @theory:sec-theory-inheritance-substitution.
 
 При композиции поле хранит ссылку на отдельный объект, которому
 передаётся действие. Это позволяет использовать реализацию без
 отношения подтипов. При динамических вызовах на `this` компонента
 получателем остаётся сам компонент; трасса с подсчётом операций:
-@theory:sec-j25-theory-inheritance-composition.
+@theory:sec-theory-inheritance-composition.
 
-## Запускаемые примеры {#sec-j25-api-inheritance-examples}
+## Запускаемые примеры {#sec-api-inheritance-examples}
 
 Каждый файл запускается самостоятельно в JDK 25. Например:
 

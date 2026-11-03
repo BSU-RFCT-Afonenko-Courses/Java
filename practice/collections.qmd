@@ -9,17 +9,17 @@ format:
     css: assets/lesson.css
 ---
 
-## Коллекции {#sec-j25-practice-collections}
+## Коллекции {#sec-practice-collections}
 
-Лабораторная работа: @tasks:sec-j25-lab-collections.
+Лабораторная работа: @tasks:sec-lab-collections.
 
-## Выбор коллекции по операции {#sec-j25-practice-collections-recap}
+## Выбор коллекции по операции {#sec-practice-collections-recap}
 
 ::: {.notes}
 Дайте три обращения a, b, a и попросите назвать сохраняемые сведения для каждого результата.
 :::
 
-### Последовательность и соответствие {#sec-j25-practice-collections-s1}
+### Последовательность и соответствие {#sec-practice-collections-s1}
 
 | Нужная операция | Отношение данных |
 |---|---|
@@ -34,7 +34,7 @@ format:
 Предложите каталог посещений: одно имя может появиться несколько раз. Попросите выбрать структуру отдельно для журнала и для числа посещений.
 :::
 
-### Повторы и модель результата {#sec-j25-practice-collections-s2 .continuation}
+### Повторы и модель результата {#sec-practice-collections-s2 .continuation}
 
 ```text
 вход:       [a, b, a]
@@ -49,20 +49,20 @@ format:
 Попросите восстановить исходный порядок только по карте частот. Обсудите, какой информации для этого не хватает.
 :::
 
-### Равенство и порядок {#sec-j25-practice-collections-s3 .continuation}
+### Равенство и порядок {#sec-practice-collections-s3 .continuation}
 
 `HashSet` и `HashMap` ищут по согласованным `equals` и `hashCode`.
 Равные ключи имеют одинаковые хеши; совпадение хешей допускает разные ключи.
 `TreeSet` использует ноль своего сравнения как совпадение элемента.
 
 Поля, участвующие в равенстве и хеше ключа, сохраняют значения во время хранения:
-@theory:sec-j25-theory-equality.
+@theory:sec-theory-equality.
 
 ::: {.notes}
 Разберите два отдельно созданных ключа одного кода. Попросите назвать ожидаемые результаты ==, equals и сравнения хешей.
 :::
 
-### Коллизия и равенство {#sec-j25-practice-collections-case-policy}
+### Коллизия и равенство {#sec-practice-collections-case-policy}
 
 ```java
 String a = new String("Aa"), b = new String("BB");
@@ -78,7 +78,7 @@ System.out.println(java.util.Set.of(a, b).size());
 Записать три прогноза до открытия следующего экрана. Попросить отдельно назвать, что сравнивают первый и второй вызовы println.
 :::
 
-### Различимость строк при коллизии {#sec-j25-practice-collections-case-policy-result .continuation}
+### Различимость строк при коллизии {#sec-practice-collections-case-policy-result .continuation}
 
 Результат опыта:
 
@@ -97,7 +97,7 @@ false
 Сопоставить ответы с прогнозом. Предложить вместо b передать new String("Aa") и объяснить отказ фабрики через равенство аргументов. Затем попросить объяснить, почему собственному ключу нужны согласованные equals и hashCode.
 :::
 
-### Обновление значения по ключу {#sec-j25-practice-collections-map-update}
+### Обновление значения по ключу {#sec-practice-collections-map-update}
 
 ```java
 Map<String, Integer> values = new HashMap<>();
@@ -114,7 +114,7 @@ System.out.println(values.get("s1"));
 Получить два отдельных прогноза. Во втором варианте первая запись s1 → 90 и завершающее чтение get("s1") сохраняются; меняется только ключ второго put.
 :::
 
-### Замена значения и новая пара {#sec-j25-practice-collections-map-update-result .continuation}
+### Замена значения и новая пара {#sec-practice-collections-map-update-result .continuation}
 
 В каждом варианте карта сначала получила `s1 → 90`:
 
@@ -131,13 +131,13 @@ System.out.println(values.get("s1"));
 Сопоставить оба прогноза с таблицей. Попросить назвать следующее значение частоты при прежнем счётчике 3, затем разобрать отсутствие ключа и назначение getOrDefault.
 :::
 
-## Состав списка и общие элементы {#sec-j25-practice-collections-reference}
+## Состав списка и общие элементы {#sec-practice-collections-reference}
 
 ::: {.notes}
 Перед опытом разделите на схеме ячейки списка и объекты элементов.
 :::
 
-### Представление и прежний состав {#sec-j25-practice-collections-view-preparation}
+### Представление и прежний состав {#sec-practice-collections-view-preparation}
 
 ```java
 var source = new ArrayList<>(List.of("Ann"));
@@ -157,7 +157,7 @@ System.out.println(snapshot);
 До выполнения выписать три ожидаемых размера и нарисовать связи source/view, copy и snapshot. Зафиксировать прогноз до открытия следующего экрана.
 :::
 
-### Состав после изменения источника {#sec-j25-practice-collections-view-result .continuation}
+### Состав после изменения источника {#sec-practice-collections-view-result .continuation}
 
 После `source.add("Bob")`:
 
@@ -175,7 +175,7 @@ System.out.println(snapshot);
 Сопоставить прогноз со всеми тремя результатами. На схеме показать, где появилась ссылка на Bob и какие составы сохранили одну ссылку на Ann. Перед следующим экраном предложить добавить Clara только в copy.
 :::
 
-### Независимое изменение копии {#sec-j25-practice-collections-copy-change}
+### Независимое изменение копии {#sec-practice-collections-copy-change}
 
 Продолжение опыта:
 
@@ -194,7 +194,7 @@ System.out.println(source); // [Ann, Bob]
 Попросите объяснить, почему view может показать новое имя после source.add, хотя view.add отвергается. Установите, через какой объект совершено действие.
 :::
 
-### Общие элементы копии списка {#sec-j25-practice-collections-shared-element}
+### Общие элементы копии списка {#sec-practice-collections-shared-element}
 
 Готовый `Book` хранит название и признак выдачи. Новый объект доступен;
 `borrow()` делает `borrowed()` истинным. Повторный вызов бросает
@@ -221,7 +221,7 @@ System.out.println(snapshot.get(0).borrowed());   // true
 и отдельно предскажите размер `snapshot`.
 :::
 
-### Защита входного состава {#sec-j25-practice-collections-input-ownership}
+### Защита входного состава {#sec-practice-collections-input-ownership}
 
 ```java
 var clientList = new ArrayList<>(List.of("Ann"));
@@ -238,7 +238,7 @@ System.out.println(owned.size());      // 1
 Измените опыт на owned = clientList и проследите другой результат. Попросите применить причину к конструктору собственного владельца книг, сохраняя общие ссылки на сами книги.
 :::
 
-## Учёт обращений и владение списком {#sec-j25-practice-collections-assignments}
+## Учёт обращений и владение списком {#sec-practice-collections-assignments}
 
 ::: {.notes}
 Для учёта обращений попросите назвать данные, сохраняемые между двумя
@@ -246,7 +246,7 @@ System.out.println(owned.size());      // 1
 контролировать его владелец.
 :::
 
-### Учёт обращений и выдача списков {#sec-j25-practice-collections-s6}
+### Учёт обращений и выдача списков {#sec-practice-collections-s6}
 
 @tasks:exr-collections-object-hash: обработайте весь массив кодов своим
 типом ключа; получите множество посещённых записей и все частоты.
@@ -259,7 +259,7 @@ System.out.println(owned.size());      // 1
 Попросите сформулировать результат каждого задания до выбора имён классов. Для учёта нужна обработка произвольного входа, для владельца — повторные вызовы его операций с наблюдением ранее выданных списков.
 :::
 
-### Самостоятельное множество результата {#sec-j25-practice-collections-set-copy}
+### Самостоятельное множество результата {#sec-practice-collections-set-copy}
 
 ```java
 Set<Integer> original = new HashSet<>(Set.of(1, 2));
@@ -271,13 +271,13 @@ System.out.println(result.size());   // 3
 
 @tasks:exr-collections-set-union-intersection требует самостоятельных
 результатов двух операций. Изменяемая копия позволяет сохранить вход.
-Сигнатуры `addAll`/`retainAll`: @handbook:sec-j25-api-sets-maps-bulk.
+Сигнатуры `addAll`/`retainAll`: @handbook:sec-api-sets-maps-bulk.
 
 ::: {.notes}
 Попросите определить, какой объект изменяет addAll и что возвращает метод. Затем сравните задачу пересечения с показанным простым добавлением одного элемента.
 :::
 
-### Границы операций над множествами {#sec-j25-practice-collections-set-borders}
+### Границы операций над множествами {#sec-practice-collections-set-borders}
 
 | Входы | Объединение | Пересечение |
 |---|---|---|
@@ -292,7 +292,7 @@ System.out.println(result.size());   // 3
 Дайте двум учащимся одинаковые множества в разном порядке печати. Попросите определить равенство результата через наличие элементов, сохранив отдельную проверку неизменности входов.
 :::
 
-### Операции одного конца {#sec-j25-practice-collections-deque-methods}
+### Операции одного конца {#sec-practice-collections-deque-methods}
 
 ```java
 Deque<String> work = new ArrayDeque<>();
@@ -310,7 +310,7 @@ System.out.println(work.peek()); // first
 Проследите вершину после каждой операции. Для скобок предложите закрывающую скобку при пустом стеке и попросите назвать результат алгоритма до pop.
 :::
 
-### Скобки и сложение многочленов {#sec-j25-practice-collections-s7 .continuation}
+### Скобки и сложение многочленов {#sec-practice-collections-s7 .continuation}
 
 @tasks:exr-collections-balanced-brackets: вложенность требует закрывать
 последнюю незавершённую пару первой.
@@ -322,7 +322,7 @@ System.out.println(work.peek()); // first
 Попросите выбрать одну альтернативу и назвать её вход, результат и обязательную структуру. Проверьте понимание различия степени и коэффициента.
 :::
 
-### Вложенность скобок и нулевые коэффициенты {#sec-j25-practice-collections-alternative-border}
+### Вложенность скобок и нулевые коэффициенты {#sec-practice-collections-alternative-border}
 
 У `([)]` и `([])` одинаковое число открывающих и закрывающих скобок.
 Первый вариант нарушает вложенность, второй корректен.
@@ -335,7 +335,7 @@ System.out.println(work.peek()); // first
 Для скобок проследите стек до первой неправильной закрывающей. Для многочленов предложите также степень, которая есть только во втором входе, и пустую карту.
 :::
 
-## Справка по операциям {#sec-j25-practice-collections-reference-links}
+## Справка по операциям {#sec-practice-collections-reference-links}
 
 Для каждого выбранного вызова найдите тип результата, изменение состояния
 и поведение при пустоте или отсутствии ключа.
@@ -345,20 +345,20 @@ System.out.println(work.peek()); // first
 Выберите одну нужную операцию и восстановите все три сведения по её справке.
 :::
 
-### Последовательность и стек {#sec-j25-practice-collections-s4}
+### Последовательность и стек {#sec-practice-collections-s4}
 
-@handbook:sec-j25-api-lists-basics — индексы, замена, добавление и удаление.
-@handbook:sec-j25-api-lists-factories — независимость состава и поддержка изменения.
-@handbook:sec-j25-api-sets-maps-queue — операции очереди и стека.
+@handbook:sec-api-lists-basics — индексы, замена, добавление и удаление.
+@handbook:sec-api-lists-factories — независимость состава и поддержка изменения.
+@handbook:sec-api-sets-maps-queue — операции очереди и стека.
 
 ::: {.notes}
 Попросите найти точную операцию для чтения вершины без удаления и указать поведение при пустоте. Затем найдите способ создать независимый состав списка.
 :::
 
-### Множество и отображение {#sec-j25-practice-collections-s5 .continuation}
+### Множество и отображение {#sec-practice-collections-s5 .continuation}
 
-@handbook:sec-j25-api-comparison — равенство, хеш и порядок.
-@handbook:sec-j25-api-sets-maps — наличие, групповые операции и значения по ключу.
+@handbook:sec-api-comparison — равенство, хеш и порядок.
+@handbook:sec-api-sets-maps — наличие, групповые операции и значения по ключу.
 
 `getOrDefault` читает прежнее значение или запасное при отсутствии ключа.
 Запись нового значения выполняется отдельным `put`.
@@ -367,14 +367,14 @@ System.out.println(work.peek()); // first
 Восстановите по справке результат put при существующем ключе. Попросите объяснить, какая операция действительно меняет частоту в алгоритме.
 :::
 
-### Предъявление решения {#sec-j25-practice-collections-result}
+### Предъявление решения {#sec-practice-collections-result}
 
 Представьте исходные Java-файлы, демонстрацию результатов и объяснение
 выбранной техники.
 Покажите пустой вход, повторный ключ, защиту состава списка и общую книгу,
 а затем границы выбранного алгоритма.
 
-Точные условия и обязательный состав: @tasks:sec-j25-lab-collections.
+Точные условия и обязательный состав: @tasks:sec-lab-collections.
 
 ::: {.notes}
 Выберите по одному случаю, отличающему решение от правдоподобной ошибки: два равных объекта ключа, изменение первоначального списка, неправильно вложенные скобки или исчезнувшая степень многочлена.

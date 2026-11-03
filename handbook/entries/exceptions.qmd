@@ -2,7 +2,7 @@
 categories: [java, java-core, java-exceptions]
 ---
 
-# Исключения: throw, throws, try и catch {#sec-j25-api-exceptions}
+# Исключения: throw, throws, try и catch {#sec-api-exceptions}
 
 `throw` передаёт объект исключения обработчику; `throws` объявляет возможные
 отказы метода. Проверяемое исключение нужно обработать подходящим `catch`
@@ -10,9 +10,9 @@ categories: [java, java-core, java-exceptions]
 [@bib-data-jls-exceptions].
 
 Путь передачи управления и состояние после отказа:
-@theory:sec-j25-theory-exceptions.
+@theory:sec-theory-exceptions.
 
-## Конструкции {#sec-j25-api-exceptions-syntax}
+## Конструкции {#sec-api-exceptions-syntax}
 
 ```java
 class EmptyException extends Exception {}
@@ -49,7 +49,7 @@ try {
 При переопределении нельзя расширить проверяемые отказы родительского
 метода; можно сузить или убрать их.
 
-## Обработчики {#sec-j25-api-exceptions-handlers}
+## Обработчики {#sec-api-exceptions-handlers}
 
 ```java
 try {
@@ -62,7 +62,7 @@ try {
 ```
 
 Этот клиент использует `parseScore(String)` из
-@theory:sec-j25-theory-exceptions-result; `text` — ненулевой аргумент.
+@theory:sec-theory-exceptions-result; `text` — ненулевой аргумент.
 Для `"ninety"` он печатает `нужно число` в поток ошибок, для `"120"` —
 `нужен диапазон`, для `"90"` ничего не печатает. Внешний метод
 может продолжить работу после конструкции.
@@ -88,7 +88,7 @@ try {
 код должен их различать. Исключение не откатывает ранее выполненные
 изменения. Неперехваченное исключение завершает текущий поток выполнения.
 
-## Диагностика {#sec-j25-api-exceptions-diagnostics}
+## Диагностика {#sec-api-exceptions-diagnostics}
 
 `getMessage()` — сообщение; `getCause()` — исходная причина обёртки;
 `getSuppressed()` — дополнительные подавленные ошибки;
@@ -98,10 +98,10 @@ try {
 `return` или `throw` внутри `finally` может вытеснить прежнее завершение,
 поэтому результат там не возвращают. Остановка процесса может прекратить
 исполнение до `finally`. Закрытие с сохранением первичной и дополнительных
-ошибок очистки описано в @handbook:sec-j25-api-resources.
+ошибок очистки описано в @handbook:sec-api-resources.
 
 
-## Интерфейс отказа и состояние {#sec-j25-api-exceptions-contract}
+## Интерфейс отказа и состояние {#sec-api-exceptions-contract}
 
 | Средство | Условие применения |
 |---|---|
@@ -111,14 +111,14 @@ try {
 | Собственный тип результата | Вызывающий код явно разбирает варианты и выбирает дальнейший путь |
 
 Предметный `sealed`-тип задаёт собственные варианты успеха и отказа:
-@theory:sec-j25-theory-exceptions-typed-result. Вызывающий код разбирает
+@theory:sec-theory-exceptions-typed-result. Вызывающий код разбирает
 полученный вариант и определяет следующее действие.
 Исключение и возвращаемая ошибка не создают автоматического отката изменений.
 Состояние после неудачной операции задают отдельно от способа сообщения.
 
 Для восстановления выбирают допустимое действие и проверяют его результат.
 Повтор с тем же неверным вводом снова приводит к отказу.
-Объяснение границ: @theory:sec-j25-theory-exceptions-recovery.
+Объяснение границ: @theory:sec-theory-exceptions-recovery.
 
 ## Исключения в наследовании {#sec-api-exceptions-inheritance}
 

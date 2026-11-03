@@ -2,7 +2,7 @@
 categories: [java, java-core, java-lists]
 ---
 
-# List и ArrayList {#sec-j25-api-lists}
+# List и ArrayList {#sec-api-lists}
 
 `List<E>` — последовательность с индексами, повторяющимися элементами и
 порядком просмотра. В Java 25 этот интерфейс наследует `SequencedCollection<E>`
@@ -10,9 +10,9 @@ categories: [java, java-core, java-lists]
 
 Позиция относится к текущему состоянию списка: вставка перед элементом
 меняет его индекс. `set` заменяет одну ссылку, сохраняя размер.
-Разбор выбора реализации: @theory:sec-j25-theory-collections.
+Разбор выбора реализации: @theory:sec-theory-collections.
 
-## Основные операции {#sec-j25-api-lists-basics}
+## Основные операции {#sec-api-lists-basics}
 
 | Сигнатура | Результат / изменение |
 |---|---|
@@ -55,7 +55,7 @@ System.out.println(values);         // [10]
 поэтому `[10, 20]` и `[20, 10]` различаются. Реализации списков могут быть
 разными: `ArrayList` и `LinkedList` с одинаковой последовательностью равны.
 
-## Конструирование и свойства {#sec-j25-api-lists-factories}
+## Конструирование и свойства {#sec-api-lists-factories}
 
 | Выражение | Состав и изменение |
 |---|---|
@@ -98,7 +98,7 @@ System.out.println(values);         // [10]
 [Iterator API](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Iterator.html).
 
 
-## Тип элемента и массовое добавление {#sec-j25-api-lists-element-type}
+## Тип элемента и массовое добавление {#sec-api-lists-element-type}
 
 `E` связывает добавляемый элемент с типом результата чтения. В `List<String>`
 `get` возвращает `String`; попытка добавить `Integer` отвергается компилятором.
@@ -119,7 +119,7 @@ System.out.println(numbers); // [2, 3, 0.5]
 обычный `ArrayList` вернёт `false`. Аргумент `null` запрещён. Изменяемые
 элементы остаются общими после добавления ссылок.
 
-## Связанные представления {#sec-j25-api-lists-views}
+## Связанные представления {#sec-api-lists-views}
 
 ```java
 var source = new java.util.ArrayList<>(java.util.List.of("a", "b", "c"));

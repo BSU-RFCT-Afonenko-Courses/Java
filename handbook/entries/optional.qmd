@@ -2,7 +2,7 @@
 categories: [java, java-core, java-optional]
 ---
 
-# Optional {#sec-j25-api-optional}
+# Optional {#sec-api-optional}
 
 `Optional<T>` представляет наличие одного ненулевого значения либо его
 отсутствие. Основное назначение — возвращаемый результат, где пустота
@@ -27,9 +27,9 @@ System.out.println(message); // Нет участников
 Если отсутствие нарушает договор вызывающего метода, вместо сообщения
 подходит `orElseThrow` с осмысленным исключением. Ошибку чтения или неверный
 формат входа следует передавать отдельно от нормального отсутствия результата.
-Объяснение: @theory:sec-j25-theory-streams.
+Объяснение: @theory:sec-theory-streams.
 
-## Создание и получение {#sec-j25-api-optional-basic}
+## Создание и получение {#sec-api-optional-basic}
 
 Метод создания определяет, допускается ли исходный `null`. Метод получения
 задаёт поведение при отсутствии значения: запасной результат или исключение.
@@ -80,7 +80,7 @@ System.out.println(java.util.Optional.<String>empty()
 При явном `isPresent()` значение извлекают через `get()` в ветви наличия;
 при преобразовании результат остаётся внутри `Optional` до выбора исхода.
 
-## Преобразование и действие {#sec-j25-api-optional-transform}
+## Преобразование и действие {#sec-api-optional-transform}
 
 | Метод | Поведение |
 |---|---|
@@ -105,8 +105,8 @@ System.out.println(shown); // ADA
 ошибки чтения: отсутствие результата поиска и неудачный ввод-вывод имеют
 разный смысл. `Optional.empty()` не хранит причину отказа проверки
 данных; вариант результата с диагностикой рассмотрен в
-@theory:sec-j25-theory-exceptions-typed-result, выбор исхода — в
-@theory:sec-j25-theory-streams-outcomes. Для примитивов существуют `OptionalInt`, `OptionalLong`,
+@theory:sec-theory-exceptions-typed-result, выбор исхода — в
+@theory:sec-theory-streams-outcomes. Для примитивов существуют `OptionalInt`, `OptionalLong`,
 `OptionalDouble` с `getAsInt/getAsLong/getAsDouble`; их API не полностью
 совпадает с обобщённым `Optional`. Среднее пустого числового потока
 отсутствует, сумма пустого потока может иметь нейтральный ноль.

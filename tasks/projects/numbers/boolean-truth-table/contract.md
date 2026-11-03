@@ -4,7 +4,7 @@
 Статус: дополнительная задача вне обязательной лабораторной `numbers`.
 Исходный коммит Java: `220857b6deb3c98064ebc4da6409d9d3ba76e563`.
 Карточка: `tasks/bank/numbers.qmd:112` — прежний ID
-`exr-j25-numbers-boolean-truth-table`; точные границы и SHA256 блока находятся
+`exr-numbers-boolean-truth-table`; точные границы и SHA256 блока находятся
 в `evidence/author-batch9-sources.json`.
 Публичное условие: `author-drafts/java/batch9/numbers/boolean-truth-table/statement.qmd`.
 SHA256: `c30e5521ae3e72101ff593bce558e3bd1fa6293a48f3df978c1c740686091fcc`.

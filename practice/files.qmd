@@ -9,13 +9,13 @@ format:
     css: assets/lesson.css
 ---
 
-## Ресурсы и файлы {#sec-j25-practice-files}
+## Ресурсы и файлы {#sec-practice-files}
 
-Лабораторная работа: @tasks:sec-j25-lab-files.
+Лабораторная работа: @tasks:sec-lab-files.
 
-## Аргументы и вход {#sec-j25-practice-files-recap}
+## Аргументы и вход {#sec-practice-files-recap}
 
-### Число аргументов {#sec-j25-practice-files-s1}
+### Число аргументов {#sec-practice-files-s1}
 
 В задачах копирования передают пути входа и выхода. У `gradeapp` другая команда:
 **путь входа и порог**, ровно два аргумента. Готовая часть точки входа
@@ -32,9 +32,9 @@ if (args.length != 2) {
 Это тело `main(String[] args)`. Нельзя читать `args[1]` до проверки длины.
 Ошибка компиляции препятствует запуску; недопустимые аргументы
 и отказ чтения обрабатываются во время выполнения:
-@theory:sec-j25-theory-exceptions-contract.
+@theory:sec-theory-exceptions-contract.
 
-### Рабочий каталог {#sec-j25-practice-files-s2 .continuation}
+### Рабочий каталог {#sec-practice-files-s2 .continuation}
 
 ```java
 var source = java.nio.file.Path.of("samples", "students.txt");
@@ -43,7 +43,7 @@ System.out.println(source.toAbsolutePath());
 
 Фрагмент помещается в `main`. Абсолютный адрес зависит от рабочего
 каталога процесса; `Path.of` не открывает файл, `toAbsolutePath` не
-доказывает его существования. API: @handbook:sec-j25-api-files-path.
+доказывает его существования. API: @handbook:sec-api-files-path.
 
 ::: {.notes}
 Попросить предсказать, что изменится при запуске из соседнего каталога.
@@ -52,7 +52,7 @@ System.out.println(source.toAbsolutePath());
 с абсолютными путями к входу и выходу.
 :::
 
-### Подготовка входа {#sec-j25-practice-files-input .continuation}
+### Подготовка входа {#sec-practice-files-input .continuation}
 
 Для копирования подготовьте UTF-8 с кириллицей, ASCII-пробелом и
 переводом строки; сохраните вход для сравнения. Входной и выходной
@@ -72,34 +72,34 @@ System.out.println(source.toAbsolutePath());
 действия удалось дойти в каждом случае?
 :::
 
-## Чтение и конец входа {#sec-j25-practice-files-reading}
+## Чтение и конец входа {#sec-practice-files-reading}
 
-### Байты и конец {#sec-j25-practice-files-byte}
+### Байты и конец {#sec-practice-files-byte}
 
 `InputStream.read()` возвращает `int`: 0–255 для байта или `-1` для конца входа.
 Для `0xFF` получается 255. Конец входа даёт `-1`;
 `IOException` сообщает об отказе чтения.
 Байтовое копирование заменяет ASCII-пробел `0x20` и сохраняет прочие байты.
 
-### Строки и конец {#sec-j25-practice-files-text .continuation}
+### Строки и конец {#sec-practice-files-text .continuation}
 
 `BufferedReader.readLine()` возвращает текст без разделителя. Пустая строка
 обозначается `""`, конец входа — `null`. `Files.newBufferedReader(path, UTF_8)` задаёт
 декодирование. Номер физической строки увеличивается и для пропущенной
 пробельной строки; пустая строка обрабатывается как часть входа.
 
-### Кодировка и сохранение текста {#sec-j25-practice-files-s3 .continuation}
+### Кодировка и сохранение текста {#sec-practice-files-s3 .continuation}
 
 Кириллическая буква кодируется несколькими байтами UTF-8. Приведение
 одного байта к `char` её не декодирует. Чтение строк удаляет разделители;
 печать через `println` может заменить их. Символьное чтение через
 `Reader.read()` сохраняет сами символы-разделители. В заданиях нужны
 соответственно байтовые потоки и `Reader`/`Writer` с UTF-8. Способ обхода
-выбираете самостоятельно: @handbook:sec-j25-api-files-operations.
+выбираете самостоятельно: @handbook:sec-api-files-operations.
 
-## Закрытие и реакция {#sec-j25-practice-files-reference}
+## Закрытие и реакция {#sec-practice-files-reference}
 
-### Явное закрытие при отказе {#sec-j25-practice-files-manual}
+### Явное закрытие при отказе {#sec-practice-files-manual}
 
 ```java
 var input = java.nio.file.Files.newInputStream(source);
@@ -123,22 +123,22 @@ throws java.io.IOException`. При байтах `0x00,0xFF` печатаетс�
 защита уже открытого первого должна охватывать открытие второго.
 :::
 
-### Несколько ресурсов {#sec-j25-practice-files-manual-many .continuation}
+### Несколько ресурсов {#sec-practice-files-manual-many .continuation}
 
 Защита первого начинается **до** открытия второго. Два вызова `close` подряд
 в одном `finally` не обеспечивают второй вызов после отказа первого.
 Вложенные `try`/`finally` обеспечивают попытку закрыть каждый успешно
 открытый ресурс. Сохранение обеих ошибок требует дополнительного кода.
-Подробный пример: @theory:sec-j25-theory-resources-manual-two.
+Подробный пример: @theory:sec-theory-resources-manual-two.
 
-### Конструкция `try` с ресурсами {#sec-j25-practice-files-s4 .continuation}
+### Конструкция `try` с ресурсами {#sec-practice-files-s4 .continuation}
 
 Конструкция `try` с ресурсами открывает слева направо и закрывает справа налево.
 Ошибка тела остаётся основным исключением, отказ `close` присоединяется к списку
 `suppressed`; `cause` сохраняет причину обёртывания исключения. Полный `CauseCloseDemo` с выводом:
-@theory:sec-j25-theory-resources-suppressed.
+@theory:sec-theory-resources-suppressed.
 
-### Политика обработки отказа {#sec-j25-practice-files-catch}
+### Политика обработки отказа {#sec-practice-files-catch}
 
 Ресурс в опыте сообщает проверяемый отказ чтения. Внешний обработчик
 показывает сообщение после закрытия ресурса. Полный файл
@@ -173,7 +173,7 @@ public class ResourcePolicyDemo {
 и настоящего файла ему не требуется.
 :::
 
-### Результат обработки отказа {#sec-j25-practice-files-s5 .continuation}
+### Результат обработки отказа {#sec-practice-files-s5 .continuation}
 
 Stdout: `closed`; stderr: `operation failed: read failed`; процесс
 завершается обычно. `use result` не печатается. Закрытие происходит до
@@ -185,16 +185,16 @@ Stdout: `closed`; stderr: `operation failed: read failed`; процесс
 копирования возможен по условию; `gradeapp` проверяет весь вход до stdout,
 но не может забрать уже переданные байты при отказе stdout.
 
-## Самостоятельная работа {#sec-j25-practice-files-assignments}
+## Самостоятельная работа {#sec-practice-files-assignments}
 
-### Фрагменты с исключениями {#sec-j25-practice-files-exceptions}
+### Фрагменты с исключениями {#sec-practice-files-exceptions}
 
 В @tasks:exr-exceptions-exception-flow-errors исправьте независимые
 ошибки `try`, порядка обработчиков и `throws`. Отказ компиляции отличайте
 от исключения при выполнении. Связь проверяемых исключений с операциями
-контейнера разобрана в @theory:sec-j25-theory-exceptions-early-checked.
+контейнера разобрана в @theory:sec-theory-exceptions-early-checked.
 
-### Две версии копирования {#sec-j25-practice-files-s6 .continuation}
+### Две версии копирования {#sec-practice-files-s6 .continuation}
 
 @tasks:exr-files-byte-file-copy — байтовые потоки и явное закрытие;
 @tasks:exr-files-character-file-copy — символьные потоки UTF-8 и `try`
@@ -209,9 +209,9 @@ Stdout: `closed`; stderr: `operation failed: read failed`; процесс
 различие двух задач состоит в уровне потока и способе закрытия.
 :::
 
-### Каталог участников {#sec-j25-practice-files-s7}
+### Каталог участников {#sec-practice-files-s7}
 
-Журнал поставок (@theory:sec-j25-theory-application) объединяет повторы
+Журнал поставок (@theory:sec-theory-application) объединяет повторы
 и сохраняет ошибки строк. `gradeapp` принимает каталог участников:
 нормализованные коды должны быть уникальны, неверная строка отменяет отчёт.
 Из полностью допустимого каталога отбираются участники с баллом не ниже порога.
@@ -225,13 +225,13 @@ Stdout: `closed`; stderr: `operation failed: read failed`; процесс
 после неверной строки нарушило бы договор `gradeapp`. Затем перейти к заготовке.
 :::
 
-### Сборка заготовки {#sec-j25-practice-files-gradeapp-build}
+### Сборка заготовки {#sec-practice-files-gradeapp-build}
 
 @tasks:exr-files-gradeapp-report использует готовые модель, исключение,
 сборку и проверку аргументов команды. Из корня скачанного `student` проверьте
 `sh ./build.sh --version`, затем `sh ./build.sh -DskipTests package`.
 Версия Java должна быть 25; точные команды и состав:
-@handbook:sec-j25-api-project-wrapper.
+@handbook:sec-api-project-wrapper.
 
 Тела с TODO в парсере, загрузчике, `Reports` и `Main.run(Path,int)` компилируются
 и выбрасывают `UnsupportedOperationException`. Предоставленная проверка
@@ -246,7 +246,7 @@ Stdout: `closed`; stderr: `operation failed: read failed`; процесс
 организация вспомогательных методов остаётся свободной.
 :::
 
-### Граничные случаи {#sec-j25-practice-files-checks .continuation}
+### Граничные случаи {#sec-practice-files-checks .continuation}
 
 | Наблюдение | Что проверяем |
 |---|---|
@@ -257,7 +257,7 @@ Stdout: `closed`; stderr: `operation failed: read failed`; процесс
 | Исходный список | Порядок элементов сохраняется при сортировке отчёта |
 | Отсутствующий файл | Отказ чтения с диагностикой |
 
-### Самостоятельная реализация {#sec-j25-practice-files-result .continuation}
+### Самостоятельная реализация {#sec-practice-files-result .continuation}
 
 Откройте заготовку и проверьте сборку. Затем реализуйте части
 и покажите обычный и граничный запуск.
@@ -266,7 +266,7 @@ Stdout: `closed`; stderr: `operation failed: read failed`; процесс
 
 Обязательный состав лабораторной: фрагменты с исключениями, две версии
 копирования и завершение `gradeapp`. Полные условия:
-@tasks:sec-j25-lab-files.
+@tasks:sec-lab-files.
 
 ## Источники {.unnumbered .scrollable}
 

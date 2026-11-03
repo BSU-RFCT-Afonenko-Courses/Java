@@ -13,9 +13,9 @@ format:
     show-notes: false
 ---
 
-## Наследование, интерфейсы и записи {#sec-j25-lecture-interfaces-records}
+## Наследование, интерфейсы и записи {#sec-lecture-interfaces-records}
 
-## Наследование и отношение подтипов {#sec-j25-lecture-interfaces-records-subtype}
+## Наследование и отношение подтипов {#sec-lecture-interfaces-records-subtype}
 
 **Наследование классов** позволяет подклассу получить доступные наследуемые
 члены суперкласса, добавить состояние и переопределить методы экземпляра.
@@ -24,7 +24,7 @@ format:
 Одновременно `TextDocument` становится **подтипом** `Document`:
 ссылку на текстовый документ можно передать параметру типа `Document`.
 У обычного класса один непосредственный суперкласс; при отсутствии
-`extends` им служит `Object`. @theory:sec-j25-theory-inheritance.
+`extends` им служит `Object`. @theory:sec-theory-inheritance.
 [@bib-objects-schildt-inheritance]
 
 ::: {.notes}
@@ -33,7 +33,7 @@ format:
 сохранятся у текстового документа, если общая операция возвращает описание.
 :::
 
-### Контракт описания документа {#sec-j25-lecture-interfaces-records-context}
+### Контракт описания документа {#sec-lecture-interfaces-records-context}
 
 `Document` хранит заголовок и предоставляет `summary()` — строку
 описания. `TextDocument` добавляет число символов. Клиенту нужна длина
@@ -48,7 +48,7 @@ format:
 Попросите назвать операцию клиента, которая завершится исключением при null. Это основание для требования к summary, даже когда тип результата String формально допускает null.
 :::
 
-### Базовое состояние и действие {#sec-j25-lecture-interfaces-records-base}
+### Базовое состояние и действие {#sec-lecture-interfaces-records-base}
 
 ```java
 class Document {
@@ -66,7 +66,7 @@ class Document {
 Проследите создание документа с заголовком Guide. Найдите место, которое запрещает отсутствие заголовка, и доступную клиенту операцию.
 :::
 
-### Дополнительное состояние подкласса {#sec-j25-lecture-interfaces-records-child .continuation}
+### Дополнительное состояние подкласса {#sec-lecture-interfaces-records-child .continuation}
 
 ```java
 class TextDocument extends Document {
@@ -90,7 +90,7 @@ null и 0; после завершения создания — "Notes" и 120. 
 конструктор выполняет каждое присваивание.
 :::
 
-### Переопределение операции {#sec-j25-lecture-interfaces-records-override .continuation}
+### Переопределение операции {#sec-lecture-interfaces-records-override .continuation}
 
 В тело `TextDocument` входит собственная реализация базовой операции:
 
@@ -115,7 +115,7 @@ String summary() {
 переопределяемой операции.
 :::
 
-### Конструкторы базового и производного классов {#sec-j25-lecture-interfaces-records-constructors}
+### Конструкторы базового и производного классов {#sec-lecture-interfaces-records-constructors}
 
 ```java
 Document plain = new Document("Guide");
@@ -136,7 +136,7 @@ TextDocument text = new TextDocument("Notes", 120);
 какой из двух конструкторов подкласса действительно записывает characters.
 :::
 
-## Статический тип и динамический вызов {#sec-j25-lecture-interfaces-records-dispatch}
+## Статический тип и динамический вызов {#sec-lecture-interfaces-records-dispatch}
 
 ```java
 Document value = new TextDocument("Notes", 120);
@@ -159,7 +159,7 @@ value: Document ──> TextDocument { title="Notes", characters=120 }
 предсказать результат summary, если создать обычный Document("Notes").
 :::
 
-### Общий алгоритм обработки документа {#sec-j25-lecture-interfaces-records-general-method .continuation}
+### Общий алгоритм обработки документа {#sec-lecture-interfaces-records-general-method .continuation}
 
 ```java
 static void print(Document document) {
@@ -177,7 +177,7 @@ print(new TextDocument("Notes", 120)); // Notes: 120 chars
 Предложите новый подкласс с другим summary. Спросите, какая строка print должна поменяться, если новый тип сохраняет договор.
 :::
 
-### Перегрузка и динамический вызов {#sec-j25-lecture-interfaces-records-overload}
+### Перегрузка и динамический вызов {#sec-lecture-interfaces-records-overload}
 
 ```java
 static String kind(Document d) { return "Document"; }
@@ -200,7 +200,7 @@ System.out.println(value.summary()); // Notes: 120 chars
 в последней строке выбранное тело останется тем же.
 :::
 
-### Поведенческий контракт подтипа {#sec-j25-lecture-interfaces-records-behavior}
+### Поведенческий контракт подтипа {#sec-lecture-interfaces-records-behavior}
 
 **Контракт операции** определяет допустимый вход, результат, изменение
 состояния и условия отказа. Для `Document.summary()` каждый созданный
@@ -216,7 +216,7 @@ System.out.println(value.summary()); // Notes: 120 chars
 Тип String допускает null; контракт summary требует результата, отличного от null.
 :::
 
-### Нарушение контракта документа {#sec-j25-lecture-interfaces-records-broken-contract}
+### Нарушение контракта документа {#sec-lecture-interfaces-records-broken-contract}
 
 ```java
 class SilentDocument extends Document {
@@ -231,7 +231,7 @@ static int summaryLength(Document d) { return d.summary().length(); }
 `NullPointerException`: переопределение вернуло запрещённое контрактом значение.
 
 Компилятор принимает обе реализации, поскольку тип `String` допускает `null`.
-@theory:sec-j25-theory-inheritance-substitution.
+@theory:sec-theory-inheritance-substitution.
 
 ::: {.notes}
 Укажите точное место отказа: summary завершился нормально, следующее
@@ -239,7 +239,7 @@ static int summaryLength(Document d) { return d.summary().length(); }
 длину с отсутствием результата.
 :::
 
-## Разделение построения и отправки сообщения {#sec-j25-lecture-interfaces-records-changing-requirements}
+## Разделение построения и отправки сообщения {#sec-lecture-interfaces-records-changing-requirements}
 
 Полученное описание документа можно включить в напоминание о возврате.
 `ConsoleReminder` формирует текст и печатает его:
@@ -265,7 +265,7 @@ Return: Java. Затем перечислите четыре сочетания 
 Спросите, какие два действия изменяются независимо друг от друга.
 :::
 
-### Интерфейс отправителя {#sec-j25-lecture-interfaces-records-interface}
+### Интерфейс отправителя {#sec-lecture-interfaces-records-interface}
 
 **Интерфейс** объявляет ссылочный тип и операции общей роли:
 
@@ -278,7 +278,7 @@ public interface Sender {
 `send` неявно `public abstract`. Он обрабатывает одно сообщение, отличное от `null`,
 способом, определённым реализацией. Передача `null` вызывает
 `NullPointerException` до обработки. Последовательные вызовы сохраняют
-порядок обращений. @theory:sec-j25-theory-interfaces.
+порядок обращений. @theory:sec-theory-interfaces.
 
 `abstract` обозначает метод без тела, реализацию которого предоставляет
 конкретный класс. Сам интерфейс нельзя создать вызовом `new Sender()`.
@@ -289,7 +289,7 @@ void означает отсутствие результата вызова. П
 эффект отправки в консоль и в буфер.
 :::
 
-### Реализация интерфейсной операции {#sec-j25-lecture-interfaces-records-implementation}
+### Реализация интерфейсной операции {#sec-lecture-interfaces-records-implementation}
 
 ```java
 public final class ConsoleSender implements Sender {
@@ -313,7 +313,7 @@ public final class ConsoleSender implements Sender {
 компилироваться. Java использует объявленную связь типов.
 :::
 
-### Композиция и делегирование {#sec-j25-lecture-interfaces-records-composition}
+### Композиция и делегирование {#sec-lecture-interfaces-records-composition}
 
 ```java
 public final class Reminder {
@@ -337,7 +337,7 @@ public final class Reminder {
 ссылку на того же отправителя.
 :::
 
-### Вызов через интерфейсное поле {#sec-j25-lecture-interfaces-records-reminder-output}
+### Вызов через интерфейсное поле {#sec-lecture-interfaces-records-reminder-output}
 
 ```java
 Sender sender = new ConsoleSender();
@@ -360,7 +360,7 @@ ConsoleSender.send. Клиент Reminder использует ту же дис�
 что и клиент Document.
 :::
 
-### Изменяемое состояние отправителя {#sec-j25-lecture-interfaces-records-recording}
+### Изменяемое состояние отправителя {#sec-lecture-interfaces-records-recording}
 
 ```java
 public final class RecordingSender implements Sender {
@@ -384,7 +384,7 @@ public final class RecordingSender implements Sender {
 добавлений в буфер.
 :::
 
-### Замена участника композиции {#sec-j25-lecture-interfaces-records-recording-result}
+### Замена участника композиции {#sec-lecture-interfaces-records-recording-result}
 
 ```java
 RecordingSender log = new RecordingSender();
@@ -406,7 +406,7 @@ System.out.print(log.text());
 Попросите отметить различие на схеме ссылок.
 :::
 
-### Дополнительное ограничение на входе {#sec-j25-lecture-interfaces-records-stronger-precondition}
+### Дополнительное ограничение на входе {#sec-lecture-interfaces-records-stronger-precondition}
 
 Контракт `Sender` допускает любую строку, отличную от `null`, включая `""`.
 Следующая реализация добавляет требование непустого сообщения:
@@ -432,7 +432,7 @@ final class NonEmptySender implements Sender {
 Назовите точное условие, после которого прежний допустимый вход отвергается.
 :::
 
-### Усиление предусловия и допустимые вызовы {#sec-j25-lecture-interfaces-records-precondition-client .continuation}
+### Усиление предусловия и допустимые вызовы {#sec-lecture-interfaces-records-precondition-client .continuation}
 
 ```java
 static void sendEmpty(Sender sender) { sender.send(""); }
@@ -462,7 +462,7 @@ catch (IllegalArgumentException ex) {
 требования к результату summary.
 :::
 
-### Обёртка как реализация интерфейса {#sec-j25-lecture-interfaces-records-decorator}
+### Обёртка как реализация интерфейса {#sec-lecture-interfaces-records-decorator}
 
 ```java
 public final class PrefixSender implements Sender {
@@ -489,7 +489,7 @@ Reminder вызывает send у своего sink; PrefixSender и RecordingSe
 последний получатель сохраняет строку.
 :::
 
-### Последовательность делегирования {#sec-j25-lecture-interfaces-records-decorator-output}
+### Последовательность делегирования {#sec-lecture-interfaces-records-decorator-output}
 
 ```java
 RecordingSender log = new RecordingSender();
@@ -511,7 +511,7 @@ Reminder → PrefixSender → RecordingSender
 Проследите текст по цепочке и отметьте место добавления префикса. Затем мысленно поменяйте местами две обёртки с разными префиксами: порядок станет наблюдаемым.
 :::
 
-### Порядок композиции {#sec-j25-lecture-interfaces-records-changing-output}
+### Порядок композиции {#sec-lecture-interfaces-records-changing-output}
 
 ```java
 RecordingSender log = new RecordingSender();
@@ -533,7 +533,7 @@ System.out.print(log.text()); // B:A:X и перевод строки
 результат станет виден сразу в стандартном выводе.
 :::
 
-## Несколько интерфейсных ролей {#sec-j25-lecture-interfaces-records-multiple-roles}
+## Несколько интерфейсных ролей {#sec-lecture-interfaces-records-multiple-roles}
 
 ```java
 interface Counted { int count(); }
@@ -561,7 +561,7 @@ final class CountingSender implements Sender, Counted {
 переполнило бы int; точный длительный учёт требует другого представления.
 :::
 
-### Две ссылки на один объект {#sec-j25-lecture-interfaces-records-multiple-role-client .continuation}
+### Две ссылки на один объект {#sec-lecture-interfaces-records-multiple-role-client .continuation}
 
 ```java
 CountingSender object = new CountingSender(new RecordingSender());
@@ -586,7 +586,7 @@ System.out.println(statistics.count()); // 2
 переменной на CountingSender и сравните доступные методы.
 :::
 
-### Метод интерфейса с общей реализацией {#sec-j25-lecture-interfaces-records-default}
+### Метод интерфейса с общей реализацией {#sec-lecture-interfaces-records-default}
 
 В расширенное объявление `Sender` добавлен метод с телом:
 
@@ -611,7 +611,7 @@ default void sendAll(String[] messages) {
 состояние буфера в момент отказа.
 :::
 
-### Частичный эффект до отказа {#sec-j25-lecture-interfaces-records-default-failure}
+### Частичный эффект до отказа {#sec-lecture-interfaces-records-default-failure}
 
 ```java
 RecordingSender log = new RecordingSender();
@@ -650,7 +650,7 @@ System.out.print(log.text());
 ему полезна возможность собственного выполнения общего договора.
 :::
 
-### Статические и закрытые методы интерфейса {#sec-j25-lecture-interfaces-records-interface-members}
+### Статические и закрытые методы интерфейса {#sec-lecture-interfaces-records-interface-members}
 
 Статическая фабрика в `Sender` создаёт консольного отправителя:
 
@@ -672,7 +672,7 @@ Codes.VALUES = new int[]{2} и Codes.VALUES[0] = 2. Первая запреще�
 вторая меняет компонент общего массива. Свяжите это с final у поля text.
 :::
 
-### Зависимости общего клиента {#sec-j25-lecture-interfaces-records-choice}
+### Зависимости общего клиента {#sec-lecture-interfaces-records-choice}
 
 `Document` объединяет заголовок и операцию описания. Подкласс
 `TextDocument` принимает это состояние и уточняет описание.
@@ -691,7 +691,7 @@ Codes.VALUES = new int[]{2} и Codes.VALUES[0] = 2. Первая запреще�
 и получателя изменяется сборка объектов, при новом виде документа — подкласс.
 :::
 
-## Объект как значение данных {#sec-j25-lecture-interfaces-records-data-values}
+## Объект как значение данных {#sec-lecture-interfaces-records-data-values}
 
 Счётчик отправителя меняется после каждой успешной обработки. Отчёту
 может понадобиться число на определённый момент — отдельный снимок:
@@ -703,7 +703,7 @@ record DispatchStats(int count) implements Counted {}
 `record` объявляет **запись**: класс с компонентами, заданными в заголовке.
 Компонент `count` создаёт закрытое поле `final int count` и открытый
 метод `count()`. Этот метод уже реализует операцию `Counted`.
-@theory:sec-j25-theory-data-classes.
+@theory:sec-theory-data-classes.
 
 ::: {.notes}
 Предложите сравнить хранение CountingSender в отчёте и копирование
@@ -711,7 +711,7 @@ record DispatchStats(int count) implements Counted {}
 участнику, второй фиксирует числовое значение.
 :::
 
-### Снимок изменяемого счётчика {#sec-j25-lecture-interfaces-records-record-snapshot .continuation}
+### Снимок изменяемого счётчика {#sec-lecture-interfaces-records-record-snapshot .continuation}
 
 ```java
 CountingSender sender = new CountingSender(new RecordingSender());
@@ -734,7 +734,7 @@ System.out.println(saved.count());  // 2
 задаёт чтение, а наличие других изменяющих операций зависит от класса.
 :::
 
-### Стандартные члены записи {#sec-j25-lecture-interfaces-records-record}
+### Стандартные члены записи {#sec-lecture-interfaces-records-record}
 
 Координата объединяет два числовых компонента в одно значение:
 
@@ -756,7 +756,7 @@ System.out.println(a == b);      // false
 Попросите объяснить одновременно equals=true и ==false. Затем назовите имена методов чтения: они совпадают с именами компонентов.
 :::
 
-### Представление для наблюдения {#sec-j25-lecture-interfaces-records-record-output .continuation}
+### Представление для наблюдения {#sec-lecture-interfaces-records-record-output .continuation}
 
 ```java
 System.out.println(new Point(2, 3)); // Point[x=2, y=3]
@@ -770,7 +770,7 @@ System.out.println(new Point(2, 3)); // Point[x=2, y=3]
 Покажите, откуда toString получил имена x и y. Формат служит наблюдению; для внешнего формата хранения нужны отдельные требования.
 :::
 
-### Ограничения объявления записи {#sec-j25-lecture-interfaces-records-record-constraints}
+### Ограничения объявления записи {#sec-lecture-interfaces-records-record-constraints}
 
 Запись неявно `final` и непосредственно расширяет `java.lang.Record`.
 Объявить её подкласс или указать другой суперкласс нельзя.
@@ -788,7 +788,7 @@ System.out.println(new Point(2, 3)); // Point[x=2, y=3]
 экземпляра int updates: оно нарушает ограничение состава состояния записи.
 :::
 
-### Представление записи и её API {#sec-j25-lecture-interfaces-records-record-model .continuation}
+### Представление записи и её API {#sec-lecture-interfaces-records-record-model .continuation}
 
 `record Point(int x, int y)` делает два компонента частью API:
 конструктор принимает их значения, методы чтения их возвращают,
@@ -808,7 +808,7 @@ System.out.println(new Point(2, 3)); // Point[x=2, y=3]
 первое действие сохраняет объект, второе создаёт равное значение.
 :::
 
-### Проверка компонентов {#sec-j25-lecture-interfaces-records-compact-constructor}
+### Проверка компонентов {#sec-lecture-interfaces-records-compact-constructor}
 
 ```java
 record Interval(int start, int end) {
@@ -828,7 +828,7 @@ record Interval(int start, int end) {
 Разберите равные границы и обратный порядок границ. Спросите, в какой момент значения параметров присваиваются компонентным полям.
 :::
 
-### Нормализация параметра {#sec-j25-lecture-interfaces-records-normalization}
+### Нормализация параметра {#sec-lecture-interfaces-records-normalization}
 
 ```java
 record BookCode(String value) {
@@ -848,7 +848,7 @@ System.out.println(new BookCode(" A-17 ").value()); // A-17
 Проследите переменную параметра value до и после strip. Запись в параметр отличается от запрещённого присваивания this.value внутри компактного конструктора.
 :::
 
-### Нормализация сведений о студенте {#sec-j25-lecture-interfaces-records-student-definition}
+### Нормализация сведений о студенте {#sec-lecture-interfaces-records-student-definition}
 
 В учебном журнале код и имя разделяются символом `;`, одна строка
 описывает одного участника. Запись `grade.Student` хранит код, имя и балл.
@@ -871,7 +871,7 @@ public record Student(String id, String name, int score) {
 Попросите назвать результат нормализации строки с краевыми пробелами. Затем предложите имя с разделителем внутри и найдите, какое условие его отклонит.
 :::
 
-### Диапазон балла и разделители записи {#sec-j25-lecture-interfaces-records-student-definition-part-1}
+### Диапазон балла и разделители записи {#sec-lecture-interfaces-records-student-definition-part-1}
 
 Продолжение конструктора и закрытый метод проверки:
 
@@ -894,7 +894,7 @@ public record Student(String id, String name, int score) {
 Сравните локальное ограничение балла и уникальность id в каталоге. Для второго свойства одной записи недостаточно: нужен контекст множества записей.
 :::
 
-### Нормализация и равенство записей {#sec-j25-lecture-interfaces-records-student-client}
+### Нормализация и равенство записей {#sec-lecture-interfaces-records-student-client}
 
 ```java
 Student a = new Student(" s1 ", " Ada ", 90);
@@ -912,7 +912,7 @@ System.out.println(a.equals(b)); // false
 Попросите объяснить равенство имён и неравенство записей через все компоненты. equals этой модели сравнивает id, name и score.
 :::
 
-### final-компонент и общий массив {#sec-j25-lecture-interfaces-records-shallow}
+### final-компонент и общий массив {#sec-lecture-interfaces-records-shallow}
 
 ```java
 record Draft(int[] scores) {}
@@ -930,7 +930,7 @@ System.out.println(draft.scores()[0]); // 90
 Нарисуйте массив и ссылку на него внутри записи. Изменение внешнего scores проходит к тому же элементу.
 :::
 
-### Защитное копирование массива {#sec-j25-lecture-interfaces-records-snapshot}
+### Защитное копирование массива {#sec-lecture-interfaces-records-snapshot}
 
 У последовательности баллов внешнее изменение нужно исключить.
 В записи `Scores` конструктор и метод чтения создают копии:
@@ -952,7 +952,7 @@ public int[] values() { return values.clone(); }
 данные через values(). Массив int не содержит изменяемых вложенных объектов.
 :::
 
-### Наблюдение после изменения копий {#sec-j25-lecture-interfaces-records-snapshot-client .continuation}
+### Наблюдение после изменения копий {#sec-lecture-interfaces-records-snapshot-client .continuation}
 
 Последовательность создана из массива с единственным баллом `80`:
 
@@ -973,7 +973,7 @@ System.out.println(scores.values()[0]); // 80
 одну копию сохранённого внутреннего массива.
 :::
 
-### Массивный компонент и равенство записи {#sec-j25-lecture-interfaces-records-array-record}
+### Массивный компонент и равенство записи {#sec-lecture-interfaces-records-array-record}
 
 ```java
 record Vector(int[] values) {}
@@ -996,7 +996,7 @@ System.out.println(a.equals(b)); // false
 дополнительного решения о равенстве значения Scores.
 :::
 
-### Проверка типа перед сравнением компонентов {#sec-j25-lecture-interfaces-records-array-type-pattern .continuation}
+### Проверка типа перед сравнением компонентов {#sec-lecture-interfaces-records-array-type-pattern .continuation}
 
 Метод `equals` получает аргумент типа `Object`. Образец типа
 `other instanceof Scores that` проверяет, ссылается ли он на `Scores`:
@@ -1023,7 +1023,7 @@ System.out.println(a.equals(b)); // false
 который теперь доступен под именем that.
 :::
 
-### Согласованное равенство последовательности {#sec-j25-lecture-interfaces-records-array-equality .continuation}
+### Согласованное равенство последовательности {#sec-lecture-interfaces-records-array-equality .continuation}
 
 Для `Scores scores = new Scores(new int[]{80})`:
 
@@ -1051,7 +1051,7 @@ System.out.println(a.equals(b)); // false
 и совпадение хеша: у разных значений хеш может совпасть.
 :::
 
-### Строковое представление последовательности {#sec-j25-lecture-interfaces-records-array-string .continuation}
+### Строковое представление последовательности {#sec-lecture-interfaces-records-array-string .continuation}
 
 У исходного и восстановленного `Scores` разные внутренние массивы.
 Стандартные строковые представления этих массивов могут различаться. Метод записи строит
@@ -1074,7 +1074,7 @@ System.out.println(scores.toString().equals(copy.toString())); // true
 
 Равные значения дают равные строки. Это человекочитаемое представление;
 устойчивый формат файла или обмена задаётся отдельно.
-@theory:sec-j25-theory-data-classes-array-value.
+@theory:sec-theory-data-classes-array-value.
 
 ::: {.notes}
 Проследите формирование строки из элементов двух разных массивов.
@@ -1083,7 +1083,7 @@ System.out.println(scores.toString().equals(copy.toString())); // true
 внешнего формата, у которого есть отдельный договор.
 :::
 
-## Фиксированные именованные варианты {#sec-j25-lecture-interfaces-records-enum}
+## Фиксированные именованные варианты {#sec-lecture-interfaces-records-enum}
 
 ```java
 enum LoanStatus { AVAILABLE, BORROWED, LOST }
@@ -1098,7 +1098,7 @@ System.out.println(state == LoanStatus.BORROWED); // true
 Спросите, чем значение BORROWED отличается от строки с теми же буквами. Затем отдельно проверьте возможность null в переменной ссылочного типа.
 :::
 
-## Запечатанная семья результатов {#sec-j25-lecture-interfaces-records-sealed}
+## Запечатанная семья результатов {#sec-lecture-interfaces-records-sealed}
 
 Поиск книги по уникальному коду возвращает найденное название или причину
 отсутствия. У этих случаев разный состав данных:
@@ -1122,7 +1122,7 @@ record Missing(String reason) implements SearchResult {}
 её фактический класс сообщает, какие данные результата доступны.
 :::
 
-### Покрытие вариантов в switch {#sec-j25-lecture-interfaces-records-exhaustive .continuation}
+### Покрытие вариантов в switch {#sec-lecture-interfaces-records-exhaustive .continuation}
 
 ```java
 static String describe(SearchResult value) {
@@ -1147,7 +1147,7 @@ static String describe(SearchResult value) {
 Проверка класса и чтение title выполняются последовательно.
 :::
 
-### Роль и вариант данных {#sec-j25-lecture-interfaces-records-design-route}
+### Роль и вариант данных {#sec-lecture-interfaces-records-design-route}
 
 Открытый `Sender` допускает новый способ отправки при прежнем вызове
 клиента. Новая обязательная операция, напротив, затронет реализующие классы.
@@ -1165,7 +1165,7 @@ static String describe(SearchResult value) {
 их обработки; открытая роль позволяет независимо добавлять реализации.
 :::
 
-### Расширение системы и обработка вариантов {#sec-j25-lecture-interfaces-records-exit}
+### Расширение системы и обработка вариантов {#sec-lecture-interfaces-records-exit}
 
 Новая реализация `Sender` сохраняет вызов `sink.send(message)`
 в `Reminder`, если соблюдает условия операции. Место обработки
@@ -1183,7 +1183,7 @@ static String describe(SearchResult value) {
 класс, метод клиента либо объект состояния и объяснить выбор.
 :::
 
-## Дополнительные разборы {#sec-j25-lecture-interfaces-records-additional}
+## Дополнительные разборы {#sec-lecture-interfaces-records-additional}
 
 ::: {.notes}
 Предложите выбрать предмет исследования: поведение вызова, порядок
@@ -1191,7 +1191,7 @@ static String describe(SearchResult value) {
 наблюдаемый результат.
 :::
 
-### Сокрытие поля {#sec-j25-lecture-interfaces-records-field-hiding}
+### Сокрытие поля {#sec-lecture-interfaces-records-field-hiding}
 
 ```java
 class Base { String label = "base"; }
@@ -1206,7 +1206,7 @@ System.out.println(value.label); // base
 Сопоставьте доступ к полю и вызов переопределённого метода. Укажите статический тип выражения, по которому выбрано объявление поля.
 :::
 
-### Сокрытие статического метода {#sec-j25-lecture-interfaces-records-static-hiding}
+### Сокрытие статического метода {#sec-lecture-interfaces-records-static-hiding}
 
 ```java
 class Base { static String kind() { return "base"; } }
@@ -1221,7 +1221,7 @@ System.out.println(Child.kind()); // child
 Попросите назвать отсутствие текущего получателя у static. Запишите вызовы через имена классов, чтобы источник выбора был виден.
 :::
 
-## Сигнатура переопределяемого метода {#sec-j25-lecture-interfaces-records-override-rules}
+## Сигнатура переопределяемого метода {#sec-lecture-interfaces-records-override-rules}
 
 У операции загрузки документа объявлен результат типа `Document`
 и разрешено проверяемое исключение ввода-вывода `IOException`. Источник в памяти
@@ -1250,7 +1250,7 @@ final class MemorySource extends DocumentSource {
 Сопоставьте три изменения заголовка: доступ, результат и throws.
 :::
 
-### Статический тип результата {#sec-j25-lecture-interfaces-records-override-result}
+### Статический тип результата {#sec-lecture-interfaces-records-override-result}
 
 ```java
 MemorySource memory = new MemorySource(new TextDocument("Notes", 120));
@@ -1277,7 +1277,7 @@ System.out.println(document == text); // true
 Сопоставьте допустимую сигнатуру SilentDocument.summary с нарушенным требованием к результату.
 :::
 
-## Абстрактная операция площади {#sec-j25-lecture-interfaces-records-abstract}
+## Абстрактная операция площади {#sec-lecture-interfaces-records-abstract}
 
 ```java
 abstract class Shape {
@@ -1297,7 +1297,7 @@ abstract class Shape {
 Спросите, что нужно общему report от фигуры. Реализация площади становится обязанностью конкретного подкласса.
 :::
 
-### Реализация площади в конкретной фигуре {#sec-j25-lecture-interfaces-records-square .continuation}
+### Реализация площади в конкретной фигуре {#sec-lecture-interfaces-records-square .continuation}
 
 ```java
 final class Square extends Shape {
@@ -1321,7 +1321,7 @@ System.out.println(shape.report()); // area=9.0
 Проследите report для квадрата со стороной 3. Попросите объяснить, почему тело report обойдётся без проверки класса.
 :::
 
-### Описание типа объектом Class {#sec-j25-lecture-interfaces-records-reflection}
+### Описание типа объектом Class {#sec-lecture-interfaces-records-reflection}
 
 **Рефлексия** — исследование структуры программы во время выполнения.
 `Student.class` получает описание типа `grade.Student`, у которого
@@ -1341,7 +1341,7 @@ System.out.println(Integer.class.isPrimitive()); // false
 Сопоставьте объект Student и объект, описывающий тип Student. Литерал int.class позволяет исследовать примитивный тип, не превращая число в Object.
 :::
 
-### Метаданные объявленных компонентов {#sec-j25-lecture-interfaces-records-reflection-components}
+### Метаданные объявленных компонентов {#sec-lecture-interfaces-records-reflection-components}
 
 ```java
 for (var component : Student.class.getRecordComponents()) {
@@ -1352,13 +1352,13 @@ for (var component : Student.class.getRecordComponents()) {
 
 Вывод: `id:String`, `name:String`, `score:int` на отдельных строках. При `var` компилятор выводит тип переменной из типа элемента массива. У обычного класса getRecordComponents() вернул бы null;
 здесь известно, что Student — запись. Изменение балла отдельного участника
-не меняет этот список: он определяется объявлением типа. @theory:sec-j25-theory-data-classes-reflection
+не меняет этот список: он определяется объявлением типа. @theory:sec-theory-data-classes-reflection
 
 ::: {.notes}
 Попросите получить порядок компонентов из объявления записи. Рефлексия сообщает порядок из объявления; допустимость балла проверяет конструктор.
 :::
 
-### Подстановка через базовый тип в C++ и Java {#sec-j25-lecture-interfaces-records-cpp}
+### Подстановка через базовый тип в C++ и Java {#sec-lecture-interfaces-records-cpp}
 
 Java-присваивание `Document value = new TextDocument(...)` копирует ссылку. Оно не создаёт отдельный базовый объект и не срезает дополнительные поля.
 
@@ -1368,7 +1368,7 @@ Java-присваивание `Document value = new TextDocument(...)` копи�
 Попросите сравнить Java-присваивание ссылки с C++ ссылкой на базовый тип. Затем отделите от этого сценария копирование базового объекта C++ по значению.
 :::
 
-### Изменяемый квадрат и прямоугольник {#sec-j25-lecture-interfaces-records-rectangle}
+### Изменяемый квадрат и прямоугольник {#sec-lecture-interfaces-records-rectangle}
 
 У `Rectangle` операция `setWidth(w)` меняет ширину и сохраняет высоту.
 `MutableSquare` переопределяет её, меняя обе стороны ради их равенства.
@@ -1382,7 +1382,7 @@ Java-присваивание `Document value = new TextDocument(...)` копи�
 Квадрат нарушил требование операции сохранять высоту.
 Общий тип с одной операцией `area()` позволяет обеим фигурам предоставлять
 площадь без несовместимого изменения сторон.
-@theory:sec-j25-theory-inheritance-mutable-shapes.
+@theory:sec-theory-inheritance-mutable-shapes.
 
 ::: {.notes}
 Попросите указать точное нарушенное условие после первого присваивания.
@@ -1390,7 +1390,7 @@ Java-присваивание `Document value = new TextDocument(...)` копи�
 изменяющих операций создаёт дополнительные требования к подстановке.
 :::
 
-## Динамический вызов при конструировании {#sec-j25-lecture-interfaces-records-construction-risk}
+## Динамический вызов при конструировании {#sec-lecture-interfaces-records-construction-risk}
 
 ```java
 class Parent {
@@ -1409,7 +1409,7 @@ class ChildState extends Parent {
 Проследите вызов show из Parent до присваивания value=7. Тип объекта уже ChildState, обычный инициализатор поля ещё не выполнен.
 :::
 
-### Порядок инициализации и ранний вызов {#sec-j25-lecture-interfaces-records-construction-order .continuation}
+### Порядок инициализации и ранний вызов {#sec-lecture-interfaces-records-construction-order .continuation}
 
 ```text
 поле value получает 0
@@ -1422,7 +1422,7 @@ class ChildState extends Parent {
 присваивание собственному полю без инициализатора может установить его
 раньше. Базовый класс не управляет порядком всех будущих подклассов;
 вызов их переопределяемых методов связывает конструктор с их готовностью.
-@theory:sec-j25-theory-inheritance-constructor-call.
+@theory:sec-theory-inheritance-constructor-call.
 
 ::: {.notes}
 Сравните с C++: из базового конструктора виртуальный вызов для создаваемого
@@ -1431,7 +1431,7 @@ class ChildState extends Parent {
 и выполнить show после успешного new.
 :::
 
-### Общий участник и владение ресурсом {#sec-j25-lecture-interfaces-records-ownership}
+### Общий участник и владение ресурсом {#sec-lecture-interfaces-records-ownership}
 
 ```java
 RecordingSender shared = new RecordingSender();
@@ -1454,7 +1454,7 @@ second.remind("C++");
 выбрать момент close. У показанного RecordingSender закрываемого ресурса нет.
 :::
 
-### Конфликт методов по умолчанию {#sec-j25-lecture-interfaces-records-default-conflict}
+### Конфликт методов по умолчанию {#sec-lecture-interfaces-records-default-conflict}
 
 ```java
 interface A { default String label() { return "A"; } }
@@ -1472,7 +1472,7 @@ class Both implements A, B {
 Уберите тело label из Both и попросите объяснить причину неоднозначности. Затем проследите явные вызовы двух непосредственных суперинтерфейсов.
 :::
 
-### Устойчивый внешний код перечисления {#sec-j25-lecture-interfaces-records-enum-code}
+### Устойчивый внешний код перечисления {#sec-lecture-interfaces-records-enum-code}
 
 ```java
 enum Priority {
@@ -1489,7 +1489,7 @@ enum Priority {
 Мысленно переставьте LOW и HIGH. Сравните изменение ordinal с сохранением явно заданного weight.
 :::
 
-### Поиск с несколькими совпадениями {#sec-j25-lecture-interfaces-records-search-evolution}
+### Поиск с несколькими совпадениями {#sec-lecture-interfaces-records-search-evolution}
 
 Поиск по названию может найти несколько книг. Клиенту нужно различить
 отсутствие совпадений и необходимость уточнить выбор. Новая версия
@@ -1518,7 +1518,7 @@ record Ambiguous(int count) implements SearchResult {
 количество; эти ограничения относятся к данным конкретного варианта.
 :::
 
-### Проверка switch при расширении семьи {#sec-j25-lecture-interfaces-records-search-coverage .continuation}
+### Проверка switch при расширении семьи {#sec-lecture-interfaces-records-search-coverage .continuation}
 
 ```java
 return switch (result) {
@@ -1540,7 +1540,7 @@ return switch (result) {
 Предложите убрать ветвь Ambiguous и назвать момент обнаружения пропуска. После восстановления ветви спросите, какие ограничения полей по-прежнему не проверены самим switch.
 :::
 
-Полные исходники и команды: @handbook:sec-j25-api-records-examples.
+Полные исходники и команды: @handbook:sec-api-records-examples.
 В инструкции к примерам записей приведены также программы по наследованию
 и интерфейсам.
 

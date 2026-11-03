@@ -2,13 +2,13 @@
 categories: [java, java-core, java-files]
 ---
 
-# Path, Files и текстовый ввод-вывод {#sec-j25-api-files}
+# Path, Files и текстовый ввод-вывод {#sec-api-files}
 
 `Path` описывает путь, `Files` выполняет файловые операции.
 `InputStream`/`OutputStream` передают байты, `Reader`/`Writer` — кодовые
 единицы текста. Для UTF-8 укажите `StandardCharsets.UTF_8` при создании
 читателя или писателя [@bib-data-files-api; @bib-data-path-api; @bib-data-bufferedreader-api].
-Причины выбора API: @theory:sec-j25-theory-io.
+Причины выбора API: @theory:sec-theory-io.
 
 ## Модели чтения {#sec-api-files-models}
 
@@ -24,8 +24,8 @@ categories: [java, java-core, java-files]
 по себе не устанавливают неблокирующий режим. NIO.2 включает файловые
 операции разных моделей: например, `Files.newBufferedReader` возвращает
 обычный синхронный читатель. Сравнение причин и издержек:
-@theory:sec-j25-theory-io-nio, @theory:sec-j25-theory-io-readiness,
-@theory:sec-j25-theory-io-asynchronous.
+@theory:sec-theory-io-nio, @theory:sec-theory-io-readiness,
+@theory:sec-theory-io-asynchronous.
 
 У `ByteBuffer` всегда `0 ≤ position ≤ limit ≤ capacity`. После заполнения
 `flip()` ограничивает чтение записанной порцией; `clear()` подготавливает
@@ -35,7 +35,7 @@ categories: [java, java-core, java-files]
 порядок запуска нескольких операций не задаёт порядок их завершения
 [@bib-io-buffer-api; @bib-io-bytebuffer-api; @bib-io-async-file-api].
 
-## Путь {#sec-j25-api-files-path}
+## Путь {#sec-api-files-path}
 
 | Операция `Path` | Назначение |
 |---|---|
@@ -53,7 +53,7 @@ categories: [java, java-core, java-files]
 есть `Files.isSameFile`. Предварительный `Files.exists` не гарантирует
 успех следующего действия: внешнее состояние может измениться.
 
-## Чтение и запись {#sec-j25-api-files-operations}
+## Чтение и запись {#sec-api-files-operations}
 
 В таблице даны перегрузки для путей, байтового и текстового ввода-вывода.
 `Path`, `OpenOption`, `CopyOption`, `LinkOption` находятся в
@@ -100,7 +100,7 @@ try (var reader = java.nio.file.Files.newBufferedReader(path,
 throws java.io.IOException`. Вход `alpha`, пустая строка, `beta`
 печатается тремя строками, включая пустую. Если загрузчик пропускает пробельные строки,
 его физический счётчик всё равно увеличивается до `continue`:
-@theory:sec-j25-theory-application-loader. Пустой вход не является отказом.
+@theory:sec-theory-application-loader. Пустой вход не является отказом.
 
 Открытие, чтение и закрытие могут дать `IOException`. Повреждённая последовательность
 UTF-8 при `Files.readString(path, UTF_8)` приводит к `IOException`;
@@ -108,14 +108,14 @@ UTF-8 при `Files.readString(path, UTF_8)` приводит к `IOException`;
 при чтении. У `Files.lines(path, UTF_8)` повреждение, обнаруженное в позднем
 обходе, передаётся как `UncheckedIOException`; так же передаётся отказ
 закрытия этого потока строк. В приложении из
-@theory:sec-j25-theory-application отказ декодирования через `BufferedReader` даёт
+@theory:sec-theory-application отказ декодирования через `BufferedReader` даёт
 код завершения 4; накопленные суммы при этом не публикуются. Код 3 означает, что
 отдельные прочитанные строки отвергнуты, а отчёт по принятым поставкам разрешён.
 Это политика журнала поставок. Для `gradeapp` ошибка данных отменяет весь
-отчёт: @handbook:sec-j25-api-project-contract.
+отчёт: @handbook:sec-api-project-contract.
 Операции «прочитать всё» требуют памяти для полного входа.
 
-## Параметры открытия и публикация {#sec-j25-api-files-options}
+## Параметры открытия и публикация {#sec-api-files-options}
 
 | `StandardOpenOption` | Смысл |
 |---|---|

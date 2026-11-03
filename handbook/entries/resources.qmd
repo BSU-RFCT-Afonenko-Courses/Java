@@ -2,18 +2,18 @@
 categories: [java, java-core, java-resources]
 ---
 
-# AutoCloseable и try с ресурсами {#sec-j25-api-resources}
+# AutoCloseable и try с ресурсами {#sec-api-resources}
 
 Try с ресурсами вызывает `close` успешно инициализированных ненулевых
 ресурсов при выходе, в обратном порядке их объявления
 [@bib-data-autocloseable-api; @bib-data-jls-resources].
 
-Объяснение владения и ошибок: @theory:sec-j25-theory-resources.
+Объяснение владения и ошибок: @theory:sec-theory-resources.
 
 GC освобождает память недостижимых объектов; момент `close` определяет
 владелец ресурса.
 
-## Допустимые формы {#sec-j25-api-resources-syntax}
+## Допустимые формы {#sec-api-resources-syntax}
 
 Пример выполняется в методе с аргументом `Path path`. Нужны импорты
 `java.nio.file.Path`, `java.nio.file.Files`,
@@ -54,10 +54,10 @@ try (reader) {
 // ссылка видима, но ресурс уже закрыт
 ```
 
-## Порядок и исключения {#sec-j25-api-resources-order}
+## Порядок и исключения {#sec-api-resources-order}
 
 Наблюдения `primary`, `cause`, `suppressed` в полном `CauseCloseDemo`:
-@theory:sec-j25-theory-resources-suppressed.
+@theory:sec-theory-resources-suppressed.
 
 | Ситуация | Результат |
 |---|---|
@@ -74,7 +74,7 @@ try (reader) {
 `getSuppressed()` у основной; причина `getCause()` выражает другое
 отношение. Специальный `Throwable` может отключать подавление.
 
-## Владение и ленивые результаты {#sec-j25-api-resources-ownership}
+## Владение и ленивые результаты {#sec-api-resources-ownership}
 
 Метод, открывший ресурс для себя, обычно сам закрывает его. При передаче
 готового ресурса соглашение о закрытии должно быть явным: интерфейс
@@ -103,7 +103,7 @@ throws IOException`; дополнительно нужен `java.util.List`. UTF
 конструкции определяется ошибкой закрытия по правилам таблицы.
 Типизированный результат ошибки данных можно сочетать с `IOException`
 в объявлении файлового метода; границы каждого вида отказа должны быть явными:
-@theory:sec-j25-theory-resources-results.
+@theory:sec-theory-resources-results.
 
 ## Программы опытов {#sec-api-resources-examples}
 

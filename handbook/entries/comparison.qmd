@@ -2,14 +2,14 @@
 categories: [java, java-core, java-comparison]
 ---
 
-# Равенство, Comparable и Comparator {#sec-j25-api-comparison}
+# Равенство, Comparable и Comparator {#sec-api-comparison}
 
 `equals` сравнивает объекты по правилу их типа, `hashCode` поддерживает
 поиск в хеш-коллекциях, а `compareTo` и `Comparator.compare` задают порядок.
 Идентичность ссылок проверяется через `==`. Механизмы сравнения и разбор ошибок:
-@theory:sec-j25-theory-equality.
+@theory:sec-theory-equality.
 
-## Идентичность и равенство {#sec-j25-api-comparison-equals}
+## Идентичность и равенство {#sec-api-comparison-equals}
 
 | Форма | Результат и условие |
 |---|---|
@@ -48,7 +48,7 @@ System.out.println(java.util.Objects.equals(a, b)); // true
 изменяемые поля объекта требуют отдельного ограничения. Если ключ
 изменён так, что это влияет на `equals`, общий контракт `Map` не определяет
 последующее поведение. Разбор поиска по старому и новому хешу:
-@theory:sec-j25-theory-equality-mutable.
+@theory:sec-theory-equality-mutable.
 
 ### Массивы и составные значения
 
@@ -65,9 +65,9 @@ System.out.println(java.util.Objects.equals(a, b)); // true
 по элементам дополнительно нужны согласованные операции `Arrays`.
 `clone` внешнего массива с массивными элементами сохраняет ссылки
 на внутренние массивы. Пример устойчивого составного ключа:
-@theory:sec-j25-theory-equality-composite.
+@theory:sec-theory-equality-composite.
 
-## Порядок {#sec-j25-api-comparison-order}
+## Порядок {#sec-api-comparison-order}
 
 Существенные операции стандартных интерфейсов:
 
@@ -100,7 +100,7 @@ interface Comparator<T> { int compare(T first, T second); }
 Тип `grade.Student` хранит ненулевые код `id`, имя `name` и балл
 `score` от 0 до 100; методы чтения — `id()`, `name()`, `score()`.
 Конструктор нормализует и проверяет строки:
-@theory:sec-j25-theory-data-classes-student.
+@theory:sec-theory-data-classes-student.
 С импортами `grade.Student` и `java.util.Comparator` порядок
 «балл по убыванию, при равенстве код по возрастанию» задаётся так:
 
@@ -115,9 +115,9 @@ System.out.println(order.compare(new Student("s10", "Ada", 90),
 При равных баллах `s10` идёт раньше `s2` по естественному порядку строк.
 `reversed()` применён до добавления кода; вызов в конце цепочки обратил
 бы также порядок кодов. Ссылки на методы:
-@theory:sec-j25-theory-functions-method-reference.
+@theory:sec-theory-functions-method-reference.
 Обычная реализация метода `compare`:
-@theory:sec-j25-theory-equality-order.
+@theory:sec-theory-equality-order.
 
 Для целочисленного сравнения используют `Integer.compare(a, b)`.
 Вычитание `a - b` может переполниться и вернуть неверный знак.
@@ -164,7 +164,7 @@ Comparator<Student> fullOrder = Comparator.comparingInt(Student::score)
 
 Поля, влияющие на порядок, сохраняют неизменными, пока элемент хранится
 в дереве.
-Причина и контрпример: @theory:sec-j25-theory-equality-tree.
+Причина и контрпример: @theory:sec-theory-equality-tree.
 
 ## Граница обобщённого алгоритма сравнения {#sec-h-comparison-bound}
 

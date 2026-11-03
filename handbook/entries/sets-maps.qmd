@@ -2,14 +2,14 @@
 categories: [java, java-core, java-sets-maps]
 ---
 
-# Set, Map, Queue и Deque {#sec-j25-api-sets-maps}
+# Set, Map, Queue и Deque {#sec-api-sets-maps}
 
 Java 25. Объяснение выбора структуры и равенства:
-@theory:sec-j25-theory-collections, @theory:sec-j25-theory-equality.
+@theory:sec-theory-collections, @theory:sec-theory-equality.
 Карты входят в Collections Framework, но не наследуют `Collection`
 [@bib-data-set-api; @bib-data-map-api].
 
-## Множества {#sec-j25-api-sets-maps-set}
+## Множества {#sec-api-sets-maps-set}
 
 | Операция Set | Назначение |
 |---|---|
@@ -47,7 +47,7 @@ Java 25. Объяснение выбора структуры и равенст�
 `equals` и `hashCode` тоже имеют стоимость. Ни одна структура автоматически
 не перестраивает своё расположение после произвольной мутации элемента.
 
-## Соседи по порядку {#sec-j25-api-sets-maps-neighbors}
+## Соседи по порядку {#sec-api-sets-maps-neighbors}
 
 `NavigableSet<E>` уточняет операции упорядоченного множества:
 
@@ -73,7 +73,7 @@ System.out.println(values.lower(10));  // null
 требует своего правила расстояния и обработки ничьей.
 [NavigableSet, Java 25](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/NavigableSet.html).
 
-## Групповые операции множеств {#sec-j25-api-sets-maps-bulk}
+## Групповые операции множеств {#sec-api-sets-maps-bulk}
 
 Операции унаследованы от `Collection`. Для множества они изменяют состав
 объекта-получателя; возвращаемый `boolean` сообщает, произошло ли изменение
@@ -96,7 +96,7 @@ System.out.println(values.lower(10));  // null
 результата сначала создают изменяемую копию; копирование состава не копирует
 сами объекты элементов. Аргумент `c` не должен быть `null`.
 
-## Карты {#sec-j25-api-sets-maps-map}
+## Карты {#sec-api-sets-maps-map}
 
 | Сигнатура Map | Значение |
 |---|---|
@@ -162,7 +162,7 @@ for (java.util.Map.Entry<String, Integer> entry : prices.entrySet()) {
 
 Вызов `counts.merge("java", 1, Integer::sum)` складывает прежний счётчик
 с единицей через ссылку на метод `Integer::sum`
-(@theory:sec-j25-theory-functions-method-reference).
+(@theory:sec-theory-functions-method-reference).
 Точная сигнатура `merge`:
 [Map.merge](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.html#merge(K,V,java.util.function.BiFunction)).
 `merge(key, nonNullValue, function)` записывает значение при отсутствии
@@ -177,7 +177,7 @@ for (java.util.Map.Entry<String, Integer> entry : prices.entrySet()) {
 запрещают изменения и `null`. Фабрика `Map.of` отвергает повторные ключи;
 порядок обхода не обещан.
 
-## Очереди {#sec-j25-api-sets-maps-queue}
+## Очереди {#sec-api-sets-maps-queue}
 
 | Действие Queue | Исключение при пустоте/недоступности | Специальный результат |
 |---|---|---|

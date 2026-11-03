@@ -9,7 +9,7 @@ format:
     css: assets/lesson.css
 ---
 
-## Общая операция {#sec-j25-practice-polymorphism}
+## Общая операция {#sec-practice-polymorphism}
 
 ## Общий клиент документов
 
@@ -24,7 +24,7 @@ static void print(Document document) {
 ```
 
 Какие объявления позволят этому методу обработать оба вида документов?
-Объявления документов: @theory:sec-j25-theory-inheritance-subclass.
+Объявления документов: @theory:sec-theory-inheritance-subclass.
 
 ::: {.notes}
 Предложить назвать общий тип параметра и место выбора конкретного
@@ -32,7 +32,7 @@ static void print(Document document) {
 по названию класса, сохранить этот вариант для сравнения с вызовом `summary`.
 :::
 
-## Состояние базового класса {#sec-j25-practice-polymorphism-recap}
+## Состояние базового класса {#sec-practice-polymorphism-recap}
 
 ```java
 class Document {
@@ -56,7 +56,7 @@ class Document {
 Спросить, нужно ли открывать поле, чтобы подкласс использовал описание.
 :::
 
-### Расширение описания {#sec-j25-practice-polymorphism-document .continuation}
+### Расширение описания {#sec-practice-polymorphism-document .continuation}
 
 ```java
 class TextDocument extends Document {
@@ -87,7 +87,7 @@ class TextDocument extends Document {
 вызвать `print` для `TextDocument("Notes", 120)` и предсказать строку.
 :::
 
-### Динамическое связывание {#sec-j25-practice-polymorphism-s2 .continuation}
+### Динамическое связывание {#sec-practice-polymorphism-s2 .continuation}
 
 ```java
 Document value = new TextDocument("Notes", 120);
@@ -108,7 +108,7 @@ print(value); // Notes: 120 chars
 Перенести это различие на вызов `area` через `TwoDShape` из задания.
 :::
 
-## Интерфейсная роль {#sec-j25-practice-polymorphism-reference}
+## Интерфейсная роль {#sec-practice-polymorphism-reference}
 
 Роль `Sender` из теории обрабатывает ненулевое сообщение.
 Консольная реализация печатает его:
@@ -183,7 +183,7 @@ System.out.print(recording.text()); // Return: Java и перевод строк
 
 Поле связывает два объекта, вызов `sink.send` делегирует действие.
 Другой `Sender` выбирается при создании `Reminder`.
-Композиция и обёртка: @theory:sec-j25-theory-interfaces-composition.
+Композиция и обёртка: @theory:sec-theory-interfaces-composition.
 
 ::: {.notes}
 Нарисовать отдельно `Reminder` и `RecordingSender`, связать их полем `sink`.
@@ -191,7 +191,7 @@ System.out.print(recording.text()); // Return: Java и перевод строк
 сколько буферов используется.
 :::
 
-## Вызовы через IVehicle {#sec-j25-practice-polymorphism-vehicle}
+## Вызовы через IVehicle {#sec-practice-polymorphism-vehicle}
 
 В задаче об `IVehicle` общий тип предоставляет чтение и изменение
 характеристик, `int range()` и `double fuelNeeded(int miles)`.
@@ -220,7 +220,7 @@ System.out.println(vehicle.fuelNeeded(100)); // 4.0
 и прежнее значение при следующем чтении.
 :::
 
-## Равенство объектов и переопределение {#sec-j25-practice-polymorphism-s7}
+## Равенство объектов и переопределение {#sec-practice-polymorphism-s7}
 
 Иерархия задания содержит `Animal`, его подкласс `Dog`
 и подкласс собаки `Puppy`. Голос вызывается через `Animal`,
@@ -236,7 +236,7 @@ System.out.println(vehicle.fuelNeeded(100)); // 4.0
 
 `==` проверяет тождество объектов. Равные объекты должны иметь
 одинаковый `hashCode`; одинаковый хеш допускается и у неравных объектов.
-Разбор: @theory:sec-j25-theory-data-classes-value.
+Разбор: @theory:sec-theory-data-classes-value.
 
 ::: {.notes}
 Назвать два признака, участвующих в каждой строке таблицы.
@@ -244,7 +244,7 @@ System.out.println(vehicle.fuelNeeded(100)); // 4.0
 у существующего объекта: результат должен быть `false`.
 :::
 
-## Общий договор очереди {#sec-j25-practice-polymorphism-assignments}
+## Общий договор очереди {#sec-practice-polymorphism-assignments}
 
 Очередь возвращает самый ранний из ещё не извлечённых символов — FIFO:
 
@@ -263,7 +263,7 @@ interface ICharQ {
 Успешные операции ничего не печатают. `get()` у пустой очереди печатает
 `Очередь пуста` и возвращает `'\0'`; этот символ исключён из данных.
 Неудачное `put` печатает `Очередь переполнена` и сохраняет очередь.
-Точные условия: @tasks:sec-j25-bank-character-queues.
+Точные условия: @tasks:sec-bank-character-queues.
 
 ::: {.notes}
 Перед следующим экраном задать ёмкость `2` и последовательность:
@@ -291,7 +291,7 @@ interface ICharQ {
 может выполнить одинаковое число помещений для любой реализации.
 :::
 
-### Общий клиент {#sec-j25-practice-polymorphism-queue-client .continuation}
+### Общий клиент {#sec-practice-polymorphism-queue-client .continuation}
 
 С готовыми реализациями из условия:
 
@@ -316,7 +316,7 @@ for (ICharQ queue : queues) {
 Предложить объяснить, почему для этого цикла не нужна ветвь `instanceof`.
 :::
 
-## Сброс и перенос {#sec-j25-practice-polymorphism-s6}
+## Сброс и перенос {#sec-practice-polymorphism-s6}
 
 `reset()` делает очередь пустой и возвращает индексы в начальное
 состояние. Текущая ёмкость сохраняется, включая уже увеличенную
@@ -338,7 +338,7 @@ for (ICharQ queue : queues) {
 подтвердят требуемый результат. Рассмотреть `count = 0`.
 :::
 
-## Проверка состояния {#sec-j25-practice-polymorphism-result}
+## Проверка состояния {#sec-practice-polymorphism-result}
 
 Чтобы проверить выбор переопределённого метода, вызов выполняют через общий тип.
 Для изменяющей операции наблюдают результат и последующее состояние:
@@ -348,8 +348,8 @@ for (ICharQ queue : queues) {
 
 Закрытое массивное хранение и использование требуемого интерфейса
 проверяются также по исходнику. Состав лабораторной и выбор
-дополнительного задания: @tasks:sec-j25-lab-polymorphism.
-Полные опыты с отправителями: @handbook:sec-j25-api-interfaces-examples.
+дополнительного задания: @tasks:sec-lab-polymorphism.
+Полные опыты с отправителями: @handbook:sec-api-interfaces-examples.
 
 ::: {.notes}
 Выбрать одно требование поведения и одно требование устройства.

@@ -13,13 +13,13 @@ format:
     show-notes: false
 ---
 
-## Исключения и ресурсы {#sec-j25-lecture-exceptions-resources}
+## Исключения и ресурсы {#sec-lecture-exceptions-resources}
 
 
-## Исключительное завершение {#sec-j25-lecture-exceptions-resources-group-1}
+## Исключительное завершение {#sec-lecture-exceptions-resources-group-1}
 
 
-### Исход операции {#sec-j25-lecture-exceptions-resources-contract}
+### Исход операции {#sec-lecture-exceptions-resources-contract}
 
 Поиск студента может успешно завершиться без совпадения.
 Для загрузки обязательного каталога нужен доступный файл; отказ чтения
@@ -38,7 +38,7 @@ format:
 Для неверного индекса установить, поможет ли повтор с тем же входом.
 :::
 
-### Условия проверки балла {#sec-j25-lecture-exceptions-resources-context}
+### Условия проверки балла {#sec-lecture-exceptions-resources-context}
 
 `parseScore` получает строку, отличную от `null`, без пробелов по краям.
 Успешный результат — целое число от 0 до 100 включительно.
@@ -53,7 +53,7 @@ format:
 Если вернуть `0` для `"ninety"`, вызывающий код примет ошибку данных
 за допустимый результат. Отказ должен сохранять это различие.
 
-### Проверка балла {#sec-j25-lecture-exceptions-resources-parse-definition}
+### Проверка балла {#sec-lecture-exceptions-resources-parse-definition}
 
 ```java
 static int parseScore(String text) {
@@ -73,7 +73,7 @@ static int parseScore(String text) {
 заменить только вход на `"ninety"` и найти первое действие, которое не удастся.
 :::
 
-### Ошибка числового представления {#sec-j25-lecture-exceptions-resources-step-01}
+### Ошибка числового представления {#sec-lecture-exceptions-resources-step-01}
 
 ```java
 int score = Integer.parseInt("ninety");
@@ -88,9 +88,9 @@ System.out.println("балл: " + score);
 Программа компилируется. Ошибка обнаружена при обработке конкретной строки.
 :::
 
-Механизм передачи управления: @theory:sec-j25-theory-exceptions-unwinding.
+Механизм передачи управления: @theory:sec-theory-exceptions-unwinding.
 
-### Ошибка предметного диапазона {#sec-j25-lecture-exceptions-resources-step-02}
+### Ошибка предметного диапазона {#sec-lecture-exceptions-resources-step-02}
 
 Вызов `parseScore("120")` сначала вычисляет:
 
@@ -106,7 +106,7 @@ if (score < 0 || score > 100)
 Для `parseScore("0")` проверка диапазона проходит; результат равен `0`.
 Подстановка нуля при отказе смешала бы эти исходы.
 
-### Объект исключения и throw {#sec-j25-lecture-exceptions-resources-step-03}
+### Объект исключения и throw {#sec-lecture-exceptions-resources-step-03}
 
 ```java
 int score = 120;
@@ -121,7 +121,7 @@ throw failure;
 В обработчике доступны тип объекта, сообщение и диагностические сведения.
 Повторное `throw failure` передаёт тот же объект.
 
-### Ответственность вызывающего кода {#sec-j25-lecture-exceptions-resources-step-04}
+### Ответственность вызывающего кода {#sec-lecture-exceptions-resources-step-04}
 
 ```text
 parseScore → проверяет текст и диапазон балла
@@ -133,7 +133,7 @@ parseScore → проверяет текст и диапазон балла
 для дальнейшего действия. Его можно использовать и в интерактивном вводе,
 и при чтении обязательного файла [@bib-context-epam-exceptions].
 
-### Передача управления в catch {#sec-j25-lecture-exceptions-resources-step-05}
+### Передача управления в catch {#sec-lecture-exceptions-resources-step-05}
 
 ```java
 try {
@@ -155,7 +155,7 @@ try {
 После раскрытия показать объект исключения и новую переменную `failure`.
 :::
 
-### Продолжение после обработчика {#sec-j25-lecture-exceptions-resources-step-06}
+### Продолжение после обработчика {#sec-lecture-exceptions-resources-step-06}
 
 ```java
 try { parseScore("120"); }
@@ -176,7 +176,7 @@ System.out.println("следующая операция");
 После ответа спросить, где должен находиться цикл для запроса нового балла.
 :::
 
-### Раскрутка стека вызовов {#sec-j25-lecture-exceptions-resources-step-07}
+### Раскрутка стека вызовов {#sec-lecture-exceptions-resources-step-07}
 
 ```java
 static int readStudent(String text) {
@@ -198,7 +198,7 @@ catch в main ← объект исключения
 на пути к подходящему обработчику. По пути выполняются предусмотренные `finally`
 и закрытия ресурсов; выполненные ранее изменения сохраняются.
 
-### Неперехваченное исключение {#sec-j25-lecture-exceptions-resources-step-08}
+### Неперехваченное исключение {#sec-lecture-exceptions-resources-step-08}
 
 Если подходящий `catch` не найден, завершается текущий поток выполнения.
 Его обработчик неперехваченных исключений может вывести трассировку.
@@ -207,9 +207,9 @@ catch в main ← объект исключения
 Другие рабочие потоки могут продолжить выполнение: исключение не переносится
 автоматически в их стеки вызовов.
 
-## Типы и объявления исключений {#sec-j25-lecture-exceptions-resources-group-2}
+## Типы и объявления исключений {#sec-lecture-exceptions-resources-group-2}
 
-### Иерархия Throwable {#sec-j25-lecture-exceptions-resources-step-09}
+### Иерархия Throwable {#sec-lecture-exceptions-resources-step-09}
 
 ```text
 Throwable
@@ -224,7 +224,7 @@ Throwable
 Для проверяемого отказа компилятор требует обработки или допустимого
 объявления передачи. Оба вида исключений возникают при выполнении.
 
-### Объявление проверяемого отказа {#sec-j25-lecture-exceptions-resources-step-10}
+### Объявление проверяемого отказа {#sec-lecture-exceptions-resources-step-10}
 
 ```java
 class EmptyException extends Exception {}
@@ -249,7 +249,7 @@ static int take(boolean empty) throws EmptyException {
 без обработки и без `throws`. Затем проверить прогноз на следующем экране.
 :::
 
-### Обработка и передача проверяемого отказа {#sec-j25-lecture-exceptions-resources-checked-caller}
+### Обработка и передача проверяемого отказа {#sec-lecture-exceptions-resources-checked-caller}
 
 Передача следующему вызывающему уровню:
 
@@ -270,7 +270,7 @@ catch (EmptyException ex) { System.out.println("хранилище пусто");
 Аргумент `false` не отменяет объявленный `EmptyException` у `take`;
 `throws` у `forward` требуется и для этого успешного запуска.
 
-### Порядок обработчиков {#sec-j25-lecture-exceptions-resources-step-13}
+### Порядок обработчиков {#sec-lecture-exceptions-resources-step-13}
 
 ```java
 try { parseScore("ninety"); }
@@ -281,7 +281,7 @@ catch (IllegalArgumentException ex) { System.out.println("нужен диапа�
 `IllegalArgumentException`, поэтому обратный порядок сделал бы частную
 ветвь недостижимой.
 
-### Выбор обработчика по подтипу {#sec-j25-lecture-exceptions-resources-step-14 .continuation}
+### Выбор обработчика по подтипу {#sec-lecture-exceptions-resources-step-14 .continuation}
 
 Для обработчиков предыдущего экрана:
 
@@ -294,7 +294,7 @@ catch (IllegalArgumentException ex) { System.out.println("нужен диапа�
 Поиск выбирает первую подходящую ветвь. После её выполнения второй
 обработчик той же конструкции не запускается.
 
-### Предметное исключение {#sec-j25-lecture-exceptions-resources-step-17}
+### Предметное исключение {#sec-lecture-exceptions-resources-step-17}
 
 ```java
 class DataFormatException extends Exception {
@@ -309,7 +309,7 @@ class DataFormatException extends Exception {
 Тип позволяет вызывающему коду различить эти причины без разбора
 текста сообщения.
 
-### Сохранение причины {#sec-j25-lecture-exceptions-resources-step-18}
+### Сохранение причины {#sec-lecture-exceptions-resources-step-18}
 
 ```java
 static int parseAt(String text, long number)
@@ -330,7 +330,7 @@ static int parseAt(String text, long number)
 вход на `"120"`: внешний тип и номер сохранятся, изменится тип причины.
 :::
 
-### Многовариантный обработчик {#sec-j25-lecture-exceptions-resources-multi-catch}
+### Многовариантный обработчик {#sec-lecture-exceptions-resources-multi-catch}
 
 `DataFormatException` — собственный подкласс `Exception` для ошибки
 содержимого. Загрузчик объявляет отдельно `IOException` и этот тип.
@@ -346,7 +346,7 @@ catch (java.io.IOException | DataFormatException failure) {
 `NumberFormatException | IllegalArgumentException` отвергается компилятором.
 Параметру многовариантного обработчика нельзя присвоить другую ссылку.
 
-### Исключения переопределённого метода {#sec-j25-lecture-exceptions-resources-override}
+### Исключения переопределённого метода {#sec-lecture-exceptions-resources-override}
 
 ```java
 interface TextSource {
@@ -386,7 +386,7 @@ final class ConstantSource implements TextSource {
 чья операция не допускает проверяемого исключения в объявлении.
 :::
 
-### Граница перехвата {#sec-j25-lecture-exceptions-resources-step-20}
+### Граница перехвата {#sec-lecture-exceptions-resources-step-20}
 
 `catch (Exception ex)` охватывает также `RuntimeException`.
 Если общий обработчик вернёт пустой каталог, он скроет и отказ чтения,
@@ -399,10 +399,10 @@ final class ConstantSource implements TextSource {
 Перехват располагают там, где можно выбрать допустимое действие.
 Промежуточный метод может передать отказ дальше и добавить свой контекст.
 
-## Завершение блока и закрытие ресурса {#sec-j25-lecture-exceptions-resources-group-3}
+## Завершение блока и закрытие ресурса {#sec-lecture-exceptions-resources-group-3}
 
 
-### Порядок return и finally {#sec-j25-lecture-exceptions-resources-step-22}
+### Порядок return и finally {#sec-lecture-exceptions-resources-step-22}
 
 ```java
 static int withFinally() {
@@ -422,7 +422,7 @@ static int withFinally() {
 Его нормальное завершение сохраняет выбранный возврат; клиент печатает
 число после завершения вызова.
 
-### Замещение завершения в finally {#sec-j25-lecture-exceptions-resources-step-23}
+### Замещение завершения в finally {#sec-lecture-exceptions-resources-step-23}
 
 ```java
 static int replacedReturn() {
@@ -444,7 +444,7 @@ finally { throw new IllegalArgumentException("cleanup"); }
 в `cause` или `suppressed`. Резкое завершение `finally` заменяет прежнюю
 причину выхода из блока.
 
-### Нормальное и резкое завершение {#sec-j25-lecture-exceptions-resources-step-24}
+### Нормальное и резкое завершение {#sec-lecture-exceptions-resources-step-24}
 
 Блок завершается нормально, когда выполнение доходит до его закрывающей скобки.
 `return`, `throw`, `break` и `continue` прерывают обычную последовательность;
@@ -456,7 +456,7 @@ finally { throw new IllegalArgumentException("cleanup"); }
 Бесконечный цикл не выходит из блока. Остановка процесса может прекратить
 исполнение до очистки [@bib-exceptions-jls-completion].
 
-### Память и внешний ресурс {#sec-j25-lecture-exceptions-resources-step-25}
+### Память и внешний ресурс {#sec-lecture-exceptions-resources-step-25}
 
 Объект файлового потока хранится в памяти JVM. Через него программа
 использует файловый дескриптор операционной системы.
@@ -466,9 +466,9 @@ GC освобождает память недостижимых объектов
 ресурсы задолго до памяти JVM.
 
 Владелец ресурса определяет момент закрытия.
-@theory:sec-j25-theory-resources-memory
+@theory:sec-theory-resources-memory
 
-### Время жизни ссылки, ресурса и данных {#sec-j25-lecture-exceptions-resources-lifetimes}
+### Время жизни ссылки, ресурса и данных {#sec-lecture-exceptions-resources-lifetimes}
 
 ```text
 область reader:   [открытие → чтение → close]
@@ -480,7 +480,7 @@ GC освобождает память недостижимых объектов
 файловый поток завершится `IOException`.
 Список уже прочитанных строк остаётся доступным независимо от файла.
 
-### Пропущенное закрытие {#sec-j25-lecture-exceptions-resources-step-26}
+### Пропущенное закрытие {#sec-lecture-exceptions-resources-step-26}
 
 `path` имеет тип `java.nio.file.Path` и указывает на UTF-8-файл.
 Файловые методы принадлежат `java.nio.file.Files`:
@@ -500,7 +500,7 @@ reader.close();
 Сопоставить новый отказ в `finally` с ранее разобранным `cleanup`.
 :::
 
-### Интерфейс AutoCloseable {#sec-j25-lecture-exceptions-resources-step-27}
+### Интерфейс AutoCloseable {#sec-lecture-exceptions-resources-step-27}
 
 `java.lang.AutoCloseable` объявляет:
 
@@ -517,7 +517,7 @@ Try с ресурсами вызывает `close` для успешно ини�
 `AutoCloseable` допускает эффект повторного закрытия
 [@bib-data-autocloseable-api; @bib-exceptions-closeable-api].
 
-### Граница try с ресурсами {#sec-j25-lecture-exceptions-resources-step-28}
+### Граница try с ресурсами {#sec-lecture-exceptions-resources-step-28}
 
 ```java
 static String firstLine(java.nio.file.Path path) throws java.io.IOException {
@@ -535,7 +535,7 @@ static String firstLine(java.nio.file.Path path) throws java.io.IOException {
 Если `close` выбросит исключение, подготовленная строка не возвращается.
 `catch` этой конструкции охватывает открытие, тело и закрытие.
 
-### Порядок инициализации и закрытия {#sec-j25-lecture-exceptions-resources-step-29}
+### Порядок инициализации и закрытия {#sec-lecture-exceptions-resources-step-29}
 
 ```java
 final class Trace implements AutoCloseable {
@@ -558,7 +558,7 @@ final class Trace implements AutoCloseable {
 печатающее `body`. Попросить прогноз всех событий.
 :::
 
-### Трасса двух ресурсов {#sec-j25-lecture-exceptions-resources-step-31}
+### Трасса двух ресурсов {#sec-lecture-exceptions-resources-step-31}
 
 ```java
 try (var a = new Trace("A"); var b = new Trace("B")) {
@@ -584,7 +584,7 @@ close A
 После раскрытия попросить указать первую и последнюю выполненную операцию.
 :::
 
-### Отказ инициализации {#sec-j25-lecture-exceptions-resources-step-30}
+### Отказ инициализации {#sec-lecture-exceptions-resources-step-30}
 
 Ресурс `A` успешно инициализирован. При создании следующего ресурса `B`
 конструктор выбрасывает `IOException("open B")` до возврата ссылки.
@@ -603,7 +603,7 @@ A получает вызов close
 открытый внутри неудавшегося конструктора `B`, требует очистки самим
 конструктором или фабрикой.
 
-### Копирование файла {#sec-j25-lecture-exceptions-resources-file-client}
+### Копирование файла {#sec-lecture-exceptions-resources-file-client}
 
 В каталоге опыта `input.txt` содержит UTF-8-текст `first\n\nlast\n`,
 где `\n` — перевод строки. `copy.txt` первоначально отсутствует.
@@ -623,9 +623,9 @@ try (var input = java.nio.file.Files.newInputStream(source);
 Существующий целевой файл при открытии был бы усечён: ошибка копирования
 может оставить записанный префикс.
 
-## Ошибки очистки и владение {#sec-j25-lecture-exceptions-resources-group-4}
+## Ошибки очистки и владение {#sec-lecture-exceptions-resources-group-4}
 
-### Первичное и подавленное исключения {#sec-j25-lecture-exceptions-resources-step-32}
+### Первичное и подавленное исключения {#sec-lecture-exceptions-resources-step-32}
 
 ```text
 тело:  IllegalStateException("body")
@@ -640,7 +640,7 @@ Try с ресурсами передаёт наружу исключение т�
 Остальные ресурсы тоже получают `close`; их ошибки добавляются
 к первичной [@bib-data-jls-resources].
 
-### Наблюдение ошибки закрытия {#sec-j25-lecture-exceptions-resources-step-33}
+### Наблюдение ошибки закрытия {#sec-lecture-exceptions-resources-step-33}
 
 ```java
 class Failing implements AutoCloseable {
@@ -663,7 +663,7 @@ try (var resource = new Failing()) {
 
 Вывод — `body`, затем `close`. Обработчик начинает работу после очистки.
 
-### Причина отказа и ошибка очистки {#sec-j25-lecture-exceptions-resources-step-34}
+### Причина отказа и ошибка очистки {#sec-lecture-exceptions-resources-step-34}
 
 `Resource.close` печатает `close` и выбрасывает
 `IOException("cleanup")`. Тело передаёт другую ошибку с причиной:
@@ -687,7 +687,7 @@ try (var resource = new Resource()) {
 отказа при `close`; затем перейти к выводу и схеме связей.
 :::
 
-### Причина отказа и ошибка очистки {#sec-j25-lecture-exceptions-resources-step-34-part-1 .continuation}
+### Причина отказа и ошибка очистки {#sec-lecture-exceptions-resources-step-34-part-1 .continuation}
 
 ```text
 close
@@ -712,7 +712,7 @@ IOException("read")
 попросить назвать основное исключение: `cleanup`; его причина не задана.
 :::
 
-### Временное пользование ресурсом {#sec-j25-lecture-exceptions-resources-step-35}
+### Временное пользование ресурсом {#sec-lecture-exceptions-resources-step-35}
 
 Метод получает `java.io.BufferedReader`, который закрывает вызывающая сторона:
 
@@ -730,7 +730,7 @@ static long countLines(java.io.BufferedReader reader) throws java.io.IOException
 
 Передача ссылки разрешила чтение; обязанность закрытия осталась у владельца.
 
-### Закрытие обёртки общего потока {#sec-j25-lecture-exceptions-resources-step-36}
+### Закрытие обёртки общего потока {#sec-lecture-exceptions-resources-step-36}
 
 Закрытие `Scanner`, читающего `System.in`, закрывает его нижележащий
 вход. Остальное приложение может потерять доступ к общему ресурсу.
@@ -739,7 +739,7 @@ static long countLines(java.io.BufferedReader reader) throws java.io.IOException
 метод только читает его во время вызова и оставляет открытым для других
 частей приложения.
 
-### Готовые данные и ленивый источник {#sec-j25-lecture-exceptions-resources-step-38}
+### Готовые данные и ленивый источник {#sec-lecture-exceptions-resources-step-38}
 
 ```java
 static java.util.List<String> nonblankLines(java.nio.file.Path path)
@@ -757,9 +757,9 @@ static java.util.List<String> nonblankLines(java.nio.file.Path path)
 Возврат одного `lines.filter(...)` передал бы ленивый конвейер
 с уже закрытым источником. Терминальная операция сама `close` не вызывает.
 
-## Состояние и реакция приложения {#sec-j25-lecture-exceptions-resources-group-5}
+## Состояние и реакция приложения {#sec-lecture-exceptions-resources-group-5}
 
-### Частичное изменение состояния {#sec-j25-lecture-exceptions-resources-step-39}
+### Частичное изменение состояния {#sec-lecture-exceptions-resources-step-39}
 
 ```java
 var scores = new java.util.ArrayList<Integer>();
@@ -782,7 +782,7 @@ try {
 После ответа обсудить требование «получить все баллы или сохранить старый список».
 :::
 
-### Подготовка результата до публикации {#sec-j25-lecture-exceptions-resources-step-40}
+### Подготовка результата до публикации {#sec-lecture-exceptions-resources-step-40}
 
 ```text
 старый каталог доступен вызывающей стороне
@@ -797,7 +797,7 @@ try {
 создаёт внешний эффект; сохранение прежнего состояния требует отдельного решения
 [@bib-exceptions-bloch-state].
 
-### Отказ создания объекта {#sec-j25-lecture-exceptions-resources-constructor}
+### Отказ создания объекта {#sec-lecture-exceptions-resources-constructor}
 
 ```java
 final class Limits {
@@ -817,7 +817,7 @@ final class Limits {
 `new` не вернул ссылку. Запись во внешний список уже состоялась.
 Проверка аргумента до `events.add` оставляет журнал неизменным при этом отказе.
 
-### Пустой результат и неудачная загрузка {#sec-j25-lecture-exceptions-resources-step-41}
+### Пустой результат и неудачная загрузка {#sec-lecture-exceptions-resources-step-41}
 
 Предположим, метод чтения использует:
 
@@ -832,7 +832,7 @@ catch (java.io.IOException ex) { return java.util.List.of(); }
 отдельным вариантом результата. Пустая коллекция остаётся успешным
 результатом чтения пустого источника.
 
-### Диагностический путь вызовов {#sec-j25-lecture-exceptions-resources-step-42}
+### Диагностический путь вызовов {#sec-lecture-exceptions-resources-step-42}
 
 Схема кадров трассировки для преобразования строки:
 
@@ -850,7 +850,7 @@ NumberFormatException
 `printStackTrace()` обычно выводит также цепочку причин и подавленные ошибки.
 Один `getMessage()` этих связей не содержит.
 
-### Условия повторной попытки {#sec-j25-lecture-exceptions-resources-retry}
+### Условия повторной попытки {#sec-lecture-exceptions-resources-retry}
 
 `parseScore("ninety")` при повторе с тем же текстом снова откажет.
 Интерактивное приложение может запросить новый ввод.
@@ -860,7 +860,7 @@ NumberFormatException
 и перечень отклонённых. Такой результат явно сообщает о неполной загрузке.
 Временный внешний отказ может допускать ограниченное число повторов.
 
-### Обработка на границе приложения {#sec-j25-lecture-exceptions-resources-step-43}
+### Обработка на границе приложения {#sec-lecture-exceptions-resources-step-43}
 
 | Отказ | Сведения для реакции |
 |---|---|
@@ -872,9 +872,9 @@ NumberFormatException
 диагностические сведения и завершает работу с принадлежащим ему ресурсом.
 
 Приложение поставок продолжает обработку после неверных строк и публикует отчёт
-после полного чтения и закрытия: @theory:sec-j25-theory-application.
+после полного чтения и закрытия: @theory:sec-theory-application.
 
-### Результат операции с ресурсом {#sec-j25-lecture-exceptions-resources-exit}
+### Результат операции с ресурсом {#sec-lecture-exceptions-resources-exit}
 
 Загрузчик прочитал две записи в локальный список. На третьей получил
 `DataFormatException` с номером строки; `close` выбросил `IOException`.
@@ -898,13 +898,13 @@ NumberFormatException
 Попросить назвать условие сохранности старого каталога.
 :::
 
-## Дополнительные механизмы отказа {#sec-j25-lecture-exceptions-resources-additional}
+## Дополнительные механизмы отказа {#sec-lecture-exceptions-resources-additional}
 
 
-## Типизированный результат {#sec-j25-lecture-exceptions-resources-results}
+## Типизированный результат {#sec-lecture-exceptions-resources-results}
 
 
-### Интерфейс проверки балла {#sec-j25-lecture-exceptions-resources-results-interface}
+### Интерфейс проверки балла {#sec-lecture-exceptions-resources-results-interface}
 
 Для строки, отличной от `null`, без пробелов по краям проверка различает
 балл 0–100, неверное представление `int` и число вне диапазона.
@@ -913,7 +913,7 @@ NumberFormatException
 Другой интерфейс возвращает значение, которое кодирует успех или причину
 отказа. Вызывающий код выбирает дальнейшее действие по этому значению.
 
-### Варианты типизированного результата {#sec-j25-lecture-exceptions-resources-results-types}
+### Варианты типизированного результата {#sec-lecture-exceptions-resources-results-types}
 
 ```java
 sealed interface ScoreResult permits Score, ScoreFailure {}
@@ -932,7 +932,7 @@ record ScoreFailure(ScoreProblem problem) implements ScoreResult {}
 Затем пройти тело метода и для каждого `return` указать создаваемый вариант.
 :::
 
-### Возврат предметного исхода {#sec-j25-lecture-exceptions-resources-results-adapter}
+### Возврат предметного исхода {#sec-lecture-exceptions-resources-results-adapter}
 
 ```java
 static ScoreResult parseScoreResult(String text) {
@@ -952,7 +952,7 @@ static ScoreResult parseScoreResult(String text) {
 `null` нарушает предусловие и по-прежнему приводит к исключению.
 `NOT_INTEGER` включает число, которое не представимо в `int`.
 
-### Результаты трёх вызовов {#sec-j25-lecture-exceptions-resources-results-inputs .continuation}
+### Результаты трёх вызовов {#sec-lecture-exceptions-resources-results-inputs .continuation}
 
 ```text
 "90"     → Score(90)
@@ -965,7 +965,7 @@ static ScoreResult parseScoreResult(String text) {
 чтобы отреагировать на отказ, ему нужно разобрать полученный вариант. Передача `null`,
 нарушающая предусловие, и дефекты реализации не превращены в обычную ошибку данных.
 
-### Полнота разбора вариантов {#sec-j25-lecture-exceptions-resources-results-switch}
+### Полнота разбора вариантов {#sec-lecture-exceptions-resources-results-switch}
 
 Шаблон типа связывает весь объект. Здесь **шаблон записи** проверяет вариант
 результата и связывает его компонент: `Score(var value)` вводит `value` типа `int`,
@@ -990,7 +990,7 @@ System.out.println(message); // ошибка: OUT_OF_RANGE
 какой участок клиента задаёт эту реакцию.
 :::
 
-### Состояние после возвращённой ошибки {#sec-j25-lecture-exceptions-resources-results-state}
+### Состояние после возвращённой ошибки {#sec-lecture-exceptions-resources-results-state}
 
 Если до возврата `ScoreFailure` уже добавлены две записи в общий список,
 они остаются там после `return`, как остаются после `throw`.
@@ -998,7 +998,7 @@ System.out.println(message); // ошибка: OUT_OF_RANGE
 **Способ сообщения об отказе не создаёт откат.** «Объект корректен»
 и «объект совсем не изменился» — разные требования к состоянию после отказа.
 
-### Возврат результата и ошибка закрытия {#sec-j25-lecture-exceptions-resources-return-close}
+### Возврат результата и ошибка закрытия {#sec-lecture-exceptions-resources-return-close}
 
 ```text
 вычислен Score или ScoreFailure → close → возврат
@@ -1017,7 +1017,7 @@ System.out.println(message); // ошибка: OUT_OF_RANGE
 `DataFormatException` в таблице двух исходов.
 :::
 
-### Ошибка как значение и исключение тела {#sec-j25-lecture-exceptions-resources-return-close-errors .continuation}
+### Ошибка как значение и исключение тела {#sec-lecture-exceptions-resources-return-close-errors .continuation}
 
 Для ресурса, чей `close` выбрасывает `IOException("close")`:
 
@@ -1029,9 +1029,9 @@ System.out.println(message); // ошибка: OUT_OF_RANGE
 **Чтобы сохранить ошибку данных, переданную значением, вместе с ошибкой
 закрытия, метод должен явно объединить сведения о них.** В первом опыте `getCause() == null`,
 `getSuppressed().length == 0`.
-Полные примеры: @theory:sec-j25-theory-resources-results.
+Полные примеры: @theory:sec-theory-resources-results.
 
-### Передача отказа и восстановление {#sec-j25-lecture-exceptions-resources-results-recovery}
+### Передача отказа и восстановление {#sec-lecture-exceptions-resources-results-recovery}
 
 | Механизм | Что происходит с отказом |
 |---|---|
@@ -1043,7 +1043,7 @@ System.out.println(message); // ошибка: OUT_OF_RANGE
 В Rust `panic!` запускает отдельный механизм аварийного завершения
 [@bib-context-rust-panic].
 
-### Тип Result в Rust {#sec-j25-lecture-exceptions-resources-rust-result}
+### Тип Result в Rust {#sec-lecture-exceptions-resources-rust-result}
 
 ```rust
 fn parse_score(text: &str) -> Result<i32, ScoreProblem> {
@@ -1059,7 +1059,7 @@ fn parse_score(text: &str) -> Result<i32, ScoreProblem> {
 `?` извлекает успех либо возвращает ошибку из текущей функции.
 `ScoreProblem` — перечисление двух причин [@bib-context-rust-result].
 
-### Значение error в Go {#sec-j25-lecture-exceptions-resources-go-result}
+### Значение error в Go {#sec-lecture-exceptions-resources-go-result}
 
 ```go
 score, err := parseScore("120")
@@ -1073,9 +1073,9 @@ fmt.Println(score)
 Функция возвращает `(int, error)`. По её соглашению балл пригоден
 только при `err == nil`; это проверяет вызывающий код.
 Тип пары сам не запрещает одновременно значение и ошибку
-[@bib-context-go-errors]. Полная функция: @theory:sec-j25-theory-exceptions-language-results.
+[@bib-context-go-errors]. Полная функция: @theory:sec-theory-exceptions-language-results.
 
-### Объявление исключений в разных языках {#sec-j25-lecture-exceptions-resources-step-12}
+### Объявление исключений в разных языках {#sec-lecture-exceptions-resources-step-12}
 
 Java проверяет обработку объявленных проверяемых исключений при компиляции.
 Переопределение метода должно сохранить допустимость прежних вызовов.
@@ -1088,7 +1088,7 @@ Java проверяет обработку объявленных проверя
 В Python обычное объявление функции также не содержит проверяемого
 компилятором списка `throws`.
 
-### Границы освобождения в разных языках {#sec-j25-lecture-exceptions-resources-cleanup-models}
+### Границы освобождения в разных языках {#sec-lecture-exceptions-resources-cleanup-models}
 
 | Средство | Граница завершающего действия |
 |---|---|
@@ -1101,7 +1101,7 @@ Java проверяет обработку объявленных проверя
 закрытия. Java try с ресурсами сохраняет дополнительный отказ закрытия
 через `suppressed` [@bib-context-cpp-raii; @bib-context-go-defer; @bib-context-python-with].
 
-### Исключение конструктора суперкласса {#sec-j25-lecture-exceptions-resources-constructor-throws}
+### Исключение конструктора суперкласса {#sec-lecture-exceptions-resources-constructor-throws}
 
 ```java
 class TextSnapshot {
@@ -1121,7 +1121,7 @@ class NamedSnapshot extends TextSnapshot {
 Конструкторы не переопределяются; ограничение сужения из правил методов
 к ним не относится [@bib-exceptions-jls-declarations].
 
-### Статический тип ресурса {#sec-j25-lecture-exceptions-resources-checked-close}
+### Статический тип ресурса {#sec-lecture-exceptions-resources-checked-close}
 
 ```java
 final class Quiet implements AutoCloseable {
@@ -1143,7 +1143,7 @@ try (resource) {} // у AutoCloseable.close объявлен Exception
 Оба запуска вызывают пустой `Quiet.close`. Компилятор учитывает объявление
 `close` по статическому типу; второй вариант требует обработки или `throws`.
 
-### Проверяемые исключения в ранней Java {#sec-j25-lecture-exceptions-resources-checked-history}
+### Проверяемые исключения в ранней Java {#sec-lecture-exceptions-resources-checked-history}
 
 В первой JLS 1996 года `throws` с проверяемыми исключениями уже описан
 как часть соглашения автора метода и его пользователя.
@@ -1153,7 +1153,7 @@ try (resource) {} // у AutoCloseable.close объявлен Exception
 Разделение на проверяемые и непроверяемые исключения было частью
 раннего описания [@bib-context-jls1-exceptions].
 
-### Финализация и задержка очистки {#sec-j25-lecture-exceptions-resources-finalization}
+### Финализация и задержка очистки {#sec-lecture-exceptions-resources-finalization}
 
 В JDK 18, согласно JEP 421, финализацию объявили устаревшей
 с намерением удалить её в будущем.

@@ -2,15 +2,15 @@
 categories: [java, java-core, java-streams]
 ---
 
-# Stream и Collectors {#sec-j25-api-streams}
+# Stream и Collectors {#sec-api-streams}
 
 `Stream<T>` — одноразовый конвейер элементов: источник,
 промежуточные преобразования и терминальное получение результата.
 Описанные операции относятся к Java 25 [@bib-data-stream-api].
 
-Объяснение вычисления: @theory:sec-j25-theory-streams.
+Объяснение вычисления: @theory:sec-theory-streams.
 
-## Источники и операции {#sec-j25-api-streams-operations}
+## Источники и операции {#sec-api-streams-operations}
 
 Источники: `collection.stream()`, `Arrays.stream(array)`,
 `Stream.of(values...)`, `Stream.empty()`, `Stream.iterate(seed, next)`,
@@ -69,7 +69,7 @@ categories: [java, java-core, java-streams]
 При выборе `null` через `findFirst/findAny/min/max` результат может
 дать `NullPointerException`: `Optional` не представляет присутствующий `null`.
 
-## Сборка {#sec-j25-api-streams-collectors}
+## Сборка {#sec-api-streams-collectors}
 
 Преобразование чисел в массив строк:
 
@@ -128,7 +128,7 @@ static <T> Collector<T, ?, Long> counting();
 `Collection` и `Map` находятся в `java.util`, `Supplier` —
 в `java.util.function`.
 
-## Требования к функциям {#sec-j25-api-streams-behavior}
+## Требования к функциям {#sec-api-streams-behavior}
 
 Действия не вмешиваются в источник и обычно не зависят от меняющегося
 внешнего состояния. Операция `reduce` требует ассоциативного объединения
@@ -147,7 +147,7 @@ static <T> Collector<T, ?, Long> counting();
 операция не закрывает файловый ресурс автоматически.
 
 
-## Кодовые единицы строки как источник {#sec-j25-api-streams-char-units}
+## Кодовые единицы строки как источник {#sec-api-streams-char-units}
 
 `IntStream chars()` у `String` возвращает поток: каждое значение — беззнаково
 расширенная до `int` кодовая единица UTF-16. `Stream<Integer> boxed()`
@@ -176,7 +176,7 @@ System.out.println(symbol.codePoints().boxed().toList()); // [128512]
 [String.chars](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#chars()) и
 [String.codePoints](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#codePoints()).
 
-## Файловый поток {#sec-j25-api-streams-files}
+## Файловый поток {#sec-api-streams-files}
 
 Сигнатура `Files.lines`:
 

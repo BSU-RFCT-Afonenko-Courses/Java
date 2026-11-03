@@ -13,9 +13,9 @@ format:
     show-notes: false
 ---
 
-## Класс и экземпляр {#sec-j25-lecture-objects-invariants}
+## Класс и экземпляр {#sec-lecture-objects-invariants}
 
-### Поля экземпляра {#sec-j25-lecture-objects-invariants-objects .continuation}
+### Поля экземпляра {#sec-lecture-objects-invariants-objects .continuation}
 
 ```java
 class Book {
@@ -28,14 +28,14 @@ class Book {
 `false` означает доступную книгу, `true` — выданную. Объявление класса
 определило эти поля; экземпляров `Book` пока не создано.
 
-Объекты и ссылки: @theory:sec-j25-theory-objects. [@bib-objects-schildt-classes]
+Объекты и ссылки: @theory:sec-theory-objects. [@bib-objects-schildt-classes]
 
 ::: {.notes}
 Попросите указать тип каждого поля. Отделите число объявлений полей
 от числа книг, которые программа сможет создать с такими полями.
 :::
 
-### Создание объекта {#sec-j25-lecture-objects-invariants-new}
+### Создание объекта {#sec-lecture-objects-invariants-new}
 
 ```java
 Book first = new Book();
@@ -60,7 +60,7 @@ first ───> A: Book
 какое значение записано в first.
 :::
 
-### Присваивание локальной переменной {#sec-j25-lecture-objects-invariants-declaration .continuation}
+### Присваивание локальной переменной {#sec-lecture-objects-invariants-declaration .continuation}
 
 В отдельном опыте локальное объявление предшествует присваиванию:
 
@@ -82,7 +82,7 @@ System.out.println(pending.title);    // null
 Спросите, почему раскомментирование печати меняет именно результат компиляции.
 :::
 
-### Состояние двух экземпляров {#sec-j25-lecture-objects-invariants-two-objects .continuation}
+### Состояние двух экземпляров {#sec-lecture-objects-invariants-two-objects .continuation}
 
 У созданной книги `first` зададим название и создадим вторую книгу:
 
@@ -110,7 +110,7 @@ second ───> B: title = "Algorithms", borrowed = false
 объект, которому принадлежит прочитанное поле.
 :::
 
-### Ссылочная переменная в Java и C++ {#sec-j25-lecture-objects-invariants-references}
+### Ссылочная переменная в Java и C++ {#sec-lecture-objects-invariants-references}
 
 В C++ локальная запись `Book object;` создаёт объект с автоматическим
 временем хранения, если класс допускает такую инициализацию.
@@ -131,7 +131,7 @@ second ───> B: title = "Algorithms", borrowed = false
 в каких случаях меняется путь к объекту.
 :::
 
-### Общий объект {#sec-j25-lecture-objects-invariants-aliases}
+### Общий объект {#sec-lecture-objects-invariants-aliases}
 
 Книга `first` имеет название `Java` и пока доступна:
 
@@ -156,7 +156,7 @@ same ──────┘
 Затем посчитайте переменные first и same и доступные через них книги.
 :::
 
-### Тождество и содержимое объекта {#sec-j25-lecture-objects-invariants-identity .continuation}
+### Тождество и содержимое объекта {#sec-lecture-objects-invariants-identity .continuation}
 
 У новой книги установлены те же значения обоих полей:
 
@@ -178,7 +178,7 @@ System.out.println(first == other); // false
 результат повторного сравнения.
 :::
 
-### Тождество экземпляра и номер книги {#sec-j25-lecture-objects-invariants-domain-identity .continuation}
+### Тождество экземпляра и номер книги {#sec-lecture-objects-invariants-domain-identity .continuation}
 
 Номер экземпляра в каталоге определяет, какую физическую книгу выдали.
 Два чтения записи с одним номером могут создать два Java-объекта:
@@ -189,7 +189,7 @@ System.out.println(first == other); // false
 При обновлении каталога правило поиска определяет, чьё состояние
 изменится. Одинакового названия для выбора экземпляра недостаточно.
 
-Предметное равенство: @theory:sec-j25-theory-objects-identity.
+Предметное равенство: @theory:sec-theory-objects-identity.
 
 ::: {.notes}
 Предложите две ситуации: два физических экземпляра одного издания
@@ -197,7 +197,7 @@ System.out.println(first == other); // false
 и объекты программы.
 :::
 
-### Переназначение переменной {#sec-j25-lecture-objects-invariants-reassignment .continuation}
+### Переназначение переменной {#sec-lecture-objects-invariants-reassignment .continuation}
 
 До присваивания `first` и `same` ссылаются на выданную книгу `A`:
 
@@ -222,7 +222,7 @@ same  ───> D: title = "Databases", borrowed = false
 Попросите объяснить сохранение borrowed у A и начальное false у D.
 :::
 
-### Отсутствие объекта {#sec-j25-lecture-objects-invariants-null}
+### Отсутствие объекта {#sec-lecture-objects-invariants-null}
 
 ```java
 Book missing = null;
@@ -240,7 +240,7 @@ System.out.println(missing == null); // true
 указать, в каком случае можно прочитать поле title и получить null.
 :::
 
-### Требования к объекту и его полю {#sec-j25-lecture-objects-invariants-null-contract .continuation}
+### Требования к объекту и его полю {#sec-lecture-objects-invariants-null-contract .continuation}
 
 Поиск может завершиться без книги. Операция чтения названия требует
 найденную книгу с заданным названием:
@@ -263,7 +263,7 @@ static String titleOf(Book book) {
 borrowed не влияет на выполнение этого метода.
 :::
 
-## Передача значений аргументов {#sec-j25-lecture-objects-invariants-arguments}
+## Передача значений аргументов {#sec-lecture-objects-invariants-arguments}
 
 Метод получает существующую книгу и устанавливает признак выдачи:
 
@@ -284,7 +284,7 @@ System.out.println(first.borrowed); // true
 
 Параметр `book` получает копию ссылки из `first`. Обе переменные
 обращаются к одной книге; запись в её поле меняет `false` на `true`.
-Передача по значению: @theory:sec-j25-theory-objects-arguments.
+Передача по значению: @theory:sec-theory-objects-arguments.
 
 ::: {.notes}
 Добавьте к переменной first отдельную переменную параметра book,
@@ -292,7 +292,7 @@ System.out.println(first.borrowed); // true
 в теле borrow и назвать состояние книги после возврата.
 :::
 
-### Параметр как локальная переменная {#sec-j25-lecture-objects-invariants-replace .continuation}
+### Параметр как локальная переменная {#sec-lecture-objects-invariants-replace .continuation}
 
 После `borrow(first)` книга `first` выдана и называется `Java`:
 
@@ -322,7 +322,7 @@ replace одной строкой book.title = "Replacement" и предсказ
 при следующем чтении first.title.
 :::
 
-### Возвращаемая ссылка {#sec-j25-lecture-objects-invariants-return}
+### Возвращаемая ссылка {#sec-lecture-objects-invariants-return}
 
 ```java
 static Book create(String title) {
@@ -345,7 +345,7 @@ create("Algorithms") без присваивания и предсказать �
 book.title. Сопоставьте это с явным book = create("Algorithms").
 :::
 
-### Копирование полей объекта {#sec-j25-lecture-objects-invariants-copy}
+### Копирование полей объекта {#sec-lecture-objects-invariants-copy}
 
 Исходная книга `first` называется `Java` и выдана:
 
@@ -370,7 +370,7 @@ System.out.println(first == copy); // false
 предсказать, какие данные останутся общими при копировании его ссылки.
 :::
 
-### Достижимость объекта {#sec-j25-lecture-objects-invariants-lifetime}
+### Достижимость объекта {#sec-lecture-objects-invariants-lifetime}
 
 ```java
 Book kept = create("Java");
@@ -394,7 +394,7 @@ kept: null       alias ───> книга: title = Java
 Отсутствие локальных ссылок ещё оставляет путь через каталог.
 :::
 
-### Закрытие внешнего ресурса {#sec-j25-lecture-objects-invariants-resources .continuation}
+### Закрытие внешнего ресурса {#sec-lecture-objects-invariants-resources .continuation}
 
 Сборщик мусора освобождает память недостижимых объектов. Присваивание
 `null` удаляет одну ссылку; остальные пути могут сохраниться.
@@ -403,7 +403,7 @@ kept: null       alias ───> книга: title = Java
 Открытый файл требует вызова `close`. Конструкция `try` с ресурсами
 вызывает `close` для успешно инициализированного ресурса, отличного от `null`,
 при выходе из блока, в том числе через `return` или исключение.
-Закрытие: @theory:sec-j25-theory-resources.
+Закрытие: @theory:sec-theory-resources.
 
 Выход автоматического объекта C++ из области вызывает его деструктор.
 Окончание области локальной переменной Java такого действия с объектом
@@ -416,7 +416,7 @@ kept: null       alias ───> книга: title = Java
 записью null без вызова close.
 :::
 
-## Инвариант состояния {#sec-j25-lecture-objects-invariants-invariant}
+## Инвариант состояния {#sec-lecture-objects-invariants-invariant}
 
 Объект бронирования хранит вместимость `capacity` и число занятых мест
 `occupied`. **Инвариант** задаёт допустимое состояние между обращениями
@@ -429,7 +429,7 @@ kept: null       alias ───> книга: title = Java
 Для комнаты на 30 мест допустимы и пустое состояние, и занятость 30.
 Запрос занять ещё 8 мест допустим, только если свободно хотя бы 8.
 Условие запроса зависит от текущего состояния объекта.
-@theory:sec-j25-theory-classes-invariant. [@bib-objects-epam-classes]
+@theory:sec-theory-classes-invariant. [@bib-objects-epam-classes]
 
 ::: {.notes}
 Назовите occupied = 25 при capacity = 30. Попросите сначала проверить
@@ -437,7 +437,7 @@ kept: null       alias ───> книга: title = Java
 которое нарушено при сохранённом инварианте.
 :::
 
-### Нарушение инварианта прямой записью {#sec-j25-lecture-objects-invariants-bad-fields}
+### Нарушение инварианта прямой записью {#sec-lecture-objects-invariants-bad-fields}
 
 ```java
 class OpenReservation {
@@ -460,7 +460,7 @@ room.occupied = 100;
 какие места пришлось бы проверить после появления второго клиента.
 :::
 
-### Закрытое представление {#sec-j25-lecture-objects-invariants-private-fields}
+### Закрытое представление {#sec-lecture-objects-invariants-private-fields}
 
 ```java
 final class Reservation {
@@ -485,7 +485,7 @@ final class Reservation {
 и установите, почему private не проверяет арифметическое условие.
 :::
 
-### Допустимое начальное состояние {#sec-j25-lecture-objects-invariants-construct .continuation}
+### Допустимое начальное состояние {#sec-lecture-objects-invariants-construct .continuation}
 
 ```java
 Reservation(int capacity) {
@@ -510,7 +510,7 @@ Reservation(int capacity) {
 и параметр вызова конструктора.
 :::
 
-### Вычисляемое состояние {#sec-j25-lecture-objects-invariants-available .continuation}
+### Вычисляемое состояние {#sec-lecture-objects-invariants-available .continuation}
 
 ```java
 int available() {
@@ -531,7 +531,7 @@ occupied. Попросите назвать два противоречащих 
 о свободных местах и найти лишнюю связь, которую пришлось бы поддерживать.
 :::
 
-### Проверка запроса до изменения {#sec-j25-lecture-objects-invariants-reserve .continuation}
+### Проверка запроса до изменения {#sec-lecture-objects-invariants-reserve .continuation}
 
 ```java
 void reserve(int count) {
@@ -556,7 +556,7 @@ void reserve(int count) {
 назвать остаток после каждого вызова и указать, какой дойдёт до присваивания.
 :::
 
-### Наблюдение состояния после отказа {#sec-j25-lecture-objects-invariants-reservation-result .continuation}
+### Наблюдение состояния после отказа {#sec-lecture-objects-invariants-reservation-result .continuation}
 
 ```java
 Reservation room = new Reservation(30);
@@ -581,7 +581,7 @@ occupied += count перед проверкой и объяснить, како�
 потеряется, даже если сообщение refused останется тем же.
 :::
 
-### Операция изменения состояния {#sec-j25-lecture-objects-invariants-setter}
+### Операция изменения состояния {#sec-lecture-objects-invariants-setter}
 
 При занятости 8 действие `reserve(8)` занимает ещё восемь мест:
 занятость становится `16`. Присваивающий метод `setOccupied(8)`
@@ -619,7 +619,7 @@ available и изменение при reserve(5) в обоих случаях. 
 Речь идёт о последовательном использовании этого объекта.
 :::
 
-## Конструирование экземпляра {#sec-j25-lecture-objects-invariants-constructors}
+## Конструирование экземпляра {#sec-lecture-objects-invariants-constructors}
 
 ```java
 class Box {
@@ -643,7 +643,7 @@ class Box {
 выполнит конструктор по умолчанию.
 :::
 
-### Инициализация полей через `this` {#sec-j25-lecture-objects-invariants-this}
+### Инициализация полей через `this` {#sec-lecture-objects-invariants-this}
 
 ```java
 class Box {
@@ -668,7 +668,7 @@ class Box {
 запись и почему final-поле осталось без требуемой инициализации.
 :::
 
-### Делегирование между конструкторами {#sec-j25-lecture-objects-invariants-delegation .continuation}
+### Делегирование между конструкторами {#sec-lecture-objects-invariants-delegation .continuation}
 
 Дополнительный конструктор того же `Box`:
 
@@ -691,7 +691,7 @@ Box(int side) {
 выполнение всей операции new.
 :::
 
-### Диапазон результата метода {#sec-j25-lecture-objects-invariants-validation}
+### Диапазон результата метода {#sec-lecture-objects-invariants-validation}
 
 Метод площади использует положительные размеры `Box`:
 
@@ -714,7 +714,7 @@ int area() {
 множителя до умножения и предсказать результат для тех же размеров.
 :::
 
-### Порядок инициализации экземпляра {#sec-j25-lecture-objects-invariants-initialization}
+### Порядок инициализации экземпляра {#sec-lecture-objects-invariants-initialization}
 
 ```java
 class Trace {
@@ -740,7 +740,7 @@ class Trace {
 после которой значение 0 заменено на 7.
 :::
 
-## Объявление метода {#sec-j25-lecture-objects-invariants-methods}
+## Объявление метода {#sec-lecture-objects-invariants-methods}
 
 ```java
 static int max(int a, int b) {
@@ -765,7 +765,7 @@ System.out.println(max(9, 2)); // 9
 прежний аргумент случайно останется, если второй setter пропущен.
 :::
 
-### Выбор перегруженного объявления {#sec-j25-lecture-objects-invariants-overload}
+### Выбор перегруженного объявления {#sec-lecture-objects-invariants-overload}
 
 ```java
 static String describe(int value) { return "int"; }
@@ -780,7 +780,7 @@ System.out.println(describe("3")); // String
 
 Объявления с одинаковыми параметрами и разными возвращаемыми типами
 конфликтуют: возвращаемый тип не различает перегрузки.
-@theory:sec-j25-theory-classes-overload.
+@theory:sec-theory-classes-overload.
 
 ::: {.notes}
 В первом объявлении предложите заменить тип параметра int на long
@@ -789,7 +789,7 @@ System.out.println(describe("3")); // String
 почему такое объявление конфликтует с уже существующим.
 :::
 
-## Статические члены {#sec-j25-lecture-objects-invariants-static}
+## Статические члены {#sec-lecture-objects-invariants-static}
 
 ```java
 final class Ticket {
@@ -813,7 +813,7 @@ final class Ticket {
 одну ячейку общего поля и две ячейки полей экземпляров.
 :::
 
-### Общий счётчик и номера экземпляров {#sec-j25-lecture-objects-invariants-static-result .continuation}
+### Общий счётчик и номера экземпляров {#sec-lecture-objects-invariants-static-result .continuation}
 
 ```java
 Ticket first = new Ticket();
@@ -839,7 +839,7 @@ Ticket.nextId: 3     first.id: 1     second.id: 2
 номера могут получить билеты.
 :::
 
-### Статический метод без получателя {#sec-j25-lecture-objects-invariants-static-this}
+### Статический метод без получателя {#sec-lecture-objects-invariants-static-this}
 
 ```java
 class Numbers {
@@ -859,7 +859,7 @@ System.out.println(Numbers.add(2, 3)); // 5
 на отсутствие this у внешнего статического метода.
 :::
 
-### Однократное присваивание ссылки {#sec-j25-lecture-objects-invariants-final}
+### Однократное присваивание ссылки {#sec-lecture-objects-invariants-final}
 
 ```java
 final int[] values = {1, 2};
@@ -879,7 +879,7 @@ System.out.println(values[0]); // 9
 какие из двух показанных присваиваний останутся допустимыми.
 :::
 
-### Неизменяемое наблюдаемое значение {#sec-j25-lecture-objects-invariants-immutable}
+### Неизменяемое наблюдаемое значение {#sec-lecture-objects-invariants-immutable}
 
 У неизменяемого объекта наблюдаемое значение сохраняется после
 создания. Например, общий `String` сохраняет последовательность
@@ -890,7 +890,7 @@ System.out.println(values[0]); // 9
 наружу появляется ещё один путь изменения. Защита собственного
 состояния требует решения на обеих границах: какие данные копируются
 при входе и какие доступны в результате метода.
-@theory:sec-j25-theory-classes-sharing.
+@theory:sec-theory-classes-sharing.
 
 ::: {.notes}
 Предложите объект с private final String[] names и клиентскую ссылку
@@ -899,7 +899,7 @@ System.out.println(values[0]); // 9
 и проверьте, что остаётся при возврате внутреннего массива.
 :::
 
-## Защищённое состояние книги {#sec-j25-lecture-objects-invariants-book-contract}
+## Защищённое состояние книги {#sec-lecture-objects-invariants-book-contract}
 
 Теперь `Book` устанавливает допустимое название при создании
 и закрывает поля от прямых записей клиента:
@@ -925,7 +925,7 @@ public final class Book {
 Назовите, какой вызов даёт клиенту книгу и каково её состояние.
 :::
 
-### Операция выдачи {#sec-j25-lecture-objects-invariants-book-contract-part-1 .continuation}
+### Операция выдачи {#sec-lecture-objects-invariants-book-contract-part-1 .continuation}
 
 Методы того же класса `Book`:
 
@@ -950,7 +950,7 @@ public final class Book {
 borrowed будут видны после обоих вызовов и где возникнет исключение.
 :::
 
-### Общее состояние через защищённый интерфейс {#sec-j25-lecture-objects-invariants-book-client}
+### Общее состояние через защищённый интерфейс {#sec-lecture-objects-invariants-book-client}
 
 ```java
 Book first = new Book("Java");
@@ -975,7 +975,7 @@ System.out.println(first.borrowed()); // true
 new Book("Java") и объяснить исход её первого borrow.
 :::
 
-### Условия доступного перехода {#sec-j25-lecture-objects-invariants-route}
+### Условия доступного перехода {#sec-lecture-objects-invariants-route}
 
 Каждый вызов ниже начинается с указанного состояния:
 
@@ -997,7 +997,7 @@ new Book("Java") и объяснить исход её первого borrow.
 может опираться при продолжении.
 :::
 
-### Отказ при создании и изменении объекта {#sec-j25-lecture-objects-invariants-design-check}
+### Отказ при создании и изменении объекта {#sec-lecture-objects-invariants-design-check}
 
 `new Reservation(30)` устанавливает пустую комнату на 30 мест.
 `reserve(8)` меняет занятость, `available()` возвращает `22`.
@@ -1012,7 +1012,7 @@ new Book("Java") и объяснить исход её первого borrow.
 после new, и действие, на котором ошибка обнаружится позже.
 :::
 
-### Сохранение данных при отказе {#sec-j25-lecture-objects-invariants-exit}
+### Сохранение данных при отказе {#sec-lecture-objects-invariants-exit}
 
 Стек добавляет элемент на вершину и извлекает последний добавленный.
 При ёмкости 2 помещения `A` и `B` заполняют стек. Отклонённое помещение
@@ -1023,7 +1023,7 @@ new Book("Java") и объяснить исход её первого borrow.
 Последующие чтения обнаруживают это нарушение: у стека — извлечение,
 у комнаты — `available()`, у книги — `borrowed()`.
 
-Защита состояния: @theory:sec-j25-theory-classes-invariant.
+Защита состояния: @theory:sec-theory-classes-invariant.
 
 ::: {.notes}
 Попросите описать ошибочную реализацию, которая сперва перезаписывает
@@ -1031,9 +1031,9 @@ new Book("Java") и объяснить исход её первого borrow.
 последующих извлечения и сопоставить их с требуемыми B и A.
 :::
 
-## Дополнительные разборы {#sec-j25-lecture-objects-invariants-additional}
+## Дополнительные разборы {#sec-lecture-objects-invariants-additional}
 
-### Граница копируемого графа {#sec-j25-lecture-objects-invariants-deep-copy}
+### Граница копируемого графа {#sec-lecture-objects-invariants-deep-copy}
 
 Новый внешний объект может хранить ссылки на прежние вложенные
 объекты. Для независимых меток книги нужен собственный изменяемый
@@ -1043,7 +1043,7 @@ new Book("Java") и объяснить исход её первого borrow.
 Копирование всех узлов потребовало бы сохранять отношения между
 копиями и учитывать циклы. Поэтому границу независимости задаёт
 модель: какие изменения должны оставаться местными, какие — общими.
-@theory:sec-j25-theory-objects-copy-depth.
+@theory:sec-theory-objects-copy-depth.
 
 ::: {.notes}
 Предложите книге хранить изменяемые метки и общую запись об авторе.
@@ -1055,7 +1055,7 @@ new Book("Java") и объяснить исход её первого borrow.
 затем выбрать вариант для единого каталога авторов.
 :::
 
-### Общая коллекция в копии объекта {#sec-j25-lecture-objects-invariants-shared-copy .continuation}
+### Общая коллекция в копии объекта {#sec-lecture-objects-invariants-shared-copy .continuation}
 
 `List` хранит упорядоченную последовательность, `ArrayList` позволяет
 менять её состав. `add` дописывает элемент в конец:
@@ -1084,7 +1084,7 @@ System.out.println(first.tags); // [java, oop]
 недоступен ни через одну из этих книг.
 :::
 
-### Копирование входного контейнера {#sec-j25-lecture-objects-invariants-input-alias .continuation}
+### Копирование входного контейнера {#sec-lecture-objects-invariants-input-alias .continuation}
 
 Внешний код передаёт изменяемый список имён и сохраняет свою ссылку.
 Прямое сохранение этой ссылки в поле оставляет общий контейнер:
@@ -1101,7 +1101,7 @@ new ArrayList<>(initial). Для каждой предскажите соста�
 initial.clear(), затем измените условие на элементы типа Book.
 :::
 
-### Снимок и представление списка {#sec-j25-lecture-objects-invariants-snapshot .continuation}
+### Снимок и представление списка {#sec-lecture-objects-invariants-snapshot .continuation}
 
 Список и все имена в этом опыте отличны от `null`:
 
@@ -1132,7 +1132,7 @@ final class GuestList {
 наличие null среди имён вызвало бы NullPointerException.
 :::
 
-### Наблюдение изменений через представление {#sec-j25-lecture-objects-invariants-guest-client .continuation}
+### Наблюдение изменений через представление {#sec-lecture-objects-invariants-guest-client .continuation}
 
 ```java
 var guests = new GuestList(java.util.List.of("Ann"));
@@ -1148,7 +1148,7 @@ System.out.println(view);     // [Ann, Bob]
 ограничивает операции через представление; сам владелец продолжает
 менять свой список через `guests.add(...)`.
 
-Контракты списков: @theory:sec-j25-theory-collections-snapshots.
+Контракты списков: @theory:sec-theory-collections-snapshots.
 
 ::: {.notes}
 Сопоставьте оба результата с прогнозом. Затем предложите изменить
@@ -1156,7 +1156,7 @@ System.out.println(view);     // [Ann, Bob]
 при разном наблюдении изменений владельца.
 :::
 
-### Передача указателя в C++ {#sec-j25-lecture-objects-invariants-cpp-argument}
+### Передача указателя в C++ {#sec-lecture-objects-invariants-cpp-argument}
 
 Сравнение использует начальный `Book` с открытым полем `borrowed`.
 
@@ -1176,7 +1176,7 @@ Java создаёт отдельную переменную параметра �
 к схеме replace в Java и найдите отличие места хранения.
 :::
 
-### Имена и статическая проверка {#sec-j25-lecture-objects-invariants-python}
+### Имена и статическая проверка {#sec-lecture-objects-invariants-python}
 
 В Python присваивание `second = first` может связать два имени
 с одним изменяемым объектом. Изменение его поля через `second`
@@ -1193,7 +1193,7 @@ Java создаёт отдельную переменную параметра �
 обнаружения ошибки при общем устройстве ссылок первого опыта.
 :::
 
-### Обязательное и допускающее отсутствие значение {#sec-j25-lecture-objects-invariants-nullable-comparison}
+### Обязательное и допускающее отсутствие значение {#sec-lecture-objects-invariants-nullable-comparison}
 
 В Kotlin различаются `String` и `String?`:
 
@@ -1215,7 +1215,7 @@ fun possibleLength(title: String?): Int? = title?.length
 possibleLength(null). Укажите проверку, которая изменила исход вызова.
 :::
 
-### Неоднозначность перегрузки {#sec-j25-lecture-objects-invariants-null-overload}
+### Неоднозначность перегрузки {#sec-lecture-objects-invariants-null-overload}
 
 ```java
 static void show(String value) { }
@@ -1237,7 +1237,7 @@ show((String) null); // выбран show(String)
 к отсутствующей строке при выполнении.
 :::
 
-### Проверка параметра до конструктора суперкласса {#sec-j25-lecture-objects-invariants-java25}
+### Проверка параметра до конструктора суперкласса {#sec-lecture-objects-invariants-java25}
 
 В Java 25 допускаются действия до явного `super(...)` или `this(...)`:
 
@@ -1262,7 +1262,7 @@ class Child extends Parent {
 печать в Parent и предсказать её наличие для 3 и -1 до запуска.
 :::
 
-### Раннее конструирование {#sec-j25-lecture-objects-invariants-early-construction .continuation}
+### Раннее конструирование {#sec-lecture-objects-invariants-early-construction .continuation}
 
 Участок перед явным вызовом другого конструктора называется прологом.
 Он может проверять параметры, вычислять локальные значения и вызывать
@@ -1278,7 +1278,7 @@ class Child extends Parent {
 отличного от `Object`, неявно начинает с `super()`. Написанные операторы
 образуют эпилог.
 [@bib-jls-25, разделы 8.8.7 и 6.5.6.1]
-Правила инициализации: @theory:sec-j25-theory-classes-constructor.
+Правила инициализации: @theory:sec-theory-classes-constructor.
 
 ::: {.notes}
 Для Child с предыдущего экрана предложите добавить своё поле
@@ -1287,7 +1287,7 @@ int checked без инициализатора. Сравните допусти
 до super. Для каждого найдите разрешённую запись или запрещённое чтение.
 :::
 
-### Доступ к незавершённому объекту {#sec-j25-lecture-objects-invariants-escape}
+### Доступ к незавершённому объекту {#sec-lecture-objects-invariants-escape}
 
 В эпилоге конструктор может передать `this` внешнему объекту.
 Если тот сразу вызовет метод создаваемого экземпляра, он прочитает
@@ -1299,7 +1299,7 @@ int checked без инициализатора. Сравните допусти
 реализацию подкласса. Его инициализаторы ещё могут быть не выполнены,
 и метод увидит начальные значения полей. В C++ виртуальный вызов
 при конструировании ограничен строящейся частью иерархии.
-@theory:sec-j25-theory-inheritance-constructor-call.
+@theory:sec-theory-inheritance-constructor-call.
 
 ::: {.notes}
 Предложите полю подкласса инициализатор со значением 7, а базовому
@@ -1308,7 +1308,7 @@ int checked без инициализатора. Сравните допусти
 в прологе конструктора подкласса.
 :::
 
-### Модификаторы доступа {#sec-j25-lecture-objects-invariants-access}
+### Модификаторы доступа {#sec-lecture-objects-invariants-access}
 
 | Модификатор члена | Область доступа |
 |---|---|
@@ -1328,7 +1328,7 @@ int checked без инициализатора. Сравните допусти
 клиента в исходный пакет и установите, какое ограничение изменилось.
 :::
 
-### Получатель защищённого члена {#sec-j25-lecture-objects-invariants-protected .continuation}
+### Получатель защищённого члена {#sec-lecture-objects-invariants-protected .continuation}
 
 В отдельной иерархии `Parent` объявляет `protected int value`,
 а `Child` расширяет его в другом пакете. В теле `Child` доступ
@@ -1353,7 +1353,7 @@ void inspect(Child child, Parent parent) {
 и предскажите доступность второго обращения.
 :::
 
-### Общая книга после переназначения {#sec-j25-lecture-objects-invariants-prediction}
+### Общая книга после переназначения {#sec-lecture-objects-invariants-prediction}
 
 У `Book` с открытыми полями `create` создаёт доступную книгу,
 а `borrow` записывает `true` в поле полученной книги:

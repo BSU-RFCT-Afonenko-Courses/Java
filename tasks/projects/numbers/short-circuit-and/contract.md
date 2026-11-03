@@ -4,7 +4,7 @@
 Статус: дополнительная задача вне обязательной лабораторной `numbers`.
 Исходный коммит Java: `220857b6deb3c98064ebc4da6409d9d3ba76e563`.
 Карточка: `tasks/bank/numbers.qmd:142` — прежний ID
-`exr-j25-numbers-short-circuit-and`; точные границы и SHA256 блока находятся
+`exr-numbers-short-circuit-and`; точные границы и SHA256 блока находятся
 в `evidence/author-batch9-sources.json`.
 Публичное условие: `author-drafts/java/batch9/numbers/short-circuit-and/statement.qmd`.
 SHA256: `67fc5490e731b632c52f8ecba680c20578d35fe99ede2ccd4b6be6adac0e6064`.

@@ -2,9 +2,9 @@
 categories: [java, java-core, java-collections]
 ---
 
-# Коллекции и способы хранения объектов {#sec-j25-theory-collections}
+# Коллекции и способы хранения объектов {#sec-theory-collections}
 
-## Общие интерфейсы коллекций {#sec-j25-theory-collections-framework}
+## Общие интерфейсы коллекций {#sec-theory-collections-framework}
 
 Коллекция хранит элементы вместе с отношениями между ними. У списка это
 позиции и порядок, у множества — принадлежность, у очереди — выбор элемента
@@ -290,7 +290,7 @@ NavigableMap <|.. TreeMap
 [@bib-collections-abstract-set-api; @bib-collections-abstract-map-api;
 @bib-collections-hashset-api]
 
-## Последовательный обход {#sec-j25-theory-collections-iteration}
+## Последовательный обход {#sec-theory-collections-iteration}
 
 Алгоритму вывода кодов достаточно получать следующие строки.
 Параметр типа `Iterable<String>` выражает именно эту возможность:
@@ -399,7 +399,7 @@ printCodes(counts.keySet()); // s1, затем s2
 У обычной `LinkedHashMap` ключи обходятся в порядке первого добавления.
 Для чтения обеих частей пары используется `entrySet()`, для одних значений —
 `values()`. Связь представлений с исходной картой:
-@theory:sec-j25-theory-collections-views.
+@theory:sec-theory-collections-views.
 
 ## Протоколы обхода в C++ и C\# {#sec-theory-collections-language-iteration}
 
@@ -503,7 +503,7 @@ C# разделяет источник и состояние интерфейс�
 [@bib-collections-cpp-sort; @bib-collections-cpp-list-ops]
 В Java `List` допускает обе организации, а стоимость `get(i)` различается:
 общий интерфейс списка не задаёт постоянного времени индексного чтения.
-@theory:sec-j25-theory-collections-cost.
+@theory:sec-theory-collections-cost.
 
 
 ### Итератор списка и разделение обхода {#sec-theory-collections-iteration-extensions}
@@ -558,11 +558,11 @@ rest.forEachRemaining(System.out::println);
 (`ORDERED`), известного размера (`SIZED`) или различных элементов
 (`DISTINCT`). У `ArrayList` есть порядок позиций и известный размер;
 повторения допустимы. Разбиение и характеристики используются
-при организации потоковых вычислений: @theory:sec-j25-theory-streams.
+при организации потоковых вычислений: @theory:sec-theory-streams.
 [@bib-collections-spliterator-api]
 
 
-## Массив и расширяемый список {#sec-j25-theory-collections-list}
+## Массив и расширяемый список {#sec-theory-collections-list}
 
 У массива фиксирована длина. При неизвестном числе имён программа должна
 отдельно хранить число занятых позиций и при заполнении массива переносить
@@ -610,7 +610,7 @@ System.out.println(numbers);         // [10]
 элементов, а `reserve(100)` резервирует хранилище без такого изменения размера.
 [@bib-collections-epam-list; @bib-data-arraylist-api]
 
-## Стоимость доступа и изменения {#sec-j25-theory-collections-cost}
+## Стоимость доступа и изменения {#sec-theory-collections-cost}
 
 У `ArrayList` ссылка в позиции `i` находится индексированием внутреннего
 массива. `get` и `set` имеют стоимость $O(1)$. Вставка в позицию `i` списка
@@ -760,7 +760,7 @@ System.out.println(names); // [Ada, Lin]
 алгоритма по возникновению этого исключения нельзя. В правильном удаляющем
 обходе изменения выполняет итератор. Вызов `names.removeIf(String::isEmpty)`
 удаляет элементы по условию, заданному ссылкой на метод `String::isEmpty`:
-@theory:sec-j25-theory-functions-method-reference.
+@theory:sec-theory-functions-method-reference.
 
 ### Замена и структурное изменение Java 25
 
@@ -897,14 +897,14 @@ it.MoveNext(); // InvalidOperationException
 реализации. Устройство ячейки и отбор кандидатов в OpenJDK `jdk-25-ga`:
 @theory:sec-theory-equality-hash-search. Линейный алгоритм с ранней остановкой:
 @theory:sec-theory-equality-linear-search. Направления поиска и отличие
-нулевого сравнения от `equals`: @theory:sec-j25-theory-equality-tree.
+нулевого сравнения от `equals`: @theory:sec-theory-equality-tree.
 
 Последовательному поиску достаточно текущих элементов и операции равенства.
 Хеш-структуре нужны устойчивые данные равенства и хеша, дереву — устойчивые
 данные порядка. Внешнее правило равенства для ASCII-кодов в C++ и .NET:
 @theory:sec-theory-equality-external-rule.
 
-## Уникальность и порядок обхода {#sec-j25-theory-collections-set}
+## Уникальность и порядок обхода {#sec-theory-collections-set}
 
 Множество хранит по одному представителю каждого различимого значения.
 У `HashSet` совпадение определяется согласованными `equals` и `hashCode`.
@@ -929,14 +929,14 @@ System.out.println(names);            // [Ada, Lin]
 по длине объединит `"Ada"` и `"Lin"`. Сортировка списка тем же компаратором
 сохранит обе строки. Для соблюдения общего договора `Set` ноль сравнения
 должен совпадать с `equals` в обе стороны. Разбор этого условия:
-@theory:sec-j25-theory-equality-tree. [@bib-collections-treeset-api]
+@theory:sec-theory-equality-tree. [@bib-collections-treeset-api]
 
 Состояние ключа участвует в размещении. Если изменить сведения равенства
 и хеша после добавления, хеш-таблица сохранит прежнее размещение и начнёт
 искать по новым сведениям. У дерева изменение поля порядка аналогично
 рассогласует узел с направлением поиска. Устойчивый строковый код или
 неизменяемый класс идентификатора сохраняет необходимые условия.
-Полная трасса повреждённого поиска: @theory:sec-j25-theory-equality-mutable.
+Полная трасса повреждённого поиска: @theory:sec-theory-equality-mutable.
 
 При хорошем распределении хешей базовые операции `HashSet` и `HashMap`
 имеют ожидаемую постоянную стоимость. У `TreeSet` и `TreeMap` поиск,
@@ -965,9 +965,9 @@ System.out.println(intersection.equals(Set.of(2))); // true
 При одинаковых входах оба результата равны их составу. Явный обход
 с `add` и `contains` даёт другой способ реализовать те же операции.
 Сигнатуры и условия поддержки изменения:
-@handbook:sec-j25-api-sets-maps-bulk.
+@handbook:sec-api-sets-maps-bulk.
 
-## Ключ и значение {#sec-j25-theory-collections-map}
+## Ключ и значение {#sec-theory-collections-map}
 
 `Map<K,V>` хранит соответствия: каждому ключу сопоставлено одно значение.
 Разные ключи могут иметь равные значения. В карте баллов код участника
@@ -1023,14 +1023,14 @@ System.out.println(counts.get("s2")); // 1
 Обычная `HashMap` не обеспечивает атомарность такого обновления при совместном изменении
 несколькими потоками. [@bib-data-map-api]
 
-## Каталог и порядок отчёта {#sec-j25-theory-collections-catalog}
+## Каталог и порядок отчёта {#sec-theory-collections-catalog}
 
 Запись `grade.Student(String id, String name, int score)` хранит код,
 имя и балл 0–100; методы `id()`, `name()`, `score()` читают компоненты.
 Строки после `strip()` должны быть непустыми и не содержать `;`, CR или LF.
 Неверные значения дают `IllegalArgumentException`, `null` —
 `NullPointerException`. Полное объявление:
-@theory:sec-j25-theory-data-classes-student.
+@theory:sec-theory-data-classes-student.
 
 В следующем входе коды различны. Индекс сохраняет ссылки на участников
 для повторных обращений по коду:
@@ -1081,7 +1081,7 @@ static Student findStudent(Iterable<Student> students, String code) {
 Первое совпадение завершает поиск. Отсутствие даёт `null`; у пустого
 источника не выполняется ни одного сравнения. Для частых запросов
 текущие сведения сохраняются в карте. Устойчивый `StudentId` определён
-в @theory:sec-j25-theory-equality-contract; его равенство учитывает
+в @theory:sec-theory-equality-contract; его равенство учитывает
 только строковый код. Новая загрузка получает три записи:
 
 ```java
@@ -1149,7 +1149,7 @@ flowchart LR
 получают текущие значения, сортируют отдельный список и фиксируют его состав.
 [@bib-io-linkedhashmap-api; @bib-data-map-api; @bib-equality-list-api]
 
-## Представления коллекций {#sec-j25-theory-collections-views}
+## Представления коллекций {#sec-theory-collections-views}
 
 **Представление** предоставляет доступ к данным другой структуры.
 `keySet`, `values` и `entrySet` карты показывают соответственно ключи,
@@ -1265,7 +1265,7 @@ System.out.println(reverse); // [s3, s2, s9]
 поддерживаемую замену значения карты.
 [@bib-data-list-api; @bib-collections-sequenced-map-api; @bib-collections-sequenced-collection-api]
 
-## Копирование состава и состояние элементов {#sec-j25-theory-collections-unmodifiable}
+## Копирование состава и состояние элементов {#sec-theory-collections-unmodifiable}
 
 `List.of`, `Set.of`, `Map.of` создают контейнеры с запрещёнными изменениями
 и отвергают `null`. Список допускает повторения; `Set.of` отвергает повторные
@@ -1278,13 +1278,13 @@ System.out.println(reverse); // [s3, s2, s9]
 `set` меняет и список, и соответствующий компонент массива; `add` и
 удаление элементов не поддерживаются.
 
-### Общая ссылка, представление, копия и снимок {#sec-j25-theory-collections-snapshots}
+### Общая ссылка, представление, копия и снимок {#sec-theory-collections-snapshots}
 
 Книга `course.examples.objects.Book` хранит название и признак выдачи.
 `Book("Java")` создаёт доступную книгу, `borrow()` отмечает выдачу,
 `borrowed()` читает этот признак. Повторная выдача даёт
 `IllegalStateException` без изменения состояния. Объявление:
-@theory:sec-j25-theory-classes-book.
+@theory:sec-theory-classes-book.
 
 ```java
 Book book = new Book("Java");
@@ -1379,7 +1379,7 @@ flowchart LR
 версии могут разделять неизменяемые части хранения. Через живое представление
 доступна одна изменяемая основа. Общий интерфейс Java `List` не задаёт
 операций построения персистентных версий. Формы фабрик:
-@handbook:sec-j25-api-lists-factories.
+@handbook:sec-api-lists-factories.
 
 ### Владение составом и состоянием элементов
 
@@ -1416,7 +1416,7 @@ System.out.println(saved.borrowed()); // false
 ссылку на состав; глубина копирования определяет, какие пути через
 общие элементы остаются. [@bib-collections-bloch-copy]
 
-## Дисциплина очереди {#sec-j25-theory-collections-queue}
+## Дисциплина очереди {#sec-theory-collections-queue}
 
 `Queue` выделяет **голову** — элемент, который должен обрабатываться
 следующим. FIFO выдаёт элементы по порядку поступления. У `Deque` доступны
@@ -1458,7 +1458,7 @@ System.out.println(queue.pollFirst()); // null
 $O(\log n)$, `peek` — $O(1)$; поиск и удаление произвольного значения
 линейны. `null` запрещён. [@bib-collections-priority-api]
 
-## Равенство контейнеров {#sec-j25-theory-collections-container-equality}
+## Равенство контейнеров {#sec-theory-collections-container-equality}
 
 `List.equals` сравнивает размер и равенство элементов на соответствующих
 позициях. `ArrayList` и `LinkedList` с последовательностью `[Ada, Lin]`

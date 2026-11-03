@@ -4,7 +4,7 @@
 Статус: дополнительная задача вне обязательной лабораторной `numbers`.
 Исходный коммит Java: `220857b6deb3c98064ebc4da6409d9d3ba76e563`.
 Карточка: `tasks/bank/numbers.qmd:194` — прежний ID
-`exr-j25-numbers-quadratic-roots`; точные границы и SHA256 блока находятся
+`exr-numbers-quadratic-roots`; точные границы и SHA256 блока находятся
 в `evidence/author-batch9-sources.json`.
 Публичное условие: `author-drafts/java/batch9/numbers/quadratic-roots/statement.qmd`.
 SHA256: `ec09e82759e90a6b6d47cc1eaf6bdfa703fd8042cdc9200422cf874a97f0dea4`.

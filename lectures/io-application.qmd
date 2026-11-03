@@ -13,7 +13,7 @@ format:
     show-notes: false
 ---
 
-## Ввод-вывод и сборка приложения {#sec-j25-lecture-io-application}
+## Ввод-вывод и сборка приложения {#sec-lecture-io-application}
 
 ## Последовательная модель ввода-вывода {#sec-lecture-io-streams}
 
@@ -102,7 +102,7 @@ int count = input.read(block);
 которое снова потребует чтения нижнего слоя.
 :::
 
-### Байты и символы текста {#sec-j25-lecture-io-application-step-09}
+### Байты и символы текста {#sec-lecture-io-application-step-09}
 
 ```text
 «Ада» в UTF-8:       D0 90 D0 B4 D0 B0    — 6 байтов
@@ -122,7 +122,7 @@ int count = input.read(block);
 не заменяет декодер.
 :::
 
-### Составление символьного источника {#sec-j25-lecture-io-application-step-10}
+### Составление символьного источника {#sec-lecture-io-application-step-10}
 
 ```java
 new BufferedReader(
@@ -145,7 +145,7 @@ new BufferedReader(
 который отвечает за соответствующую работу.
 :::
 
-### Три представления одного входа {#sec-j25-lecture-io-application-encoding-size}
+### Три представления одного входа {#sec-lecture-io-application-encoding-size}
 
 Последовательность `Ада\nБоб\n` каждый раз открывается заново:
 
@@ -550,7 +550,7 @@ Try с ресурсами подходит, если до выхода из бл
 потоков занято их ожиданием.
 :::
 
-## Файловая система и текстовые записи {#sec-j25-lecture-io-application-group-2}
+## Файловая система и текстовые записи {#sec-lecture-io-application-group-2}
 
 ### Задачи файловой модели {#sec-lecture-io-nio2-origin}
 
@@ -570,7 +570,7 @@ NIO.2 вошла в Java 7. `Path` описывает путь, `Files` пред
 с возможностью выбрать дальнейшее действие программы.
 :::
 
-### Новое открытие и прежний читатель {#sec-j25-lecture-io-application-step-17}
+### Новое открытие и прежний читатель {#sec-lecture-io-application-step-17}
 
 ```java
 try (var reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
@@ -590,7 +590,7 @@ try (var reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 какая часть программы стала короче и какое поведение цикла сохранилось.
 :::
 
-### Путь и рабочий каталог {#sec-j25-lecture-io-application-step-12}
+### Путь и рабочий каталог {#sec-lecture-io-application-step-12}
 
 ```java
 Path path = Path.of("data", "input.txt");
@@ -609,7 +609,7 @@ Path path = Path.of("data", "input.txt");
 не переносит автоматически его входные данные.
 :::
 
-### Запись пути и идентичность файла {#sec-j25-lecture-io-application-step-13}
+### Запись пути и идентичность файла {#sec-lecture-io-application-step-13}
 
 `normalize()` упрощает компоненты пути лексически.
 `toRealPath()` обращается к существующему файлу; `Files.isSameFile`
@@ -625,7 +625,7 @@ Path path = Path.of("data", "input.txt");
 предварительной проверки.
 :::
 
-### Память при построчном чтении {#sec-j25-lecture-io-application-step-16}
+### Память при построчном чтении {#sec-lecture-io-application-step-16}
 
 ```text
 память = буфер читателя + текущая строка + сохранённые данные программы
@@ -643,7 +643,7 @@ Path path = Path.of("data", "input.txt");
 строки в список. Сравнить память при одинаковом способе чтения.
 :::
 
-### Уровни проверки входа {#sec-j25-lecture-io-application-step-07}
+### Уровни проверки входа {#sec-lecture-io-application-step-07}
 
 ```text
 байты → декодирование → строка → поля → число → допустимая поставка
@@ -661,9 +661,9 @@ Path path = Path.of("data", "input.txt");
 строку как вход, не привлекая настоящий файл.
 :::
 
-## Приложение и границы результата {#sec-j25-lecture-io-application-group-3}
+## Приложение и границы результата {#sec-lecture-io-application-group-3}
 
-### Команда и результат {#sec-j25-lecture-io-application-step-01}
+### Команда и результат {#sec-lecture-io-application-step-01}
 
 Команда `deliveries.Main input` принимает один путь к UTF-8-файлу:
 
@@ -677,7 +677,7 @@ Path path = Path.of("data", "input.txt");
 
 Отчёт содержит `тетрадь;7`, `ручка;2`, `альбом;1` в порядке первого
 принятого появления. Ошибка строки 4 сохраняется в диагностике;
-чтение продолжается. Договор: @theory:sec-j25-theory-application-behavior.
+чтение продолжается. Договор: @theory:sec-theory-application-behavior.
 
 ::: {.notes}
 Предложить восстановить суммы и объяснить, почему ошибочная строка
@@ -704,7 +704,7 @@ Path path = Path.of("data", "input.txt");
 с нагрузкой конкретной программы.
 :::
 
-### Отложенная публикация {#sec-j25-lecture-io-application-step-35}
+### Отложенная публикация {#sec-lecture-io-application-step-35}
 
 Немедленная печать каждой новой суммы дала бы две строки для тетрадей
 и могла бы оставить часть отчёта при позднем отказе чтения.
@@ -722,7 +722,7 @@ Path path = Path.of("data", "input.txt");
 Сопоставить видимый stdout при немедленной и отложенной печати.
 :::
 
-### Значение поставки и ключ товара {#sec-j25-lecture-io-application-step-21}
+### Значение поставки и ключ товара {#sec-lecture-io-application-step-21}
 
 `Delivery(String item, long quantity)` представляет одну поставку.
 Конструктор применяет `strip` к названию, требует непустое имя
@@ -739,7 +739,7 @@ Path path = Path.of("data", "input.txt");
 суммирования. Затем сопоставить `ручка` и ` ручка ` после нормализации.
 :::
 
-### Строка и предметное значение {#sec-j25-lecture-io-application-step-22}
+### Строка и предметное значение {#sec-lecture-io-application-step-22}
 
 ```java
 String[] fields = line.split(";", -1);
@@ -758,7 +758,7 @@ return new Delivery(fields[0], quantity);
 правильность декодирования байтов.
 :::
 
-### Накопление поставок {#sec-j25-lecture-io-application-step-02}
+### Накопление поставок {#sec-lecture-io-application-step-02}
 
 | Строка | Состояние сумм |
 |---|---|
@@ -777,7 +777,7 @@ return new Delivery(fields[0], quantity);
 после каждой при договоре продолжения.
 :::
 
-### Вычисление до изменения состояния {#sec-j25-lecture-io-application-step-25}
+### Вычисление до изменения состояния {#sec-lecture-io-application-step-25}
 
 ```java
 long previous = totals.getOrDefault(delivery.item(), 0L);
@@ -796,7 +796,7 @@ totals.put(delivery.item(), next);
 которое изменяет карту, и все проверки, предшествующие ему.
 :::
 
-### Результат после закрытия {#sec-j25-lecture-io-application-step-28}
+### Результат после закрытия {#sec-lecture-io-application-step-28}
 
 ```text
 локальные суммы и проблемы
@@ -817,7 +817,7 @@ totals.put(delivery.item(), next);
 новые данные через прежнее представление.
 :::
 
-### Границы печати {#sec-j25-lecture-io-application-step-36}
+### Границы печати {#sec-lecture-io-application-step-36}
 
 `ReportPrinter` получает готовый результат, `out` и `err`.
 В stdout идут суммы, в stderr — диагностика. Потоки заимствованы
@@ -836,7 +836,7 @@ totals.put(delivery.item(), next);
 накопленных данных обоих потоков.
 :::
 
-### Коды завершения {#sec-j25-lecture-io-application-step-37}
+### Коды завершения {#sec-lecture-io-application-step-37}
 
 | Статус | Договор команды |
 |---|---|
@@ -855,7 +855,7 @@ totals.put(delivery.item(), next);
 доставку диагностики.
 :::
 
-### Точка входа и обязанности частей {#sec-j25-lecture-io-application-step-19}
+### Точка входа и обязанности частей {#sec-lecture-io-application-step-19}
 
 ```text
 Main → проверить один аргумент и создать Path
@@ -867,14 +867,14 @@ Main → проверить один аргумент и создать Path
 загрузчик — с файловым ресурсом, печать — с готовым результатом.
 Разделение позволяет проверять каждую границу на подходящем входе.
 
-Полный разбор: @theory:sec-j25-theory-application.
+Полный разбор: @theory:sec-theory-application.
 
 ::: {.notes}
 Предложить разместить три проверки: неверное число, отсутствующий файл,
 формат отчёта. Для каждой назвать минимальный необходимый внешний ресурс.
 :::
 
-### Сборка классов и JAR {#sec-j25-lecture-io-application-wrapper}
+### Сборка классов и JAR {#sec-lecture-io-application-wrapper}
 
 Из корня проекта, JDK 25:
 
@@ -895,9 +895,9 @@ java -jar deliveries.jar input.txt
 какие пути потребуется передать явно.
 :::
 
-## Дополнительные вопросы {#sec-j25-lecture-io-application-additional}
+## Дополнительные вопросы {#sec-lecture-io-application-additional}
 
-### Публикация файла перемещением {#sec-j25-lecture-io-application-step-41}
+### Публикация файла перемещением {#sec-lecture-io-application-step-41}
 
 ```text
 вычислить → записать временный файл → закрыть → переместить к цели
@@ -909,7 +909,7 @@ java -jar deliveries.jar input.txt
 
 `ATOMIC_MOVE` запрашивает неделимость перемещения. Поддержка и замена
 уже существующей цели зависят от реализации. Границы:
-@theory:sec-j25-theory-io-publication.
+@theory:sec-theory-io-publication.
 
 ::: {.notes}
 Разместить сбой после каждой стрелки. Указать, какой файл мог измениться
@@ -917,7 +917,7 @@ java -jar deliveries.jar input.txt
 сохранность при отключении питания как другое свойство хранения.
 :::
 
-### Сохранение представления текста {#sec-j25-lecture-io-application-context}
+### Сохранение представления текста {#sec-lecture-io-application-context}
 
 `readLine()` удаляет разделители. Последовательности `Ада` и `Ада\n`
 дают одинаковую последнюю строку.
@@ -934,7 +934,7 @@ java -jar deliveries.jar input.txt
 сведения, которые должны сохраниться.
 :::
 
-### Изменение масштаба и политики {#sec-j25-lecture-io-application-large-input}
+### Изменение масштаба и политики {#sec-lecture-io-application-large-input}
 
 Суммы растут с числом разных товаров, диагностика — с числом ошибок.
 Построчное чтение не ограничивает эти коллекции постоянным размером.

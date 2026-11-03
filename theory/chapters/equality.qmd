@@ -2,7 +2,7 @@
 categories: [java, java-core, java-equality]
 ---
 
-# Равенство объектов и порядок {#sec-j25-theory-equality}
+# Равенство объектов и порядок {#sec-theory-equality}
 
 ## Система операций сравнения {#sec-theory-equality-operations}
 
@@ -30,7 +30,7 @@ categories: [java, java-core, java-equality]
 и дополнительные критерии. Отдельное изменение порядка не меняет
 значения уже сохранённых ключей.
 
-## Идентичность и равенство содержимого {#sec-j25-theory-equality-identity}
+## Идентичность и равенство содержимого {#sec-theory-equality-identity}
 
 Для ссылочных значений `==` возвращает `true`, когда обе ссылки ведут
 к одному объекту или обе равны `null`. Сравнение двух ссылок на объекты
@@ -83,7 +83,7 @@ System.out.println(alias == first);       // true
 не определяет результат `equals`.
 [@bib-data-object-api; @bib-equality-bloch-equals]
 
-## Равенство записи и уникальность кода {#sec-j25-theory-equality-domain}
+## Равенство записи и уникальность кода {#sec-theory-equality-domain}
 
 Запись `grade.Student` хранит код участника `id`, имя `name` и целый
 балл `score` от 0 до 100. Её конструктор принимает эти три значения;
@@ -91,7 +91,7 @@ System.out.println(alias == first);       // true
 Код и имя проходят `strip()`, должны быть непустыми и не содержать
 `;`, CR или LF. Неверные строки и балл приводят к `IllegalArgumentException`,
 а `null` — к `NullPointerException`. Полное объявление и причина этих
-ограничений приведены в @theory:sec-j25-theory-data-classes-student.
+ограничений приведены в @theory:sec-theory-data-classes-student.
 
 Стандартный `equals` этой записи сравнивает все три компонента.
 После исправления оценки получаются две версии сведений:
@@ -138,7 +138,7 @@ System.out.println(codes.add(after.id()));  // false
 соответствует одно значение. Обычный `put` заменяет значение существующего
 ключа. Если повтор кода является ошибкой входа, проверку повтора и отказ
 реализует приложение. Операции карты:
-@theory:sec-j25-theory-collections-map.
+@theory:sec-theory-collections-map.
 
 Равенство `Student` только по коду тоже возможно как решение другой модели:
 тогда исправление оценки сохраняет равенство версий. В данной записи
@@ -163,7 +163,7 @@ System.out.println(codes.add(after.id()));  // false
 правило отказа при повторе кода принадлежит приложению.
 [@bib-context-python-dataclass; @bib-context-python-dictionaries]
 
-## Соглашение equals {#sec-j25-theory-equality-contract}
+## Соглашение equals {#sec-theory-equality-contract}
 
 Корректный `equals` задаёт отношение эквивалентности: объекты распределяются
 по группам равных значений. Любые два объекта из такой группы сравниваются
@@ -288,7 +288,7 @@ System.out.println(first.equals(argument)); // false
 методу `equals(Object)`; объявленная перегрузка его не заменяет.
 Аннотация `@Override` у ошибочного метода заставит компилятор сообщить,
 что он ничего не переопределяет. Разбор выбора перегрузки и динамического
-вызова: @theory:sec-j25-theory-inheritance.
+вызова: @theory:sec-theory-inheritance.
 
 ## Линейный поиск по значению {#sec-theory-equality-linear-search}
 
@@ -329,7 +329,7 @@ System.out.println(containsCode(java.util.List.of(), "s1")); // false
 Хеш-таблица использует предварительное размещение, чтобы начинать поиск
 с меньшего набора кандидатов.
 
-## Равенство и хеш {#sec-j25-theory-equality-hash}
+## Равенство и хеш {#sec-theory-equality-hash}
 
 `hashCode()` возвращает число типа `int`, используемое для отбора кандидатов
 при поиске. Для равных объектов хеши должны совпадать. Разные хеши позволяют
@@ -480,7 +480,7 @@ for (StudentId stored : values.keySet()) {
 сохранилась. Цикл выбирает этот ключ проверкой равенства, поэтому его
 положение в порядке обхода не влияет на результат.
 
-## Изменяемые ключи {#sec-j25-theory-equality-mutable}
+## Изменяемые ключи {#sec-theory-equality-mutable}
 
 Хеш-коллекция размещает запись при добавлении ключа. Данные его равенства
 и хеша должны оставаться устойчивыми во время хранения. Карта сохраняет
@@ -601,7 +601,7 @@ System.out.println(students.size());                          // 1
 Та же схема допускает изменяемый объект значения, если его изменения
 не затрагивают отдельный ключ.
 
-## Равенство составных значений {#sec-j25-theory-equality-composite}
+## Равенство составных значений {#sec-theory-equality-composite}
 
 Составной тип выбирает операцию равенства для каждого компонента.
 При допустимом `null` удобно `Objects.equals(a, b)`: две пустые ссылки
@@ -685,7 +685,7 @@ System.out.println(vector.hashCode() == sameValue.hashCode()); // true
 пару `Arrays.deepEquals` и `Arrays.deepHashCode`; `clone` внешнего массива
 копирует только ссылки на внутренние массивы. Копирование этих массивов
 требует отдельного решения. Вариант записи с защитными копиями:
-@theory:sec-j25-theory-data-classes-array-value.
+@theory:sec-theory-data-classes-array-value.
 [@bib-equality-arrays-api; @bib-equality-record-api]
 
 ### Глубина снимка ключа {#sec-theory-equality-key-snapshot}
@@ -747,7 +747,7 @@ System.out.println(keys.contains(same)); // true
 в предметной модели; исходный граф изменяемых объектов остаётся у клиента.
 [@bib-collections-bloch-copy]
 
-## Естественный порядок и порядок отчёта {#sec-j25-theory-equality-order}
+## Естественный порядок и порядок отчёта {#sec-theory-equality-order}
 
 `Comparable<T>` задаёт естественный порядок значений типа методом
 `int compareTo(T other)`. Для `x.compareTo(y)` отрицательный результат
@@ -812,7 +812,7 @@ java.util.Comparator<Student> byScoreAndId =
 возрастающее сравнение, `reversed` обращает его, а `thenComparing` применяет
 сравнение кодов только при равных баллах. Положение `reversed` существенно:
 в конце всей цепочки оно обратило бы также порядок кодов.
-Механизм ссылок на методы: @theory:sec-j25-theory-functions-method-reference.
+Механизм ссылок на методы: @theory:sec-theory-functions-method-reference.
 
 ### Законы порядка
 
@@ -838,7 +838,7 @@ java.util.Comparator<Student> byScoreAndId =
 политики отсутствия: внешняя обёртка для `null`-объекта не обрабатывает
 автоматически `null` в извлекаемом поле.
 
-## Уникальность в упорядоченных множествах {#sec-j25-theory-equality-tree}
+## Уникальность в упорядоченных множествах {#sec-theory-equality-tree}
 
 `TreeSet` использует сравнение для выбора направления поиска.
 Отрицательный и положительный результаты различают положения элементов,
@@ -919,7 +919,7 @@ java.util.Comparator<Student> byAllComponents =
 согласованность данных и структуры.
 
 Сигнатуры и готовые способы построения сравнений:
-@handbook:sec-j25-api-comparison. Полные исходники опытов и команды:
+@handbook:sec-api-comparison. Полные исходники опытов и команды:
 @handbook:sec-api-equality-examples.
 
 ## Внешнее правило равенства в C++ и C\# {#sec-theory-equality-external-rule}
