@@ -2,7 +2,7 @@
 
 ID `exr-collections-set-union-intersection`. Исходный Java commit
 `220857b6deb3c98064ebc4da6409d9d3ba76e563`: полная карточка
-`exr-collections-set-union-intersection` в tasks/bank/collections.qmd,
+`exr-j25-collections-set-union-intersection` в tasks/bank/collections.qmd,
 общая преамбула, tasks/labs/collections.qmd и student-комплект
 в tasks/projects/j25-collections-set-union-intersection/student.
 Действует принятый control/author-contracts.md.

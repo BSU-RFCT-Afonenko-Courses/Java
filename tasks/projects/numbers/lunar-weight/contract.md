@@ -4,7 +4,7 @@
 Статус: дополнительная задача вне обязательной лабораторной `numbers`.
 Исходный коммит Java: `220857b6deb3c98064ebc4da6409d9d3ba76e563`.
 Карточка: `tasks/bank/numbers.qmd:64` — прежний ID
-`exr-numbers-lunar-weight`; точные границы и SHA256 блока находятся
+`exr-j25-numbers-lunar-weight`; точные границы и SHA256 блока находятся
 в `evidence/author-batch9-sources.json`.
 Публичное условие: `author-drafts/java/batch9/numbers/lunar-weight/statement.qmd`.
 SHA256: `6c866a43747cb4dfa694f122af2d79cc75ae808c94a05bdb2d0e93f78638caa9`.

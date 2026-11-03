@@ -2,7 +2,7 @@
 
 Закрытая передача техническому исполнителю. ID: `exr-numbers-interval-membership`.
 Исходник: Java `220857b6deb3c98064ebc4da6409d9d3ba76e563`,
-`tasks/bank/numbers.qmd`, прежний ID `exr-numbers-interval-membership`.
+`tasks/bank/numbers.qmd`, прежний ID `exr-j25-numbers-interval-membership`.
 Публичная редакция для независимой рецензии:
 `author-drafts/java/batch1/numbers/interval-membership/statement.qmd`;
 SHA256 `55ce5560e418d2032c9bc586aa4d2e7ff1f2e3c51d7d0572dfc104f9a2c79635`.

@@ -6,7 +6,7 @@
 Статус: дополнительная задача вне обязательной лабораторной `control`.
 Исходный коммит Java: `220857b6deb3c98064ebc4da6409d9d3ba76e563`.
 Карточка: `tasks/bank/control.qmd:131`, прежний ID
-`exr-control-numeric-palindromes`. Точные границы и SHA256 блока находятся
+`exr-j25-control-numeric-palindromes`. Точные границы и SHA256 блока находятся
 в `evidence/author-batch10-sources.json`.
 Условие: `author-drafts/java/batch10/control/numeric-palindromes/statement.qmd`.
 SHA256: `9c4e745dafa8822abd57cfb18df83e175a8ccfbbce51cd5afe7f40ec68ab6621`.

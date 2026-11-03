@@ -4,7 +4,7 @@
 Статус: дополнительная задача вне обязательной лабораторной `numbers`.
 Исходный коммит Java: `220857b6deb3c98064ebc4da6409d9d3ba76e563`.
 Карточка: `tasks/bank/numbers.qmd:185` — прежний ID
-`exr-numbers-argument-sum-product`; точные границы и SHA256 блока находятся
+`exr-j25-numbers-argument-sum-product`; точные границы и SHA256 блока находятся
 в `evidence/author-batch9-sources.json`.
 Публичное условие: `author-drafts/java/batch9/numbers/argument-sum-product/statement.qmd`.
 SHA256: `0f69e41b9052894e43ba052b127131cabf2307ff8dc8bc932a34cd29d79d0894`.

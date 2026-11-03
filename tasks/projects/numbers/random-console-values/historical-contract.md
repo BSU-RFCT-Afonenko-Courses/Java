@@ -4,7 +4,7 @@
 Статус: дополнительная задача вне обязательной лабораторной `numbers`.
 Исходный коммит Java: `220857b6deb3c98064ebc4da6409d9d3ba76e563`.
 Карточка: `tasks/bank/numbers.qmd:178` — прежний ID
-`exr-numbers-random-console-values`; точные границы и SHA256 блока находятся
+`exr-j25-numbers-random-console-values`; точные границы и SHA256 блока находятся
 в `evidence/author-batch9-sources.json`.
 Публичное условие: `author-drafts/java/batch9/numbers/random-console-values/statement.qmd`.
 SHA256: `71370d3b8faed4bb97cf301a6547a7781348fb6588ad91d524eca1a0bbcfe800`.
