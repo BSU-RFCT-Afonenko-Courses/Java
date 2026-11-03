@@ -1,6 +1,6 @@
 # Выпуск Java/SP — единственное состояние продолжения
 
-Срок: **10 ноября 2026, 09:00 Europe/Minsk**. Обновление 3 ноября, после installer checkpoint047/f9. При входе сверить реальные HEAD и активных исполнителей, затем продолжать следующий шаг ниже. [Исторический checkpoint](../../reports/release-evidence-checkpoint-20261103-2000.md) — только evidence, никогда не state; прежние сроки/START из истории не возобновлять. Измерения и ограничения — в reports, история — в Git.
+Срок: **10 ноября 2026, 09:00 Europe/Minsk**. Обновление 3 ноября, 20:35 Minsk. При входе сверить реальные HEAD и активных исполнителей, затем продолжать следующий шаг ниже. [Исторический checkpoint](../../reports/release-evidence-checkpoint-20261103-2000.md) — только evidence, никогда не state; прежние сроки/START из истории не возобновлять. Измерения и ограничения — в reports, история — в Git.
 
 ## Права, объём и границы
 
@@ -26,13 +26,13 @@
 
 | Checkout | Продуктовый HEAD / состояние |
 | --- | --- |
-| `java` | `097f22f53ad5849506135254e404d167be1e4c1c`; Core047/PLf9 installed,30targets/19files на курс. PR нет; product097 ещё не pushed, сохраняется вместе со state. |
-| `system-practice` | `a69081d7e3e01c9403ed39595548376f8c3ca1af`; Core047/PLf9 installed. Exact remote=HEAD; новый PR нет, старыйPR9 сохранён. |
+| `java` | `22604ae18fb43bb52e9d4aad6ba52f77779685e9` local после state22bdd; Core830/PLda installed. PR нет; root сохраняет вместе со state. |
+| `system-practice` | install `904fed875d546247cd84df23c8128b50071344f4` → config `1626aa0792301f6c91cf2a04bd4d242f89736578`, уже remote1626; Core830/PLda installed. Новый PR нет, старыйPR9 сохранён. |
 | `platform` | `b37febb6e46da681b16b27eadb676e29b764130b`, remoteb37; [draft PR35](https://github.com/Afonenko-Course-Tools/prairielearn-platform/pull/35), CI41670994246 success. |
-| `core` | `0478458a71f3acf34ad6d9983ac11023783dde3d`, Source clean, независимо PASS, installed; exact remote=HEAD. |
-| `prairielearn` | Source `4e4ab0cd5499006826f5ab21d1e3fdeef9c313b1`: typing11files+284/-63, typecheck PASS; ещё не independently reviewed/pushed/installed. Installed/remote `f9c00aed6de610dce7d9b7cb6e50c28ebfb9573e` независимо ACCEPT; [draft PR36](https://github.com/Afonenko-Course-Tools/quarto-course-prairielearn/pull/36) обновлён: «Сохранить UUID и типы API, убрать повторы native-экспорта». CI41680971465 наf9 FAIL, см. ниже; writer делает отдельный CI fix, до изменений сообщит подход. Evidence: `reports/pl-typed-materialization.md`. |
+| `core` | `830381697beea4106655965e10605cc13987199b` accepted/installed/remote. Следующая bounded JSON owner typing партия в Source, не installed. |
+| `prairielearn` | `da2ad6b6c00891590e59e5abccf3d1eb4ff552f7` installed/SSHremote, [draft PR36](https://github.com/Afonenko-Course-Tools/quarto-course-prairielearn/pull/36) обновлён. Typing4e и CI fixda независимо ACCEPT; full hosted CI41684816393 SUCCESS, старыйf9FAIL устранён. |
 
-Installer завершён. Активны `/root/core_native_delivery` (Sol6.1/high, read-only lifetime/callorder/необходимость Downloadpost; run запрещён) и `/root/pl_typed_materialization` (Sol6.1/high, typing4e4ab готов, следующий отдельный CI fix). Предыдущие reviewers завершены. 
+Активны `/root/install_empty_scratch_pair` (Sol6.1/medium, один ordinary release artifact пакет, исход ещё неизвестен) и `/root/core_native_delivery` (Sol6.1/high, runtime operation/assignment-admission JSON owner types; без actual pipeline). SP читает frozen installed830, не dirty Core Source.
 
 ## Принятые пакеты
 
@@ -47,15 +47,16 @@ Installer завершён. Активны `/root/core_native_delivery` (Sol6.1/
 | Circle `b65ea6a9` |6равных cases:2открытых+4параметризованных; reference6/6, wrong2/6, starter0/6. Старые результаты не пересчитывать. [runtime](../../reports/circle-source-runtime-integration.md); четыре варианта без причины не повторять. |
 | Materializer99e/SP8103/2659/6ed2 | Mixed versions законны, batch adoption, убран третий student render. [versions](../../reports/materializer-package-versions.md), [SP](../../reports/sp-batch-adoption.md), [CI](../../reports/sp-ci-render-repeat.md). |
 | Core9331/332e, PL3a6c | Trusted-owner Quarto вместо priorP launcher graph, P2/profiles приняты. [Core](../../reports/core-native-delivery-review.md), [profiles](../../reports/pl-native-profiles.md), [install](../../reports/core-pl-candidate-installation.md). |
-| Coref10, Java38cb/SPe579 | Shortcode fix; SP exit1/28.1436s,7QMD/QRC/Site/Corepost7 прошли, membership labs отказал; complete/seal/транспорты pending. [attempt](../../reports/sp-native-f10-acceptance.md). |
-| Core047/PLf9 | Scratch falsepositive исправлен, строгая Core API/DTO boundary принята и установлена. [scratch](../../reports/core-empty-scratch-review.md), [PL](../../reports/pl-strict-core-boundary-review.md). |
+| Coref10/047 | Shortcode/scratch falsepositive исправлены; история [f10](../../reports/sp-native-f10-acceptance.md), [047](../../reports/sp-native-047-acceptance.md). |
+| Core830/PLda | Download defer assignment render принят, дублирующая Site finalization внутри capture убрана, Core guard прежний. [Core review](../../reports/core-download-defer-review.md); PL [typing](../../reports/pl-typed-materialization-review.md)/[CI fix](../../reports/pl-ci-core-map-gate-review.md) ACCEPT. |
 | Transpose | Контракт рассмотрен, student readReport не принят;10cases/origin/refusal требуют привязки, product diff нет. [contract](../../reports/transpose-file-contract.md). |
 
 ## Точная точка продолжения
 
-1. Core047+PLf9 установлены адресно:30targets/19files на курс. Единственный SP attempt **25.6473s/exit1/retry0**:7QMD/Corepost7/7current/finish готовы0.3s, старый labs falsepositive исчез. Новый отказ Downloadpost `withCurrentNativeOperation`: OPERATION_INCOMPLETE «Операция ещё не завершена» (`operation.ts2275→Downloadruntime633`). [Отчёт](../../reports/sp-native-047-acceptance.md). Core owner делает read-only диагноз lifetime/callorder/необходимости Downloadpost. **Новый run запрещён** до устранённой причины; Java pipeline не добавлять.
-2. Максимальная типизация всего собственного активного TS: API/DTO/wire variants, unknown до existing parse, точные типы после; any/casts не покрытие. Vendor исключён; новых validators/coverage framework нет. [Очередь](../../reports/typescript-any-audit.md): candidate/ownerJSON, selection/materialization/feedback, AST/YAML, остальные providers/tools; compiler runners UNKNOWN. Новую PL партию рецензировать отдельно от pinned install.
-3. PLf9 CI41680971465 FAIL: envless Coregate получил NotCapable QUARTO_PROFILE из-за раннего functionalProfiles read; existing denotest без map:3TS2307+9TS7006,106tests/exdev green. [Диагноз](../../reports/pl-ci-f9-failure.md). PL writer после typing4e4ab исправляет actual compiler entries/Corepin и gate-before-env, без --no-check/новойматрицы. PR35/36 сохранять, PR32/28/старыйSP9 не менять; новый PR перед known-red expensive gate не открывать.
+1. SP830 attempt22.2385s завершил7docs/HTML, потребовал late binding. Book project URL ошибочно был в website: SP1626 переносит **тот же URL** в `book.site-url`, namespace/ID/value прежние; low review ACCEPT ([review](../../reports/course-book-site-url-review.md)), Java6bookconfigs без дефекта. Следующий attempt23.4663s завершил7docs/HTML и отказал late `QRC.TARGET_UNKNOWN system-practice-theory:sec-work-environment`. ID реальный; locals толькоtasks, imports отсутствуют, это не stale catalog. [830](../../reports/sp-native-830-acceptance.md), [book URL](../../reports/sp-native-book-url-acceptance.md), [readiness](../../reports/sp-qrc-reference-readiness.md). **Exports нет; полный capture не означает доставку/готовность обоих transports.**
+2. Сейчас запущен **один** ordinary полезный release artifact пакет theory9 → practice5(revealjswebsite) → handbook6student, shared180s/TERM5/retry0/firstfailurestop, без standaloneinspect/PLcapture; результат ещё неизвестен. После успеха3реальных local catalogs → existing relative imports config с realURL и readiness27knownrefs → независимый review → только один следующий SP native. Imports пока не менялись. Не повторять pipeline/checks для статуса.
+3. Максимальная типизация всего собственного активного TS: реальные API/DTO/wire variants, unknown до same existing guards/checkedDTO; any/casts не покрытие. Vendor исключён, новых schema/validators/extra qualification/coverage framework нет. [Очередь](../../reports/typescript-any-audit.md): PL typing4e/CI fixda приняты; Core owner продолжает bounded runtime operation/assignment-admission JSON партию, не installed/без actual pipeline. Остальные AST/YAML/providers/tools и UNKNOWN compiler runners остаются по карте. PR35/36 сохранять, PR32/28/старыйSP9 не менять.
+
 4. Далее public feedback неподдержанных overload; transpose trusted-reader известных форматов с honest unrecognized без student0/PASS, origin/refusal отдельно; дубли Core/metadata/HTML/CI; канон, назначение10labs/тренировки/editor overrides. Новые обязанности/цели/баллы — к пользователю.
 5. Весь состав с exact pins/images/student/full/IDE/обаSP; реальные результаты/UID/восстановление. Итоговый просмотр перед production; честный остаток без выдуманных процентов.
 
