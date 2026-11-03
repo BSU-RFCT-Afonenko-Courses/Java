@@ -5,7 +5,7 @@
 Источники этой копии задают [providers.json](providers.json),
 [installed-packages.json](installed-packages.json) и [CI/toolchain.json](CI/toolchain.json).
 Пять опубликованных провайдеров закреплены фактическими неизменяемыми тегами:
-Опубликованный Core — 9.3.4; Navigation и Presentation в том же public Source bundle остаются9.3.2. Exporter9.0.5, QRC3.2.0,
+Опубликованный Core — 9.3.4; Navigation и Presentation в том же public Source bundle остаются9.3.2. Exporter9.0.7, QRC3.2.0,
 Download 3.5.0 и Publisher 6.0.1. Все области установки проверяются штатным
 `tools/materialize-providers.py --check` по точным bytes и Git executable mode.
 Теги, коммиты, sourceZip и области установки остаются в этих манифестах;
