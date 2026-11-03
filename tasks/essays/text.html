@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.11.5">
+<meta name="generator" content="quarto-1.11.6">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -60,19 +60,18 @@ div.csl-indent {
 <link href="../essays/arrays.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-35fc0813589bbfbfa0b8ec974497eeb2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-b57dfbc8f2a817f5fbf71abc54994605.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-b3f6ff2dc823300d2c5fa49387c7b369.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
 <script src="../site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
 <link href="../site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation">
-
-<style>.task-items li:has(.course-assignment-omitted):not(:has(a)){display:none}</style>
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -1021,43 +1020,42 @@ div.csl-indent {
 
 
 <p>Общие требования: <a data-qrc-custom="false" data-qrc-ref="tasks:sec-research-program" data-qrc-style="default" class="qrc-link" href="index.html#sec-research-program"><span>Глава 116</span></a>.</p>
-<div id="exr-text-research-string-value-identity" class="course-block course-role-independent-study theorem exercise" target="manual" data-statement-visibility="open" data-course-role="independent-study" data-course-difficulty="introductory">
+<div id="exr-text-research-string-value-identity" class="theorem exercise" data-course-difficulty="introductory">
 <p><span class="theorem-title"><strong>Упражнение 120.1 (Равенство содержимого и тождественность строк)</strong></span> &nbsp;</p>
 <div class="course-metadata">
-<span class="course-meta course-meta-role">Самостоятельная работа</span> <span class="course-meta course-meta-difficulty">Начальный</span>
+<span class="course-meta course-meta-difficulty">Начальный</span>
 </div>
 <p>Почему сравнение строк может работать в демонстрационном примере и перестать работать после изменения источника данных?</p>
 <p>Рассмотреть распознавание команды или поиск слова, полученного из литерала, вычисления и пользовательского ввода. Сопоставить равенство ссылок и равенство содержимого, определить роль константного выражения и <code>intern</code>. Объяснить, какие наблюдения гарантированы языком, а какие не дают основания сравнивать текст через <code>==</code>. Отдельно определить обработку <code>null</code> и учёт регистра, сохранив один небольшой предметный сценарий.</p>
 <p>Неизменяемость <code>String</code> служит исходным свойством; устройство строкового пула, сборка мусора и сравнение производительности способов конкатенации не входят в работу.</p>
-<p><strong>Подготовка.</strong> Разделы <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-text" data-qrc-style="default" class="qrc-link" href="../../theory/chapters/text.html#sec-theory-text"><span>Глава 9</span></a>, <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-methods" data-qrc-style="default" class="qrc-link" href="../../theory/chapters/methods.html#sec-theory-methods"><span>Глава 7</span></a>, объектные ссылки.</p>
+<p><strong>Подготовка.</strong> Разделы <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-text" data-qrc-style="default" class="qrc-link" rel="external" href="../../theory/chapters/text.html#sec-theory-text"><span>Глава 9</span></a>, <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-methods" data-qrc-style="default" class="qrc-link" rel="external" href="../../theory/chapters/methods.html#sec-theory-methods"><span>Глава 7</span></a>, объектные ссылки.</p>
 <p>Связанное задание: <a data-qrc-custom="false" data-qrc-ref="tasks:exr-pipelines-count-selected-words" data-qrc-style="default" class="qrc-link" href="../bank/pipelines.html#exr-pipelines-count-selected-words">Упражнение&nbsp;<span>25.4</span></a> — подсчёт вхождений заданного слова: смысл совпадения текста непосредственно влияет на результат. Для исследования создайте небольшой массив: строка <code>"java"</code> из литерала, отдельный объект <code>new String("java")</code>, строка с тем же содержимым, полученная при выполнении программы, и строка <code>"Java"</code>. Составьте обычный цикл сравнения с искомым словом и заранее задайте обработку <code>null</code>. Выполнение задачи средствами Stream API не требуется.</p>
 <p><span class="citation" data-cites="bib-research-string-value-identity-1 bib-research-string-value-identity-2 bib-research-string-value-identity-3"><a href="../references.html#ref-bib-research-string-value-identity-2" role="doc-biblioref">[33]</a>, <a href="../references.html#ref-bib-research-string-value-identity-3" role="doc-biblioref">[45]</a>, <a href="../references.html#ref-bib-research-string-value-identity-1" role="doc-biblioref">[83]</a></span></p>
 </div>
-<div id="exr-text-research-unicode-units-equivalence" class="course-block course-role-independent-study theorem exercise" target="manual" data-statement-visibility="open" data-course-role="independent-study" data-course-difficulty="intermediate">
+<div id="exr-text-research-unicode-units-equivalence" class="theorem exercise" data-course-difficulty="intermediate">
 <p><span class="theorem-title"><strong>Упражнение 120.2 (Единицы длины и эквивалентность текста Unicode)</strong></span> &nbsp;</p>
 <div class="course-metadata">
-<span class="course-meta course-meta-role">Самостоятельная работа</span> <span class="course-meta course-meta-difficulty">Средний</span>
+<span class="course-meta course-meta-difficulty">Средний</span>
 </div>
 <p>Что следует считать символом и одинаковым текстом в небольшой задаче обработки строк?</p>
 <p>Для выделения фрагмента текста различить число <code>char</code>, число кодовых точек и воспринимаемые символы; сопоставить примеры из основной и дополнительной плоскостей Unicode. Затем на одной паре канонически эквивалентных строк исследовать, как нормализация влияет на их сравнение. Сформулировать границы выбранной единицы обработки: одна графема может включать несколько кодовых точек. Преобразование регистра с фиксированной локалью допускается как углубление для текстового ключа.</p>
 <p>Полная сегментация графем, транслитерация, борьба с визуально похожими символами и универсальное сравнение без учёта регистра по правилам Unicode в обязательную часть не входят.</p>
-<p><strong>Подготовка.</strong> Разделы <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-arrays" data-qrc-style="default" class="qrc-link" href="../../theory/chapters/arrays.html#sec-theory-arrays"><span>Глава 8</span></a>, <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-text" data-qrc-style="default" class="qrc-link" href="../../theory/chapters/text.html#sec-theory-text"><span>Глава 9</span></a>; методы <code>String</code> и <code>Normalizer</code>. Коллекции нужны только при выборе расширения с ключами.</p>
+<p><strong>Подготовка.</strong> Разделы <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-arrays" data-qrc-style="default" class="qrc-link" rel="external" href="../../theory/chapters/arrays.html#sec-theory-arrays"><span>Глава 8</span></a>, <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-text" data-qrc-style="default" class="qrc-link" rel="external" href="../../theory/chapters/text.html#sec-theory-text"><span>Глава 9</span></a>; методы <code>String</code> и <code>Normalizer</code>. Коллекции нужны только при выборе расширения с ключами.</p>
 <p>Связанные задания: <a data-qrc-custom="false" data-qrc-ref="tasks:exr-text-replace-word-letter" data-qrc-style="default" class="qrc-link" href="../bank/text.html#exr-text-replace-word-letter">Упражнение&nbsp;<span>20.2</span></a> — замена k-й буквы каждого слова: реферат уточняет смысл единицы счёта. <a data-qrc-custom="false" data-qrc-ref="tasks:exr-text-count-normalized-word" data-qrc-style="default" class="qrc-link" href="../bank/text.html#exr-text-count-normalized-word">Упражнение&nbsp;<span>20.10</span></a> — факультативное сопоставление букв и регистра. В этом задании пары «е/ё» и «и/й» объединяются при сравнении; каноническая нормализация Unicode сохраняет различие букв в каждой паре.</p>
 <p><span class="citation" data-cites="bib-research-unicode-units-equivalence-1 bib-research-unicode-units-equivalence-2 bib-research-unicode-units-equivalence-3"><a href="../references.html#ref-bib-research-unicode-units-equivalence-3" role="doc-biblioref">[41]</a>, <a href="../references.html#ref-bib-research-unicode-units-equivalence-2" role="doc-biblioref">[44]</a>, <a href="../references.html#ref-bib-research-unicode-units-equivalence-1" role="doc-biblioref">[84]</a></span></p>
 </div>
-<div id="exr-text-research-regex-text-recognition" class="course-block course-role-independent-study theorem exercise" target="manual" data-statement-visibility="open" data-course-role="independent-study" data-course-difficulty="intermediate">
+<div id="exr-text-research-regex-text-recognition" class="theorem exercise" data-course-difficulty="intermediate">
 <p><span class="theorem-title"><strong>Упражнение 120.3 (Регулярное выражение и последовательная проверка формата)</strong></span> &nbsp;</p>
 <div class="course-metadata">
-<span class="course-meta course-meta-role">Самостоятельная работа</span> <span class="course-meta course-meta-difficulty">Средний</span>
+<span class="course-meta course-meta-difficulty">Средний</span>
 </div>
 <p>Когда регулярное выражение делает обработку текста яснее, а когда удобнее последовательная проверка символов?</p>
 <p>На одном заданном формате — например, учебном правиле допустимого пароля — сравнить регулярное выражение и последовательность обычных проверок. Различить совпадение всей строки, поиск подстроки и выделение частей; объяснить экранирование в строковом литерале Java. На небольших воспроизводимых примерах рассмотреть пустую строку, границы длины и недопустимый символ. Обосновать выбор подхода с точки зрения читаемости и изменения требований.</p>
 <p>Полноценный разбор Java, XML или произвольного CSV, исследование всех конструкций регулярных выражений и измерение производительности не требуются.</p>
-<p><strong>Подготовка.</strong> Разделы <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-control" data-qrc-style="default" class="qrc-link" href="../../theory/chapters/control.html#sec-theory-control"><span>Глава 6</span></a> и <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-text" data-qrc-style="default" class="qrc-link" href="../../theory/chapters/text.html#sec-theory-text"><span>Глава 9</span></a>; формы методов из <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-methods" data-qrc-style="default" class="qrc-link" href="../../theory/chapters/methods.html#sec-theory-methods"><span>Глава 7</span></a> для оформления примеров.</p>
+<p><strong>Подготовка.</strong> Разделы <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-control" data-qrc-style="default" class="qrc-link" rel="external" href="../../theory/chapters/control.html#sec-theory-control"><span>Глава 6</span></a> и <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-text" data-qrc-style="default" class="qrc-link" rel="external" href="../../theory/chapters/text.html#sec-theory-text"><span>Глава 9</span></a>; формы методов из <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-methods" data-qrc-style="default" class="qrc-link" rel="external" href="../../theory/chapters/methods.html#sec-theory-methods"><span>Глава 7</span></a> для оформления примеров.</p>
 <p>Связанные задания: <a data-qrc-custom="false" data-qrc-ref="tasks:exr-text-strong-password" data-qrc-style="default" class="qrc-link" href="../bank/text.html#exr-text-strong-password">Упражнение&nbsp;<span>20.4</span></a> — проверка строки по формальным учебным правилам; <a data-qrc-custom="false" data-qrc-ref="tasks:exr-text-word-length-extrema" data-qrc-style="default" class="qrc-link" href="../bank/text.html#exr-text-word-length-extrema">Упражнение&nbsp;<span>20.3</span></a> — выделение слов как альтернативный материал. Исследуйте реализацию заданных правил проверки текста. Оценка безопасности паролей выходит за пределы этой темы.</p>
 <p><span class="citation" data-cites="bib-research-regex-text-recognition-1 bib-research-regex-text-recognition-2 bib-research-regex-text-recognition-3"><a href="../references.html#ref-bib-research-regex-text-recognition-3" role="doc-biblioref">[39]</a>, <a href="../references.html#ref-bib-research-regex-text-recognition-2" role="doc-biblioref">[43]</a>, <a href="../references.html#ref-bib-research-regex-text-recognition-1" role="doc-biblioref">[85]</a></span></p>
 </div>
-
 
 
 
@@ -2151,6 +2149,9 @@ div.csl-indent {
       }
     }
   });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Прокручиваемый код","output":"Прокручиваемый вывод"};
   </script>
 <nav class="page-navigation" aria-label="Страница">
   <div class="nav-page nav-page-previous">

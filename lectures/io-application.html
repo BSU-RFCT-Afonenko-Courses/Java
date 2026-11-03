@@ -6,16 +6,16 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-35fc0813589bbfbfa0b8ec974497eeb2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
 <link href="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.11.5">
+  <meta name="generator" content="quarto-1.11.6">
 
   <title>Лекции Java – Ввод-вывод и сборка приложения</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
   <style>
@@ -123,10 +123,8 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-3ce18430e1250f8c2f6f98be2c9c7b18.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-836333b27002cb1bbca9e7698ee01091.css">
   <link rel="stylesheet" href="assets/lesson.css">
-  
-  <style>.task-items li:has(.course-assignment-omitted):not(:has(a)){display:none}</style>
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -235,26 +233,13 @@
 </section>
 <section id="sec-j25-lecture-io-application" class="title-slide slide level1 center">
 <h1>Ввод-вывод и сборка приложения</h1>
-<ul>
-<li>Потоковая модель <code>java.io</code>: байты, символы, обёртки и владение.</li>
-<li>Синхронность, блокирование и стоимость ожидания.</li>
-<li>Каналы и буферы NIO; неблокирующий режим и готовность.</li>
-<li>Асинхронное завершение, порядок операций и время жизни буфера.</li>
-<li>Файловая модель NIO.2, пути и текстовые записи.</li>
-<li>Накопление данных, границы отказа и публикация результата.</li>
-<li>Консольная команда, коды завершения и сборка JAR.</li>
-</ul>
+
 </section>
 
 <section>
 <section id="sec-lecture-io-streams" class="title-slide slide level1 center">
 <h1>Последовательная модель ввода-вывода</h1>
-<ul>
-<li>Источник байтов и последовательное чтение.</li>
-<li>Конец входа и фактическая порция.</li>
-<li>Символьное декодирование и буферизующие обёртки.</li>
-<li>Владение цепочкой ресурсов.</li>
-</ul>
+
 </section>
 <section id="sec-lecture-io-source-model" class="slide level2">
 <h2>Общий алгоритм для разных источников</h2>
@@ -446,12 +431,7 @@
 <section>
 <section id="sec-lecture-io-waiting" class="title-slide slide level1 center">
 <h1>Ожидание и канальная модель</h1>
-<ul>
-<li>Синхронный результат и блокирование вызывающего потока.</li>
-<li>Независимые источники и стоимость ожидания.</li>
-<li>Причины появления NIO.</li>
-<li>Канал, буфер и состояние порции.</li>
-</ul>
+
 </section>
 <section id="sec-lecture-io-sync-call" class="slide level2">
 <h2>Синхронное получение результата</h2>
@@ -674,12 +654,7 @@
 <section>
 <section id="sec-lecture-io-readiness-completion" class="title-slide slide level1 center">
 <h1>Готовность и завершение</h1>
-<ul>
-<li>Неблокирующая попытка и совместное ожидание готовности.</li>
-<li>Асинхронный заказ операции и уведомление о завершении.</li>
-<li><code>Future</code>, обработчик, порядок результатов и владение буфером.</li>
-<li>Виртуальные потоки и стоимость синхронного ожидания.</li>
-</ul>
+
 </section>
 <section id="sec-lecture-io-nonblocking" class="slide level2">
 <h2>Неблокирующая попытка чтения</h2>
@@ -865,12 +840,7 @@
 <section>
 <section id="sec-j25-lecture-io-application-group-2" class="title-slide slide level1 center">
 <h1>Файловая система и текстовые записи</h1>
-<ul>
-<li>Развитие файловой модели в NIO.2.</li>
-<li>Путь, идентичность файла и момент открытия.</li>
-<li>Построчное чтение, память и декодирование.</li>
-<li>Структура предметной строки.</li>
-</ul>
+
 </section>
 <section id="sec-lecture-io-nio2-origin" class="slide level2">
 <h2>Задачи файловой модели</h2>
@@ -991,12 +961,7 @@
 <section>
 <section id="sec-j25-lecture-io-application-group-3" class="title-slide slide level1 center">
 <h1>Приложение и границы результата</h1>
-<ul>
-<li>Журнал поставок и наблюдаемый договор команды.</li>
-<li>Накопление, продолжение после ошибки и сохранение состояния.</li>
-<li>Самостоятельный результат, печать и коды завершения.</li>
-<li>Последовательность стадий и сборка приложения.</li>
-</ul>
+
 </section>
 <section id="sec-j25-lecture-io-application-step-01" class="slide level2">
 <h2>Команда и результат</h2>
@@ -1295,11 +1260,7 @@
 <section>
 <section id="sec-j25-lecture-io-application-additional" class="title-slide slide level1 center">
 <h1>Дополнительные вопросы</h1>
-<ul>
-<li>Публикация файла и неделимость перемещения.</li>
-<li>Сохранение байтового представления текста.</li>
-<li>Рост входа и изменение договора обработки.</li>
-</ul>
+
 </section>
 <section id="sec-j25-lecture-io-application-step-41" class="slide level2">
 <h2>Публикация файла перемещением</h2>

@@ -6,16 +6,16 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-35fc0813589bbfbfa0b8ec974497eeb2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
 <link href="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.11.5">
+  <meta name="generator" content="quarto-1.11.6">
 
   <title>Лекции Java – Функции и последовательности</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
   <style>
@@ -123,10 +123,8 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-3ce18430e1250f8c2f6f98be2c9c7b18.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-836333b27002cb1bbca9e7698ee01091.css">
   <link rel="stylesheet" href="assets/lesson.css">
-  
-  <style>.task-items li:has(.course-assignment-omitted):not(:has(a)){display:none}</style>
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -235,15 +233,7 @@
 <section>
 <section id="sec-j25-lecture-functions-streams" class="title-slide slide level1 center">
 <h1>Функции и последовательности</h1>
-<ul>
-<li>Функциональный интерфейс и передача условия отбора.</li>
-<li>Лямбда: целевой тип, создание и вызов действия.</li>
-<li>Стандартные интерфейсы, возвращаемое значение и побочные эффекты.</li>
-<li>Ссылки на методы, захват окружения и композиция.</li>
-<li>Stream: стадии, ленивость, одноразовость и порядок.</li>
-<li>Редукция, коллекторы и отсутствие результата.</li>
-<li>Файловые источники, владение ресурсом и параллельная обработка.</li>
-</ul>
+
 </section>
 <section id="sec-j25-lecture-functions-streams-source" class="slide level2">
 <h2>Исходный каталог</h2>
@@ -311,12 +301,6 @@
 <section>
 <section id="sec-j25-lecture-functions-streams-group-1" class="title-slide slide level1 center">
 <h1>Передача условия отбора</h1>
-<ul>
-<li>Условие как параметр алгоритма.</li>
-<li>Функциональный интерфейс и анонимная реализация.</li>
-<li>Лямбда, целевой тип и формы тела.</li>
-<li>Создание действия и вызов операции.</li>
-</ul>
 <aside class="notes">
 <p>Сформулировать переменную часть алгоритма: ответ для одного <code>Student</code>. Перейти от предметного требования к операции <code>test</code>, затем показать точку её вызова в цикле.</p>
 <style type="text/css">
@@ -581,11 +565,6 @@
 <section>
 <section id="sec-j25-lecture-functions-streams-group-2" class="title-slide slide level1 center">
 <h1>Форма действия и его эффект</h1>
-<ul>
-<li>Стандартные функциональные интерфейсы.</li>
-<li>Преобразование, потребитель и поставщик.</li>
-<li>Вычисление значения и внешний эффект.</li>
-</ul>
 <aside class="notes">
 <p>Для получения имени, печати и создания списка попросить назвать параметры и результат. Затем для каждого действия указать наблюдаемый эффект, если он есть.</p>
 <style type="text/css">
@@ -800,13 +779,6 @@
 <section>
 <section id="sec-j25-lecture-functions-streams-group-3" class="title-slide slide level1 center">
 <h1>Ссылки, захват и композиция</h1>
-<ul>
-<li>Ссылки на методы и конструкторы.</li>
-<li>Захват локального значения и ссылки на объект.</li>
-<li>Возвращаемое правило и изменяемая настройка.</li>
-<li>Композиция предикатов и преобразований.</li>
-<li>Каррирование и отложенный выбор поставщика.</li>
-</ul>
 <aside class="notes">
 <p>Сопоставить три источника данных действия: аргумент вызова, захваченное значение и текущие поля объекта. Для правила порога указать, какие из них нужны.</p>
 <style type="text/css">
@@ -1196,13 +1168,6 @@
 <section>
 <section id="sec-j25-lecture-functions-streams-group-4" class="title-slide slide level1 center">
 <h1>Композиция конвейера</h1>
-<ul>
-<li>Источник, типы стадий и терминальный результат.</li>
-<li>Ленивость, одноразовость и короткое замыкание.</li>
-<li>Порядок операций, разворачивание и числовая агрегация.</li>
-<li>Редукция, коллекторы и <code>Optional</code>.</li>
-<li>Побочные эффекты, файловый ресурс и публикация результата.</li>
-</ul>
 <aside class="notes">
 <p>Перенести переданные функции в операции библиотеки. На каждом шаге спрашивать, какие сведения содержат элементы и кто начинает обработку.</p>
 <style type="text/css">
