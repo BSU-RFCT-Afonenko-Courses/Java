@@ -1,0 +1,1137 @@
+{
+  "schema": "heavy-operations-source-audit-v1",
+  "language": "ru",
+  "date": "2026-11-03",
+  "mode": "read-only-source",
+  "executed": {
+    "builds": 0,
+    "tests": 0,
+    "benchmarks": 0,
+    "full_tree_hashing": 0,
+    "native_inspect": 0
+  },
+  "admission": {
+    "threadId": "01a1a16e-662d-7331-bba7-1c693b908cdf",
+    "agentPath": "/root/audit_core",
+    "initialTurnId": "01a1a16e-666d-70a0-bc4b-b46158c7b7f0",
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "ultra",
+    "speedChanged": false,
+    "primarySource": "/home/tolya/.codex/sessions/2026/11/03/rollout-2026-11-03T15-42-09-01a1a16e-662d-7331-bba7-1c693b908cdf.jsonl",
+    "initialLines": [
+      1,
+      8
+    ],
+    "interval": {
+      "fromOriginalTurn": "01a1a16e-666d-70a0-bc4b-b46158c7b7f0",
+      "contextCount": 1,
+      "contexts": [
+        {
+          "line": 8,
+          "turnId": "01a1a16e-666d-70a0-bc4b-b46158c7b7f0"
+        }
+      ],
+      "allTopAndNestedModelEffortMatch": true,
+      "globalConfigChanged": false,
+      "speedChanged": false
+    }
+  },
+  "refs": {
+    "javaInstalled": {
+      "repository": "BSU-RFCT-Afonenko-Courses/Java",
+      "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+      "root": "/home/tolya/JavaCodex/java-improvement-research-20261103"
+    },
+    "coreOwnerSource": {
+      "repository": "Afonenko-Course-Tools/quarto-course",
+      "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+      "version": "Core9.3.4; Presentation/Navigation9.3.2",
+      "currentMainVerified": true
+    },
+    "qrcOwnerSource": {
+      "repository": "Afonenko-Course-Tools/quarto-reference-catalog",
+      "ref": "798f8c0d9f87fd5dcfe9ee85b79df57e647d2f3c",
+      "version": "3.2.0",
+      "currentMainVerified": true
+    },
+    "spInstalled": {
+      "repository": "BSU-RFCT-Afonenko-Courses/System-Practice",
+      "ref": "fcc5a2ac1eff3760d306a337a9c8871780365488",
+      "root": "/home/tolya/JavaCodex/java-research-20261103/followup-heavy-operations/platform/refs/System-Practice-fcc5a2ac1eff3760d306a337a9c8871780365488"
+    },
+    "spCorePin": {
+      "repository": "Afonenko-Course-Tools/quarto-course",
+      "ref": "04c189fccfaa56badfc079f7be46fea4969ccf37",
+      "version": "9.1.0"
+    },
+    "performanceSource": {
+      "repository": "Afonenko-Course-Tools/quarto-course-performance",
+      "ref": "0dc6ca31228da400a48e1278c13853d088b9dec9",
+      "currentMainVerified": true
+    },
+    "performancePackagedSource": {
+      "repository": "Afonenko-Course-Tools/quarto-course-performance",
+      "ref": "f79d4f7e4cf2d235ae7d35a7b6a1b7a6be42486f",
+      "packagerReportedBy": "root; perf-arch PKGBUILD",
+      "subsetCompared": [
+        "src/runner/render.ts",
+        "src/adapters/quarto/inspect.ts",
+        "src/runner/diagnostic.ts",
+        "src/adapters/quarto/capabilities.ts",
+        "src/launchers/setup.ts",
+        "src/runner/package-coverage.ts"
+      ],
+      "subsetContentEqual": true
+    }
+  },
+  "coverage": {
+    "implementations": [
+      "Core runtime/source-snapshot/assignment authority/A1/artifact/body/native TS",
+      "Presentation filters/browser",
+      "Navigation composition/exercise/native browser",
+      "QRC local/full publish/linker/search/probes",
+      "Performance render wrapper/diagnostic/experiment",
+      "SP older Core runtime+A1"
+    ],
+    "duplicates": "Java root/theory/tasks/lectures/practice/handbook copies — одна реализация, разные invocations/scopes. /home/tolya/course-tools/quarto-course-budget — detached historical worktree того же quarto-course, HEAD5ea107e3338f2cb90dc3c7cf47884875d2fe384f; не отдельный актуальный budget проект.",
+    "sourceComparison": "12 адресно fetched Core/QRC files имеют те же bytes installed Java; SP3 ключевых files same bytes exact installed SP. Это plain source equality, не full-tree hashing.",
+    "limitations": [
+      "Нет runtime frequency measurement или performance PASS.",
+      "Не скачаны/обновлены все репозитории. Адресные exact GitHub sources в sources/.",
+      "Source-audit hotspot означает вопрос следующего прохода, не разрешение удалить currentness/privacy safeguards.",
+      "Vendored parse5/YAML/Zod APIs учитывались только через реальные callers; unused file inventory helper не внесён как hot path.",
+      "CI/release installation/hash checks не выданы за обычный runtime; Packaging smoke/hash/Podman рассматривает root отдельно."
+    ]
+  },
+  "decisionBasis": {
+    "path": "docs/refactoring-plan.md",
+    "lines": [
+      395,
+      396,
+      397
+    ],
+    "summary": "Decision74: packet native context, no repeated inspect/hash unchanged; final exact acceptance and preservation retained; no universal manager selected."
+  },
+  "groups": [
+    {
+      "id": "C01",
+      "priority": "high",
+      "class": "runtime-owner-admission",
+      "title": "Полный снимок source owner перед native inspect",
+      "evidence": [
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/source-snapshot.ts",
+          "line": 92,
+          "function": "snapshot",
+          "caller": "beginNativeOperationInternal:1274; prepareAssignment:296",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/source-snapshot.ts#L92"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/operation.ts",
+          "line": 1274,
+          "function": "beginNativeOperationInternal",
+          "caller": "entrypoints/pre.ts→beginNativePreHook",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/operation.ts#L1274"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/assignment-admission.ts",
+          "line": 296,
+          "function": "prepareAssignment",
+          "caller": "assignment capture reservation",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/assignment-admission.ts#L296"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "04c189fccfaa56badfc079f7be46fea4969ccf37",
+          "path": "_extensions/course-core/runtime/operation.ts",
+          "line": 1180,
+          "function": "beginNativeOperationInternal",
+          "caller": "SP Core9.1.0 pre-hook",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/04c189fccfaa56badfc079f7be46fea4969ccf37/_extensions/course-core/runtime/operation.ts#L1180"
+        }
+      ],
+      "object_scope": "Все regular files и directory memberships под owner.root; исключены output, .git/.quarto/_generated/node_modules/.gradle/build и tool cache. _extensions/vendor, учебные projects и непотреблённые исходники НЕ исключены.",
+      "frequency": "Один full walk+read+SHA256 каждого файла на свежую owner operation; prepared assignment повторно использует admission.source. Не на документ и не на getter. Число fresh owner operations за полный курс UNKNOWN.",
+      "lifetime": "Снимок сериализуется в state.json; sourceIndex — WeakMap на object state текущего процесса.",
+      "original_purpose": "Связать native metadata/render с неизменным точным source set; обнаружить подмену, links/special entries и изменения во время capture.",
+      "challenge": "Поставить под вопрос байтовый SHA256 всего owner перед любым малым render: ограничить рабочий вход реально используемой closure, переиспользовать fixed release identity в доверенной неизменной checkout. Не обещать correctness нового механизма без отдельного решения.",
+      "literal_requirement": "Нет требования буквально SHA256 всего дерева на каждый render. Decision74 требует пакетность/адресность; существующий Core API уже обещает SAME S и lifecycle, их изменение требует осознанного решения.",
+      "limits": "Стоимость по времени/байтам не измерялась. Source snapshot не равен повторному content hashing на fences."
+    },
+    {
+      "id": "C02",
+      "priority": "high",
+      "class": "runtime-currentness",
+      "title": "Whole-source metadata fences и разные fast path Java/SP",
+      "evidence": [
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/source-snapshot.ts",
+          "line": 155,
+          "function": "assertSources",
+          "caller": "operation.guard/begin/finish/beforeOperationChild",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/source-snapshot.ts#L155"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/operation.ts",
+          "line": 2258,
+          "function": "guard",
+          "caller": "withCurrentNativeOperation entry/exit; withProjectBatch",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/operation.ts#L2258"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/operation.ts",
+          "line": 2603,
+          "function": "withProjectBatch",
+          "caller": "withProjectContexts/withProjectContracts",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/operation.ts#L2603"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/operation.ts",
+          "line": 2862,
+          "function": "assertCurrent",
+          "caller": "публичный operation consumer",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/operation.ts#L2862"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "04c189fccfaa56badfc079f7be46fea4969ccf37",
+          "path": "_extensions/course-core/runtime/operation.ts",
+          "line": 2068,
+          "function": "guard",
+          "caller": "SP assertCurrent:2386 + bound context guards",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/04c189fccfaa56badfc079f7be46fea4969ccf37/_extensions/course-core/runtime/operation.ts#L2068"
+        }
+      ],
+      "object_scope": "Full fence: lstat+realPath всех snapshot files/common ancestors и readDir всех зафиксированных directories; local fence: configuration/document/dependency inputs и предки. Full check outputs/resources дополнительно делает regular(path)+lstat.",
+      "frequency": "Java static: outer entry+exit и static batch entry+exit full; checkpoint внутри batch проверяет только life/failure/env/cwd, source IO=0. assertCurrent() в static по-прежнему full. SP9.1.0: static/checkpoint отсутствуют; assertCurrent() вызывает local guard с IO на каждом вызове; all-doc default может брать объединение всех config/doc inputs. Точный consumer call count UNKNOWN.",
+      "lifetime": "Индексы source/memberships живут в private operation; physical common-ancestor memo только внутри одного assertSources.",
+      "original_purpose": "Не выдавать устаревшие/подменённые native capture, contexts, source и ресурсы.",
+      "challenge": "Искать лишние explicit assertCurrent вокруг уже закрытого static batch, вложенные full fences с одинаковыми dependencies и before-child whole-source fence. Для SP адресно перенять существующую принятую batch lifetime семантику; не добавлять новый общий validator.",
+      "literal_requirement": "Требуется актуальность/сохранность на осмысленных границах; буквального количества fences и per-getter IO нет. Current Core9.3.4 docs явно допускают deferred currentness внутри static callback.",
+      "limits": "Fences здесь метаданные/membership, не повтор SHA256 всех source. Java9.3.4 fast path нельзя распространять на SP9.1.0."
+    },
+    {
+      "id": "C03",
+      "priority": "high",
+      "class": "runtime-identity",
+      "title": "Runtime executable, assignment K/G и authority content checks",
+      "evidence": [
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/operation.ts",
+          "line": 251,
+          "function": "runtimeIdentity",
+          "caller": "initial admission; assertPrivate(full)",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/operation.ts#L251"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/operation.ts",
+          "line": 367,
+          "function": "assertPrivate",
+          "caller": "pre/post/seal/operation.guard",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/operation.ts#L367"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/assignment-admission.ts",
+          "line": 336,
+          "function": "prepareAssignment runtime files",
+          "caller": "assignment admission",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/assignment-admission.ts#L336"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/assignment-admission.ts",
+          "line": 169,
+          "function": "assertAssignmentRuntime",
+          "caller": "assertPrivate; capture children",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/assignment-admission.ts#L169"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/assignment-authority.ts",
+          "line": 466,
+          "function": "assertAssignmentAuthority",
+          "caller": "assertAssignmentRuntime",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/assignment-authority.ts#L466"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/assignment-authority.ts",
+          "line": 301,
+          "function": "graph(content)",
+          "caller": "openAssignmentAuthority + full authority fence",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/assignment-authority.ts#L301"
+        }
+      ],
+      "object_scope": "Ordinary runtimeIdentity хеширует только разрешённый Quarto executable, не автоматически quarto.js. Assignment admission хеширует все profile.runtime.files вне уже hashed S; последующие K guards обычно lstat/realPath файлов, readDir loader corridors, absence corridors. Authority open/full повторяет hash 4 capsule JSON files и graph.files при full=true.",
+      "frequency": "Ordinary initial executable SHA256 + after-inspect SHA256; post/full entry/exit/batch fences снова runtimeIdentity(content=true). Assignment K admission один раз на runtime witness; authority handles/WeakMaps локальны процессу, новый TS child может открыть authority заново. G состав и число child opens UNKNOWN.",
+      "lifetime": "runtimeAuthorities WeakMap и handles — process-local; private operation JSON не переносит живой authority handle.",
+      "original_purpose": "Runtime/profile/authority binding и запрет незарегистрированного loader input.",
+      "challenge": "Поставить под вопрос полный content identity одних и тех же закреплённых runtime/G между близкими trusted boundaries; отдельно решить lifetime fixed toolchain/release authority и дешёвую identity проверку. Не смешивать это с user source invalidation.",
+      "literal_requirement": "Нет требования буквально перехешировать runtime/graph на каждый checkpoint. Есть принятые runtime/preservation границы и текущий exact producer authority API.",
+      "limits": "В отсутствие profile/runtime registry нельзя утверждать конкретный размер K или что в нём точно есть quarto.js; ordinary runtimeIdentity такого чтения не делает."
+    },
+    {
+      "id": "C04",
+      "priority": "high",
+      "class": "runtime-resource-observation",
+      "title": "Двойной обход identical AST и цепочка SHA1→SHA1/SHA256→выдача bytes",
+      "evidence": [
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/native-ts/late-filter.lua",
+          "line": 66,
+          "function": "Pandoc late filter",
+          "caller": "обычный native capture без COURSE_CORE_TS_RUN",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/native-ts/late-filter.lua#L66"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/course-core/native-resources.lua",
+          "line": 47,
+          "function": "facts",
+          "caller": "late-filter:67 facts(observedDoc,observedDoc,{})",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/course-core/native-resources.lua#L47"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/operation.ts",
+          "line": 1712,
+          "function": "finishNativeOperationInternal resource capture",
+          "caller": "per referenced unique canonical resource",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/operation.ts#L1712"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/operation.ts",
+          "line": 2478,
+          "function": "resourceInventory",
+          "caller": "materialization/resource consumer",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/operation.ts#L2478"
+        }
+      ],
+      "object_scope": "facts вызывает M.uses(raw) и M.uses(public); ordinary late path передаёт один и тот же object в оба аргумента. Ресурсы читаются целиком Lua и SHA1; post reread проверяет SHA1 и вычисляет SHA256; first bytes DTO read+SHA256 ещё раз.",
+      "frequency": "Два одинаковых whole-doc AST walks в указанной late ветви на каждый документ. Lua resource hashing повторяется для ссылки на один физический файл из разных документов; post resources dedup по canonical source в operation. DTO bytes cache по dev/ino+sha256 даёт один read/hash на physical identity за public operation, потом byte copies.",
+      "lifetime": "Lua collected uses локален документу; post resources на native operation; snapshots Map на publicOperation callback.",
+      "original_purpose": "Захватить фактически наблюдавшиеся engine-generated bytes до их перемещения, связать late observation с выдачей, не выдать приватный ресурс.",
+      "challenge": "Прямой кандидат удаления — второй M.uses при raw===public. Поставить под вопрос два алгоритма digest/двойное чтение retained bytes; если lifecycle сохраняет bytes, переиспользовать одно наблюдение на real resource identity. Generated/private distinction сохраняется.",
+      "literal_requirement": "Нет буквального требования одновременно SHA1 и SHA256 или дважды обходить один AST; native actual resource correctness требуется.",
+      "limits": "Не каждый resource проходит все stages: DTO может не запрашиваться; code доказывает цепочку, но не её измеренную долю полного курса."
+    },
+    {
+      "id": "C05",
+      "priority": "high",
+      "class": "runtime-native-metadata",
+      "title": "Core A1: contract batch fast path и дорогой fallback/standalone",
+      "evidence": [
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/infrastructure/project-context.ts",
+          "line": 536,
+          "function": "readProjectContexts",
+          "caller": "public standalone API",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/infrastructure/project-context.ts#L536"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/infrastructure/project-context.ts",
+          "line": 599,
+          "function": "copyOwner",
+          "caller": "readProjectContexts",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/infrastructure/project-context.ts#L599"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/infrastructure/project-context.ts",
+          "line": 1094,
+          "function": "operationProjectContextReuse qualify",
+          "caller": "operation.withProjectContracts",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/infrastructure/project-context.ts#L1094"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/infrastructure/project-context.ts",
+          "line": 1128,
+          "function": "contractProbe",
+          "caller": "one aggregate inspect for missing qualified html contracts",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/infrastructure/project-context.ts#L1128"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/infrastructure/project-context.ts",
+          "line": 1201,
+          "function": "operationProjectContextReuse fallback",
+          "caller": "неqualified contract/full metadata request",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/infrastructure/project-context.ts#L1201"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/infrastructure/project-context.ts",
+          "line": 1250,
+          "function": "per-input inspect fallback",
+          "caller": "withAssignmentA1Probe",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/infrastructure/project-context.ts#L1250"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "tasks/_extensions/Afonenko-Course-Tools/course-prairielearn/application/native-course.ts",
+          "line": 36,
+          "function": "withProjects selection",
+          "caller": "PL prefers withProjectContracts",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/tasks/_extensions/Afonenko-Course-Tools/course-prairielearn/application/native-course.ts#L36"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/project-download/infrastructure/runtime.ts",
+          "line": 600,
+          "function": "withProjectContracts",
+          "caller": "Download current runtime",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/project-download/infrastructure/runtime.ts#L600"
+        }
+      ],
+      "object_scope": "Standalone: whole owner read+copy temp, owner inspect и per-input synthetic inspect. Bound fallback: SAME S rows целиком materialize temp, затем input probes. Qualified contract path: aggregate _quarto.yml carrier для missing html contracts; без owner source copy.",
+      "frequency": "Standalone 1 owner inspect+N selected-input inspect на request owner. Current contract eligible batch —1 inspect только для uncached missing set; cache hit=0. Bound fallback —N unique inputs на cache miss, selectProbeInput ограничивает render одним input. Сколько реальных fallback requests UNKNOWN.",
+      "lifetime": "byteCache, cache, contractCache живут в closure operationProjectContextReuse (одна operation generation); callbacks contexts expire.",
+      "original_purpose": "Получить native metadata и origins с реальным Quarto merge; общий consumer API вместо собственной merge реализации.",
+      "challenge": "До новых native экспериментов проверить eligibility существующего contractsOnly path у реальных callers; убрать вызовы standalone API внутри уже bound operation; не копировать всё S ради одного metadata leaf. Полный metadata fallback может оставаться адресной исключительной ветвью.",
+      "literal_requirement": "Native metadata/origins и разграничение owner/input/profile/format требуются; whole copy/per-input inspect как механизм не закреплены пользователем.",
+      "limits": "Нельзя утверждать, что Java current делает N inspect per project всегда: PL/Download уже предпочитают narrow contracts API."
+    },
+    {
+      "id": "C06",
+      "priority": "high",
+      "class": "runtime-legacy-sp",
+      "title": "SP9.1.0 не имеет contract batch/static checkpoint оптимизаций",
+      "evidence": [
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "04c189fccfaa56badfc079f7be46fea4969ccf37",
+          "path": "_extensions/course-core/infrastructure/project-context.ts",
+          "line": 850,
+          "function": "operationProjectContextReuse cache miss",
+          "caller": "SP PL9.0.1 withProjectContexts",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/04c189fccfaa56badfc079f7be46fea4969ccf37/_extensions/course-core/infrastructure/project-context.ts#L850"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "04c189fccfaa56badfc079f7be46fea4969ccf37",
+          "path": "_extensions/course-core/infrastructure/project-context.ts",
+          "line": 897,
+          "function": "technical profile render: inputs",
+          "caller": "bound A1 batch",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/04c189fccfaa56badfc079f7be46fea4969ccf37/_extensions/course-core/infrastructure/project-context.ts#L897"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "04c189fccfaa56badfc079f7be46fea4969ccf37",
+          "path": "_extensions/course-core/infrastructure/project-context.ts",
+          "line": 903,
+          "function": "for(input) inspect",
+          "caller": "bound A1 batch",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/04c189fccfaa56badfc079f7be46fea4969ccf37/_extensions/course-core/infrastructure/project-context.ts#L903"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "04c189fccfaa56badfc079f7be46fea4969ccf37",
+          "path": "_extensions/course-core/runtime/operation.ts",
+          "line": 2386,
+          "function": "assertCurrent",
+          "caller": "SP PL adapter fence",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/04c189fccfaa56badfc079f7be46fea4969ccf37/_extensions/course-core/runtime/operation.ts#L2386"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "04c189fccfaa56badfc079f7be46fea4969ccf37",
+          "path": "_extensions/course-core/runtime/operation.ts",
+          "line": 2595,
+          "function": "bound.guard",
+          "caller": "checkState/context methods",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/04c189fccfaa56badfc079f7be46fea4969ccf37/_extensions/course-core/runtime/operation.ts#L2595"
+        }
+      ],
+      "object_scope": "Full SAME S temp copy; per selected input inspect с техническим profile render всех inputs; guard selected locals/config/default document dependencies.",
+      "frequency": "При cache miss N inspect для N selected inputs; профиль содержит весь inputs набор, поэтому каждый inspect может обходить всю batch (исторический механизм квадратичной работы). Это source mechanism; актуальная длительность UNKNOWN. Повтор exact request within same operation может cache hit.",
+      "lifetime": "Process/operation closure caches; no static policy/contract aggregate/checkpoint at this ref.",
+      "original_purpose": "Native contract origins и currentness; сохранившийся более ранний API.",
+      "challenge": "В следующем проходе поставить SP путь первым кандидатом обновления к уже существующему narrow contract batch + explicit lifetime, после согласования SP consumer API. Не лечить увеличением timeout или отключением всех checks.",
+      "literal_requirement": "Пользователь не требовал сохранять именно старый probe protocol; принятые результаты/сохранность и SP routes остаются обязательны.",
+      "limits": "Installed SP source comparison выполнено только для operation/source-snapshot/project-context; это не полный аудит всех файлов старого Core."
+    },
+    {
+      "id": "C07",
+      "priority": "medium",
+      "class": "runtime-output-fixation",
+      "title": "HTML/output fixation, child seal и повторные байтовые копии",
+      "evidence": [
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/operation.ts",
+          "line": 1542,
+          "function": "finishNativeOperationInternal output rows",
+          "caller": "post-hook after local QRC",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/operation.ts#L1542"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/operation.ts",
+          "line": 1774,
+          "function": "exercise index rewrite",
+          "caller": "full ordinary native inputs",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/operation.ts#L1774"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/operation.ts",
+          "line": 1930,
+          "function": "sealNativeCaptureScope output/resource verification",
+          "caller": "reservation children seal",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/operation.ts#L1930"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/runtime/operation.ts",
+          "line": 2503,
+          "function": "resourceInventory DTO",
+          "caller": "cached or fresh bytes consumer",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/runtime/operation.ts#L2503"
+        }
+      ],
+      "object_scope": "Каждый текущий HTML output read/decode/hash; index pages rewrite и rehash; reservation seal перечитывает/hash child output/resources. DTO clones Uint8Array на каждую выдачу.",
+      "frequency": "Output fixation один раз за child post, дополнительный rehash если rewritten exercise index; seal один pass по outputs/resources scope; resource DTO clones каждый запрос. Полная величина/количество overlapping scopes UNKNOWN.",
+      "lifetime": "rows в complete.json; bytes cache только publicOperation; copied DTO независим/изменяем consumer-ом.",
+      "original_purpose": "Точная текущая публикация после QRC и независимость byte DTO от mutable consumer.",
+      "challenge": "Поставить под вопрос последовательные фиксации одного неизменного результата через local post→scope seal→publisher stage; выбрать финальную meaningful boundary. Cheap checksum reuse возможен только с валидной immutable lifetime; DTO isolation нельзя просто убрать.",
+      "literal_requirement": "Точная финальная приёмка сохранена, но буквальных промежуточных hash boundaries пользователь не задавал.",
+      "limits": "Full source fences не хешируют outputs; этот content rehash находится на seal, а full guard outputs проверяет signatures."
+    },
+    {
+      "id": "C08",
+      "priority": "medium",
+      "class": "runtime-ast-transport",
+      "title": "Document AST transport, clones и повтор late cleanup",
+      "evidence": [
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/course-core/native-ts/early-context.lua",
+          "line": 64,
+          "function": "run_json_filter",
+          "caller": "runtime-filter native-ts per document",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/course-core/native-ts/early-context.lua#L64"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/course-core/native-ts/early-filter.ts",
+          "line": 90,
+          "function": "normalizeDocument+sidecars",
+          "caller": "Deno child receives Pandoc JSON",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/course-core/native-ts/early-filter.ts#L90"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/course-core/document/normalize.ts",
+          "line": 101,
+          "function": "normalizeDocumentWork",
+          "caller": "early-filter",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/course-core/document/normalize.ts#L101"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/course-core/document/normalize.ts",
+          "line": 361,
+          "function": "collect/collectAnswers/collectReleaseFacts/project",
+          "caller": "normalizeDocumentWork",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/course-core/document/normalize.ts#L361"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/native-ts/late-filter.lua",
+          "line": 15,
+          "function": "Div subtree captures",
+          "caller": "post-render filter",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/native-ts/late-filter.lua#L15"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/native-ts/late-filter.lua",
+          "line": 64,
+          "function": "whole document clean→JSON decode",
+          "caller": "ordinary native capture",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/native-ts/late-filter.lua#L64"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/native-ts/late-filter.lua",
+          "line": 85,
+          "function": "second whole document clean walk",
+          "caller": "late-filter return",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/native-ts/late-filter.lua#L85"
+        }
+      ],
+      "object_scope": "Whole document JSON child transport; Zod/bounds+structuredClone; semantic AST walks; whole early DTO and early.ast serialized separately; occurrence fragments walk/write JSON/read JSON; ordinary late body whole clean walk and final return second clean walk.",
+      "frequency": "На каждый rendered document; occurrence subtree serializations proportional exercise/assessment occurrences, possible nested overlap. Assignment-only producer/mark scans дополнительно; no per-field IO in normalize.",
+      "lifetime": "AST/sidecars текущего документа, reusable body caches позже живут operation callback.",
+      "original_purpose": "Native TS semantic normalization, audience projection, keep actual post-Quarto bodies and clean marker attributes.",
+      "challenge": "Поставить под вопрос повтор clean walk(64/85), повтор whole AST serialization/copies и overlapping fragment scans; использовать одно очищенное представление/одну нужную capture projection. Не заменять native AST собственным exporter.",
+      "literal_requirement": "Требуется фактическое native условие и student/full корректность; число сериализаций/sidecars не является учебным требованием.",
+      "limits": "Это bounded per-doc работа, не доказанный главный bottleneck. Семантические разные passes не объявлены автоматически лишними."
+    },
+    {
+      "id": "C09",
+      "priority": "medium",
+      "class": "runtime-materialization",
+      "title": "Artifact materialization: plan cache, Pandoc calls, file hashes и DTO copies",
+      "evidence": [
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/artifacts/project.ts",
+          "line": 161,
+          "function": "parsedFragment",
+          "caller": "materializeProject includes",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/artifacts/project.ts#L161"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/artifacts/project.ts",
+          "line": 394,
+          "function": "materialize cache key",
+          "caller": "materializeProject/Condition",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/artifacts/project.ts#L394"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/artifacts/project.ts",
+          "line": 406,
+          "function": "add",
+          "caller": "each artifact file",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/artifacts/project.ts#L406"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/artifacts/project.ts",
+          "line": 777,
+          "function": "markdown→json submission instructions",
+          "caller": "materialize output",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/artifacts/project.ts#L777"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/artifacts/project.ts",
+          "line": 815,
+          "function": "json→gfm writer",
+          "caller": "generated README",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/artifacts/project.ts#L815"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course",
+          "ref": "a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8",
+          "path": "_extensions/course-core/artifacts/project.ts",
+          "line": 885,
+          "function": "writeArtifactInventory",
+          "caller": "public final bytes IO API",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course/blob/a478d2cc0dfb19e0bebd99108815ac8ef1fe85a8/_extensions/course-core/artifacts/project.ts#L885"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "tasks/_extensions/Afonenko-Course-Tools/course-prairielearn/application/native-materialize.ts",
+          "line": 148,
+          "function": "student/full/final materializeProject",
+          "caller": "nativeTaskMaterialize",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/tasks/_extensions/Afonenko-Course-Tools/course-prairielearn/application/native-materialize.ts#L148"
+        }
+      ],
+      "object_scope": "Files for one explicit plan/audience; per add byte clone+SHA256; inventory cache clones; final write clones and SHA256 every file again. Fragment and README conversion use Quarto Pandoc child.",
+      "frequency": "Материализация cache miss per (condition,bindings,kind) на plan; ≤16 variants. parsedFragments cached path. PL вызывает preliminary student, optional full и final student с updated submission, поэтому это не обязательно cache hit. writeArtifactInventory только если consumer вызывает API (актуальный consumer count UNKNOWN).",
+      "lifetime": "PlanState caches и fragments на explicit plan; inventory DTO independent.",
+      "original_purpose": "Standalone Gradle/readme/resource inventory с полным условием, reproducible byte DTO и public/full separation.",
+      "challenge": "Поставить под вопрос повтор preliminary/final rendering неизменных частей и rehash на trusted in-process write boundary. Cache ключ можно сузить на неизменные parts, но финальное submission text и DTO safety сохраняются.",
+      "literal_requirement": "Пользователь требует самостоятельный проект, корректный README, student/full; literal SHA256 каждого промежуточного DTO нет.",
+      "limits": "writeArtifactInventory — exported callable, но реальный текущий Download/PL call site не найден; не считать его rehash обязательным для каждого ZIP."
+    },
+    {
+      "id": "C10",
+      "priority": "medium",
+      "class": "runtime-body-export",
+      "title": "Body fragments: два citeproc child и resource base64",
+      "evidence": [
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/course-core/body-export/references.ts",
+          "line": 39,
+          "function": "resolveReferences",
+          "caller": "preparePublicIntroduction/preparePublicCondition",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/course-core/body-export/references.ts#L39"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/course-core/body-export/references.ts",
+          "line": 80,
+          "function": "citation-only native witness",
+          "caller": "resolveReferences",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/course-core/body-export/references.ts#L80"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/course-core/body-export/references.ts",
+          "line": 107,
+          "function": "full fragment citeproc",
+          "caller": "resolveReferences",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/course-core/body-export/references.ts#L107"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/course-core/body-export/assignment.ts",
+          "line": 108,
+          "function": "Body caches",
+          "caller": "operation.assignmentBodyPackage",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/course-core/body-export/assignment.ts#L108"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/course-core/body-export/assignment.ts",
+          "line": 261,
+          "function": "resource DTO→base64",
+          "caller": "buildAssignmentBody",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/course-core/body-export/assignment.ts#L261"
+        }
+      ],
+      "object_scope": "Partitioned public introduction/condition/answer fragment; 2 Pandoc --citeproc children only if citations.size>0. Resource copy to binary JS string then btoa; dedup by physical identity within package.",
+      "frequency": "Два child на uncached citation-bearing public fragment; no citations=0. Intro/questions cached по doc context/version/id внутри operation body cache, with defensive structuredClone per reuse. Текущее число фрагментов с citations UNKNOWN.",
+      "lifetime": "Body cache в publicOperation WeakMap для совместимых namespace/resolve/sourceUrl references; package resource identity map локальна package.",
+      "original_purpose": "Не дать warning-only unknown citation заимствовать forged csl-entry; genuine public bibliography partition and portable Body resources.",
+      "challenge": "Поставить под вопрос второй witness subprocess при наличии единого надёжного native результата; экономия требует сохранить неизвестные citation/collision отказы. Для ресурсов — избежать дополнительной binary string copy, если формат транспорта допускает bytes.",
+      "literal_requirement": "Native ссылки и public provenance требуются; literal два citeproc child или base64 assembly loop не требуются.",
+      "limits": "Два native child — deliberate verification mechanism, не просто случайная дубликация; допустимость однопроходного замещения UNKNOWN."
+    },
+    {
+      "id": "C11",
+      "priority": "high",
+      "class": "runtime-qrc-inspect",
+      "title": "QRC post-hook повторно запрашивает owner inspect",
+      "evidence": [
+        {
+          "repository": "Afonenko-Course-Tools/quarto-reference-catalog",
+          "ref": "798f8c0d9f87fd5dcfe9ee85b79df57e647d2f3c",
+          "path": "_extensions/reference-catalog/entrypoints/post.ts",
+          "line": 8,
+          "function": "main",
+          "caller": "project post-render hook",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-reference-catalog/blob/798f8c0d9f87fd5dcfe9ee85b79df57e647d2f3c/_extensions/reference-catalog/entrypoints/post.ts#L8"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-reference-catalog",
+          "ref": "798f8c0d9f87fd5dcfe9ee85b79df57e647d2f3c",
+          "path": "_extensions/reference-catalog/entrypoints/post.ts",
+          "line": 15,
+          "function": "quarto --version + publish",
+          "caller": "QRC main",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-reference-catalog/blob/798f8c0d9f87fd5dcfe9ee85b79df57e647d2f3c/_extensions/reference-catalog/entrypoints/post.ts#L15"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "theory/_quarto.yml",
+          "line": 3,
+          "function": "Core pre + QRC post + Core post",
+          "caller": "native owner hooks",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/theory/_quarto.yml#L3"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "tasks/_quarto.yml",
+          "line": 6,
+          "function": "QRC post",
+          "caller": "native owner hooks",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/tasks/_quarto.yml#L6"
+        }
+      ],
+      "object_scope": "Целый owner/project config/profile через Quarto inspect; дальше нужен reference-catalog namespace/config/outputDir и version.",
+      "frequency": "1 inspect+1 --version за каждый QRC local post-hook; Core перед ним уже делал owner inspect. theory/tasks/lectures/practice/handbook настроены так; конкретное число owner invocations UNKNOWN.",
+      "lifetime": "QRC main не использует Core owner witness; результаты локальны этому процессу.",
+      "original_purpose": "Самостоятельный QRC проект может работать независимо от Core/Publisher, получить effective config native способом.",
+      "challenge": "У coupled Core+QRC owner передавать уже resolved config/version/output facts на существующей lifecycle boundary; standalone QRC сохраняет свой native lookup. Поставить под вопрос unconditional post-inspect при явно пустых outputs.",
+      "literal_requirement": "Самостоятельность QRC и native effective config не требуют повторять inspect в интегрированном caller.",
+      "limits": "Нельзя механически удалить inspect у standalone QRC: там другого producer facts может не быть."
+    },
+    {
+      "id": "C12",
+      "priority": "high",
+      "class": "runtime-qrc-html",
+      "title": "QRC local→full снова разбирает и переписывает HTML; search переиспользует tree",
+      "evidence": [
+        {
+          "repository": "Afonenko-Course-Tools/quarto-reference-catalog",
+          "ref": "798f8c0d9f87fd5dcfe9ee85b79df57e647d2f3c",
+          "path": "_extensions/reference-catalog/infrastructure/publish.ts",
+          "line": 66,
+          "function": "publish",
+          "caller": "QRC local hook или Publisher full/local",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-reference-catalog/blob/798f8c0d9f87fd5dcfe9ee85b79df57e647d2f3c/_extensions/reference-catalog/infrastructure/publish.ts#L66"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-reference-catalog",
+          "ref": "798f8c0d9f87fd5dcfe9ee85b79df57e647d2f3c",
+          "path": "_extensions/reference-catalog/infrastructure/pages.ts",
+          "line": 22,
+          "function": "readPage",
+          "caller": "publish Promise.all current HTML",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-reference-catalog/blob/798f8c0d9f87fd5dcfe9ee85b79df57e647d2f3c/_extensions/reference-catalog/infrastructure/pages.ts#L22"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/reference-catalog/infrastructure/search.ts",
+          "line": 19,
+          "function": "updateSearch",
+          "caller": "publish passes linked.parsedPages",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/reference-catalog/infrastructure/search.ts#L19"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/course-site/application/compose.ts",
+          "line": 597,
+          "function": "full publishReferenceCatalog",
+          "caller": "Publisher composition after native child outputs",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/course-site/application/compose.ts#L597"
+        }
+      ],
+      "object_scope": "Только explicit current outputs, не полный stage filesystem walk. На страницу readText→canonicalizeMetadata→parse5 full AST→nodes arrays; локальные probe/ID scans, linker; linked HTML всех страниц write. Search индекс прочитан/записан, node index строится ещё раз из того же parsed tree, НЕ второй parse5.",
+      "frequency": "1 parse на current HTML в каждом publish; обычные child local post и последующая Publisher full composition могут повторить parse/write тех же страниц. Native/generation phases current refs matter. Full count UNKNOWN.",
+      "lifetime": "Page AST общий linker+search только внутри publish; local/full вызовы отдельны.",
+      "original_purpose": "Local deferred links vs full course refs, native labels/targets, search с окончательным текстом, атомарное вычисление before writes.",
+      "challenge": "Поставить под вопрос выполнение local publish когда caller сразу делает full stage finalize; кешировать/передавать parsed Page в пределах одной composition без расширения authority. Не писать страницы без изменения, если не нужен повтор dynamic script injection.",
+      "literal_requirement": "Требуется верное local/full resolution и native labels; повтор parse/write и inline navigation script replace не являются пользовательским требованием.",
+      "limits": "QRC infrastructure/files.ts:8 recursive files helper не имеет runtime caller вне self recursion в текущем package; его нельзя считать фактическим full walk. Vendor APIs не приписаны runtime."
+    },
+    {
+      "id": "C13",
+      "priority": "medium",
+      "class": "runtime-navigation-html",
+      "title": "Navigation после QRC ещё раз parse5 всех current HTML",
+      "evidence": [
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "tasks/_extensions/Afonenko-Course-Tools/course-navigation/composition.ts",
+          "line": 79,
+          "function": "composeNavigation",
+          "caller": "Publisher compose.ts:613",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/tasks/_extensions/Afonenko-Course-Tools/course-navigation/composition.ts#L79"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "tasks/_extensions/Afonenko-Course-Tools/course-navigation/composition.ts",
+          "line": 101,
+          "function": "read/parse pages",
+          "caller": "composeNavigation current outputs",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/tasks/_extensions/Afonenko-Course-Tools/course-navigation/composition.ts#L101"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/course-site/application/compose.ts",
+          "line": 608,
+          "function": "Navigation enabled branch",
+          "caller": "after full QRC publish",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/course-site/application/compose.ts#L608"
+        }
+      ],
+      "object_scope": "Every explicit HTML output: realPath/readText/parseHtml/elements; per-page find/filter scans для native headings/navbars, replacement serialization/write.",
+      "frequency": "1 complete reparse/current HTML за enabled course navigation composition; precedes own per-page node scans. Repeated entries sort at155 per page. UNKNOWN how many outputs in actual run.",
+      "lifetime": "pages Map только composeNavigation, не shared QRC parsedPages.",
+      "original_purpose": "Единое меню с фактическими native заголовками, Reveal/non-Reveal integration.",
+      "challenge": "Поставить под вопрос повторный parse boundary в одной Publisher composition и per-page sort same entries; переиспользовать одно Page tree или один рассчитанный menu order в существующем owner.",
+      "literal_requirement": "Native headings/единая навигация требуются; отдельный parse5 tree для каждого consumer — нет.",
+      "limits": "Navigation filter.lua и exercise-index.ts сами не делают native inspect/full filesystem discovery; browser UI отдельно."
+    },
+    {
+      "id": "C14",
+      "priority": "low-address-only",
+      "class": "runtime-presentation-ast-browser",
+      "title": "Presentation: несколько AST/DOM passes, но нет hashing/inspect",
+      "evidence": [
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/course-presentation/filter.lua",
+          "line": 39,
+          "function": "Pandoc identities then transform",
+          "caller": "pre-ast filter",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/course-presentation/filter.lua#L39"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/course-presentation/filter.lua",
+          "line": 24,
+          "function": "recursive transform",
+          "caller": "explicit div.content recursion, handler returns false",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/course-presentation/filter.lua#L24"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/course-presentation/presentation.js",
+          "line": 31,
+          "function": "localizeQuartoLabels MutationObserver",
+          "caller": "DOMContentLoaded initialize",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/course-presentation/presentation.js#L31"
+        },
+        {
+          "repository": "BSU-RFCT-Afonenko-Courses/Java",
+          "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+          "path": "_extensions/Afonenko-Course-Tools/course-presentation/presentation.js",
+          "line": 37,
+          "function": "normalizeNotes",
+          "caller": "setMode/slidechanged/notes MutationObserver",
+          "url": "https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/dd5b76a0168133f0760ece6cb21f4bdf4f6203bb/_extensions/Afonenko-Course-Tools/course-presentation/presentation.js#L37"
+        }
+      ],
+      "object_scope": "Presentation identities full doc walk + transforming traversal. Browser startup labels/tab panels full DOM; additions-local localization observer; normalizeNotes scans speaker-notes subtree on changes, modes, slide changes.",
+      "frequency": "2 conceptual AST passes per document; recursive transform explicitly returns false so nested Div handled once per recursion, не доказан quadratic rewalk. DOM localize initial once, then added subtrees; notes frequency native events/MutationObserver, count UNKNOWN.",
+      "lifetime": "Lua document; browser page/event listeners.",
+      "original_purpose": "Exercise/solution linkage, metadata decorations, native note IDs, Russian labels, study/audience behavior.",
+      "challenge": "Только адресно поставить под вопрос повтор normalizeNotes for one native update и ID prepass при уже известных Core facts. Сначала более крупные IO/inspect duplicates; не организовывать новый общий browser benchmark.",
+      "literal_requirement": "Presentation behavior/Russian UX нужны; конкретные scans/observers не закреплены.",
+      "limits": "Не найдены subprocess/hash/full source walks в собственных Presentation runtime paths; request.current URL hash не content hashing."
+    },
+    {
+      "id": "C15",
+      "priority": "high",
+      "class": "performance-wrapper-all-modes",
+      "title": "Performance render даже off делает отдельный inspect/Git/version",
+      "evidence": [
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course-performance",
+          "ref": "0dc6ca31228da400a48e1278c13853d088b9dec9",
+          "path": "src/runner/render.ts",
+          "line": 86,
+          "function": "renderCommand",
+          "caller": "CLI render",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course-performance/blob/0dc6ca31228da400a48e1278c13853d088b9dec9/src/runner/render.ts#L86"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course-performance",
+          "ref": "0dc6ca31228da400a48e1278c13853d088b9dec9",
+          "path": "src/adapters/quarto/inspect.ts",
+          "line": 101,
+          "function": "resolveRenderProject",
+          "caller": "renderCommand:89",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course-performance/blob/0dc6ca31228da400a48e1278c13853d088b9dec9/src/adapters/quarto/inspect.ts#L101"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course-performance",
+          "ref": "0dc6ca31228da400a48e1278c13853d088b9dec9",
+          "path": "src/runner/render.ts",
+          "line": 32,
+          "function": "gitProvenance",
+          "caller": "renderCommand:92",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course-performance/blob/0dc6ca31228da400a48e1278c13853d088b9dec9/src/runner/render.ts#L32"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course-performance",
+          "ref": "0dc6ca31228da400a48e1278c13853d088b9dec9",
+          "path": "src/runner/render.ts",
+          "line": 96,
+          "function": "quarto --version",
+          "caller": "renderCommand",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course-performance/blob/0dc6ca31228da400a48e1278c13853d088b9dec9/src/runner/render.ts#L96"
+        }
+      ],
+      "object_scope": "Selected project native inspect; Git rev-parse/status всей selected cwd scope (exclusions .quarto and old report dirs); --version; report storage. Raw native render argv затем выполняется child.",
+      "frequency": "1 inspect + --version + Git provenance на каждый Performance render, в том числе --perf-mode=off. Help CLI bypass отдельный. Native quarto render напрямую этот wrapper overhead не несёт.",
+      "lifetime": "RunRecord данного invocation; reuse между wrappers нет.",
+      "original_purpose": "Определить правильный project root/output/resources, не портить child argv, сохранить provenance/report destination.",
+      "challenge": "Поставить под вопрос обязательный pre-inspect для off или выбранного input/cwd, когда caller уже имеет target facts. Разнести measured child duration и total wrapper preparation; off не считать автоматически zero-overhead baseline.",
+      "literal_requirement": "Сбор wall/CPU/RSS/provenance не требует literally inspect до каждого run; wrapper correctness/output preservation сохраняются.",
+      "limits": "Основные5 файлов current0dc6 и packagedf79 побайтово совпадают; group относится обоим refs. Bench measured time не автоматически включает preparation."
+    },
+    {
+      "id": "C16",
+      "priority": "high",
+      "class": "performance-diagnostic-preparation",
+      "title": "Summary/cpu: repeated runtime hashes, whole backend copy/hash и source coverage walk",
+      "evidence": [
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course-performance",
+          "ref": "0dc6ca31228da400a48e1278c13853d088b9dec9",
+          "path": "src/runner/diagnostic.ts",
+          "line": 125,
+          "function": "prepareRenderDiagnostic",
+          "caller": "renderCommand mode!==off",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course-performance/blob/0dc6ca31228da400a48e1278c13853d088b9dec9/src/runner/diagnostic.ts#L125"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course-performance",
+          "ref": "0dc6ca31228da400a48e1278c13853d088b9dec9",
+          "path": "src/adapters/quarto/capabilities.ts",
+          "line": 67,
+          "function": "probeQuarto",
+          "caller": "diagnostic preparation",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course-performance/blob/0dc6ca31228da400a48e1278c13853d088b9dec9/src/adapters/quarto/capabilities.ts#L67"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course-performance",
+          "ref": "0dc6ca31228da400a48e1278c13853d088b9dec9",
+          "path": "src/adapters/quarto/capabilities.ts",
+          "line": 85,
+          "function": "quarto.js hash again",
+          "caller": "same probeQuarto invocation",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course-performance/blob/0dc6ca31228da400a48e1278c13853d088b9dec9/src/adapters/quarto/capabilities.ts#L85"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course-performance",
+          "ref": "0dc6ca31228da400a48e1278c13853d088b9dec9",
+          "path": "src/launchers/setup.ts",
+          "line": 30,
+          "function": "prepareLaunchers",
+          "caller": "prepareRenderDiagnostic:131",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course-performance/blob/0dc6ca31228da400a48e1278c13853d088b9dec9/src/launchers/setup.ts#L30"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course-performance",
+          "ref": "0dc6ca31228da400a48e1278c13853d088b9dec9",
+          "path": "src/runner/package-coverage.ts",
+          "line": 42,
+          "function": "collectPackageCoverage",
+          "caller": "prepareRenderDiagnostic:142",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course-performance/blob/0dc6ca31228da400a48e1278c13853d088b9dec9/src/runner/package-coverage.ts#L42"
+        }
+      ],
+      "object_scope": "probeQuarto запускает --paths/help/versions; целиком hash quarto wrapper, quarto.js (дважды), Deno, Pandoc и filter main. setup treeHash(src/bridge/node_modules)+files before, copy всех3 trees, treeHash copy after; Pandoc datadir copy/init patch. Coverage recursive selected project tree walk, every package .ts/.lua tokenization, repeated facade hash per import, evidence files reread/hash.",
+      "frequency": "Каждый summary/cpu render; mode off пропускает diagnostic prepare. probeQuarto runtimeHash повторяет уже посчитанный quartoBundle hash в одном вызове; Pandoc --version также дважды. Coverage canonical bridge hashes once, facade hash повторяется per matching import (no memo).",
+      "lifetime": "Всё setup workspace одного report invocation; persistent prepared runtime/coverage reuse между renders не реализован.",
+      "original_purpose": "Портативный diagnostic backend с точными self-contained agents, публичными Deno preload/Pandoc init, честная installed/instrumented coverage.",
+      "challenge": "Немедленно поставить под вопрос duplicate quarto.js hash/Pandoc version в одном probe. Затем один immutable prepared backend на tool version + один package inventory на неизменный source set, memo facade hashes. Diagnostic layer не должен доминировать над измеряемой сборкой.",
+      "literal_requirement": "Честная coverage/runtime provenance нужны; копирование+двойной treeHash node_modules на каждый diagnostic render и per-import hash не являются literal пользовательским требованием.",
+      "limits": "capabilities/setup/render/inspect/diagnostic/package-coverage fetched at packagedf79 и current0dc6: same content. Не утверждается размер runtime/node_modules или измеренная доля времени."
+    },
+    {
+      "id": "C17",
+      "priority": "medium-experiment-only",
+      "class": "performance-experiment-only",
+      "title": "Freeze/prepare/compare и повторная benchmark матрица",
+      "evidence": [
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course-performance",
+          "ref": "0dc6ca31228da400a48e1278c13853d088b9dec9",
+          "path": "src/sources/freeze.ts",
+          "line": 14,
+          "function": "freezeVariants",
+          "caller": "experiment freeze",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course-performance/blob/0dc6ca31228da400a48e1278c13853d088b9dec9/src/sources/freeze.ts#L14"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course-performance",
+          "ref": "0dc6ca31228da400a48e1278c13853d088b9dec9",
+          "path": "src/sources/prepare.ts",
+          "line": 10,
+          "function": "verifySources",
+          "caller": "freezeVariants each variant; prepareVariant",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course-performance/blob/0dc6ca31228da400a48e1278c13853d088b9dec9/src/sources/prepare.ts#L10"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course-performance",
+          "ref": "0dc6ca31228da400a48e1278c13853d088b9dec9",
+          "path": "src/sources/prepare.ts",
+          "line": 26,
+          "function": "prepareVariant",
+          "caller": "experiment run/benchmark",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course-performance/blob/0dc6ca31228da400a48e1278c13853d088b9dec9/src/sources/prepare.ts#L26"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course-performance",
+          "ref": "0dc6ca31228da400a48e1278c13853d088b9dec9",
+          "path": "src/sources/packages.ts",
+          "line": 28,
+          "function": "installPackages",
+          "caller": "prepareVariant",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course-performance/blob/0dc6ca31228da400a48e1278c13853d088b9dec9/src/sources/packages.ts#L28"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course-performance",
+          "ref": "0dc6ca31228da400a48e1278c13853d088b9dec9",
+          "path": "src/analysis/outputs.ts",
+          "line": 56,
+          "function": "compareOutputs",
+          "caller": "experiment verify/analysis callers",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course-performance/blob/0dc6ca31228da400a48e1278c13853d088b9dec9/src/analysis/outputs.ts#L56"
+        },
+        {
+          "repository": "Afonenko-Course-Tools/quarto-course-performance",
+          "ref": "0dc6ca31228da400a48e1278c13853d088b9dec9",
+          "path": "src/runner/benchmark.ts",
+          "line": 14,
+          "function": "benchmarkPair",
+          "caller": "experiment benchmark",
+          "url": "https://github.com/Afonenko-Course-Tools/quarto-course-performance/blob/0dc6ca31228da400a48e1278c13853d088b9dec9/src/runner/benchmark.ts#L14"
+        }
+      ],
+      "object_scope": "Runtime files hashes each verifySources; clean Git checkouts; full course copy; each replacement package files discovery+treeHash+dest audit+copy. Output comparison walks both output trees, hashes each matching file; java pilot ZIP invokes unzip list then 2 child extract per entry. benchmarkPair does 2 warmups+2*pairs renders.",
+      "frequency": "Только explicit experiment commands, не обычный Performance render/native build. freeze verifies3 variants→same runtime reread3x; pair prepare ещё2 verifications. default pairs10→22 renders, без дополнительных diagnostic/verify runs; policy/config may override. Actual requested count UNKNOWN.",
+      "lifetime": "Frozen manifest persistent; temporary prepared variants per experiment command; benchmark per supplied pair.",
+      "original_purpose": "Контролируемые source variants, byte equivalence и статистическая regression check.",
+      "challenge": "Не повторять freeze/prepare/whole-output equivalence для неизменных inputs без основания. Поставить под вопрос default 22 renders на узкий новый вопрос; использовать уже сохранённые актуальные результаты. Новые runs в этом audit не назначены.",
+      "literal_requirement": "Финальная точная приёмка сохраняется, но constant shadow/baseline runs и дубли runtime hashes не требуются; decision74 прямо запрещает бессмысленные повторы.",
+      "limits": "Packagedf79 equivalence проверена для обычного wrapper/diagnostic subset, не всех experiment files. Group exact currentSource0dc6; released experiment refs следует отдельно сверить только если нужен их запуск."
+    }
+  ]
+}
