@@ -1,9 +1,25 @@
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.lang.Double;
-import java.lang.Math;
-import java.lang.Object;
-import java.lang.Runnable;
 import java.lang.String;
-import java.lang.System;
-import org.junit.jupiter.api.Test;import static org.junit.jupiter.api.Assertions.*;import java.io.*;import java.nio.charset.StandardCharsets;import java.util.*;class ContractTest{static String capture(Runnable action){PrintStream previous=System.out;ByteArrayOutputStream bytes=new ByteArrayOutputStream();try(PrintStream out=new PrintStream(bytes,true,StandardCharsets.UTF_8)){System.setOut(out);action.run();}finally{System.setOut(previous);}return bytes.toString(StandardCharsets.UTF_8).replace("\r\n","\n");}@Test void positiveDomainAndLargeRadius(){double[]r={Double.MIN_VALUE,1e-100,0.25,3,1e150};double[]expected={0,3.141592653589793e-200,0.19634954084936207,28.274333882308138,3.141592653589793e300};for(int i=0;i<r.length;i++){Object c=TaskBinding.circle(r[i]);assertEquals(2*r[i],TaskBinding.width(c));assertEquals(2*r[i],TaskBinding.height(c));double area=TaskBinding.area(c);assertTrue(Double.isFinite(area));assertEquals(expected[i],area,Math.max(1e-9,1e-12*Math.abs(expected[i])));}}}
+import java.util.stream.Stream;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+class ContractTest {
+    @DisplayName("Размеры, имя и площадь круга для допустимых радиусов")
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("positiveRadii")
+    void positiveDomain(String caseName, double radius) {
+        PublicChecks.checkCircle(radius);
+    }
+
+    static Stream<Arguments> positiveRadii() {
+        return Stream.of(
+            Arguments.of("Минимальный положительный double: r=Double.MIN_VALUE", Double.MIN_VALUE),
+            Arguments.of("Малый положительный радиус: r=1e-100", 1e-100),
+            Arguments.of("Дробный радиус: r=0.25", 0.25),
+            Arguments.of("Целый радиус: r=3", 3)
+        );
+    }
+}

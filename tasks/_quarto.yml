@@ -1439,19 +1439,20 @@ project-checks:
         mode: weighted
       public-cases:
       - id: normal
-        name: Размеры и площадь через базовую ссылку
+        name: "Размеры, имя и площадь круга: r=2"
         test: PublicExamplesTest#normal
         action: Circle(2), ссылка TwoDShape; чтение размеров/имени/area
         expected: 4,4,circle; площадь12.566370614359172 в допуске.
       - id: boundary
-        name: Максимальный допустимый радиус
+        name: "Максимальный допустимый радиус: r=1e150"
         test: PublicExamplesTest#boundary
         action: Circle(1e150), вызов через TwoDShape
         expected: 2e150,2e150,circle; конечная площадьπ*10^300 в допуске.
       feedback:
         requirement: Диаметр и имя одного радиуса; конечная площадь с допуском max(1e-9,1e-12*|πr²|).
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
+        what-check: >-
+          После допуска API каждый радиус проверяется как отдельный случай: размеры, имя, конечность и площадь
+          с заданным допуском через базовую ссылку TwoDShape. Нарушенные свойства сообщают обычные JUnit assertions.
     java-polymorphism-vehicle-interface:
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
