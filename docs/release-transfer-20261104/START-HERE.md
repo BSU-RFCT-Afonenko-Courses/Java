@@ -1,3 +1,7 @@
+# Итог публикации
+
+Связь позднее восстановилась: актуальные Core и Site успешно отправлены в свои draft PR. [Полный список удалённых PR](REMOTE-REFS.md). Прежние сообщения об отказах в скопированных отчётах — история; bundles остаются резервом.
+
 # Начать продолжение здесь
 
 Пользователь разрешил сохранить все результаты в GitHub для другого устройства. Это checkpoint, не выпуск и не приёмка production. Все расписания на прежнем устройстве PAUSED. Последнее сообщение — продолжаем обсуждение списка ночных работ; автоматически реализацию не начинать.
@@ -16,11 +20,11 @@
 
 | Каталог | Репозиторий | Ветка/коммит | Где сохранён |
 |---|---|---|---|
-|core-native-bridge|Afonenko-Course-Tools/quarto-course|codex/core-native-bridge-20261110 /010ba917909fa7d44179d4a1a05291f88f061775|Точный Git bundle+shallow и tracked archive ниже: обычный push блокируется транспортом|
+|core-native-bridge|Afonenko-Course-Tools/quarto-course|codex/core-native-bridge-20261110 /010ba917909fa7d44179d4a1a05291f88f061775|draft PR71, exact remote Source; bundle+shallow/archive сохранены как резерв|
 |prairielearn|Afonenko-Course-Tools/quarto-course-prairielearn|codex/java-release-20261110 /1ad5516e543d07804aa09e426302413c21542e3e|PR36|
 |download|Afonenko-Course-Tools/quarto-project-download|codex/java-release-20261110 /09e797a1f56bdeb31a66c3e2afa7b8aba7f90321|PR19|
 |qrc|Afonenko-Course-Tools/quarto-reference-catalog|codex/java-release-20261110 /541a44836cf5ec934a101059cbee77c9ff47d134|draftPR22|
-|site-native-audience|Afonenko-Course-Tools/quarto-project-publish|codex/site-native-audience-20261110 /2b397815cfdbf0e860405559de68067fe20204b4|Точный Git bundle+shallow и tracked archive ниже: push блокируется транспортом/workflow scope|
+|site-native-audience|Afonenko-Course-Tools/quarto-project-publish|codex/site-native-audience-20261110 /2b397815cfdbf0e860405559de68067fe20204b4|draft PR21, exact remote Source; bundle+shallow/archive сохранены как резерв|
 |system-practice|BSU-RFCT-Afonenko-Courses/System-Practice|codex/java-release-20261110 /d30345098dcfb1da1530eca5021319bf91fe0f75|draftPR10|
 |platform|Afonenko-Course-Tools/prairielearn-platform|codex/java-release-20261110 /6616222206d3e0843ebc560af38c2dc3519557f0|draftPR35, WIP: full review/Docker не приняты|
 |performance-lifecycle|Afonenko-Course-Tools/quarto-course-performance|codex/performance-lifecycle-20261110 /7a1645936924ba0dd710c9121a8871a13d67a84b|draftPR6, summaryboundedPASS/compilerblocked|
@@ -28,7 +32,7 @@
 
 Java берётся из PR этого checkpoint; сохраняет весь source, docs и этот пакет. Для чтения соседних старых относительных ссылок можно положить checkout как <root>/java, а reports и briefs этого пакета скопировать в <root>/reports и <root>/briefs.
 
-## Восстановление blocked Source и архивных WIP
+## Резервное восстановление Source и архивных WIP
 
 [Git bundles, сохранённые shallow границы, архивы и точные команды](reports/transfer-source-bundles-20261104/README.md). Восстановление всех четырёх комплектов в пустые bare repositories проверено. Голый bundle без его shallow sidecar недостаточен: следовать README. Core010ba иSite2b — актуальные.
 
