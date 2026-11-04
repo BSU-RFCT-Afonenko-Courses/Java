@@ -3,8 +3,7 @@
 Закрытая авторская передача. ID: `exr-numbers-lightning-distance`.
 Статус: дополнительная задача вне обязательной лабораторной `numbers`.
 Исходный коммит Java: `220857b6deb3c98064ebc4da6409d9d3ba76e563`.
-Карточка: `tasks/bank/numbers.qmd:93` — прежний ID
-`exr-j25-numbers-lightning-distance`; точные границы и SHA256 блока находятся
+Карточка: `tasks/bank/numbers.qmd:93`; точные границы и SHA256 блока находятся
 в `evidence/author-batch9-sources.json`.
 Публичное условие: `author-drafts/java/batch9/numbers/lightning-distance/statement.qmd`.
 SHA256: `bf3672726d502793d83a29f21e573b960e7afe4bf1a9ea447970e574ad033224`.

@@ -2,9 +2,8 @@
 
 ID `exr-collections-balanced-brackets`. Исходный Java commit
 `220857b6deb3c98064ebc4da6409d9d3ba76e563`: полная карточка
-`exr-j25-collections-balanced-brackets` в tasks/bank/collections.qmd,
-общая преамбула, tasks/labs/collections.qmd и student-комплект
-в tasks/projects/j25-collections-balanced-brackets/student.
+в `tasks/bank/collections.qmd`, общая преамбула и `tasks/labs/collections.qmd`.
+Текущий student-комплект: `tasks/projects/collections/balanced-brackets/student`.
 Действует принятый control/author-contracts.md.
 Редакция: `author-drafts/java/batch6/collections/balanced-brackets/statement.qmd`;
 SHA256 `117097de29a7e53c84e910edbbb0c2c10882be5067df0933fd11a75376290557`.

@@ -45,7 +45,7 @@ SHA256 полного блока: `d183b33f895789f7b6c430b26f715e92e403477cf9380
 
 ## Открытый ресурс
 
-`java/tasks/projects/j25-objects-rational-fractions/student/examples/scenarios.json` → `java/tasks/projects/objects/rational-fractions/student/examples/scenarios.json`;
+Текущий путь: `java/tasks/projects/objects/rational-fractions/student/examples/scenarios.json`; историческое происхождение — в указанном выше снимке;
 в комплекте `examples/scenarios.json`. 669 байт, SHA256 `d610202e99bfb8e82f0adceddbc50eec64d195511306bb32006863b6802186c0`.
 Это исходные открытые наблюдения, а не формат обязательного ввода.
 Технический исполнитель материализует точные байты из одного источника;

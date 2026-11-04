@@ -2,8 +2,8 @@
 
 ID `exr-objects-variadic-sum`. Исходный Java commit
 `220857b6deb3c98064ebc4da6409d9d3ba76e563`: блок в
-`tasks/bank/objects.qmd`, его общая преамбула, `tasks/labs/objects.qmd`
-и открытый student-комплект `tasks/projects/j25-objects-variadic-sum/student`.
+`tasks/bank/objects.qmd`, его общая преамбула, `tasks/labs/objects.qmd`.
+Текущий открытый student-комплект: `tasks/projects/objects/variadic-sum/student`.
 Действует принятый `control/author-contracts.md`.
 Редакция: `author-drafts/java/batch3/objects/variadic-sum/statement.qmd`;
 SHA256 `4c28b4622a00fd8c90d168bd943a3a7ae4bc3ae37e194232a87ed663200ccc17`.

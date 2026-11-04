@@ -45,7 +45,7 @@ SHA256 полного блока: `405feb1abad4af8e6b711ba4eb758fb32a0b24593f0d7
 
 ## Открытый ресурс
 
-`java/tasks/projects/j25-objects-patient-registry/student/examples/scenarios.json` → `java/tasks/projects/objects/patient-registry/student/examples/scenarios.json`;
+Текущий путь: `java/tasks/projects/objects/patient-registry/student/examples/scenarios.json`; историческое происхождение — в указанном выше снимке;
 в комплекте `examples/scenarios.json`. 639 байт, SHA256 `b28c19b7629513fb40844dd5dc0d0dead818de8341815b9d6c84532ca89c1023`.
 Это исходные открытые наблюдения, а не формат обязательного ввода.
 Технический исполнитель материализует точные байты из одного источника;

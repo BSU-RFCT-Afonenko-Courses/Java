@@ -2,8 +2,8 @@
 
 ID `exr-objects-character-stack`. Исходный Java commit
 `220857b6deb3c98064ebc4da6409d9d3ba76e563`: блок в
-`tasks/bank/objects.qmd`, его общая преамбула, `tasks/labs/objects.qmd`
-и открытый student-комплект `tasks/projects/j25-objects-character-stack/student`.
+`tasks/bank/objects.qmd`, его общая преамбула, `tasks/labs/objects.qmd`.
+Текущий открытый student-комплект: `tasks/projects/objects/character-stack/student`.
 Действует принятый `control/author-contracts.md`.
 Редакция: `author-drafts/java/batch3/objects/character-stack/statement.qmd`;
 SHA256 `5c7a514e86b5b2d7d8e294930999e490639fbd70bbe19e0d090d638f457fe838`.

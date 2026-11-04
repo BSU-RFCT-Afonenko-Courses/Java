@@ -5,8 +5,7 @@
 Закрытая авторская передача. ID: `exr-control-primes-to-hundred`.
 Статус: дополнительная задача вне обязательной лабораторной `control`.
 Исходный коммит Java: `220857b6deb3c98064ebc4da6409d9d3ba76e563`.
-Карточка: `tasks/bank/control.qmd:109`, прежний ID
-`exr-j25-control-primes-to-hundred`. Точные границы и SHA256 блока находятся
+Карточка: `tasks/bank/control.qmd:109`. Точные границы и SHA256 блока находятся
 в `evidence/author-batch10-sources.json`.
 Условие: `author-drafts/java/batch10/control/primes-to-hundred/statement.qmd`.
 SHA256: `34690b11f2bcaf56222b4bff12ddf571888db9846acb7d937a6acc9756880105`.

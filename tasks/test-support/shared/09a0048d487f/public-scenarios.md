@@ -259,9 +259,8 @@ Na me dzieciństwo sielskie, anielskie,
 
 ## exr-files-disk-help-menu
 
-Открытый образец справки уже есть в исходном комплекте:
-`tasks/projects/j25-files-disk-help-menu/student/examples/helpfile.txt`
-на закреплённом Java-снимке 220857b6. Это PUBLIC ресурс, не закрытый эталон.
+Открытый образец справки происходит из закреплённого Java-снимка 220857b6.
+Текущий путь: `tasks/projects/files/disk-help-menu/student/examples/helpfile.txt`. Это PUBLIC ресурс, не закрытый эталон.
 При технической подготовке для него сохраняется один канонический источник;
 при другом собственном справочнике ожидания берутся из соответствующих тем.
 
@@ -293,8 +292,9 @@ Na me dzieciństwo sielskie, anielskie,
 
 - **Что наблюдаем:** три вида комментариев и сохранение литералов.
 - **Вход и состояние:** точные байты открытого
-  `student/examples/publicInput.txt` проекта
-  `tasks/projects/j25-files-remove-java-comments` на снимке 220857b6.
+  `student/examples/publicInput.txt`
+  с происхождением из снимка 220857b6; текущий проект —
+  `tasks/projects/files/remove-java-comments`.
   Отдельный новый каталог и результат.
 - **Действие:** удалить комментарии и записать новый UTF-8-файл.
 - **Ожидается:** точные байты уже опубликованного

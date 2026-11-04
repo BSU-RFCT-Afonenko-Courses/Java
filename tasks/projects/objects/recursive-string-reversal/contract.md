@@ -45,7 +45,7 @@ SHA256 полного блока: `b12e17f1f40590b3a0eca89e926aa08bc3aa4262ef49d
 
 ## Открытый ресурс
 
-`java/tasks/projects/j25-objects-recursive-string-reversal/student/examples/scenarios.json` → `java/tasks/projects/objects/recursive-string-reversal/student/examples/scenarios.json`;
+Текущий путь: `java/tasks/projects/objects/recursive-string-reversal/student/examples/scenarios.json`; историческое происхождение — в указанном выше снимке;
 в комплекте `examples/scenarios.json`. 695 байт, SHA256 `7d98eba251ecc9de3ca85c999cf4dc76e9add2914f4ecd8139f55ddc14da676d`.
 Это исходные открытые наблюдения, а не формат обязательного ввода.
 Технический исполнитель материализует точные байты из одного источника;

@@ -2,9 +2,8 @@
 
 ID `exr-collections-polynomial-map-addition`. Исходный Java commit
 `220857b6deb3c98064ebc4da6409d9d3ba76e563`: полная карточка
-`exr-j25-collections-polynomial-map-addition` в tasks/bank/collections.qmd,
-общая преамбула, tasks/labs/collections.qmd и student-комплект
-в tasks/projects/j25-collections-polynomial-map-addition/student.
+в `tasks/bank/collections.qmd`, общая преамбула и `tasks/labs/collections.qmd`.
+Текущий student-комплект: `tasks/projects/collections/polynomial-map-addition/student`.
 Действует принятый control/author-contracts.md.
 Редакция: `author-drafts/java/batch6/collections/polynomial-map-addition/statement.qmd`;
 SHA256 `2dec3645c39e804f93d607e44db55668d443cfa11910e2fa7f77e4d26fb7f5ab`.

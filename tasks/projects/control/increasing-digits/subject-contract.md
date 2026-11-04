@@ -5,8 +5,7 @@
 Закрытая авторская передача. ID: `exr-control-increasing-digits`.
 Статус: дополнительная задача вне обязательной лабораторной `control`.
 Исходный коммит Java: `220857b6deb3c98064ebc4da6409d9d3ba76e563`.
-Карточка: `tasks/bank/control.qmd:145`, прежний ID
-`exr-j25-control-increasing-digits`. Точные границы и SHA256 блока находятся
+Карточка: `tasks/bank/control.qmd:145`. Точные границы и SHA256 блока находятся
 в `evidence/author-batch10-sources.json`.
 Условие: `author-drafts/java/batch10/control/increasing-digits/statement.qmd`.
 SHA256: `2cb1fc1c564eb6f98dece7cbe296a6852c57d8795323b0d5f5d2b429c85de8be`.

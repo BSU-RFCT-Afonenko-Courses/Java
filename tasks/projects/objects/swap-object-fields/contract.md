@@ -2,8 +2,8 @@
 
 ID `exr-objects-swap-object-fields`. Исходный Java commit
 `220857b6deb3c98064ebc4da6409d9d3ba76e563`: блок в
-`tasks/bank/objects.qmd`, его общая преамбула, `tasks/labs/objects.qmd`
-и открытый student-комплект `tasks/projects/j25-objects-swap-object-fields/student`.
+`tasks/bank/objects.qmd`, его общая преамбула, `tasks/labs/objects.qmd`.
+Текущий открытый student-комплект: `tasks/projects/objects/swap-object-fields/student`.
 Действует принятый `control/author-contracts.md`.
 Редакция: `author-drafts/java/batch3/objects/swap-object-fields/statement.qmd`;
 SHA256 `ed6d6bd8228f4875bbd8597d93c38ed80a9f93d1c5a4bbe9f3e5187cb204f95e`.

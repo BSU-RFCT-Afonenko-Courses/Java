@@ -2,8 +2,8 @@
 
 ID `exr-objects-car-selection`. Исходный Java commit
 `220857b6deb3c98064ebc4da6409d9d3ba76e563`: блок в
-`tasks/bank/objects.qmd`, его общая преамбула, `tasks/labs/objects.qmd`
-и открытый student-комплект `tasks/projects/j25-objects-car-selection/student`.
+`tasks/bank/objects.qmd`, его общая преамбула, `tasks/labs/objects.qmd`.
+Текущий открытый student-комплект: `tasks/projects/objects/car-selection/student`.
 Действует принятый `control/author-contracts.md`.
 Редакция: `author-drafts/java/batch3/objects/car-selection/statement.qmd`;
 SHA256 `dc44f1e17a55cebc37b1895dd420be8b14f9e841c8008cfd9e68b34ea2fa6ed4`.
