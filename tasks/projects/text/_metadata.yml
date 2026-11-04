@@ -1,0 +1,32 @@
+course-project:
+  instructions:
+    gradle:
+      path: ../common/java/gradle.md
+      base: config
+    local:
+      path: README.local.md
+  solutions:
+    alternate:
+      path: alternatives/alternate
+  components:
+    apiSupport:
+      path: ../common/java/api-support
+      base: config
+  testsets:
+    api:
+      path: api
+      requires:
+        apiSupport: true
+  build:
+    files:
+      build.gradle:
+        path: build.gradle
+  delivery:
+    student:
+      testsets:
+        api: true
+        demo: true
+  verification:
+    testsets:
+      api: true
+      contract: true

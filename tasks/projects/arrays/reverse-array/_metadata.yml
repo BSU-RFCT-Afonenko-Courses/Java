@@ -1,31 +1,46 @@
 course-project:
-  starter: {path: starter}
   instructions:
-    gradle: {path: ../../common/java/gradle.md}
-    local: {path: README.local.md}
+    gradle:
+      path: ../../common/java/gradle.md
+      base: config
   solutions:
-    reference: {path: reference}
-    recursive: {path: alternatives/recursive}
-    exitAfterOutput: {path: alternatives/exit-after-output}
+    recursive:
+      path: alternatives/recursive
+    exitAfterOutput:
+      path: alternatives/exit-after-output
   components:
-    apiSupport: {path: ../../common/java/api-support}
-    process: {path: ../../common/java/process}
+    apiSupport:
+      path: ../../common/java/api-support
+      base: config
+    process:
+      path: ../../common/java/process
+      base: config
   testsets:
     api:
       path: api
-      requires: {apiSupport: true}
+      requires:
+        apiSupport: true
     demo:
       path: demo
-      requires: {api: true, process: true}
+      requires:
+        api: true
+        process: true
     contract:
       path: checks
-      requires: {api: true, process: true}
+      requires:
+        api: true
+        process: true
   build:
     files:
-      build.gradle: ../../common/java/build.gradle
-      settings.gradle: ../../common/java/settings.gradle
+      build.gradle:
+        path: ../../common/java/build.gradle
+        base: config
   delivery:
     student:
-      testsets: {api: true, demo: true}
+      testsets:
+        api: true
+        demo: true
   verification:
-    testsets: {api: true, contract: true}
+    testsets:
+      api: true
+      contract: true

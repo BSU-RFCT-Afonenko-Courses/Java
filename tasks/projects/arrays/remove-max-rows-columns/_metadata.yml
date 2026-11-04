@@ -1,32 +1,44 @@
 course-project:
-  starter: {path: starter}
   instructions:
-    gradle: {path: ../../common/java/gradle.md}
-    local: {path: README.local.md}
+    gradle:
+      path: ../../common/java/gradle.md
+      base: config
   solutions:
-    reference: {path: reference}
-    alternate: {path: alternatives/alternate}
-    mutating: {path: alternatives/mutating}
-    inheritedChecked: {path: alternatives/inherited-checked}
-    plainCarrier: {path: alternatives/plain-carrier}
+    alternate:
+      path: alternatives/alternate
+    mutating:
+      path: alternatives/mutating
+    inheritedChecked:
+      path: alternatives/inherited-checked
+    plainCarrier:
+      path: alternatives/plain-carrier
   components:
-    apiSupport: {path: ../../common/java/api-support}
+    apiSupport:
+      path: ../../common/java/api-support
+      base: config
   testsets:
     api:
       path: api
-      requires: {apiSupport: true}
+      requires:
+        apiSupport: true
     demo:
       path: demo
-      requires: {api: true}
+      requires:
+        api: true
     contract:
       path: checks
-      requires: {api: true}
+      requires:
+        api: true
   build:
     files:
-      build.gradle: build.gradle
-      settings.gradle: ../../common/java/settings.gradle
+      build.gradle:
+        path: build.gradle
   delivery:
     student:
-      testsets: {api: true, demo: true}
+      testsets:
+        api: true
+        demo: true
   verification:
-    testsets: {api: true, contract: true}
+    testsets:
+      api: true
+      contract: true
