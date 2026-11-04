@@ -1,10 +1,10 @@
 import { diagnostic } from "./diagnostics.ts";
 import { dirname, relative, resolve } from "stdlib/path";
-import type { Request } from "./application/publish.ts";
+import type { ArtifactRequest } from "./application/publish.ts";
 import { RESOURCE_ID } from "./domain/config.ts";
 import { child, exists, noSymlinks } from "./infrastructure/files.ts";
 
-/** Снимок временных заявок после завершения нативного рендера. */
+/** Проверенные временные заявки после завершения нативного рендера. */
 export interface OwnedRequestState {
   protocol: 1;
   root: string;
@@ -13,18 +13,33 @@ export interface OwnedRequestState {
     path: string;
     source: string;
     resources: string[];
-    artifacts?: Request["artifacts"];
-    sha256: string;
+    artifacts?: ArtifactRequest[];
+    configuration?: unknown;
   }[];
 }
 
+function record(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === "object" && !Array.isArray(value);
+}
+function resourceId(value: unknown): value is string {
+  return typeof value === "string" && RESOURCE_ID.test(value);
+}
+function artifactKind(value: unknown): value is ArtifactRequest["kind"] {
+  const kinds: readonly unknown[] = ["starter", "full", "conditions"];
+  return kinds.includes(value);
+}
+function artifact(value: unknown): value is ArtifactRequest {
+  return record(value) &&
+    !Object.keys(value).some((key) => !["exerciseId", "kind"].includes(key)) &&
+    resourceId(value.exerciseId) && artifactKind(value.kind);
+}
+
 async function hash(
-  algorithm: "SHA-1" | "SHA-256",
   bytes: Uint8Array,
 ): Promise<string> {
   return Array.from(
     new Uint8Array(
-      await crypto.subtle.digest(algorithm, new Uint8Array(bytes)),
+      await crypto.subtle.digest("SHA-1", new Uint8Array(bytes)),
     ),
   )
     .map((value) => value.toString(16).padStart(2, "0")).join("");
@@ -121,14 +136,14 @@ export async function inspectOwnedRequests(
         cause,
       );
     }
-    if (!value || typeof value !== "object" || Array.isArray(value)) {
+    if (!record(value)) {
       throw diagnostic(
         "DOWNLOAD.REQUEST_INVALID",
         `Повреждённая заявка: ${path}`,
         { source: path, field: "request" },
       );
     }
-    const fields = value as Record<string, unknown>;
+    const fields = value;
     if (
       Object.keys(fields).some((key) =>
         ![
@@ -145,9 +160,7 @@ export async function inspectOwnedRequests(
         typeof fields.courseProcessed !== "boolean") ||
       !Object.hasOwn(fields, "source") || !Object.hasOwn(fields, "resources") ||
       typeof fields.source !== "string" || !allowed.has(fields.source) ||
-      !Array.isArray(fields.resources) || fields.resources.some((id) =>
-        typeof id !== "string" || !RESOURCE_ID.test(id)
-      )
+      !Array.isArray(fields.resources) || !fields.resources.every(resourceId)
     ) {
       throw diagnostic(
         "DOWNLOAD.REQUEST_INVALID",
@@ -157,14 +170,7 @@ export async function inspectOwnedRequests(
     }
     if (
       fields.artifacts !== undefined &&
-      (!Array.isArray(fields.artifacts) || fields.artifacts.some((v: any) =>
-        !v || typeof v !== "object" || Array.isArray(v) ||
-        Object.keys(v).some((k) =>
-          !["exerciseId", "kind"].includes(k)
-        ) ||
-        typeof v.exerciseId !== "string" || !RESOURCE_ID.test(v.exerciseId) ||
-        !["starter", "full", "conditions"].includes(v.kind)
-      ))
+      (!Array.isArray(fields.artifacts) || !fields.artifacts.every(artifact))
     ) {
       throw diagnostic(
         "DOWNLOAD.REQUEST_INVALID",
@@ -172,10 +178,9 @@ export async function inspectOwnedRequests(
         { source: path, field: "artifacts" },
       );
     }
-    const request = value as Request;
     if (
       entry.name !==
-        await hash("SHA-1", new TextEncoder().encode(request.source)) + ".json"
+        await hash(new TextEncoder().encode(fields.source)) + ".json"
     ) {
       throw diagnostic(
         "DOWNLOAD.REQUEST_INVALID",
@@ -185,10 +190,12 @@ export async function inspectOwnedRequests(
     }
     state.files.push({
       path,
-      source: request.source,
-      resources: request.resources,
-      ...(request.artifacts ? { artifacts: request.artifacts } : {}),
-      sha256: await hash("SHA-256", bytes),
+      source: fields.source,
+      resources: fields.resources,
+      ...(fields.artifacts ? { artifacts: fields.artifacts } : {}),
+      ...(Object.hasOwn(fields, "configuration")
+        ? { configuration: fields.configuration }
+        : {}),
     });
   }
   return state;
