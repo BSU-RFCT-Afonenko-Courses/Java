@@ -1,5 +1,7 @@
 # Выпуск Java/SP — единственное состояние продолжения
 
+> **ОСТАНОВКА ПО УКАЗАНИЮ ПОЛЬЗОВАТЕЛЯ, 4 ноября.** [Подробный отчёт к15:00](extensions-work-report-20261104.md) выдан раньше срока. Самостоятельные реализации и опыты остановлены до совместного обсуждения и нового явного решения пользователя. `java-sp-10` и `java-sp-3` переведены через app tool в **PAUSED**, ответы инструмента подтверждены. Все исполнители завершили работу; активных SSH/CI операций нет. Старое разрешение автономно работать до10ноября не отменяет остановку. Дальше — обсуждение, не автоматическое возобновление.
+
 Срок: **10 ноября 2026, 09:00 Europe/Minsk**. Обновление 4 ноября после утреннего пакета.
 Корень: `/home/tolya/JavaCodex/java-release-20261110`. При возобновлении прочитать этот файл и фактических владельцев/незавершённые операции; не дублировать работу.
 История и полное evidence остаются в reports и Git; прежние START, сроки и назначения не возобновлять.
@@ -17,7 +19,7 @@
 - Гарантированное окно **07:00–22:00**; 22:00–00:00 — при доступности одна короткая сетевая попытка/10 мин.
 - Ночью без циклов ожидания/build/inspect/hash; **00:00–07:00 сеть не планировать**.
 - Сводки 12:00/20:00: готово/далее/риск/нужен ли ответ; вне окон — существенное изменение/решение.
-- Активны `java-sp-10`, `java-sp-3`; дубликаты не создавать, чужие paused не менять.
+- `java-sp-10`, `java-sp-3` **PAUSED после отчёта4ноября**; не возобновлять без нового решения пользователя. Дубликаты не создавать, чужие расписания не менять.
 - Однократный `java-sp-4-09-45` PAUSED, [сводка выдана](../../reports/progress-20261104-0945.md).
 - При завершении/итоговом отчёте к сроку обе основные automation поставить на паузу.
 - 5–8 ноября — интеграция; 9 ноября 15:00 — stop новых функций, вечером итоговый review/согласованное переключение.
@@ -51,12 +53,12 @@
 
 | Checkout | Последний известный Source / статус |
 | --- | --- |
-| Java | Product `f774559ef290cf78d621ab63333cb5677439510d`, 31MD cleanup root APPROVE. Последний указанный state backup6aa1cedd — история, следующий отдельно. Installed Core d7/PL da. |
+| Java | Product `f774559ef290cf78d621ab63333cb5677439510d`, 31MD cleanup root APPROVE. State backup `44bb2e9a` pushed SSH; следующий отдельно. Installed Core d7/PL da. |
 | SP | Local `9a2f8120a37d1b42384e2f008b3e0a3a34247008` поверх remote3bb: Site6 config APPROVE, **не pushed**. Не render со старым installed Site5.3. Старый PR9 сохранён. |
-| Core | Remote `4a2903e6d03d1dd489b6922d113100826913cf67`, [PR70](https://github.com/Afonenko-Course-Tools/quarto-course/pull/70), hosted41790570793 **SUCCESS**. Local `a06ded0b` condition walker types root APPROVE, affected pure/compiler PASS3.5025s; не pushed, CI коалесцировать. Original46b+rejected A dirty6paths сохранены. |
-| PL | Remote `20f9a4f7b481c01f7720f5ff75e50e1c70564a39` через SSH, [PR36](https://github.com/Afonenko-Course-Tools/quarto-course-prairielearn/pull/36): computed fixture/f3 orphan digests/Core4a pin. CI41800068684 **FAILURE** в ordinary-publication assertion; Installed native questions and Java/Gradle **SUCCESS**. Старый30ed CI SUCCESS — история. |
-| Download | Remote `e0bddeb9e8574710c02f282d216e63f8932b4b0c` через SSH, [PR19](https://github.com/Afonenko-Course-Tools/quarto-project-download/pull/19). Envelope/preflight/recognizer root APPROVE; early-filter без explicit any/casts/key!, не whole Download coverage. CI41800150679 **FAILURE** в imported oldPL publication assertion; полный contract step не достигнут. Старый944 CI SUCCESS — история. |
-| Performance | Remote c2dcf00 SUCCESS, targeted selector root APPROVE; ранее e726 streaming/356 table/108/e88/94f/536 APPROVE. Branch `codex/release-performance-20261110`; overall speedup не доказан. |
+| Core | Remote `5f4590aa4eb524830715f8020c8ff3c504197f73`, [PR70](https://github.com/Afonenko-Course-Tools/quarto-course/pull/70). Condition a06, late cleanup556 и Navigation wrappers5f Source APPROVE; CI41803137079 **SUCCESS** ([evidence](../../reports/core-ci-5f4590a-20261104.md)). Дополнительная remote backup branch codex/core-native-bridge-20261110 сохранена; фактический PR head codex/java-release-20261110. Original46b+rejected A dirty6paths сохранены. |
+| PL | Remote `4d39a6648d2816bab9a372877deded3320ff35e1` через SSH, [PR36](https://github.com/Afonenko-Course-Tools/quarto-course-prairielearn/pull/36), **CI41806801145 SUCCESS**. Core5f pin, obsolete publication/native-scope DRIFT хвосты удалены. Прежние failures20f/0ebb и причины сохранены; не rerun. |
+| Download | Remote `671093945a8a6f76c25e60840aee71964d995496` через SSH, [PR19](https://github.com/Afonenko-Course-Tools/quarto-project-download/pull/19), **CI41806903708 SUCCESS**. Ownership643 APPROVE, count-only wrappers c3 удалены, exact PL4d/Core5f pins. SSH42513 завершён; прежние failed runs сохранены. |
+| Performance | Remote c2dcf00 SUCCESS, targeted selector APPROVE; ранее e726 streaming/356 table/108/e88/94f/536 APPROVE. **6 dirty files TERM recovery NOT QUALIFIED**, frozen в release checkout; не stage/push и не использовать этот runner в новых измерениях. [Patch/evidence](../../reports/performance-term-recovery-20261104.md) сохранены; архивировать c2 для принятого инструмента. Overall speedup не доказан. |
 | Platform | Remote `9b82e29bffd77cc462ffdef23cd3b96ca041db92`, [PR35](https://github.com/Afonenko-Course-Tools/prairielearn-platform/pull/35), CI41772299873 SUCCESS. Raw payload/hash retained, partial typing APPROVE. Local `6491517`: JDK official preflight independent high APPROVE; пока не pushed, следующую Docker/JDK CI коалесцировать. Новый image/OCI UNKNOWN. |
 | Site | Remote `85080c730ad54c8fd81fa4a3c7c806a8771c4f68`, clean после разрешённого FF d16→850 и успешного SSH push. Alternate inspect removal принят пользователем; config/output rename не нужен. Open PR exact head lookup пуст; новый PR/pins/install не делались. Isolated850 и старый site-sp сохранены. |
 | QRC | Remote541a448 SUCCESS: direct Native Lua Attr maps, semantic cleanup APPROVE; ранее77abe92 post DTO/f0d6 SearchRow/873 extras+HTML cleanup приняты. Installed798 прежний; Lua cleanup не TS coverage. |
@@ -68,18 +70,18 @@ Installed/published composition не приравнивать к local Source; �
 
 | Владелец | Текущая граница |
 | --- | --- |
-| Root | Независимая приёмка, единый state/backup и PR descriptions; публикационные тесты приняты Source-only, PL local e4ffd86 без push до coalesced pins. |
-| High `/root/perf_event_types` | Core cleanup candidate frozen; следующий Source-only вопрос — отсутствие Performance final artifacts при наружном TERM. Новых Native/signal runs утром нет. |
-| High `/root/pl_typed_materialization` | Независимый Core cleanup review. После него paired pin companion PL/Download — один writer. |
-| Medium `/root/core_yaml_types` | Saved verbose review APPROVE, аудит актуализирован; Source-only Navigation FFI/signature gap, без нового census. |
+| Root | Отчёт выдан, PR descriptions актуализированы, Core/PL/Download green. Остановлено до обсуждения; остаётся только документальное сохранение этого состояния отдельным Java commit. |
+| High `/root/perf_event_types` | Recovery frozen NOT QUALIFIED, исполнения закончены: runtime8.7468/15s, compiler PASS0.9274/10s; caller TERM control timeout, history runtime NOTRUN. Новых попыток/поручения нет. |
+| High `/root/pl_typed_materialization` | Завершён. JDK hash candidate frozen/unaccepted,4files/pure RED→GREEN0.479s; не commit/push/image до обсуждения. Platform material и factual review отчёта готовы. |
+| Medium `/root/core_yaml_types` | Завершён. Types material и редакционное чтение готовы, замечания исправлены root. Новых Source поручений нет. |
 
-**Первый следующий шаг:** независимая приёмка Core cleanup, затем один coalesced push/существующий CI с condition types. PL e4ffd86 удаляет obsolete DRIFT assertions без добавления replacement guards; [причина/review](../../reports/paired-ci-publication-test-align-review-20261104.md), [первый CI excerpt](../../reports/paired-ci-publication-failure-20261104.json). После Core qualification — PL Core pin и Download exact fixedPL/Core companions, каждый одним push. Повторов CI без изменений нет; local Native не дублировать.
+**Первый следующий шаг:** совместное обсуждение [отчёта](extensions-work-report-20261104.md), без нового implementation. Три новые hosted CI Core/PL/Download SUCCESS ([финальный срез](../../reports/paired-ci-final-success-20261104.json)); не повторять. Первый [publication drift](../../reports/paired-ci-publication-test-align-review-20261104.md) и [второй failure](../../reports/paired-ci-second-failure-20261104.json) объяснены/исправлены; [Source review](../../reports/paired-ci-test-cleanup-review-20261104.md). Удалены count-only Proxy/subclass/any wrappers, replacement checks/count3 нет. Новых Native runs не назначать.
 Не запускать новую Java/SP matrix или увеличивать cap. PL computed fixture пока не registered, hosted R/knitr **UNKNOWN**.
 Site backup выполнен SSH d16→850 после exact open-head PR lookup `[]`; [план/evidence](../../reports/site-backup-pr-next-20261104.md). PR trigger запускает широкую suite; новый PR открывать с согласованным integration composition, не ради статуса.
 [Paired Source plan](../../reports/pl-core-paired-ci-next-20261104.md), [Download pin](../../reports/download-core-paired-ci-pin-20261104.md).
 JDK649 принят: official-only второй javac-version process удалён; первая JVM/toolchainreturn и host refusal сохранены.
 [JDK evidence](../../reports/jdk-official-preflight-20261104.md)/[independent review](../../reports/jdk-official-preflight-review-20261104.md): первый filesystem fixture ERROR сохранён; changed isolated control PASS0.1933s, total0.435s.
-Production runner SHA согласован одним чтением; image digests/history не менялись. Per-job bundle/self hashes всё ещё под вопросом.
+Production runner SHA согласован одним чтением; image digests/history не менялись. [Per-job read map](../../reports/jdk-per-job-read-boundary-20261104.md): lib/modules без byte SHA на каждой оценке; runner/bundle/shared/hash helper остаются per-job, lock минимум дважды parsed. [Следующий кандидат](../../reports/jdk-official-image-hashes-next-20261104.md) снимает только fixed-image byte guarantee после genuine official admission и registryNone; host/direct/custom registry полные, helper и job-local checks вне diff. Не новый proof/cache/attestation; actual deployed overrides/qualification UNKNOWN, до production review.
 Platform service typing **STOP**: checker/declaration graph не собран; public PG92584 Source получен root, не installed declaration composition.
 [Service gap](../../reports/platform-service-types-20261104.md), [PG Source](../../reports/platform-postgres-source-92584/README.md).
 Live binding дальше — только после structural-export consent; Gateway901/Platform845 labels известны, runtime config/activity binding UNKNOWN.
@@ -105,6 +107,8 @@ Live binding дальше — только после structural-export consent;
 Canonical33pairs/20spans — observed inclusive envelopes, не clean startup/CPU; [reading](../../reports/performance-pandoc-layer-reading.md).
 [Canonical cost](../../reports/pl-canonical-performance-reading.md): serialization NOIO, нет доказанного F×S дубля/cache основания.
 Performance streaming сохраняет prefix, не гарантирует TERM final-report; [review](../../reports/performance-streaming-logs-review-20261104.md).
+[TERM Source причина/план](../../reports/performance-term-recovery-next-20261104.md): executeScenario не удерживает caller при TERM, missing tool-status/resources затем блокируют финализацию. Pending parent не закрывать status дочернего Pandoc или outer124; новый candidate обязан хранить UNKNOWN/INVALID, не fake outcome.
+Frozen candidate **не принят**: [отчёт](../../reports/performance-term-recovery-20261104.md). 4prod+2existingtests, known350ms fixture race, hardtimeout и EXDEV сохранены; final direct caller не завершил finalization, test-watchdog SIGKILL137. Compiler PASS не доказывает recovery. Новых signals/runs этого пакета не назначать, бюджет не сбрасывать новым агентом; опубликованный c2 и prefix streaming остаются принятыми отдельно.
 Новых signal/SP paired stage runs и четвёртой утренней Java попытки нет. Штатный verbose дал coarse native filter records без --trace/global Lua hook, но дополнительные35189B INFO имеют неизвестную observer cost. Не вычитать CPU из wall и не называть остаток HTML/startup; два документа не экстраполировать на128. [Независимый saved-only review](../../reports/java-native-filter-summary-review-20261104.md) APPROVE в границе diagnostic prefix; причины900s и полный export остаются открыты. Логи/failed evidence сохранять.
 [Dispatch main.lua](../../reports/java-main-filter-dispatch-next-20261104.md) выделил повторный whole-document cleanup Core late-filter.lua для native body и return. High владеет1-file candidate в core-native-bridge, без нового Native; это Source-дубль, не доказанная причина5s/900s.
 
@@ -120,6 +124,8 @@ R0–R6/74-группы — существующая очередь/evidence, н
 [Cache](../../reports/quarto-cache-boundary-20261104.md), [cells](../../reports/quarto-execution-boundary-20261104.md): shared `_freeze` не изолирован output dirs; live leak не установлен.
 Реальные caches не чистить; отдельная cache/execution policy профилей ещё не реализована. Output profiles уже разделены, это не cache isolation. Никаких новых kernels/install/render ради статуса.
 [YAML remainder](../../reports/core-yaml-node-types-20261104.md): productdiff0/compiler0; нужен exact vendor pin + matching portable declarations.
+[Navigation](../../reports/core-navigation-wrappers-review-20261104.md): wrappers приняты, но полный FFI candidate FAIL из-за transitive parse5 JS→d.ts resolution; local AST/doublecast остаются долгом, failed evidence сохранено.
+[Download ownership](../../reports/download-ownership-snapshot-20261104.md)/[review](../../reports/download-ownership-snapshot-review-20261104.md): APPROVE/committed643; typed scalar snapshot удаляет внутренний JSON round-trip. Повторная signature/currentness гарантия этим не оправдана и не удалена. [Paired companion](../../reports/download-core5f-pl0ebb-paired-ci-pin-20261104.md) committed893, ждёт последовательной remote PL→Download отправки.
 Открыты: live identity/DB/результаты, automatic grader/OCI, оба SP transports E2E, feedback overloads/trusted-reader origin/refusal, full Java export.
 Канон/10labs/training/editor overrides и [SP catalogs](../../reports/sp-qrc-reference-readiness.md) сохраняют предметные требования; local export не production.
 Print/Cloud, лекция9 и новые образовательные цели не втягивать в техническую оптимизацию. Весь релиз пока **не завершён**, процентов нет.
