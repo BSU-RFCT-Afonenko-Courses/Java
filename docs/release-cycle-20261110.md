@@ -1,6 +1,6 @@
 # Выпуск Java/SP — единственное состояние продолжения
 
-> **ОСТАНОВКА ПО УКАЗАНИЮ ПОЛЬЗОВАТЕЛЯ, 4 ноября.** [Подробный отчёт к15:00](extensions-work-report-20261104.md) выдан раньше срока. Самостоятельные реализации и опыты остановлены до совместного обсуждения и нового явного решения пользователя. `java-sp-10` и `java-sp-3` переведены через app tool в **PAUSED**, ответы инструмента подтверждены. Все исполнители завершили работу; активных SSH/CI операций нет. Старое разрешение автономно работать до10ноября не отменяет остановку. Дальше — обсуждение, не автоматическое возобновление.
+> **ПРОДОЛЖЕНИЕ ПО НОВОМУ УКАЗАНИЮ ПОЛЬЗОВАТЕЛЯ, 4 ноября, после готового отчёта.** Пользователь: «Если отчёт уже готов, тогда займись другими направлениями и не ограничивается сроком в15». Отчёт остаётся историческим срезом. Продолжаются остальные согласованные направления: YAML provenance, честный service type checker Platform, Native project selection/cache в Site. Последние Performance TERM recovery и Platform fixed-image SHA candidates остаются заморожены/не приняты; их лимиты не сбрасываются. Production по-прежнему только после итогового просмотра. Документальный commit отчёта `85dcf10a` сохранён локально; SSH отправка54262 закончилась publickey отказом, готовится одна попытка с обычным доступом. Оба прежних расписания `java-sp-10` и `java-sp-3` вновь **ACTIVE**, app tool подтвердил обновление; дубликаты не создавались.
 
 Срок: **10 ноября 2026, 09:00 Europe/Minsk**. Обновление 4 ноября после утреннего пакета.
 Корень: `/home/tolya/JavaCodex/java-release-20261110`. При возобновлении прочитать этот файл и фактических владельцев/незавершённые операции; не дублировать работу.
@@ -19,7 +19,7 @@
 - Гарантированное окно **07:00–22:00**; 22:00–00:00 — при доступности одна короткая сетевая попытка/10 мин.
 - Ночью без циклов ожидания/build/inspect/hash; **00:00–07:00 сеть не планировать**.
 - Сводки 12:00/20:00: готово/далее/риск/нужен ли ответ; вне окон — существенное изменение/решение.
-- `java-sp-10`, `java-sp-3` **PAUSED после отчёта4ноября**; не возобновлять без нового решения пользователя. Дубликаты не создавать, чужие расписания не менять.
+- `java-sp-10`, `java-sp-3` были **PAUSED после отчёта4ноября**; новое прямое решение о продолжении получено. Оба возобновлены через app tool с новым приоритетным указанием и прежними окнами/уведомлениями, без дубликатов. Дубликаты не создавать, чужие расписания не менять.
 - Однократный `java-sp-4-09-45` PAUSED, [сводка выдана](../../reports/progress-20261104-0945.md).
 - При завершении/итоговом отчёте к сроку обе основные automation поставить на паузу.
 - 5–8 ноября — интеграция; 9 ноября 15:00 — stop новых функций, вечером итоговый review/согласованное переключение.
@@ -70,12 +70,12 @@ Installed/published composition не приравнивать к local Source; �
 
 | Владелец | Текущая граница |
 | --- | --- |
-| Root | Отчёт выдан, PR descriptions актуализированы, Core/PL/Download green. Остановлено до обсуждения; остаётся только документальное сохранение этого состояния отдельным Java commit. |
-| High `/root/perf_event_types` | Recovery frozen NOT QUALIFIED, исполнения закончены: runtime8.7468/15s, compiler PASS0.9274/10s; caller TERM control timeout, history runtime NOTRUN. Новых попыток/поручения нет. |
-| High `/root/pl_typed_materialization` | Завершён. JDK hash candidate frozen/unaccepted,4files/pure RED→GREEN0.479s; не commit/push/image до обсуждения. Platform material и factual review отчёта готовы. |
-| Medium `/root/core_yaml_types` | Завершён. Types material и редакционное чтение готовы, замечания исправлены root. Новых Source поручений нет. |
+| Root | Отчёт готов/commit85dcf10a. Новое поручение продолжать принято; восстановить SSH backup, обновить существующие расписания и согласовать три Source-only результата. |
+| High `/root/perf_event_types` | Source-only Site Native project selection/cache followup до20min; без новой cache/privacy policy или запуска. Performance recovery frozen, прежний бюджет не сбрасывать. |
+| High `/root/pl_typed_materialization` | Source-only actual PostgreSQL declaration/service checker readiness до20min; Source без правок. JDK hash candidate frozen/unaccepted,4dirty сохранять. |
+| Medium `/root/core_yaml_types` | Source-only YAML bundle provenance/matching declarations до20min; без vendor edits/новой установки/compiler. |
 
-**Первый следующий шаг:** совместное обсуждение [отчёта](extensions-work-report-20261104.md), без нового implementation. Три новые hosted CI Core/PL/Download SUCCESS ([финальный срез](../../reports/paired-ci-final-success-20261104.json)); не повторять. Первый [publication drift](../../reports/paired-ci-publication-test-align-review-20261104.md) и [второй failure](../../reports/paired-ci-second-failure-20261104.json) объяснены/исправлены; [Source review](../../reports/paired-ci-test-cleanup-review-20261104.md). Удалены count-only Proxy/subclass/any wrappers, replacement checks/count3 нет. Новых Native runs не назначать.
+**Первый следующий шаг после нового разрешения:** собрать три независимых Source-only followups и выбрать минимальную реализацию с закрытыми зависимостями; решения о новой cache/privacy policy и двух замороженных candidates остаются для обсуждения [отчёта](extensions-work-report-20261104.md). Три новые hosted CI Core/PL/Download SUCCESS ([финальный срез](../../reports/paired-ci-final-success-20261104.json)); не повторять. Первый [publication drift](../../reports/paired-ci-publication-test-align-review-20261104.md) и [второй failure](../../reports/paired-ci-second-failure-20261104.json) объяснены/исправлены; [Source review](../../reports/paired-ci-test-cleanup-review-20261104.md). Удалены count-only Proxy/subclass/any wrappers, replacement checks/count3 нет. Новых Native runs не назначать.
 Не запускать новую Java/SP matrix или увеличивать cap. PL computed fixture пока не registered, hosted R/knitr **UNKNOWN**.
 Site backup выполнен SSH d16→850 после exact open-head PR lookup `[]`; [план/evidence](../../reports/site-backup-pr-next-20261104.md). PR trigger запускает широкую suite; новый PR открывать с согласованным integration composition, не ради статуса.
 [Paired Source plan](../../reports/pl-core-paired-ci-next-20261104.md), [Download pin](../../reports/download-core-paired-ci-pin-20261104.md).
