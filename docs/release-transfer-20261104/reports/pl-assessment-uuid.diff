@@ -1,0 +1,405 @@
+diff --git a/_extensions/course-prairielearn/application/declarations.ts b/_extensions/course-prairielearn/application/declarations.ts
+index 34393ae..5909b9c 100644
+--- a/_extensions/course-prairielearn/application/declarations.ts
++++ b/_extensions/course-prairielearn/application/declarations.ts
+@@ -93,14 +93,22 @@ export function gradingMethod(
+   return { method: value.method };
+ }
+ export function declarations(raw: any, key: string) {
+   closed(raw, ["delivery", "question-defaults"], [
+     "assessment-defaults",
+     "seed-targets",
+   ]);
++  if (
++    object(raw["assessment-defaults"]) &&
++    Object.hasOwn(raw["assessment-defaults"], "uuid")
++  ) {
++    throw Error(
++      "PL.ASSESSMENT_INVALID: uuid разрешён только в локальной assessment.prairielearn, не в assessment-defaults",
++    );
++  }
+   if (raw["seed-targets"] !== undefined) {
+     NativeSeedTargetsSchema.parse(raw["seed-targets"]);
+   }
+   closed(raw.delivery, ["book", "course", "instances"]);
+   const course = raw.delivery.course;
+   closed(course, ["name", "title", "timezone", "topics"]);
+   for (const f of ["name", "title", "timezone"]) {
+diff --git a/_extensions/course-prairielearn/application/export-course.ts b/_extensions/course-prairielearn/application/export-course.ts
+index 449ebf7..35ef18f 100644
+--- a/_extensions/course-prairielearn/application/export-course.ts
++++ b/_extensions/course-prairielearn/application/export-course.ts
+@@ -190,14 +190,29 @@ export async function exportCourse(
+   for (const exercise of content.exercises) {
+     methods[exercise.id] = gradingMethod(
+       exercise.extensions?.prairielearn?.grading ??
+         input.config["question-defaults"].grading,
+     ).method;
+   }
+   for (const work of works) validateGradingComponents(work, methods);
++  const courseUuid = await identity("course/" + input.courseId);
++  const assessmentUuids = new Map<string, string>();
++  const uuidOwners = new Map<string, string>();
++  for (const work of works) {
++    const uuid = work.extensions.prairielearn.uuid ??
++      await identity("assessment/" + work.id, courseUuid);
++    const previous = uuidOwners.get(uuid.toLowerCase());
++    if (previous !== undefined) {
++      throw Error(
++        `PL.ASSESSMENT_INVALID: повторный UUID ${uuid}: ${previous} и ${work.id}`,
++      );
++    }
++    uuidOwners.set(uuid.toLowerCase(), work.id);
++    assessmentUuids.set(work.id, uuid);
++  }
+   const selectedIds = input.publicationConditions
+     ? new Set(
+       works.flatMap((w: any) => [
+         ...(w.slots ?? []).flatMap((slot: any) => slot.candidates),
+         ...(w.relatedExercise ? [w.relatedExercise] : []),
+       ]),
+     )
+@@ -232,15 +247,14 @@ export async function exportCourse(
+     if (schema === "infoAssessment") validateAssessmentSemantics(v, path);
+     await Deno.writeTextFile(
+       join(stage, path),
+       JSON.stringify(v, null, 2) + "\n",
+     );
+   };
+   try {
+-    const courseUuid = await identity("course/" + input.courseId);
+     await write("infoCourse.json", {
+       uuid: courseUuid,
+       name: d.course.name,
+       title: d.course.title,
+       timezone: d.course.timezone,
+       topics: d.course.topics,
+     });
+@@ -672,15 +686,15 @@ export async function exportCourse(
+       const assessmentType = ["test", "practical"].includes(work.kind)
+         ? "Exam"
+         : "Homework";
+       await write(
+         "courseInstances/" + input.instance + "/assessments/" + work.id +
+           "/infoAssessment.json",
+         {
+-          uuid: await identity("assessment/" + work.id, courseUuid),
++          uuid: assessmentUuids.get(work.id),
+           type: assessmentType,
+           title: work.title,
+           set: assessmentType,
+           number: String(index + 1),
+           ...grading.assessment,
+           text: overview.html +
+             `<p>Выполните не менее ${completion.atLeast} обязательных позиций полностью. Частичный результат и необязательные позиции не заменяют обязательные.</p>`,
+diff --git a/_extensions/course-prairielearn/application/grading-policy.ts b/_extensions/course-prairielearn/application/grading-policy.ts
+index cd29bb8..a0df102 100644
+--- a/_extensions/course-prairielearn/application/grading-policy.ts
++++ b/_extensions/course-prairielearn/application/grading-policy.ts
+@@ -1,10 +1,13 @@
+ import {createMetrics as __createMetrics} from "../observability/bridge.ts";
+ const __metrics=__createMetrics("course-prairielearn");
+ import { closed } from "./declarations.ts";
++// Форма UUID совпадает с закреплённой native infoAssessment schema.
++export const assessmentUuidPattern =
++  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+ const scalar = (v: any) =>
+   typeof v === "number" && Number.isFinite(v) && v >= 0;
+ const attempts = (v: any) => Number.isSafeInteger(v) && v >= 1;
+ const questionFields = [
+   "question-points",
+   "question-max-points",
+   "attempts",
+@@ -18,24 +21,33 @@ export function gradingPolicy(work: any) {
+   const fail = (field: string, reason: string): never => {
+     throw new Error(
+       `PL.GRADING_INVALID: ${source} ${field}: ${reason}; declare assessment.prairielearn or prairielearn.assessment-defaults in course/directory/document metadata`,
+     );
+   };
+   closed(policy, ["attempts", "pass"], [
+     "assignment",
++    "uuid",
+     "question-points",
+     "question-max-points",
+     "slot-overrides",
+     "max-points",
+     "grade-rate-minutes",
+     "advance-score-perc",
+     "allow-multiple-instances",
+     "auto-points",
+     "manual-points",
+   ]);
++  if (
++    Object.hasOwn(policy, "uuid") &&
++    (typeof policy.uuid !== "string" || !assessmentUuidPattern.test(policy.uuid))
++  ) {
++    throw Error(
++      `PL.ASSESSMENT_INVALID: ${source} uuid: ожидается native UUID контрольной работы`,
++    );
++  }
+   if (!attempts(policy.attempts)) {
+     fail("attempts", "expected positive integer (native triesPerVariant)");
+   }
+   if (policy["max-points"] != null && !scalar(policy["max-points"])) {
+     fail("max-points", "expected finite nonnegative number or null");
+   }
+   if (
+diff --git a/_extensions/course-prairielearn/application/native-business.ts b/_extensions/course-prairielearn/application/native-business.ts
+index 020ac68..602ed13 100644
+--- a/_extensions/course-prairielearn/application/native-business.ts
++++ b/_extensions/course-prairielearn/application/native-business.ts
+@@ -7,15 +7,19 @@ import { z } from "../vendor/zod/v4/index.js";
+ import { createHash } from "node:crypto";
+ import {
+   closed,
+   declarations,
+   publicationQuestion,
+   question,
+ } from "./declarations.ts";
+-import { gradingPolicy, validateGradingComponents } from "./grading-policy.ts";
++import {
++  assessmentUuidPattern,
++  gradingPolicy,
++  validateGradingComponents,
++} from "./grading-policy.ts";
+ import {
+   nativeCheckScalars,
+   NativeProjectChecksSchema,
+ } from "./native-checks.ts";
+ 
+ const amount = z.number().nonnegative().finite();
+ const points = z.union([amount, z.array(amount).min(1).max(4096)]);
+@@ -38,14 +42,18 @@ export const ScoringPolicySchema = z.strictObject({
+     z.strictObject(questionScore),
+   ).optional(),
+   "max-points": amount.nullable().optional(),
+   "grade-rate-minutes": amount.optional(),
+   "allow-multiple-instances": z.boolean().optional(),
+ });
+ export const AssessmentPolicySchema = ScoringPolicySchema.extend({
++  uuid: z.string().regex(
++    assessmentUuidPattern,
++    "Ожидается native UUID контрольной работы",
++  ).optional(),
+   pass: z.strictObject({ "at-least": z.number().int().positive() }),
+   attempts: z.number().int().positive(),
+   assignment: AssignmentPolicySchema.optional(),
+ });
+ export const AssessmentDefaultsSchema = ScoringPolicySchema.extend({
+   pass: z.strictObject({ "at-least": z.number().int().positive() }).optional(),
+   assignment: AssignmentPolicySchema.optional(),
+diff --git a/docs/authoring.md b/docs/authoring.md
+index a484a62..883e38b 100644
+--- a/docs/authoring.md
++++ b/docs/authoring.md
+@@ -54,14 +54,26 @@ Native TS Core 9 и C 9 используют публичные capture/current-
+ `assessment.prairielearn` — явное подключение правил к конкретной контрольной.
+ Пустая карта `{}` подключает значения из `prairielearn.assessment-defaults`.
+ Без подключения глобальные значения не действуют, в том числе на контрольные
+ с упражнениями других платформ. Видимость обрабатывается ядром раньше
+ адаптера: restricted условия и закрытые блоки не остаются в студенческой
+ проекции. Заголовок работы и её `.assessment-preview` доступны на сайте.
+ 
++Необязательное `assessment.prairielearn.uuid` задаёт сохранённый native UUID
++конкретной работы в стандартной форме `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
++(шестнадцатеричные цифры). При переименовании `assessment.id` прежнее значение
++UUID можно оставить: оно без изменения записывается в `infoAssessment.json`.
++Без поля действует прежний алгоритм UUIDv5: `assessment/<work.id>` в namespace
++course UUID, вычисленном из `course/<course.id>`. Для новых работ поле не требуется.
++В `prairielearn.assessment-defaults` поле `uuid` запрещено. Неверная форма и
++совпадение UUID выбранных работ, включая совпадение с автоматически вычисленным
++UUID и различие только регистром, останавливают экспорт до создания поставки.
++Поле сохраняет identity исходников; соответствие UUID уже установленному курсу
++проверяется отдельно при интеграции с PrairieLearn.
++
+ После объединения требуются все поля:
+ 
+ | Поле | Значение |
+ |---|---|
+ | `attempts` | Положительное целое число оцениваемых попыток для каждого задания. |
+ | `pass.at-least` | Положительное целое число полностью выполненных required заданий, не больше числа required позиций `.task-items`. |
+ | `assignment` | Одна стратегия назначения: `mode: assessment-id` либо `student-label: <метка>`. |
+diff --git a/docs/diagnostics.md b/docs/diagnostics.md
+index 7535fbd..f052e4c 100644
+--- a/docs/diagnostics.md
++++ b/docs/diagnostics.md
+@@ -14,15 +14,15 @@ updated: 2026-10-08
+ Контекст не добавляет обязательных полей в модель курса или Body-пакет.
+ 
+ | ID | Что проверяется | Что сделать |
+ |---|---|---|
+ | `PL001_externalAssessmentMembers` | В явно подключённую работу PrairieLearn входят только задания с `target="prairielearn"`. | Проверьте состав `.task-items` и `target` указанных заданий. |
+ | `ADAPTER` | Публичный Body-пакет и состав одной работы, явные привязки вопросов, внешний проверяющий инструмент, поддерживаемое условие, ресурсы и файлы поставки. | Найдите вопрос и поле в контексте сообщения; исправьте условие, проект или `binding.questions.<id>`. |
+ | `PL.INPUT_INVALID` | Аргументы явного экспорта, наличие установленного Core и чтение JSON-привязки. | Укажите корень курса, книгу, ID работы, привязку и новый каталог результата; установите совместимый Core в книгу. |
+-| `PL.ASSESSMENT_INVALID` | Форма настроек работы и общих настроек, стратегия назначения и порог относительно списка заданий. | Проверьте `assessment.prairielearn`, `prairielearn.assessment-defaults` и `.task-items`. |
++| `PL.ASSESSMENT_INVALID` | Форма настроек работы и общих настроек, стратегия назначения, порог относительно списка заданий и неверный/повторный native UUID. | Проверьте `assessment.prairielearn`, `prairielearn.assessment-defaults` и `.task-items`. |
+ | `PL.PROJECT_INVALID` | Путь проекта и существующий каталог внутри выбранной книги. | Укажите путь от корня книги, например `/projects/clamp`. |
+ | `PL.FILTER_ORDER` | Core обрабатывает документ до адаптера. | Укажите `filters: [course-core, course-prairielearn]`. |
+ | `PL.CONTRACT_INVALID` | Доступен установленный контракт адаптера. | Переустановите расширение целиком. |
+ | `PL.NATIVE_INVALID` | Согласованы представление, каталог, указатель и профили native-сборки. | Повторите сборку с согласованными Core и адаптером; сохраните исходное сообщение при обращении к сопровождающему. |
+ 
+ Правила попыток, порога, назначения и неизвестные поля проверяет исполняемый TS-контракт владельца.
+ Диагностика сохраняет исходную причину и конкретный `source/id/field`; путь
+diff --git a/tests/export-course.test.ts b/tests/export-course.test.ts
+index 9c7f90c..55692bf 100644
+--- a/tests/export-course.test.ts
++++ b/tests/export-course.test.ts
+@@ -1105,7 +1105,100 @@ Deno.test("Дублированная защита отвергается ран
+         publicationSource: { repository: "invalid", commit: "invalid", book: "tasks" },
+         body: async () => { called = true; throw new Error("unexpected body"); },
+       });
+     } catch (e) { message = String(e); }
+     assert(message === "Error: PL duplicate active defense" && !called, "Опциональная зависимость скрыла duplicate defense до body");
+   } finally { await Deno.remove(root, { recursive: true }); }
+ });
++
++Deno.test("UUID assessment сохраняется при переименовании, fallback стабилен, ошибки атомарны", async () => {
++  const root = await Deno.makeTempDir({ prefix: "pl-assessment-uuid-" });
++  try {
++    await Deno.mkdir(root + "/project/student", { recursive: true });
++    await Deno.writeTextFile(root + "/project/student/README.md", "Условие");
++    const assignment = { requirement: "required", workMode: "individual" };
++    const work: any = {
++      id: "sec-lab", source: "lab.qmd", kind: "lab", title: "Работа",
++      slots: [{ id: "exr-a", selection: "fixed", candidates: ["exr-a"], assignment }],
++      extensions: { prairielearn: { attempts: 1, pass: { "at-least": 1 }, "auto-points": 0, "manual-points": 2 } },
++    };
++    const config = {
++      delivery: { book: "tasks",
++        course: { name: "DEMO", title: "Курс", timezone: "Europe/Minsk", topics: [{ name: "Курс", color: "blue2", description: "Курс" }] },
++        instances: { pilot: { title: "Поток", "self-enrollment": false,
++          publishing: { "start-date": "1970-01-01T00:00:00Z", "end-date": "9999-12-31T00:00:00Z" }, works: ["sec-lab"] } },
++      },
++      "question-defaults": { topic: "Курс", grading: { method: "manual" }, submission: { mode: "upload" } },
++    };
++    const body = {
++      schema: "course-body-package-v2", owner: "demo", release: "native", apiVersion: [1, 23, 1],
++      questions: [{ owner: "demo", id: "exr-a", key: "demo/exr-a", title: "Задача", source: "a.qmd",
++        visibility: "public", statementVisibility: "open", hasPublicSolution: false, answerType: "manual",
++        condition: [{ t: "Para", c: [{ t: "Str", c: "Условие" }] }], publicAnswer: [] }],
++      works: [{ owner: "demo", id: work.id, key: "demo/" + work.id, source: "lab.qmd", kind: "lab", title: "Работа",
++        slots: [{ id: "demo/sec-lab/exr-a", selection: "fixed", candidates: ["demo/exr-a"], assignment }] }],
++      resources: [],
++    };
++    const input: any = { courseId: "demo", projectRoot: root, instance: "pilot", config, registry: { schemaVersion: 1, profiles: {} },
++      result: { model: { assessments: [work], exercises: [{ id: "exr-a", target: "prairielearn" }],
++        projects: [{ exerciseId: "exr-a", bankMember: true, projectRoot: "project" }] } },
++      checks: { schemaVersion: 1, courseId: "demo", bookRoot: "tasks", sourceSnapshotHash: "a".repeat(64), inventoryHash: "b".repeat(64), projects: [] },
++      body: async () => body,
++    };
++    // Явная identity переживает смену author ID и пути native assessment.
++    const preservedUuid = "6cbeb308-b0c5-51fc-bc0e-0f6bcbe75a45";
++    for (const id of ["sec-lab", "sec-renamed"]) {
++      const renamed = structuredClone(work) as any;
++      renamed.id = id;
++      renamed.extensions.prairielearn.uuid = preservedUuid;
++      const renamedConfig = structuredClone(config);
++      renamedConfig.delivery.instances.pilot.works = [id];
++      const renamedBody = structuredClone(body);
++      renamedBody.works[0].id = id;
++      renamedBody.works[0].key = "demo/" + id;
++      renamedBody.works[0].slots[0].id = "demo/" + id + "/exr-a";
++      const output = root + "/uuid-" + id;
++      await exportCourse({ ...input, config: renamedConfig,
++        result: { model: { ...input.result.model, assessments: [renamed] } },
++        body: async () => renamedBody, output, checksOutput: output + "-checks.json" });
++      const native = JSON.parse(await Deno.readTextFile(output + "/courseInstances/pilot/assessments/" + id + "/infoAssessment.json"));
++      assert(native.uuid === preservedUuid, "Переименование assessment изменило явный native UUID");
++    }
++    const uuidOther = structuredClone(work) as any;
++    uuidOther.id = "sec-other";
++    const invalidUuidCases = [
++      ...[null, false, 42, "", "not-a-uuid"].map((uuid) => ({
++        assessments: [{ ...work, extensions: { prairielearn: { ...work.extensions.prairielearn, uuid } } }],
++        config: structuredClone(config),
++      })),
++      ...[false, true].map((fallback) => {
++        const first = structuredClone(work) as any, second = structuredClone(uuidOther);
++        if (!fallback) first.extensions.prairielearn.uuid = preservedUuid;
++        second.extensions.prairielearn.uuid = preservedUuid.toUpperCase();
++        const twoConfig = structuredClone(config);
++        twoConfig.delivery.instances.pilot.works.push(second.id);
++        return { assessments: [first, second], config: twoConfig };
++      }),
++      { assessments: [work], config: { ...config, "assessment-defaults": { uuid: preservedUuid } } },
++    ];
++    for (const [index, invalid] of invalidUuidCases.entries()) {
++      const output = root + "/invalid-uuid-" + index;
++      let message = "", bodyCalled = false;
++      try {
++        await exportCourse({ ...input, config: invalid.config,
++          result: { model: { ...input.result.model, assessments: invalid.assessments } },
++          body: async () => { bodyCalled = true; return body; },
++          output, checksOutput: output + "-checks.json" });
++      } catch (error) { message = String(error); }
++      assert(message.toLowerCase().includes("uuid") && !bodyCalled,
++        "UUID ошибка не остановила экспорт до подготовки Body: " + index);
++      for (const path of [output, output + "-checks.json"]) {
++        assert(!await Deno.stat(path).then(() => true, () => false), "Неверный UUID создал поставку");
++      }
++    }
++    await exportCourse({ ...input, output: root + "/fallback", checksOutput: root + "/fallback-checks.json" });
++    const fallbackAssessment = JSON.parse(await Deno.readTextFile(root + "/fallback/courseInstances/pilot/assessments/sec-lab/infoAssessment.json"));
++    assert(fallbackAssessment.uuid === "6cbeb308-b0c5-51fc-bc0e-0f6bcbe75a45", "Отсутствующее поле UUID изменило прежний deterministic fallback");
++  } finally {
++    await Deno.remove(root, { recursive: true });
++  }
++});
+diff --git a/tests/grading-policy.test.ts b/tests/grading-policy.test.ts
+index 60690ca..24eaaa3 100644
+--- a/tests/grading-policy.test.ts
++++ b/tests/grading-policy.test.ts
+@@ -182,7 +182,53 @@ Deno.test("required zero-point questions fail closed; optional zero never suppli
+   );
+   w.slots[0].assignment.requirement = "optional";
+   assert(
+     gradingPolicy(w).slots["exr-a"].points === 0,
+     "optional zero with no ceiling rejected",
+   );
+ });
++
++
++import {
++  decodeNativeBusiness,
++  validateNativeRaw,
++} from "../_extensions/course-prairielearn/application/native-business.ts";
++
++Deno.test("Локальный native UUID проходит business contract при переименовании assessment", () => {
++  const uuid = "6cbeb308-b0c5-51fc-bc0e-0f6bcbe75a45";
++  for (const id of ["sec-lab", "sec-renamed"]) {
++    const assessment = work();
++    assessment.id = id;
++    const raw = {
++      config: { "assessment-defaults": { attempts: 3, pass: { "at-least": 1 }, "question-points": 2 } },
++      assessment: { uuid, assignment: { mode: "assessment-id" } },
++      declarations: [],
++    };
++    const decoded = decodeNativeBusiness(raw, {
++      course: { id: "demo" }, assessment, declarations: [],
++    }, { deferComposition: true });
++    assert(decoded.assessment.uuid === uuid, "Native business потерял явную identity");
++    gradingPolicy({ ...assessment, extensions: { prairielearn: decoded.assessment } });
++  }
++});
++
++Deno.test("Native UUID запрещён в defaults и неверный локальный UUID отвергается", () => {
++  const assessment = work();
++  for (const uuid of [null, false, 42, "", "not-a-uuid", "6cbeb308b0c551fcbc0e0f6bcbe75a45", "6cbeb308-b0c5-51fc-bc0e-0f6bcbe75a45\n"]) {
++    let message = "";
++    try {
++      decodeNativeBusiness({
++        assessment: { ...assessment.extensions.prairielearn, uuid, assignment: { mode: "assessment-id" } },
++        declarations: [],
++      }, { course: { id: "demo" }, assessment, declarations: [] }, { deferComposition: true });
++    } catch (error) { message = String(error); }
++    assert(message.includes("uuid"), "Неверный UUID прошёл native business contract");
++  }
++  let message = "";
++  try {
++    validateNativeRaw({
++      config: { "assessment-defaults": { uuid: "6cbeb308-b0c5-51fc-bc0e-0f6bcbe75a45" } },
++      declarations: [],
++    });
++  } catch (error) { message = String(error); }
++  assert(message.includes("uuid"), "Один UUID допускается для всех работ через defaults");
++});

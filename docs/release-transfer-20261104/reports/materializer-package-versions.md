@@ -1,0 +1,7 @@
+# Версия release и версии вложенных пакетов
+
+Root Sol6.1/ultra, Standard, 3 ноября2026. При SP migration обнаружено source противоречие, подтверждённое в фактической установленной Java: Core descriptor9.3.4, Presentation/Navigation9.3.2 принадлежат одному опубликованному provider releasev9.3.4 a478d2cc. Старый staged() сравнивал каждый descriptor с provider.version и отклонял такой комплект. Это не разрешение заменить immutable pin или потерять локальные файлы.
+
+Изменены только tools/materialize-providers.py, его существующий тест и docs/provider-installation.md. Удалено неверное равенство номера пакета номеру общего release. Наличие _extension.yml проверяется по уже вычисленному inventory, без нового чтения descriptor; точные bytes определяют прежние tag→commit, archive/candidate patch и package inventory. Provider/installed schema и сами установленные пакеты не меняются. Сохраняются prewrite local-edit/mode/symlink guards и commit/patch/content provenance.
+
+Новый поведенческий fixture — один настоящий Git release1.0.0 с Core1.0.0 и UI0.8.0. До правки CLI --write отверг его: Version descriptor отличается: course-ui (один тест0.096s). После правки существующие12tests tool прошли за1.657s: реальная CLI поставка/проверка mixed release, candidate/repeat, tag/provenance/content/mode/локальные изменения. Ни course/provider whole-tree inventory, ни render/build/inspect не запускались. Новый version registry/DSL/протокол не добавлен. Независимый review отдельным исполнителем следует после commit.

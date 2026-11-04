@@ -1,0 +1,43 @@
+# Независимый технический обзор удаления j25
+
+Проверяемая дельта: `dd5b76a0168133f0760ece6cb21f4bdf4f6203bb` → `ffe0ccfb8d21666e82f79b2a8c1af954f3cdf7f8`. Рецензент не автор изменения, Source не изменял.
+
+**Исходный verdict до исправлений — соответствие требованиям: требуется исправление/явная миграционная граница.** Удаление j25 из активных учебных anchors и потребителей реализовано последовательно; однако перенос затрагивает вычисляемые внешние UUID оценочных работ. Утверждения о сохранении UUID на основании одних UUID-литералов недостаточно.
+
+**Исходный verdict до исправлений — качество: требуется исправление.** Два actionable замечания ниже. Смысловой дельты в алгоритмах, баллах и учебных условиях по рассмотренным изменениям нет; замечания относятся к идентичности публикации и достоверности исторических свидетельств.
+
+## Адресный повторный обзор P1/P2
+
+**Scoped verdict — соответствие требованиям: clean для пяти Java data values и восстановления исторических IDs. Качество этих исправлений: clean, новых actionable findings нет.** Это не приёмка PL API, установленного runtime, миграции реального сервера или всей публикации. Известный blocker остаётся: новый optional uuid contract должен быть независимо принят и установлен в Java вместо старого PL9.0.7; native интеграция выполняется координатором.
+
+Прочитаны только соответствующие секции `reports/java-identifiers-fix.diff` и `reports/java-assessment-uuid.md`. Адресным `git show dd5b76a0…:<path>` подтверждены исходные входы генерации: course.id `java-semester-one`, assessment IDs `sec-j25-lab-{objects,polymorphism,collections,pipelines,files}`. Пять current QMD содержат те же новые смысловые IDs без j25 и следующие значения именно в `assessment.prairielearn.uuid`:
+
+| Файл | Строка UUID | Сохранённое значение |
+| --- | --- | --- |
+| tasks/labs/objects.qmd | 9 | `b61a155f-7ea3-5dfa-b301-72a4656ace98` |
+| tasks/labs/polymorphism.qmd | 9 | `5f70c5f6-4f87-5f4e-ba0c-e8fdb6670ab6` |
+| tasks/labs/collections.qmd | 9 | `eb9f17fb-4f17-5631-b3b5-4cbebb4c4bb3` |
+| tasks/labs/pipelines.qmd | 9 | `cf890a50-0e8e-53b6-871b-65989cf5219a` |
+| tasks/labs/files.qmd | 10 | `864cfffa-5e75-5872-9bb7-9c378b6e7fdd` |
+
+После уточнения scope координатором независимо вычислены только UUIDv5 этих пяти коротких ключей, без file/tree/toolchain hashing: `uuid.uuid5(uuid.NAMESPACE_DNS, "course/" + baseCourseId)` → namespace `036dee22-0705-5c6d-abd5-30620afcce9b`, затем `uuid.uuid5(namespace, "assessment/" + baseAssessmentId)`. Все пять сравнений с current QMD дали True; namespace/name взяты непосредственно из base Source. Таким образом P1 закрыт в части Java source data, при условии отдельно принимаемой реализации override в PL commit `5a04576e0b288e481fbbf55ffe8fa16be56ed77a`. Actual server identity отчёт не подтверждает.
+
+P2 закрыт: в `cac1418fdbbd037e8bd69f4e9634fecbb1dce775b` 21 историческое утверждение возвращено к прежним exr-j25 IDs: пять collections contracts, четыре control subject-contracts и двенадцать numbers historical/contracts. В рассмотренном fix diff возвращены именно строки, описывающие закреплённый `220857b6…`; текущие IDs в начале контрактов и активные учебные anchors остаются без j25. В частности `quadratic-roots/historical-contract.md:7` снова совпадает с уже адресно прочитанным историческим source. Новый runtime или повторный поиск learner output для этого вывода не запускались.
+
+Модельный допуск после продолжения: весь исходный интервал от `01a1a1ca-e472-7843-9db5-b48b0a42266f` содержит две turn_context, включая новый ход `01a1a1d9-ad5e-7771-bd6b-bca46b65cc3d`; обе top/nested пары `gpt-6.1-sol/medium`. Первичная запись session_meta и источник те же, начало интервала сохранено.
+
+## Исходные замечания (состояние до исправлений)
+
+1. **[P1] Зафиксировать миграцию пяти внешних assessment identities до публикации.** `tasks/labs/objects.qmd:27` (аналогично `polymorphism.qmd:25`, `collections.qmd:25`, `pipelines.qmd:28`, `files.qmd:26`) меняет не только HTML anchor, но и `assessment.id`. Прямой установленный потребитель `tasks/_extensions/Afonenko-Course-Tools/course-prairielearn/application/export-course.ts:675–679` использует `work.id` для каталога assessment и вычисляет UUID как `identity("assessment/" + work.id, courseUuid)`. `identity` в том же файле:63–83 — UUID v5, независимого сохранённого UUID у этих frontmatter declarations нет. Поэтому следующий экспорт получит другие UUID пяти работ, даже при побайтовой сохранности всех UUID-литералов. Дополнительно `application/native-business.ts:275–280` выводит assignment student-label из course.id и assessment.id. Это ровно предусмотренный brief случай внешнего identity без независимого UUID. Цепочка native-публикации подтверждена в `application/native-course.ts:301–306` (value.assessment → content.assessments), `:529` (exportCourse), `application/export-course.ts:170–177` (выбор works по id) и `:675–679` (путь и UUID). Штатного explicit assessment UUID или migration map в этой цепочке нет: `export-course.ts:679` вычисляет UUID безусловно, а strict `AssessmentPolicySchema` в `native-business.ts:44–48` такого поля не предусматривает. Assignment поддерживает явный `student-label` (`native-business.ts:30–33`), что покрывает только метку, не UUID. В report нужно явно записать эти пять старых→новых идентичностей и точную границу необходимой миграции/сохранения прежних UUID перед продуктовой синхронизацией; в интеграции обеспечить сохранение связанной истории и назначений. Здесь новые вечные идентификаторы или aliases не предлагаются. Реальная публикация этих конкретных работ и состояние сервера этим обзором не устанавливались; риск уже доказан самим экспортным контрактом, потери данных не утверждаются.
+
+2. **[P2] Сохранить буквальные прежние IDs в исторических свидетельствах.** `tasks/projects/numbers/quadratic-roots/historical-contract.md:7` теперь называет `exr-numbers-quadratic-roots` «прежним ID» карточки `tasks/bank/numbers.qmd:194` коммита `220857b6…`. Адресное чтение `git show 220857b6…:tasks/bank/numbers.qmd` показывает там `{#exr-j25-numbers-quadratic-roots}`. Такая же механическая подмена сделана в других number/control historical/subject contracts и в `tasks/projects/collections/balanced-brackets/contract.md:5` и соседних collection contracts, прямо описывающих этот снимок. Это делает проверяемое свидетельство фактически неверным. Вернуть старые IDs именно в исторических утверждениях либо явно отделить прежний ID от текущего соответствия; активные учебные ссылки оставить новыми. Эти закрытые файлы не нужны для выполнения требования убрать j25 из выдаваемого учебника, как и сохранённые исторические физические пути.
+
+## Оставшиеся исторические пути и границы проверки
+
+16 остатков из авторского report сами по себе не являются замечанием. Прочитаны исключения `tasks/_quarto.yml:13–14`, корневые resources, состав `course-project` на примерах objects/collections и реальная реализация `artifacts/plan.ts:212–279`: комплект берётся из starter, объявленных build files, components/testsets, solutions и instructions, а не из всего родительского каталога. `artifacts/policy.ts` закрывает contract.md для student; для full решающим остаётся явный состав корней, а не эта student-политика. Два пути в `09a0048d487f/public-scenarios.md` прямо описывают закреплённый снимок. С учётом уже выполненной автором проверки всех соответствующих metadata и отсутствия include/link в активном Source оснований считать эти остатки текущим learner output нет. Никакого обещания о фактически просмотренных ZIP/HTML этим не даётся.
+
+Успешные адресные проверки отсутствия остатков в активном Source, инъективности/коллизий, соответствий каталога, UUID-литералов и точной механической дельты переиспользованы из `reports/java-identifiers.md`; повторно не запускались. Независимые адресные чтения проверили новый вопрос вычисляемой внешней идентичности и достоверность исторической ссылки. Render, inspect, build, вычисление хешей, Gradle и CI не запускались. Source и нормативный model-admission не изменялись.
+
+## Собственный первичный допуск
+
+Собственный ID чата `01a1a1ca-e449-7ce3-a06b-3a3aa9ec2594`, путь агента `/root/review_identifiers`, исходный ход `01a1a1ca-e472-7843-9db5-b48b0a42266f`. Источник первичных данных: `/home/tolya/.codex/sessions/2026/11/03/rollout-2026-11-03T17-23-10-01a1a1ca-e449-7ce3-a06b-3a3aa9ec2594.jsonl`. Прочитаны session_meta и весь исходный интервал turn_context: одна запись. Назначение и фактические поля совпадают: `gpt-6.1-sol/medium`; вложенный collaboration_mode также `gpt-6.1-sol/medium`. service_tier не задан, Fast/Ultrafast не включались. Перед передачей повторно проверен тот же полный интервал без сдвига начала.

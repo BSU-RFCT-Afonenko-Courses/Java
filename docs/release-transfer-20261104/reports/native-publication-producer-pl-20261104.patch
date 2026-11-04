@@ -1,0 +1,1300 @@
+diff --git a/README.md b/README.md
+index f99219f..a76a536 100644
+--- a/README.md
++++ b/README.md
+@@ -208,9 +208,9 @@ Quarto `--profile`, сохраняются при экспорте.
+ Полный exporter 7.0.0 требует авторский `question-points`; пример явно объявляет
+ default 1, который можно заменить в course/directory/document metadata. Баллы,
+ ceiling и повторные попытки описаны в [контракте](docs/authoring.md#авторские-баллы-и-повторные-попытки-exporter-500);
+-`inspect-grading.ts` читает уже завершённую genuine Core operation и показывает
+-effective policy без нового inspect/render. Он требует полного текущего capture;
+-plain DTO или старая correlation candidate не дают publication authority.
++`inspect-publication.ts` читает завершённый capture через `Core.withNativePublication`
++и показывает author business policy без нового inspect/render. Полная pricing/seed
++qualification не требуется обычному сайту. Plain DTO не заменяет живую operation.
+ Текущий контракт 7.1.0 сохраняет Body v2; установка нового тега требует
+ фактической публикации и явного обновления metadata курса.
+ 
+@@ -228,7 +228,7 @@ prairielearn:
+ An exercise may override this with `prairielearn-single-variant="false"`.
+ Only YAML booleans and the attribute literals `true`/`false` are accepted.
+ The normalized question policy carries `single-variant` to native
+-`info.json.singleVariant`; `inspect-grading` reports its effective value.
++`info.json.singleVariant`; `inspect-publication` показывает его эффективное значение.
+ When absent the exporter omits the field: pinned Community documents its
+ native default as `false` (variants may be generated). Declare `true` explicitly
+ to preserve the earlier exporter's forced single-variant behavior.
+@@ -329,16 +329,14 @@ prepared correlation и исполняет один TS business decoder. Пов
+ обхода, per-document child и business sidecars нет. Частичная publication
+ валидация не выдумывает обязательные delivery topic/submission.
+ 
+-`inspectPublication(Core, operation, request)` читает уже аутентичные callback
+-facts через публичный Core API. Его data result не является lease/plan или
+-разрешением assignment delivery. Прямая проверка DTO не наполняет native
+-business cache. Для той же живой operation и exact request полная проверка
+-повторно использует private proof с currentness fence перед artifact boundary.
+-Другой generation/request и failure не наследуют cache.
+-
+-## Кандидат 9.0.1: обычная публикация
+-
+-[Адресная поправка](docs/release-9.0.1.md) связывает common sources с настоящим Core release proof. Полная delivery и её grading/prepared guards не менялись; новый тег требует OTHER и CI.
++`Core.withNativePublication(expectation, selection, use)` открывает одну живую
++ordinary publication: Core проверяет общую семантику capture, роли и принадлежащие
++владельцу пути; PL `inspectPublication(publication)` проверяет собственные metadata
++и cross-document members. Результат `PublicationInspection` — типизированные данные,
++без release proof/certificate. Полная grading/seed qualification и prepared correlation
++остаются у отдельного course exporter. Site и Download не вызывают их для ordinary
++публикации. Cache freshness и произвольный немаркированный computed text не получают
++новой гарантии приватности: профили выбираются конфигурацией Quarto.
+ 
+ ## Native project contracts 9.0.2
+ 
+diff --git a/_extensions/course-prairielearn/_extension.yml b/_extensions/course-prairielearn/_extension.yml
+index 7fec42c..7cbc75a 100644
+--- a/_extensions/course-prairielearn/_extension.yml
++++ b/_extensions/course-prairielearn/_extension.yml
+@@ -9,7 +9,7 @@ contributes:
+     course-prairielearn:
+       package-contract: course-body-package-v2
+       entrypoint: entrypoints/export.ts
+-      grading-inspection-entrypoint: entrypoints/inspect-grading.ts
++      publication-inspection-entrypoint: entrypoints/inspect-publication.ts
+       native-entrypoint: entrypoints/export-course.ts
+       native-contract: course-native-delivery-v3
+       core-version: 9.0.0
+diff --git a/_extensions/course-prairielearn/application/declarations.ts b/_extensions/course-prairielearn/application/declarations.ts
+index 5909b9c..1c224ae 100644
+--- a/_extensions/course-prairielearn/application/declarations.ts
++++ b/_extensions/course-prairielearn/application/declarations.ts
+@@ -2,9 +2,9 @@ import { NativeSeedTargetsSchema } from "./native-materialization.ts";
+ import { submission as parseSubmission } from "./submission.ts";
+ import { createMetrics as __createMetrics } from "../observability/bridge.ts";
+ const __metrics = __createMetrics("course-prairielearn");
+-export const object = (v: any) =>
++export const object = (v: unknown): v is Record<string, unknown> =>
+   v !== null && typeof v === "object" && !Array.isArray(v);
+-export function closed(v: any, required: string[], optional: string[] = []) {
++export function closed(v: unknown, required: string[], optional: string[] = []) {
+   if (!object(v)) throw new Error("PL.DECLARATION_INVALID: expected map");
+   const missing = required.filter((k) => !Object.hasOwn(v, k));
+   const unknown = Object.keys(v).filter((k) =>
+@@ -18,26 +18,23 @@ export function closed(v: any, required: string[], optional: string[] = []) {
+           : "unknown " + unknown.join(", ")),
+     );
+   }
++  return v;
+ }
+-function readQuestion(v: any, complete: boolean) {
+-  closed(
+-    v,
+-    complete ? ["topic", "submission"] : [],
+-    complete
+-      ? ["single-variant", "grading"]
+-      : ["topic", "submission", "single-variant", "grading"],
+-  );
+-  if (
+-    Object.hasOwn(v, "single-variant") &&
+-    typeof v["single-variant"] !== "boolean"
+-  ) {
+-    throw Error("PL single-variant requires boolean");
++function readQuestion(value: unknown, complete: boolean) {
++  const v = closed(value, complete ? ["topic", "submission"] : [], complete
++    ? ["single-variant", "grading"] : ["topic", "submission", "single-variant", "grading"]);
++
++  let singleVariant: boolean | undefined;
++  if (Object.hasOwn(v, "single-variant")) {
++    const value = v["single-variant"];
++    if (typeof value !== "boolean") throw Error("PL single-variant requires boolean");
++    singleVariant = value;
+   }
+-  if (
+-    Object.hasOwn(v, "topic") &&
+-    (typeof v.topic !== "string" || !v.topic.trim())
+-  ) {
+-    throw Error("PL topic required");
++  let topic: string | undefined;
++  if (Object.hasOwn(v, "topic")) {
++    const value = v.topic;
++    if (typeof value !== "string" || !value.trim()) throw Error("PL topic required");
++    topic = value;
+   }
+   const submission = Object.hasOwn(v, "submission")
+     ? parseSubmission(v.submission, true)
+@@ -51,46 +48,36 @@ function readQuestion(v: any, complete: boolean) {
+       "PL.WORKSPACE_INVALID: Workspace требует Manual и single-variant: true",
+     );
+   }
+-  return { submission, grading };
++  return { submission, grading, topic, singleVariant };
+ }
+ /** Частичная native publication policy: отсутствие поля не становится default delivery. */
+-export function publicationQuestion(v: any) {
+-  const { submission, grading } = readQuestion(v, false);
++export function publicationQuestion(v: unknown) {
++  const { submission, grading, topic, singleVariant } = readQuestion(v, false);
+   return {
+-    ...(Object.hasOwn(v, "topic") ? { topic: v.topic } : {}),
+-    ...(submission ? { submission } : {}),
+-    grading,
+-    ...(Object.hasOwn(v, "single-variant")
+-      ? { singleVariant: v["single-variant"] }
+-      : {}),
++    ...(topic !== undefined ? { topic } : {}),
++    ...(submission ? { submission } : {}), grading,
++    ...(singleVariant !== undefined ? { singleVariant } : {}),
+     ...(submission?.mode === "workspace" ? { singleVariant: true } : {}),
+   };
+ }
+-export function question(v: any) {
+-  const { submission, grading } = readQuestion(v, true);
++export function question(v: unknown) {
++  const { submission, grading, topic, singleVariant } = readQuestion(v, true);
+   return {
+-    topic: v.topic,
+-    ...(v.grading !== undefined && v.grading !== "external" ? { grading } : {}),
+-    ...(Object.hasOwn(v, "single-variant")
+-      ? { singleVariant: v["single-variant"] }
+-      : {}),
+-    ...(submission!.mode === "workspace" ? { singleVariant: true } : {}),
++    topic: topic!,
++    ...(grading.method !== "external" ? { grading } : {}),
++    ...(singleVariant !== undefined ? { singleVariant } : {}),
++    ...(submission?.mode === "workspace" ? { singleVariant: true } : {}),
+     submission: submission!,
+   };
+ }
+-export function gradingMethod(
+-  value: any,
+-): { method: "external" | "manual" | "mixed" } {
+-  if (value === undefined || value === "external") {
+-    return { method: "external" };
+-  }
+-  closed(value, ["method"]);
+-  if (!["manual", "mixed"].includes(value.method)) {
+-    throw Error(
+-      "PL.GRADING_INVALID: grading.method должен быть manual или mixed",
+-    );
++export function gradingMethod(value: unknown): { method: "external" | "manual" | "mixed" } {
++  if (value === undefined || value === "external") return { method: "external" };
++  const record = closed(value, ["method"]);
++  const method = record.method;
++  if (method !== "manual" && method !== "mixed") {
++    throw Error("PL.GRADING_INVALID: grading.method должен быть manual или mixed");
+   }
+-  return { method: value.method };
++  return { method };
+ }
+ export function declarations(raw: any, key: string) {
+   closed(raw, ["delivery", "question-defaults"], [
+diff --git a/_extensions/course-prairielearn/application/native-business.ts b/_extensions/course-prairielearn/application/native-business.ts
+index 602ed13..eaa5979 100644
+--- a/_extensions/course-prairielearn/application/native-business.ts
++++ b/_extensions/course-prairielearn/application/native-business.ts
+@@ -1,3 +1,11 @@
++import type { NativeAdapterValidationInput } from "course-core/public.ts";
++/** Реально читаемые поля Core input; schema/authenticity остаются у Core boundary.
++ * Полный preprojection input структурно совместим без копирования/приведения. */
++export type NativeBusinessInput = Pick<NativeAdapterValidationInput, "declarations"> & {
++  assessment?: Pick<NonNullable<NativeAdapterValidationInput["assessment"]>, "id" | "kind" | "slots">;
++  origin?: Pick<NativeAdapterValidationInput["origin"], "source">;
++  course: Partial<NativeAdapterValidationInput["course"]>;
++};
+ import {
+   decodeNativeMaterialization,
+   NativeSeedTargetsSchema,
+@@ -7,6 +15,7 @@ import { z } from "../vendor/zod/v4/index.js";
+ import { createHash } from "node:crypto";
+ import {
+   closed,
++  object,
+   declarations,
+   publicationQuestion,
+   question,
+@@ -73,52 +82,35 @@ export const NativeBusinessSchema = z.strictObject({
+ });
+ export type NativeBusiness = z.output<typeof NativeBusinessSchema>;
+ /** Нормализация native Pandoc scalars; metadata inheritance уже выполнил Quarto. */
+-export function nativePolicy(value: unknown): any {
+-  if (!value || typeof value !== "object" || Array.isArray(value)) return value;
+-  const result: any = structuredClone(value);
+-  for (
+-    const key of [
+-      "attempts",
+-      "question-points",
+-      "question-max-points",
+-      "max-points",
+-      "grade-rate-minutes",
+-      "advance-score-perc",
+-      "auto-points",
+-      "manual-points",
+-    ]
+-  ) {
+-    const numeric = (v: unknown) =>
+-      typeof v === "string" && v.trim() !== "" && Number.isFinite(Number(v))
+-        ? Number(v)
+-        : v;
++export function nativePolicy(value: unknown): unknown {
++  if (!object(value)) return value;
++  const result = structuredClone(value);
++  for (const key of ["attempts", "question-points", "question-max-points", "max-points",
++    "grade-rate-minutes", "advance-score-perc", "auto-points", "manual-points"]) {
++    const numeric = (v: unknown) => typeof v === "string" && v.trim() !== "" && Number.isFinite(Number(v))
++      ? Number(v) : v;
+     if (Object.hasOwn(result, key)) {
+-      result[key] = Array.isArray(result[key])
+-        ? result[key].map(numeric)
+-        : numeric(result[key]);
++      const field = result[key];
++      result[key] = Array.isArray(field) ? field.map(numeric) : numeric(field);
+     }
+   }
+-  if (result.pass && typeof result.pass === "object") {
+-    result.pass["at-least"] = typeof result.pass["at-least"] === "string"
+-      ? Number(result.pass["at-least"])
+-      : result.pass["at-least"];
++  const pass = result.pass;
++  if (object(pass)) {
++    pass["at-least"] = typeof pass["at-least"] === "string" ? Number(pass["at-least"]) : pass["at-least"];
+   }
+-  if (result["slot-overrides"]) {
+-    for (const id of Object.keys(result["slot-overrides"])) {
+-      result["slot-overrides"][id] = nativePolicy(result["slot-overrides"][id]);
+-    }
++  const overrides = result["slot-overrides"];
++  if (object(overrides)) {
++    for (const id of Object.keys(overrides)) overrides[id] = nativePolicy(overrides[id]);
+   }
+   return result;
+ }
+-function mergePolicy(base: any, local: any): any {
+-  if (!local || typeof local !== "object" || Array.isArray(local)) return local;
+-  const out = { ...base };
++function mergePolicy(base: Record<string, unknown>, local: unknown): unknown {
++  if (!object(local)) return local;
++  const out: Record<string, unknown> = { ...base };
+   for (const [key, value] of Object.entries(local)) {
+-    out[key] = key !== "assignment" && value && typeof value === "object" &&
+-        !Array.isArray(value) && out[key] && typeof out[key] === "object" &&
+-        !Array.isArray(out[key])
+-      ? mergePolicy(out[key], value)
+-      : value;
++    const prior = out[key];
++    out[key] = key !== "assignment" && object(value) && object(prior)
++      ? mergePolicy(prior, value) : value;
+   }
+   return out;
+ }
+@@ -126,15 +118,16 @@ function mergePolicy(base: any, local: any): any {
+ function readNativeRaw(
+   value: unknown,
+   context: { source?: string },
+-  parseQuestion: (value: any) => unknown,
++  parseQuestion: (value: unknown) => unknown,
+ ) {
+   const raw = NativeBusinessSchema.parse(structuredClone(value)),
+-    config = (raw.config ?? {}) as any;
++    config = raw.config ?? {};
+   // Pandoc представляет numeric metadata scalar как Inlines; нормализация принадлежит PL.
+-  const port = config["question-defaults"]?.submission?.workspaceOptions?.port;
+-  if (typeof port === "string" && /^\d+$/.test(port)) {
+-    config["question-defaults"].submission.workspaceOptions.port = Number(port);
+-  }
++  const questionDefaults = config["question-defaults"];
++  const submission = object(questionDefaults) ? questionDefaults.submission : undefined;
++  const workspace = object(submission) ? submission.workspaceOptions : undefined;
++  const port = object(workspace) ? workspace.port : undefined;
++  if (object(workspace) && typeof port === "string" && /^\d+$/.test(port)) workspace.port = Number(port);
+   closed(config, [], [
+     "delivery",
+     "question-defaults",
+@@ -145,7 +138,9 @@ function readNativeRaw(
+     NativeSeedTargetsSchema.parse(config["seed-targets"]);
+   }
+   if (config.delivery !== undefined) {
+-    const keys = Object.keys(config.delivery?.instances ?? {});
++    const delivery = config.delivery;
++    const instances = object(delivery) ? delivery.instances : undefined;
++    const keys = Object.keys(object(instances) ? instances : {});
+     if (!keys.length) throw Error("PL.DECLARATION_INVALID: пустые instances");
+     declarations({
+       ...config,
+@@ -214,9 +209,9 @@ function decodeBusiness<
+   Q extends Partial<ReturnType<typeof publicationQuestion>>,
+ >(
+   value: unknown,
+-  input: any,
++  input: NativeBusinessInput,
+   options: { deferComposition?: boolean },
+-  parseQuestion: (value: any) => Q,
++  parseQuestion: (value: unknown) => Q,
+   completeGrading: boolean,
+ ) {
+   const { raw, config, defaults, materialization } = readNativeRaw(value, {
+@@ -237,7 +232,7 @@ function decodeBusiness<
+       throw Error("PL.ANSWER_UNQUALIFIED: raw/native answer mismatch");
+     }
+     const attrs = declaration.attributes, base = config["question-defaults"];
+-    const authored = structuredClone(base ?? {});
++    const authored: Record<string, unknown> = structuredClone(object(base) ? base : {});
+     if (attrs["prairielearn-topic"] !== undefined) {
+       authored.topic = attrs["prairielearn-topic"];
+     }
+@@ -251,16 +246,13 @@ function decodeBusiness<
+         attrs["prairielearn-single-variant"] === "true";
+     }
+     if (attrs["prairielearn-submission"] !== undefined) {
+-      authored.submission = {
+-        ...authored.submission,
++      const submission: Record<string, unknown> = {
++        ...(object(authored.submission) ? authored.submission : {}),
+         mode: attrs["prairielearn-submission"],
+       };
+-      if (authored.submission.mode !== "editor") {
+-        delete authored.submission["ace-mode"];
+-      }
+-      if (authored.submission.mode !== "workspace") {
+-        delete authored.submission.workspaceOptions;
+-      }
++      if (submission.mode !== "editor") delete submission["ace-mode"];
++      if (submission.mode !== "workspace") delete submission.workspaceOptions;
++      authored.submission = submission;
+     }
+     const parsed = parseQuestion(authored);
+     questions[declaration.id] = {
+@@ -268,7 +260,7 @@ function decodeBusiness<
+       grading: parsed.grading ?? { method: "external" },
+     };
+   }
+-  let assessment: any;
++  let assessment: z.output<typeof AssessmentPolicySchema> | undefined;
+   if (raw.assessment !== undefined) {
+     if (!input.assessment) {
+       throw Error("PL.ASSESSMENT_INVALID: нет Core assessment composition");
+@@ -287,7 +279,7 @@ function decodeBusiness<
+           ).digest("hex"),
+       };
+     }
+-    const required = input.assessment.slots.filter((s: any) =>
++    const required = input.assessment.slots.filter((s) =>
+       s.assignment.requirement === "required"
+     );
+     if (assessment.pass["at-least"] > required.length) {
+@@ -304,7 +296,7 @@ function decodeBusiness<
+     if (!completeGrading) {
+       // Partial publication vet проверяет форму/порог; pricing требует полной delivery.
+     } else if (
+-      input.assessment.slots.every((s: any) =>
++      input.assessment.slots.every((s) =>
+         s.candidates.every((id: string) => methods[id] !== undefined)
+       )
+     ) validateGradingComponents(work, methods);
+@@ -327,7 +319,7 @@ function decodeBusiness<
+ /** Полная delivery не получает неполные topic/submission через publication parser. */
+ export function decodeNativeBusiness(
+   value: unknown,
+-  input: any,
++  input: NativeBusinessInput,
+   options: { deferComposition?: boolean } = {},
+ ) {
+   return decodeBusiness(value, input, options, question, true);
+@@ -335,7 +327,7 @@ export function decodeNativeBusiness(
+ /** Чистая частичная publication validation, без delivery/proof/operation authority. */
+ export function decodePublicationBusiness(
+   value: unknown,
+-  input: any,
++  input: NativeBusinessInput,
+   options: { deferComposition?: boolean } = {},
+ ) {
+   return decodeBusiness(value, input, options, publicationQuestion, false);
+diff --git a/_extensions/course-prairielearn/application/native-input.ts b/_extensions/course-prairielearn/application/native-input.ts
+index b038d97..9300837 100644
+--- a/_extensions/course-prairielearn/application/native-input.ts
++++ b/_extensions/course-prairielearn/application/native-input.ts
+@@ -1,3 +1,4 @@
++import type { NativeAdapterValidationInput } from "course-core/public.ts";
+ import type { PublicCore } from "./native-adapter.ts";
+ 
+ /** Единственный data decoder уже аутентичного immutable Core callback input.
+@@ -14,7 +15,11 @@ export function nativeBusinessInput(
+   Core: Pick<PublicCore, "NativeAdapterValidationInputSchema">,
+   value: unknown,
+ ) {
+-  const input = Core.NativeAdapterValidationInputSchema.parse(value);
++  return parsedNativeBusinessInput(Core.NativeAdapterValidationInputSchema.parse(value));
++}
++
++/** Mapping actual parsed Core input; эта функция не создаёт capability. */
++export function parsedNativeBusinessInput(input: NativeAdapterValidationInput) {
+   const envelope = input.nativeMetadata, slots = nativeMetadataReadSet;
+   if (
+     !envelope || !Array.isArray(envelope.readSet) ||
+diff --git a/_extensions/course-prairielearn/application/native-publication.ts b/_extensions/course-prairielearn/application/native-publication.ts
+index 819b351..6f2f13d 100644
+--- a/_extensions/course-prairielearn/application/native-publication.ts
++++ b/_extensions/course-prairielearn/application/native-publication.ts
+@@ -1,62 +1,44 @@
++import type { NativeAdapterValidationInput, NativePublication } from "course-core/public.ts";
+ import { decodePublicationBusiness } from "./native-business.ts";
+-import { nativeBusinessInput, nativeMetadataReadSet } from "./native-input.ts";
++import { parsedNativeBusinessInput, nativeMetadataReadSet } from "./native-input.ts";
+ import { safePath } from "./source-selection.ts";
+ import { diagnostic } from "./diagnostics.ts";
+-/** Один genuine ordinary Core release callback. Результат — data для авторской
+- * инспекции; он не даёт assignment delivery, A1/lease или publish authority. */
+-export async function inspectPublication(
+-  Core: any,
+-  operation: any,
+-  request: { expectedSources: string[]; courseId?: string },
+-) {
+-  const loaded = new Map<
+-    string,
+-    { input: any; business: ReturnType<typeof decodePublicationBusiness> }
+-  >();
+-  const proof = await operation.validateRelease(request, [{
+-    name: "prairielearn",
+-    nativeMetadataReadSet,
+-    validate(value: unknown) {
+-      const { input, raw } = nativeBusinessInput(Core, value);
+-      try {
+-        if (loaded.has(input.origin.source)) {
+-          throw Error("PL.ASSESSMENT_INVALID: duplicate source");
+-        }
+-        const business = decodePublicationBusiness(raw, input, {
+-          deferComposition: true,
+-        });
+-        const sources = [];
+-        for (const declaration of input.declarations) {
+-          if (declaration.answer) continue;
+-          const path = declaration.attributes.project?.replace(/^\//, "");
+-          if (!safePath(path)) {
+-            throw Error("PL.PROJECT_INVALID: требуется owner-relative project");
+-          }
+-          sources.push({ path, kind: "directory" as const });
+-          for (
+-            const common of business.materialization?.projects[declaration.id]
+-              ?.["common-files"] ?? []
+-          ) sources.push({ path: common.source, kind: "file" as const });
++/** Ordinary business inspection; full grading/seed admission принадлежит course export. */
++export async function inspectPublication(publication: NativePublication) {
++  const loaded = new Map<string, {
++    input: NativeAdapterValidationInput;
++    business: ReturnType<typeof decodePublicationBusiness>;
++  }>();
++  const inputs = publication.adapterInputs("prairielearn", nativeMetadataReadSet);
++  const sources = publication.catalog.documents.map((d) => d.source);
++  if (!publication.course.adapters.includes("prairielearn")) {
++    return { course: structuredClone(publication.course), documents: [] };
++  }
++  for (const value of inputs) {
++    const { input, raw } = parsedNativeBusinessInput(value);
++    try {
++      if (loaded.has(input.origin.source)) throw Error("PL.ASSESSMENT_INVALID: duplicate source");
++      const business = decodePublicationBusiness(raw, input, { deferComposition: true });
++      const references: { path: string; kind: "directory" | "file" }[] = [];
++      for (const declaration of input.declarations) {
++        if (declaration.answer) continue;
++        const path = declaration.attributes.project?.replace(/^\//, "");
++        if (!safePath(path)) throw Error("PL.PROJECT_INVALID: требуется owner-relative project");
++        references.push({ path, kind: "directory" });
++        for (const common of business.materialization?.projects[declaration.id]?.["common-files"] ?? []) {
++          references.push({ path: common.source, kind: "file" });
+         }
+-        loaded.set(input.origin.source, { input, business });
+-        return { sources };
+-      } catch (cause) {
+-        throw diagnostic(
+-          "PL.DECLARATION_INVALID",
+-          cause instanceof Error ? cause.message : String(cause),
+-          { source: input.origin.source, field: "prairielearn" },
+-          cause,
+-        );
+       }
+-    },
+-  }]);
+-  if (!proof.validatedAdapters.includes("prairielearn")) {
+-    return { proof, course: structuredClone(proof.course), documents: [] };
++      await publication.checkSources(input.origin.source, references);
++      loaded.set(input.origin.source, { input, business });
++    } catch (cause) {
++      throw diagnostic("PL.DECLARATION_INVALID", cause instanceof Error ? cause.message : String(cause),
++        { source: input.origin.source, field: "prairielearn" }, cause);
++    }
++  }
++  if (loaded.size !== sources.length || sources.some((source) => !loaded.has(source))) {
++    throw Error("PL.ASSESSMENT_INVALID: incomplete owner source coverage");
+   }
+-  if (
+-    loaded.size !== request.expectedSources.length ||
+-    request.expectedSources.some((source) => !loaded.has(source))
+-  ) throw Error("PL.ASSESSMENT_INVALID: incomplete owner source coverage");
+   const questions = new Set<string>();
+   for (const { input } of loaded.values()) {
+     for (const d of input.declarations) {
+@@ -67,7 +49,7 @@ export async function inspectPublication(
+     }
+   }
+   for (const { input, business } of loaded.values()) {
+-    if (business.assessment) {
++    if (business.assessment && input.assessment) {
+       for (const slot of input.assessment.slots) {
+         for (const id of slot.candidates) {
+           if (!questions.has(id)) {
+@@ -86,11 +68,9 @@ export async function inspectPublication(
+       }
+     }
+   }
+-  await operation.assertCurrent();
+   return {
+-    proof,
+-    course: structuredClone(proof.course),
+-    documents: request.expectedSources.map((source) => {
++    course: structuredClone(publication.course),
++    documents: sources.map((source) => {
+       const { input, business } = loaded.get(source)!;
+       return {
+         source,
+@@ -101,3 +81,5 @@ export async function inspectPublication(
+     }),
+   };
+ }
++
++export type PublicationInspection = Awaited<ReturnType<typeof inspectPublication>>;
+diff --git a/_extensions/course-prairielearn/entrypoints/inspect-grading.ts b/_extensions/course-prairielearn/entrypoints/inspect-grading.ts
+deleted file mode 100644
+index 7d9b000..0000000
+--- a/_extensions/course-prairielearn/entrypoints/inspect-grading.ts
++++ /dev/null
+@@ -1,113 +0,0 @@
+-import { join } from "node:path";
+-import { pathToFileURL } from "node:url";
+-import { readNativeAdapterExpectation } from "../application/native-adapter.ts";
+-import { inspectPublication } from "../application/native-publication.ts";
+-import { declarations } from "../application/declarations.ts";
+-import { gradingPolicy } from "../application/grading-policy.ts";
+-const args = Deno.args[0] === "--" ? Deno.args.slice(1) : Deno.args;
+-const [rootArg, ...options] = args, flags: Record<string, string> = {};
+-for (let i = 0; i < options.length; i += 2) {
+-  if (
+-    !["--instance", "--book", "--output"].includes(options[i]) ||
+-    !options[i + 1] || flags[options[i]]
+-  ) {
+-    throw Error("PL unknown/duplicate inspect option");
+-  }
+-  flags[options[i]] = options[i + 1];
+-}
+-if (!rootArg || !flags["--instance"]) {
+-  throw Error(
+-    "Usage: inspect-grading.ts COURSE_ROOT --instance KEY [--book tasks] [--output PATH]",
+-  );
+-}
+-const owner = await Deno.realPath(
+-  join(await Deno.realPath(rootArg), flags["--book"] ?? "tasks"),
+-);
+-let core: string | undefined;
+-for (
+-  const path of [
+-    join(owner, "_extensions/course-core"),
+-    join(owner, "_extensions/Afonenko-Course-Tools/course-core"),
+-  ]
+-) {
+-  try {
+-    const stat = await Deno.lstat(path);
+-    if (
+-      stat.isDirectory && !stat.isSymlink && await Deno.realPath(path) === path
+-    ) {
+-      core = path;
+-      break;
+-    }
+-  } catch (e) {
+-    if (!(e instanceof Deno.errors.NotFound)) throw e;
+-  }
+-}
+-if (!core) throw Error("PL.INPUT_INVALID: installed public Core required");
+-const Core = await import(pathToFileURL(join(core, "public.ts")).href);
+-const candidate = await readNativeAdapterExpectation(Core, owner);
+-const output = await Core.withCurrentNativeOperation(
+-  candidate.expectation,
+-  async (operation: any) => {
+-    const inspected = await inspectPublication(Core, operation, {
+-      expectedSources: candidate.expectedSources,
+-    });
+-    const configs = inspected.documents.map((doc: any) =>
+-      doc.business.raw.config
+-    ).filter(Boolean);
+-    const configured = configs.map((config: unknown) =>
+-      declarations(config, flags["--instance"])
+-    );
+-    if (
+-      !configured.length ||
+-      configured.some((d: any) => d.book !== (flags["--book"] ?? "tasks"))
+-    ) throw Error("PL.INPUT_INVALID: delivery book");
+-    const selected = configured[0].instance.works;
+-    if (
+-      configured.some((d: any) =>
+-        JSON.stringify(d.instance.works) !== JSON.stringify(selected)
+-      )
+-    ) throw Error("PL.INPUT_INVALID: conflicting delivery declarations");
+-    const works = selected.map((id: string) => {
+-      const docs = inspected.documents.filter((doc: any) =>
+-        doc.assessment?.id === id
+-      );
+-      if (docs.length !== 1) {
+-        throw Error("PL selected work missing/ambiguous " + id);
+-      }
+-      const { source, assessment, business } = docs[0],
+-        policy = business.assessment;
+-      return {
+-        id,
+-        source,
+-        kind: assessment.kind,
+-        effectivePolicy: policy,
+-        native: gradingPolicy({
+-          ...assessment,
+-          source,
+-          extensions: { prairielearn: policy },
+-        }),
+-      };
+-    });
+-    await operation.assertCurrent();
+-    return {
+-      schemaVersion: 1,
+-      courseId: inspected.course.id,
+-      instance: flags["--instance"],
+-      works,
+-      questions: inspected.documents.flatMap(({ source, business }: any) =>
+-        Object.entries(business.questions).map(([id, q]: [string, any]) => ({
+-          id,
+-          source,
+-          ...(Object.hasOwn(q, "singleVariant")
+-            ? { singleVariant: q.singleVariant }
+-            : {}),
+-        }))
+-      ),
+-      nativeOptionalFields:
+-        "Отсутствующие/null ceilings и необязательные repeat controls не получают внутренних defaults.",
+-    };
+-  },
+-);
+-const text = JSON.stringify(output, null, 2) + "\n";
+-if (flags["--output"]) await Deno.writeTextFile(flags["--output"], text);
+-else console.log(text.trimEnd());
+diff --git a/_extensions/course-prairielearn/public.ts b/_extensions/course-prairielearn/public.ts
+index eae0b88..5f88bf2 100644
+--- a/_extensions/course-prairielearn/public.ts
++++ b/_extensions/course-prairielearn/public.ts
+@@ -22,3 +22,5 @@ export {
+ export { selectNativeCompilerInputs } from "./application/native-selection.ts";
+ 
+ export { inspectPublication } from "./application/native-publication.ts";
++
++export type { PublicationInspection } from "./application/native-publication.ts";
+diff --git a/docs/authoring.md b/docs/authoring.md
+index 883e38b..a96287d 100644
+--- a/docs/authoring.md
++++ b/docs/authoring.md
+@@ -257,7 +257,7 @@ Question defaults задают topic/submission и необязательный
+ отсутствующее поле опускается (документированный default pinned PL: `false`).
+ Явное `true` сохраняет прежний режим единственного варианта.
+ `prairielearn-single-variant="true|false"` переопределяет настройку упражнения;
+-`inspect-grading` показывает эффективное значение. Редкие атрибуты
++`inspect-publication` показывает эффективное значение. Редкие атрибуты
+ `prairielearn-topic` и `prairielearn-submission="editor|upload"` переопределяют
+ платформенные поля. Runtime и источники выбирает общий project-check. Unknown
+ metadata/attributes, missing inputs, symlinks, binary/NUL/oversize и изменение
+@@ -339,7 +339,7 @@ slot-overrides меняет их по local slot ID. Случайная груп
+ `prairielearn.assessment-defaults.question-points` в `_quarto.yml: [9,7,5]`
+ и directory `_metadata.yml: [4,2]` даёт `[9,7,5,4,2]`. Экспортёр сохраняет этот
+ целиком авторский список. Если concatenation делает Exam schedule возрастающим,
+-экспорт отказывается с диагностикой; проверьте результат через `inspect-grading`.
++экспорт отказывается с диагностикой; проверьте результат через `inspect-publication`.
+ 
+ Отдельное объединение адаптера применяется между разными путями: inherited
+ `prairielearn.assessment-defaults`, локальная `assessment.prairielearn` и
+@@ -404,15 +404,19 @@ ID и поля отвергаются. `maxVariants` и другие непод
+ Перед созданием native файлов автор может увидеть effective значения:
+ 
+ ```sh
+-quarto run tasks/_extensions/course-prairielearn/entrypoints/inspect-grading.ts . --instance pilot --output effective-grading.json
++quarto run tasks/_extensions/course-prairielearn/entrypoints/inspect-publication.ts tasks --projection student --profiles student --output-directory _site/student --output publication.json
+ ```
+ 
+-Отчёт содержит source, kind, разрешённую policy и точный native mapping каждого
+-вопроса; production registry/image не нужны, native артефакт не создаётся. Missing
+-points вызывает actionable отказ с source/work/question и местом объявления.
+-Delivery сохраняет все effective grading поля и overrides; у ordinary labs
+-удаляется только assignment, который им не нужен. Completion по полностью
+-выполненным required вопросам остаётся отдельной закрытой политикой.
++Отчёт обычной публикации содержит source/format, Core assessment composition,
++разобранную PL policy и доступные question summaries. Он не строит native grading
++mapping и не требует полного набора points; production registry/image не нужны,
++новый native артефакт не создаётся.
++
++Полный course-export отдельно строит native mapping и отказывает при missing points
++с source/work/question и местом объявления. Delivery сохраняет все effective grading
++поля и overrides; у ordinary labs удаляется только assignment, который им не нужен.
++Completion по полностью выполненным required вопросам остаётся отдельной закрытой
++политикой.
+ 
+ Native awarded score и результат тестов различаются. Gateway берёт
+ `instance_question.score_perc / 100`, а completion требует ровно 1. Pinned
+@@ -656,25 +660,26 @@ patterns `explanation.m[d]` и `.pl-seed/identity.jso[n]`. Они выбираю
+ 
+ ## Проверка публикации и полная поставка
+ 
+-`inspectPublication(Core, operation, {expectedSources})` вызывают внутри живого
+-публичного `withCurrentNativeOperation`. Этот частичный vet проверяет metadata,
+-нормализацию, assignment, порог и принадлежность всех members платформе; он
+-не требует отсутствующий topic/submission до полной delivery и не создаёт
+-assignment authority. Core остаётся единственным владельцем AST, private
+-preprojection facts, source/currentness и native format/profile binding.
+-
+-Полный `createNativeAdapter` получает все четыре авторитетных metadata planes
+-через typed Core validator; повторный Lua collector/child/sidecar не нужен.
+-Prepared correlation сверяется до capture и полной composition. Direct DTO
+-validation даёт только data result, без business/cache/proof/publish прав.
+-Один private proof повторно используется только для той же operation identity
+-и exact request, с currentness fence перед выдачей следующего artifact.
+-Failure очищает cache; getter не читает дерево/metadata и не запускает inspect.
+-`inspect-grading.ts` потребляет уже завершённый capture, не строит legacy модель.
+-
+-### Ordinary proof и common sources в кандидате 9.0.1
+-
+-`inspectPublication` возвращает также `proof` — уже полученный публичный Core release result, data без новых полномочий. Для каждого упражнения common-file paths из существующего PL decoder передаются тому же Core source guard, включая скрытые декларации до projection. Cross-document grading/pricing остаётся обязанностью полной delivery, а не обычного сайта. Если Core не выбрал PL adapter, результат содержит действительный общий proof и пустой PL documents list; установленный optional PL не меняет ordinary noPL маршрут. Полный `createNativeAdapter.validateCourse` и prepared correlation не изменены.
++Обычный сайт открывает `Core.withNativePublication(expectation, selection, use)`.
++Core владеет общей семантикой capture, catalog, actual root/outputDirectory,
++проекцией, физическими путями и lifetime. В callback вызывают
++`inspectPublication(publication)`; его typed `PublicationInspection` содержит
++course и documents с source/format/assessment/business, без proof. PL проверяет
++свои metadata, assignment/порог, common-file paths и принадлежность members.
++Topic/submission до полной delivery остаются необязательными.
++
++Ordinary публикация не требует полного grading/pricing, seed qualification,
++prepared PL correlation или certificate. Полный `createNativeAdapter`/`validateCourse`
++остаётся отдельным маршрутом course-export с прежними требованиями. Borrowed Core
++методы истекают при завершении callback; DTO не продлевает их lifetime. Остающиеся
++Core currentness/private/physical guards не заменены новым proof.
++
++`inspect-publication.ts OWNER --projection student|author --output-directory PATH
++[--profiles student,other] [--output PATH]` показывает тот же business result без
++дополнительного inspect/render, instance/book selection и grading projection.
++Имена student/full задаются Quarto configuration. Роли защищают отмеченный контент
++и выбранные файлы; свежесть вычислений и немаркированный profile-dependent текст
++остаются Native execution/cache policy автора.
+ 
+ ## Полный набор файлов авторского Java reference
+ 
+diff --git a/docs/native-ts.md b/docs/native-ts.md
+index ceb6a7d..f9d24a0 100644
+--- a/docs/native-ts.md
++++ b/docs/native-ts.md
+@@ -33,14 +33,22 @@ identity и exact request, с currentness fence перед каждым artifact
+ Другой generation/request и failed currentness не наследуют cache; getters
+ сами не читают дерево, не хешируют файлы и не запускают inspect.
+ 
+-## Частичная publication validation
++## Обычная публикация
+ 
+-`inspectPublication(Core, operation, {expectedSources})` проверяет genuine
+-ordinary callback inputs и cross-document membership через тот же TS canon.
+-Частичная политика не выдумывает отсутствующий topic/submission. Полная delivery
+-по-прежнему требует обязательные поля, pricing и корректный grading. Результат
+-инспекции — данные автора, не assignment/A1 authority. `inspect-grading.ts`
+-читает уже завершённый текущий capture и не запускает второй inspect/render.
++`Core.withNativePublication(expectation, selection, use)` открывает живой Core view
++с actual root/outputDirectory/catalog/profiles и borrowed document/materialization
++методами. `selection` равен явному NativeReleaseRequest либо undefined для всего
++завершённого capture. `inspectPublication(publication)` читает Core-owned metadata,
++проверяет PL syntax/порог/cross-document membership и физические common-file paths.
++Политика вопроса не выдумывает отсутствующие topic/submission. Результат
++`PublicationInspection` — данные, не proof или assignment authority. Ordinary
++маршрут не вызывает full grading/seed qualification; separate course exporter
++сохраняет `createNativeAdapter` и `validateCourse`.
++
++CLI `inspect-publication.ts OWNER --projection student|author --output-directory PATH
++[--profiles student,other] [--output PATH]` потребляет тот же завершённый capture.
++Он не выбирает delivery instance/book и не запускает новый inspect/render.
++Старое имя inspect-grading удалено без alias.
+ 
+ ## Выдача, ответы и provenance
+ 
+diff --git a/spec/index.md b/spec/index.md
+index 5888b11..ffc8d5c 100644
+--- a/spec/index.md
++++ b/spec/index.md
+@@ -43,8 +43,9 @@ delivery v3/v4 сохраняют собственные версии. `contract
+ владельца; исполняемые business contracts находятся в TypeScript.
+ Точная source dependency задаётся CI; номера descriptor не дают runtime authority.
+ Полная поставка требует genuine Core operation, independent prior P и проверенного
+-Platform image digest. Частичный publication vet — data inspection без assignment
+-прав. Новый кандидат не объявляется выпущенным до OTHER review и paired CI.
++Platform image digest. Обычный `Core.withNativePublication` + `inspectPublication(publication)` —
++типизированная business inspection без full grading/seed gate и release certificate;
++borrowed методы остаются ограничены callback. Полная delivery — отдельный API. Новый кандидат не объявляется выпущенным до OTHER review и paired CI.
+ 
+ ## Reference-only единицы и повторные вопросы
+ 
+diff --git a/tests/grading-policy.test.ts b/tests/grading-policy.test.ts
+index 24eaaa3..cc2a967 100644
+--- a/tests/grading-policy.test.ts
++++ b/tests/grading-policy.test.ts
+@@ -1,7 +1,8 @@
++import type { NativeBusinessInput } from "../_extensions/course-prairielearn/application/native-business.ts";
+ import { gradingPolicy } from "../_extensions/course-prairielearn/application/grading-policy.ts";
+-const assert = (v: unknown, m: string) => {
++function assert(v: unknown, m: string): asserts v {
+   if (!v) throw Error(m);
+-};
++}
+ Deno.test("required zero-ceiling Homework fails actionable; optional zero-point zero-ceiling remains supported", () => {
+   const w = work();
+   w.slots[0].assignment.requirement = "required";
+@@ -26,7 +27,11 @@ Deno.test("required zero-ceiling Homework fails actionable; optional zero-point
+     "optional zero-ceiling policy changed",
+   );
+ });
+-const work = () => ({
++type FixtureWork = NonNullable<NativeBusinessInput["assessment"]> & {
++  source: string;
++  extensions: { prairielearn: Record<string, unknown> };
++};
++const work = (): FixtureWork => ({
+   id: "sec-lab",
+   source: "tasks/lab.qmd",
+   kind: "lab",
+@@ -48,7 +53,7 @@ const work = () => ({
+           "question-max-points": null,
+         },
+       },
+-    } as any,
++    },
+   },
+ });
+ Deno.test("authored scores and retry controls preserve scalar values and per-question null/overrides", () => {
+@@ -119,7 +124,7 @@ Deno.test("Exam accepts nonincreasing arrays, clears max; Homework rejects array
+       ["slot-overrides", { "exr-a": null }],
+       ["slot-overrides", { "exr-unknown": { "question-points": 1 } }],
+       ["slot-overrides", { "exr-a": { unknown: 1 } }],
+-    ] as [string, any][]
++    ] satisfies [string, unknown][]
+   ) {
+     const w = work();
+     w.extensions.prairielearn[field] = value;
+@@ -206,6 +211,7 @@ Deno.test("Локальный native UUID проходит business contract п
+     const decoded = decodeNativeBusiness(raw, {
+       course: { id: "demo" }, assessment, declarations: [],
+     }, { deferComposition: true });
++    assert(decoded.assessment !== undefined, "Авторская политика должна присутствовать");
+     assert(decoded.assessment.uuid === uuid, "Native business потерял явную identity");
+     gradingPolicy({ ...assessment, extensions: { prairielearn: decoded.assessment } });
+   }
+diff --git a/tests/native-course-export-types.ts b/tests/native-course-export-types.ts
+index 7fb0b1f..30b4624 100644
+--- a/tests/native-course-export-types.ts
++++ b/tests/native-course-export-types.ts
+@@ -62,3 +62,17 @@ type _NativeDescriptor = Require<
+     ReturnType<typeof runtimeDescriptor<NativeProjectCheck>>
+   >
+ >;
++
++// Ordinary publication сохраняет реальные decoded scalar/policy types, без any.
++import type { NativeAdapterValidationInput, NativePublication } from "course-core/public.ts";
++import type { PublicationInspection } from "../_extensions/course-prairielearn/public.ts";
++import type { NativeBusinessInput, AssessmentPolicySchema } from "../_extensions/course-prairielearn/application/native-business.ts";
++import type { Submission } from "../_extensions/course-prairielearn/application/submission.ts";
++type PublicationBusiness = PublicationInspection["documents"][number]["business"];
++type PublicationQuestion = PublicationBusiness["questions"][string];
++type _PublicationPolicy = Require<Exact<PublicationBusiness["assessment"], ReturnType<typeof AssessmentPolicySchema.parse> | undefined>>;
++type _PublicationTopic = Require<Exact<PublicationQuestion["topic"], string | undefined>>;
++type _PublicationSubmission = Require<Exact<PublicationQuestion["submission"], Submission | undefined>>;
++type _PublicationGrading = Require<Exact<PublicationQuestion["grading"]["method"], "external" | "manual" | "mixed">>;
++type _BusinessConsumedInput = Require<NativeAdapterValidationInput extends NativeBusinessInput ? true : false>;
++type _PublicationInput = Require<Exact<ReturnType<NativePublication["adapterInputs"]>[number], NativeAdapterValidationInput>>;
+diff --git a/tests/native-publication-sources.ts b/tests/native-publication-sources.ts
+index 9947b15..bcd8654 100644
+--- a/tests/native-publication-sources.ts
++++ b/tests/native-publication-sources.ts
+@@ -15,22 +15,21 @@ async function copy(source: string, target: string) {
+     if (st.mode !== null) await Deno.chmod(target, st.mode & 0o777);
+   }
+ }
+-export async function runPublicationCases(coreSource: string, downloadSource?: string) {
++export async function runPublicationCases(coreSource: string) {
+   const output = Deno.env.get('PUBLICATION_TEST_OUTPUT');
+   const parent = output ? resolve(output) : await Deno.makeTempDir({ prefix: 'pl-publication-' });
+   await Deno.mkdir(parent, { recursive: true });
+   const checks: unknown[] = [];
+   try {
+-    for (const variant of ['missing-visible', 'missing-hidden', 'valid', ...(downloadSource ? ['no-pl'] : [])]) {
++    for (const variant of ['missing-visible', 'missing-hidden', 'valid']) {
+       const root = await Deno.makeTempDir({ dir: parent, prefix: variant + '-' });
+-      for (const [source, name] of [[coreSource, 'course-core'], [repo, 'course-prairielearn'], ...(downloadSource ? [[downloadSource, 'project-download']] : [])]) {
++      for (const [source, name] of [[coreSource, 'course-core'], [repo, 'course-prairielearn']]) {
+         await copy(join(source, '_extensions', name), join(root, '_extensions', name));
+       }
+       const put = async (path: string, text: string) => { await Deno.mkdir(dirname(join(root, path)), { recursive: true }); await Deno.writeTextFile(join(root, path), text); };
+       await put('project/starter.txt', 'STARTER_PUBLIC\n');
+       await put('common/visible.txt', 'COMMON_VISIBLE\n');
+       await put('common/hidden.txt', 'COMMON_HIDDEN\n');
+-      await put('assets/public.txt', 'ORDINARY_RESOURCE_PUBLIC\n');
+       await put('_quarto.yml', `project:
+   type: website
+   output-dir: _site
+@@ -38,20 +37,20 @@ export async function runPublicationCases(coreSource: string, downloadSource?: s
+   pre-render: [quarto run _extensions/course-core/entrypoints/native-pre.ts]
+   post-render: [quarto run _extensions/course-core/entrypoints/native-post.ts]
+ format: {html: {theme: none}}
+-filters: [course-core${downloadSource ? ', project-download' : ''}]
+-course: {id: ordinary-publication, view: student, adapters: ${variant === 'no-pl' ? '[]' : '[prairielearn]'}}
++filters: [course-core]
++course: {id: ordinary-publication, view: student, adapters: [prairielearn]}
+ course-core-runtime: native-ts
+ course-core-projection: student
+ exercise-bank: true
+ default-exercise-difficulty: introductory
+ default-exercise-time: 5
+ default-exercise-course-role: false
+-default-exercise-target: ${variant === 'no-pl' ? 'manual' : 'prairielearn'}
++default-exercise-target: prairielearn
+ default-exercise-statement-visibility: open
+ prairielearn:
+   question-defaults: {topic: Test, single-variant: true, grading: {method: manual}, submission: {mode: upload}}
+   assessment-defaults: {assignment: {mode: assessment-id}}
+-${downloadSource ? 'project-download:\n  course-model: true\n  resources:\n    public-data: {path: assets, gitignore: false}\n' : ''}`);
++`);
+       await put('_quarto-student.yml', 'course-core-projection: student\n');
+       await put('question.qmd', `---
+ project-materialization:
+@@ -63,19 +62,16 @@ project-materialization:
+ ---
+ # Вопросы
+ 
+-::: {#exr-visible project=/project ${variant === 'no-pl' ? '' : 'prairielearn-grading=manual'}}
++::: {#exr-visible project=/project prairielearn-grading=manual}
+ ## Видимая задача
+ Открытое условие.
+ :::
+ 
+-::: {#exr-hidden statement-visibility=restricted project=/project ${variant === 'no-pl' ? '' : 'prairielearn-grading=manual'}}
++::: {#exr-hidden statement-visibility=restricted project=/project prairielearn-grading=manual}
+ ## Скрытая задача
+ PRIVATE_STATEMENT
+ :::
+ 
+-[Материал](assets/public.txt)
+-
+-${downloadSource ? '{{< project-download public-data >}}' : ''}
+ `);
+       await put('work.qmd', '---\nassessment:\n  id: sec-work\n  kind: lab\n  prairielearn:\n    pass: {at-least: 1}\n    attempts: 1\n    auto-points: 0\n    manual-points: 10\n---\n# Работа {#sec-work}\n\n::: {.task-items requirement=required}\n- @exr-visible\n:::\n');
+       const render = await new Deno.Command(Deno.env.get('QUARTO') || 'quarto', { args: ['render', '--to', 'html', '--profile', 'student'], cwd: root, stdout: 'piped', stderr: 'piped' }).output();
+@@ -83,37 +79,22 @@ ${downloadSource ? '{{< project-download public-data >}}' : ''}
+       await Deno.writeFile(join(parent, variant + '-render.stderr'), render.stderr);
+       assert(render.success, new TextDecoder().decode(render.stderr));
+       assert(!(await Deno.readTextFile(join(root, '_site/question.html'))).includes('PRIVATE_STATEMENT'));
+-      const Core = await import(pathToFileURL(join(root, '_extensions/course-core/public.ts')).href);
+-      const PL = await import(pathToFileURL(join(root, '_extensions/course-prairielearn/public.ts')).href);
+-      const expected = { root, projection: 'student', profiles: ['student'], outputDirectory: join(root, '_site') };
++      const Core: typeof import("course-core/public.ts") = await import(pathToFileURL(join(root, '_extensions/course-core/public.ts')).href);
++      const PL: typeof import("../_extensions/course-prairielearn/public.ts") = await import(pathToFileURL(join(root, '_extensions/course-prairielearn/public.ts')).href);
++      const expected = { root, projection: 'student' as const, profiles: ['student'], outputDirectory: join(root, '_site') };
+       const request = { expectedSources: ['question.qmd', 'work.qmd'] };
+-      const inspect = () => Core.withCurrentNativeOperation(expected, (op: any) => PL.inspectPublication(Core, op, request));
++      const inspect = () => Core.withNativePublication(expected, request, (publication: import("course-core/public.ts").NativePublication) => PL.inspectPublication(publication));
+       if (variant.startsWith('missing-')) {
+         await assert.rejects(inspect, /RELEASE.SOURCE_POLICY/);
+         checks.push({ variant, missingCommonRefusedBeforeProjection: true });
+         continue;
+       }
+       const data = await inspect();
+-      assert.equal(data.proof.schema, 'course-native-release-proof-v1');
+-      assert.deepEqual(data.proof.validatedAdapters, variant === 'no-pl' ? [] : ['prairielearn']);
+-      assert.equal(data.documents.length, variant === 'no-pl' ? 0 : 2);
+-      if (variant !== 'no-pl') {
+-        await assert.rejects(() => Core.withCurrentNativeOperation(expected, (op: any) => op.validateRelease(request, [PL.createNativeAdapter({ root, core: Core })])), /PL.ASSESSMENT_UNQUALIFIED/);
+-        await assert.rejects(() => Core.withCurrentNativeOperation(expected, (op: any) => PL.inspectPublication(Core, op, { expectedSources: ['question.qmd'] })), /RELEASE.COVERAGE/);
+-      }
+-      await assert.rejects(() => Core.withCurrentNativeOperation({ ...expected, profiles: ['foreign'] }, () => {}), /OPERATION_BINDING/);
+-      if (downloadSource) {
+-        const Down = await import(pathToFileURL(join(root, '_extensions/project-download/public.ts')).href);
+-        const count = await Down.finishDownloads(root, { native: true, profiles: ['student'], projection: 'student', outputDirectory: join(root, '_site') });
+-        assert.equal(count, 1);
+-        const receipt = JSON.parse(await Deno.readTextFile(join(root, '_generated/project-download/artifacts-receipt.json')));
+-        assert.equal(receipt.release.validationPasses, 1);
+-        assert.deepEqual(receipt.release.proof.validatedAdapters, variant === 'no-pl' ? [] : ['prairielearn']);
+-        assert.equal(receipt.release.proof.operation, receipt.operation);
+-        const zip = await new Deno.Command('unzip', { args: ['-p', join(root, '_site/_downloads/public-data.zip'), 'public.txt'], stdout: 'piped', stderr: 'piped' }).output();
+-        assert(zip.success);assert.equal(new TextDecoder().decode(zip.stdout), 'ORDINARY_RESOURCE_PUBLIC\n');
+-      }
+-      checks.push({ variant, genuineOrdinaryProof: true, download: !!downloadSource });
++      assert.equal(data.documents.length, 2);
++      await assert.rejects(() => Core.withCurrentNativeOperation(expected, (op) => op.validateRelease(request, [PL.createNativeAdapter({ root, core: Core })])), /PL.ASSESSMENT_UNQUALIFIED/);
++      await assert.rejects(() => Core.withNativePublication(expected, { expectedSources: ['question.qmd'] }, (publication: import("course-core/public.ts").NativePublication) => PL.inspectPublication(publication)), /RELEASE.COVERAGE/);
++      await assert.rejects(() => Core.withCurrentNativeOperation({ ...expected, profiles: ['foreign'] }, async () => {}), /OPERATION_BINDING/);
++      checks.push({ variant, genuineOrdinaryPublication: true });
+     }
+     console.log(JSON.stringify({ status: 'PASS_GENUINE_ORDINARY_PUBLICATION', checks, limit: 'No Cmain/assignment/P; ordinary public operation only' }, null, 2));
+   } finally {
+diff --git a/tests/native-scope-integration.ts b/tests/native-scope-integration.ts
+index 0124efd..4f28e50 100644
+--- a/tests/native-scope-integration.ts
++++ b/tests/native-scope-integration.ts
+@@ -107,6 +107,15 @@ prairielearn:
+   await capture();
+   const candidate = await readNativeAdapterExpectation(Core, root);
+   assert.deepEqual(candidate.identity.profiles, ["student"]);
++  await Core.withNativePublication(candidate.expectation,
++    { expectedSources: ["index.qmd", "slides.qmd"] },
++    async (publication: import("course-core/public.ts").NativePublication) => {
++      const data = await PL.inspectPublication(publication);
++      assert.equal(data.documents.length, 2);
++    });
++  await assert.rejects(() => Core.withNativePublication(candidate.expectation,
++    { expectedSources: ["index.qmd"] },
++    (publication: import("course-core/public.ts").NativePublication) => PL.inspectPublication(publication)), /RELEASE.COVERAGE/);
+   await Core.withCurrentNativeOperation(
+     candidate.expectation,
+     async (op: any) => {
+@@ -281,13 +290,6 @@ prairielearn:
+       checks.push(
+         "post-acquisition candidate drift: same-op exact request reuses proof with0 candidate reads; new request rereads/refuses and clears cache",
+       );
+-      const data = await PL.inspectPublication(Core, op, request);
+-      assert.equal(data.documents.length, 2);
+-      checks.push("genuine installed public partial consumer");
+-      await assert.rejects(() =>
+-        PL.inspectPublication(Core, op, { expectedSources: ["index.qmd"] })
+-      );
+-      checks.push("partial owner coverage refused");
+       const copy = {
+         ...op,
+         assertCurrent: async () => {
+diff --git a/tests/owner-contract.test.ts b/tests/owner-contract.test.ts
+index db7c293..09782fe 100644
+--- a/tests/owner-contract.test.ts
++++ b/tests/owner-contract.test.ts
+@@ -2,10 +2,11 @@ import { strict as assert } from "node:assert";
+ import * as Owner from "../_extensions/course-prairielearn/application/declarations.ts";
+ import {
+   decodeNativeBusiness,
++  type NativeBusinessInput,
+   validateNativeRaw,
+ } from "../_extensions/course-prairielearn/application/native-business.ts";
+ Deno.test("Публичная частичная политика не выдумывает topic/submission и сохраняет overrides", () => {
+-  const partial = (Owner as any).publicationQuestion;
++  const partial = Owner.publicationQuestion;
+   assert.equal(
+     typeof partial,
+     "function",
+@@ -44,7 +45,15 @@ const declarations = [{
+   id: "exr-one",
+   attributes: { "prairielearn-grading": "manual" },
+ }];
+-const raw = () => ({
++type RawFixture = {
++  config: {
++    "question-defaults": Record<string, unknown>;
++    "assessment-defaults": Record<string, unknown>;
++  };
++  declarations: NativeBusinessInput["declarations"];
++  assessment: unknown;
++};
++const raw = (): RawFixture => ({
+   config: {
+     "question-defaults": {
+       topic: "Java",
+@@ -62,7 +71,9 @@ const raw = () => ({
+   declarations: structuredClone(declarations),
+   assessment: {},
+ });
+-const input = () => ({
++const input = (): NativeBusinessInput & {
++  assessment: NonNullable<NativeBusinessInput["assessment"]>;
++} => ({
+   origin: { source: "work.qmd" },
+   course: { id: "demo" },
+   declarations,
+@@ -78,19 +89,21 @@ const input = () => ({
+   },
+ });
+ Deno.test("TS-канон сохраняет inheritance, замену assignment и numeric normalization без изменения входа", () => {
+-  const r: any = raw();
+-  r.assessment = {
++  const r = { ...raw(), assessment: {
+     attempts: "4",
+     pass: { "at-least": "1" },
+     assignment: { "student-label": "retake" },
+-  };
++  } };
+   const before = JSON.stringify(r);
+   const b = decodeNativeBusiness(r, input());
++  assert.ok(b.assessment, "Авторская политика должна присутствовать");
+   assert.equal(b.assessment.attempts, 4);
+   assert.equal(b.assessment.pass["at-least"], 1);
+   assert.deepEqual(b.assessment.assignment, { "student-label": "retake" });
+   assert.equal(JSON.stringify(r), before);
+   const mode = decodeNativeBusiness(raw(), input());
++  assert.ok(mode.assessment?.assignment && "student-label" in mode.assessment.assignment,
++    "assessment-id должен дать действительную student-label policy");
+   assert.match(
+     mode.assessment.assignment["student-label"],
+     /^pl-[a-f0-9]{40}$/,
+@@ -99,42 +112,46 @@ Deno.test("TS-канон сохраняет inheritance, замену assignment
+     ...input(),
+     assessment: { ...input().assessment, id: "sec-other" },
+   });
++  assert.ok(same.assessment?.assignment && "student-label" in same.assessment.assignment,
++    "Вторая работа должна сохранить student-label policy");
+   assert.notEqual(
+     mode.assessment.assignment["student-label"],
+     same.assessment.assignment["student-label"],
+   );
+ });
+ Deno.test("Старые отрицательные политики остаются исполняемыми TS отказами", () => {
+-  const mutants = [
+-    (r: any) => r.assessment.attempts = 0,
+-    (r: any) => r.assessment.attempts = 1.5,
+-    (r: any) => r.assessment.attempts = "много",
+-    (r: any) => r.assessment.pass = { "at-least": 0 },
+-    (r: any) => r.assessment.pass = { "at-least": 1.5 },
+-    (r: any) => r.assessment.pass = { "at-least": 2 },
+-    (r: any) => r.assessment.attemps = 3,
+-    (r: any) => r.assessment.pass = { "at-least": 1, unknown: 2 },
+-    (r: any) => r.assessment.assignment = { "student-label": "" },
+-    (r: any) => r.assessment = false,
+-    (r: any) => r.assessment = [],
+-    (r: any) => r.config["assessment-defaults"] = false,
+-    (r: any) => r.config["question-defaults"].unknown = true,
+-    (r: any) => r.declarations[0].attributes["prairielearn-submit"] = "upload",
+-    (r: any) => r.assessment.assignment = { mode: "other" },
+-    (r: any) =>
+-      r.assessment.assignment = {
+-        mode: "assessment-id",
+-        "student-label": "two",
+-      },
+-    (r: any) => r.assessment["manual-points"] = -1,
++  const assessment = { attempts: 3, pass: { "at-least": 1 } };
++  const assessmentVariants: unknown[] = [
++    { ...assessment, attempts: 0 },
++    { ...assessment, attempts: 1.5 },
++    { ...assessment, attempts: "много" },
++    { ...assessment, pass: { "at-least": 0 } },
++    { ...assessment, pass: { "at-least": 1.5 } },
++    { ...assessment, pass: { "at-least": 2 } },
++    { ...assessment, attemps: 3 },
++    { ...assessment, pass: { "at-least": 1, unknown: 2 } },
++    { ...assessment, assignment: { "student-label": "" } },
++    false,
++    [],
++    { ...assessment, assignment: { mode: "other" } },
++    { ...assessment, assignment: { mode: "assessment-id", "student-label": "two" } },
++    { ...assessment, "manual-points": -1 },
++  ];
++  const base = { ...raw(), assessment };
++  const mutants: unknown[] = [
++    ...assessmentVariants.map((assessment) => ({ ...raw(), assessment })),
++    { ...base, config: { ...base.config, "assessment-defaults": false } },
++    { ...base, config: { ...base.config, "question-defaults": {
++      ...base.config["question-defaults"], unknown: true,
++    } } },
++    { ...base, declarations: [{ ...declarations[0], attributes: {
++      ...declarations[0].attributes, "prairielearn-submit": "upload",
++    } }] },
+   ];
+-  for (const mutate of mutants) {
+-    const r: any = raw();
+-    r.assessment = { attempts: 3, pass: { "at-least": 1 } };
+-    mutate(r);
+-    assert.throws(() => decodeNativeBusiness(r, input()), String(mutate));
++  for (const mutant of mutants) {
++    assert.throws(() => decodeNativeBusiness(mutant, input()), JSON.stringify(mutant));
+   }
+-  const r: any = raw();
++  const r = raw();
+   delete r.config["assessment-defaults"].attempts;
+   assert.throws(() => decodeNativeBusiness(r, input()));
+   const wrong = input();
+diff --git a/tests/performance-native-boundary.ts b/tests/performance-native-boundary.ts
+index fe33410..cffd296 100644
+--- a/tests/performance-native-boundary.ts
++++ b/tests/performance-native-boundary.ts
+@@ -22,7 +22,7 @@ export async function withNativeCaptureScope(request,options,use){
+     join(core, "public.ts"),
+     `
+ export const NativeOperationIdentitySchema={parse:v=>v};
+-export async function withCurrentNativeOperation(expectation,use){
++export async function withNativePublication(expectation,selection,use){
+  await Deno.writeTextFile(${
+       JSON.stringify(log)
+     },JSON.stringify({expectation,use:typeof use}));
+@@ -65,10 +65,10 @@ if(Deno.args[1]==='active')installTsAgent({processId:'native-negative',outputDir
+       JSON.stringify(root)
+     }});
+ const Command=Deno.Command;Deno.Command=new Proxy(Command,{construct(){throw Error('UNEXPECTED_NATIVE_CHILD')}});
+-if(Deno.args[2]==='inspect'){Deno.args.splice(0,Deno.args.length,Deno.args[0],'--instance','fixture');await import(${
++if(Deno.args[2]==='inspect'){Deno.args.splice(0,Deno.args.length,Deno.args[0]+'/tasks','--projection','author','--output-directory','_generated/prairielearn-native-render');await import(${
+       JSON.stringify(
+         new URL(
+-          "../_extensions/course-prairielearn/entrypoints/inspect-grading.ts",
++          "../_extensions/course-prairielearn/entrypoints/inspect-publication.ts",
+           import.meta.url,
+         ).href,
+       )
+diff --git a/_extensions/course-prairielearn/entrypoints/inspect-publication.ts b/_extensions/course-prairielearn/entrypoints/inspect-publication.ts
+new file mode 100644
+index 0000000..c007537
+--- /dev/null
++++ b/_extensions/course-prairielearn/entrypoints/inspect-publication.ts
+@@ -0,0 +1,54 @@
++import { join, resolve } from "node:path";
++import { pathToFileURL } from "node:url";
++import { inspectPublication } from "../application/native-publication.ts";
++const args = Deno.args[0] === "--" ? Deno.args.slice(1) : Deno.args;
++const [ownerArg, ...options] = args, flags: Record<string, string> = {};
++for (let i = 0; i < options.length; i += 2) {
++  if (!["--projection", "--profiles", "--output-directory", "--output"].includes(options[i]) ||
++      !options[i + 1] || flags[options[i]]) throw Error("PL unknown/duplicate publication option");
++  flags[options[i]] = options[i + 1];
++}
++const projection = flags["--projection"];
++if (!ownerArg || !flags["--output-directory"] || (projection !== "student" && projection !== "author")) {
++  throw Error("Usage: inspect-publication.ts OWNER --projection student|author --output-directory PATH [--profiles student,other] [--output PATH]");
++}
++const owner = await Deno.realPath(ownerArg);
++let core: string | undefined;
++for (
++  const path of [
++    join(owner, "_extensions/course-core"),
++    join(owner, "_extensions/Afonenko-Course-Tools/course-core"),
++  ]
++) {
++  try {
++    const stat = await Deno.lstat(path);
++    if (
++      stat.isDirectory && !stat.isSymlink && await Deno.realPath(path) === path
++    ) {
++      core = path;
++      break;
++    }
++  } catch (e) {
++    if (!(e instanceof Deno.errors.NotFound)) throw e;
++  }
++}
++if (!core) throw Error("PL.INPUT_INVALID: installed public Core required");
++const Core: typeof import("course-core/public.ts") = await import(pathToFileURL(join(core, "public.ts")).href);
++const output = await Core.withNativePublication({
++  root: owner,
++  projection,
++  profiles: flags["--profiles"] ? flags["--profiles"].split(",") : [],
++  outputDirectory: resolve(owner, flags["--output-directory"]),
++}, undefined, async (publication) => {
++  const inspected = await inspectPublication(publication);
++  return {
++    course: inspected.course,
++    documents: inspected.documents.map(({source, format, assessment, business}) => ({
++      source, format, assessment, policy: business.assessment,
++      questions: Object.entries(business.questions).map(([id, question]) => ({id, ...question})),
++    })),
++  };
++});
++const text = JSON.stringify(output, null, 2) + "\n";
++if (flags["--output"]) await Deno.writeTextFile(flags["--output"], text);
++else console.log(text.trimEnd());

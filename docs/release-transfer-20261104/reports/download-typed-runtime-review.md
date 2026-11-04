@@ -1,0 +1,43 @@
+# Независимый review типизации native runtime Download
+
+## Собственный допуск
+
+Назначение: gpt-6.1-sol/high, Standard. Собственный chat `01a1a34e-02f6-7021-ba73-02522b0a6a14`, путь `/root/review_download_types`; исходный turn `01a1a34e-032a-7541-b085-5af16bf83f02`, root turn `01a1a338-3b4c-79a1-98e8-f635eca07373`. Первичный источник: `/home/tolya/.codex/sessions/2026/11/04/rollout-2026-11-04T00-26-01-01a1a34e-02f6-7021-ba73-02522b0a6a14.jsonl`. `session_meta` строка 1 подтверждает собственные ID/path. `turn_context` строка 8: верхние `model=gpt-6.1-sol`, `effort=high`; вложенные `collaboration_mode.settings.model=gpt-6.1-sol`, `reasoning_effort=high`. Входной допуск PASS. Standard задан координатором; отдельное первичное поле tier отсутствует, скрытая маршрутизация не утверждается. Глобальная конфигурация не менялась.
+
+Роль: независимое чтение точного diff `c81df7364dd1fbbd07a0e54d67714b3d66f9695e..fcff6ad94c66b61948c44cf8a2c080f8758abfd9`, контракта и фактических provider API. Повторные compiler/tests/matrix, сеть, render/inspect/hash/build/install/push исключены заданием.
+
+## Вердикт
+
+**Принять Source-партию типизации. Исправляемых дефектов в просмотренном diff не найдено.** Это вердикт о семи изменённых файлах данного commit; готовность старого hosted CI-состава и установленного выпуска из него не следует.
+
+Прочитаны `download/AGENTS.md`, `spec/index.md`, `spec/contract.md`, локальное общее языковое правило Core, отчёт владельца, точный семифайловый diff и затронутые фактические публичные contracts Core/PL. Код продукта, Git state, installed копии и pins review не меняет.
+
+## Основания
+
+1. `infrastructure/siblings.ts:4–20`: ключи module map прямо связаны с `typeof import` фактических `public.ts`; отдельный DTO/facade интерфейс не вводится. Export/import типов стирается. Runtime `import()` остаётся вычисляемым по прежнему sibling пути: helper находится на той же глубине, что прежний helper в `runtime.ts` и прежний import в `application/package-artifact.ts`. Обычная ветка загружает только helper и уже использовавшийся `stdlib/path`; Core/PL/QRC eager runtime imports не появились. Вычисляемый dynamic import остаётся доверенной границей загрузки кода: TypeScript не проверяет содержимое произвольного файла во время исполнения. Возврат типизирован actual module map без нового `as`, `any`, validator или ручного public API.
+
+2. `runtime.ts:159–188,222–232,343–350,647–657`: `NativeOperation` и module types приходят от public Core. Optional `{operation, Core}` передаётся одной парой, поэтому type-level рассогласование отдельных аргументов устранено. Все реальные вызовы дают либо полную пару из `withCurrentNativeOperation`, либо отсутствие пары. Проверка release, observe callback и native model refusal сохраняют прежний порядок. PL остаётся optional после прежнего `Deno.stat`, а `NativeReleaseProofSchema.parse` сохранён. Фактический PL `application/native-publication.ts:7` всё ещё имеет legacy any-параметры: эта партия не обещает типизацию implementation PL.
+
+3. `runtime.ts:330–331,405–408,422–425,486–508,615–634`: context и plan maps имеют реальные разные типы. Batch callback выводится из Core `withProjectContracts` (`core/runtime/operation.ts:3151–3161`). Get-or-create сохраняет единственный `planProject` на прежний ключ format/project/audience; его успешный результат — объект `ProjectPlan`, поэтому `if (!plan)` эквивалентен прежнему `has`. В `materializationClosure` и materialize передаётся уже полученный plan, а file/reference callbacks выводятся из фактических методов. Schema parse в `package-artifact.ts:25` даёт inventory/files из Core schema (`core/artifacts/contracts.ts:111–183`); ручные file interfaces убраны.
+
+4. `runtime.ts:361–388`: оба новых `!` подтверждаются реальным provider invariant. Успешный `document({source})` отвергает отсутствующий source (`core/runtime/operation.ts:2709–2727`); `condition` вызывает `selectCondition` на том же документе (`:3018–3028`), где требуется ровно одно фактически видимое exercise occurrence (`core/document/condition.ts:36–47`). Core строит documents и catalog из того же finalized document и visible occurrences (`core/runtime/operation.ts:1753–1798`), а публичный catalog immutable (`:2708`). Между успешными вызовами и lookup нет `await` или внешней мутации. Это конкретная correlation, не преобразование внешнего JSON в доверенный DTO. Используется нормализованный `catalog.exercise.project`; подстановка сырого `condition.project` не сделана.
+
+5. `runtime.ts:591–636`: standalone early return вызывает тот же `pack`, до которого раньше доходили через пустой `projectRequests`. Раньше optional lookup давал пустой список; теперь обход пропущен целиком. В native ветке `if (doc)` эквивалентен прежнему `doc?.exercises... ?? []`; порядок artifacts, formats и Set inputs прежний. Get-or-create Set сохраняет порядок и deduplication. Нового runtime scan, child process, filesystem index или проверки DTO нет. Новый объект пары на native callback мал и не меняет масштаб стоимости. ZIP, hashes, receipts и публикационные fences не изменены.
+
+6. `package-artifact.ts:9–38,39–80`: `unknown` внешнего public input обоснован существующим schema parse. `structuredClone` до lazy import и копирование file bytes до первого digest `await` сохранены; проверки targets/audience, collision, размера/SHA256, сортировка и `zip` прежние. Новая типизация не создаёт второй validation pass. Legacy JSON inspect/request/ownership остаётся за пределами этой партии; в `runtime.ts:658` явный any по-прежнему относится к распаковке ownership signature, а не к native materialization API.
+
+## Проверка типов и её пределы
+
+`tests/runtime-types.ts:10–34` содержит четыре `NotAny` для module, artifact inventory/file и resource inventory, а также два предметных отрицательных DTO-контроля: resource inventory не является artifact inventory; project context нельзя подать вместо plan. Реальный affected runtime и packager входят в compiler graph. Это полезные адресные проверки типов, а не метрика полного покрытия Download.
+
+`tests/contract-consistency.ts:14–67,79–100` использует фактические `CORE`/`PL`/`QRC` roots, поддерживает Source/namespaced/extension layouts, нормализует через `realPath`, задаёт URL prefix imports для текущего и scratch root и bare `course-core/` для фактических PL imports. Это сохраняет реальные Core sibling imports, включая Navigation, вместо facade. Новый consumer включён в существующие positive и drift invocations. Drift остаётся изменением actual config guard, а не искусственным несовместимым интерфейсом.
+
+Прочитаны сохранённые `download-typed-compiler.json` и `download-typed-runner.json`: affected compiler exit 0 за 6.424s; существующий runner exit 0 за 10.204s при внешнем cap 30s/retry 0; внутри positive exit 0, drift exit 1 с восемью ожидаемыми diagnostics, включая `contract-types.ts`. Review принимает эти уже полученные свидетельства и не повторяет запуск. Исправление отсутствовавшего Navigation в раннем scratch описано корректно как ошибка composition; это не дефект Core. После последних compiler/runner PASS по отчёту владельца менялись только README и внешний report.
+
+## Открытая provenance CI
+
+`.github/workflows/check.yml:65` добавляет только PL env к существующему runner. Checkout pins, Actions и матрица не менялись. Текущая actual Source composition Core/PL с installed QRC798 подтверждена указанными локальными compiler результатами. Старые hosted pins Core `68074174…`, PL `df8bd4aa…`, QRC `798f8c0d…` этими результатами не проверены; локального объекта старого Core нет. Их hosted результат остаётся отдельным gate, не блокирующим принятие Source diff по данному review.
+
+`--deny-import` в compiler child намеренно требует имеющегося dependency cache; подтверждённый локальный запуск использовал Quarto cache. Полный public graph расширяет compiler workload в двух уже существовавших invocations. Совместимость старых pins, полнота cache на hosted runner и стоимость именно hosted состава ещё не измерены. Это реальные ограниченные риски CI, для которых нельзя обещать зелёный hosted результат по текущему Source PASS; новый полный matrix в рамках review не требуется. Новый `PL` нужен для static compiler composition и не становится обязательным runtime provider обычных resources.
+
+Перед вердиктом повторно прочитан весь собственный primary интервал от исходного turn: единственный `turn_context` строка 8, верхняя и вложенная пара gpt-6.1-sol/high согласованы; исходная точка не сдвинута. Итоговый собственный допуск PASS.

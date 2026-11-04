@@ -1,0 +1,93 @@
+{
+  "scope": "A5 affected graph and two pure fixtures only",
+  "source_review": "APPROVE reports/native-final-outputs-review-evening-20261104.md final freeze",
+  "model_admission": "reports/native-titles-public-acceptance-model-admission-20261104.json",
+  "environment": {
+    "CORE": "/home/tolya/JavaCodex/java-release-20261110/core-native-bridge",
+    "PL": "/home/tolya/JavaCodex/java-release-20261110/prairielearn",
+    "QRC": "/home/tolya/JavaCodex/java-release-20261110/qrc",
+    "DOWNLOAD": "/home/tolya/JavaCodex/java-release-20261110/download",
+    "QUARTO": "/opt/quarto/bin/quarto",
+    "PATH": "/opt/quarto/bin:/home/tolya/.codex/tmp/arg0/codex-arg0nDIbYg:/home/tolya/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override:/home/tolya/CourseCompiler:/var/lib/snapd/snap/bin:/home/tolya/.zvm/bin:/home/tolya/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/apache-spark/bin:/opt/apache-spark/sbin:/usr/share/dotnet:/home/tolya/.dotnet/tools:/var/lib/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/usr/lib/rustup/bin:/usr/lib/smlnj/bin:/home/tolya/.local/share/coursier/bin:/home/tolya/.local/share/coursier/bin:/home/tolya/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:/usr/lib/chatgpt/resources:/opt/apache-spark/bin:/opt/apache-spark/sbin:/usr/lib/smlnj/bin",
+    "DENO_DIR": "/home/tolya/JavaCodex/.cache/quarto/deno_std/cache",
+    "XDG_CACHE_HOME": "/home/tolya/JavaCodex/.cache",
+    "QUARTO_RUN_NO_NETWORK": "true",
+    "DENO_NO_PACKAGE_JSON": "1"
+  },
+  "cap_seconds_including_grace_and_overhead": 12,
+  "old_a4_costs_preserved": true,
+  "stages": [
+    {
+      "name": "a5-affected-typegraph",
+      "command": [
+        "/opt/quarto/bin/tools/x86_64/deno",
+        "check",
+        "--deny-import",
+        "--no-config",
+        "--no-lock",
+        "--import-map=/tmp/native-publication-combined-imports-20261104.json",
+        "/home/tolya/JavaCodex/java-release-20261110/core-native-bridge/_extensions/course-core/public.ts",
+        "/home/tolya/JavaCodex/java-release-20261110/prairielearn/_extensions/course-prairielearn/application/export.ts",
+        "/home/tolya/JavaCodex/java-release-20261110/core-native-bridge/tests/assignment-role-alias.ts",
+        "/home/tolya/JavaCodex/java-release-20261110/core-native-bridge/tests/assignment-body.ts",
+        "/home/tolya/JavaCodex/java-release-20261110/core-native-bridge/tests/native-operation-a3.ts",
+        "/home/tolya/JavaCodex/java-release-20261110/core-native-bridge/tests/native-capture-currentness-a4c.ts",
+        "/home/tolya/JavaCodex/java-release-20261110/core-native-bridge/tests/native-capture-fences-a4c.ts",
+        "/home/tolya/JavaCodex/java-release-20261110/core-native-bridge/tests/static-source-policy.ts",
+        "/home/tolya/JavaCodex/java-release-20261110/core-native-bridge/tests/release-generated-resource-currentness.ts",
+        "/home/tolya/JavaCodex/java-release-20261110/core-native-bridge/tests/native-output-resource-paths.ts"
+      ],
+      "cwd": "/home/tolya/JavaCodex/java-release-20261110",
+      "remaining_at_start_seconds": 11.999999166990165,
+      "exit_code": 0,
+      "timed_out": false,
+      "elapsed_seconds": 3.522491704003187
+    },
+    {
+      "name": "a5-role-alias",
+      "command": [
+        "/opt/quarto/bin/tools/x86_64/deno",
+        "run",
+        "-A",
+        "--no-check",
+        "--cached-only",
+        "--no-config",
+        "--no-lock",
+        "--import-map=/tmp/native-publication-combined-imports-20261104.json",
+        "/home/tolya/JavaCodex/java-release-20261110/core-native-bridge/tests/assignment-role-alias.ts"
+      ],
+      "cwd": "/home/tolya/JavaCodex/java-release-20261110",
+      "remaining_at_start_seconds": 8.477500985987717,
+      "exit_code": 0,
+      "timed_out": false,
+      "elapsed_seconds": 0.11443322600098327
+    },
+    {
+      "name": "a5-output-resource-paths",
+      "command": [
+        "/opt/quarto/bin/tools/x86_64/deno",
+        "run",
+        "-A",
+        "--no-check",
+        "--cached-only",
+        "--no-config",
+        "--no-lock",
+        "--import-map=/tmp/native-publication-combined-imports-20261104.json",
+        "/home/tolya/JavaCodex/java-release-20261110/core-native-bridge/tests/native-output-resource-paths.ts"
+      ],
+      "cwd": "/home/tolya/JavaCodex/java-release-20261110",
+      "remaining_at_start_seconds": 8.363062031989102,
+      "exit_code": 0,
+      "timed_out": false,
+      "elapsed_seconds": 0.11447608200251125
+    }
+  ],
+  "started_utc": "2026-11-04T14:55:10.669936+00:00",
+  "status": "PASS",
+  "elapsed_seconds": 3.7514193480019458,
+  "native_runtime_evidence": "reports/native-titles-public-acceptance-20261104.json",
+  "native_runtime_status": "PASS same tiny whole-book public PL CLI including real QRC post/catalog",
+  "native_attempt_seconds": 6.47722448699642,
+  "native_cumulative_seconds": 12.355128194001736,
+  "native_original_cap_seconds": 40
+}

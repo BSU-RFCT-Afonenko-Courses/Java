@@ -1,0 +1,57 @@
+# Независимый Source review Core Native bridge
+
+Вердикт: **APPROVE для указанного Source candidate и ограниченной семантики моста.** Конкретных блокирующих findings в проверенной дельте не найдено. Это не приёмка NativePNG→Core→README/ZIP integration, installed composition или производительности. Старый same-S/whole-owner freeze не принят за самостоятельное требование и не предлагается к восстановлению.
+
+## Scope и независимость
+
+Checkout `/home/tolya/JavaCodex/java-release-20261110/core-native-bridge`, base/HEAD `46b35909c9878196294f54b6be2d7505b336fe8d`. Pending tracked diff:5production modules,6existing controls,3docs; `+689/-1402`. Этот reviewer Source данной дельты не писал и не менял. Commit/push/install/state/production/SSH/config/DB не затрагивались.
+
+Прочитаны applicable AGENTS/spec index; [viability](core-native-boundary-viability-20261104.md), обновлённый [implementation ledger](core-native-bridge-implementation-20261104.md), [rejected A review с двумя P2](core-owner-boundary-review-20261104.md), [cache](quarto-cache-boundary-20261104.md) и [execution](quarto-execution-boundary-20261104.md) отчёты. Проверены production diff и целевые текущие функции, изменённые controls/docs, сохранённые [compiler](core-native-bridge-typecheck.log) и [control](core-native-bridge-controls.log) outputs. Ни одна successful проверка не повторялась. Tiny repro не понадобился; новых Native children/render/inspect/hash/build/compiler/tests/network не было.
+
+## Что Source действительно сохраняет
+
+Пути далее относительно `_extensions/course-core/`, строки текущего dirty candidate.
+
+| Граница | Evidence | Вывод |
+| --- | --- | --- |
+| **Actual bank AST authority** | `runtime/operation.ts:1010–1018` больше не делает config/include/ancestor closure источником содержимого; `:1500–1536` по-прежнему сверяет captureWitness, operation, exact input, ordered profiles, format/projection и early/late role, затем finalizeDocument | Metadata и результаты вычислений принадлежат фактическому Native render. Это настоящий отказ от прежнего обещания frozen metadata, не incomplete dependency freezer. Assessment intent и capture identity не заменены raw inspect bag |
+| **Raw selected QMD provenance** | `assignment-admission.ts:203–216,250`; `operation.ts:899,1223,1315,1845,2038,2166,2356`; `source-snapshot.ts:164–180,218–233` | Выбранный raw QMD должен быть в initial provenance, canonical physical regular path/signature сохраняются. Local return снимает sibling membership equality, но не принимает новый/заменённый selected QMD как прежний raw source. Full initial rows/SHA остаются реальными observations |
+| **Нет blanket engine refusal** | Старый static engines/codeCells/OJS gate удалён из `bindOwner`, policy enum/owner/projection/output checks остаются `operation.ts:960–1009` | `static` — legacy shortcut hint, не запрет knitr/Jupyter/OJS. Это не обещание переносимости каждого output в README/PL. Нового engine whitelist/eligibility framework нет |
+| **Нет blanket source freeze Native operation** | Все изменённые operation `assertSources` callsites используют selected local inputs; `source-snapshot.ts:224–233` возвращает до directory membership loop | Engine cache/metadata/sibling writes сами по себе не нарушают owner admission в Native render/currentness. Runtime/private/output/resource и raw QMD guards остаются отдельными. Это относится и к general callsites, не только static |
+| **Actual post-child A1 acquisition** | `operation.ts:2684–2749` проверяет allowed all-project input/format coverage; `project-context.ts:495–587` группирует owner, получает actual owner inspect и делает одну current copy; `:651–717` один inspect на unique input даёт нужные formats и обратно собирает request groups | A1 не читает metadata/bytes через прежние pre-child rows. Один owner acquisition на весь existing PL batch, без отдельной copy на format/condition/README/ZIP. Между отдельными batches не обещается старый metadata cache |
+| **Scalar origins настоящие** | `project-context.ts:303–480` оставляет existing instrument/Native marker/shape/field matching; `:676–703` строит schema-parsed context; `:903–911` narrow contract получает тот же private State | Не найдено fabricated sourceFile/resolvedPath/evidence, присвоения bank doc.meta типу ProjectContext или публичного DTO, который сам создаёт authority. Unsupported markers/fields не принимаются с fallback |
+| **Private generation/lifetime** | `project-context.ts:95,209–233,719–727,807–817,938–940`; contexts и narrow views хранятся в WeakMap, все acquired/context states инвалидируются finally | Копия/structural DTO не создаёт private State; чужая generation не проходит. State.operation прикрепляется только actual acquired context из private operation closure. Retained contexts после batch истекают |
+| **Physical role/alias** | `assignment-roles.ts:143–201` сохраняет owner/profiles/format/student-full/generation/declared-root checks; `:196–218` объединяет sealed resource identities с **fresh acquired** inode facts `project-context.ts:838–849` | Роли не опираются исключительно на старые initial inodes. Lexical closed/public intersection, unclassified project subtree и closed hardlink alias остаются refusals. Identity view не является новым scanner/proof и сам authority не даёт |
+| **Failure/await/reentrance** | `operation.ts:2623–2670,2764–2790`; before-child bound scope используется для обоих hints; callbackLive/childLife/active/failed закрываются finally. Current outer callback проверяет active/failed до и после final guard `:2395–2429` | Failed/reentrant/not-awaited batch не превращается в успешный publish. Удаление legacy source freezer не удалило sticky failure, host/cwd/env/runtime и child lifetime checks |
+| **Output/resource/owner binding** | `operation.ts:1534–1554,2235–2285,2323–2383`; `assignment-execution.ts:130–174,205…` не изменён | Capture/output/expectedDocuments, private pointer/complete, canonical resources и selected runtime/exact argv/profiles/env остаются. A1 uses existing owner inspect и technical input inspect; произвольный command authority не добавлен |
+
+`assignmentRoleIndex` теперь получает initial context identities из A1, а resources — из sealed capture. Это не снятие private роли: свежие actual A1 rows добавляют недостающую физическую alias информацию, и role predicate проверяется до public resource lookup. Actual source bytes остаются captured copy и проверяются своими dependent IO/full A1 fences.
+
+## Почему прежние два P2 не требуют вернуть freeze
+
+Rejected A обещал удерживать selected metadata относительно pre-child baseline, но пропускал появление `_metadata` и document `metadata-file(s)`. Новый candidate **отказывается от этого обещания для bank/site**: actual Native context/AST — содержание операции, а input selection/intent/runtime/role/output продолжают связываться отдельно. Появившаяся metadata теперь легитимно участвует в actual render; это не замаскированный PASS старого freezer.
+
+Code-project A1 остаётся отдельной границей: `instrument:328–329` отвергает metadata-file(s), `:332–339` неподдержанный format contributor, scalar aliases/tags также не становятся qualified origin. Post-child acquisition не объявлен resolver произвольных Native metadata. Эта честная несовместимость явно записана в docs/ledger и здесь не выдана за полную Native parity.
+
+## Проверенное evidence и его предел
+
+- Affected actual bundled compiler: **PASS15entrypoints, exit0/4.056s**, including5production+6changed controls+actual PL/QRC graph; `--deny-import` и cached actual map. Это writer evidence, прочитанное reviewer, не новый запуск.
+- В controls log8успешных адресных control scripts: owner boundary; raw-QMD closing; marker isolation; scope guards; roles; role alias; batch checkpoint; empty supporting scratch. Marker script проверяет actual copy/instrument/context/plan/lifetime с **Native JSON payload double**, не настоящее исполнение Quarto.
+- RED→GREEN owner engine evidence описано ledger. В control log честно сохранены symlink CLI capability failure до assertion и первое устаревшее general checkpoint ожидание; исправлены только permissions/test expectation, не скрыты. Расширенный изменённый marker control выполнен отдельно один раз; это не повтор принятой старой матрицы.
+- Existing `native-context-scaling` адаптирован и скомпилирован, actual Native scaling/benchmark не запускался. One-owner/multiformat private fixture показывает1copy/3payload callbacks на два unique inputs, не измерение реальных Quarto subprocess timings.
+
+Новой fault гипотезы, требующей tiny repro, Source review не обнаружил. Назначать повтор compiler/8controls или новую execution matrix оснований нет. Один knitrPNG→Core→condition→README/ZIP experiment остаётся **не выполненным** и может быть назначен только отдельным root решением с ранее указанным cap120/retry0; reviewer его автоматически не запускает.
+
+## Оставшиеся ограничения и риски
+
+1. Initial whole-owner snapshot/hash и exported raw sourceRows/SHA остаются transitional стоимостью/совместимостью. Raw source обновления selected QMD во время операции по-прежнему отказывают. Изменённый/generated starter/test source не гарантированно согласуется с PL initial raw-source SHA; фиктивных значений не добавлено. Это не полное удаление hash-механизма.
+2. Actual A1 acquisition всё ещё full owner copy и full inventory checks в короткой batch. Concurrent mutation во время A1, unrelated symlink/special entries либо некоторые custom cache layouts могут отказать. Новый путь убирает pre-child stale baseline, но не делает A1 zero-copy и не обещает скорость прежнего удалённого carrier. `sourceCopyBytes`/sourceFileReads показывают эту работу, probeCacheHits=0 честно.
+3. Native freeze/cache сохраняют Native свежесть, а не автоматический data/profile dependency graph. Условный R3 full→student unmarked computed text reuse остаётся: marked solution/test роли не являются taint analysis любого Para/PNG. Это не повод возвращать engine gate; actual private files/role aliases остаются закрыты.
+4. Унаследованный generic `groups as unknown as …C` остаётся в `project-context.ts:928–930` (тот же adapter был в46b:1373–1377). Он не создаёт origin/WeakMap authority: context/view schema parse и private State происходят раньше. Это **не заявлено полностью доказанным generic typing**, но не новый cast/stub вместо Native result или новое ослабление DTO в данном diff. Existing dynamic inspect/YAML bags тоже не выданы за полностью типизированный API.
+5. Реальный Native generated PNG corridor, итоговая README URL/bytes и ZIP ещё не проверены новой композицией. Ни compiler, ни payload double не доказывают их PASS. Actual production config/mount approval к этому Source review не относится; отклонённый config read не обходился.
+
+## Собственный первичный допуск и решение
+
+Reviewer `/root/pl_typed_materialization`, primary chat `01a1a25f-b098-7242-bf6d-d0e8f6517361`. Весь исходный interval от turn `01a1a25f-b0fb-7fd2-b244-83933af77834` до current `01a1a526-ab04-7553-92bf-8999a251f51c`:15turn_context, line8→2343; top/nested model везде `gpt-6.1-sol`, effort high. Standard назначен; hidden service tier логом не подтверждается. Globals/настройки не менялись; secrets/полный env не печатались.
+
+**APPROVE Source candidate** по указанному base и diff. Source не правился; reviewer не commit/push/install и не принимает за root решение production/integration. Указанные ограничения — реальные остатки, а не обещание их автоматического устранения данным мостом.

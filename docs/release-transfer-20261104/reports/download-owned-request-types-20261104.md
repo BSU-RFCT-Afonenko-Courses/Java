@@ -1,0 +1,21 @@
+# Download: checked ownership view вместо full Request cast
+
+**Source frozen, affected compiler PASS; independent review PENDING.** Изменён ровно `_extensions/project-download/ownership.ts`. Прочитаны AGENTS/spec contract и прежний snapshot plan; принятый runtime snapshot643 не повторялся. Параллельные wrapper bindings в других файлах не менялись. [Exact patch](download-owned-request-types-20261104.patch).
+
+## Потребляемые данные и доказательство
+
+После JSON.parse значение остаётся unknown. Local `record` predicate содержит ровно прежнюю проверку truthy/object/not-array; она используется вместо существующей проверки outer value и той же проверки каждого artifact. `const fields=value` больше не требует Record cast. Не создаётся новая request-проекция/копия: исходный объект и его arrays сохраняются.
+
+Resource ID predicate — ровно прежний typeof string + RESOURCE_ID.test. Artifact predicate проверяет ровно прежние object/nonarray, разрешённые ключи exerciseId/kind, string+RESOURCE_ID для exerciseId и прежнее includes membership starter/full/conditions для kind. Тип ArtifactRequest взят из настоящего application API; он содержит именно exerciseId/kind, не configuration/native payload. Readonly unknown[] kinds — типовая аннотация прежнего membership массива, без новой assurance.
+
+Оба existing отрицательных `.some(invalid)` заменены на эквивалентные `!every(validPredicate)` в тех же combined validation branches. Один прежний проход, та же последовательность short-circuit checks и остановка на первом неверном элементе; Object.keys/ID regexp/kind membership не повторяются. Никаких новых runtime rules, schema/framework/декодеров или сохранённых callbacks на последующем IO пути нет. Sparse arrays оба метода пропускают одинаково; внешний JSON массивы создаёт dense.
+
+После branch failures TypeScript может сохранить source:string, resources:string[], artifacts:ArtifactRequest[]|undefined. Эти фактически проверенные поля напрямую используются для SHA-1 имени и OwnedRequestState.files. Полный `value as Request` и artifacts callback(v:any) удалены. Public state artifacts выводятся из actual ArtifactRequest, вместо ссылки на весь optional Request port. У configuration не заявлена проверенная форма; native/courseProcessed сохраняют только прежние boolean checks, full Request не утверждается.
+
+## Сохранённый договор
+
+Outer allowed-key list, diagnostics/contexts, artifact-key policy и malformed отказ остаются прежними. Допустимое configuration содержимое остаётся unknown на исходном fields; оно не нормализуется/не выкидывается новым DTO. State как раньше выдаёт только path/source/resources/optional artifacts/sha256; refs и порядок arrays не копируются/не меняются. Ordering entries, filesystem path/symlink/filename checks, UTF-8/JSON handling, SHA-1/SHA-256 reads, очистка и IO не менялись. Никаких новых tests/guard passes/clones/IO.
+
+`git diff --check` PASS. До отдельного разрешения root compiler не запускался. Затем один substantive affected check ownership.ts + tests/runtime-types.ts **PASS4.5393s**, cap10/retry0. Actual provider HEADs: Core `5f4590aa4eb524830715f8020c8ff3c504197f73`, PL `4d39a6648d2816bab9a372877deded3320ff35e1`; существующая actual public-prefix map использована без изменений. [Command/map/elapsed/exit](download-owned-request-types-check-20261104.json), [полный log](download-owned-request-types-compiler-20261104.log). Прежний wrapper-only PASS относится к более ранней дельте и не засчитывается ownership; отдельного повторного wrapper check не было. Native/runtime/tests/network/install/full CI не запускались. После подготовки patch Source заморожен до review; stage/commit/push/mainstate/audit отсутствуют.
+
+[Own origin admission](download-owned-request-types-admission-20261104.json): исходный medium interval не сбрасывался; top/nested Sol6.1/medium согласованы, Standard назначен, скрытый routing не утверждается. Новые подагенты/globals не использовались. Полное Download coverage не заявляется.

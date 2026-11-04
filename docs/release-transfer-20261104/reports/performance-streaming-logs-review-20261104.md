@@ -1,0 +1,42 @@
+# Независимый review Performance streaming logs
+
+**APPROVE в согласованной узкой границе. Блокирующих findings нет.** Проверен Source candidate поверх exact `356a76b52d4fa0b20b965a82c1997e34632173fc` в `/home/tolya/JavaCodex/java-release-20261110/performance`, writer `/root/pl_typed_materialization`. Текущий diff содержит ровно `src/runner/execute.ts` и `tests/runner/execute.test.ts`; сохранённый [exact patch](performance-streaming-logs-20261104.patch) побайтно совпал с прочитанным двухфайловым `git diff`. Это Source review и чтение готовых результатов, без нового runtime/compiler PASS.
+
+Прочитаны [согласованный план](performance-streaming-logs-next-20261104.md), [final implementation report](performance-streaming-logs-20261104.md), оба полных changed files, адресные `process.ts` private tee, `resource-child.ts`, `assets.ts` и environment boundary. Отдельного `AGENTS.md` в Performance нет. Source не редактировался, тесты/Native/signals/матрица/CI не запускались. Review завершён в 20-минутном Source timebox.
+
+## Проверенная реализация
+
+- `execute.ts:185–192`: `child.status` и оба `streamLog` начинают наблюдаться в одном `Promise.allSettled`; открытия stdout/stderr files независимы и асинхронны. Нет последовательного ожидания одного целого stream перед другим. Переход к outcome/normalize происходит после status и завершения обоих pumps, включая EOF и закрытие файлов. Child exit сам по себе не обрывает хвост pipe.
+- `execute.ts:25–64`: каждый pump читает `Uint8Array` без декодирования; `subarray(offset)` записывается до конца chunk, offset двигается по фактическому количеству записанных bytes. Zero/negative progress даёт явную ошибку. Следующий chunk не читается до завершения текущего file write, поэтому внутри stdout и внутри stderr сохраняются bytes и порядок. Общий interleaving двух streams не обещается и прежде не был одним логом.
+- При `open` failure pump остаётся читать/отбрасывать соответствующий pipe. При write failure фиксируется ошибка, file закрывается и дальнейшие chunks дренируются без очереди. `close` failure также передаётся в `failed`, не маскируя уже зарегистрированную ошибку. `finally` закрывает оставшийся file. `errors` хранит максимум одну первую наблюдённую IO/read/close/status ошибку, а не весь output.
+- `execute.ts:181–195`: status rejection наблюдается сразу, повторно бросается в settled Promise и регистрируется тем же first-error collector. После завершения трёх операций capture/status failure бросается до формирования RunResult. Нет придуманного Native code0/dataValid=true для truncated capture, нет unhandled status rejection. При transport read failure восстановление потока/времени завершения child не гарантируется; новый kill/cancellation policy намеренно не добавлен.
+- `execute.ts:118–180` и последующие resource branches: executable/args/cwd/env, `clearEnv:true`, inherited stdin и две piped ветви сохранены. GNU time запускает прежний resource-child с тем же status path и argv; Hyperfine сохраняет runs1/warmup0/shell-none quoting/metrics и прежний parser. Сохранились direct status code/signal, resource-child code/signal/toolWallSeconds overrides, Hyperfine wall/exit/resource overrides и signalAvailability. Process groups, PTY, console mirror, supervisor, listeners и новый статусный протокол не появились.
+
+В production нет нового `any`, fake cast или ignored diagnostic. Нет массива chunks, полного output Uint8Array, текстового склеивания или `ReadableStream.tee`; память pump ограничена текущими in-flight chunks/обычными stream buffers. Размер файлов по-прежнему растёт с output; ограничение общего RSS/размера логов не заявляется.
+
+Прежняя direct wall граница начиналась перед command и заканчивалась после capture до normalize/report; теперь завершение включает concurrent log writes и close. Backpressure может менять результат и замедлять chatty child. Численная эквивалентность прежнему wall/измеренное ускорение не утверждаются; GNU-time/Hyperfine измерительные overrides не изменены.
+
+## Сохранённые результаты, прочитанные независимо
+
+| Evidence | Что действительно показывает |
+| --- | --- |
+| [runtime-red.json](performance-streaming-logs-20261104-evidence/runtime-red.json) / [log](performance-streaming-logs-20261104-evidence/runtime-red.log) | На прежнем `.output()` расширенный existing case отказал именно на отсутствии early logs: exit1, 1.466652213 s |
+| [runtime-green-first-assertion-error.json](performance-streaming-logs-20261104-evidence/runtime-green-first-assertion-error.json) / [log](performance-streaming-logs-20261104-evidence/runtime-green-first-assertion-error.log) | После production diff ранние bytes/gate прошли; ошибочная fixture `assert.equal` для final stderr Uint8Array дала exit1, 0.667770516 s. Ошибка открыто учтена и исправлена на deepEqual |
+| [runtime-green.json](performance-streaming-logs-20261104-evidence/runtime-green.json) / [log](performance-streaming-logs-20261104-evidence/runtime-green.log) | Final case PASS, exit0, 1 passed/4 filtered, 206 ms case, 0.444748514 s outer. До release проверены оба известных binary потока по256KiB плюс prefixes, после release — final bytes/exit23/argv/cwd/functional profile/off diagnostics |
+| [compiler.json](performance-streaming-logs-20261104-evidence/compiler.json) / [log](performance-streaming-logs-20261104-evidence/compiler.log) | Единственный final affected `deno check --cached-only src/runner/execute.ts tests/runner/execute.test.ts`, exit0, 0.817828545 s |
+
+Все записи используют `/usr/bin/deno`, cwd Performance, `DENO_DIR` unset; по implementation report это system Deno2.9.7, не bundled QuartoDeno2.7. Runtime captures вместе2.579171243 s; повторения неизменного GREEN не видно. Изменён только один existing case: >pipe-buffer binary output в оба stream делает проверку concurrent drain содержательной; release gate проверяет раннюю доступность независимо от завершения executeScenario. В finally gate открывается и running promise дожидается; child имеет свой конечный deadline. Новый suite/framework отсутствует.
+
+Short writes/zero-write/open/write/close/read failure handling проверены по Source, **не fault injection**. Native direct/no-time branch, Hyperfine и signal143-vs-SIGTERM controls здесь не перепроверялись; их ветви и существующие cases прочитаны, command composition не менялась. Нельзя превратить этот review в новый runtime PASS этих областей.
+
+## Что остаётся за границей APPROVE
+
+Уже записанные log prefixes доступны до завершения child. Не обещаются bytes, оставшиеся в child/pipe/read buffer, fsync/power-loss durability либо целый последний chunk при hard kill. После file failure drain сохраняет шанс завершения child, но полного capture/final record на error path нет. Read failure/status rejection/долгоживущие descendants не приобрели нового supervision или bounded recovery.
+
+**Standalone TERM/status/final-report recovery не исправлено и этим review не квалифицировано.** Соответствующий старый UNKNOWN остаётся. Полный SP/render, матрица, installed/production, student output/privacy corpus, timings/RSS benchmark и hosted CI не входят в приёмку. Existing final report прямо сохраняет эти ограничения; редакционной правки/нового code diff для APPROVE не требуется.
+
+## Собственный первичный допуск reviewer
+
+Назначение `gpt-6.1-sol/high`, Standard. Собственный chat `01a1a514-165b-7ae2-bff1-b9ca9f7e3bb1`, agent path `/root/perf_event_types`, неизменный origin turn `01a1a514-1688-7662-80fc-58bf7a272ae0`. Источник `/home/tolya/.codex/sessions/2026/11/04/rollout-2026-11-04T08-41-59-01a1a514-165b-7ae2-bff1-b9ca9f7e3bb1.jsonl`.
+
+Перед review и перед итогом прочитан весь origin interval: session_meta строка1 подтверждает собственные chat/path; turn_context **8/171/270/405/734/918/1031/1046/1192** все имеют `model=gpt-6.1-sol`, `effort=high` и согласованные `collaboration_mode.settings.model/reasoning_effort`. Итог PASS. Глобальные настройки не менялись; явный service_tier отсутствует, скрытая серверная маршрутизация не удостоверяется. Reviewer не участвовал в реализации этого streaming candidate.

@@ -1,0 +1,22 @@
+diff --git a/_extensions/course-prairielearn/application/export.ts b/_extensions/course-prairielearn/application/export.ts
+--- a/_extensions/course-prairielearn/application/export.ts
++++ b/_extensions/course-prairielearn/application/export.ts
+@@ -444,18 +444,6 @@
+         "Неверная кодировка ресурса: " + r.target,
+         "resources.data",
+         cause,
+-      );
+-    }
+-    const hash = Array.from(
+-      new Uint8Array(
+-        await crypto.subtle.digest("SHA-256", new Uint8Array(bytes!)),
+-      ),
+-      (x) => x.toString(16).padStart(2, "0"),
+-    ).join("");
+-    if (hash !== r.sha256) {
+-      questionFail(
+-        "Контрольная сумма ресурса не совпадает: " + r.target,
+-        "resources.sha256",
+       );
+     }
+     files.push({

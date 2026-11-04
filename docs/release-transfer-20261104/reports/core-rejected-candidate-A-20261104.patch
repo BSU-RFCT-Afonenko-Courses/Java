@@ -1,0 +1,451 @@
+diff --git a/_extensions/course-core/runtime/assignment-admission.ts b/_extensions/course-core/runtime/assignment-admission.ts
+index 76489a4..9f8e926 100644
+--- a/_extensions/course-core/runtime/assignment-admission.ts
++++ b/_extensions/course-core/runtime/assignment-admission.ts
+@@ -172,9 +172,10 @@ export async function prepareAssignment(
+       localSourceFences: 0,
+     },
+   };
+-  const { nativeRuntimeIdentity, inspectNativeOwner } = await import(
+-    "./operation.ts"
+-  );
++  const { nativeRuntimeIdentity, inspectNativeOwner, nativeSourceInputs } =
++    await import(
++      "./operation.ts"
++    );
+   const metrics = { runtimeHashReads: 0, runtimeHashBytes: 0 };
+   const invocation = await nativeRuntimeIdentity(source.root, true, metrics);
+   const executable = JSON.parse(invocation).physical as string;
+@@ -200,7 +201,12 @@ export async function prepareAssignment(
+     executable,
+     environment,
+   );
+-  await assertSources(source);
++  source.ownerInputs = owner.files.input.map((path) =>
++    relative(source.root, resolve(source.root, path))
++  );
++  Object.assign(source, nativeSourceInputs(source, owner, source.ownerInputs));
++  const fullSources = owner.config["course-core-source-policy"] !== "static";
++  await assertSources(source, [], fullSources);
+   if (await nativeRuntimeIdentity(source.root, true, metrics) !== invocation) {
+     fail("OPERATION_CHANGED", "Runtime изменён во время preparation");
+   }
+@@ -234,7 +240,11 @@ export async function prepareAssignment(
+       !/^[a-z][a-z0-9-]*$/.test(p.id)
+     )
+   ) invalid("Неверный assignment intent");
+-  await assertSources(source);
++  Object.assign(
++    source,
++    nativeSourceInputs(source, owner, selection.expectedSources),
++  );
++  await assertSources(source, [], fullSources);
+   const result: AssignmentAdmission = {
+     source,
+     operation: crypto.randomUUID(),
+diff --git a/_extensions/course-core/runtime/operation.ts b/_extensions/course-core/runtime/operation.ts
+index 902f5df..54a2252 100644
+--- a/_extensions/course-core/runtime/operation.ts
++++ b/_extensions/course-core/runtime/operation.ts
+@@ -55,6 +55,7 @@ import {
+   snapshot,
+   sourceIndex,
+ } from "./source-snapshot.ts";
++import type { SourceSnapshotState } from "./source-snapshot.ts";
+ import {
+   toolCacheContainer,
+   toolCachePath,
+@@ -946,6 +947,72 @@ export async function withNativeCaptureScope<T>(
+     live = false;
+   }
+ }
++/** Существующие native config/include/metadata contributors; без discovery или IO. */
++export function nativeSourceInputs(
++  state: SourceSnapshotState,
++  owner: NativeOwnerInspection,
++  inputs: readonly string[],
++) {
++  const root = state.root;
++  // В bindOwner это уже обязательная path boundary; preparation использует её до callback.
++  if (inputs.some((path) => !pathSchema.safeParse(path).success)) {
++    fail("OPERATION_BINDING", "Некорректный native owner input scope");
++  }
++  const configuration = new Set<string>();
++  for (const config of owner.files?.config ?? []) {
++    configuration.add(relative(root, resolve(root, config)));
++  }
++  const documentInputs: Record<string, string[]> = {};
++  const relevant = new Set<string>(configuration);
++  for (const source of inputs) {
++    const dependencies = new Set<string>([source]);
++    const information = record(owner.fileInformation)
++      ? owner.fileInformation[source]
++      : undefined;
++    if (!record(information) || !Array.isArray(information.includeMap)) {
++      fail("OPERATION_UNQUALIFIED", "Нет native include closure");
++    }
++    const edges: readonly unknown[] = information.includeMap;
++    for (const edge of edges) {
++      if (
++        !record(edge) || typeof edge.source !== "string" ||
++        typeof edge.target !== "string"
++      ) {
++        fail(
++          "OPERATION_UNQUALIFIED",
++          "Некорректное native include observation",
++        );
++      }
++      const original = resolve(root, edge.source);
++      dependencies.add(relative(root, original));
++      dependencies.add(relative(root, resolve(dirname(original), edge.target)));
++    }
++    let directory = dirname(resolve(root, source));
++    while (true) {
++      for (const name of ["_metadata.yml", "_metadata.yaml"]) {
++        const path = relative(root, join(directory, name));
++        if (sourceIndex(state).rows.has(path)) dependencies.add(path);
++      }
++      if (directory === root) break;
++      directory = dirname(directory);
++    }
++    documentInputs[source] = [...dependencies];
++    for (const dependency of dependencies) relevant.add(dependency);
++  }
++  for (const input of relevant) {
++    if (!state.rows.some((r) => r.path === input)) {
++      fail(
++        "OPERATION_BINDING",
++        "Native input/config/include отсутствует в source snapshot",
++      );
++    }
++  }
++  return {
++    configurationInputs: [...configuration],
++    documentInputs,
++    relevantInputs: [...relevant],
++  };
++}
+ export function bindOwner(
+   state: State,
+   owner: NativeOwnerInspection,
+@@ -1051,56 +1118,7 @@ export function bindOwner(
+   if (outputDirectory !== state.outputDirectory) {
+     fail("OPERATION_BINDING", "Native output отличается");
+   }
+-  const configuration = new Set<string>();
+-  for (const config of owner.files?.config ?? []) {
+-    configuration.add(relative(root, resolve(root, config)));
+-  }
+-  state.configurationInputs = [...configuration];
+-  const relevant = new Set<string>(configuration);
+-  for (const source of inputs) {
+-    const dependencies = new Set<string>([source]);
+-    const information = record(owner.fileInformation)
+-      ? owner.fileInformation[source]
+-      : undefined;
+-    if (!record(information) || !Array.isArray(information.includeMap)) {
+-      fail("OPERATION_UNQUALIFIED", "Нет native include closure");
+-    }
+-    const edges: readonly unknown[] = information.includeMap;
+-    for (const edge of edges) {
+-      if (
+-        !record(edge) || typeof edge.source !== "string" ||
+-        typeof edge.target !== "string"
+-      ) {
+-        fail(
+-          "OPERATION_UNQUALIFIED",
+-          "Некорректное native include observation",
+-        );
+-      }
+-      const original = resolve(root, edge.source);
+-      dependencies.add(relative(root, original));
+-      dependencies.add(relative(root, resolve(dirname(original), edge.target)));
+-    }
+-    let directory = dirname(resolve(root, source));
+-    while (true) {
+-      for (const name of ["_metadata.yml", "_metadata.yaml"]) {
+-        const path = relative(root, join(directory, name));
+-        if (sourceIndex(state).rows.has(path)) dependencies.add(path);
+-      }
+-      if (directory === root) break;
+-      directory = dirname(directory);
+-    }
+-    state.documentInputs[source] = [...dependencies];
+-    for (const dependency of dependencies) relevant.add(dependency);
+-  }
+-  for (const input of relevant) {
+-    if (!state.rows.some((r) => r.path === input)) {
+-      fail(
+-        "OPERATION_BINDING",
+-        "Native input/config/include отсутствует в source snapshot",
+-      );
+-    }
+-  }
+-  state.relevantInputs = [...relevant];
++  Object.assign(state, nativeSourceInputs(state, owner, inputs));
+   state.ownerWitness = {
+     quarto: { version: owner.quarto.version },
+     dir: owner.dir,
+@@ -1405,7 +1423,7 @@ async function beginNativeOperationInternal(root: string, nativeHook: boolean) {
+     !!reservation,
+     Deno.env.get("QUARTO_PROJECT_OUTPUT_DIR"),
+   );
+-  await assertSources(state);
++  await assertSources(state, [], state.sourcePolicy !== "static");
+   if (
+     await nativeRuntimeIdentity(root, true, state.metrics) !== state.invocation
+   ) {
+@@ -1935,12 +1953,17 @@ async function finishNativeOperationInternal(
+       !outputRows.some((r) => resolve(root, r.path) === p)
+     )
+   ) fail("OPERATION_INCOMPLETE", "HTML output без Core capture");
+-  await assertSources(state, additions, !reservation, [
+-    ...new Set([
+-      ...state.configurationInputs,
+-      ...inputs.flatMap((source) => state.documentInputs[source]),
+-    ]),
+-  ]);
++  await assertSources(
++    state,
++    additions,
++    !reservation && state.sourcePolicy !== "static",
++    [
++      ...new Set([
++        ...state.configurationInputs,
++        ...inputs.flatMap((source) => state.documentInputs[source]),
++      ]),
++    ],
++  );
+   const identity = NativeOperationIdentitySchema.parse({
+     operation: state.operation,
+     profiles: state.profiles,
+@@ -2133,7 +2156,7 @@ async function sealCaptureScope(reservation: Reservation) {
+   await withWriter(root, async () => {
+     await assertReservationCurrent(reservation);
+     await assertPrivate(state, true);
+-    await assertSources(state);
++    await assertSources(state, [], state.sourcePolicy !== "static");
+     reservation.status = "sealed";
+     await writePrivate(reservationPath(reservation), reservation);
+     complete.state.metrics = { ...state.metrics };
+@@ -2271,7 +2294,12 @@ export async function withPendingNativeOperation<T>(
+     } catch (error) {
+       if (!(error instanceof Deno.errors.NotFound)) throw error;
+     }
+-    await assertSources(state, [], !pendingScope, localInputs);
++    await assertSources(
++      state,
++      [],
++      !pendingScope && state.sourcePolicy !== "static",
++      localInputs,
++    );
+   };
+   const view = Object.freeze({
+     get identity() {
+@@ -2463,7 +2491,7 @@ export async function withCurrentNativeOperation<T>(
+     await assertSources(
+       complete.state,
+       additions,
+-      full,
++      full && complete.state.sourcePolicy !== "static",
+       inputs,
+     );
+     for (
+@@ -3123,7 +3151,7 @@ function publicOperation(
+             }
+             const actual = await ownedPhysical(complete.state.root, local),
+               info = await Deno.stat(actual);
+-            // Только объявленный dependency subtree: остальные sources проверит final full fence.
++            // Только объявленный dependency subtree; unrelated sources не являются static admission.
+             const selected = info.isDirectory
+               ? [
+                 local,
+diff --git a/_extensions/course-core/runtime/source-snapshot.ts b/_extensions/course-core/runtime/source-snapshot.ts
+index 93b7ec4..a83cd2b 100644
+--- a/_extensions/course-core/runtime/source-snapshot.ts
++++ b/_extensions/course-core/runtime/source-snapshot.ts
+@@ -203,6 +203,18 @@ export async function assertSources(
+       fail("OPERATION_CHANGED", "Native source изменён: " + row.path);
+     }
+   }
++  if (!full) {
++    // Сохраняем physical containment/type selected paths, без equality соседних entries.
++    for (const dir of directories) {
++      if (
++        dir && index.directories.has(dir) &&
++        !(await inspectPath(dir)).isDirectory
++      ) {
++        fail("OPERATION_CHANGED", "Native source directory type изменён");
++      }
++    }
++    return;
++  }
+   const allowed = new Set(additions);
+   const allowedParents = new Set<string>();
+   for (const path of additions) {
+diff --git a/docs/native-operation-ts.md b/docs/native-operation-ts.md
+index 2107eaf..99c3685 100644
+--- a/docs/native-operation-ts.md
++++ b/docs/native-operation-ts.md
+@@ -93,10 +93,17 @@ membership и resources принадлежат текущей операции;
+ настоящие native metadata/origins и прежний probe cache. Standalone A1 этим
+ ключом не переключается.
+ 
+-Полные внешние entry/exit source/runtime/pointer/complete/output fences и
+-межпроцессные capture/complete границы сохраняются. Явный `assertCurrent()` в
+-static режиме выполняет полную реальную проверку. Новый/удалённый/изменённый
+-source, новый QMD, symlink и неизвестные generated paths не становятся частью S.
++Внешние entry/exit runtime/pointer/complete/output fences и межпроцессные
++capture/complete границы сохраняются. На static маршруте source-проверки,
++включая явный `assertCurrent()`, охватывают actual native config, выбранные
++inputs/include/metadata и явно потребляемые paths. Unrelated правка или новый
++sibling файл больше не аннулируют операцию; они также не включаются
++автоматически в уже наблюдённый native plan. Selected paths сохраняют physical
++containment, regular type и signature checks. Initial snapshot/hash и public
++sourceRows пока сохраняются для совместимости. General route и A1 whole-copy
++fallback сохраняют прежнее ограничение на все копируемые rows; это ещё не полный
++отказ от same-S.
++
+ Финальная полнота, privacy и точные известные generated resources продолжают
+ проверяться прежним владельцем; публикация допустима только после успешного
+ возврата callback. Обнаружение намеренной same-process подмены между двумя
+diff --git a/tests/assignment-closing-source-fence.ts b/tests/assignment-closing-source-fence.ts
+index d5500c6..93abb83 100644
+--- a/tests/assignment-closing-source-fence.ts
++++ b/tests/assignment-closing-source-fence.ts
+@@ -1,5 +1,6 @@
+ // Data-only coverage: actual existing fence на своих файлах, не seal/producer replay.
+ import { dirname, join } from "stdlib/path";
++import { nativeSourceInputs } from "../_extensions/course-core/runtime/operation.ts";
+ import { CoreContractError } from "../_extensions/course-core/contracts/project.ts";
+ import {
+   assertSources,
+@@ -11,6 +12,8 @@ async function fixture() {
+   const paths = [
+     "index.qmd",
+     "_quarto.yml",
++    "_metadata.yml",
++    "fragment.qmd",
+     "banks/unselected.qmd",
+     "_extensions/provider/vendor.js",
+   ];
+@@ -45,6 +48,21 @@ async function fixture() {
+       localSourceFences: 0,
+     },
+   };
++  const owner = {
++    dir: root,
++    quarto: { version: "1.11.5" },
++    config: {},
++    files: {
++      input: [join(root, "index.qmd")],
++      config: [join(root, "_quarto.yml")],
++    },
++    fileInformation: {
++      "index.qmd": {
++        includeMap: [{ source: "index.qmd", target: "fragment.qmd" }],
++      },
++    },
++  };
++  Object.assign(state, nativeSourceInputs(state, owner, ["index.qmd"]));
+   return { root, state };
+ }
+ for (
+@@ -52,6 +70,8 @@ for (
+     "unchanged",
+     "source",
+     "config",
++    "include",
++    "metadata",
+     "unselected",
+     "vendor",
+     "addition",
+@@ -61,12 +81,19 @@ for (
+   const { root, state } = await fixture();
+   try {
+     await assertSources(state, [], false);
+-    // Изменение после baseline и через await: closing должен видеть иной S.
+-    if (["source", "config", "unselected", "vendor"].includes(name)) {
++    // Selected contributors остаются теми же; unrelated edits не аннулируют closing.
++    if (
++      ["source", "config", "include", "metadata", "unselected", "vendor"]
++        .includes(name)
++    ) {
+       const path = name === "source"
+         ? "index.qmd"
+         : name === "config"
+         ? "_quarto.yml"
++        : name === "include"
++        ? "fragment.qmd"
++        : name === "metadata"
++        ? "_metadata.yml"
+         : name === "unselected"
+         ? "banks/unselected.qmd"
+         : "_extensions/provider/vendor.js";
+@@ -75,24 +102,20 @@ for (
+         "Изменённые данные другой длины " + name,
+       );
+     } else if (name === "addition") {
+-      await Deno.writeTextFile(join(root, "banks/new.qmd"), "Новое содержимое");
++      await Deno.writeTextFile(join(root, "new.qmd"), "Новое содержимое");
+     } else if (name === "symlink") {
+-      const path = join(root, "_extensions/provider/vendor.js");
++      const path = join(root, "index.qmd");
+       await Deno.remove(path);
+-      await Deno.symlink(join(root, "index.qmd"), path);
+-    }
+-    if (["unselected", "vendor", "addition", "symlink"].includes(name)) {
+-      // Эти edits вне relevant rows и их membership ancestors: local их не квалифицирует.
+-      await assertSources(state, [], false);
++      await Deno.symlink(join(root, "banks/unselected.qmd"), path);
+     }
+     let error: unknown;
+     try {
+-      await assertSources(state);
++      await assertSources(state, [], false);
+     } catch (cause) {
+       error = cause;
+     }
+     if (
+-      name === "unchanged"
++      ["unchanged", "unselected", "vendor", "addition"].includes(name)
+         ? error !== undefined
+         : !(error instanceof CoreContractError) ||
+           error.code !== "OPERATION_CHANGED"
+@@ -104,5 +127,5 @@ for (
+   }
+ }
+ console.log(
+-  "PASS data-only closing Source fence: relevant source/config и edits вне local scope; zero render/inspect/hash",
++  "PASS scoped closing: unrelated edit/addition accepted; native selected source/config/include/metadata/physical path refused; zero render/inspect/hash",
+ );
+diff --git a/tests/static-batch-checkpoint.ts b/tests/static-batch-checkpoint.ts
+index 09d8e47..62b554c 100644
+--- a/tests/static-batch-checkpoint.ts
++++ b/tests/static-batch-checkpoint.ts
+@@ -336,7 +336,7 @@ try {
+         outputDirectory: root + "/_site",
+         rows: [],
+         memberships: {},
+-        relevantInputs: [],
++        relevantInputs: ["index.qmd", "empty"],
+         metrics: {
+           fullWalks: 0,
+           sourceDirectoryReads: 0,
+@@ -381,7 +381,7 @@ try {
+         if (batches.failed) throw Error("OPERATION_INCOMPLETE");
+         if (force) {
+           full++;
+-          await assertSources(state, [], true);
++          await assertSources(state, [], state.sourcePolicy !== "static");
+           if (mode === "closing-race" && full === 2) {
+             await Promise.resolve();
+             try {
+@@ -489,7 +489,6 @@ try {
+       if (
+         [
+           "source",
+-          "membership",
+           "warm",
+           "explicit",
+           "entry",

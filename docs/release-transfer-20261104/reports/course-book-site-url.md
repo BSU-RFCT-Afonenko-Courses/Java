@@ -1,0 +1,17 @@
+# Исправление секции существующего URL книги
+
+3 ноября 2026. По прямому разрешению root выполнен один механический YAML fix, без нового namespace/URL, изменения IDs/UUID/целей или provider Source. SP commit `1626aa0792301f6c91cf2a04bd4d242f89736578` поверх `904fed875d546247cd84df23c8128b50071344f4`. Единственный изменённый файл — `system-practice/tasks/_quarto.yml`.
+
+Прежнее `website.site-url` (строка71 до правки) перенесено в `book.site-url` (строка53 после правки) с точным значением `https://bsu-rfct-afonenko-courses.github.io/System-Practice/tasks/`. Пустая website mapping удалена; дублирующей записи/anchor нет. Namespace `system-practice-tasks` строка46 и остальное YAML дерево сохранены. Diff: одна строка добавлена в book, две строки website/site-url удалены.
+
+Причина уже установленного SP830 blocker: проект `type: book` (`tasks/_quarto.yml:4`); установленный Quarto1.11.5 в `/opt/quarto/bin/quarto.js:153317` формирует `website.site-url` из `book.site-url` и затирает прежнее website значение при отсутствии book значения. Saved ownerWitness830 подтверждал namespace, но отсутствие обоих URL в normalized config. Подробнее `sp-native-830-acceptance.md`.
+
+Адресно просмотрены active scope `_quarto.yml` обоих курсов: tasks, theory, handbook имеют typebook (шесть книг всего), lectures/practice имеют typewebsite. У Java tasks/theory/handbook и SP theory/handbook нет ни website.site-url, ни book.site-url: точный дефект typebook+websiteURL+нетbookURL присутствовал только в SPtasks. Новые адреса остальным книгам не назначались. Java не изменена; пустой commit не создавался.
+
+Проверены прямые site-url consumers в course tools/CI и установленных Site/PL/Download/QRC. Raw YAML consumer, зависящий от SPtasks.website.site-url, не найден. Site `application/compose.ts:282,515,631,635` читает ws.config.website; `infrastructure/config.ts:190–195` получает workspace config штатным Quarto inspect, а `inspectDocuments:339–347` делает то же для projects. PL `native-entry.ts:235–236` получает observed config от Core inspect; `native-materialize.ts:71–78` читает normalized website.site-url. QRC `entrypoints/post.ts:8–15` также использует inspect config. Таким consumers правильная book запись возвращает прежнее ожидаемое normalized website поле; прямого чтения удалённой YAML mapping нет. Root portal URL не менялся.
+
+Верификация: existing PyYAML safe_load до/после PASS; получившееся дерево строго равно исходному с единственным переносом URL и удалением пустой website mapping. Git diff прочитан, unstaged/cached diff-check PASS; SP после commit clean, Java оставлена без изменений. Reversible config edit не сопровождалась новыми tests/framework или запуском inspect/render/export/hash. Старые partial owner artifacts сохранены; rootdocs не stage/commit. Push/PR/production/student data не затрагивались.
+
+Передача на независимый read-only delta review: exact SP `904fed875d546247cd84df23c8128b50071344f4..1626aa0792301f6c91cf2a04bd4d242f89736578`, файл `tasks/_quarto.yml`. Actual SP attempt не запускался и ждёт отдельного root сообщения review ACCEPT. Штатный consume existing не реализован; reuse authority/capsule не имитировался.
+
+Собственный прежний admission: chat01a1a261-97e1-7352-ae02-b6721eb39fb9, baseline01a1a261-9811-7ca3-8a48-e4482c3beafc. Полный исходный интервал turn_context [8, 155, 244, 342], top+nested Sol6.1/medium PASS. Standard prescribed, globals untouched.

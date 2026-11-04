@@ -1,0 +1,1072 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 7dc66c1..a2ad792 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -140,4 +140,4 @@ jobs:
+       - name: Атомарный экспорт между файловыми системами
+         run: PL_EXDEV_TEST_DIR=/dev/shm deno test --no-config --import-map .ci-deps/pl-native-imports.json -A --filter "across output filesystems" tests/export-course.test.ts
+       - name: Профили исходников Java, starter/API/Gradle и native delivery
+-        run: deno test --no-config --import-map .ci-deps/pl-native-imports.json --allow-read --allow-write --allow-run --allow-env tests/java-build.test.ts tests/native-contract-batch.test.ts tests/native-batch-checkpoint.test.ts tests/native-reuse-refusal.test.ts tests/native-selection.test.ts tests/native-origin-scope.test.ts tests/native-verification-inventory.test.ts tests/native-seed-policy.test.ts tests/native-auxiliary.test.ts
++        run: deno test --no-config --import-map .ci-deps/pl-native-imports.json --allow-read --allow-write --allow-run --allow-env tests/java-build.test.ts tests/native-contract-batch.test.ts tests/native-batch-checkpoint.test.ts tests/native-selection.test.ts tests/native-origin-scope.test.ts tests/native-verification-inventory.test.ts tests/native-seed-policy.test.ts tests/native-auxiliary.test.ts
+diff --git a/_extensions/course-prairielearn/application/export-course.ts b/_extensions/course-prairielearn/application/export-course.ts
+index 85d9d15..e4c4df6 100644
+--- a/_extensions/course-prairielearn/application/export-course.ts
++++ b/_extensions/course-prairielearn/application/export-course.ts
+@@ -1,3 +1,4 @@
++import type { BodyResource, PublicBodyPackage } from "course-core/body-export/model.ts";
+ import type { NativeAuxiliary } from "./native-auxiliary.ts";
+ import { nativeAnswerBinding } from "./native-delivery.ts";
+ import { loadPublicationConditions } from "./publication-conditions.ts";
+@@ -146,7 +147,7 @@ export async function exportCourse<Checks extends ExportChecks>(
+     instance: string;
+     output: string;
+     checksOutput: string;
+-    body: (work: string) => Promise<any>;
++    body: (work: string) => Promise<PublicBodyPackage>;
+     candidateImage?: string;
+     deferPublish?: boolean;
+     nativeBody?: boolean;
+@@ -188,7 +189,7 @@ export async function exportCourse<Checks extends ExportChecks>(
+     }
+     return work;
+   });
+-  const menuBodies = new Map<string, any>();
++  const menuBodies = new Map<string, PublicBodyPackage>();
+   const unitMenus = nativeUnitMenus(works, content.assessments);
+   const active = new Set();
+   for (const w of works) {
+@@ -315,12 +316,14 @@ export async function exportCourse<Checks extends ExportChecks>(
+         studentArtifacts: Record<string, StudentArtifact> = {};
+       const contexts = [{ work, body: p, menu: false }];
+       for (const menu of unitMenus.get(work.id) ?? []) {
+-        if (!menuBodies.has(menu.id)) {
+-          menuBodies.set(menu.id, await input.body(menu.id));
++        let body = menuBodies.get(menu.id);
++        if (!body) {
++          body = await input.body(menu.id);
++          menuBodies.set(menu.id, body);
+         }
+         contexts.push({
+           work: menu,
+-          body: menuBodies.get(menu.id),
++          body,
+           menu: true,
+         });
+       }
+@@ -668,19 +671,17 @@ export async function exportCourse<Checks extends ExportChecks>(
+           }
+         }
+         const nativeFiles = await inventory(join(partial, base));
+-        const resourceBindings = [...new Map<string, any>(
++        const resourceBindings = [...new Map<string, BodyResource>(
+           p.resources
+-            .filter((resource: any) =>
++            .filter((resource) =>
+               Object.hasOwn(
+                 nativeFiles,
+                 "clientFilesQuestion/" + resource.target,
+               )
+             )
+-            .map((resource: any) =>
+-              [resource.target, resource] as [string, any]
+-            ),
++            .map((resource) => [resource.target, resource]),
+         ).values()]
+-          .sort((left: any, right: any) =>
++          .sort((left, right) =>
+             left.target.localeCompare(right.target)
+           );
+         const snapshot = canonical({
+diff --git a/_extensions/course-prairielearn/application/export.ts b/_extensions/course-prairielearn/application/export.ts
+index 2c187e8..70b4bab 100644
+--- a/_extensions/course-prairielearn/application/export.ts
++++ b/_extensions/course-prairielearn/application/export.ts
+@@ -464,7 +464,9 @@ export async function renderPublicBody(
+   ).replaceAll(resourceMarker + "/", clientFilesToken + "/");
+   return { html, files };
+ }
+-function metadata(q: any): string {
++function metadata(
++  q: Pick<PublicBodyPackage["questions"][number], "difficulty" | "time">,
++): string {
+   const difficulty: Record<string, string> = {
+     introductory: "Начальный",
+     intermediate: "Средний",
+@@ -479,7 +481,7 @@ function metadata(q: any): string {
+     : "";
+ }
+ export async function exportPrairieLearn(
+-  p: any,
++  p: PublicBodyPackage,
+   context: ProjectContext,
+   binding: any,
+   output: string,
+@@ -537,7 +539,7 @@ export async function exportPrairieLearn(
+     refuse("Требуется одна работа", "works");
+   }
+   if (
+-    !fields(work, ["owner", "id", "key", "source", "kind", "title", "slots"], [
++    !work || !fields(work, ["owner", "id", "key", "source", "kind", "title", "slots"], [
+       "theoryTime",
+       "relatedExercise",
+       "introduction",
+@@ -552,20 +554,24 @@ export async function exportPrairieLearn(
+     work.theoryTime !== undefined &&
+       (typeof work.theoryTime !== "number" ||
+         !Number.isFinite(work.theoryTime) || work.theoryTime <= 0)
+-  ) refuse("Неверные поля работы v2", "works");
++  ) return refuse("Неверные поля работы v2", "works");
+   try {
+     validateSlots(work.slots, p.owner, work.id, true);
+   } catch (error) {
+     refuse("Неверные позиции Body v2: " + String(error), "works.slots");
+   }
+-  const candidates = work.slots.flatMap((slot: any) => slot.candidates);
++  const candidates = work.slots.flatMap((slot) => slot.candidates);
+   if (
+     candidates.length !== p.questions.length ||
+-    p.questions.some((q: any) => !candidates.includes(q?.key))
++    p.questions.some((q) => !candidates.includes(q?.key))
+   ) refuse("Каталог должен содержать всех кандидатов", "works.slots");
+-  const assignments = Object.fromEntries(
+-    work.slots.flatMap((slot: any) =>
+-      slot.candidates.map((id: string) => [id, slot.assignment])
++  const assignments = Object.fromEntries<
++    PublicBodyPackage["works"][number]["slots"][number]["assignment"]
++  >(
++    work.slots.flatMap((slot) =>
++      slot.candidates.map((id): [string, typeof slot.assignment] =>
++        [id, slot.assignment]
++      )
+     ),
+   );
+   const prepared: { name: string; data: Uint8Array }[] = [];
+@@ -616,7 +622,7 @@ export async function exportPrairieLearn(
+         q.answerType,
+       ) ||
+       !Array.isArray(q.condition) || !Array.isArray(q.publicAnswer)
+-    ) questionFail("Неверный публичный вопрос", "questions");
++    ) return questionFail("Неверный публичный вопрос", "questions");
+     if (
+       ["test", "practical"].includes(work.kind) &&
+       q.statementVisibility !== "restricted"
+diff --git a/_extensions/course-prairielearn/application/native-adapter.ts b/_extensions/course-prairielearn/application/native-adapter.ts
+index 40de478..13bf71e 100644
+--- a/_extensions/course-prairielearn/application/native-adapter.ts
++++ b/_extensions/course-prairielearn/application/native-adapter.ts
+@@ -1,6 +1,10 @@
+ import type * as CorePublic from "course-core/public.ts";
+ import type {
+   NativeOperationIdentity,
++  NativeOperation,
++  NativeAssignmentRequest,
++  NativeAssignmentDeliveryOptions,
++  NativeAdapterValidationInput,
+   NativePendingOperationExpectation,
+   NativePreparedLease,
+   NativePreparedOperation,
+@@ -223,15 +227,17 @@ export function createNativeAdapter(
+     : options.core.NativeOperationIdentitySchema.parse(
+       options.preparedIdentity,
+     );
+-  const loaded = new Map<string, ReturnType<typeof decodeNativeBusiness>>();
+-  const effectiveInputs = new Map<string, any>();
++  const captured = new Map<string, {
++    business: ReturnType<typeof decodeNativeBusiness>;
++    input: NativeAdapterValidationInput;
++  }>();
+   let composing = false;
+   let validatingRequest: Awaited<ReturnType<typeof requestFor>> | undefined;
+   let validatedCourse: {
+-    operation: any;
+-    identity: any;
+-    request: any;
+-    proof: any;
++    operation: NativeOperation;
++    identity: NativeOperation["identity"];
++    request: Parameters<NativeOperation["validateRelease"]>[0];
++    proof: Awaited<ReturnType<NativeOperation["validateRelease"]>>;
+   } | undefined;
+   const adapter = {
+     name: "prairielearn",
+@@ -312,16 +318,15 @@ export function createNativeAdapter(
+         ) sources.push({ path: common.source, kind: "file" });
+       }
+       if (composing) {
+-        loaded.set(input.origin.source, business);
+-        effectiveInputs.set(input.origin.source, input);
++        captured.set(input.origin.source, { business, input });
+       }
+       return { sources };
+     },
+     async validateCourse(
+-      operation: any,
+-      request: { expectedSources: string[]; courseId?: string },
++      operation: NativeOperation,
++      request: Parameters<NativeOperation["validateRelease"]>[0],
+       checkpoint?: () => Promise<void>,
+-    ) {
++    ): Promise<Awaited<ReturnType<NativeOperation["validateRelease"]>>> {
+       if (composing) throw Error("PL.ASSESSMENT_INVALID: recursive validation");
+       if (
+         validatedCourse && validatedCourse.operation === operation &&
+@@ -333,13 +338,11 @@ export function createNativeAdapter(
+           return validatedCourse.proof;
+         } catch (error) {
+           validatedCourse = undefined;
+-          loaded.clear();
+-          effectiveInputs.clear();
++          captured.clear();
+           throw error;
+         }
+       }
+-      loaded.clear();
+-      effectiveInputs.clear();
++      captured.clear();
+       validatedCourse = undefined;
+       composing = true;
+       try {
+@@ -365,12 +368,14 @@ export function createNativeAdapter(
+         await operation.assertCurrent();
+         const proof = await operation.validateRelease(request, [adapter]);
+         if (
+-          loaded.size !== request.expectedSources.length ||
+-          request.expectedSources.some((source) => !loaded.has(source))
++          captured.size !== request.expectedSources.length ||
++          request.expectedSources.some((source) => !captured.has(source))
+         ) throw Error("PL.ASSESSMENT_INVALID: missing authenticated source");
+-        assertNativeSeedTargets([...loaded.values()]);
++        assertNativeSeedTargets(
++          [...captured.values()].map(({ business }) => business),
++        );
+         const methods: Record<string, "external" | "manual" | "mixed"> = {};
+-        for (const business of loaded.values()) {
++        for (const { business } of captured.values()) {
+           for (const [id, settings] of Object.entries(business.questions)) {
+             if (Object.hasOwn(methods, id)) {
+               throw Error("PL.ASSESSMENT_INVALID: repeated declaration");
+@@ -378,8 +383,7 @@ export function createNativeAdapter(
+             methods[id] = settings.grading.method;
+           }
+         }
+-        for (const [source, business] of loaded) {
+-          const input = effectiveInputs.get(source);
++        for (const [source, { business, input }] of captured) {
+           if (input.assessment && business.assessment) {
+             validateGradingComponents({
+               ...input.assessment,
+@@ -402,8 +406,7 @@ export function createNativeAdapter(
+         };
+         return proof;
+       } catch (error) {
+-        loaded.clear();
+-        effectiveInputs.clear();
++        captured.clear();
+         throw error;
+       } finally {
+         composing = false;
+@@ -414,9 +417,9 @@ export function createNativeAdapter(
+      * живой composition. Этот bridge не создаёт scope/plan/condition authority.
+      */
+     async assignmentDelivery(
+-      operation: any,
+-      request: { source: string; assessmentId: string },
+-      options: { projectPlans: readonly unknown[]; references?: unknown },
++      operation: NativeOperation,
++      request: NativeAssignmentRequest,
++      options: NativeAssignmentDeliveryOptions,
+       release: { expectedSources: string[]; courseId?: string },
+       checkpoint?: () => Promise<void>,
+     ) {
+@@ -442,15 +445,18 @@ export function createNativeAdapter(
+       ) {
+         throw Error("PL.ASSIGNMENT_CHANGED: public delivery binding");
+       }
+-      const nativeAnswers: Record<string, unknown> = {},
+-        nativeSettings: Record<string, unknown> = {};
++      const nativeAnswers: Record<
++        string,
++        NonNullable<NativeAdapterValidationInput["declarations"][number]["answer"]>
++      > = {},
++        nativeSettings: ReturnType<typeof decodeNativeBusiness>["questions"] = {};
+       const ids = new Set<string>();
+       for (const question of delivery.publicPackage.questions) {
+-        const input = effectiveInputs.get(question.source);
+-        const declaration = input?.declarations.find((d: any) =>
++        const source = captured.get(question.source);
++        const declaration = source?.input.declarations.find((d) =>
+           d.id === question.id
+         );
+-        const settings = loaded.get(question.source)?.questions[question.id];
++        const settings = source?.business.questions[question.id];
+         if (
+           !declaration || !settings || ids.has(question.id) ||
+           !delivery.conditions[question.id]
+@@ -481,11 +487,11 @@ export function createNativeAdapter(
+     },
+     /** Закрытое состояние PL composition; не включать в public Body/catalog/README. */
+     validatedInput(source: string) {
+-      const input = effectiveInputs.get(source);
+-      if (!validatedCourse || !input) {
++      const value = captured.get(source);
++      if (!validatedCourse || !value) {
+         throw Error("PL.CAPTURE_MISSING: validation не выполнена");
+       }
+-      return structuredClone(input);
++      return structuredClone(value.input);
+     },
+     async workspaceArtifact(
+       request: {
+@@ -502,20 +508,21 @@ export function createNativeAdapter(
+       await adapter.validateCourse(request.operation, {
+         expectedSources: request.expectedSources,
+       }, request.checkpoint);
+-      const business = loaded.get(request.source),
+-        input = effectiveInputs.get(request.source);
+-      const declaration = input?.declarations.find((d: any) =>
++      const source = captured.get(request.source),
++        business = source?.business,
++        input = source?.input;
++      const declaration = input?.declarations.find((d) =>
+         d.id === request.exerciseId
+       );
+       if (
+         !business || !declaration ||
+-        request.operation.identity.operation !== input.origin.operation
++        request.operation.identity.operation !== input?.origin.operation
+       ) throw Error("PL.CAPTURE_CHANGED: Workspace operation");
+       const inventory = options.core.ArtifactInventorySchema.parse(
+         request.inventory,
+       );
+       if (
+-        inventory.operation !== input.origin.operation ||
++        inventory.operation !== input?.origin.operation ||
+         inventory.exerciseId !== request.exerciseId ||
+         inventory.audience !== "student"
+       ) throw Error("PL.WORKSPACE_SEED: inventory identity");
+@@ -546,11 +553,11 @@ export function createNativeAdapter(
+     },
+     /** Значения только после настоящего executable callback; publish владеет outer Core fence. */
+     business(source: string) {
+-      const result = loaded.get(source);
++      const result = captured.get(source);
+       if (!validatedCourse || !result) {
+         throw Error("PL.CAPTURE_MISSING: validation не выполнена");
+       }
+-      return structuredClone(result);
++      return structuredClone(result.business);
+     },
+   };
+   return adapter;
+diff --git a/_extensions/course-prairielearn/application/native-course.ts b/_extensions/course-prairielearn/application/native-course.ts
+index 099b2d1..8ac53da 100644
+--- a/_extensions/course-prairielearn/application/native-course.ts
++++ b/_extensions/course-prairielearn/application/native-course.ts
+@@ -1,3 +1,5 @@
++import type { NativeOperation, NativeAssignmentDeliveryOptions } from "course-core/public.ts";
++import type { PublicBodyPackage } from "course-core/body-export/model.ts";
+ import { captureNativeAuxiliary } from "./native-auxiliary.ts";
+ import { dirname, join, resolve } from "node:path";
+ import { createNativeAdapter } from "./native-adapter.ts";
+@@ -16,6 +18,8 @@ import {
+   nativeReferenceBindings,
+   publicExtension,
+ } from "./native-materialize.ts";
++type NativeAdapter = ReturnType<typeof createNativeAdapter>;
++type NativeDelivered = Awaited<ReturnType<NativeAdapter["assignmentDelivery"]>>;
+ export type NativeProjectPlansResult<T> = {
+   value: T;
+   projectContextMetrics: Readonly<{
+@@ -31,16 +35,8 @@ export async function withNativeProjectPlans<T>(
+   profiles: string[],
+   witness: any,
+   use: (plans: any[], checkpoint: () => Promise<void>) => Promise<T>,
+-  operation: any,
++  operation: NativeOperation,
+ ): Promise<NativeProjectPlansResult<T>> {
+-  const withProjects = typeof operation?.withProjectContracts === "function"
+-    ? operation.withProjectContracts
+-    : operation?.withProjectContexts;
+-  if (typeof withProjects !== "function") {
+-    throw Error(
+-      "PL.NATIVE_PROJECT_CONTEXT_REUSE_REQUIRED: public current-operation A1 batch unavailable; no standalone fallback",
+-    );
+-  }
+   const formats = [
+     ...new Set(witness.projects.map((p: any) => p.format)),
+   ] as string[];
+@@ -70,10 +66,7 @@ export async function withNativeProjectPlans<T>(
+     }
+     return snapshot as Readonly<Record<string, number>>;
+   };
+-  const value = await withProjects.call(
+-    operation,
+-    requests,
+-    async (batch: any) => {
++  const useBatch = async (batch: any): Promise<T> => {
+       retained = batch;
+       // Capability захватывается только этой callback; старый Core всегда full.
+       const checkpoint = typeof batch.checkpoint === "function"
+@@ -123,8 +116,8 @@ export async function withNativeProjectPlans<T>(
+       const result = await use(plans, checkpoint);
+       inside = metrics();
+       return result;
+-    },
+-  );
++  };
++  const value = await operation.withProjectContracts(requests, useBatch);
+   const final = metrics();
+   if (!inside) {
+     throw Error("PL.NATIVE_METRICS_UNAVAILABLE: callback observation missing");
+@@ -136,21 +129,21 @@ export async function withNativeProjectPlans<T>(
+ export async function withNativeAssignments<T>(
+   input: {
+     Core: any;
+-    operation: any;
++    operation: NativeOperation;
+     descriptor: any;
+     selection: {
+       expectedSources: string[];
+       assessments: { source: string; id: string }[];
+     };
+-    references?: unknown;
++    references?: NativeAssignmentDeliveryOptions["references"];
+   },
+   use: (
+     prepared: {
+-      adapter: any;
+-      proof: any;
+-      witness: any;
+-      projectPlans: any[];
+-      deliveries: any[];
++      adapter: NativeAdapter;
++      proof: Awaited<ReturnType<NativeAdapter["validateCourse"]>>;
++      witness: Awaited<ReturnType<typeof nativeProjectWitness>>;
++      projectPlans: NativeAssignmentDeliveryOptions["projectPlans"];
++      deliveries: NativeDelivered[];
+       checkpoint: () => Promise<void>;
+     },
+   ) => Promise<T>,
+@@ -174,7 +167,7 @@ export async function withNativeAssignments<T>(
+     descriptor.identity.profiles,
+     witness,
+     async (projectPlans, checkpoint) => {
+-      const deliveries = [];
++      const deliveries: NativeDelivered[] = [];
+       for (const assessment of selection.assessments) {
+         deliveries.push(
+           await adapter.assignmentDelivery(
+@@ -238,7 +231,7 @@ export function authoredNativeSettings(value: any) {
+ export async function prepareNativeCourse(
+   input: {
+     Core: any;
+-    operation: any;
++    operation: NativeOperation;
+     descriptor: any;
+     selection: {
+       expectedSources: string[];
+@@ -286,7 +279,7 @@ export async function prepareNativeCourse(
+       const courseId = deliveries[0]?.publicPackage.owner;
+       if (
+         !courseId ||
+-        deliveries.some((d: any) => d.publicPackage.owner !== courseId)
++        deliveries.some((d) => d.publicPackage.owner !== courseId)
+       ) throw Error("PL.ASSIGNMENT_CHANGED: course owner");
+       const rows = witness.sourceRows,
+         bySource = new Map(rows.map((r: any) => [r.source, r.sha256]));
+@@ -327,7 +320,7 @@ export async function prepareNativeCourse(
+         nativeResponseSlots: any = {},
+         artifacts: Record<string, Materialized> = {},
+         settings: any = {},
+-        bodies = new Map<string, any>();
++        bodies = new Map<string, PublicBodyPackage>();
+       // Введение каждого реально используемого меню готово до дорогих A1 ZIP.
+       // Assignment membership проверяет Core по раннему observed context intent.
+       if (options.instance) {
+@@ -390,10 +383,10 @@ export async function prepareNativeCourse(
+         }
+         return registryInput.value;
+       };
+-      const materializationTotal = new Set(deliveries.flatMap((d: any) =>
+-        d.publicPackage.questions.filter((q: any) =>
++      const materializationTotal = new Set(deliveries.flatMap((d) =>
++        d.publicPackage.questions.filter((q) =>
+           !d.nativeAnswers[q.id]
+-        ).map((q: any) =>
++        ).map((q) =>
+           q.id
+         )
+       )).size;
+@@ -430,7 +423,7 @@ export async function prepareNativeCourse(
+           const facts = witness.projects.filter((p: any) =>
+             p.source === q.source && p.fact.exerciseId === q.id
+           );
+-          const pairs = projectPlans.filter((p: any) =>
++          const pairs = projectPlans.filter((p) =>
+             p.source === q.source && p.exerciseId === q.id
+           );
+           if (facts.length !== 1 || pairs.length !== 1) {
+@@ -439,16 +432,16 @@ export async function prepareNativeCourse(
+           const fact = facts[0].fact,
+             business = adapter.business(q.source),
+             declaration = adapter.validatedInput(q.source).declarations.find((
+-              d: any,
++              d,
+             ) => d.id === q.id);
+           if (
+             fact.check &&
+-            canonical(
++            (!declaration || canonical(
+                 decodeNativeCheck(
+                   business.raw.projectChecks,
+                   declaration.attributes["project-check"],
+                 ),
+-              ) !== canonical(fact.check)
++              ) !== canonical(fact.check))
+           ) throw Error("PL.CHECKS_CHANGED: Core/C policy parity");
+           const runtime = fact.check
+             ? (await registry()).profiles?.[fact.check.runtime]
+@@ -539,13 +532,14 @@ export async function prepareNativeCourse(
+           output,
+           checksOutput: options.checksOutput,
+           body: async (id) => {
+-            if (!bodies.has(id)) {
++            const body = bodies.get(id);
++            if (!body) {
+               throw Error(
+                 "PL.NATIVE_INTENT_INCOMPLETE: selected menu context absent: " +
+                   id,
+               );
+             }
+-            return bodies.get(id);
++            return body;
+           },
+           candidateImage: options.candidateImage,
+           deferPublish: true,
+diff --git a/tests/export-course.test.ts b/tests/export-course.test.ts
+index 3ddf3b9..742e5bd 100644
+--- a/tests/export-course.test.ts
++++ b/tests/export-course.test.ts
+@@ -1,3 +1,4 @@
++import type { PublicBodyPackage } from "course-core/body-export/model.ts";
+ import { NativeProjectCheckSchema } from "../_extensions/course-prairielearn/application/native-checks.ts";
+ import {runtimeDescriptor} from "../_extensions/course-prairielearn/application/runtime-descriptor.ts";
+ import {
+@@ -238,7 +239,7 @@ Deno.test("full native export is deterministic, closed and atomic across output
+         "single-variant": false,
+       },
+     };
+-    const assignment = { requirement: "required", workMode: "individual" };
++    const assignment: PublicBodyPackage["works"][number]["slots"][number]["assignment"] = { requirement: "required", workMode: "individual" };
+     const work = {
+       id: "sec-lab",
+       source: "lab.qmd",
+@@ -285,7 +286,7 @@ Deno.test("full native export is deterministic, closed and atomic across output
+       sources: [selection],
+       trustedTests: [test],
+     };
+-    const body = {
++    const body: PublicBodyPackage = {
+       schema: "course-body-package-v2",
+       owner: "demo",
+       release: "1",
+@@ -303,7 +304,7 @@ Deno.test("full native export is deterministic, closed and atomic across output
+         condition: [{ t: "Para", c: [{ t: "Str", c: "PUBLIC_CONDITION" }] }],
+         publicAnswer: [],
+       }],
+-      resources: [{owner: "demo", source: "lab.qmd", effectiveBase: root, target: "diagram.svg", visibility: "public", data: btoa("<svg>PUBLIC_DIAGRAM</svg>"), sha256: await hash("<svg>PUBLIC_DIAGRAM</svg>")}],
++      resources: [{owner: "demo", source: "lab.qmd", effectiveBase: root, target: "diagram.svg", visibility: "public", data: btoa("<svg>PUBLIC_DIAGRAM</svg>")}],
+       works: [{
+         owner: "demo",
+         id: "sec-lab",
+@@ -1122,7 +1123,7 @@ Deno.test("UUID assessment сохраняется при переименова
+   try {
+     await Deno.mkdir(root + "/project/student", { recursive: true });
+     await Deno.writeTextFile(root + "/project/student/README.md", "Условие");
+-    const assignment = { requirement: "required", workMode: "individual" };
++    const assignment: PublicBodyPackage["works"][number]["slots"][number]["assignment"] = { requirement: "required", workMode: "individual" };
+     const work: any = {
+       id: "sec-lab", source: "lab.qmd", kind: "lab", title: "Работа",
+       slots: [{ id: "exr-a", selection: "fixed", candidates: ["exr-a"], assignment }],
+@@ -1136,7 +1137,7 @@ Deno.test("UUID assessment сохраняется при переименова
+       },
+       "question-defaults": { topic: "Курс", grading: { method: "manual" }, submission: { mode: "upload" } },
+     };
+-    const body = {
++    const body: PublicBodyPackage = {
+       schema: "course-body-package-v2", owner: "demo", release: "native", apiVersion: [1, 23, 1],
+       questions: [{ owner: "demo", id: "exr-a", key: "demo/exr-a", title: "Задача", source: "a.qmd",
+         visibility: "public", statementVisibility: "open", hasPublicSolution: false, answerType: "manual",
+diff --git a/tests/export.test.ts b/tests/export.test.ts
+index bc35667..7915fa2 100644
+--- a/tests/export.test.ts
++++ b/tests/export.test.ts
+@@ -1,9 +1,10 @@
++import type { PublicBodyPackage } from "course-core/body-export/model.ts";
+ import { stripVTControlCharacters } from "node:util";
+ import { exportPrairieLearn } from "../_extensions/course-prairielearn/application/export.ts";
+ const assert = (v: unknown, m: string) => {
+   if (!v) throw Error(m);
+ };
+-const p = () => ({
++const p = (): PublicBodyPackage => ({
+   schema: "course-body-package-v2",
+   owner: "demo",
+   release: "native",
+diff --git a/tests/git-transport.test.ts b/tests/git-transport.test.ts
+index a1b176f..cff2395 100644
+--- a/tests/git-transport.test.ts
++++ b/tests/git-transport.test.ts
+@@ -1,3 +1,4 @@
++import type { PublicBodyPackage } from "course-core/body-export/model.ts";
+ // Синтетический export unit: настоящий Git/ZIP/Pandoc, без NativeRun и рендера курса.
+ import {exportPrairieLearn} from '../_extensions/course-prairielearn/application/export.ts';
+ import {join,relative} from 'node:path';
+@@ -36,7 +37,7 @@ Deno.test('Git clone переносит полный native payload, а starter
+   const zip=join(root,'starter.zip');
+   await command(root,'python3',['-c','import pathlib,sys,zipfile; r=pathlib.Path(sys.argv[1]); z=zipfile.ZipFile(sys.argv[2],"w"); [z.write(p,p.relative_to(r)) for p in sorted(r.rglob("*")) if p.is_file()]; z.close()',student,zip]);
+   const archive=await Deno.readFile(zip);
+-  const pkg={schema:'course-body-package-v2',owner:'synthetic',release:'native',apiVersion:[1,23,1],questions:[{owner:'synthetic',id:'exr-report',key:'synthetic/exr-report',title:'История Git',difficulty:'introductory',source:'report.qmd',visibility:'public',statementVisibility:'open',hasPublicSolution:false,answerType:'manual',condition:[{t:'Para',c:[{t:'Str',c:'Распакуйте комплект.'}]}],publicAnswer:[]}],works:[{owner:'synthetic',id:'sec-report',key:'synthetic/sec-report',source:'report.qmd',kind:'lab',title:'История Git',slots:[{id:'synthetic/sec-report/exr-report',selection:'fixed',candidates:['synthetic/exr-report'],assignment:{requirement:'required',workMode:'individual'}}]}],resources:[]};
++  const pkg: PublicBodyPackage={schema:'course-body-package-v2',owner:'synthetic',release:'native',apiVersion:[1,23,1],questions:[{owner:'synthetic',id:'exr-report',key:'synthetic/exr-report',title:'История Git',difficulty:'introductory',source:'report.qmd',visibility:'public',statementVisibility:'open',hasPublicSolution:false,answerType:'manual',condition:[{t:'Para',c:[{t:'Str',c:'Распакуйте комплект.'}]}],publicAnswer:[]}],works:[{owner:'synthetic',id:'sec-report',key:'synthetic/sec-report',source:'report.qmd',kind:'lab',title:'История Git',slots:[{id:'synthetic/sec-report/exr-report',selection:'fixed',candidates:['synthetic/exr-report'],assignment:{requirement:'required',workMode:'individual'}}]}],resources:[]};
+   const output=join(root,'native');
+   await exportPrairieLearn(pkg,{projectRoot:root,projects:{'exr-report':'/projects/report'},studentArtifacts:{'exr-report':{files,archive}}},{questions:{'exr-report':{topic:'Synthetic',grading:{method:'manual'},submission:{mode:'upload'},files:[]}}},output);
+   const intended=await inventory(output);
+diff --git a/tests/manual-mixed.test.ts b/tests/manual-mixed.test.ts
+index 667e23c..d5bb034 100644
+--- a/tests/manual-mixed.test.ts
++++ b/tests/manual-mixed.test.ts
+@@ -1,3 +1,4 @@
++import type { PublicBodyPackage } from "course-core/body-export/model.ts";
+ import {question} from '../_extensions/course-prairielearn/application/declarations.ts';
+ import {gradingPolicy,validateGradingComponents} from '../_extensions/course-prairielearn/application/grading-policy.ts';
+ const assert=(value:unknown,message:string)=>{if(!value)throw Error(message)};
+@@ -33,7 +34,7 @@ Deno.test('manual upload экспортируется без runtime и tests, 
+  const root=await Deno.makeTempDir({prefix:'manual-export-'});
+  try{
+   await Deno.mkdir(root+'/projects/report/student',{recursive:true});await Deno.writeTextFile(root+'/projects/report/student/README.md','PUBLIC_README');
+-  const pkg={schema:'course-body-package-v2',owner:'synthetic',release:'native',apiVersion:[1,23,1],questions:[{owner:'synthetic',id:'exr-report',key:'synthetic/exr-report',title:'Исследование',difficulty:'introductory',source:'report.qmd',visibility:'public',statementVisibility:'open',hasPublicSolution:false,answerType:'manual',condition:[{t:'Para',c:[{t:'Str',c:'PUBLIC_CONDITION'}]}],publicAnswer:[]}],works:[{owner:'synthetic',id:'sec-report',key:'synthetic/sec-report',source:'report.qmd',kind:'lab',title:'Исследование',slots:[{id:'synthetic/sec-report/exr-report',selection:'fixed',candidates:['synthetic/exr-report'],assignment:{requirement:'required',workMode:'individual'}}]}],resources:[]};
++  const pkg: PublicBodyPackage={schema:'course-body-package-v2',owner:'synthetic',release:'native',apiVersion:[1,23,1],questions:[{owner:'synthetic',id:'exr-report',key:'synthetic/exr-report',title:'Исследование',difficulty:'introductory',source:'report.qmd',visibility:'public',statementVisibility:'open',hasPublicSolution:false,answerType:'manual',condition:[{t:'Para',c:[{t:'Str',c:'PUBLIC_CONDITION'}]}],publicAnswer:[]}],works:[{owner:'synthetic',id:'sec-report',key:'synthetic/sec-report',source:'report.qmd',kind:'lab',title:'Исследование',slots:[{id:'synthetic/sec-report/exr-report',selection:'fixed',candidates:['synthetic/exr-report'],assignment:{requirement:'required',workMode:'individual'}}]}],resources:[]};
+   await exportPrairieLearn(pkg,{projectRoot:root,projects:{'exr-report':'/projects/report'}},{questions:{'exr-report':{topic:'Synthetic',grading:{method:'manual'},submission:{mode:'upload'},files:[]}}},root+'/out');
+   const base=root+'/out/questions/synthetic/exr-report',info=JSON.parse(await Deno.readTextFile(base+'/info.json')),html=await Deno.readTextFile(base+'/question.html');
+   assert(infoQuestion(info)&&info.gradingMethod==='Manual'&&info.showCorrectAnswer===false&&!info.externalGradingOptions,'Native Manual declaration invalid');
+diff --git a/tests/native-answer.test.ts b/tests/native-answer.test.ts
+index 4ffc715..7833f94 100644
+--- a/tests/native-answer.test.ts
++++ b/tests/native-answer.test.ts
+@@ -1,3 +1,5 @@
++import type { NativeAdapterValidationInput } from "course-core/public.ts";
++import type { PublicBodyPackage } from "course-core/body-export/model.ts";
+ function fixtureSlots(a: any) {
+   const slot = (name: string, type: string, i: number, extra: any = {}) => ({
+     name,
+@@ -41,7 +43,7 @@ async function copyTree(from: string, to: string) {
+ import { exportCourse } from "../_extensions/course-prairielearn/application/export-course.ts";
+ import { exportPrairieLearn } from "../_extensions/course-prairielearn/application/export.ts";
+ import { infoQuestion } from "../_extensions/course-prairielearn/application/native-validators.js";
+-const forms = [{ type: "manual", submission: "text" }, {
++const forms: NonNullable<NativeAdapterValidationInput["declarations"][number]["answer"]>[] = [{ type: "manual", submission: "text" }, {
+   type: "numeric",
+   key: { value: 734129, tolerance: { absolute: 0.1 } },
+ }, {
+@@ -78,7 +80,7 @@ for (const answer of forms) {
+         const id = "exr-answer",
+           key = "fixture/" + id,
+           manual = answer.type === "manual",
+-          pkg = {
++          pkg: PublicBodyPackage = {
+             schema: "course-body-package-v2",
+             owner: "fixture",
+             release: "native",
+diff --git a/tests/native-contract-batch.test.ts b/tests/native-contract-batch.test.ts
+index 3d1f992..e99ed1d 100644
+--- a/tests/native-contract-batch.test.ts
++++ b/tests/native-contract-batch.test.ts
+@@ -2,8 +2,8 @@ import { withNativeProjectPlans } from "../_extensions/course-prairielearn/appli
+ const assert = (v: unknown, m: string) => {
+   if (!v) throw Error(m);
+ };
+-for (const narrow of [true, false]) {
+-  Deno.test(`project plans выбирают ${narrow ? "contract" : "legacy"} batch без изменения student/full и metrics`, async () => {
++for (const withContextMethod of [true, false]) {
++  Deno.test(`project plans используют contract batch ${withContextMethod ? "с дополнительным context методом" : "без обращения к context методу"} и сохраняют student/full и metrics`, async () => {
+     const events: string[] = [],
+       contexts = [{ input: "/owner/projects/a/native-input.qmd" }, {
+         input: "/owner/projects/b/native-input.qmd",
+@@ -24,26 +24,18 @@ for (const narrow of [true, false]) {
+     };
+     const operation: any = {
+       token: 17,
+-      async withProjectContexts(requests: any, use: any) {
++      async withProjectContracts(requests: any, use: any) {
+         assert(this === operation, "Потерян receiver");
+-        events.push("legacy");
++        events.push("contract");
+         assert(requests[0].inputs.length === 2, "Потеряна группировка");
+         const result = await use(batch);
+         closed = true;
+         return result;
+       },
+     };
+-    if (narrow) {
+-      operation.withProjectContracts = async function (
+-        requests: any,
+-        use: any,
+-      ) {
+-        assert(this === operation, "Потерян receiver");
+-        events.push("contract");
+-        assert(requests[0].inputs.length === 2, "Потеряна группировка");
+-        const result = await use(batch);
+-        closed = true;
+-        return result;
++    if (withContextMethod) {
++      operation.withProjectContexts = async () => {
++        throw Error("Текущий NativeOperation не требует legacy выбора");
+       };
+     }
+     const Core = {
+@@ -75,8 +67,8 @@ for (const narrow of [true, false]) {
+     }, operation);
+     assert(
+       events.join(",") ===
+-        `${narrow ? "contract" : "legacy"},student,full,student,full,use`,
+-      "Неверный API selection/order",
++        "contract,student,full,student,full,use",
++      "Неверный contract API/order",
+     );
+     assert(
+       result.value === "exact" &&
+@@ -86,45 +78,3 @@ for (const narrow of [true, false]) {
+     );
+   });
+ }
+-Deno.test("ошибка contract batch сохраняется без silent legacy retry", async () => {
+-  const sentinel = Error("original contract failure");
+-  let legacy = 0, caught: unknown;
+-  try {
+-    await withNativeProjectPlans(
+-      {},
+-      "/owner",
+-      [],
+-      { projects: [] },
+-      async () => {},
+-      {
+-        withProjectContracts: async () => {
+-          throw sentinel;
+-        },
+-        withProjectContexts: async () => {
+-          legacy++;
+-        },
+-      },
+-    );
+-  } catch (e) {
+-    caught = e;
+-  }
+-  assert(caught === sentinel && legacy === 0, "Ошибка скрыта fallback");
+-});
+-Deno.test("feature check принимает contract API без legacy метода", async () => {
+-  const metrics = { inspectCalls: 0, fullWalks: 0, sourceBytesRead: 0 };
+-  const result = await withNativeProjectPlans(
+-    {},
+-    "/owner",
+-    [],
+-    { projects: [] },
+-    async () => "exact",
+-    {
+-      withProjectContracts: async (_r: any, use: any) =>
+-        await use({ groups: [], metrics }),
+-    },
+-  );
+-  assert(
+-    result.value === "exact" && result.projectContextMetrics.final === metrics,
+-    "Feature check требует отсутствующий legacy метод",
+-  );
+-});
+diff --git a/tests/native-course-export-types.ts b/tests/native-course-export-types.ts
+index 30b4624..cd2bdc2 100644
+--- a/tests/native-course-export-types.ts
++++ b/tests/native-course-export-types.ts
+@@ -76,3 +76,25 @@ type _PublicationSubmission = Require<Exact<PublicationQuestion["submission"], S
+ type _PublicationGrading = Require<Exact<PublicationQuestion["grading"]["method"], "external" | "manual" | "mixed">>;
+ type _BusinessConsumedInput = Require<NativeAdapterValidationInput extends NativeBusinessInput ? true : false>;
+ type _PublicationInput = Require<Exact<ReturnType<NativePublication["adapterInputs"]>[number], NativeAdapterValidationInput>>;
++
++// Реальная Native body цепочка: Exact отклоняет any, одной assignability мало.
++import type { NativeOperation, NativeAssignmentDelivery, NativeAssignmentRequest, NativeAssignmentDeliveryOptions } from "course-core/public.ts";
++import type { PublicBodyPackage, BodyResource } from "course-core/body-export/model.ts";
++import type { createNativeAdapter } from "../_extensions/course-prairielearn/application/native-adapter.ts";
++import type { prepareNativeCourse, withNativeAssignments, withNativeProjectPlans } from "../_extensions/course-prairielearn/application/native-course.ts";
++import type { exportPrairieLearn } from "../_extensions/course-prairielearn/application/export.ts";
++type Adapter = ReturnType<typeof createNativeAdapter>;
++type Delivered = Awaited<ReturnType<Adapter["assignmentDelivery"]>>;
++type PreparedBodies = Parameters<Parameters<typeof withNativeAssignments>[1]>[0];
++type _CourseOperation = Require<Exact<Parameters<typeof prepareNativeCourse>[0]["operation"], NativeOperation>>;
++type _CompositionOperation = Require<Exact<Parameters<typeof withNativeAssignments>[0]["operation"], NativeOperation>>;
++type _ProjectOperation = Require<Exact<Parameters<typeof withNativeProjectPlans>[5], NativeOperation>>;
++type _AdapterOperation = Require<Exact<Parameters<Adapter["assignmentDelivery"]>[0], NativeOperation>>;
++type _AdapterRequest = Require<Exact<Parameters<Adapter["assignmentDelivery"]>[1], NativeAssignmentRequest>>;
++type _AdapterOptions = Require<Exact<Parameters<Adapter["assignmentDelivery"]>[2], NativeAssignmentDeliveryOptions>>;
++type _CoreDelivery = Require<Exact<Delivered["delivery"], NativeAssignmentDelivery>>;
++type _AdapterPackage = Require<Exact<Delivered["publicPackage"], PublicBodyPackage>>;
++type _CompositionPackage = Require<Exact<PreparedBodies["deliveries"][number]["publicPackage"], PublicBodyPackage>>;
++type _InputBody = Require<Exact<Awaited<ReturnType<ExportInput["body"]>>, PublicBodyPackage>>;
++type _ExporterPackage = Require<Exact<Parameters<typeof exportPrairieLearn>[0], PublicBodyPackage>>;
++type _BodyResource = Require<Exact<Awaited<ReturnType<ExportInput["body"]>>["resources"][number], BodyResource>>;
+diff --git a/tests/native-publication.test.ts b/tests/native-publication.test.ts
+index 643f8bd..804a6c3 100644
+--- a/tests/native-publication.test.ts
++++ b/tests/native-publication.test.ts
+@@ -1,3 +1,4 @@
++import type { PublicBodyPackage } from "course-core/body-export/model.ts";
+ // Ограниченный lifecycle harness; scope callbacks здесь НЕ genuine Core operation/prior P.
+ import { exportPrairieLearn } from "../_extensions/course-prairielearn/application/export.ts";
+ import { exportCourse } from "../_extensions/course-prairielearn/application/export-course.ts";
+@@ -28,16 +29,21 @@ async function fixture(course: boolean) {
+   const answer = { type: "manual", submission: "text" },
+     id = "exr-answer",
+     key = "fixture/" + id;
++  const kind: PublicBodyPackage["works"][number]["kind"] = "lab";
++  const selection: PublicBodyPackage["works"][number]["slots"][number]["selection"] = "fixed";
++  const assignment: PublicBodyPackage["works"][number]["slots"][number]["assignment"] = {
++    requirement: "required", workMode: "individual",
++  };
+   const work = {
+     id: "sec-work",
+     source: "work.qmd",
+-    kind: "lab",
++    kind,
+     title: "Работа",
+     slots: [{
+       id,
+-      selection: "fixed",
++      selection,
+       candidates: [id],
+-      assignment: { requirement: "required", workMode: "individual" },
++      assignment,
+     }],
+     extensions: {
+       prairielearn: {
+@@ -49,7 +55,7 @@ async function fixture(course: boolean) {
+       },
+     },
+   };
+-  const pkg = {
++  const pkg: PublicBodyPackage = {
+     schema: "course-body-package-v2",
+     owner: "fixture",
+     release: "native",
+diff --git a/tests/native-reuse-refusal.test.ts b/tests/native-reuse-refusal.test.ts
+deleted file mode 100644
+index 86fe89c..0000000
+--- a/tests/native-reuse-refusal.test.ts
++++ /dev/null
+@@ -1,73 +0,0 @@
+-import { withNativeProjectPlans } from "../_extensions/course-prairielearn/application/native-course.ts";
+-// Только inert refusals: эти fixtures не являются genuine operation/contexts.
+-Deno.test("missing public operation A1 refuses without standalone fallback", async () => {
+-  let legacyCalls = 0;
+-  const Core = {
+-    readProjectContexts() {
+-      legacyCalls++;
+-      throw Error("legacy fallback");
+-    },
+-  };
+-  let error = "";
+-  try {
+-    await withNativeProjectPlans(
+-      Core,
+-      "/owner",
+-      [],
+-      { projects: [] },
+-      async () => {},
+-      {},
+-    );
+-  } catch (e) {
+-    error = String(e);
+-  }
+-  if (
+-    !error.includes("PL.NATIVE_PROJECT_CONTEXT_REUSE_REQUIRED") || legacyCalls
+-  ) throw Error("missing API used legacy fallback");
+-});
+-Deno.test("missing batch observations remain unavailable rather than zero", async () => {
+-  let error = "";
+-  try {
+-    await withNativeProjectPlans(
+-      {},
+-      "/owner",
+-      [],
+-      { projects: [] },
+-      async () => {},
+-      { withProjectContexts: async () => undefined },
+-    );
+-  } catch (e) {
+-    error = String(e);
+-  }
+-  if (!error.includes("PL.NATIVE_METRICS_UNAVAILABLE")) {
+-    throw Error("unobserved metrics guessed");
+-  }
+-});
+-Deno.test("non numeric observation cannot become accepted cost DTO", async () => {
+-  let error = "";
+-  try {
+-    await withNativeProjectPlans(
+-      {},
+-      "/owner",
+-      [],
+-      { projects: [] },
+-      async () => {},
+-      {
+-        withProjectContexts: async (_r: any, use: any) =>
+-          await use({
+-            groups: [],
+-            metrics: {
+-              inspectCalls: "unknown",
+-              fullWalks: 0,
+-              sourceBytesRead: 0,
+-            },
+-          }),
+-      },
+-    );
+-  } catch (e) {
+-    error = String(e);
+-  }
+-  if (!error.includes("PL.NATIVE_METRICS_UNAVAILABLE")) {
+-    throw Error("unknown metric became zero");
+-  }
+-});
+diff --git a/tests/native-seed-packages.ts b/tests/native-seed-packages.ts
+index c0a73bd..09bea6c 100644
+--- a/tests/native-seed-packages.ts
++++ b/tests/native-seed-packages.ts
+@@ -1,3 +1,4 @@
++import type { PublicBodyPackage } from "course-core/body-export/model.ts";
+ import { workspaceSeed } from "../_extensions/course-prairielearn/application/workspace-seed.ts";
+ // Реальные pinned recipe/Python/Git и C packages; Body/config — explicit harness, не assignment/P.
+ import { assert, fixture } from "./native-auxiliary-fixtures.ts";
+@@ -44,16 +45,21 @@ for (
+       });
+       await Deno.writeFile(path, file.bytes);
+     }
++    const kind: PublicBodyPackage["works"][number]["kind"] = "lab";
++    const selection: PublicBodyPackage["works"][number]["slots"][number]["selection"] = "fixed";
++    const assignment: PublicBodyPackage["works"][number]["slots"][number]["assignment"] = {
++      requirement: "required", workMode: "individual",
++    };
+     const work = {
+       id: "sec-work",
+       source: "work.qmd",
+-      kind: "lab",
++      kind,
+       title: "Работа",
+       slots: [{
+         id,
+-        selection: "fixed",
++        selection,
+         candidates: [id],
+-        assignment: { requirement: "required", workMode: "individual" },
++        assignment,
+       }],
+       extensions: {
+         prairielearn: {
+@@ -65,7 +71,7 @@ for (
+         },
+       },
+     };
+-    const pkg = {
++    const pkg: PublicBodyPackage = {
+       schema: "course-body-package-v2",
+       owner: "fixture",
+       release: "native",
+diff --git a/tests/whole-bank.test.ts b/tests/whole-bank.test.ts
+index c38bfeb..9ebcd3f 100644
+--- a/tests/whole-bank.test.ts
++++ b/tests/whole-bank.test.ts
+@@ -1,3 +1,4 @@
++import type { PublicBodyPackage } from "course-core/body-export/model.ts";
+ import { exportCourse } from "../_extensions/course-prairielearn/application/export-course.ts";
+ import { hash } from "../_extensions/course-prairielearn/application/source-selection.ts";
+ const assert = (v: unknown, m: string) => {
+@@ -11,7 +12,7 @@ const image = (s: string) => ({
+     c: [["", [], []], [{ t: "Str", c: "Диаграмма" }], [s, ""]],
+   }],
+ });
+-const assignment = { requirement: "required", workMode: "individual" };
++const assignment: PublicBodyPackage["works"][number]["slots"][number]["assignment"] = { requirement: "required", workMode: "individual" };
+ function work(id: string, exr = "exr-a"): any {
+   return {
+     id,
+@@ -36,7 +37,7 @@ function work(id: string, exr = "exr-a"): any {
+   };
+ }
+ async function fixture(
+-  run: (input: any, root: string, body: (w: any) => any) => Promise<void>,
++  run: (input: any, root: string, body: (w: any) => PublicBodyPackage) => Promise<void>,
+ ) {
+   const root = await Deno.makeTempDir({ prefix: "whole-bank-" });
+   try {
+@@ -46,7 +47,7 @@ async function fixture(
+       "PUBLIC_STARTER",
+     );
+     const first = work("sec-first"), second = work("sec-unit-a");
+-    const body = (w: any) => ({
++    const body = (w: any): PublicBodyPackage => ({
+       schema: "course-body-package-v2",
+       owner: "fixture",
+       release: "native",
+@@ -188,7 +189,6 @@ Deno.test("whole-bank: public menu context uses its original resources and exclu
+           target: "menu.svg",
+           visibility: "public",
+           data: btoa("<svg>MENU</svg>"),
+-          sha256: await hash("<svg>MENU</svg>"),
+         }];
+       }
+       return p;
+@@ -314,7 +314,6 @@ for (const mappingOnly of [false, true]) {
+             target: "q.svg",
+             visibility: "public",
+             data: btoa(data),
+-            sha256: await hash(data),
+           }];
+           return p;
+         };
+@@ -330,14 +329,13 @@ Deno.test("whole-bank: ambiguous resource target in public projection refuses",
+       );
+       p.questions[0].condition = [image("q.svg")];
+       p.resources = await Promise.all(
+-        ["<svg>A</svg>", "<svg>B</svg>"].map(async (data) => ({
++        ["<svg>A</svg>", "<svg>B</svg>"].map(async (data): Promise<PublicBodyPackage["resources"][number]> => ({
+           owner: "fixture",
+           source: "bank/a.qmd",
+           effectiveBase: root,
+           target: "q.svg",
+           visibility: "public",
+           data: btoa(data),
+-          sha256: await hash(data),
+         })),
+       );
+       return p;
+@@ -405,7 +403,6 @@ for (const conflict of [false, true]) {
+               target: "shared.svg",
+               visibility: "public",
+               data: btoa(data),
+-              sha256: await hash(data),
+             }];
+           }
+           return p;
+diff --git a/tests/workspace-transport.test.ts b/tests/workspace-transport.test.ts
+index 567aaa2..d016dc2 100644
+--- a/tests/workspace-transport.test.ts
++++ b/tests/workspace-transport.test.ts
+@@ -1,3 +1,4 @@
++import type { PublicBodyPackage } from "course-core/body-export/model.ts";
+ import { question } from "../_extensions/course-prairielearn/application/declarations.ts";
+ import { exportPrairieLearn } from "../_extensions/course-prairielearn/application/export.ts";
+ import { infoQuestion } from "../_extensions/course-prairielearn/application/native-validators.js";
+@@ -17,7 +18,7 @@ export const workspaceOptions = {
+     ".pl-seed/identity.jso[n]",
+   ],
+ };
+-export const body = {
++export const body: PublicBodyPackage = {
+   schema: "course-body-package-v2",
+   owner: "synthetic",
+   release: "native",

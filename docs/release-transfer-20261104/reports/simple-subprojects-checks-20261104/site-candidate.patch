@@ -1,0 +1,794 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 5e66df6..56a4c95 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -97,7 +97,7 @@ jobs:
+           quarto run tests/planning-progress.ts
+           quarto run tests/site-native-planning.ts
+           quarto run tests/site-native-pipeline.ts
+-          for mode in missing unexpected format root-missing; do
++          for mode in missing unexpected root-missing; do
+             quarto run tests/site-native-pipeline.ts "$mode"
+           done
+           quarto run tests/site-composed-navigation.ts --web-only
+diff --git a/README.md b/README.md
+index c8bb217..f9ee10b 100644
+--- a/README.md
++++ b/README.md
+@@ -40,8 +40,8 @@ project:
+   post-render: _extensions/course-site/entrypoints/post.ts
+ format: html
+ subprojects:
+-  - {path: theory, to: default}
+-  - {path: slides, to: default}
++  - theory
++  - slides
+ ```
+ 
+ У каждой части есть собственный `_quarto.yml`, native `output-dir` и post-render hook `../_extensions/course-site/entrypoints/collect.ts`: после QRC
+@@ -58,8 +58,8 @@ project:
+ format: html
+ ```
+ 
+-`subprojects` — непустой список строгих `{path, to}`. `path` — относительный путь папки;
+-`to` обязателен: `default`, `html` или `revealjs`. Прежние строки не поддерживаются. Адрес части совпадает
++`subprojects` — непустой упорядоченный список относительных путей каталогов.
++Форматы задаются в конфигурации, профилях и документах дочернего Quarto. Адрес части совпадает
+ с её нормализованным путём: `a/slides` публикуется в `a/slides/`. `./tasks` и
+ `tasks` обозначают одну часть и не могут входить в список вместе. Вложенные
+ пересекающиеся проекты, symlink и пересечение источников/outputs запрещены.
+@@ -126,9 +126,9 @@ reference-catalog: {namespace: theory}
+ 
+ ## Native поведение и ошибки
+ 
+-Каждая часть рендерится одной штатной командой `quarto render . --to <to>` с выбранными профилями. `default` сохраняет native выбор первого формата документа, включая смешанный HTML index и Revealjs. `html` или `revealjs` явно выбирают этот native формат для всей части. Publisher не выводит формат из project inspect и не вводит собственную эвристику единственного web-формата. Если HTML/PDF конфигурация ставит PDF первым, автор выбирает `to: html` для веб-публикации; `default` следует настоящему порядку Quarto. Тип book/website, metadata, профили и hooks сохраняются.
++Каждая часть рендерится одной штатной командой `quarto render .` с выбранными профилями. Конфигурация и документы дочернего Quarto выбирают форматы, включая смешанный HTML index и Revealjs. Для веб-публикации HTML/PDF проекта автор выбирает HTML первым в дочерней конфигурации или её профиле. Publisher не выводит формат из project inspect и не вводит собственную эвристику единственного web-формата. Тип book/website, metadata, профили и hooks сохраняются.
+ 
+-До cleanup один project inspect каждого owner независимо определяет selected sources и resources. В полной композиции actual Core catalog должен точно покрывать этот selected set и текущие HTML outputs; явный `to` проверяется по actual Core format. Проверка выполняется внутри единой Core publication session до подготовки ZIP соответствующего owner, без нового lease или приватного API. Для `default` формат является только native/Core фактом. Без Core успешная native команда и текущие output paths не объявляются модельной publication authority. Partial render/preview сохраняет локальную область.
++До cleanup один project inspect каждого owner независимо определяет selected sources и resources. В полной композиции actual Core catalog должен точно покрывать этот selected set и текущие HTML outputs. Проверка выполняется внутри единой Core publication session до подготовки ZIP соответствующего owner, без нового lease или приватного API. Формат является native/Core фактом. Без Core успешная native команда и текущие output paths не объявляются модельной publication authority. Partial render/preview сохраняет локальную область.
+ 
+ Свежие outputs, ресурсы и search монтируются по путям папок; QRC строго связывает
+ текущие HTML и объединяет search. `.quarto`, `_freeze` и кеши движков сохраняются.
+diff --git a/_extensions/course-site/application/compose.ts b/_extensions/course-site/application/compose.ts
+index 0d984bd..1a73e94 100644
+--- a/_extensions/course-site/application/compose.ts
++++ b/_extensions/course-site/application/compose.ts
+@@ -154,18 +154,16 @@ function catalogCoverage(catalog: NativeCatalog, record: NativeSiteRecord) {
+       (sources.size !== expectedSources.size ||
+         [...sources].some((source) => !expectedSources.has(source)))) ||
+     actual.size !== outputs.length || actual.size !== expected.size ||
+-    [...actual].some((path) => !expected.has(path)) ||
+-    (record.to && record.to !== "default" &&
+-      documents.some((document) => document.format !== record.to))
++    [...actual].some((path) => !expected.has(path))
+   ) {
+     throw diagnostic(
+       "SITE.CURRENT_RESULT_MISSING",
+-      "Публичный каталог Core не совпадает с native selection, outputs или выбранным to",
++      "Публичный каталог Core не совпадает с native selection или outputs",
+       {
+         source: record.projectRoot,
+-        field: "selectedSources/output/format",
++        field: "selectedSources/output",
+         hint:
+-          "Проверьте неизменность native selection и явный формат компонента.",
++          "Проверьте неизменность native selection и текущие outputs компонента.",
+       },
+     );
+   }
+@@ -387,7 +385,7 @@ export async function pre(root = Deno.cwd()): Promise<void> {
+     const collection = join(run, `${project.id}-0.json`);
+     await progress("Рендер", project.path, () =>
+       quarto(
+-        ["render", ".", "--to", project.to, ...profileArguments(ws.profiles)],
++        ["render", ".", ...profileArguments(ws.profiles)],
+         project.path,
+         {
+           COURSE_SITE_COLLECTION: collection,
+@@ -420,7 +418,6 @@ export async function pre(root = Deno.cwd()): Promise<void> {
+       nativeOutputs: collected.nativeOutputs,
+       files: collected.files,
+       selectedSources: plan.selectedSources,
+-      to: project.to,
+     };
+     records.push({ project, config, record });
+   }
+diff --git a/_extensions/course-site/application/sibling-contracts.ts b/_extensions/course-site/application/sibling-contracts.ts
+index 1722498..273aac8 100644
+--- a/_extensions/course-site/application/sibling-contracts.ts
++++ b/_extensions/course-site/application/sibling-contracts.ts
+@@ -2,7 +2,7 @@ import type * as Core from "course-core/public.ts";
+ import type * as PrairieLearn from "course-prairielearn/public.ts";
+ import type * as Download from "project-download/public.ts";
+ import type { Record as CollectionRecord } from "../infrastructure/collection.ts";
+-import type { Project, Workspace } from "../infrastructure/config.ts";
++import type { Workspace } from "../infrastructure/config.ts";
+ 
+ /** Формы доверенных соседей задают их действительные публичные модули. */
+ export interface SiblingModuleMap {
+@@ -17,7 +17,6 @@ export type NativeSiteRecord = Pick<
+   "projectRoot" | "outputDir" | "profiles" | "nativeOutputs"
+ > & {
+   selectedSources?: Workspace["selectedSources"];
+-  to?: Project["to"];
+ };
+ 
+ export type {
+diff --git a/_extensions/course-site/infrastructure/config.ts b/_extensions/course-site/infrastructure/config.ts
+index 9f93a2d..8e143ba 100644
+--- a/_extensions/course-site/infrastructure/config.ts
++++ b/_extensions/course-site/infrastructure/config.ts
+@@ -12,9 +12,8 @@ import { profileArguments, quarto } from "./process.ts";
+ function projectRecord(
+   path: string,
+   mount: string,
+-  to: "default" | "html" | "revealjs",
+ ) {
+-  return { id: `subproject-${encodeURIComponent(mount)}`, path, mount, to };
++  return { id: `subproject-${encodeURIComponent(mount)}`, path, mount };
+ }
+ export type Project = ReturnType<typeof projectRecord>;
+ export type Workspace = Awaited<ReturnType<typeof workspace>>;
+@@ -70,30 +69,26 @@ export async function validateConfig(
+       },
+     );
+   }
+-  const raw = config.subprojects;
++  const raw: unknown = config.subprojects;
+   if (
+     !Array.isArray(raw) || !raw.length ||
+-    raw.some((item) =>
+-      !item || typeof item !== "object" || Array.isArray(item) ||
+-      Object.keys(item).length !== 2 || !Object.hasOwn(item, "path") ||
+-      !Object.hasOwn(item, "to") ||
+-      typeof item.path !== "string" || !item.path ||
+-      !["default", "html", "revealjs"].includes(item.to)
++    !raw.every((item: unknown): item is string =>
++      typeof item === "string" && item.length > 0
+     )
+   ) {
+     throw diagnostic(
+       "SITE.CONFIG_INVALID",
+-      "subprojects должен быть непустым списком {path, to}",
++      "subprojects должен быть непустым списком каталогов",
+       {
+         source: root,
+         field: "subprojects",
+         hint:
+-          "Например: subprojects: [{path: theory, to: default}]. Допустимы default, html, revealjs.",
++          "Например: subprojects: [theory, tasks, lectures].",
+       },
+     );
+   }
+   const projects: Project[] = [];
+-  for (const { path: item, to } of raw) {
++  for (const item of raw) {
+     if (isAbsolute(item) || /^[a-z][a-z0-9+.-]*:/i.test(item)) {
+       throw diagnostic(
+         "SITE.SUBPROJECT_INVALID",
+@@ -188,7 +183,7 @@ export async function validateConfig(
+         );
+       }
+     }
+-    projects.push(projectRecord(path, mount, to));
++    projects.push(projectRecord(path, mount));
+   }
+   return { root, output, projects, profiles, config };
+ }
+diff --git a/docs/diagnostics.md b/docs/diagnostics.md
+index 36bc64d..c23226f 100644
+--- a/docs/diagnostics.md
++++ b/docs/diagnostics.md
+@@ -9,7 +9,7 @@
+ 
+ | ID | Когда возникает | Доступный контекст | Действие автора |
+ | --- | --- | --- | --- |
+-| `SITE.CONFIG_INVALID` | Неверный тип корня, прежняя конфигурация, пустой список компонентов, некорректные профили, отсутствие output-dir или несогласованная аудитория | Проект, компонент/курс, `project.type`, `subprojects`, `course-site`, `QUARTO_PROFILE`, `project.output-dir` или `course.view` | Используйте native website, непустой список `{path,to}` с `default|html|revealjs`, уникальные профили, самостоятельный output-dir и согласованную аудиторию. |
++| `SITE.CONFIG_INVALID` | Неверный тип корня, прежняя конфигурация, пустой список компонентов, некорректные профили, отсутствие output-dir или несогласованная аудитория | Проект, компонент/курс, `project.type`, `subprojects`, `course-site`, `QUARTO_PROFILE`, `project.output-dir` или `course.view` | Используйте native website, непустой список относительных путей каталогов, уникальные профили, самостоятельный output-dir и согласованную аудиторию. |
+ | `SITE.AUDIENCE_MISMATCH` | Effective course.view или native Core проекция противоречит выбранной student/full аудитории корня/компонента | Проект или native компонент, `course.view` либо `course-core-projection` | Согласуйте student/full view и student/author проекцию до повторной сборки; прежняя выдача сохраняется. |
+ | `SITE.SUBPROJECT_INVALID` | Абсолютный/выходящий путь, символическая ссылка, повторяющиеся или вложенные компоненты, источник не является файлом | Проект, `subprojects`, `input` или `path`, связанные пути и компонент | Выберите обычные файлы и непересекающиеся папки внутри проекта. |
+ | `SITE.OUTPUT_OVERLAP` | Каталоги результата пересекаются с источниками, служебными данными, другими outputs, аудиториями или корневым монтированием; очистка затронет исходник/кеш | Проект, компонент, `project.output-dir` или `subprojects`, конфликтующие пути | Разделите каталоги результатов и исходники; перенесите исходные файлы из output. |
+diff --git a/docs/public-operation.md b/docs/public-operation.md
+index e077adc..40eae50 100644
+--- a/docs/public-operation.md
++++ b/docs/public-operation.md
+@@ -4,7 +4,8 @@
+ `Core.withNativePublication(expectation, selection, use)`. Core проверяет
+ семантические facts документов/course/assessment, coverage, audience и текущий
+ capture. Publisher сравнивает catalog с независимо выбранными Native sources,
+-HTML outputs и явным `to` внутри callback. Native course без активного Core
++текущими HTML outputs внутри callback. Форматы определяют конфигурация, профили
++и документы дочернего Quarto. Native course без активного Core
+ сохраняет `SITE.RELEASE_UNQUALIFIED`; ordinary noCore проект самостоятельный.
+ 
+ PL активен по фактическому `publication.course.adapters`. При активном
+diff --git a/docs/releases/2026-11-01-native-planning-600.md b/docs/releases/2026-11-01-native-planning-600.md
+index f7e5f5b..abe43a7 100644
+--- a/docs/releases/2026-11-01-native-planning-600.md
++++ b/docs/releases/2026-11-01-native-planning-600.md
+@@ -1,3 +1,5 @@
++> Историческое описание кандидата. Текущий договор использует список каталогов `subprojects: [theory]`; форматы задаёт дочерний Quarto. См. [контракт](../../spec/contract.md).
++
+ # Publisher 6.0.0 — штатное планирование Quarto
+ 
+ Новый публичный вход: `subprojects: [{path: theory, to: default}]`. Строки прежних версий не поддерживаются. `to` принимает только `default`, `html`, `revealjs`; путь исходников и порядок монтирования прежние.
+diff --git a/examples/course/_quarto.yml b/examples/course/_quarto.yml
+index b571c0e..6c608b6 100644
+--- a/examples/course/_quarto.yml
++++ b/examples/course/_quarto.yml
+@@ -21,4 +21,4 @@ website:
+ format: html
+ filters: [reference-catalog]
+ reference-catalog: {namespace: portal}
+-subprojects: [{path: book, to: default}, {path: materials, to: default}]
++subprojects: [book, materials]
+diff --git a/spec/contract.md b/spec/contract.md
+index 06c65e9..efedf09 100644
+--- a/spec/contract.md
++++ b/spec/contract.md
+@@ -9,8 +9,8 @@ status: current
+ Текущий ref: **6.0.0** (кандидат); версия пакета задаётся
+ `_extensions/course-site/_extension.yml`.
+ 
+-Корень native проекта объявляет непустой список `subprojects: [{path: theory, to: default}]`; структуру и файловые границы проверяет
+-[исполняемый TS-контракт](../_extensions/course-site/infrastructure/config.ts). Каждый элемент содержит только `path` и `to`; прежние строки отклоняются. `to` обязателен: `default|html|revealjs`.
++Корень native проекта объявляет непустой список `subprojects: [theory, tasks, lectures]`; структуру и файловые границы проверяет
++[исполняемый TS-контракт](../_extensions/course-site/infrastructure/config.ts). Каждый элемент — строка с путём каталога; объекты и aliases не поддерживаются. Порядок элементов определяет порядок компонентов.
+ Каждый путь относительный и обозначает папку
+ самостоятельного проекта. Размещение готовой части повторяет нормализованный путь.
+ Повторы, вложенные пересечения источников/outputs и symlink отклоняются до cleanup.
+@@ -19,9 +19,9 @@ status: current
+ Native Quarto определяет selected sources, эффективные форматы и профили.
+ Publisher сохраняет native defaults/groups при отсутствии root profile и записывает
+ фактический `QUARTO_PROFILE` post-hook; `files.config` не определяет профиль.
+-Publisher проверяет outputs только выбранной аудитории. Publisher не запускает отдельный inspect неактивных student/full профилей; сохранность старой выдачи другой аудитории при совпадающих или вложенных output-каталогах не гарантируется: cleanup текущей композиции может удалить или перезаписать её. Для одновременного хранения выдач автор задаёт непересекающиеся каталоги. Каждый child получает одну native whole-project команду `render . --to <to>`; `default` выбирает первый формат штатным правилом Quarto, явный `html|revealjs` задаёт формат всей части. Publisher не выполняет N document inspect, не вычисляет effective format и не переходит к per-document render. Невеб-результаты при `default` остаются обычным native поведением, без вымышленной Core publication authority.
++Publisher проверяет outputs только выбранной аудитории. Publisher не запускает отдельный inspect неактивных student/full профилей; сохранность старой выдачи другой аудитории при совпадающих или вложенных output-каталогах не гарантируется: cleanup текущей композиции может удалить или перезаписать её. Для одновременного хранения выдач автор задаёт непересекающиеся каталоги. Каждый child получает одну native whole-project команду `render .` с выбранными корнем профилями; конфигурация дочернего Quarto выбирает форматы штатным правилом. Publisher не выполняет N document inspect, не вычисляет effective format и не переходит к per-document render. Невеб-результаты остаются обычным native поведением, без вымышленной Core publication authority.
+ 
+-В full preflight independent project inspect корня и каждого child определяет validated selected sources до cleanup. Root native результат не запрашивается повторно. Точный owner/profile результат можно повторно использовать только внутри этого preflight; он не удостоверяет конфигурацию невыбранных профилей. В full post source set actual Core catalog точно равен независимому selected set; output set точно равен текущим HTML outputs, а явный `to` — actual format. Сравнение выполняется в едином live publication callback до подготовки ZIP соответствующего owner; с Download и без него Core получает независимый список. Новый Core lease, metadata resolver или authority не создаётся. Partial/preview не сравнивается с полным project set. При отказе успешный composition.json не записывается; внешняя публикация требует rc0.
++В full preflight independent project inspect корня и каждого child определяет validated selected sources до cleanup. Root native результат не запрашивается повторно. Точный owner/profile результат можно повторно использовать только внутри этого preflight; он не удостоверяет конфигурацию невыбранных профилей. В full post source set actual Core catalog точно равен независимому selected set; output set точно равен текущим HTML outputs. Сравнение выполняется в едином live publication callback до подготовки ZIP соответствующего owner; с Download и без него Core получает независимый список. Новый Core lease, metadata resolver или authority не создаётся. Partial/preview не сравнивается с полным project set. При отказе успешный composition.json не записывается; внешняя публикация требует rc0.
+ 
+ Явные pre/post/collect hooks передают только текущие outputs успешных native
+ процессов. Сохранённые HTML и sidecar другой попытки не включаются автоматически.
+diff --git a/tests/planning-progress.ts b/tests/planning-progress.ts
+index 66885ca..141ddb9 100644
+--- a/tests/planning-progress.ts
++++ b/tests/planning-progress.ts
+@@ -26,7 +26,7 @@ try {
+       events.push("INSPECT " + (alternate ? "full " : "student ") + this.cwd);
+       if (failTasksFull && alternate && this.cwd === owners[2]) throw sentinel;
+       const config: any = { project: { type: "website", "output-dir": alternate ? "_site-full" : "_site" } };
+-      if (this.cwd === root) config.subprojects = owners.slice(1).map((owner) => ({ path: owner.slice(root.length + 1), to: "default" }));
++      if (this.cwd === root) config.subprojects = owners.slice(1).map((owner) => owner.slice(root.length + 1));
+       return Promise.resolve({ success: true, code: 0, signal: null, stdout: new TextEncoder().encode(JSON.stringify({ config, files: { input: [join(this.cwd, "index.qmd")], resources: [] } })), stderr: new Uint8Array() });
+     }
+     spawn() { events.push("RENDER_STOP " + this.cwd); throw Error("STOP_BEFORE_RENDER"); }
+diff --git a/tests/release-composition.ts b/tests/release-composition.ts
+index b8d88c4..86b98a9 100644
+--- a/tests/release-composition.ts
++++ b/tests/release-composition.ts
+@@ -12,7 +12,7 @@ try{
+   pre-render: _extensions/course-site/entrypoints/pre.ts
+   post-render: _extensions/course-site/entrypoints/post.ts
+ format: html
+-subprojects: [{path: part, to: default}]
++subprojects: [part]
+ `);
+  await Deno.writeTextFile(join(root,'part/_quarto.yml'),`project:
+   type: website
+diff --git a/tests/site-child-profiles.ts b/tests/site-child-profiles.ts
+index b15f097..3249539 100644
+--- a/tests/site-child-profiles.ts
++++ b/tests/site-child-profiles.ts
+@@ -24,7 +24,7 @@ async function run(args: string[], cwd = root) {
+ try {
+   await write(
+     "_quarto.yml",
+-    "project:\n  type: website\n  output-dir: _site\n  render: [index.qmd]\n  pre-render: _extensions/course-site/entrypoints/pre.ts\n  post-render: _extensions/course-site/entrypoints/post.ts\nformat: html\nsubprojects: [{path: plain, to: default}, {path: core, to: default}]\n",
++    "project:\n  type: website\n  output-dir: _site\n  render: [index.qmd]\n  pre-render: _extensions/course-site/entrypoints/pre.ts\n  post-render: _extensions/course-site/entrypoints/post.ts\nformat: html\nsubprojects: [plain, core]\n",
+   );
+   await write("index.qmd", "# Root\n");
+   for (const part of ["plain", "core"]) {
+diff --git a/tests/site-composed-navigation.ts b/tests/site-composed-navigation.ts
+index a708a44..d0686cf 100644
+--- a/tests/site-composed-navigation.ts
++++ b/tests/site-composed-navigation.ts
+@@ -42,8 +42,8 @@ filters: [course-navigation]
+ course-navigation: {enabled: true}
+ subprojects: ${
+       webOnly
+-        ? "[{path: theory, to: default}, {path: slides, to: default}]"
+-        : "[{path: theory, to: default}, {path: slides, to: default}, {path: handout, to: default}]"
++        ? "[theory, slides]"
++        : "[theory, slides, handout]"
+     }
+ `,
+   );
+diff --git a/tests/site-domains.ts b/tests/site-domains.ts
+index 2b7d20f..fcec31c 100644
+--- a/tests/site-domains.ts
++++ b/tests/site-domains.ts
+@@ -46,7 +46,7 @@ profile:
+ filters: [course-core, reference-catalog]
+ course: {id: portal}
+ reference-catalog: {namespace: portal}
+-subprojects: [{path: part, to: default}, {path: second, to: default}]
++subprojects: [part, second]
+ `,
+ );
+ await write(
+diff --git a/tests/site-effective-formats.ts b/tests/site-effective-formats.ts
+index 189cf82..d6dd860 100644
+--- a/tests/site-effective-formats.ts
++++ b/tests/site-effective-formats.ts
+@@ -20,10 +20,10 @@ async function native(args: string[]) {
+     new TextDecoder().decode(r.stdout) + new TextDecoder().decode(r.stderr),
+   );
+ }
+-async function render(to = "default", profiles: string[] = []) {
++async function render(profiles: string[] = []) {
+   await write(
+     "_quarto.yml",
+-    `project:\n  type: website\n  output-dir: _site\n  render: [index.qmd]\n  pre-render: _extensions/course-site/entrypoints/pre.ts\n  post-render: _extensions/course-site/entrypoints/post.ts\nformat: html\nsubprojects: [{path: part, to: ${to}}]\n`,
++    `project:\n  type: website\n  output-dir: _site\n  render: [index.qmd]\n  pre-render: _extensions/course-site/entrypoints/pre.ts\n  post-render: _extensions/course-site/entrypoints/post.ts\nformat: html\nsubprojects: [part]\n`,
+   );
+   await native([
+     "render",
+@@ -42,11 +42,6 @@ try {
+     "part/_quarto.yml",
+     "project:\n  type: website\n  output-dir: _site\n  render: [index.qmd, slides.qmd]\n  post-render: ../_extensions/course-site/entrypoints/collect.ts\nformat: html\n",
+   );
+-  await write("part/index.qmd", "# Native HTML\n");
+-  await write(
+-    "part/slides.qmd",
+-    "---\nformat: revealjs\n---\n# Native слайды\n",
+-  );
+   await Deno.mkdir(join(root, "_extensions"));
+   const copied = await new Deno.Command("cp", {
+     args: [
+@@ -56,65 +51,27 @@ try {
+     ],
+   }).output();
+   assert(copied.success, "Копирование Publisher");
+-  let actual = await render();
+-  assert(
+-    !actual.index.includes("reveal.js") && actual.slides.includes("reveal.js"),
+-    "Native mixed default изменён",
+-  );
+   await write("_quarto-full.yml", "project: {output-dir: _site-full}\n");
+   await write(
+     "part/_quarto-full.yml",
+     "project: {output-dir: _site-full}\nformat: revealjs\n",
+   );
+-  actual = await render("default", ["full"]);
+-  assert(
+-    actual.index.includes("reveal.js") && actual.slides.includes("reveal.js"),
+-    "Native profile format потерян",
+-  );
+-  await write(
+-    "part/index.qmd",
+-    "---\nformat: {html: default, pdf: default}\n---\n# HTML первым\n",
+-  );
+-  actual = await render();
+-  assert(
+-    !actual.index.includes("reveal.js") && actual.index.includes("HTML первым"),
+-    "Native default первого формата изменён",
+-  );
+   await write(
+     "part/index.qmd",
+-    "---\nformat: {pdf: default, html: default}\n---\n# Явный HTML\n",
++    "---\nformat: html\n---\n# Native HTML\n",
+   );
+-  actual = await render("html");
++  // Этот документ получает Revealjs из профиля дочернего проекта.
++  await write("part/slides.qmd", "# Native слайды\n");
++  const actual = await render(["full"]);
+   assert(
+-    !actual.index.includes("reveal.js") && !actual.slides.includes("reveal.js"),
+-    "Явный html не передан native процессу",
++    !actual.index.includes("reveal.js") && actual.index.includes("Native HTML"),
++    "Дочерний document format или mounted HTML потерян",
+   );
+-  await write(
+-    "part/_extensions/custom/_extension.yml",
+-    "title: Custom\nversion: 0.1.0\ncontributes:\n  formats:\n    html:\n      toc: true\n",
+-  );
+-  await write(
+-    "part/index.qmd",
+-    "---\nformat: custom-html\n---\n# Native Custom\n",
+-  );
+-  actual = await render();
+   assert(
+-    actual.index.includes("Native Custom") &&
+-      !actual.index.includes("reveal.js"),
+-    "Custom html alias изменён",
+-  );
+-  await write(
+-    "part/index.qmd",
+-    "---\nformat: {html: default, revealjs: default}\n---\n# Native первый web\n",
+-  );
+-  actual = await render();
+-  assert(
+-    !actual.index.includes("reveal.js") && actual.slides.includes("reveal.js"),
+-    "Два web formats должны следовать native default, без собственной ambiguity эвристики",
+-  );
+-  console.log(
+-    "PASS actual mixed native formats, profiles, HTML/PDF intent, custom-html и native default первого web",
++    actual.slides.includes("reveal.js") && actual.slides.includes("Native слайды"),
++    "Формат из профиля дочернего Quarto или mounted Revealjs потерян",
+   );
++  console.log("PASS mounted child HTML/Revealjs from native document and profile formats");
+ } finally {
+   await Deno.remove(root, { recursive: true });
+ }
+diff --git a/tests/site-formats.ts b/tests/site-formats.ts
+index f8fb715..b9565ac 100644
+--- a/tests/site-formats.ts
++++ b/tests/site-formats.ts
+@@ -30,7 +30,7 @@ await write(
+   pre-render: _extensions/course-site/entrypoints/pre.ts
+   post-render: _extensions/course-site/entrypoints/post.ts
+ format: html
+-subprojects: [{path: book, to: default}, {path: slides, to: default}]
++subprojects: [book, slides]
+ `,
+ );
+ await write("index.qmd", "# Native formats\n");
+diff --git a/tests/site-local.ts b/tests/site-local.ts
+index 7a33fe4..b5c47f1 100644
+--- a/tests/site-local.ts
++++ b/tests/site-local.ts
+@@ -31,7 +31,7 @@ await write(
+ format: html
+ filters: [reference-catalog]
+ reference-catalog: {namespace: portal}
+-subprojects: [{path: part, to: default}]
++subprojects: [part]
+ `,
+ );
+ await write("index.qmd", "# Root\n\n@part:sec-later\n");
+diff --git a/tests/site-metadata-profiles.ts b/tests/site-metadata-profiles.ts
+index 8dcfaf1..6c08fb4 100644
+--- a/tests/site-metadata-profiles.ts
++++ b/tests/site-metadata-profiles.ts
+@@ -25,7 +25,7 @@ async function run(args: string[]) {
+ try {
+   await write(
+     "_quarto.yml",
+-    "project:\n  type: website\n  output-dir: _site\n  render: [index.qmd]\n  pre-render: _extensions/course-site/entrypoints/pre.ts\n  post-render: _extensions/course-site/entrypoints/post.ts\nformat: html\nsubprojects: [{path: part, to: default}]\n",
++    "project:\n  type: website\n  output-dir: _site\n  render: [index.qmd]\n  pre-render: _extensions/course-site/entrypoints/pre.ts\n  post-render: _extensions/course-site/entrypoints/post.ts\nformat: html\nsubprojects: [part]\n",
+   );
+   await write("index.qmd", "# Root\n");
+   await write(
+diff --git a/tests/site-native-pipeline.ts b/tests/site-native-pipeline.ts
+index f64366f..9007b2d 100644
+--- a/tests/site-native-pipeline.ts
++++ b/tests/site-native-pipeline.ts
+@@ -42,7 +42,7 @@ try {
+   ) await install(source!, name, "tasks");
+   await put(
+     "_quarto.yml",
+-    `project:\n  type: website\n  output-dir: _site\n  render: [index.qmd]\n  pre-render: [quarto run ${ext}/course-site/entrypoints/pre.ts]\n  post-render: [quarto run ${ext}/course-site/entrypoints/post.ts]\nformat:\n  html:\n    theme: cosmo\nwebsite:\n  title: Курс\n  navbar: {}\n  site-url: https://pages.example.test/course/\nsubprojects: [{path: tasks, to: default}, {path: book, to: default}]\nreference-catalog:\n  namespace: portal\ncourse-navigation:\n  enabled: true\n`,
++    `project:\n  type: website\n  output-dir: _site\n  render: [index.qmd]\n  pre-render: [quarto run ${ext}/course-site/entrypoints/pre.ts]\n  post-render: [quarto run ${ext}/course-site/entrypoints/post.ts]\nformat:\n  html:\n    theme: cosmo\nwebsite:\n  title: Курс\n  navbar: {}\n  site-url: https://pages.example.test/course/\nsubprojects: [tasks, book]\nreference-catalog:\n  namespace: portal\ncourse-navigation:\n  enabled: true\n`,
+   );
+   if (true) {
+     const config = await Deno.readTextFile(join(root, "_quarto.yml"));
+@@ -108,7 +108,6 @@ try {
+       if(mode==="root-missing") state.ws.selectedSources=[];
+       else if(mode==="missing") state.records[0].record.selectedSources.pop();
+       else if(mode==="unexpected") state.records[0].record.selectedSources.push("foreign.qmd");
+-      else if(mode==="format") state.records[0].record.to="html";
+       else throw Error("Неизвестный mutant");
+       await Deno.writeTextFile(path,JSON.stringify(state));`,
+     );
+@@ -133,7 +132,7 @@ try {
+   if (mutant) {
+     assert(
+       !rendered.success && log.includes("SITE.CURRENT_RESULT_MISSING"),
+-      "Ожидался отказ independent selection/format: " + root + "\n" + log,
++      "Ожидался отказ independent selection: " + root + "\n" + log,
+     );
+     const zip = join(
+       root,
+diff --git a/tests/site-native-planning.ts b/tests/site-native-planning.ts
+index 657a67c..1ff63d9 100644
+--- a/tests/site-native-planning.ts
++++ b/tests/site-native-planning.ts
+@@ -1,81 +1,18 @@
+-import { dirname, join } from "stdlib/path";
+-import * as config from "../_extensions/course-site/infrastructure/config.ts";
+-import { assert, assertEquals, assertRejects } from "./support.ts";
+-const NativeCommand = Deno.Command, commands: any[] = [];
+-(Deno as any).Command = new Proxy(NativeCommand, {
+-  construct(target, args: any[]) {
+-    const command = Reflect.construct(target, args),
+-      output = command.output.bind(command);
+-    command.output = async () => {
+-      const result = await output();
+-      if (args[1]?.args?.[0] === "inspect" && result.success) {
+-        const project = JSON.parse(new TextDecoder().decode(result.stdout));
+-        commands.push({
+-          args: args[1].args,
+-          inputs: project.files?.input.length,
+-          populated: Object.keys(project.fileInformation || {}).length,
+-        });
+-      }
+-      return result;
+-    };
+-    return command;
+-  },
+-});
++import { join } from "stdlib/path";
++import { inspectProject } from "../_extensions/course-site/infrastructure/config.ts";
++import { assertEquals } from "./support.ts";
+ const root = await Deno.makeTempDir({ prefix: "site-native-plan-" });
+ try {
+-  await Deno.mkdir(join(root, "child"));
+-  const value = {
+-    project: { type: "website", "output-dir": "_site" },
+-    subprojects: [{ path: "child", to: "default" }],
+-  };
+-  const ws = await config.validateConfig(root, value, []);
+-  assertEquals(ws.projects[0].to, "default");
+-  for (
+-    const bad of [["child"], [{ path: "child" }], [{
+-      path: "child",
+-      to: "pdf",
+-    }], [{ path: "child", to: "default", unknown: true }]]
+-  ) {
+-    await assertRejects(
+-      () => config.validateConfig(root, { ...value, subprojects: bad }, []),
+-      "SITE.CONFIG_INVALID",
+-      ["subprojects"],
+-    );
+-  }
+   await Deno.writeTextFile(
+     join(root, "_quarto.yml"),
+-    "project:\n  type: website\n  render: [index.qmd]\n  output-dir: _site\nformat: html\nsubprojects: [{path: child, to: default}]\n",
++    "project:\n  type: website\n  render: [index.qmd]\n  output-dir: _site\nformat: html\nsubprojects: [child]\n",
+   );
+   await Deno.writeTextFile(join(root, "index.qmd"), "# Корень\n");
+-  const project = await (config as any).inspectProject(root, []);
++  await Deno.writeTextFile(join(root, "unselected.qmd"), "# Отдельная страница\n");
++  const project = await inspectProject(root, []);
+   assertEquals(project.selectedSources, ["index.qmd"]);
+   assertEquals(project.config.project.type, "website");
+-  await Deno.writeTextFile(join(root, "second.qmd"), "# Второй\n");
+-  await Deno.writeTextFile(join(root, "third.qmd"), "# Третий\n");
+-  await Deno.writeTextFile(
+-    join(root, "_quarto.yml"),
+-    (await Deno.readTextFile(join(root, "_quarto.yml"))).replace(
+-      "render: [index.qmd]",
+-      "render: [index.qmd, second.qmd, third.qmd]",
+-    ),
+-  );
+-  const three = await config.inspectProject(root, []);
+-  assertEquals(three.selectedSources, ["index.qmd", "second.qmd", "third.qmd"]);
+-  assert(
+-    commands.length === 2 &&
+-      commands.every((command) => command.args[1] === root),
+-    "Publisher выполнил document inspect",
+-  );
+-  assertEquals(commands.map((command) => command.inputs), [1, 3]);
+-  assertEquals(commands.map((command) => command.populated), [1, 3]);
+-  console.log(
+-    JSON.stringify({
+-      status: "PASS",
+-      scope: "native owner selected set",
+-      commands,
+-    }),
+-  );
++  console.log("PASS native owner selected sources");
+ } finally {
+-  (Deno as any).Command = NativeCommand;
+   await Deno.remove(root, { recursive: true });
+ }
+diff --git a/tests/site-native.ts b/tests/site-native.ts
+index 1a5c2fa..d004858 100644
+--- a/tests/site-native.ts
++++ b/tests/site-native.ts
+@@ -51,7 +51,7 @@ await write(
+ format:
+   html:
+     theme: cosmo
+-subprojects: [{path: part, to: default}]
++subprojects: [part]
+ `,
+ );
+ await write("index.qmd", "# Root\n\n[Lesson](part/index.html)\n");
+diff --git a/tests/site-navigation.browser.cjs b/tests/site-navigation.browser.cjs
+index 7e029c5..8c8384a 100644
+--- a/tests/site-navigation.browser.cjs
++++ b/tests/site-navigation.browser.cjs
+@@ -20,7 +20,7 @@ write('_quarto.yml', `project:
+   resources: ['!units/**', '!theory/**', '!_extensions/**', '!_generated/**']
+   pre-render: _extensions/course-site/entrypoints/pre.ts
+   post-render: _extensions/course-site/entrypoints/post.ts
+-subprojects: [{path: units/slides, to: default}, {path: theory, to: default}, {path: deck, to: default}]
++subprojects: [units/slides, theory, deck]
+ format: html
+ lang: ru
+ website:
+diff --git a/tests/site-owner-release.ts b/tests/site-owner-release.ts
+index a9c966c..dcc43e4 100644
+--- a/tests/site-owner-release.ts
++++ b/tests/site-owner-release.ts
+@@ -55,7 +55,7 @@ try {
+     view = author ? "full" : "student";
+   await put(
+     "_quarto.yml",
+-    `project:\n  type: website\n  output-dir: _site\n  render: [index.qmd]\n  pre-render: [quarto run ${ext}/course-site/entrypoints/pre.ts]\n  post-render: [quarto run ${ext}/course-site/entrypoints/post.ts]\nformat: {html: {theme: none}}\nwebsite: {site-url: 'https://pages.example.test/course/'}\nsubprojects: [{path: tasks, to: default}]\nreference-catalog: {namespace: portal}\n`,
++    `project:\n  type: website\n  output-dir: _site\n  render: [index.qmd]\n  pre-render: [quarto run ${ext}/course-site/entrypoints/pre.ts]\n  post-render: [quarto run ${ext}/course-site/entrypoints/post.ts]\nformat: {html: {theme: none}}\nwebsite: {site-url: 'https://pages.example.test/course/'}\nsubprojects: [tasks]\nreference-catalog: {namespace: portal}\n`,
+   );
+   await put("index.qmd", "# Общий сайт\n");
+   if (mode === "root-pl") {
+diff --git a/tests/site-paths.ts b/tests/site-paths.ts
+index e854f21..ab0a0ed 100644
+--- a/tests/site-paths.ts
++++ b/tests/site-paths.ts
+@@ -1,9 +1,5 @@
+ import { assertEquals, assertRejects } from "./support.ts";
+ import { validateConfig } from "../_extensions/course-site/infrastructure/config.ts";
+-const intent = (paths: unknown[]) =>
+-  paths.map((path) =>
+-    typeof path === "string" ? { path, to: "default" } : path
+-  );
+ const root = await Deno.makeTempDir();
+ try {
+   for (const path of ["a/slides", "b/slides", "part", "part/nested"]) {
+@@ -12,14 +8,14 @@ try {
+   await Deno.writeTextFile(`${root}/not-directory.qmd`, "# Source");
+   const base = {
+     project: { type: "website", "output-dir": "_site" },
+-    subprojects: intent(["./a/slides", "b/slides"]),
++    subprojects: ["./a/slides", "b/slides"],
+   };
+   const result = await validateConfig(root, base, ["student"]);
+   assertEquals(result.projects.map((p) => p.mount), ["a/slides", "b/slides"]);
+   assertEquals(new Set(result.projects.map((p) => p.id)).size, 2);
+   assertEquals(result.profiles, ["student"]);
+   await assertRejects(
+-    () => validateConfig(root, { ...base, subprojects: intent([]) }, []),
++    () => validateConfig(root, { ...base, subprojects: [] }, []),
+     "SITE.CONFIG_INVALID",
+     [root, "subprojects"],
+   );
+@@ -27,7 +23,7 @@ try {
+     () =>
+       validateConfig(
+         root,
+-        { ...base, subprojects: intent(["part", "part/nested"]) },
++        { ...base, subprojects: ["part", "part/nested"] },
+         [],
+       ),
+     "SITE.SUBPROJECT_INVALID",
+@@ -46,14 +42,14 @@ try {
+     () =>
+       validateConfig(root, {
+         ...base,
+-        subprojects: intent(["not-directory.qmd"]),
++        subprojects: ["not-directory.qmd"],
+       }, []),
+     "SITE.SUBPROJECT_INVALID",
+     [root, "not-directory.qmd", "subprojects"],
+   );
+   await assertRejects(
+     () =>
+-      validateConfig(root, { ...base, subprojects: intent(["absent"]) }, []),
++      validateConfig(root, { ...base, subprojects: ["absent"] }, []),
+     "SITE.SUBPROJECT_INVALID",
+     [root, "absent", "subprojects"],
+   );
+@@ -77,7 +73,7 @@ try {
+     ]
+   ) {
+     await assertRejects(() =>
+-      validateConfig(root, { ...base, subprojects: intent(subprojects) }, [])
++      validateConfig(root, { ...base, subprojects }, [])
+     );
+   }
+   await assertRejects(() =>
+@@ -96,7 +92,7 @@ try {
+     }, [])
+   );
+   await assertRejects(() =>
+-    validateConfig(root, { ...base, subprojects: intent(["linked"]) }, [])
++    validateConfig(root, { ...base, subprojects: ["linked"] }, [])
+   );
+   console.log(
+     "PASS normalized subproject paths, symlinks, overlaps, old syntax rejection and profiles",
+diff --git a/tests/site-profiles.ts b/tests/site-profiles.ts
+index e5e5ee2..afa22b1 100644
+--- a/tests/site-profiles.ts
++++ b/tests/site-profiles.ts
+@@ -58,7 +58,7 @@ try {
+   );
+   await Deno.writeTextFile(
+     `${root}/_quarto.yml`,
+-    "project: {type: website, output-dir: _site}\nformat: html\nsubprojects: [{path: part, to: default}]\nfilters: [course-core]\ncourse: {id: guarded-root, view: full}\n",
++    "project: {type: website, output-dir: _site}\nformat: html\nsubprojects: [part]\nfilters: [course-core]\ncourse: {id: guarded-root, view: full}\n",
+   );
+   const oldProfile = Deno.env.get("QUARTO_PROFILE"),
+     oldAll = Deno.env.get("QUARTO_PROJECT_RENDER_ALL");
+@@ -82,7 +82,7 @@ try {
+     // обязан остановить композицию до cleanup обеих предыдущих выдач.
+     await Deno.writeTextFile(
+       `${root}/_quarto.yml`,
+-      "project: {type: website, output-dir: _site}\nformat: html\nsubprojects: [{path: part, to: default}]\ncourse-core-runtime: native-ts\ncourse: {id: guarded-root, view: student}\n",
++      "project: {type: website, output-dir: _site}\nformat: html\nsubprojects: [part]\ncourse-core-runtime: native-ts\ncourse: {id: guarded-root, view: student}\n",
+     );
+     await Deno.writeTextFile(`${root}/part/index.qmd`, "# Part\n");
+     await Deno.writeTextFile(
+diff --git a/tests/site-project-native.ts b/tests/site-project-native.ts
+index 6af1465..c76b409 100644
+--- a/tests/site-project-native.ts
++++ b/tests/site-project-native.ts
+@@ -53,7 +53,7 @@ fail-if-warnings: true
+ filters: [course-core]
+ course: {id: project-source}
+ exercise-bank: true
+-${owner ? "" : "subprojects: [{path: part, to: default}, {path: nested/second, to: default}]\n"}course-project:
++${owner ? "" : "subprojects: [part, nested/second]\n"}course-project:
+   build:
+     files: {Public.java: common/Public.java}
+ project-materialization:
+diff --git a/tests/site-public-operation.ts b/tests/site-public-operation.ts
+index 449a692..3eced24 100644
+--- a/tests/site-public-operation.ts
++++ b/tests/site-public-operation.ts
+@@ -40,7 +40,7 @@ try {
+   ) await install(source!, name, "tasks");
+   await put(
+     "_quarto.yml",
+-    `project:\n  type: website\n  output-dir: _site\n  render: [index.qmd]\n  pre-render: [quarto run ${ext}/course-site/entrypoints/pre.ts]\n  post-render: [quarto run ${ext}/course-site/entrypoints/post.ts]\nformat:\n  html:\n    theme: none\nwebsite:\n  site-url: https://pages.example.test/course/\nsubprojects: [{path: tasks, to: default}]\nreference-catalog:\n  namespace: portal\n`,
++    `project:\n  type: website\n  output-dir: _site\n  render: [index.qmd]\n  pre-render: [quarto run ${ext}/course-site/entrypoints/pre.ts]\n  post-render: [quarto run ${ext}/course-site/entrypoints/post.ts]\nformat:\n  html:\n    theme: none\nwebsite:\n  site-url: https://pages.example.test/course/\nsubprojects: [tasks]\nreference-catalog:\n  namespace: portal\n`,
+   );
+   if (Deno.env.get("B2_ROOT_NATIVE")) {
+     const config = await Deno.readTextFile(join(root, "_quarto.yml"));
+diff --git a/tests/site-siblings.ts b/tests/site-siblings.ts
+index e2a28ee..f30efd8 100644
+--- a/tests/site-siblings.ts
++++ b/tests/site-siblings.ts
+@@ -6,7 +6,7 @@ try {
+   await Deno.mkdir(join(root, "part"));
+   await Deno.writeTextFile(
+     join(root, "_quarto.yml"),
+-    "project:\n  type: website\n  output-dir: _site\nformat: html\nproject-download: {resources: {data: {path: assets}}}\nsubprojects: [{path: part, to: default}]\n",
++    "project:\n  type: website\n  output-dir: _site\nformat: html\nproject-download: {resources: {data: {path: assets}}}\nsubprojects: [part]\n",
+   );
+   await Deno.writeTextFile(join(root, "index.qmd"), "# Root\n");
+   const add = await new Deno.Command(Deno.env.get("QUARTO") || "quarto", {
+@@ -47,7 +47,7 @@ try {
+   // Import-time failures of a present QRC module must also stay foreign.
+   await Deno.writeTextFile(
+     join(root, "_quarto.yml"),
+-    "project:\n  type: website\n  output-dir: _site\nformat: html\nreference-catalog: {namespace: root}\nsubprojects: [{path: part, to: default}]\n",
++    "project:\n  type: website\n  output-dir: _site\nformat: html\nreference-catalog: {namespace: root}\nsubprojects: [part]\n",
+   );
+   await Deno.mkdir(join(root, "_site"));
+   await Deno.writeTextFile(join(root, "_site/index.html"), "current");
+diff --git a/tests/site-source-paths.ts b/tests/site-source-paths.ts
+index 07443df..03e7ccc 100644
+--- a/tests/site-source-paths.ts
++++ b/tests/site-source-paths.ts
+@@ -21,7 +21,7 @@ async function run(args: string[]) {
+ try {
+   await write(
+     "_quarto.yml",
+-    "project:\n  type: website\n  output-dir: _site\n  render: [index.qmd]\n  pre-render: _extensions/course-site/entrypoints/pre.ts\n  post-render: _extensions/course-site/entrypoints/post.ts\nformat: html\nsubprojects: [{path: part, to: default}]\n",
++    "project:\n  type: website\n  output-dir: _site\n  render: [index.qmd]\n  pre-render: _extensions/course-site/entrypoints/pre.ts\n  post-render: _extensions/course-site/entrypoints/post.ts\nformat: html\nsubprojects: [part]\n",
+   );
+   await write("index.qmd", "# Root\n");
+   await write(
+diff --git a/tests/site-web-selection.ts b/tests/site-web-selection.ts
+index 385c26c..3374f8a 100644
+--- a/tests/site-web-selection.ts
++++ b/tests/site-web-selection.ts
+@@ -29,7 +29,7 @@ async function run(args: string[], cwd = root) {
+ try {
+   await write(
+     "_quarto.yml",
+-    `project:\n  type: website\n  output-dir: _site\n  render: [index.qmd]\n  pre-render: _extensions/course-site/entrypoints/pre.ts\n  post-render: _extensions/course-site/entrypoints/post.ts\nformat: html\nfilters: [reference-catalog]\nreference-catalog: {namespace: rootpage}\nsubprojects: [{path: a/slides, to: default}]\n`,
++    `project:\n  type: website\n  output-dir: _site\n  render: [index.qmd]\n  pre-render: _extensions/course-site/entrypoints/pre.ts\n  post-render: _extensions/course-site/entrypoints/post.ts\nformat: html\nfilters: [reference-catalog]\nreference-catalog: {namespace: rootpage}\nsubprojects: [a/slides]\n`,
+   );
+   await write("index.qmd", "# Root\n\n@talk:sec-slide\n");
+   await write(

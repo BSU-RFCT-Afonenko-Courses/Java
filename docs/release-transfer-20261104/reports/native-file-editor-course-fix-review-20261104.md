@@ -1,0 +1,15 @@
+# Независимое review: наследование редактора PrairieLearn
+
+Вердикт: **APPROVE**, замечаний нет. Приёмка ограничена Source (source-only acceptance). Автор изменения — A2; рецензент `/root/editor_override_review` изменение исходника не писал.
+
+Проверен Java HEAD `ea17038679a7b8fdca0c8ad26394658c2a0d85e2`. Побайтовое сравнение HEAD и рабочего `tasks/bank/numbers.qmd` подтвердило ровно удаление ` prairielearn-submission="upload"` в декларации `exr-numbers-short-circuit-and` на строке 172. Всё остальное содержимое этого файла совпадает: условие, ID, project path, project-check, grading, target, shortcode, UUID и баллы не менялись. Все остальные upload overrides, включая `exr-numbers-argument-sum-product`, сохранены.
+
+В HEAD `tasks/_quarto.yml:373–376` уже присутствуют `submission.mode: editor` и `ace-mode: ace/mode/java`; сам tasks YAML не имеет diff. Профиль `java-numbers-short-circuit-and` использует `source-profile: java-gradle`, runtime `java25-gradle-junit-v1`, `java-build.main-class: Main`, без `additional-java-sources`. Source-profile задаёт `mode: implementation`, root `src/main/java`, include `**/*.java`. В выбранном metadata starter найден только `src/main/java/Main.java`: публичный Main, main(String[] args), пустое тело с TODO, без решения. Reference и alternatives заданы отдельными solutions и не входят в starter. Следовательно удаление upload корректно наследует существующий editor для фиксированного `Main.java` и не расширяет выдачу исходников.
+
+Контрпример проверен: `java-numbers-argument-sum-product` сохраняет `additional-java-sources.primary-required: false` и явный upload в bank. Новый PL auto mode, validator или library code этой правкой не вводятся. Прочитаны исходные отчёты `native-file-editor-evening-20261104.md` и `native-file-editor-course-fix-20261104.md`; их границы подтверждения сохранены.
+
+Проверки выполнены адресным чтением исходников, HEAD и точным сравнением bytes. Для обратимого удаления одного атрибута новый тест не добавлялся. Не запускались PL suite, сборка, Java compiler, сеть, Native materialization или browser submission. Реальная Native UI поставка, ZIP и фактический submit этим review не квалифицированы.
+
+Собственный первичный допуск: `gpt-6.1-sol/medium`, PASS на обоих уровнях turn_context. Chat `01a1a6d4-80b9-7d71-9b67-541745466d20`, исходный turn `01a1a6d4-80e7-7740-9b7b-2b9bd95e397a`; прочитан полный интервал от исходного хода, без сдвига baseline. Свидетельство: [native-file-editor-course-review-model-evidence-20261104.json](native-file-editor-course-review-model-evidence-20261104.json). Standard назначен; service tier в первичной записи отсутствует.
+
+Перед коммитом index пуст. Разрешён только локальный коммит `tasks/bank/numbers.qmd`; чужие CI/tools/root docs/provider изменения и untracked HTML сохраняются. Коммит: `d934ede168d6d43210948940a540ea8f51e69fe6` (`Исправить наследование редактора для проверки частного`). После коммита проверены единственный путь в commit, чистый index и отсутствие diff bank-файла. Остальные статусы рабочего дерева побайтово совпадают с сохранённым списком до commit. Push и production действия не выполнялись.

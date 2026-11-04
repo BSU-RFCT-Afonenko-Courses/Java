@@ -1,0 +1,101 @@
+# Расширения: необходимость механизмов, производительность и границы
+
+4 ноября 2026. Сводный документ для запрошенного отчёта около09:45 Europe/Minsk. Это результаты межрасширенческого source-only прохода и отдельно перечисленных ограниченных изменений; не итоговая приёмка релиза10ноября.
+
+## Последующие результаты,10:05 Minsk
+
+Это evidence, не второй файл состояния; очередь/активные владельцы — в `java/docs/release-cycle-20261110.md`.
+
+- Core5a снял engine ban и whole-owner equality, сохранив selected QMD/roles/lifetime. Actual R→Table/PNG→README/ZIP PASS; [опыт/review](core-native-computed-integration-20261104.md).
+- PL ordinary computed consumer тоже PASS при неизменных grader inputs: Table/Image/inline42, bytes/ZIP, UUID/scenarios/privacy. Production consumer переписывать не понадобилось. [Опыт](pl-computed-consumer-integration-20261104.md), [review](pl-computed-consumer-integration-review-20261104.md). Generating grading files/cache freshness — отдельные открытые границы.
+- QRCf0d6: SearchRow и передача final rows удалили повторный index read/JSON.parse; duplicate exactpath и extra metadata сохранены. [Report/review](qrc-search-types-review-20261104.md). Performance356 показывает saved command intervals без новых Native команд.
+- Shared Site6 проверен маленькой fixture; полный SP paired root stage остановлен cap115s после четырёх child exit0. Root/handbook/final publication ещё UNKNOWN. [Частичный результат](sp-shared-site6-stage-integration-20261104.md).21saved inspect требуют адресного Source разбора, одинаковые argv ещё не доказывают избыточность.
+- Старые Core tests всё ещё требуют отменённые engine/same-S/cache гарантии. Они согласуются Source-only перед одним следующим CI; runtime checks ради зелёных assertions не возвращаются. [Карта](core-native-bridge-test-contracts-next-20261104.md).
+- Gateway actual901/Platform845 установлены по live OCI Source labels, delivery4 поддержан. DB/runtime config остаются UNKNOWN: structural export отклонён auto-review и ждёт явного разрешения, обходов не было.
+
+## Что установлено
+
+Паттерн повторяется во всём активном стеке. Иногда наша гарантия строже Native: whole-owner byte equality, closed sidecar JSON, каталог/assignment по hash, обязательная канонизация HTML. Иногда работа повторяется без нового consumer: проверка созданного receipt самим создателем, schema closure SHA при каждом info JSON, AST walk того же объекта. В Performance нашлись собственные дорогие действия наблюдателя, которые не нужны для записи времени: default lexical inventory и normal supervisor `/proc` polling.
+
+Это позволяет двигаться на существующем стеке. Native Quarto/Pandoc/PrairieLearn и TypeScript не требуют большинства этих усилений. Противоречие возникло между желаемой гибкостью Native и **нашими техническими допущениями**, а не между основными требованиями пользователя. Но удалять общий hash, оставив его как persisted identity и единственный способ читать старые assignments/results, нельзя: там нужна согласованная смена consumers с сохранением native records/истории. Максимальная типизация совместима с более широким Native JSON: точно типизировать потребляемые поля и существующие границы, не вводить новые закрытые runtime схемы ради типового процента.
+
+## Исследованная область
+
+| Область | Основной результат | Подробное evidence |
+| --- | --- | --- |
+| Core | Whole-owner snapshot/fences/provenance сильнее selected input/privacy требований. Source SHA уже экспортирован в public DTO; нужен согласованный consumer diff. Ресурсные SHA, ранний private state decode, trusted AST clones и authority/proof нельзя считать одним механизмом | [Core/UI/QRC pass](pattern-pass-core-20261104.md) |
+| PrairieLearn | Full native file inventory/canonical delivery identity и часть witness/proof — наша архитектура. Resource/privacy/role и реальные grading/seed/scenario связи имеют отдельный смысл. README materialization до/после submission mapping не доказана одинаковым входом | [Export pass](pattern-pass-export-20261104.md), [producer audit](hash-mechanism-producer-review.md) |
+| Download | Повторные clone/parse/copy/hash до ZIP и archive receipt требуют пересмотра по consumer. Старые sourceRunHash/reZIP/fallback дубли уже удалены ранее и не названы новыми находками | [Export pass](pattern-pass-export-20261104.md) |
+| Site Java/SP | Это два разных pinned composition пути. SP ещё имеет per-document inspect/свой format capture; перенос Java native composition требует явной config compatibility. Java noDownload→PL inspection не является доказанной равнозначной однострочной заменой: различаются grading/seed/correlation проверки и noPL metadata fallback | [Export pass](pattern-pass-export-20261104.md) |
+| QRC | Runtime порядок HTML attributes не влияет на labels/link semantics. Закрытые непотребляемые catalog keys, лишний post inspect и local→full обработки — отдельные кандидаты. Actual labels/probes/path ownership остаются полезными | [Core/UI/QRC pass](pattern-pass-core-20261104.md) |
+| UI/Navigation | Whole-tree SHA/proof в прочитанных UI путях не найден. Расход другого рода: повторные HTML parse/write и DOM scans. Notes sanitation/ID rewriting защищают реальное поведение copied UI и не равны ненужной криптографии | [Core/UI/QRC pass](pattern-pass-core-20261104.md) |
+| Platform/Gateway | Native course.id/path/CI/assessment/user — устойчивая runtime identity. Наш delivery SHA участвует в bindings/assignments/history/outbox. Скопированные Native schemas, release assembly, private stage, per-job runtime hashing/version JVM и seed resume имеют разные границы и цены | [Platform pass](pattern-pass-platform-20261104.md), [consumer audit](hash-mechanism-consumer-review.md) |
+| Performance | Default project lexical inventory, backend hash→copy→hash, automatic trace exports и normal10ms `/proc` loop — собственная стоимость. Сохранённые SP captures измеряли другой runner и не доказывают цену general supervisor | [Performance/CI pass](pattern-pass-performance-ci-20261104.md) |
+| Сборки/CI | Source candidate, published pin, installed package и production admission смешаны не всегда оправданно. Actual compiler/Native interoperability проверка полезна на соответствующей границе; repeated full inventories/triplets/qualification для unrelated изменения не становятся требованием из старого workflow комментария | [Performance/CI pass](pattern-pass-performance-ci-20261104.md) |
+
+Точные HEAD/provenance каждого чтения указаны в четырёх отчётах. QRC после прохода получен отдельным exact shallow Source checkout на798; старые worktrees не менялись. Для SP Site использован exact bare ref e0, а не предположение о совпадении с Java e8/d16. Первый Source-only проход использовал saved f9d7e66; последующий actual OCI Source901 указан выше. DB rows/runtime overrides остаются UNKNOWN. Переиспользованы R0–R6,74-карта и сохранённые measurements; общей новой матрицы не было.
+
+## Уже сделанные ограниченные изменения
+
+| Изменение | Смысл и приёмка | Сохранение/ограничение |
+| --- | --- | --- |
+| Core `46b35909c9878196294f54b6be2d7505b336fe8d` | Один actual Pandoc object больше не обходится дважды ради raw/projected resources. Используется `rawequal`: native Pandoc подтвердил, что обычное `==` считает равными разные одинаковые по содержимому объекты. Focused native RED→GREEN: same1walk/distinct2, пути/digest и private generated bytes сохранены. Независимый root review APPROVE | Local commit поверх ad80, не pushed/не установлен; whole-owner guarantee этим не удалена. [Изменение](core-resource-walk-20261104.md), [review](core-resource-walk-review-20261104.md) |
+| QRC `4a692ea1934224c844a1a3f277a7a77d513f012b` | Удалены два whole-HTML regex sorting passes и сам TS helper. Существующий тест теперь проверяет actual targets/labels/metadata/local/full вместо равенства bytes. Два целевых semantic tests PASS,1.807s; независимый high review APPROVE | Remote backup успешен, нового PR/установки нет. Отдельный typecheck не выполнился: неподдерживаемый bundled Deno `--cached-only`, не PASS и не повторялся. Lua Attr sorting пока отдельная очередь. [Изменение](qrc-native-metadata-20261104.md), [review](qrc-native-metadata-review-20261104.md) |
+| Performance `744dfac5e872dec71700971e00142689c7ef23fd` | Удалён обязательный full package lexical/hash inventory обычного summary/cpu. Actual extension observations остаются, installation inventory честно unknown/null, complete:false. Explicit experiment collector сохранён. Один affected program check и3existing fixtures PASS,35ms; независимый high review APPROVE | Remote backup успешен, нового PR нет. Проверка выполнена system Deno, не выдана за actual Quarto bundled execution/fullCI. General native runtime не перезапускался. [Изменение](performance-routine-inventory-20261104.md), [review](performance-routine-inventory-review-20261104.md) |
+| PL `f3a09cd060609b57e516779588d635abedb1ca21` | Удалены два orphan digest `nativeProjectWitnessHash` и private `nativeVerificationInventory.inventoryHash` вместе с hash-only assertions. Witness/projects/questions/scenarios/реальные byte/owner checks и потребляемый scenariosHash сохранены.5pure runtime fixtures PASS83ms; независимый high review APPROVE, включая transitive object serialization/hash flows | Local clean commit поверх remote30ed, не pushed/не установлен. Два integration diagnostic JSON больше не содержат private inventoryHash; их reader использует scenariosHash и отдельный checks.json. Affected compiler остановился до TS на uncached JSR с --deny-import; successful typecheck не заявляется. [Изменение](pl-unused-digests-20261104.md), [review](pl-unused-digests-review-20261104.md) |
+
+Прямой новый cross-project coupling обнаружился у QRC: Performance offline tools извлекают удалённый private normalizer из pinned Git blob. Старые798 manifests работают с историческим blob. Перед обновлением QRC pin нужен companion пересмотр этих byte-comparison tools; возвращать runtime sorting ради старого tool нельзя. Это пример реальной границы consumer, которую недостаточно увидеть в одном расширении.
+
+Второй QRC пакет `8732dbbe0d8502f8b6a77049e27907ae8a66e46a` принят независимым review и сохранён remote: imported catalog принимает непотребляемые дополнительные metadata keys, возвращая прежнюю typed consumed projection. Schema/required consumed types/адресация и запрет owner-binding overrides сохранены. [Report](qrc-import-metadata-20261104.md)/[review](qrc-import-metadata-review-20261104.md). Import-safety PASS; four-level metadata assertion прошёл, затем existing HTTP fixture остановился на sandbox socket bind, остальные transport cases не приняты.
+
+После установления фактического Quarto `DENO_DIR=/home/tolya/.cache/quarto/deno_std/cache` **один** bundledDeno2.7.14 offline coupled check Core/PL/QRC завершился PASS3.965s: оба изменённых PL producer и QRC validator/imports теперь проверены actual compiler. Это снимает их прежнюю preparation-only неопределённость в текущей композиции; исторические неудачные attempts в отчётах не скрываются. Все runtime suites/fullCI этим не приняты. Core scoped-boundary candidate отдельно находится на review; наличие passed compiler не считается семантической приёмкой.
+
+Ни одна строка этой таблицы не означает measured course speedup. Тестовые35ms/1.807s — длительности проверок, а не выигрыш сборки. Уже успешные full suites/SP captures не повторялись, production/pins/студентские файлы/UUID/оценки не менялись.
+
+## Новый адресный замер Java
+
+Один Deno2.7.14 process, один read сохранённого2,184,627B state,8 чистых JSON parse + exact extracted d7 schema decode, cap15s/retry0. Весь process443.053ms, exit0. Read6.131ms; первая parse10.087ms/decode25.495ms; медианы8 parse8.257ms/decode11.445ms. Actual operation/guard/correlation, Native child, inspect/render/build и Source hash не запускались. State/environment никуда не копировались и не печатались.
+
+Это **не подтверждает** гипотезу, что один лишь чистый decode большого state объясняет900s. Оно измеряет конкретные микростадии; per-document startup/import graph, repeated actual IO, correlation, AST и HTML writer остаются неразложенными. Нельзя выдавать8итераций за total128 или новый прогноз полного курса. [Метод/предел](java-state-decode-20261104.md), [raw timings](java-state-decode-20261104/result.json).
+
+## Следующие границы решений
+
+1. Отделить stable Native binding от whole-course content identity, сохранив существующие parent DB IDs/attempts/files и legacy history/outbox. Первый кандидат — ordinary work context; per-slot completion/managed assignment/AGS не менять молча.
+2. Согласованно ослабить Core whole-owner equality с actual exported provenance/materializer consumers. Фиктивный digest или новый policy-hash/receipt framework не являются удалением механизма.
+3. Избавляться от непотребляемых PL witness/private inventory digests, repeated self-validation/schema hashing, лишних Download copies/selfdigests; каждый отдельный bounded diff сохраняет полезные роли/bytes/scenarios и honest DTO.
+4. У Performance следующий сложный участок — `/proc` polling while native status pending. Readiness/ownership, descendant/zombie cleanup и signal/EOF нельзя выбросить вместе с частым сканированием. Сначала узкое lifecycle решение; старый standaloneSIGTERM не объявлен исправленным.
+5. Установить actual deployed Source/Gateway compatibility до cutover. Saved Gateway loader поддерживает delivery3, новые PL producers delivery4; это Source gap, а не доказанный live отказ. Ни миграция данных, ни пересоздание курса не запускались.
+
+Типизация остаётся параллельной задачей. Новые конкретные долги: Platform raw/parsed Zod domain (`__proto__`), Performance Event cast с неполной проверкой optional IDs, оставшиеся PL/Core dynamic producer boundaries. Их нельзя закрывать словом strict, фиктивными casts или введением повторных runtime guards. Поиск паттернов завершён как адресное чтение активных производственных путей; все варианты Native/runtime/CI и максимальное type coverage этим не приняты.
+
+## Дополнение пользователя: кеши и штатные выполняемые ячейки
+
+Пользователь прямо включил это направление после первого прохода. Два независимых Source-only исследования завершены: [Quarto cache/freeze boundary](quarto-cache-boundary-20261104.md) и [execution cells/engine boundary](quarto-execution-boundary-20261104.md). R3v3 переиспользуется, его успешные R/Python/include/inline/cache/freeze пробы не повторяются; прежняя собственная static/frozen policy не считается оправданием запрета computed. Собственный execution engine, cachekey/proof/receipt framework не вводится.
+
+Основные официальные источники — [исполнение проектов](https://quarto.org/docs/projects/code-execution.html), [кеши движков](https://quarto.org/docs/computations/caching.html), [контекст исполнения](https://quarto.org/docs/advanced/quarto-execute-info.html), [include](https://quarto.org/docs/authoring/includes.html). Их current описание сверяется с установленным Quarto1.11.5/сохранённым R3, а не выдаётся за новую проверку всех engines. Нужна штатная цепочка известный QMD→Native execution/thaw→готовый AST/ресурсы→consumers; позднее создание новых QMD и перенос widget/OJS/Raw dependencies в GFM — отдельные реальные границы.
+
+## Текущий следующий проход,08:35 Minsk
+
+Все4слота используются: root координирует/review/сохраняет state, три исполнителя параллельно ведут Performance supervision, Core native boundary viability и сквозной Platform native binding plan. После завершения слоты переходят к независимому review/следующему осмысленному diff, без лишних прогонов ради занятости.
+
+Core scoped-fence candidate **не принят**: [review](core-owner-boundary-review-20261104.md) выявил пропущенные baseline-absent ancestor metadata и document metadata-file(s). Tiny actual counterexample0.352s подтвердил первый дефект; пересматривать надо архитектурную границу, а не наращивать собственный recursive YAML resolver. Pending diff сохранён.
+
+Cache/execution reports подтверждают два разных собственных препятствия: static engine admission и whole-owner byte equality. Shared Native `_freeze` при разных output dirs не становится profile-isolated; saved R3 показывает cross-profile reuse. Это условная опасность для unmarked profile-dependent computed output, не установленная утечка в текущих static курсах. Native настройки freeze/cache уже дают варианты без собственного cachekey protocol. Полная цепочка computed figures→README/PL/ZIP остаётся открытой.
+
+Performance supervision принят независимым root review: local `10810e482dcecde1eecf2e697cac0e3d628f05fe`, один production участок+3existingfixtures,13scoped cases/affected compiler roots PASS12.220s/cap60/retry0. [Report](performance-pending-supervision-20261104.md)/[review](performance-pending-supervision-review-20261104.md). Это устраняет normal `/proc` enumeration до status, сохраняя transition cleanup; measured course speedup не установлен. Освободившийся слот занял medium исполнитель companion QRC/Performance, другие2high продолжают Core/Platform.
+
+## Продолжение после08:50
+
+Приняты rootreview и localcommits: Performancee88 EventDTO (5cases+correctedaffectedcompilerPASS),94f removesCore/QRCnormalizers/privateblobexecution/normalization-onlytests (4purecases+affectedcompilerPASS),536 removesdoublebackendhash/equality/receipt (affectedcompiler+2existingpurecasesPASS). Download944 packagesactualbytes безповторногоsize/SHAcertificate/ordinarysecondcopy, сохраняетSABownershipcopy иpath/audience/collision/CRC (4purecases+affectedcompilerPASS<16s). Это удаление гарантий, а не новоеproof/cacheframework; старые telemetryresultsсохранены. Measuredcourse speedup UNKNOWN.
+
+Javaf774 очищает31учебныйMDотстарогоj25literal; historicalcommit/evidenceиcurrentпутиразделены, ID/UUID/баллыпрежние. Никакихrender/tests/hashдляредакционнойзаменыне запускалось.
+
+CorebridgeпишетсяотдельноототклонённогоAнаexact46b,5existingmodules; originaldirtyсохранён. ActualGatewaySource901полученизOCIlabelдействующегообраза, delivery4поддерживается; oldsavedf9schema3gapнепереноситьнаlive. Source-onlycatalogbranchанализпродолжается. Structuralruntimeconfig/mountworkIDexportавтоматическиотклонён, asyncuserconsentожидается; не повторять/необходить. [Imageevidence](live-image-sources-20261104.md).
+
+## Дополнение 4 ноября: тип сужен, runtime объект не спроецирован
+
+Новый ordinary Native fixture дошёл до Core→PL и воспроизвёл конкретный дефект (`native-publication-bounded-acceptance-20261104-r2.stderr.log`). `PublicationIdentity = Pick<NativeOperationIdentity,...>` сужал только TypeScript view; `{...identity}` переносил actual `runtime` в adapter origin. Собственная strict schema затем отказывалась от собственного объекта. Общий compiler этого не находил, поскольку parse принимал unknown. Это доказанная причина данного отказа, не объяснение прежнего whole-course timeout.
+
+Следующий аналогичный паттерн в расширениях ставить под вопрос: широкий внутренний объект → Pick/ручной DTO → spread → повторный schema.parse ради обещания точной формы. Проверять actual ownership/потребляемые поля и реальную границу разбора. Проекция должна формировать настоящие поля, а подтверждённые Native значения — сохранять точный тип от существующей входной границы. Простое расширение schema служебным полем либо два новых guards в каждом consumer воспроизводят проблему.
+
+Текущее исправление ограничено двум Core files: explicit canonical origin, typed Native complete context на existing JSON boundary и перенос результата уже существующей seal проверки в producer. Ordinary builder не получает повторных guards/selfparse. Общие pure semantic documents остаются broad; их fixtures не должны получать fake captureWitness. Existing full course admission отделён, его полный redesign не входит в этот bugfix. На момент дополнения final Source/runtime квалификация исправления ещё pending. Общий Native spent18.623064679s/60, compiler9.800762860s/20; budgets не сбрасывать. Старые неудачи сохранены.

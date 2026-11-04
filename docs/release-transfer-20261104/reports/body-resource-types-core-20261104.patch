@@ -1,0 +1,60 @@
+diff --git a/_extensions/course-core/body-export/package-contracts.ts b/_extensions/course-core/body-export/package-contracts.ts
+--- a/_extensions/course-core/body-export/package-contracts.ts
++++ b/_extensions/course-core/body-export/package-contracts.ts
+@@ -44,11 +44,19 @@
+     c.addIssue({code: "custom", message: "Некорректный work key или повторная позиция/кандидат"});
+   }
+ });
++export const BodyResourceSchema = z.strictObject({
++  owner,
++  source: z.string().min(1),
++  effectiveBase: z.string().min(1),
++  target: z.string().min(1),
++  data: z.string(),
++  visibility: z.literal("public"),
++});
+ export const BodyPackageSchema = z.strictObject({
+   schema: z.literal("course-body-package-v2"), owner, release: z.string().min(1),
+   apiVersion: z.array(z.number().int().nonnegative()).min(1),
+   questions: z.array(BodyQuestionSchema).min(1), works: z.array(work).min(1),
+-  resources: z.array(z.any()),
++  resources: z.array(BodyResourceSchema),
+ }).superRefine((p, c) => {
+   const issue = (message: string, path: (string | number)[] = []) => c.addIssue({code: "custom", message, path});
+   const questions = new Map(p.questions.map((q) => [q.key, q]));
+@@ -74,5 +82,6 @@
+   }
+   for (const [i, q] of p.questions.entries()) if (!used.has(q.key)) issue("Неиспользованный вопрос", ["questions", i]);
+ });
++export type BodyResource = z.output<typeof BodyResourceSchema>;
+ export type BodyQuestion = z.output<typeof BodyQuestionSchema>;
+ export type BodyPackage = z.output<typeof BodyPackageSchema>;
+diff --git a/_extensions/course-core/body-export/model.ts b/_extensions/course-core/body-export/model.ts
+--- a/_extensions/course-core/body-export/model.ts
++++ b/_extensions/course-core/body-export/model.ts
+@@ -1,5 +1,5 @@
+ import type { BodyPackage, BodyQuestion } from "./package-contracts.ts";
+-export type { BodyPackage, BodyQuestion } from "./package-contracts.ts";
++export type { BodyPackage, BodyQuestion, BodyResource } from "./package-contracts.ts";
+ export type Node = { t: string; c?: any };
+ export type PublicBodyPackage = Omit<BodyPackage, "questions"> & {
+   questions: Omit<BodyQuestion, "closedKey" | "solution" | "gradingNotes">[];
+diff --git a/tests/body-schema.ts b/tests/body-schema.ts
+--- a/tests/body-schema.ts
++++ b/tests/body-schema.ts
+@@ -35,7 +35,14 @@
+       assignment: { requirement: "required", workMode: "individual" },
+     }],
+   }],
+-  resources: [{ opaque: "resource" }],
++  resources: [{
++    owner: "demo",
++    source: "bank.qmd",
++    effectiveBase: root,
++    target: "figure.svg",
++    data: btoa("<svg/>"),
++    visibility: "public",
++  }],
+ };
+ try {
+   const cases: [string, (p: any) => void, boolean][] = [

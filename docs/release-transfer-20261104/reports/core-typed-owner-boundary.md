@@ -1,0 +1,45 @@
+# Типизированная граница Core owner inspect
+
+3 ноября 2026. Ограниченная Source партия из `typescript-any-audit.md` поверх Core `830381697beea4106655965e10605cc13987199b`. Единственный Core writer — `/root/core_native_delivery`. Изменены только `runtime/operation.ts`, `runtime/assignment-admission.ts` и новый адресный test. Установленные Java/SP/providers, PL Source `da2ad6b6c00891590e59e5abccf3d1eb4ff552f7`, нормативные файлы и глобальные settings не менялись. Render/inspect/hash/build/install/push/actual SP или Java здесь не запускались.
+
+## Выбранная граница
+
+Проблема была в статической потере уже проверяемых данных: `inspectNativeOwner` и private `json` выводили `any` из `JSON.parse`; затем `bindOwner(owner:any)` и `AssignmentAdmission.owner:Record<string,any>` переносили его в admission и source binding. Прочитан existing Quarto1.11.5 `/opt/quarto/bin/quarto.js:164800–164844`: inspect owner содержит `quarto`, `dir`, `engines`, `config`, `files`, `fileInformation`, `extensions`; сведения конкретного файла содержат `includeMap`, `codeCells`, `metadata`. Новый inspect не выполнялся. Сохранённый SP owner witness подтверждает top-level config/files shape, но не выдаётся за новый полный inspect dump.
+
+До правок root согласовал конкретный подход и уточнил предел: structural record/string-element narrowing внутри тех же owner guards разрешён; malformed JSON должен получить controlled Core error вместо прежнего path TypeError. Второго qualification/validation прохода, metadata whitelist и новой schema нет.
+
+В `operation.ts` выделен внутренний `NativeOwnerInspection`:
+
+```ts
+Record<string, unknown> & {
+  dir: string;
+  quarto: Record<string, unknown> & { version: string };
+  config: Record<string, unknown>;
+  files: Record<string, unknown> & { input: string[]; config?: string[] };
+}
+```
+
+Внешний результат JSON сначала присваивается `unknown`. Existing input/version/root проверки собраны в один `decodeNativeOwnerInspection` непосредственно на выходе inspect. Используется тот же `SupportedQuartoVersionSchema.safeParse`, причём результат `.data` сохраняет тип; string elements проверяются до передачи в path функции. Ветви `bindOwner`/assignment admission больше не повторяют эти проверки. Known containers и config paths получают structural narrowing там же, где они потреблялись; новый policy/формат/metadata allowlist не введён.
+
+Полный payload сохраняется spread-копиями исходных top-level/quarto/files объектов; вложенные config и прочие extension данные не урезаются и не нормализуются. Config имеет `Record<string, unknown>`, metadata после existing object guard — тот же unknown bag. `engines`/`fileInformation` и непроверенные extension значения не объявлены заранее валидированными: они остаются `unknown` до existing static/include guards. Там убраны `format:any`/`cell:any`; static ojs запрет, language/engine ограничения и include source/target проверки сохраняются. В том числе format array с ojs по-прежнему не обходит существующий запрет.
+
+`inspectNativeOwner` теперь возвращает `Promise<NativeOwnerInspection>`; `bindOwner` и `AssignmentAdmission.owner` принимают этот же тип. Root отдельно разрешил укрепление существующей callback сигнатуры: `AssignmentPreparation.prepare` получает `Readonly<NativeOwnerInspection>` вместо `Readonly<Record<string, unknown>>`, поэтому тип не стирается сразу после разбора. Existing callbacks, принимающие Record bag, совместимы. Контракт, поля, данные и public wire не меняются; `public.ts`/`capture.ts` не получают новых runtime API members. Decoder и bindOwner экспортированы только из внутреннего runtime module для адресной проверки, не через public barrel.
+
+Private `json` теперь возвращает `Promise<unknown>`. Существующие schema decoders state/capture/reservation уже сохраняют конкретные output types. Для прямых pointer consumers тот же UUID/path guard вынесен в небольшой общий `nativePointer`, который возвращает `.data` UUID и проверенный directory без прежних `as string`. У metrics добавлено structural record narrowing перед существующими numeric/key checks; у installed contract name — record narrowing перед прежней string проверкой. Это используемые JSON fields в одном module, без нового registry/protocol/schema. Malformed containers получают соответствующий controlled Core refusal, а не маскируются cast или любым `any`.
+
+## Выполненная проверка и пределы
+
+1. Compiler RED после объявления unknown на исходной границе: existing `tests/navigation-typecheck.ts` обнаружил64 настоящие TS ошибки доступов к `unknown` в owner/pointer/metrics/contract consumers. `core-typed-owner-red.log`, exit1,5.972s. Это показало закрываемый статический разрыв; не runtime отказ Quarto.
+2. После narrowing existing targeted Core graph прошёл: `core-typed-owner-check.log`, exit0,4.908s. Этот проход был до последнего type-only укрепления prepare callback. Он затем отдельно не повторялся.
+3. Новый pure `tests/assignment-owner-boundary.ts` прошёл за1.101s: `core-typed-owner-regression.log`/`.json`. Он вызывает actual decoder/bindOwner functions на малом data-only owner и не запускает native producer, Source snapshot, read/hash, render или inspect. Проверены полное сохранение inspect payload/config, malformed/null/array containers, nonstring input/config paths, пустые/повторные/внешние inputs, версия/root, projection/view/reservation/runtime mismatch, source policy, nonstring output, static engine/cell/ojs и includeMap/edge отказы; ordinary default student/general сохраняется. Test state содержит явно неиспользуемые `not-read` signature/hash placeholders, а не live producer authority/capsule. Existing canonical `tests/assignment-*.ts` glob включает test без изменения suite wiring; сам suite не запускался.
+4. Для финальной callback сигнатуры root назначил один affected Core→PL positive compiler graph через готовый PL `tools/native-core-import-map.ts`; старые8 negatives не повторялись. Первый ошибочный invocation был сделан мною через shell Deno вне Quarto cache env: helper прошёл1.001s, compiler остановился за0.112s на попытке resolution JSR manifest до typechecking. Это ошибка среды запуска проверки, не TypeScript diagnostic и не продуктовый отказ. `core-typed-owner-composition.log`/`.json` сохранены.
+5. Исправленный temporary runner использовал тот же helper и `Deno.Command(Deno.execPath())` внутри Quarto, по existing positive части `tests/native-core-typecheck.ts`, без negative цикла. **PASS**,6.280s: PL `application/native-entry.ts`, existing `tests/native-core-boundary-types.ts`, новый Core `tests/assignment-owner-boundary.ts` и их статически достижимый graph. PL exact Source оставался `da2ad6b6c00891590e59e5abccf3d1eb4ff552f7`, Core —83038169 с данной дельтой. `core-typed-owner-composition-final.log`/`.json`. Runner/map остались в собственном `/tmp/core-typed-owner-check-6lu44p5j`, Source PL не менялся.
+6. Только затронутые3 TS файла отформатированы bundled Deno; `fmt --check` и `git diff --check` PASS. После последнего compiler PASS изменились только форматирование и fail-closed object-container guard перед тем же typed installed contract name доступом; type/API сигнатуры не менялись. Полный checker, old suites, успешные capture и actual pipeline не повторялись.
+
+Остаточный долг не скрывается: это одна inspect/owner/private-reader граница, а не завершение всей TS/JS типизации стека. Соседний existing `JSON.parse(invocation).physical as string` в assignment executable identity не менялся и не считается доказанным unknown-decoded DTO этой партией; wholesale identity/API перестройка не включена. AST/Body exporter, Quarto runtime policy и public native prepared wire не менялись. Ни зелёный compiler graph, ни pure malformed-owner controls не подтверждают новую actual installed capture/delivery/Platform/production готовность.
+
+## Допуск и передача
+
+Полный primary interval проверен от прежнего original turn `01a1a21a-f52f-73a3-85e9-758306144504`, не от нового удобного baseline. Current turn `01a1a27f-8c47-7703-b1b0-92739a2adfb8`, строка1301; все9 turn_context records/8unique turns имеют top+nested `gpt-6.1-sol/high`. Standard по назначению root; service_tier отсутствует и отдельно не утверждается. Глобальные settings и normative документы untouched.
+
+Source commit `3af7600cd44c562cb781865f02f94833c4690ada` поверх `830381697beea4106655965e10605cc13987199b`:3файла,+366/−80. Core Source после commit clean; staged diff check PASS. Точный диапазон независимого review — `830381697beea4106655965e10605cc13987199b..3af7600cd44c562cb781865f02f94833c4690ada`. Установка, PR, push, release и production остаются у root после review.

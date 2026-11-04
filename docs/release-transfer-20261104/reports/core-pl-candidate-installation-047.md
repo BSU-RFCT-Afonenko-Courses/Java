@@ -1,0 +1,15 @@
+# Адресная установка Core 047 + PrairieLearn f9
+
+3 ноября 2026. После сообщения root с независимым PASS `core-empty-scratch-review.md` выполнена одна разрешённая установка exact Core `0478458a71f3acf34ad6d9983ac11023783dde3d` + PL `f9c00aed6de610dce7d9b7cb6e50c28ebfb9573e`. Начало UTC `2026-11-03T17:09:05.601597+00:00`, wall `0.216083515` s, exit `0`. Отдельного preflight не было.
+
+Минимальная копия `core-pl-candidate-installation-047.py` отличается от прежнего скрипта только PL constant и именем result JSON. Команда и время в `core-pl-candidate-installation-047-execution.json`, output в одноимённом `.log`, адресные scopes/path/status в `core-pl-candidate-installation-047-result.json`. Исторические 332/f10 script/result/evidence сохранены.
+
+Исходные HEAD: Java `045e0c4caa1f9679f44c2e61cb2a9771cd8e8e5a`, SP `e579e0e0bfe20403f6b07df2f04a64e5e6c5d7d8`, оба clean. Manifest candidates Core f10 и PL3a совпали с поручением. Source PL читается только по pinned Git blobs f9, live dirty Source не читался.
+
+Дельта: Core `runtime/operation.ts`, `runtime/source-snapshot.ts` в `_extensions/Afonenko-Course-Tools/course-core/` каждого из шести scopes `.`, `theory`, `tasks`, `lectures`, `practice`, `handbook` обоих курсов; PL `application/native-adapter.ts`, `application/native-entry.ts`, `application/native-input.ts` только в tasks обоих курсов. Итого30 адресных атомарных замен. На курс19 файлов:15vendor paths, providers.json, installed-packages.json и два cumulative provider patches.
+
+До первой записи existing script проверил затронутые old bytes/mode/lock и patch provenance обоих курсов; после записи проверил new bytes/mode только этих targets. Подтверждены exact19 unstaged и staged paths, точное совпадение changed lock file rows с Git delta, сохранность UI file rows, exact cumulative patch bytes published base→target. Concrete manifest diff прочитан. Unstaged/cached diff-check без *.patch PASS; синтаксические blank context строки exact unified patches сохранены. Published base/tag/version/sourceZip и local-unpublished candidate contract сохранены. Java UI metadata синхронизирована existing contract, UI bytes не трогались; SP core-ui и другие providers не изменялись. Полного vendor walk/hash/materializer запуска не было.
+
+Commits: Java `097f22f53ad5849506135254e404d167be1e4c1c`, SP `a69081d7e3e01c9403ed39595548376f8c3ca1af`. После commits оба git status clean. Root release docs не stage/commit. Push/PR/production/данные студентов не затрагивались. Java pipeline, отдельные tests/build/render/inspect не запускались. Единственная штатная SP native попытка описана отдельно в `sp-native-047-acceptance.md`; установка сама по себе не подтверждает complete/seal/delivery.
+
+Собственный primary допуск: chat `01a1a261-97e1-7352-ae02-b6721eb39fb9`, path `/root/install_empty_scratch_pair`, baseline `01a1a261-9811-7ca3-8a48-e4482c3beafc`. Source и строки в `core-pl-candidate-installation-047-model-evidence.json`: session_meta1, turn_context8; top+nested gpt-6.1-sol/medium согласованы. Standard назначен root; service_tier отсутствует, скрытая маршрутизация не аттестуется. Глобальные настройки и нормативные документы не менялись.

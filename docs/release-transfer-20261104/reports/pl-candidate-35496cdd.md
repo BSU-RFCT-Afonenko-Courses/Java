@@ -1,0 +1,7 @@
+# Адресное обновление установленного PL candidate
+
+3 ноября2026, root Sol6.1/ultra, Standard. PL35496cdd независимо рассмотрен clean и pushed в существующий PR36. В Java tasks scope прежний candidate5a04576e обновлён ровно двумя файлами: application/native-check-inventory.ts и application/native-check-projection.ts. До записи их bytes/size/mode сопоставлены с прежним lock, чтобы сохранить постороннюю локальную работу. Новые bytes получены из точного Git commit35496cdd.
+
+Использованы существующие safe/sha/tree_hash/atomic_text из tools/materialize-providers.py; inventory остальных providers и старых неизменённых PL файлов не повторялся. Полный PL lock вычислен из прежних rows и двух новых rows. Patch сформирован Git от release1c41f03f до35496cdd только для _extensions; его SHA21c748d16697b178ea4ac45c8c0215cd1ca4983f74b4549e54716c4c0449c3a7, package lock24ddeb7ddbb4200ba6fc0c6fddd495a10142ae5a664b5e99b79c504753fba93c. Существующий local-unpublished provenance сохранён, published release не подменялся.
+
+Адресные raw-origin/reference tests и typecheck автора переиспользованы. Прежние UUID tests/hostedCI и малый native UUID/HTML проход не повторялись: corresponding policy/HTML путь этим diff не изменён. Полный staged materializer уже проверял прежнийrelease+patch, для нового head полный обход не запускался. Это установка рассмотренного diff, не заявление полной интеграции/публикации.

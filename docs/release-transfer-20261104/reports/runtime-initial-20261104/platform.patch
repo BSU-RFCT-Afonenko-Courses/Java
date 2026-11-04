@@ -1,0 +1,137 @@
+diff --git a/images/java25-grader/grade.py b/images/java25-grader/grade.py
+index 2c4e223..bba399b 100644
+--- a/images/java25-grader/grade.py
++++ b/images/java25-grader/grade.py
+@@ -556,6 +556,10 @@ LANDLOCK_HELPER_SHA256 = (
+ 
+ 
+ def preflight(runtime, registry=None):
++    return _preflight(runtime, registry, verify_bytes=True)
++
++
++def _preflight(runtime, registry, *, verify_bytes):
+     try:
+         registry = (
+             registry
+@@ -563,9 +567,10 @@ def preflight(runtime, registry=None):
+             else json.loads((PLATFORM / "runtime-profiles.json").read_text())
+         )
+         profile = registry["profiles"][runtime]
++        runner_sha = profile["runnerSha256"]
+         if (
+-            hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+-            != profile["runnerSha256"]
++            verify_bytes
++            and hashlib.sha256(Path(__file__).read_bytes()).hexdigest() != runner_sha
+         ):
+             raise GraderError("Runtime runner checksum mismatch")
+         if profile.get("assertionFeedbackProtocol") != 2:
+@@ -578,7 +583,10 @@ def preflight(runtime, registry=None):
+             raise GraderError("Runtime bundle contains unregistered or missing files")
+         for name, digest in profile["files"].items():
+             files = _files_any(bundle, name)
+-            if hashlib.sha256(files.read_bytes()).hexdigest() != digest:
++            if (
++                verify_bytes
++                and hashlib.sha256(files.read_bytes()).hexdigest() != digest
++            ):
+                 raise GraderError("Runtime bundle checksum mismatch: " + name)
+         if runtime == NATIVE_RUNTIME and (
+             not isinstance(profile.get("sharedFiles"), dict)
+@@ -586,9 +594,9 @@ def preflight(runtime, registry=None):
+         ):
+             raise GraderError("Native recipe dependency pins are missing")
+         for name, sha in profile["sharedFiles"].items():
++            files = _files_any(PLATFORM, name)
+             if (
+-                hashlib.sha256(_files_any(PLATFORM, name).read_bytes()).hexdigest()
+-                != sha
++                verify_bytes and hashlib.sha256(files.read_bytes()).hexdigest() != sha
+             ):
+                 raise GraderError("Shared runtime checksum mismatch")
+         if os.environ.get("PL_CONTAINMENT") == "official":
+@@ -2648,7 +2656,13 @@ def grade(job_dir, registry=None):
+     if official:
+         _protect_input_identity(job)
+     toolchain_lock = _admit_java_job() if official else None
+-    profile, bundle, toolchain = preflight(config["runtime"], registry)
++    if official and registry is None:
++        # Fixed image bytes уже проверены при сборке; job admission завершён.
++        profile, bundle, toolchain = _preflight(
++            config["runtime"], None, verify_bytes=False
++        )
++    else:
++        profile, bundle, toolchain = preflight(config["runtime"], registry)
+     import runpy
+ 
+     try:
+diff --git a/runtime-profiles.json b/runtime-profiles.json
+index b112984..c89081c 100644
+--- a/runtime-profiles.json
++++ b/runtime-profiles.json
+@@ -26,7 +26,7 @@
+         "upstream/LICENSE": "f3fba75145cfb48af6b3f50664b12459b5a60b50500176692b06309beb1dda4d",
+         "upstream/org/prairielearn/autograder/AutograderInfo.java": "43e3e320cb5fae2840462d36dea21c9fdbb0c99fbcb51ad3e692739b2bf3683f"
+       },
+-      "runnerSha256": "5023a63140a721f0b72dcd0eb04d3f2818f6907c58ddecaf0a49543e44e83e98",
++      "runnerSha256": "16f59402b9be796150209f48dcac83e8b3e61a8eb697c6a1e8b33103de2e2ff9",
+       "sharedFiles": {
+         "runtime/student_feedback.py": "54beda2d884e1b00c274bbca155de5bc910dcc29ecbe85c764ac0ff04c7872fe",
+         "runtime/junit_result.py": "ffbcbf3282beed963a2b47d256c29dac46c8d44110d7f176267ca677019b1ebe"
+@@ -58,7 +58,7 @@
+         "upstream/LICENSE": "f3fba75145cfb48af6b3f50664b12459b5a60b50500176692b06309beb1dda4d",
+         "upstream/org/prairielearn/autograder/AutograderInfo.java": "43e3e320cb5fae2840462d36dea21c9fdbb0c99fbcb51ad3e692739b2bf3683f"
+       },
+-      "runnerSha256": "5023a63140a721f0b72dcd0eb04d3f2818f6907c58ddecaf0a49543e44e83e98",
++      "runnerSha256": "16f59402b9be796150209f48dcac83e8b3e61a8eb697c6a1e8b33103de2e2ff9",
+       "sharedFiles": {
+         "runtime/student_feedback.py": "54beda2d884e1b00c274bbca155de5bc910dcc29ecbe85c764ac0ff04c7872fe",
+         "runtime/junit_result.py": "ffbcbf3282beed963a2b47d256c29dac46c8d44110d7f176267ca677019b1ebe"
+diff --git a/tests/test_gradle_review_fixes.py b/tests/test_gradle_review_fixes.py
+index 642ba12..4f94c80 100644
+--- a/tests/test_gradle_review_fixes.py
++++ b/tests/test_gradle_review_fixes.py
+@@ -57,6 +57,30 @@ class RecipeMembershipTests(unittest.TestCase):
+   with patch.dict(os.environ,{'PL_CONTAINMENT':'official'}),patch.object(grader,'_verify_landlock_helper'),patch.object(grader,'_run',side_effect=official_version):
+    for rid in ('java25-gradle-junit-v1','java25-junit-v1','java25-mutation-v1'):
+     with self.subTest(runtime=rid):self.assertEqual(grader.preflight(rid,value)[2],output.strip())
++   fixture=native.fixtures.JUnitJob();fixture.setUp()
++   try:
++    (fixture.job/'tests/grading-job.json').write_text(json.dumps(fixture.cfg))
++    (fixture.job/'student/Student.java').unlink()
++    read_text=Path.read_text
++    for kind in ('runner','bundle','shared'):
++     with self.subTest(stale_pin=kind):
++      changed=copy.deepcopy(value);profile=changed['profiles']['java25-junit-v1']
++      if kind=='runner':profile['runnerSha256']='0'*64
++      else:
++       pins=profile['files' if kind=='bundle' else 'sharedFiles'];pins[next(iter(pins))]='0'*64
++      def image_registry(path,*args,**kwargs):
++       if path==grader.PLATFORM/'runtime-profiles.json':return json.dumps(changed)
++       return read_text(path,*args,**kwargs)
++      # Synthetic admission: проверяем routing/evidence, не image/role qualification.
++      with patch.object(grader,'_protect_input_identity'),patch.object(grader,'_admit_java_job',return_value={}),patch.object(Path,'read_text',image_registry):
++       result=grader.grade(fixture.job)
++       self.assertEqual(result['classification'],'unsafe-submission')
++       self.assertEqual(result['executionEvidence']['dependencyHashes'],{**profile['files'],**profile['sharedFiles'],'runner/grade.py':profile['runnerSha256']})
++       with self.assertRaisesRegex(grader.GraderError,'checksum mismatch'):grader.grade(fixture.job,registry=changed)
++      with self.assertRaisesRegex(grader.GraderError,'checksum mismatch'):grader.preflight('java25-junit-v1',changed)
++      with patch.dict(os.environ,{'PL_CONTAINMENT':'host'}),patch.object(Path,'read_text',image_registry):
++       with self.assertRaisesRegex(grader.GraderError,'checksum mismatch'):grader.grade(fixture.job)
++   finally:fixture.doCleanups()
+   with patch.dict(os.environ,{'PL_CONTAINMENT':'host'}),patch.object(grader,'_run',side_effect=[(0,output,None),(0,'javac 24',None)]) as run:
+    with self.assertRaisesRegex(grader.GraderError,'actual JDK25 compiler'):grader.preflight('java25-junit-v1',value)
+    self.assertEqual(run.call_args.args[0],['java','-XX:TieredStopAtLevel=1','com.sun.tools.javac.Main','-version'])
+diff --git a/tools/prepare_native_toolchain.py b/tools/prepare_native_toolchain.py
+index 686b731..3b6da39 100644
+--- a/tools/prepare_native_toolchain.py
++++ b/tools/prepare_native_toolchain.py
+@@ -24,7 +24,7 @@ TOOLCHAIN='images/java25-grader/toolchain'
+ FINGERPRINT='F6ECB3762474EDA9D21B7022871920D1991BC93C'
+ EXPECTED_LOCK='c44c6f648e0bafbd2f87871813a8c5b2095315c465ddbf14e1b6282acae574ca'
+ HARDENED_LOCK='bcde4c1c54c4c11cc6e55381a6bbf53df97968e644c986d3aa32676c552f231f'
+-RUNNER='5023a63140a721f0b72dcd0eb04d3f2818f6907c58ddecaf0a49543e44e83e98'
++RUNNER='16f59402b9be796150209f48dcac83e8b3e61a8eb697c6a1e8b33103de2e2ff9'
+ COMPONENTS={'lib/libmanagement.so','lib/libmanagement_ext.so','lib/libmanagement_agent.so'}
+ 
+ def require(value,message):

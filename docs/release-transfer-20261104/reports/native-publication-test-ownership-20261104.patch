@@ -1,0 +1,29 @@
+diff --git a/.github/workflows/check.yml b/.github/workflows/check.yml
+index e821fe2..5b50b00 100644
+--- a/.github/workflows/check.yml
++++ b/.github/workflows/check.yml
+@@ -53,11 +53,6 @@ jobs:
+           persist-credentials: false
+       - name: Проверить закреплённый PrairieLearn
+         run: test "$(git -C pl-fixture rev-parse HEAD)" = "4d39a6648d2816bab9a372877deded3320ff35e1"
+-      - name: Настоящая ordinary публикация и public proof
+-        env:
+-          CORE: ${{ github.workspace }}/core-fixture
+-          PL: ${{ github.workspace }}/pl-fixture
+-        run: quarto run tests/ordinary-publication.ts
+       - name: Полный контракт Download и native installed model artifacts
+         env:
+           CORE: ${{ github.workspace }}/core-fixture
+diff --git a/tests/ordinary-publication.ts b/tests/ordinary-publication.ts
+deleted file mode 100644
+index f391d70..0000000
+--- a/tests/ordinary-publication.ts
++++ /dev/null
+@@ -1,7 +0,0 @@
+-// Проверка настоящего public owner, не private Core DTO.
+-import { resolve, dirname } from 'node:path';
+-import { fileURLToPath, pathToFileURL } from 'node:url';
+-const core = Deno.env.get('CORE'), pl = Deno.env.get('PL');
+-if (!core || !pl) throw Error('Нужны точные CORE и PL source checkouts');
+-const { runPublicationCases } = await import(pathToFileURL(resolve(pl, 'tests/native-publication-sources.ts')).href);
+-await runPublicationCases(resolve(core), dirname(dirname(fileURLToPath(import.meta.url))));

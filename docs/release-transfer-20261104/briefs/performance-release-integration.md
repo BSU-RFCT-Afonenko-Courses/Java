@@ -1,0 +1,27 @@
+# Performance: интеграция в выпуск 10 ноября
+
+3 ноября 2026. Владелец `/root/performance_tooling`; собственный первичный допуск Sol6.1/high PASS, исходный ход `01a1a2b3-2484-7082-8dbe-0952b115bedd`, свидетельство `reports/performance-model-admission.json`. Standard предписан; globals не менялись.
+
+Фактический source `/home/tolya/course-tools/quarto-course-performance` чистый на `ce19c1209a4647c63d1b853ff711a0617e1138f0`. Он сохранён без изменений. В отдельный локальный clone `/home/tolya/JavaCodex/java-release-20261110/performance` один раз получен remote default HEAD `0dc6ca31228da400a48e1278c13853d088b9dec9`; работа идёт на `codex/release-performance-20261110` от этого ref. Это runtime Performance 2.0; `quarto-course-perf-arch` — отдельный рецепт установки, не источник runtime. Текущих AGENTS.md внутри Performance и в родительских source/release каталогах нет.
+
+## Существующий путь
+
+- `render --perf-mode summary --perf-output <external-parent> <native-args>` сохраняет нативные параметры Quarto. `src/runner/render.ts` выбирает проект, сохраняет Git provenance, готовит внешнее staging, включает диагностику, затем запускает одну native команду через supervision и переносит raw/report в итоговый каталог. `off` не готовит агентов/launchers.
+- `src/runner/diagnostic.ts:prepareRenderDiagnostic` использует публичные Deno preload и Pandoc init. `src/launchers/setup.ts` копирует backend (`src`, `bridge`, `node_modules`, config/lock/registry), сверяет source/copy hash и готовит data-dir. Эти операции вне native wall, но входят в общее ожидание CLI; их стоимость пока не измерена. Простой render не патчит Quarto и не наблюдает `quarto.filter.run`.
+- `src/launchers/tool.ts` создаёт независимые process ID, предварительный и итоговый native status; Deno `run` получает preload, `cpu` также отдельный профиль. Pandoc сохраняет эффективный data-dir/пользовательский init через `pandoc-data.ts`. Идентификаторы/окружение наследуются child; точное родительство spans требует `childEnv`/`child_env` и реально исполненных wrappers. Наличие ABI фасада само по себе не доказывает проход native Core через обёрнутый launcher.
+- TS bootstrap (`src/agents/ts/bootstrap.ts`) устанавливает ABI 1, flush на exit/unload/error/unhandledrejection и best-effort TERM/INT. Lua init (`src/agents/lua/init.lua`) устанавливает ABI 1 и shutdown finalizer. `summary` собирает ручные semantic scopes/declared AST walks; `cpu` добавляет V8 samples; `trace` отдельно в disposable experiment преобразует выбранный TS scope и включает Lua hooks. Compiler API загружается только для TS trace.
+- `src/analysis/normalize.ts` объединяет per-process events, summaries и expectations, проверяет sequence/parents/quality и явно сохраняет partial/invalid. `src/report/run.ts` пишет summary, Markdown, causal и отдельные wall/Lua-CPU traces; `src/report/perfetto.ts` сохраняет локальные clocks и подтверждённые сопоставимые связи. Raw/native status сохраняется независимо от телеметрии.
+
+## Что можно заключить
+
+Summary даёт inclusive длительности реально размеченных операций, completed/error counts, AST walk API counts и отдельные TS wall/Lua process CPU. `selfMicroseconds`/`self_us` остаются null; async exclusive time, node visits и неразмеченные I/O/stages неизвестны. Clock domains складывать нельзя; вложенные inclusive времена не равны wall. CPU samples — не точные counts. Child native статус/process causal связь — не отдельная измеренная стоимость каждой стадии child. Статический package inventory и recorded observations разделены; современные локальные фасады Core могут отличаться от canonical byte hash и это не равнозначно отсутствию ABI 1.
+
+В обычном `off` bridge возвращает исходные функции, нет agent clock/hooks/telemetry; малые imports/registration и внешняя supervision всё равно имеют стоимость. В summary bounded event buffers/flush и per-process launcher старт тоже имеют стоимость. Текущая полная native Java попытка 900 s была без Performance bootstrap/mode: по её counters нельзя восстановить stage times или приписать timeout hash/AST.
+
+## Ближайшая ограниченная партия
+
+1. Проверить собственный strict TS охват: текущий `deno task check` перечисляет несколько entrypoints, тогда как bootstrap/tool/resource-child и часть tools запускаются по строковому пути; доказать покрытие всех собственных TS без нового валидатора и без ослабления strict. Выполнять cached-only адресную проверку, без install/build/матрицы.
+2. Устранить только прямые дубли, подтверждённые исходником: `probeQuarto` повторно читает/hash один `quarto.js`, повторяет `pandoc --version`; адресный regression через существующие fixtures. Копирование backend/data-dir и прочий inventory менять лишь после доказанного безопасного дубля, не выдумывать cache/invalidation framework.
+3. После координации с root провести один минимальный summary fixture с существующими launchers и current Core native TS+Lua, внешними durable outputs, cap ≤120 s/retry 0 (предпочтительно 30–60 s). Сохранить общую native wall/CPU/RSS и действительно наблюдаемые operations/walks/child связи. Полный Java/SP не запускать. Отдельно определить, проходит ли native child Core через environment/launcher; при отсутствии spans фиксировать unknown и адресовать владельцу Core.
+
+Перед source edits пакет файлов/проверяемого поведения/стоимости сообщается root. Перед любым push нужен независимый review; production/DB/publish/globals вне этой работы. Перед выпуском прочитать сохранённую инструментированную статистику и назвать её фактическую границу, без новой полной матрицы.

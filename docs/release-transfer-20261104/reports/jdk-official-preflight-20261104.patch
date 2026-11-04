@@ -1,0 +1,124 @@
+diff --git a/images/java25-grader/grade.py b/images/java25-grader/grade.py
+index 1dbed5e..2c4e223 100644
+--- a/images/java25-grader/grade.py
++++ b/images/java25-grader/grade.py
+@@ -596,22 +596,23 @@ def preflight(runtime, registry=None):
+         code, output, reason = _run([_grading_java(), "-version"], PLATFORM, 5)
+         if code or reason or not re.search(r'version "25(?:[.\"+\-])', output):
+             raise GraderError("The grader requires an actual JDK 25 runtime")
+-        compiler_code, compiler_output, compiler_reason = _run(
+-            [
+-                _grading_java(),
+-                "-XX:TieredStopAtLevel=1",
+-                "com.sun.tools.javac.Main",
+-                "-version",
+-            ],
+-            PLATFORM,
+-            5,
+-        )
+-        if (
+-            compiler_code
+-            or compiler_reason
+-            or not re.search(r"javac 25(?:[.\s+\-]|$)", compiler_output)
+-        ):
+-            raise GraderError("The grader requires the actual JDK25 compiler")
++        if os.environ.get("PL_CONTAINMENT") != "official":
++            compiler_code, compiler_output, compiler_reason = _run(
++                [
++                    _grading_java(),
++                    "-XX:TieredStopAtLevel=1",
++                    "com.sun.tools.javac.Main",
++                    "-version",
++                ],
++                PLATFORM,
++                5,
++            )
++            if (
++                compiler_code
++                or compiler_reason
++                or not re.search(r"javac 25(?:[.\s+\-]|$)", compiler_output)
++            ):
++                raise GraderError("The grader requires the actual JDK25 compiler")
+         return profile, bundle, output.strip()
+     except (KeyError, OSError, ValueError) as error:
+         raise GraderError("Missing or invalid versioned runtime bundle") from error
+diff --git a/runtime-profiles.json b/runtime-profiles.json
+index 71dcea4..b112984 100644
+--- a/runtime-profiles.json
++++ b/runtime-profiles.json
+@@ -26,7 +26,7 @@
+         "upstream/LICENSE": "f3fba75145cfb48af6b3f50664b12459b5a60b50500176692b06309beb1dda4d",
+         "upstream/org/prairielearn/autograder/AutograderInfo.java": "43e3e320cb5fae2840462d36dea21c9fdbb0c99fbcb51ad3e692739b2bf3683f"
+       },
+-      "runnerSha256": "a529996a56d9e5906e8b7655667cee133eacddb16c07bc27164ff0c4c684c4af",
++      "runnerSha256": "5023a63140a721f0b72dcd0eb04d3f2818f6907c58ddecaf0a49543e44e83e98",
+       "sharedFiles": {
+         "runtime/student_feedback.py": "54beda2d884e1b00c274bbca155de5bc910dcc29ecbe85c764ac0ff04c7872fe",
+         "runtime/junit_result.py": "ffbcbf3282beed963a2b47d256c29dac46c8d44110d7f176267ca677019b1ebe"
+@@ -58,7 +58,7 @@
+         "upstream/LICENSE": "f3fba75145cfb48af6b3f50664b12459b5a60b50500176692b06309beb1dda4d",
+         "upstream/org/prairielearn/autograder/AutograderInfo.java": "43e3e320cb5fae2840462d36dea21c9fdbb0c99fbcb51ad3e692739b2bf3683f"
+       },
+-      "runnerSha256": "a529996a56d9e5906e8b7655667cee133eacddb16c07bc27164ff0c4c684c4af",
++      "runnerSha256": "5023a63140a721f0b72dcd0eb04d3f2818f6907c58ddecaf0a49543e44e83e98",
+       "sharedFiles": {
+         "runtime/student_feedback.py": "54beda2d884e1b00c274bbca155de5bc910dcc29ecbe85c764ac0ff04c7872fe",
+         "runtime/junit_result.py": "ffbcbf3282beed963a2b47d256c29dac46c8d44110d7f176267ca677019b1ebe"
+diff --git a/tests/gradle_unit_fixtures.py b/tests/gradle_unit_fixtures.py
+index 0a176f0..223ba8b 100644
+--- a/tests/gradle_unit_fixtures.py
++++ b/tests/gradle_unit_fixtures.py
+@@ -21,7 +21,7 @@ def registry():
+   native['sharedFiles'][p]=hashlib.sha256((ROOT/p).read_bytes()).hexdigest()
+  value['profiles']['java25-gradle-junit-v1']=native
+  spec=importlib.util.spec_from_file_location('fixture_preparation',ROOT/'tools/prepare_native_toolchain.py');preparation=importlib.util.module_from_spec(spec);spec.loader.exec_module(preparation)
+- fish=preparation._fish_view(ROOT)['profiles']['fish-git-v1'];fish['image']='unit.invalid/synthetic-fixture@sha256:'+'1'*64
++ fish=preparation._fish_view(ROOT,read=lambda path:path.read_bytes())['profiles']['fish-git-v1'];fish['image']='unit.invalid/synthetic-fixture@sha256:'+'1'*64
+  value['profiles']['fish-git-v1']=fish
+  return value
+ 
+diff --git a/tests/test_gradle_review_fixes.py b/tests/test_gradle_review_fixes.py
+index 8af0698..642ba12 100644
+--- a/tests/test_gradle_review_fixes.py
++++ b/tests/test_gradle_review_fixes.py
+@@ -1,6 +1,7 @@
+ """R1–R3: отдельные контрпримеры private provenance; Gradle doubles только unit."""
+ import copy
+ import json
++import os
+ from pathlib import Path
+ import unittest
+ from unittest.mock import patch
+@@ -49,9 +50,16 @@ class RecipeMembershipTests(unittest.TestCase):
+     with patch.object(grader,'_run',side_effect=AssertionError('Java child ran before recipe membership admission')):
+      with self.assertRaisesRegex(grader.GraderError,'recipe'):grader.preflight('java25-gradle-junit-v1',value)
+  def test_complete_native_pins_and_plain_profiles_remain_admissible(self):
+-  value=registry()
+-  for rid in ('java25-gradle-junit-v1','java25-junit-v1','java25-mutation-v1'):
+-   with self.subTest(runtime=rid):self.assertTrue(grader.preflight(rid,value)[2])
++  value=registry();output='openjdk version "25.0.1"\n'
++  def official_version(command,*args):
++   self.assertEqual(command,[str(grader.HARDENED_JDK/'bin/java'),'-version'])
++   return 0,output,None
++  with patch.dict(os.environ,{'PL_CONTAINMENT':'official'}),patch.object(grader,'_verify_landlock_helper'),patch.object(grader,'_run',side_effect=official_version):
++   for rid in ('java25-gradle-junit-v1','java25-junit-v1','java25-mutation-v1'):
++    with self.subTest(runtime=rid):self.assertEqual(grader.preflight(rid,value)[2],output.strip())
++  with patch.dict(os.environ,{'PL_CONTAINMENT':'host'}),patch.object(grader,'_run',side_effect=[(0,output,None),(0,'javac 24',None)]) as run:
++   with self.assertRaisesRegex(grader.GraderError,'actual JDK25 compiler'):grader.preflight('java25-junit-v1',value)
++   self.assertEqual(run.call_args.args[0],['java','-XX:TieredStopAtLevel=1','com.sun.tools.javac.Main','-version'])
+ 
+ class DurableBuildProofTests(native.BuildEvidenceTests):
+  def test_rehashed_reference_or_behavior_proof_downgrade_is_rejected(self):
+diff --git a/tools/prepare_native_toolchain.py b/tools/prepare_native_toolchain.py
+index 556bdde..686b731 100644
+--- a/tools/prepare_native_toolchain.py
++++ b/tools/prepare_native_toolchain.py
+@@ -24,7 +24,7 @@ TOOLCHAIN='images/java25-grader/toolchain'
+ FINGERPRINT='F6ECB3762474EDA9D21B7022871920D1991BC93C'
+ EXPECTED_LOCK='c44c6f648e0bafbd2f87871813a8c5b2095315c465ddbf14e1b6282acae574ca'
+ HARDENED_LOCK='bcde4c1c54c4c11cc6e55381a6bbf53df97968e644c986d3aa32676c552f231f'
+-RUNNER='a529996a56d9e5906e8b7655667cee133eacddb16c07bc27164ff0c4c684c4af'
++RUNNER='5023a63140a721f0b72dcd0eb04d3f2818f6907c58ddecaf0a49543e44e83e98'
+ COMPONENTS={'lib/libmanagement.so','lib/libmanagement_ext.so','lib/libmanagement_agent.so'}
+ 
+ def require(value,message):

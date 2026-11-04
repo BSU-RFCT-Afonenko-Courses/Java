@@ -1,0 +1,82 @@
+diff --git a/_extensions/course-navigation/html/document.ts b/_extensions/course-navigation/html/document.ts
+index a0c3e6b..93e0b9c 100644
+--- a/_extensions/course-navigation/html/document.ts
++++ b/_extensions/course-navigation/html/document.ts
+@@ -1,36 +1,10 @@
+ import { createMetrics as __createMetrics } from "../observability/bridge.ts";
+ const __metrics = __createMetrics("course-navigation");
+-import { parse } from "../vendor/parse5/dist/index.js";
+-// Минимальный интерфейс адаптера HTML; сторонняя библиотека изолирована в этом модуле.
+-interface Offset {
+-  startOffset: number;
+-  endOffset: number;
+-}
+-interface Location extends Offset {
+-  startTag?: Offset;
+-  endTag?: Offset;
+-}
+-interface Document {
+-  nodeName: "#document";
+-  childNodes: Node[];
+-}
+-interface Text {
+-  nodeName: "#text";
+-  value: string;
+-}
+-interface Comment {
+-  nodeName: "#comment";
+-  data: string;
+-}
+-export interface Element {
+-  nodeName: string;
+-  tagName: string;
+-  attrs: { name: string; value: string }[];
+-  childNodes: Node[];
+-  parentNode?: Element | Document;
+-  sourceCodeLocation?: Location;
+-}
+-export type Node = Document | Text | Comment | Element;
++// @deno-types="../vendor/parse5/dist/index.d.ts"
++import { parse, type DefaultTreeAdapterTypes } from "../vendor/parse5/dist/index.js";
++type Document = DefaultTreeAdapterTypes.Document;
++export type Element = DefaultTreeAdapterTypes.Element;
++export type Node = DefaultTreeAdapterTypes.Node;
+ export function elements(node: Node): Element[] {
+   const out: Element[] = [];
+   const visit = (item: Node) => {
+@@ -70,7 +44,10 @@ export interface Edit {
+   end: number;
+   value: string;
+ }
+-export function replace(html: string, edits: Edit[]): string {
++export const replace = __metrics.wrapSync({
++  id: "course-navigation.html.document.replace",
++  kind: "io",
++}, function replace(html: string, edits: Edit[]): string {
+   edits.sort((a, b) => b.start - a.start);
+   let end = html.length;
+   for (const edit of edits) {
+@@ -81,18 +58,10 @@ export function replace(html: string, edits: Edit[]): string {
+     end = edit.start;
+   }
+   return html;
+-}
+-export function parseHtml(html: string) {
+-  return parse(html, { sourceCodeLocationInfo: true }) as unknown as Document;
+-}
+-
+-// @ts-expect-error JS допускает замену function binding; сигнатура публичного API сохраняется.
+-replace = __metrics.wrapSync({
+-  id: "course-navigation.html.document.replace",
+-  kind: "io",
+-}, replace);
+-// @ts-expect-error JS допускает замену function binding; сигнатура публичного API сохраняется.
+-parseHtml = __metrics.wrapSync({
++});
++export const parseHtml = __metrics.wrapSync({
+   id: "course-navigation.html.document.parseHtml",
+   kind: "io",
+-}, parseHtml);
++}, function parseHtml(html: string): Document {
++  return parse(html, { sourceCodeLocationInfo: true });
++});

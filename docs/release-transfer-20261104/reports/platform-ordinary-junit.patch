@@ -1,0 +1,201 @@
+diff --git a/runtime-profiles.json b/runtime-profiles.json
+index 21d6487..010c6e5 100644
+--- a/runtime-profiles.json
++++ b/runtime-profiles.json
+@@ -11,7 +11,7 @@
+       "files": {
+         "PlatformApiPrecheck.java": "061019f75ce624c43b19027902e3d1d10c7c9ac65dff614df89c5aca31db2fae",
+         "PlatformJUnitAdapter.java": "ead632e48fb16e82b75ad02b44fc01c8563b0eabafc0981f8aea2711b8fd0991",
+-        "feedback/Transform.java": "8402ce259566f48194c7bb06d4a0bd36f94ffb5e340b44a59642ef25ed60ab7d",
++        "feedback/Transform.java": "4c4f712165edb2b1aa355afead72ef61dda2d9c2b313fa15cbb93736251338c7",
+         "feedback/module/module-info.java": "030c13198a143a66df1d29d2ad39d5166904091c614680721e6541daffa1f228",
+         "feedback/module/org/prairielearn/feedback/Assertions.java": "d568f88da7dec6392dca0f1975dbeac78a76ac6b54b537085d97e1d581a0de68",
+         "feedback/module/org/prairielearn/feedback/Gate.java": "e321f38c5aa88ec6d0aa00776a3d7e43f9d1f12a9df6d6988c858a122056ea69",
+@@ -28,7 +28,7 @@
+       },
+       "runnerSha256": "a529996a56d9e5906e8b7655667cee133eacddb16c07bc27164ff0c4c684c4af",
+       "sharedFiles": {
+-        "runtime/student_feedback.py": "a4f5237e85866f3169f77f774f65152b57a6ccb0032aff2edd29535f4756f59e",
++        "runtime/student_feedback.py": "36774ab9013744651f52f37128d3900869ab5caf0f8a46cc4e213812c5953538",
+         "runtime/junit_result.py": "36a019f32d66dcf2ec125738c02e2e22d7a2585bd628596556d846ea6dfd3a4e"
+       },
+       "assertionFeedbackProtocol": 2
+@@ -43,7 +43,7 @@
+       "files": {
+         "PlatformApiPrecheck.java": "061019f75ce624c43b19027902e3d1d10c7c9ac65dff614df89c5aca31db2fae",
+         "PlatformJUnitAdapter.java": "ead632e48fb16e82b75ad02b44fc01c8563b0eabafc0981f8aea2711b8fd0991",
+-        "feedback/Transform.java": "8402ce259566f48194c7bb06d4a0bd36f94ffb5e340b44a59642ef25ed60ab7d",
++        "feedback/Transform.java": "4c4f712165edb2b1aa355afead72ef61dda2d9c2b313fa15cbb93736251338c7",
+         "feedback/module/module-info.java": "030c13198a143a66df1d29d2ad39d5166904091c614680721e6541daffa1f228",
+         "feedback/module/org/prairielearn/feedback/Assertions.java": "d568f88da7dec6392dca0f1975dbeac78a76ac6b54b537085d97e1d581a0de68",
+         "feedback/module/org/prairielearn/feedback/Gate.java": "e321f38c5aa88ec6d0aa00776a3d7e43f9d1f12a9df6d6988c858a122056ea69",
+@@ -60,7 +60,7 @@
+       },
+       "runnerSha256": "a529996a56d9e5906e8b7655667cee133eacddb16c07bc27164ff0c4c684c4af",
+       "sharedFiles": {
+-        "runtime/student_feedback.py": "a4f5237e85866f3169f77f774f65152b57a6ccb0032aff2edd29535f4756f59e",
++        "runtime/student_feedback.py": "36774ab9013744651f52f37128d3900869ab5caf0f8a46cc4e213812c5953538",
+         "runtime/junit_result.py": "36a019f32d66dcf2ec125738c02e2e22d7a2585bd628596556d846ea6dfd3a4e"
+       },
+       "assertionFeedbackProtocol": 2
+@@ -79,7 +79,7 @@
+         "supervisor.py": "d7aa7ab5e721b4b55cb604d77a633c41fb294b540420dfc8230a47d52ccb2ee3"
+       },
+       "sharedFiles": {
+-        "runtime/student_feedback.py": "a4f5237e85866f3169f77f774f65152b57a6ccb0032aff2edd29535f4756f59e",
++        "runtime/student_feedback.py": "36774ab9013744651f52f37128d3900869ab5caf0f8a46cc4e213812c5953538",
+         "schemas/grading-descriptor.schema.json": "94944d3fccb9ec8f19468056e8289738cf60d4c0728529ff5e786a48b6e9fd68"
+       }
+     }
+diff --git a/runtime/java25-junit-v1/feedback/Transform.java b/runtime/java25-junit-v1/feedback/Transform.java
+index 6303cea..162f3d0 100644
+--- a/runtime/java25-junit-v1/feedback/Transform.java
++++ b/runtime/java25-junit-v1/feedback/Transform.java
+@@ -245,9 +245,8 @@ public final class Transform {
+           : cf.transformClass(model, ClassTransform.transformingMethodBodies((builder, element) -> {
+               if (element instanceof InvokeInstruction call && call.opcode() == Opcode.INVOKESTATIC
+                   && call.owner().asInternalName().equals("org/junit/jupiter/api/Assertions")
+-                  && !adapter) {
+-                if (!supported.contains(call.name().stringValue() + call.type().stringValue()))
+-                  throw new IllegalArgumentException("Unsupported exact descriptor: " + call);
++                  && !adapter
++                  && supported.contains(call.name().stringValue() + call.type().stringValue())) {
+                 builder.invokestatic(FACADE, call.name().stringValue(), call.typeSymbol());
+               } else
+                 builder.with(element);
+diff --git a/runtime/student_feedback.py b/runtime/student_feedback.py
+index 7364b93..0ff12a3 100644
+--- a/runtime/student_feedback.py
++++ b/runtime/student_feedback.py
+@@ -277,7 +277,7 @@ def student_result(result, descriptor):
+                 lines = []
+                 if case.get("reporter"):
+                     lines.extend(["Наблюдение TestReporter:", test["description"]])
+-                if not checks:
++                if not checks and case["status"] != "passed":
+                     complete = False
+                 for check in checks:
+                     complete &= check["availability"] == "complete"
+@@ -292,6 +292,7 @@ def student_result(result, descriptor):
+                     if check["availability"] != "complete":
+                         lines.append("Полнота: " + check["availability"])
+                     for key, label in (
++                        ("delta", "Допуск"),
+                         ("differenceIndex", "Первое различие"),
+                         ("differenceLine", "Строка"),
+                         ("differenceColumn", "Столбец"),
+diff --git a/tests/test_assertion_feedback.py b/tests/test_assertion_feedback.py
+index a77728d..08257d1 100644
+--- a/tests/test_assertion_feedback.py
++++ b/tests/test_assertion_feedback.py
+@@ -159,6 +159,58 @@ class ProductionCase(unittest.TestCase):
+ 
+ class AssertionFeedback(ProductionCase):
+ 
++    def test_ordinary_junit_keeps_real_leaves_and_private_failure_details(self):
++        (self.job / "tests/AnswerTest.java").write_text("""
++import org.junit.jupiter.api.*;
++import org.junit.jupiter.params.ParameterizedTest;
++import org.junit.jupiter.params.provider.ValueSource;
++import static org.junit.jupiter.api.Assertions.*;
++public class AnswerTest {
++ @ParameterizedTest(name="Самостоятельный случай {0}") @ValueSource(ints={1,2})
++ void rows(int n){assertEquals((double)n,(double)n,"PRIVATE_PARAMETER_MESSAGE");}
++ @Test @DisplayName("Обычное равенство") void exact(){
++  assertEquals(187.25d,Student.answer(),"PRIVATE_DOUBLE_MESSAGE");
++ }
++ @Test @DisplayName("Две причины одного случая") void grouped(){
++  assertAll("PRIVATE_GROUP_MESSAGE",
++   ()->assertEquals(41,Student.answer(),"PRIVATE_FIRST_MESSAGE"),
++   ()->assertTrue(false,"PRIVATE_SECOND_MESSAGE"));
++ }
++ @Test @DisplayName("Равенство с допуском") void tolerance(){
++  assertEquals(41d,Student.answer(),0.01d,"PRIVATE_TOLERANCE_MESSAGE");
++ }
++ @Test @DisplayName("Успех без обязательного наблюдения") void lazy(){
++  assertEquals(42d,Student.answer(),()->{throw new IllegalStateException("EAGER_MESSAGE");});
++  assertArrayEquals(new boolean[]{true},new boolean[]{true});
++ }
++}
++""")
++        result = self.run_job()
++        counts = result["counts"]
++        self.assertEqual((counts["executed"], counts["passed"], counts["failed"]), (6, 3, 3))
++        self.assertTrue(counts["complete"])
++        self.assertEqual(result["score"], 0.5)
++        cases = counts["cases"]
++        group = next(c for c in cases if c["name"] == "Две причины одного случая")
++        self.assertEqual(len(group["checks"]), 2)
++        self.assertTrue(all(c["delegated"] == "threw" for c in group["checks"]))
++        lazy = next(c for c in cases if c["name"] == "Успех без обязательного наблюдения")
++        self.assertEqual((lazy["status"], lazy["checks"]), ("passed", []))
++        raw_cases = result["rawResult"]["tests"]
++        raw_group = next(c for c in raw_cases if c["name"] == "Две причины одного случая")
++        for message in ("PRIVATE_FIRST_MESSAGE", "PRIVATE_SECOND_MESSAGE"):
++            self.assertIn(message, raw_group["message"])
++        raw_exact = next(c for c in raw_cases if c["name"] == "Обычное равенство")
++        for detail in ("PRIVATE_DOUBLE_MESSAGE", "187.25", "42.0"):
++            self.assertIn(detail, raw_exact["message"])
++        native = feedback(result, self.cfg)
++        self.assertEqual((native["score"], len(native["tests"])), (0.5, 6))
++        tolerance = next(t for t in native["tests"] if t["name"] == "Равенство с допуском")
++        self.assertIn("Допуск: 0.01", tolerance["description"])
++        public = json.dumps(native, ensure_ascii=False)
++        for private in ("PRIVATE_", "187.25", "EAGER_MESSAGE", "java25-job-runtime-"):
++            self.assertNotIn(private, public)
++
+     def test_real_arguments_reach_native_without_new_points(self):
+         (self.job / "tests/AnswerTest.java").write_text("""
+ import org.junit.jupiter.api.*;
+diff --git a/tests/test_assertion_feedback_consumer.py b/tests/test_assertion_feedback_consumer.py
+index b9b7a23..3f3464f 100644
+--- a/tests/test_assertion_feedback_consumer.py
++++ b/tests/test_assertion_feedback_consumer.py
+@@ -81,6 +81,19 @@ class ConsumerGuards(unittest.TestCase):
+         self.assertEqual(native["feedback"]["feedbackCompleteness"], "incomplete")
+         self.assertEqual((native["score"], native["tests"][0]["points"]), (1, 1))
+ 
++    def test_success_without_optional_checks_has_complete_feedback(self):
++        result = self.result()
++        result["counts"]["cases"][0]["checks"] = []
++        native = af.feedback(result, {})
++        self.assertEqual(native["feedback"]["feedbackCompleteness"], "complete")
++        self.assertEqual((native["score"], native["tests"][0]["points"]), (1, 1))
++
++    def test_existing_tolerance_is_rendered_without_private_data(self):
++        result = self.result()
++        result["counts"]["cases"][0]["checks"][0]["delta"] = "0.25"
++        native = af.feedback(result, {})
++        self.assertIn("Допуск: 0.25", native["tests"][0]["description"])
++
+ 
+ class SignedUnknownGuard(af.ProductionCase):
+     def test_broken_signed_unknown_complete_is_infrastructure(self):
+diff --git a/tests/test_assertion_feedback_overloads_static.py b/tests/test_assertion_feedback_overloads_static.py
+index 1cf6a4b..5ba7c9b 100644
+--- a/tests/test_assertion_feedback_overloads_static.py
++++ b/tests/test_assertion_feedback_overloads_static.py
+@@ -75,12 +75,18 @@ public class OverloadFixture {
+         result = self.invoke(['java', '-cp', os.pathsep.join(map(str, (root, self.facade, self.jar))), 'OverloadFixture'])
+         self.assertEqual(result.stdout.strip(), 'EXACT_OVERLOADS_OK')
+ 
+-    def test_unknown_exact_descriptor_remains_refused(self):
++    def test_ordinary_descriptor_without_observer_keeps_junit_behavior(self):
+         root = self.compile_fixture('UnsupportedFixture', '''
+ import static org.junit.jupiter.api.Assertions.*;
+-public class UnsupportedFixture {static void check(){assertArrayEquals(new boolean[]{true},new boolean[]{true});}}
++public class UnsupportedFixture {public static void main(String[] args){
++ assertArrayEquals(new boolean[]{true},new boolean[]{true});
++ try {assertArrayEquals(new boolean[]{true},new boolean[]{false});
++  throw new IllegalStateException("missing JUnit failure");
++ } catch(org.opentest4j.AssertionFailedError expected) {}
++ System.out.print("ORDINARY_JUNIT_OK");
++}}
+ ''')
+         result = self.transform(root)
+-        self.assertNotEqual(result.returncode, 0)
+-        self.assertIn('Unsupported exact descriptor', result.stderr)
+-        self.assertFalse((root/'sites.properties').exists())
++        self.assertEqual(result.returncode, 0, result.stderr)
++        executed = self.invoke(['java', '-cp', os.pathsep.join(map(str, (root, self.facade, self.jar))), 'UnsupportedFixture'])
++        self.assertEqual(executed.stdout, 'ORDINARY_JUNIT_OK')

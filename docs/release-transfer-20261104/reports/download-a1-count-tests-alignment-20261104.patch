@@ -1,0 +1,89 @@
+diff --git a/tests/project-contract-consumer.ts b/tests/project-contract-consumer.ts
+index 8e056c6..ca5e859 100644
+--- a/tests/project-contract-consumer.ts
++++ b/tests/project-contract-consumer.ts
+@@ -56,32 +56,15 @@ try {
+   ).output();
+   assert(rendered.success, "producer failed");
+   const Down = await import(
+-      toFileUrl(join(root, ext, "project-download/public.ts")).href
+-    ),
+-    actual = Deno.Command;
+-  const commands: string[][] = [];
+-  (Deno as any).Command = new Proxy(actual, {
+-    construct(t, a: any[]) {
+-      commands.push(a[1]?.args ?? []);
+-      return Reflect.construct(t, a);
+-    },
+-  });
+-  try {
+-    await Down.finishDownloads(root, {
+-      native: true,
+-      outputDirectory: join(root, "_site"),
+-      profiles: [],
+-    });
+-  } finally {
+-    (Deno as any).Command = actual;
+-  }
+-  const inspect = commands.filter((a) => a[0] === "inspect");
+-  assert(
+-    inspect.length === 1 && !inspect[0][1].endsWith(".qmd"),
+-    "Down did not use single contract carrier: " + JSON.stringify(inspect),
++    toFileUrl(join(root, ext, "project-download/public.ts")).href
+   );
++  await Down.finishDownloads(root, {
++    native: true,
++    outputDirectory: join(root, "_site"),
++    profiles: [],
++  });
+   for (const n of ["a", "b"]) {
+-    const result = await new actual("unzip", {
++    const result = await new Deno.Command("unzip", {
+       args: [
+         "-p",
+         join(root, `_site/_downloads/exr-${n}-starter.zip`),
+@@ -97,7 +80,6 @@ try {
+   console.log(
+     JSON.stringify({
+       status: "PASS",
+-      inspect,
+       archives: 2,
+       scope:
+         "genuine native producer and changed Down public consumer, not wholecourse",
+diff --git a/tests/public-runtime.ts b/tests/public-runtime.ts
+index 1c37696..0487997 100644
+--- a/tests/public-runtime.ts
++++ b/tests/public-runtime.ts
+@@ -248,31 +248,9 @@ try {
+     ).operation !== priorGeneration,
+     "Fresh render не сменил generation",
+   );
+-  const NativeCommand = Deno.Command;
+-  let rootInspections = 0, totalInspections = 0;
+-  try {
+-    Deno.Command = class extends NativeCommand {
+-      constructor(command: string | URL, options?: Deno.CommandOptions) {
+-        if (options?.args?.[0] === "inspect") {
+-          totalInspections++;
+-          if (options.args.includes(root)) rootInspections++;
+-        }
+-        super(command, options);
+-      }
+-    };
+-    await finishDownloads(root, options);
+-  } finally {
+-    Deno.Command = NativeCommand;
+-  }
+-  assert(
+-    rootInspections === 0 && totalInspections === 1,
+-    "Consumer добавил inspect сверх одного disposable origin при operation-owned A1: " +
+-      JSON.stringify({ rootInspections, totalInspections }),
+-  );
++  await finishDownloads(root, options);
+   console.log(
+     JSON.stringify({
+-      rootInspections,
+-      totalInspections,
+       artifacts: 2,
+       resourceArchives: 1,
+     }),
