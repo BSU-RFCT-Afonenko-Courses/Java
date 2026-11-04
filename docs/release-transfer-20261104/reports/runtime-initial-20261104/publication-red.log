@@ -1,0 +1,39 @@
+test_publishes_runtime_profiles_without_preparation_or_file_inventories (test_publish_metadata.PublishedMetadata.test_publishes_runtime_profiles_without_preparation_or_file_inventories) ... FAIL
+test_records_real_source_commit_and_version (test_publish_metadata.PublishedMetadata.test_records_real_source_commit_and_version) ... FAIL
+test_rejects_image_from_other_role_before_writing (test_publish_metadata.PublishedMetadata.test_rejects_image_from_other_role_before_writing) ... ok
+test_workspace_uses_its_own_image_role (test_publish_metadata.PublishedMetadata.test_workspace_uses_its_own_image_role) ... FAIL
+
+======================================================================
+FAIL: test_publishes_runtime_profiles_without_preparation_or_file_inventories (test_publish_metadata.PublishedMetadata.test_publishes_runtime_profiles_without_preparation_or_file_inventories)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/tolya/JavaCodex/java-release-20261110/platform/tests/test_publish_metadata.py", line 32, in test_publishes_runtime_profiles_without_preparation_or_file_inventories
+    self.assertEqual(result.returncode, 0, result.stderr.decode())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Publication metadata refused: Unsafe parent identity: /
+
+
+======================================================================
+FAIL: test_records_real_source_commit_and_version (test_publish_metadata.PublishedMetadata.test_records_real_source_commit_and_version)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/tolya/JavaCodex/java-release-20261110/platform/tests/test_publish_metadata.py", line 60, in test_records_real_source_commit_and_version
+    self.assertEqual(result.returncode,0,result.stderr.decode())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Publication metadata refused: Unsafe parent identity: /
+
+
+======================================================================
+FAIL: test_workspace_uses_its_own_image_role (test_publish_metadata.PublishedMetadata.test_workspace_uses_its_own_image_role)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/tolya/JavaCodex/java-release-20261110/platform/tests/test_publish_metadata.py", line 47, in test_workspace_uses_its_own_image_role
+    self.assertEqual(result.returncode, 0, result.stderr.decode())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Publication metadata refused: Unsafe parent identity: /
+
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.489s
+
+FAILED (failures=3)

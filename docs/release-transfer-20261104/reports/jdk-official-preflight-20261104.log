@@ -1,0 +1,29 @@
+test_complete_native_pins_and_plain_profiles_remain_admissible (test_gradle_review_fixes.RecipeMembershipTests.test_complete_native_pins_and_plain_profiles_remain_admissible) ... ERROR
+
+======================================================================
+ERROR: test_complete_native_pins_and_plain_profiles_remain_admissible (test_gradle_review_fixes.RecipeMembershipTests.test_complete_native_pins_and_plain_profiles_remain_admissible)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/tolya/JavaCodex/java-release-20261110/platform/tests/test_gradle_review_fixes.py", line 53, in test_complete_native_pins_and_plain_profiles_remain_admissible
+    value=registry();output='openjdk version "25.0.1"\n'
+  File "/home/tolya/JavaCodex/java-release-20261110/platform/tests/gradle_unit_fixtures.py", line 24, in registry
+    fish=preparation._fish_view(ROOT)['profiles']['fish-git-v1'];fish['image']='unit.invalid/synthetic-fixture@sha256:'+'1'*64
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/tolya/JavaCodex/java-release-20261110/platform/tools/prepare_native_toolchain.py", line 127, in _fish_view
+    source=json.loads(read(root/'runtime-profiles.json'))
+                      ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tolya/JavaCodex/java-release-20261110/platform/tools/prepare_native_toolchain.py", line 44, in read_regular
+    path=Path(path);safe_parent(path.parent)
+                    ~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/tolya/JavaCodex/java-release-20261110/platform/tools/prepare_native_toolchain.py", line 38, in safe_parent
+    s=parent.lstat();require(stat.S_ISDIR(s.st_mode) and s.st_uid in (0,os.geteuid()),'Unsafe parent identity: '+str(parent))
+                     ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tolya/JavaCodex/java-release-20261110/platform/tools/prepare_native_toolchain.py", line 31, in require
+    if not value:raise ValueError(message)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Unsafe parent identity: /
+
+----------------------------------------------------------------------
+Ran 1 test in 0.038s
+
+FAILED (errors=1)

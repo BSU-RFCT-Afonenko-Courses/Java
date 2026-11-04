@@ -1,0 +1,97 @@
+error: Uncaught (in promise) Error: B3 root-pl: actual render
+course-site: Планирование корня: /tmp/site-b3-owner-8159104057db647 — начало
+course-site: Планирование корня: /tmp/site-b3-owner-8159104057db647 — готово (0.8 с)
+course-site: Планирование компонента: /tmp/site-b3-owner-8159104057db647/tasks — начало
+course-site: Планирование компонента: /tmp/site-b3-owner-8159104057db647/tasks — готово (0.8 с)
+course-site: Рендер: /tmp/site-b3-owner-8159104057db647/tasks — начало
+Running script 'quarto'
+Running script 'quarto'
+Core: Подготовка модели: /tmp/site-b3-owner-8159104057db647/tasks — начало
+Core: Подготовка модели — inputs=2
+Core: Подготовка модели: /tmp/site-b3-owner-8159104057db647/tasks — готово (0.9 с)
+
+[1/2] index.qmd
+[2/2] other.qmd
+
+Running script 'quarto'
+Running script 'quarto'
+Core: Финализация модели: /tmp/site-b3-owner-8159104057db647/tasks — начало
+Core: Финализация модели — outputs=2
+Core: 2 текущих native-ts student документов
+Core: Финализация модели: /tmp/site-b3-owner-8159104057db647/tasks — готово (0.0 с)
+Running script 'quarto'
+
+Output created: _site/index.html
+
+course-site: Рендер: /tmp/site-b3-owner-8159104057db647/tasks — готово (6.0 с)
+Core: Подготовка модели: /tmp/site-b3-owner-8159104057db647 — начало
+Core: Подготовка модели — inputs=1
+Core: Подготовка модели: /tmp/site-b3-owner-8159104057db647 — готово (1.0 с)
+
+pandoc 
+  to: html
+  output-file: index.html
+  standalone: true
+  wrap: none
+  default-image-extension: png
+  
+metadata
+  document-css: false
+  lang: en
+  subprojects:
+    - path: tasks
+      to: default
+  reference-catalog:
+    namespace: portal
+  course-core-runtime: native-ts
+  course-core-projection: student
+  theme: none
+  course:
+    id: root-course
+    view: student
+    adapters:
+      - prairielearn
+  prairielearn:
+    question-defaults:
+      topic: Git
+      grading:
+        method: manual
+      submission:
+        mode: upload
+  
+QRC разрешено ссылок: 0; отложено ссылок: 0; целей: 0; страниц: 3
+Core: Финализация модели: /tmp/site-b3-owner-8159104057db647 — начало
+Core: Финализация модели — outputs=1
+Core: 1 текущих native-ts student документов
+Core: Финализация модели: /tmp/site-b3-owner-8159104057db647 — готово (0.0 с)
+course-site: Проверка и загрузки: /tmp/site-b3-owner-8159104057db647/tasks — начало
+course-site: Проверка и загрузки: /tmp/site-b3-owner-8159104057db647/tasks — ошибка (0.2 с)
+error: Uncaught (in promise) ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "runtime"
+    ],
+    "path": [
+      "origin"
+    ],
+    "message": "Unrecognized key: \"runtime\""
+  }
+]
+  return immutable(NativeAdapterValidationInputSchema.parse({
+                                                      ^
+    at publicationAdapterInput (file:///tmp/site-b3-owner-8159104057db647/tasks/_extensions/Afonenko-Course-Tools/course-core/release/publication.ts:207:55)
+    at file:///tmp/site-b3-owner-8159104057db647/tasks/_extensions/Afonenko-Course-Tools/course-core/release/publication.ts:268:34
+    at Array.map (<anonymous>)
+    at Object.adapterInputs (file:///tmp/site-b3-owner-8159104057db647/tasks/_extensions/Afonenko-Course-Tools/course-core/release/publication.ts:268:21)
+    at Module.inspectPublication (file:///tmp/site-b3-owner-8159104057db647/tasks/_extensions/Afonenko-Course-Tools/course-prairielearn/application/native-publication.ts:12:30)
+    at file:///tmp/site-b3-owner-8159104057db647/_extensions/Afonenko-Course-Tools/course-site/application/compose.ts:240:31
+    at async file:///tmp/site-b3-owner-8159104057db647/tasks/_extensions/Afonenko-Course-Tools/course-core/runtime/operation.ts:2183:5
+    at async file:///tmp/site-b3-owner-8159104057db647/tasks/_extensions/Afonenko-Course-Tools/course-core/runtime/operation.ts:2387:18
+    at async run (file:///tmp/site-b3-owner-8159104057db647/tasks/_extensions/Afonenko-Course-Tools/course-core/runtime/operation.ts:2383:20)
+    at async withCapturedOperation (file:///tmp/site-b3-owner-8159104057db647/tasks/_extensions/Afonenko-Course-Tools/course-core/runtime/operation.ts:2444:9)
+
+  if (!value) throw Error(message);
+                    ^
+    at assert (file:///home/tolya/JavaCodex/java-release-20261110/site-native-audience/tests/site-owner-release.ts:18:21)
+    at file:///home/tolya/JavaCodex/java-release-20261110/site-native-audience/tests/site-owner-release.ts:230:5
