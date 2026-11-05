@@ -1,0 +1,80 @@
+.....................................FF.....................F...         [100%]
+=================================== FAILURES ===================================
+_ test_restart_foreign_course_or_instance_cannot_send_another_grade[delivery-pending] _
+
+setup = (<gateway.store.Store object at 0x7faeb595ae70>, {'userId': 'a789899e815c3babdf86c589ad3037b75f28bf06e794fe4150778cb96...ct at 0x7faeb59ac200>, <gateway.grades.Grades object at 0x7faeb5aa6430>, <test_gradebook.AGS object at 0x7faeb5942a30>)
+queued_state = 'pending', change = 'delivery'
+
+    @pytest.mark.anyio
+    @pytest.mark.parametrize("queued_state",["pending","sending"])
+    @pytest.mark.parametrize("change",["delivery","instance"])
+    async def test_restart_foreign_course_or_instance_cannot_send_another_grade(setup,queued_state,change):
+        store,student,_,assignments,grades,ags=setup
+        row=await assignments.request(student,"exr-essay-a","a")
+        evidence=result(row,student["uid"]);grades.observe(row,evidence)
+        with store.transaction() as db:
+            db.execute("UPDATE outbox SET state=?,lease_until=900",(queued_state,))
+        upgraded=delivery();instance="pilot"
+        if change=="delivery":upgraded["courseKey"]="b"*64
+        else:
+            instance="other";upgraded["instances"][instance]=upgraded["instances"]["pilot"]
+        reopened=Store(store.path)
+        restarted=Assignments(reopened,Bridge(),upgraded,instance,{"mode":"immediate","capacity":{}},clock=lambda:2000)
+        resumed=Grades(reopened,restarted,ags,clock=lambda:2000)
+        accepted=resumed.observe(row,evidence)
+        await resumed.drain()
+>       assert not ags.sent  # No replacement/zero score; preserve the prior Moodle grade.
+        ^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert not [('https://moodle.example/lineitem', {'activityProgress': 'Completed', 'gradingProgress': 'FullyGraded', 'scoreGiven': 2, 'scoreMaximum': 3, ...}, '7bb271511217c705661e60ddca4ac8c9b910792802ec1242c01ecbb380c16b3d')]
+E        +  where [('https://moodle.example/lineitem', {'activityProgress': 'Completed', 'gradingProgress': 'FullyGraded', 'scoreGiven': 2, 'scoreMaximum': 3, ...}, '7bb271511217c705661e60ddca4ac8c9b910792802ec1242c01ecbb380c16b3d')] = <test_gradebook.AGS object at 0x7faeb5942a30>.sent
+
+tests/test_gradebook.py:149: AssertionError
+_ test_restart_foreign_course_or_instance_cannot_send_another_grade[delivery-sending] _
+
+setup = (<gateway.store.Store object at 0x7faeb5927e90>, {'userId': 'a789899e815c3babdf86c589ad3037b75f28bf06e794fe4150778cb96...ct at 0x7faeb59ad760>, <gateway.grades.Grades object at 0x7faeb59cf230>, <test_gradebook.AGS object at 0x7faeb59d5f90>)
+queued_state = 'sending', change = 'delivery'
+
+    @pytest.mark.anyio
+    @pytest.mark.parametrize("queued_state",["pending","sending"])
+    @pytest.mark.parametrize("change",["delivery","instance"])
+    async def test_restart_foreign_course_or_instance_cannot_send_another_grade(setup,queued_state,change):
+        store,student,_,assignments,grades,ags=setup
+        row=await assignments.request(student,"exr-essay-a","a")
+        evidence=result(row,student["uid"]);grades.observe(row,evidence)
+        with store.transaction() as db:
+            db.execute("UPDATE outbox SET state=?,lease_until=900",(queued_state,))
+        upgraded=delivery();instance="pilot"
+        if change=="delivery":upgraded["courseKey"]="b"*64
+        else:
+            instance="other";upgraded["instances"][instance]=upgraded["instances"]["pilot"]
+        reopened=Store(store.path)
+        restarted=Assignments(reopened,Bridge(),upgraded,instance,{"mode":"immediate","capacity":{}},clock=lambda:2000)
+        resumed=Grades(reopened,restarted,ags,clock=lambda:2000)
+        accepted=resumed.observe(row,evidence)
+        await resumed.drain()
+>       assert not ags.sent  # No replacement/zero score; preserve the prior Moodle grade.
+        ^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert not [('https://moodle.example/lineitem', {'activityProgress': 'Completed', 'gradingProgress': 'FullyGraded', 'scoreGiven': 2, 'scoreMaximum': 3, ...}, 'c3482d92c96c0fde40c30f68bc41b3f7123eca438816ca2d51349b9836a5f6a7')]
+E        +  where [('https://moodle.example/lineitem', {'activityProgress': 'Completed', 'gradingProgress': 'FullyGraded', 'scoreGiven': 2, 'scoreMaximum': 3, ...}, 'c3482d92c96c0fde40c30f68bc41b3f7123eca438816ca2d51349b9836a5f6a7')] = <test_gradebook.AGS object at 0x7faeb59d5f90>.sent
+
+tests/test_gradebook.py:149: AssertionError
+_______________ test_previous_database_rejected_without_mutation _______________
+
+tmp_path = PosixPath('/tmp/pytest-of-tolya/pytest-3/test_previous_database_rejecte0')
+
+    def test_previous_database_rejected_without_mutation(tmp_path):
+     p=tmp_path/'old.sqlite'
+     with sqlite3.connect(p) as db:db.execute('CREATE TABLE schema_versions(version INTEGER PRIMARY KEY)');db.execute('INSERT INTO schema_versions VALUES(2)')
+     before=p.read_bytes()
+>    with pytest.raises(GatewayError,match='delivery'):Store(p)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E    AssertionError: Regex pattern did not match.
+E      Expected regex: 'delivery'
+E      Actual message: 'Unsupported Gateway database schema; create a fresh v3 database'
+
+tests/test_slots.py:22: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_gradebook.py::test_restart_foreign_course_or_instance_cannot_send_another_grade[delivery-pending]
+FAILED tests/test_gradebook.py::test_restart_foreign_course_or_instance_cannot_send_another_grade[delivery-sending]
+FAILED tests/test_slots.py::test_previous_database_rejected_without_mutation
+3 failed, 61 passed in 2.92s

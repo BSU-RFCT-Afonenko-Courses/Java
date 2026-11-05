@@ -1,0 +1,498 @@
+.........FFFF......F...........F...ss................................... [ 33%]
+............................FF.......................................... [ 66%]
+.....................s..F................................F....F......... [100%]
+=================================== FAILURES ===================================
+_ test_real_signed_http_launch_cookie_binding_bootstrap_and_replay[False-client] _
+
+tmp_path = PosixPath('/tmp/pytest-of-tolya/pytest-2/test_real_signed_http_launch_c0')
+client_id = 'client', padded_platform_key = False
+
+    @pytest.mark.anyio
+    @pytest.mark.parametrize("client_id", ["client", None])
+    @pytest.mark.parametrize("padded_platform_key", [False, True])
+    async def test_real_signed_http_launch_cookie_binding_bootstrap_and_replay(tmp_path, client_id, padded_platform_key):
+        config=example();config["database"]=str(tmp_path/"http.sqlite")
+        key=RSAKey.generate_key(parameters={"kid":"synthetic-moodle"})
+        class Clients:
+            bridge=Bridge()
+            async def jwks(self):
+                public=key.as_dict(private=False)
+                if padded_platform_key:
+                    public["n"] += "=="
+                return {"keys":[public]}
+            class AGS:
+                async def score(self,*args):pass
+            ags=AGS()
+        enrolled=[]
+        async def enroll(uid,instance,delivery_hash):enrolled.append((uid,instance,delivery_hash))
+        clients=Clients();clients.bridge.enroll=enroll
+        app=create_app(config,delivery=delivery(),clients=clients,clock=lambda:1000,start_worker=False)
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app),base_url="https://course.example") as http:
+            params={"iss":"https://moodle.example","target_link_uri":"https://course.example/gateway/courses/demo/lti/launch","login_hint":"signed-hint","lti_message_hint":"fixed-message"}
+            if client_id is not None: params["client_id"]=client_id
+            response=await http.get("/gateway/courses/demo/lti/login",params=params)
+            assert response.status_code==303 and "Secure" in response.headers["set-cookie"] and "SameSite=none" in response.headers["set-cookie"]
+            oidc=httpx.URL(response.headers["location"]).params
+            assert oidc["client_id"] == "client"
+            claims={"iss":"https://moodle.example","aud":"client","sub":"synthetic-student","iat":990,"exp":1100,"nonce":oidc["nonce"],"name":"Студент","https://purl.imsglobal.org/spec/lti-ags/claim/endpoint":{"lineitem":"https://moodle.example/lineitems/defense","scope":[SCORE_SCOPE]},LTI+"deployment_id":"deploy",LTI+"context":{"id":"context"},LTI+"resource_link":{"id":"resource"},LTI+"roles":[LEARNER],LTI+"message_type":"LtiResourceLinkRequest",LTI+"version":"1.3.0",LTI+"target_link_uri":"https://course.example/gateway/courses/demo/lti/launch"}
+            body={"state":oidc["state"],"id_token":jwt.encode({"alg":"RS256","kid":key.kid},claims,key,algorithms=["RS256"])}
+            launched=await http.post("/gateway/courses/demo/lti/launch",data=body,headers={"X-Gateway-User":"administrator@example.invalid"})
+            assert launched.status_code==303 and launched.headers["location"].startswith("/gateway/courses/demo/pl/")
+            cookies=launched.headers.get_list("set-cookie")
+            assert any("GatewaySession=" in cookie and "Secure" in cookie and "HttpOnly" in cookie for cookie in cookies)
+            assert http.cookies.get("GatewayBinding") is None
+            who=app.state.store.session(http.cookies["GatewaySession"],1000)
+            assert who["subject"]=="synthetic-student" and who["uid"].endswith("@example.invalid")
+            assert (await http.get("/gateway/courses/demo/bootstrap")).status_code==303
+>           assert enrolled==[(who["uid"],"pilot","a"*64)]
+E           AssertionError: assert [('gw-0df3261...lot', 'demo')] == [('gw-0df3261...aaaaaaaaaaa')]
+E             
+E             At index 0 diff: ('gw-0df3261eb0eb32312b4055b00f2e9270196d6407bf8024e775703fc5378d681e@example.invalid', 'pilot', 'demo') != ('gw-0df3261eb0eb32312b4055b00f2e9270196d6407bf8024e775703fc5378d681e@example.invalid', 'pilot', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+E             Use -v to get more diff
+
+tests/test_app.py:111: AssertionError
+_ test_real_signed_http_launch_cookie_binding_bootstrap_and_replay[False-None] _
+
+tmp_path = PosixPath('/tmp/pytest-of-tolya/pytest-2/test_real_signed_http_launch_c1')
+client_id = None, padded_platform_key = False
+
+    @pytest.mark.anyio
+    @pytest.mark.parametrize("client_id", ["client", None])
+    @pytest.mark.parametrize("padded_platform_key", [False, True])
+    async def test_real_signed_http_launch_cookie_binding_bootstrap_and_replay(tmp_path, client_id, padded_platform_key):
+        config=example();config["database"]=str(tmp_path/"http.sqlite")
+        key=RSAKey.generate_key(parameters={"kid":"synthetic-moodle"})
+        class Clients:
+            bridge=Bridge()
+            async def jwks(self):
+                public=key.as_dict(private=False)
+                if padded_platform_key:
+                    public["n"] += "=="
+                return {"keys":[public]}
+            class AGS:
+                async def score(self,*args):pass
+            ags=AGS()
+        enrolled=[]
+        async def enroll(uid,instance,delivery_hash):enrolled.append((uid,instance,delivery_hash))
+        clients=Clients();clients.bridge.enroll=enroll
+        app=create_app(config,delivery=delivery(),clients=clients,clock=lambda:1000,start_worker=False)
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app),base_url="https://course.example") as http:
+            params={"iss":"https://moodle.example","target_link_uri":"https://course.example/gateway/courses/demo/lti/launch","login_hint":"signed-hint","lti_message_hint":"fixed-message"}
+            if client_id is not None: params["client_id"]=client_id
+            response=await http.get("/gateway/courses/demo/lti/login",params=params)
+            assert response.status_code==303 and "Secure" in response.headers["set-cookie"] and "SameSite=none" in response.headers["set-cookie"]
+            oidc=httpx.URL(response.headers["location"]).params
+            assert oidc["client_id"] == "client"
+            claims={"iss":"https://moodle.example","aud":"client","sub":"synthetic-student","iat":990,"exp":1100,"nonce":oidc["nonce"],"name":"Студент","https://purl.imsglobal.org/spec/lti-ags/claim/endpoint":{"lineitem":"https://moodle.example/lineitems/defense","scope":[SCORE_SCOPE]},LTI+"deployment_id":"deploy",LTI+"context":{"id":"context"},LTI+"resource_link":{"id":"resource"},LTI+"roles":[LEARNER],LTI+"message_type":"LtiResourceLinkRequest",LTI+"version":"1.3.0",LTI+"target_link_uri":"https://course.example/gateway/courses/demo/lti/launch"}
+            body={"state":oidc["state"],"id_token":jwt.encode({"alg":"RS256","kid":key.kid},claims,key,algorithms=["RS256"])}
+            launched=await http.post("/gateway/courses/demo/lti/launch",data=body,headers={"X-Gateway-User":"administrator@example.invalid"})
+            assert launched.status_code==303 and launched.headers["location"].startswith("/gateway/courses/demo/pl/")
+            cookies=launched.headers.get_list("set-cookie")
+            assert any("GatewaySession=" in cookie and "Secure" in cookie and "HttpOnly" in cookie for cookie in cookies)
+            assert http.cookies.get("GatewayBinding") is None
+            who=app.state.store.session(http.cookies["GatewaySession"],1000)
+            assert who["subject"]=="synthetic-student" and who["uid"].endswith("@example.invalid")
+            assert (await http.get("/gateway/courses/demo/bootstrap")).status_code==303
+>           assert enrolled==[(who["uid"],"pilot","a"*64)]
+E           AssertionError: assert [('gw-0df3261...lot', 'demo')] == [('gw-0df3261...aaaaaaaaaaa')]
+E             
+E             At index 0 diff: ('gw-0df3261eb0eb32312b4055b00f2e9270196d6407bf8024e775703fc5378d681e@example.invalid', 'pilot', 'demo') != ('gw-0df3261eb0eb32312b4055b00f2e9270196d6407bf8024e775703fc5378d681e@example.invalid', 'pilot', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+E             Use -v to get more diff
+
+tests/test_app.py:111: AssertionError
+_ test_real_signed_http_launch_cookie_binding_bootstrap_and_replay[True-client] _
+
+tmp_path = PosixPath('/tmp/pytest-of-tolya/pytest-2/test_real_signed_http_launch_c2')
+client_id = 'client', padded_platform_key = True
+
+    @pytest.mark.anyio
+    @pytest.mark.parametrize("client_id", ["client", None])
+    @pytest.mark.parametrize("padded_platform_key", [False, True])
+    async def test_real_signed_http_launch_cookie_binding_bootstrap_and_replay(tmp_path, client_id, padded_platform_key):
+        config=example();config["database"]=str(tmp_path/"http.sqlite")
+        key=RSAKey.generate_key(parameters={"kid":"synthetic-moodle"})
+        class Clients:
+            bridge=Bridge()
+            async def jwks(self):
+                public=key.as_dict(private=False)
+                if padded_platform_key:
+                    public["n"] += "=="
+                return {"keys":[public]}
+            class AGS:
+                async def score(self,*args):pass
+            ags=AGS()
+        enrolled=[]
+        async def enroll(uid,instance,delivery_hash):enrolled.append((uid,instance,delivery_hash))
+        clients=Clients();clients.bridge.enroll=enroll
+        app=create_app(config,delivery=delivery(),clients=clients,clock=lambda:1000,start_worker=False)
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app),base_url="https://course.example") as http:
+            params={"iss":"https://moodle.example","target_link_uri":"https://course.example/gateway/courses/demo/lti/launch","login_hint":"signed-hint","lti_message_hint":"fixed-message"}
+            if client_id is not None: params["client_id"]=client_id
+            response=await http.get("/gateway/courses/demo/lti/login",params=params)
+            assert response.status_code==303 and "Secure" in response.headers["set-cookie"] and "SameSite=none" in response.headers["set-cookie"]
+            oidc=httpx.URL(response.headers["location"]).params
+            assert oidc["client_id"] == "client"
+            claims={"iss":"https://moodle.example","aud":"client","sub":"synthetic-student","iat":990,"exp":1100,"nonce":oidc["nonce"],"name":"Студент","https://purl.imsglobal.org/spec/lti-ags/claim/endpoint":{"lineitem":"https://moodle.example/lineitems/defense","scope":[SCORE_SCOPE]},LTI+"deployment_id":"deploy",LTI+"context":{"id":"context"},LTI+"resource_link":{"id":"resource"},LTI+"roles":[LEARNER],LTI+"message_type":"LtiResourceLinkRequest",LTI+"version":"1.3.0",LTI+"target_link_uri":"https://course.example/gateway/courses/demo/lti/launch"}
+            body={"state":oidc["state"],"id_token":jwt.encode({"alg":"RS256","kid":key.kid},claims,key,algorithms=["RS256"])}
+            launched=await http.post("/gateway/courses/demo/lti/launch",data=body,headers={"X-Gateway-User":"administrator@example.invalid"})
+            assert launched.status_code==303 and launched.headers["location"].startswith("/gateway/courses/demo/pl/")
+            cookies=launched.headers.get_list("set-cookie")
+            assert any("GatewaySession=" in cookie and "Secure" in cookie and "HttpOnly" in cookie for cookie in cookies)
+            assert http.cookies.get("GatewayBinding") is None
+            who=app.state.store.session(http.cookies["GatewaySession"],1000)
+            assert who["subject"]=="synthetic-student" and who["uid"].endswith("@example.invalid")
+            assert (await http.get("/gateway/courses/demo/bootstrap")).status_code==303
+>           assert enrolled==[(who["uid"],"pilot","a"*64)]
+E           AssertionError: assert [('gw-0df3261...lot', 'demo')] == [('gw-0df3261...aaaaaaaaaaa')]
+E             
+E             At index 0 diff: ('gw-0df3261eb0eb32312b4055b00f2e9270196d6407bf8024e775703fc5378d681e@example.invalid', 'pilot', 'demo') != ('gw-0df3261eb0eb32312b4055b00f2e9270196d6407bf8024e775703fc5378d681e@example.invalid', 'pilot', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+E             Use -v to get more diff
+
+tests/test_app.py:111: AssertionError
+_ test_real_signed_http_launch_cookie_binding_bootstrap_and_replay[True-None] __
+
+tmp_path = PosixPath('/tmp/pytest-of-tolya/pytest-2/test_real_signed_http_launch_c3')
+client_id = None, padded_platform_key = True
+
+    @pytest.mark.anyio
+    @pytest.mark.parametrize("client_id", ["client", None])
+    @pytest.mark.parametrize("padded_platform_key", [False, True])
+    async def test_real_signed_http_launch_cookie_binding_bootstrap_and_replay(tmp_path, client_id, padded_platform_key):
+        config=example();config["database"]=str(tmp_path/"http.sqlite")
+        key=RSAKey.generate_key(parameters={"kid":"synthetic-moodle"})
+        class Clients:
+            bridge=Bridge()
+            async def jwks(self):
+                public=key.as_dict(private=False)
+                if padded_platform_key:
+                    public["n"] += "=="
+                return {"keys":[public]}
+            class AGS:
+                async def score(self,*args):pass
+            ags=AGS()
+        enrolled=[]
+        async def enroll(uid,instance,delivery_hash):enrolled.append((uid,instance,delivery_hash))
+        clients=Clients();clients.bridge.enroll=enroll
+        app=create_app(config,delivery=delivery(),clients=clients,clock=lambda:1000,start_worker=False)
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app),base_url="https://course.example") as http:
+            params={"iss":"https://moodle.example","target_link_uri":"https://course.example/gateway/courses/demo/lti/launch","login_hint":"signed-hint","lti_message_hint":"fixed-message"}
+            if client_id is not None: params["client_id"]=client_id
+            response=await http.get("/gateway/courses/demo/lti/login",params=params)
+            assert response.status_code==303 and "Secure" in response.headers["set-cookie"] and "SameSite=none" in response.headers["set-cookie"]
+            oidc=httpx.URL(response.headers["location"]).params
+            assert oidc["client_id"] == "client"
+            claims={"iss":"https://moodle.example","aud":"client","sub":"synthetic-student","iat":990,"exp":1100,"nonce":oidc["nonce"],"name":"Студент","https://purl.imsglobal.org/spec/lti-ags/claim/endpoint":{"lineitem":"https://moodle.example/lineitems/defense","scope":[SCORE_SCOPE]},LTI+"deployment_id":"deploy",LTI+"context":{"id":"context"},LTI+"resource_link":{"id":"resource"},LTI+"roles":[LEARNER],LTI+"message_type":"LtiResourceLinkRequest",LTI+"version":"1.3.0",LTI+"target_link_uri":"https://course.example/gateway/courses/demo/lti/launch"}
+            body={"state":oidc["state"],"id_token":jwt.encode({"alg":"RS256","kid":key.kid},claims,key,algorithms=["RS256"])}
+            launched=await http.post("/gateway/courses/demo/lti/launch",data=body,headers={"X-Gateway-User":"administrator@example.invalid"})
+            assert launched.status_code==303 and launched.headers["location"].startswith("/gateway/courses/demo/pl/")
+            cookies=launched.headers.get_list("set-cookie")
+            assert any("GatewaySession=" in cookie and "Secure" in cookie and "HttpOnly" in cookie for cookie in cookies)
+            assert http.cookies.get("GatewayBinding") is None
+            who=app.state.store.session(http.cookies["GatewaySession"],1000)
+            assert who["subject"]=="synthetic-student" and who["uid"].endswith("@example.invalid")
+            assert (await http.get("/gateway/courses/demo/bootstrap")).status_code==303
+>           assert enrolled==[(who["uid"],"pilot","a"*64)]
+E           AssertionError: assert [('gw-0df3261...lot', 'demo')] == [('gw-0df3261...aaaaaaaaaaa')]
+E             
+E             At index 0 diff: ('gw-0df3261eb0eb32312b4055b00f2e9270196d6407bf8024e775703fc5378d681e@example.invalid', 'pilot', 'demo') != ('gw-0df3261eb0eb32312b4055b00f2e9270196d6407bf8024e775703fc5378d681e@example.invalid', 'pilot', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+E             Use -v to get more diff
+
+tests/test_app.py:111: AssertionError
+_____ test_upgrade_or_changed_moodle_binding_cannot_mutate_pending_request _____
+
+setup = (<gateway.store.Store object at 0x7f427eefd610>, <test_assignment.Bridge object at 0x7f427eee3c70>, {'userId': 'a78989...suer': 'issuer', 'client': 'client', 'deployment': 'deploy', ...}, <function setup.<locals>.service at 0x7f427ed9fe20>)
+
+    @pytest.mark.anyio
+    async def test_upgrade_or_changed_moodle_binding_cannot_mutate_pending_request(setup):
+        store,_,student,teacher,factory=setup;old=factory("approval")
+        row=await old.request(student,"exr-essay-a","pending")
+        upgraded=delivery();upgraded["courseKey"]="b"*64
+        service=Assignments(store,Bridge(),upgraded,"pilot",{"mode":"approval","capacity":{}},clock=lambda:1000)
+        for operation in (service.approve,service.reject):
+>           with pytest.raises(GatewayError):await operation(teacher,row["id"])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE GatewayError
+
+tests/test_assignment.py:109: Failed
+_____________ test_catalog_uses_valid_manual_v3_selected_delivery ______________
+
+tmp_path = PosixPath('/tmp/pytest-of-tolya/pytest-2/test_catalog_uses_valid_manual0')
+
+    def test_catalog_uses_valid_manual_v3_selected_delivery(tmp_path):
+        import json
+        from gateway.config import load_delivery
+        value = current_delivery()
+        (tmp_path/'delivery.json').write_text(json.dumps(value))
+>       actual = load_delivery(tmp_path, 'pilot')
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_catalog.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/gateway/config.py:116: in load_delivery
+    if delivery['schemaVersion']==5:delivery_v4.validate_bindings(delivery,questions,_delivery_bindings)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/gateway/delivery_v4.py:96: in validate_bindings
+    require(isinstance(b['uuid'],str) and re.fullmatch(r'(?:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-8][a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)',b['uuid']) is not None and b['uuid'] not in uuids)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+
+    def require(condition):
+        if not condition:
+>           raise GatewayError('Invalid native delivery v5 contract')
+E           gateway.errors.GatewayError: Invalid native delivery v5 contract
+
+src/gateway/delivery_v4.py:7: GatewayError
+_ test_restart_changed_delivery_or_instance_fences_old_observation_and_outbox[delivery-pending] _
+
+setup = (<gateway.store.Store object at 0x7f427e96bdd0>, {'userId': 'a789899e815c3babdf86c589ad3037b75f28bf06e794fe4150778cb96...ct at 0x7f427e977c80>, <gateway.grades.Grades object at 0x7f427e997000>, <test_gradebook.AGS object at 0x7f427e96b770>)
+queued_state = 'pending', change = 'delivery'
+
+    @pytest.mark.anyio
+    @pytest.mark.parametrize("queued_state",["pending","sending"])
+    @pytest.mark.parametrize("change",["delivery","instance"])
+    async def test_restart_changed_delivery_or_instance_fences_old_observation_and_outbox(setup,queued_state,change):
+        store,student,_,assignments,grades,ags=setup
+        row=await assignments.request(student,"exr-essay-a","a")
+        evidence=result(row,student["uid"]);grades.observe(row,evidence)
+        with store.transaction() as db:
+            db.execute("UPDATE outbox SET state=?,lease_until=900",(queued_state,))
+        upgraded=delivery();instance="pilot"
+        if change=="delivery":upgraded["courseKey"]="b"*64
+        else:
+            instance="other";upgraded["instances"][instance]=upgraded["instances"]["pilot"]
+        reopened=Store(store.path)
+        restarted=Assignments(reopened,Bridge(),upgraded,instance,{"mode":"immediate","capacity":{}},clock=lambda:2000)
+        resumed=Grades(reopened,restarted,ags,clock=lambda:2000)
+        accepted=resumed.observe(row,evidence)
+        await resumed.drain()
+>       assert not ags.sent  # No replacement/zero score; preserve the prior Moodle grade.
+        ^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert not [('https://moodle.example/lineitem', {'activityProgress': 'Completed', 'gradingProgress': 'FullyGraded', 'scoreGiven': 2, 'scoreMaximum': 3, ...}, 'fc5c6e10c945817b96ddb53229f766b5b1ecf3236d314f0c9ada73a676e7d754')]
+E        +  where [('https://moodle.example/lineitem', {'activityProgress': 'Completed', 'gradingProgress': 'FullyGraded', 'scoreGiven': 2, 'scoreMaximum': 3, ...}, 'fc5c6e10c945817b96ddb53229f766b5b1ecf3236d314f0c9ada73a676e7d754')] = <test_gradebook.AGS object at 0x7f427e96b770>.sent
+
+tests/test_gradebook.py:149: AssertionError
+_ test_restart_changed_delivery_or_instance_fences_old_observation_and_outbox[delivery-sending] _
+
+setup = (<gateway.store.Store object at 0x7f427e969610>, {'userId': 'a789899e815c3babdf86c589ad3037b75f28bf06e794fe4150778cb96...ct at 0x7f427e9779b0>, <gateway.grades.Grades object at 0x7f427e994bb0>, <test_gradebook.AGS object at 0x7f427e9694f0>)
+queued_state = 'sending', change = 'delivery'
+
+    @pytest.mark.anyio
+    @pytest.mark.parametrize("queued_state",["pending","sending"])
+    @pytest.mark.parametrize("change",["delivery","instance"])
+    async def test_restart_changed_delivery_or_instance_fences_old_observation_and_outbox(setup,queued_state,change):
+        store,student,_,assignments,grades,ags=setup
+        row=await assignments.request(student,"exr-essay-a","a")
+        evidence=result(row,student["uid"]);grades.observe(row,evidence)
+        with store.transaction() as db:
+            db.execute("UPDATE outbox SET state=?,lease_until=900",(queued_state,))
+        upgraded=delivery();instance="pilot"
+        if change=="delivery":upgraded["courseKey"]="b"*64
+        else:
+            instance="other";upgraded["instances"][instance]=upgraded["instances"]["pilot"]
+        reopened=Store(store.path)
+        restarted=Assignments(reopened,Bridge(),upgraded,instance,{"mode":"immediate","capacity":{}},clock=lambda:2000)
+        resumed=Grades(reopened,restarted,ags,clock=lambda:2000)
+        accepted=resumed.observe(row,evidence)
+        await resumed.drain()
+>       assert not ags.sent  # No replacement/zero score; preserve the prior Moodle grade.
+        ^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert not [('https://moodle.example/lineitem', {'activityProgress': 'Completed', 'gradingProgress': 'FullyGraded', 'scoreGiven': 2, 'scoreMaximum': 3, ...}, '0811434835603423db2189f668a8d61de9e3a2f55a92a839a69ec4b793bc46bc')]
+E        +  where [('https://moodle.example/lineitem', {'activityProgress': 'Completed', 'gradingProgress': 'FullyGraded', 'scoreGiven': 2, 'scoreMaximum': 3, ...}, '0811434835603423db2189f668a8d61de9e3a2f55a92a839a69ec4b793bc46bc')] = <test_gradebook.AGS object at 0x7f427e9694f0>.sent
+
+tests/test_gradebook.py:149: AssertionError
+_________ test_bootstrap_enrollment_and_manifest_scoped_native_launch __________
+
+    @pytest.mark.anyio
+    async def test_bootstrap_enrollment_and_manifest_scoped_native_launch():
+        seen=[];binding={"userUid":"gw-synthetic@example.invalid","instance":"pilot","courseKey":"demo"}
+        def endpoint(request):
+            seen.append(request)
+            if request.method=="PUT":return httpx.Response(200,json={"schemaVersion":1,**binding,"enrolled":True})
+            return httpx.Response(200,json={**binding,"workId":"lab","path":"/pl/course_instance/1/assessment/9/"})
+        async with httpx.AsyncClient(transport=httpx.MockTransport(endpoint)) as http:
+            bridge=PLClient(http,"http://private-pl:3001","s"*32)
+            await bridge.enroll(binding["userUid"],binding["instance"],binding["courseKey"])
+>           assert await bridge.work_launch(binding["userUid"],"pilot","a"*64,"lab")=="/pl/course_instance/1/assessment/9/"
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pl_bridge.py:37: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <gateway.pl.PLClient object at 0x7f427ee0f770>
+uid = 'gw-synthetic@example.invalid', instance = 'pilot'
+delivery = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+work = 'lab'
+
+    async def work_launch(self,uid,instance,delivery,work):
+        answer=await self._call("GET","/internal/gateway/work-launch",params={"userUid":uid,"instance":instance,"courseKey":delivery,"workId":work})
+        expected={"userUid":uid,"instance":instance,"courseKey":delivery,"workId":work}
+>       if set(answer)!=set(expected)|{"path"} or any(answer[k]!=v for k,v in expected.items()) or not isinstance(answer["path"],str) or not __import__("re").fullmatch(r"/pl/course_instance/[1-9][0-9]*/assessment/[1-9][0-9]*/",answer["path"]): raise GatewayError("Native launch scope mismatch",503)
+                                                                                                                                                                                                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       gateway.errors.GatewayError: Native launch scope mismatch
+
+src/gateway/pl.py:44: GatewayError
+_ test_new_instance_preserves_session_csrf_and_old_assignment_only_with_same_database[True] _
+
+tmp_path = PosixPath('/tmp/pytest-of-tolya/pytest-2/test_new_instance_preserves_se0')
+retain_database = True
+
+    @pytest.mark.anyio
+    @pytest.mark.parametrize("retain_database", [True, False])
+    async def test_new_instance_preserves_session_csrf_and_old_assignment_only_with_same_database(tmp_path, retain_database):
+        store=Store(tmp_path/"runtime.sqlite")
+        config=example();config.update(database=str(store.path),routePrefix="/gateway/courses/java")
+        config["registration"]["activities"]["lab"]={"kind":"lab","resourceLinkId":"lab-resource","lineitem":"https://moodle.example/lineitems/lab","workId":"lab"}
+        pending=store.state("browser",1000)
+        identity={"userId":"synthetic-student","uid":"student@example.invalid","issuer":"https://moodle.example","client":"client","deployment":"deploy","subject":"student","name":"Студент","role":"student","context":"context","resource":"resource","activity":"defense","lineitem":"https://moodle.example/lineitems/defense"}
+        defense=store.activate(pending["state"],"browser",1000,identity)
+        old=Assignments(store,Bridge(),delivery(),"pilot",{"mode":"immediate","capacity":{}},clock=lambda:1000)
+        legacy=await old.request(defense,"exr-essay-a","pilot-request")
+        pending=store.state("browser",1000)
+        lab=store.activate(pending["state"],"browser",1000,{**identity,"activity":"lab","resource":"lab-resource","lineitem":"https://moodle.example/lineitems/lab"})
+        with store.connect() as db:
+            old_requests=[dict(row) for row in db.execute("SELECT * FROM requests WHERE assignment_id=?",(legacy["id"],))]
+    
+        next_delivery=copy.deepcopy(delivery());next_delivery["courseKey"]="b"*64
+        next_delivery["instances"]={"2026-2027-s1":{"works":["defense-a","defense-b","lab"]}}
+        config.update(instance="2026-2027-s1",deliveryPath="/private/new-native-course")
+        restarted=Store(store.path if retain_database else tmp_path/"fresh.sqlite")
+        config["database"]=str(restarted.path)
+        class Native(Bridge):
+            async def enroll(self,uid,instance,delivery_hash):
+                assert (uid,instance,delivery_hash)==("student@example.invalid","2026-2027-s1","b"*64)
+            async def work_launch(self,uid,instance,delivery_hash,work):
+                assert (uid,instance,delivery_hash,work)==("student@example.invalid","2026-2027-s1","b"*64,"lab")
+                return "/pl/course_instance/999/assessment/999/"
+        class Clients:
+            bridge=Native()
+            class AGS:
+                async def score(self,*args):raise AssertionError("AGS is outside the local restart test")
+            ags=AGS()
+        app=create_app(config,store=restarted,delivery=next_delivery,clients=Clients(),clock=lambda:1001,start_worker=False)
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app),base_url="https://course.example") as client:
+            client.cookies.set("GatewaySession",lab["token"],domain="course.example",path="/gateway/courses/java")
+            response=await client.get("/gateway/courses/java/my/works")
+            assert response.status_code==(200 if retain_database else 403)
+            if retain_database:
+                assert response.json()["assignment"] is None
+                assert [work["id"] for work in response.json()["works"]]==["lab"]
+                assert response.json()["csrfToken"]==lab["csrf"]
+>               bootstrap=await client.get("/gateway/courses/java/bootstrap")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_restart.py:81: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.14/site-packages/httpx/_client.py:1768: in get
+    return await self.request(
+/usr/lib/python3.14/site-packages/httpx/_client.py:1540: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.14/site-packages/httpx/_client.py:1629: in send
+    response = await self._send_handling_auth(
+/usr/lib/python3.14/site-packages/httpx/_client.py:1657: in _send_handling_auth
+    response = await self._send_handling_redirects(
+/usr/lib/python3.14/site-packages/httpx/_client.py:1694: in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.14/site-packages/httpx/_client.py:1730: in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.14/site-packages/httpx/_transports/asgi.py:170: in handle_async_request
+    await self.app(scope, receive, send)
+../gateway-delivery-venv/lib/python3.14/site-packages/fastapi/applications.py:1216: in __call__
+    await super().__call__(scope, receive, send)
+/usr/lib/python3.14/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+/usr/lib/python3.14/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+/usr/lib/python3.14/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+../gateway-delivery-venv/lib/python3.14/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+/usr/lib/python3.14/site-packages/starlette/middleware/base.py:203: in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/gateway/app.py:126: in response_security
+    response=await call_next(request)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.14/site-packages/starlette/middleware/base.py:179: in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+/usr/lib/python3.14/site-packages/starlette/middleware/base.py:149: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+/usr/lib/python3.14/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/usr/lib/python3.14/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/usr/lib/python3.14/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+../gateway-delivery-venv/lib/python3.14/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+/usr/lib/python3.14/site-packages/starlette/routing.py:683: in __call__
+    await self.middleware_stack(scope, receive, send)
+../gateway-delivery-venv/lib/python3.14/site-packages/fastapi/routing.py:2786: in app
+    await route.handle(scope, receive, send)
+../gateway-delivery-venv/lib/python3.14/site-packages/fastapi/routing.py:1310: in handle
+    await super().handle(scope, receive, send)
+/usr/lib/python3.14/site-packages/starlette/routing.py:289: in handle
+    await self.app(scope, receive, send)
+../gateway-delivery-venv/lib/python3.14/site-packages/fastapi/routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/usr/lib/python3.14/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/usr/lib/python3.14/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+../gateway-delivery-venv/lib/python3.14/site-packages/fastapi/routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+../gateway-delivery-venv/lib/python3.14/site-packages/fastapi/routing.py:727: in app
+    raw_response = await run_endpoint_function(
+../gateway-delivery-venv/lib/python3.14/site-packages/fastapi/routing.py:360: in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/gateway/app.py:197: in bootstrap
+    await clients.bridge.enroll(who["uid"],config.instance,delivery["courseId"])
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <test_restart.test_new_instance_preserves_session_csrf_and_old_assignment_only_with_same_database.<locals>.Native object at 0x7f427e74b380>
+uid = 'student@example.invalid', instance = '2026-2027-s1'
+delivery_hash = 'demo'
+
+    async def enroll(self,uid,instance,delivery_hash):
+>       assert (uid,instance,delivery_hash)==("student@example.invalid","2026-2027-s1","b"*64)
+E       AssertionError: assert ('student@exa...7-s1', 'demo') == ('student@exa...bbbbbbbbbbbb')
+E         
+E         At index 2 diff: 'demo' != 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
+E         Use -v to get more diff
+
+tests/test_restart.py:63: AssertionError
+___________ test_unsupported_delivery_rejected_before_database_write ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-tolya/pytest-2/test_unsupported_delivery_reje0')
+
+    def test_unsupported_delivery_rejected_before_database_write(tmp_path):
+     import json
+     from gateway.app import create_app
+     from test_config import example
+     native=tmp_path/'native';native.mkdir();(native/'delivery.json').write_text(json.dumps({'schemaVersion':1}))
+     config=example();config['database']=str(tmp_path/'untouched/runtime.sqlite');config['deliveryPath']=str(native)
+>    with pytest.raises(GatewayError,match='schema'):create_app(config)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E    AssertionError: Regex pattern did not match.
+E      Expected regex: 'schema'
+E      Actual message: 'Expected functional native delivery v5'
+
+tests/test_slots.py:36: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_app.py::test_real_signed_http_launch_cookie_binding_bootstrap_and_replay[False-client]
+FAILED tests/test_app.py::test_real_signed_http_launch_cookie_binding_bootstrap_and_replay[False-None]
+FAILED tests/test_app.py::test_real_signed_http_launch_cookie_binding_bootstrap_and_replay[True-client]
+FAILED tests/test_app.py::test_real_signed_http_launch_cookie_binding_bootstrap_and_replay[True-None]
+FAILED tests/test_assignment.py::test_upgrade_or_changed_moodle_binding_cannot_mutate_pending_request
+FAILED tests/test_catalog.py::test_catalog_uses_valid_manual_v3_selected_delivery
+FAILED tests/test_gradebook.py::test_restart_changed_delivery_or_instance_fences_old_observation_and_outbox[delivery-pending]
+FAILED tests/test_gradebook.py::test_restart_changed_delivery_or_instance_fences_old_observation_and_outbox[delivery-sending]
+FAILED tests/test_pl_bridge.py::test_bootstrap_enrollment_and_manifest_scoped_native_launch
+FAILED tests/test_restart.py::test_new_instance_preserves_session_csrf_and_old_assignment_only_with_same_database[True]
+FAILED tests/test_slots.py::test_unsupported_delivery_rejected_before_database_write
+11 failed, 202 passed, 3 skipped in 19.30s

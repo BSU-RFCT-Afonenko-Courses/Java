@@ -1,0 +1,41 @@
+EEE
+======================================================================
+ERROR: test_actual_free_and_zip_upload_controls_use_runtime_union_policy (test_delivery5.Delivery5.test_actual_free_and_zip_upload_controls_use_runtime_union_policy) (layout='files-or-zip')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/java-release-work-20261105/platform-delivery/tests/test_delivery5.py", line 53, in test_actual_free_and_zip_upload_controls_use_runtime_union_policy
+    self.d['gradingPayloads'][self.q]['submission']={'mode':'upload','layout':layout};self.put('questions/'+self.q+'/question.html',control+'<pl-external-grader-results></pl-external-grader-results>');self.assertEqual(v.package_integrity(self.d,self.root,m)['status'],'success')
+                                                                                                                                                                                                                          ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/java-release-work-20261105/platform-delivery/tools/delivery_verification.py", line 196, in package_integrity
+    if patterns or sorted(optional)!=sorted(expected_optional):raise JobError('Native upload optional files differ from declared policy')
+                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grading_job.JobError: Native upload optional files differ from declared policy
+
+======================================================================
+ERROR: test_actual_free_and_zip_upload_controls_use_runtime_union_policy (test_delivery5.Delivery5.test_actual_free_and_zip_upload_controls_use_runtime_union_policy) (layout='zip')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/java-release-work-20261105/platform-delivery/tests/test_delivery5.py", line 53, in test_actual_free_and_zip_upload_controls_use_runtime_union_policy
+    self.d['gradingPayloads'][self.q]['submission']={'mode':'upload','layout':layout};self.put('questions/'+self.q+'/question.html',control+'<pl-external-grader-results></pl-external-grader-results>');self.assertEqual(v.package_integrity(self.d,self.root,m)['status'],'success')
+                                                                                                                                                                                                                          ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/java-release-work-20261105/platform-delivery/tools/delivery_verification.py", line 196, in package_integrity
+    if patterns or sorted(optional)!=sorted(expected_optional):raise JobError('Native upload optional files differ from declared policy')
+                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grading_job.JobError: Native upload optional files differ from declared policy
+
+======================================================================
+ERROR: test_actual_free_and_zip_upload_controls_use_runtime_union_policy (test_delivery5.Delivery5.test_actual_free_and_zip_upload_controls_use_runtime_union_policy) (layout='files')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/java-release-work-20261105/platform-delivery/tests/test_delivery5.py", line 53, in test_actual_free_and_zip_upload_controls_use_runtime_union_policy
+    self.d['gradingPayloads'][self.q]['submission']={'mode':'upload','layout':layout};self.put('questions/'+self.q+'/question.html',control+'<pl-external-grader-results></pl-external-grader-results>');self.assertEqual(v.package_integrity(self.d,self.root,m)['status'],'success')
+                                                                                                                                                                                                                          ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/java-release-work-20261105/platform-delivery/tools/delivery_verification.py", line 196, in package_integrity
+    if patterns or sorted(optional)!=sorted(expected_optional):raise JobError('Native upload optional files differ from declared policy')
+                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grading_job.JobError: Native upload optional files differ from declared policy
+
+----------------------------------------------------------------------
+Ran 1 test in 0.109s
+
+FAILED (errors=3)

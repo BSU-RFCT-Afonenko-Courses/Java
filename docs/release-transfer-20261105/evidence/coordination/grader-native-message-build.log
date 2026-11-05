@@ -1,0 +1,67 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.11kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/prairielearn/grader-java@sha256:dacce5e76d24cf1eaee21bec3e20b3ea40739408afdc89e6607eb542dc6b7a2e
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/gradle:9.8.2-jdk25-noble
+#3 DONE 9.2s
+
+#4 [internal] load metadata for docker.io/library/eclipse-temurin:25-jdk-noble
+#4 DONE 14.2s
+
+#5 [stage-2  1/12] FROM docker.io/prairielearn/grader-java@sha256:dacce5e76d24cf1eaee21bec3e20b3ea40739408afdc89e6607eb542dc6b7a2e
+#5 DONE 0.0s
+
+#6 [jdk 1/1] FROM docker.io/library/eclipse-temurin:25-jdk-noble@sha256:95e350ad1eb738f943e141640f7e3d797e483359a3b33c3864255bfd1ad71f8a
+#6 DONE 0.0s
+
+#7 [gradle 1/1] FROM docker.io/library/gradle:9.8.2-jdk25-noble@sha256:a586c97fc3ebf46f7d75fc3c3c928c378b627d87f24287068ffac791688dab6a
+#7 DONE 0.0s
+
+#8 [internal] load build context
+#8 transferring context: 89.14kB done
+#8 DONE 0.0s
+
+#9 [stage-2  6/12] COPY images/java25-grader/landlock/sandbox.c /tmp/landlock-sandbox.c
+#9 CACHED
+
+#10 [stage-2  3/12] COPY --from=jdk /opt/java/openjdk /opt/native-jdk
+#10 CACHED
+
+#11 [stage-2  2/12] RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-jsonschema gcc libc6-dev && rm -rf /var/lib/apt/lists/*
+#11 CACHED
+
+#12 [stage-2  7/12] RUN gcc -O2 -Wall -Wextra /tmp/landlock-sandbox.c -o /usr/local/bin/landlock_sandbox && chmod 755 /usr/local/bin/landlock_sandbox && rm /tmp/landlock-sandbox.c
+#12 CACHED
+
+#13 [stage-2  5/12] RUN groupadd --system nativebuild && useradd --system --gid nativebuild --shell /usr/sbin/nologin nativebuild     && mkdir -p /usr/lib/jvm/java-25-openjdk-amd64     && cp -a /opt/native-jdk/. /usr/lib/jvm/java-25-openjdk-amd64/     && rm -f /usr/lib/jvm/java-25-openjdk-amd64/lib/libmanagement.so /usr/lib/jvm/java-25-openjdk-amd64/lib/libmanagement_ext.so /usr/lib/jvm/java-25-openjdk-amd64/lib/libmanagement_agent.so     && chown -R root:nativebuild /opt/native-jdk && chmod -R g+rX,o-rwx /opt/native-jdk && chmod 750 /opt/native-jdk
+#13 CACHED
+
+#14 [stage-2  9/12] COPY runtime /platform/runtime
+#14 CACHED
+
+#15 [stage-2  8/12] WORKDIR /platform
+#15 CACHED
+
+#16 [stage-2  4/12] COPY --from=gradle /opt/gradle /opt/gradle
+#16 CACHED
+
+#17 [stage-2 10/12] COPY runtime-profiles.json /platform/runtime-profiles.json
+#17 CACHED
+
+#18 [stage-2 11/12] COPY images/java25-grader/grade.py /platform/images/java25-grader/grade.py
+#18 DONE 0.4s
+
+#19 [stage-2 12/12] RUN chmod 700 /platform /javagrader
+#19 DONE 0.5s
+
+#20 exporting to image
+#20 exporting layers
+#20 exporting layers 0.7s done
+#20 writing image sha256:8e9cd1119bd189e7d6723e03fd017b795e6e6e979f6012a181e0ebec57331fc5 done
+#20 naming to docker.io/codex/java-feedback-ui:20261105 done
+#20 DONE 0.7s

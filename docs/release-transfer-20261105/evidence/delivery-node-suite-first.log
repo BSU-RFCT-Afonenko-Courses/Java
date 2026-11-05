@@ -1,0 +1,152 @@
+✔ tests/bridge/administrator.test.mjs (137.454654ms)
+✔ tests/bridge/attempt-consistency.test.mjs (173.113918ms)
+✔ tests/bridge/choice.test.mjs (322.672961ms)
+✔ tests/bridge/context-selection.test.mjs (188.497128ms)
+✔ tests/bridge/course-routing.test.mjs (340.426436ms)
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Missing expected exception.
+    at file:///tmp/java-release-work-20261105/platform-delivery/tests/bridge/course-sync.test.mjs:9:9
+    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)
+    at async node:internal/modules/esm/loader:650:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: undefined,
+  operator: 'throws',
+  diff: 'simple'
+}
+
+Node.js v26.12.1
+✖ tests/bridge/course-sync.test.mjs (166.117198ms)
+✖ tests/bridge/delivery.test.mjs (805.107241ms)
+✔ tests/bridge/grader-pool.test.mjs (213.467765ms)
+✔ tests/bridge/institution-bootstrap.test.mjs (673.870543ms)
+✖ tests/bridge/native-course-payload.test.mjs (1033.233129ms)
+✖ tests/bridge/policy.test.mjs (436.266132ms)
+✖ tests/bridge/recognized-attempt.test.mjs (433.281487ms)
+✔ tests/bridge/slots.test.mjs (428.196156ms)
+✔ tests/bridge/zod-bounds.test.mjs (716.082445ms)
+✔ tests/delivery5.test.mjs (1343.740474ms)
+file:///tmp/java-release-work-20261105/platform-delivery/tests/native-credit-hooks.test.mjs:4
+const old=process.argv.includes('--old'),dist=process.argv.includes('--dist');const base=old?new URL('./fixtures/native-credit-upstream/',import.meta.url):pathToFileURL(process.argv.find(v=>v.startsWith('--fixture-root=')).slice('--fixture-root='.length)+'/');
+                                                                                                                                                                                                                              ^
+
+TypeError: Cannot read properties of undefined (reading 'slice')
+    at file:///tmp/java-release-work-20261105/platform-delivery/tests/native-credit-hooks.test.mjs:4:223
+    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)
+    at async node:internal/modules/esm/loader:650:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5)
+
+Node.js v26.12.1
+✖ tests/native-credit-hooks.test.mjs (390.414532ms)
+file:///tmp/java-release-work-20261105/platform-delivery/tests/recognized-aggregate.test.mjs:6
+const file=process.argv.find(v=>v.startsWith('--aggregate=')).slice('--aggregate='.length);
+                                                             ^
+
+TypeError: Cannot read properties of undefined (reading 'slice')
+    at file:///tmp/java-release-work-20261105/platform-delivery/tests/recognized-aggregate.test.mjs:6:62
+    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)
+    at async node:internal/modules/esm/loader:650:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5)
+
+Node.js v26.12.1
+✖ tests/recognized-aggregate.test.mjs (354.711636ms)
+file:///tmp/java-release-work-20261105/platform-delivery/tests/recognized-assignment.test.mjs:2
+import {bindRecognizedAssignment,migrateRecognizedAssignment,assignmentDigest} from '../bridge/recognized-assignment.mjs';
+                                                             ^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '../bridge/recognized-assignment.mjs' does not provide an export named 'assignmentDigest'
+    at #asyncInstantiate (node:internal/modules/esm/module_job:463:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:561:5)
+    at async node:internal/modules/esm/loader:650:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5)
+
+Node.js v26.12.1
+✖ tests/recognized-assignment.test.mjs (327.116372ms)
+✖ tests/recognized-bindings.test.mjs (1295.67466ms)
+✔ tests/recognized-credit.test.mjs (960.364722ms)
+file:///tmp/java-release-work-20261105/platform-delivery/tests/recognized-native-acl.test.mjs:3
+import {loadVerifiedBindings} from '../bridge/bindings.mjs';import {assertProductionRuntime,resolveAssignment,validateNativeGroups} from '../bridge/policy.mjs';import {bindRecognizedAssignment,migrateRecognizedAssignment,assignmentDigest} from '../bridge/recognized-assignment.mjs';import {verifyRecognizedPrivateFiles,privateManifestDigest} from '../tools/recognized-credit-files.mjs';import {deliveryFixture,CI_UUID} from './helpers/credit-delivery.mjs';
+                                                                                                                                                                                                                             ^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '../bridge/recognized-assignment.mjs' does not provide an export named 'assignmentDigest'
+    at #asyncInstantiate (node:internal/modules/esm/module_job:463:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:561:5)
+    at async node:internal/modules/esm/loader:650:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5)
+
+Node.js v26.12.1
+✖ tests/recognized-native-acl.test.mjs (842.407815ms)
+file:///tmp/java-release-work-20261105/platform-delivery/tests/recognized-private-files.test.mjs:7
+import {attachRecognizedPrivateFiles,privateManifestDigest} from '../tools/recognized-credit-files.mjs';
+                                     ^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '../tools/recognized-credit-files.mjs' does not provide an export named 'privateManifestDigest'
+    at #asyncInstantiate (node:internal/modules/esm/module_job:463:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:561:5)
+    at async node:internal/modules/esm/loader:650:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5)
+
+Node.js v26.12.1
+✖ tests/recognized-private-files.test.mjs (276.012999ms)
+✖ tests/recognized-sql.test.mjs (1583.169623ms)
+✔ tests/recognized-student-route.test.mjs (1085.514073ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 12
+ℹ fail 12
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2815.287706
+
+✖ failing tests:
+
+test at tests/bridge/course-sync.test.mjs:1:1
+✖ tests/bridge/course-sync.test.mjs (166.117198ms)
+  'test failed'
+
+test at tests/bridge/delivery.test.mjs:1:1
+✖ tests/bridge/delivery.test.mjs (805.107241ms)
+  'test failed'
+
+test at tests/bridge/native-course-payload.test.mjs:1:1
+✖ tests/bridge/native-course-payload.test.mjs (1033.233129ms)
+  'test failed'
+
+test at tests/bridge/policy.test.mjs:1:1
+✖ tests/bridge/policy.test.mjs (436.266132ms)
+  'test failed'
+
+test at tests/bridge/recognized-attempt.test.mjs:1:1
+✖ tests/bridge/recognized-attempt.test.mjs (433.281487ms)
+  'test failed'
+
+test at tests/native-credit-hooks.test.mjs:1:1
+✖ tests/native-credit-hooks.test.mjs (390.414532ms)
+  'test failed'
+
+test at tests/recognized-aggregate.test.mjs:1:1
+✖ tests/recognized-aggregate.test.mjs (354.711636ms)
+  'test failed'
+
+test at tests/recognized-assignment.test.mjs:1:1
+✖ tests/recognized-assignment.test.mjs (327.116372ms)
+  'test failed'
+
+test at tests/recognized-bindings.test.mjs:1:1
+✖ tests/recognized-bindings.test.mjs (1295.67466ms)
+  'test failed'
+
+test at tests/recognized-native-acl.test.mjs:1:1
+✖ tests/recognized-native-acl.test.mjs (842.407815ms)
+  'test failed'
+
+test at tests/recognized-private-files.test.mjs:1:1
+✖ tests/recognized-private-files.test.mjs (276.012999ms)
+  'test failed'
+
+test at tests/recognized-sql.test.mjs:1:1
+✖ tests/recognized-sql.test.mjs (1583.169623ms)
+  'test failed'
