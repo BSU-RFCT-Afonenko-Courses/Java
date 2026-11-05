@@ -8,11 +8,16 @@ public class PublicChecks {
     static final String NORMAL_NAME = "Два числовых формата";
     static final String NORMAL_WHAT = "Исходные поля чтения и числовые сумма/среднее.";
     static final String NORMAL_INPUT = "PUBLIC valid.txt: 1,5 TAB ru-BY; 2.5 TAB en-US";
-    static final String NORMAL_EXPECTED = "Исходные поля сохранены; сумма4.0, среднее2.0";
+    static final String NORMAL_EXPECTED =
+        "Исходные поля сохранены; сумма 4.0, среднее 2.0; допуск max(1e-12, 1e-12 × |ожидаемое|)";
     static final String BOUNDARY_NAME = "Пустой файл";
     static final String BOUNDARY_WHAT = "Нет записей; сообщение об отсутствии данных, без среднего.";
     static final String BOUNDARY_INPUT = "Существующий файл0байтов";
     static final String BOUNDARY_EXPECTED = "Нет данных; среднее не вычислено";
+    private static boolean near(double expected, double actual) {
+        return Double.isFinite(actual)
+            && Math.abs(actual - expected) <= Math.max(1e-12, 1e-12 * Math.abs(expected));
+    }
     static Observation observe(boolean normal) throws Exception {
         Path file = Files.createTempFile("Публичные локали ", ".txt");
         try {
@@ -29,8 +34,8 @@ public class PublicChecks {
             }
             boolean okay = normal
                 ? original.equals(List.of(List.of("1,5", "ru-BY"), List.of("2.5", "en-US")))
-                    && result.count() == 2 && result.sum() == 4.0 && result.average().isPresent()
-                    && result.average().getAsDouble() == 2.0
+                    && result.count() == 2 && near(4.0, result.sum()) && result.average().isPresent()
+                    && near(2.0, result.average().getAsDouble())
                 : original.isEmpty() && result.count() == 0 && result.average().isEmpty() && bytes.size() > 0;
             return new Observation("Прочитано=" + original + "; записей=" + result.count()
                     + "; сумма=" + result.sum() + "; среднее="
