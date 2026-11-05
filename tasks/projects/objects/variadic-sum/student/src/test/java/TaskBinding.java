@@ -1,1 +1,5 @@
-class TaskBinding { static int sum(int...a){return Arithmetic.sum(a);} }
+class TaskBinding {
+    static int sum(int... a) {
+        return Arithmetic.sum(a);
+    }
+}
