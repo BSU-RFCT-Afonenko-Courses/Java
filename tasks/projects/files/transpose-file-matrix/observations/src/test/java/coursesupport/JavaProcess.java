@@ -1,11 +1,14 @@
 package coursesupport;
-import coursesupport.JavaProcess;
 import coursesupport.JavaProcess.CheckedLauncher;
 import coursesupport.JavaProcess.Result;
 import coursesupport.JavaProcess.StudentOutputLimit;
 import coursesupport.JavaProcess.StudentTimeout;
 import coursesupport.JavaProcess.UncaughtStudentException;
+import coursesupport.JavaProcess;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.lang.AssertionError;
 import java.lang.Boolean;
@@ -32,8 +35,14 @@ import java.lang.Throwable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -41,20 +50,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
-
-
-import java.io.IOException;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 /** Запускает программу в отдельной JVM и получает её вывод и код завершения. */
 public final class JavaProcess {
@@ -96,10 +94,10 @@ public final class JavaProcess {
         return runCheckingUncaught(classes, entryPoint.getName(), false, input, arguments);
     }
 
-    /** Тот же наблюдатель для разделённых каталогов helper и student classes. */
-    public static Result runCheckingUncaught(Path classes, String mainClass, String input,
+    /** Тот же наблюдатель для разделённых каталогов trusted адаптера и решения. */
+    public static Result runCheckingUncaught(Path classes, String trustedEntry, String input,
             String... arguments) throws Exception {
-        return runCheckingUncaught(classes, mainClass, true, input, arguments);
+        return runCheckingUncaught(classes, trustedEntry, true, input, arguments);
     }
 
     private static Result runCheckingUncaught(Path classes, String mainClass,
@@ -156,11 +154,12 @@ public final class JavaProcess {
             Method selector = Class.forName("jdk.internal.misc.MethodFinder")
                 .getMethod("findMainMethod", Class.class);
             selector.invoke(null, CheckedLauncher.class);
-            // Доверенный ProcessPort должен быть загружен до отметки готовности.
-            // Ошибка bootstrap не является отказом вызываемой программы.
+            // Trusted адаптер должен быть найден до отметки готовности:
+            // его отсутствие или ошибка инициализации не являются отказом решения.
             if (Boolean.parseBoolean(arguments[2])) {
-                Class<?> port = Class.forName(arguments[1], false, ClassLoader.getSystemClassLoader());
-                if (selector.invoke(null, port) == null) throw new NoSuchMethodException("Не найден main в " + port.getName());
+                Class<?> port = Class.forName(arguments[1], true, ClassLoader.getSystemClassLoader());
+                if (selector.invoke(null, port) == null)
+                    throw new NoSuchMethodException("Не найден main в " + port.getName());
             }
             status.write('R');
             Thread.UncaughtExceptionHandler monitor = (thread, failure) -> {
