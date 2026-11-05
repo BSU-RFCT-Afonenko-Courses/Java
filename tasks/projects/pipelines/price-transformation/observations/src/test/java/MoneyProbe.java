@@ -12,7 +12,7 @@ final class MoneyProbe {
   assertNotSame(input,out);assertEquals(refs.length,input.size());assertEquals(refs.length,out.size());
   assertSame(out,Study.values(result),"Проекция возвращает фактический список");
   List<BigDecimal>after=new ArrayList<>();
-  for(int k=0;k<refs.length;k++){assertSame(refs[k],input.get(k));assertEquals(0,before.get(k).compareTo(MoneyPolicy.scalar(refs[k])),"Изменена исходная цена");BigDecimal expected=MoneyPolicy.expected(before.get(k),rateBefore);BigDecimal actual=MoneyPolicy.scalar(out.get(k));assertEquals(0,expected.compareTo(actual),"Цена "+k+" при заранее объявленном "+MoneyPolicy.KIND+"/"+MoneyPolicy.ROUNDING);after.add(actual);}
+  for(int k=0;k<refs.length;k++){assertSame(refs[k],input.get(k));assertEquals(0,before.get(k).compareTo(MoneyPolicy.scalar(refs[k])),"Изменена исходная цена");BigDecimal expected=MoneyPolicy.expected(before.get(k),rateBefore);BigDecimal actual=MoneyPolicy.scalar(out.get(k));assertEquals(0,expected.compareTo(actual),"Цена "+k+" при заранее объявленном "+MoneyPolicy.KIND+"/"+MoneyPolicy.ROUNDING+"; ожидалось="+expected.toPlainString()+"; получено="+actual.toPlainString());after.add(actual);}
   assertEquals(0,rateBefore.compareTo(MoneyPolicy.scalar(rate)),"Изменена ставка");
   if(mutate){input.clear();assertEquals(refs.length,out.size());for(int k=0;k<out.size();k++)assertEquals(0,after.get(k).compareTo(MoneyPolicy.scalar(out.get(k))));}
   return after.toString()+"; "+MoneyPolicy.KIND+"/"+MoneyPolicy.ROUNDING;
