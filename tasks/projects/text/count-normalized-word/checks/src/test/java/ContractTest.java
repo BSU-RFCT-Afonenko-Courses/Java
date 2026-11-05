@@ -11,7 +11,7 @@ class ContractTest {
   void case01(TestReporter publicReporter) {
     var publicActual = Study.count("Ёлка, елка; елками", "елка");
     publicReporter.publishEntry(Map.of("public-case", "count-normalized-word-01", "input",
-        "Вызов: Study.count(\"Ёлка, елка", "expected", String.valueOf(2L), "actual",
+        "Вызов: Study.count(\"Ёлка, елка; елками\", \"елка\")", "expected", String.valueOf(2L), "actual",
         "result=" + publicActual));
 
     assertEquals(2L, publicActual, "е/ё, регистр, целое слово");
@@ -22,7 +22,7 @@ class ContractTest {
   void case02(TestReporter publicReporter) {
     var publicActual = Study.count("май МАЙ, маи; маий", "МАИ");
     publicReporter.publishEntry(Map.of("public-case", "count-normalized-word-02", "input",
-        "Вызов: Study.count(\"май МАЙ, маи", "expected", String.valueOf(3L), "actual",
+        "Вызов: Study.count(\"май МАЙ, маи; маий\", \"МАИ\")", "expected", String.valueOf(3L), "actual",
         "result=" + publicActual));
 
     assertEquals(3L, publicActual, "и/й, регистр и более длинное слово");
