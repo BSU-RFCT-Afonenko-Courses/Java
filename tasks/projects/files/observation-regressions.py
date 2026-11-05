@@ -4,6 +4,7 @@
 Запуск: python observation-regressions.py --java-bin /path/to/jdk25/bin
     --junit /path/to/junit-platform-console-standalone.jar --output /tmp/files-checks
 Собирает только эталон, наблюдатель и малые регрессии, без Gradle и course build.
+Для узкой проверки сообщений опубликованных комплектов добавьте --student-messages.
 """
 import argparse
 import json
@@ -89,10 +90,16 @@ def main():
     parser.add_argument('--junit',required=True,type=Path)
     parser.add_argument('--output',required=True,type=Path)
     parser.add_argument('--task',action='append')
-    parser.add_argument('--protocol-only',action='store_true')
+    mode=parser.add_mutually_exclusive_group()
+    mode.add_argument('--protocol-only',action='store_true')
+    mode.add_argument('--student-messages',action='store_true')
     args=parser.parse_args()
+    tasks=sorted(task for task in Path(__file__).parent.iterdir() if (task/'observations/src/test/java').is_dir())
+    unknown=set(args.task or [])-{task.name for task in tasks}
+    if unknown:
+        parser.error('Неизвестные проекты: '+', '.join(sorted(unknown)))
     results=[]
-    for task in sorted(Path(__file__).parent.iterdir()):
+    for task in tasks:
         observations=task/'observations/src/test/java'
         if not observations.is_dir() or args.task and task.name not in args.task:
             continue
@@ -107,18 +114,25 @@ def main():
             directory.mkdir(parents=True,exist_ok=True)
         (fixtures/'ObservationReadabilityTest.java').write_text(READABILITY)
         public=(observations/'PublicChecks.java').read_text()
-        if 'static int example(' in public:
+        if not args.student_messages and 'static int example(' in public:
             (fixtures/'ObservationInfrastructureTest.java').write_text(INFRASTRUCTURE)
-        if (observations/'FileInvocation.java').exists():
+        if not args.student_messages and (observations/'FileInvocation.java').exists():
             (fixtures/'ObservationRefusalTest.java').write_text(REFUSAL)
+        sources=sorted(observations.rglob('*.java'))
+        if args.student_messages:
+            replacements={'PublicChecks.java':task/'student/src/test/java/PublicChecks.java'}
+            student_binding=task/'student/src/test/java/TaskBinding.java'
+            if student_binding.exists():
+                replacements['TaskBinding.java']=student_binding
+            sources=[replacements.get(source.name,source) for source in sources]
         commands=[
             [args.java_bin/'javac','--release','25','-encoding','UTF-8','-d',main_classes,*sorted((task/'reference/src/main/java').rglob('*.java'))],
-            [args.java_bin/'javac','--release','25','-encoding','UTF-8','-cp',str(main_classes)+':'+str(args.junit),'-d',test_classes,*sorted(observations.rglob('*.java')),*sorted(fixtures.glob('*.java'))],
+            [args.java_bin/'javac','--release','25','-encoding','UTF-8','-cp',str(main_classes)+':'+str(args.junit),'-d',test_classes,*sources,*sorted(fixtures.glob('*.java'))],
             [args.java_bin/'java','-jar',args.junit,'execute','--class-path',str(test_classes)+':'+str(main_classes),'--scan-class-path','--disable-banner','--details=summary'],
         ]
         if args.protocol_only:
             commands=[]
-        if (observations/'FileInvocation.java').exists():
+        if not args.student_messages and (observations/'FileInvocation.java').exists():
             protocol=work/'protocol'
             protocol.mkdir(exist_ok=True)
             (protocol/'ProcessPort.java').write_text(PORT_FIXTURE)
@@ -139,6 +153,8 @@ def main():
         record={'task':task.name,'status':'PASS' if result.returncode==0 else 'FAIL','seconds':round(time.monotonic()-start,3),'log':str(work/'run.log')}
         results.append(record)
         print(json.dumps(record,ensure_ascii=False),flush=True)
+    if not results:
+        parser.error('Для выбранного режима не найдено ни одного проекта')
     args.output.mkdir(parents=True,exist_ok=True)
     (args.output/'results.json').write_text(json.dumps(results,ensure_ascii=False,indent=2))
     return int(any(result['status']!='PASS' for result in results))

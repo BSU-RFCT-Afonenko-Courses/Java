@@ -2,9 +2,9 @@ import coursesupport.JavaProcess;
 import java.nio.file.*;import java.nio.charset.StandardCharsets;import java.time.Duration;import java.util.*;
 public class PublicChecks {
  public record Observation(String actual,boolean passed){}
- private static final class CheckFailure extends AssertionError{CheckFailure(){super("Фактическое состояние файлов не соответствует открытому ожиданию");}}
- public static void checkNormal(Observation o){if(!o.passed())throw new CheckFailure();}
- public static void checkBoundary(Observation o){if(!o.passed())throw new CheckFailure();}
+ private static final class CheckFailure extends AssertionError{CheckFailure(String expected,String actual){super("Ожидается: "+expected+"\nПолучено: "+actual);}}
+ public static void checkNormal(Observation o){if(!o.passed())throw new CheckFailure("Выход: "+CopySupport.escaped("A-B\tC\u00A0D\r\nE-F".getBytes(StandardCharsets.UTF_8))+"; вход прежний",o.actual());}
+ public static void checkBoundary(Observation o){if(!o.passed())throw new CheckFailure("Прежний файл A B; сообщена причина отказа",o.actual());}
  @SuppressWarnings("unchecked") private static <E extends Throwable,R>R forward(Throwable e)throws E{throw(E)e;}
  public static Observation observeNormal(){try{return normal();}catch(Throwable e){return PublicChecks.<RuntimeException,Observation>forward(e);}}
  public static Observation observeBoundary(){try{return boundary();}catch(Throwable e){return PublicChecks.<RuntimeException,Observation>forward(e);}}
