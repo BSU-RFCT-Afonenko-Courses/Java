@@ -38,6 +38,12 @@
 
 {{< include /test-support/shared/1f3cc9cbe64a/text-word.md >}}
 
+::: {.public-tests}
+
+Вызов `Study.count("Ёлка, елка; елками", "елка")` возвращает `2`: более длинное слово не учитывается. Вызов `Study.count("май МАЙ, маи; маий", "МАИ")` возвращает `3`, игнорируя регистр и объединяя `и/й` только при сравнении.
+
+:::
+
 {{< project-download exr-text-count-normalized-word >}}
 
 ::::

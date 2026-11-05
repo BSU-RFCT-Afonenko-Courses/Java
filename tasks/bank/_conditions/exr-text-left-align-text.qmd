@@ -33,6 +33,14 @@
 
 {{< include /test-support/shared/fb37bc6434ec/text-data.md >}}
 
+::: {.public-tests}
+
+Вызов `Study.align("one   two\nthree", 7)`, где `\n` обозначает перевод строки, возвращает список `["one two", "three"]`: первая строка заполняется ровно до ширины 7, исходные разделители нормализуются.
+
+Текст `" \t\n "` из пробела, TAB, LF и пробела при ширине `1` даёт пустой список `[]`.
+
+:::
+
 {{< project-download exr-text-left-align-text >}}
 
 ::::

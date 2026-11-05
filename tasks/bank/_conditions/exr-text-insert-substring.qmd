@@ -30,6 +30,14 @@
 
 {{< include /test-support/shared/fb37bc6434ec/text-data.md >}}
 
+::: {.public-tests}
+
+Вызов `Study.insert("Java", "!", 2)` возвращает `"Ja!va"`: граница вставки проходит после двух исходных символов.
+
+Для текста `"Java"` и фрагмента `"!"` позиция `0` даёт `"!Java"`, а позиция `4` — `"Java!"`. Пустой текст с фрагментом `"код"` и позицией `0` даёт `"код"`.
+
+:::
+
 {{< project-download exr-text-insert-substring >}}
 
 ::::
