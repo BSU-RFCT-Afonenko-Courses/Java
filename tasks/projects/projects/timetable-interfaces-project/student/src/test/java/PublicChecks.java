@@ -40,8 +40,8 @@ public class PublicChecks {
    +"; теория="+TaskBinding.theory(driving)+",практика="+TaskBinding.practice(driving)
    +",автомобили="+cars,policy&&day&&limit&&cars);
  }
- public static void checkNormal(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте обычный результат с условием.");}
- public static void checkBoundary(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте граничный результат с условием.");}
+ public static void checkNormal(Observation o){if(!o.passed())throw new AssertionError("Ожидалось: "+"t1: l1/l3 → l3, g1: l1/l2 → l2, количества 2 → 1; остальные поля l3 сохранены"+"; получено: "+o.actual());}
+ public static void checkBoundary(Observation o){if(!o.passed())throw new AssertionError("Ожидалось: "+"Объявленная политика удаления; l3/l4 исключены в выходной; превышение предела и отсутствие автомобиля выявлены"+"; получено: "+o.actual());}
  static int example(boolean normal){
   System.out.println("Сценарий: "+(normal?"Выборки после изменения расписания":"Политики и специализации"));
   System.out.println("Вход и действие: "+(normal?"Опубликованные4занятия19/20октября: выборкиT1/G1, отменаL1, аудиторияL3=C.":"Независимые исходные состояния: удалениеT1, выходной20.10, объявленный предел школы и наличие автомобиля."));

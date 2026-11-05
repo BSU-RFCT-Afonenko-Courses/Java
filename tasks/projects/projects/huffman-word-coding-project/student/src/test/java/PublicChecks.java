@@ -6,8 +6,8 @@ static Observation inspect(String input,Map<String,Integer> expected,int length)
 
  public static Observation observeNormal()throws Exception{return inspect("one two two three three three",Map.of("one",1,"two",2,"three",3),9);}
  public static Observation observeBoundary()throws Exception{var empty=inspect("",Map.of(),0);var one=inspect("one one one",Map.of("one",3),3);var equal=inspect("red blue green",Map.of("red",1,"blue",1,"green",1),5);Object a=TaskBinding.encode("red blue green"),b=TaskBinding.encode("red blue green");Object single=TaskBinding.encode("one one one");boolean same=TaskBinding.codes(a).equals(TaskBinding.codes(b))&&TaskBinding.bits(a).equals(TaskBinding.bits(b));return new Observation(empty.actual()+"; "+one.actual()+"; "+equal.actual()+"; повтор="+same,empty.passed()&&one.passed()&&equal.passed()&&same&&TaskBinding.codes(single).equals(Map.of("one","0"))&&TaskBinding.bits(single).equals("000")); }
- public static void checkNormal(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте обычный результат с условием.");}
- public static void checkBoundary(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте граничный результат с условием.");}
+ public static void checkNormal(Observation o){if(!o.passed())throw new AssertionError("Ожидалось: "+"Частоты one:1, two:2, three:3; префиксные двоичные коды, минимальная суммарная длина, биты в порядке входа"+"; получено: "+o.actual());}
+ public static void checkBoundary(Observation o){if(!o.passed())throw new AssertionError("Ожидалось: "+"Пустые таблица и биты; для единственного слова код 0; воспроизводимые коды равных частот"+"; получено: "+o.actual());}
  static int example(boolean normal){
   System.out.println("Сценарий: "+(normal?"Частоты, коды и девять битов":"Пустой, однословный и равновесный вход"));
   System.out.println("Вход и действие: "+(normal?"one two two three three three;построить таблицу и биты.":"Пустой текст;one one one;red blue green и повтор последнего."));
