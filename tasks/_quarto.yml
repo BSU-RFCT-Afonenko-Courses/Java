@@ -412,37 +412,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: demo-normal
-        state: args=[Анна]; stdin="stdin не имя".
-        action: Выполнить Main. Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого
-          примера нет.
-        expected: Здравствуйте, Анна!; допускается один завершающий LF/CRLF.
-        name: Прежний открытый обычный пример
-        test: ContractTest#normal
-      - id: normal
-        name: Имя из аргумента
-        input: 'Аргумент: Анна; stdin пуст.'
-        expected: Здравствуйте, Анна!
-        state: 'Аргумент: Анна; stdin пуст.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#normal
-      - id: demo-absent
-        state: args=[]; stdin="stdin не имя".
-        action: Выполнить Main. Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого
-          примера нет.
-        expected: Укажите имя.; допускается один завершающий LF/CRLF.
-        name: Имя отсутствует
-        test: ContractTest#absent
-      - id: boundary
-        name: Аргументы отсутствуют
-        input: Без аргументов; stdin пуст.
-        expected: Укажите имя.
-        state: Без аргументов; stdin пуст.
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#absent
     java-image-size:
       source-profile: java-gradle
       additional-java-sources:
@@ -481,37 +450,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: demo-normal
-        state: "args=[]; stdin=\"1024\n\t1024 4\", EOF."
-        action: Выполнить Main. Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого
-          примера нет.
-        expected: 4194304 байта; 4 МиБ; абсолютный допуск1e-8.
-        name: Прежний открытый обычный пример
-        test: ContractTest#normal
-      - id: normal
-        name: Изображение размером четыре МиБ
-        input: 'stdin: 1024 1024 4; EOF.'
-        expected: 4194304 4.0
-        state: 'stdin: 1024 1024 4; EOF.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#normal
-      - id: demo-pixel
-        state: "args=[]; stdin=\"1\n\t1 1\", EOF."
-        action: Выполнить Main. Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого
-          примера нет.
-        expected: 1 байт; 0.00000095367431640625 МиБ; абсолютный допуск1e-8.
-        name: Один пиксель
-        test: ContractTest#pixel
-      - id: boundary
-        name: Один однобайтовый пиксель
-        input: 'stdin: 1 1 1; EOF.'
-        expected: 1 0.00000095367431640625
-        state: 'stdin: 1 1 1; EOF.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#pixel
     java-interval-membership:
       source-profile: java-gradle
       additional-java-sources:
@@ -550,30 +488,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: boundary
-        name: Нижний конец интервала
-        input: 'stdin: -2 4 -2; EOF.'
-        expected: false true false true
-        state: 'stdin: -2 4 -2; EOF.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#left
-      - id: demo-right
-        state: "args=[]; stdin=\"-2\t4\n4\", EOF."
-        action: Выполнить Main; четыре границы в прежнем порядке. Статус относится ко всей проверяемой группе, включая другие
-          входы; отдельного балла у этого примера нет.
-        expected: true false false true
-        name: Правая граница интервала
-        test: ContractTest#right
-      - id: normal
-        name: Внутренняя точка
-        input: 'stdin: -2 4 0; EOF.'
-        expected: true true true true
-        state: 'stdin: -2 4 0; EOF.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#inside
     java-count-console-spaces:
       source-profile: java-gradle
       additional-java-sources:
@@ -612,23 +526,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Пробелы до первой точки
-        input: 'stdin: a b c.after dot; EOF без перевода строки.'
-        expected: '2'
-        state: 'stdin: a b c.after dot; EOF без перевода строки.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#published
-      - id: boundary
-        name: Пустой ввод
-        input: Пустой stdin, сразу EOF.
-        expected: '0'
-        state: Пустой stdin, сразу EOF.
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#empty
     java-number-extrema:
       source-profile: java-gradle
       additional-java-sources:
@@ -667,25 +564,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Последовательность из четырёх чисел
-        input: 'stdin: 4 7 -3 0 7; EOF.'
-        expected: 'Максимум: 7
-
-          Минимум: -3'
-        state: 'stdin: 4 7 -3 0 7; EOF.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#published
-      - id: boundary
-        name: Нулевое количество
-        input: 'stdin: 0; EOF.'
-        expected: Количество должно быть положительным
-        state: 'stdin: 0; EOF.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#zero
     java-reverse-array:
       source-profile: java-gradle
       additional-java-sources:
@@ -721,23 +599,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Обратный порядок с повторением
-        input: 'Без аргументов; stdin: 4 7 -2 7 0; EOF.'
-        expected: 0 7 -2 7
-        state: 'Без аргументов; stdin: 4 7 -2 7 0; EOF.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ReverseArrayTest#reverseWithDuplicates
-      - id: boundary
-        name: Пустой массив
-        input: 'Без аргументов; stdin: 0; EOF.'
-        expected: Нет чисел и другого текста; допустимо пробельное оформление.
-        state: 'Без аргументов; stdin: 0; EOF.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ReverseArrayTest#emptyArray
     java-subtract-array-average:
       source-profile: java-gradle
       additional-java-sources:
@@ -773,23 +634,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Обязательная матрица с дробными средними
-        input: Без аргументов; пустой stdin, сразу EOF.
-        expected: 'Три строки: -3 0 3; 5/3 -4/3 -1/3; 1/3 7/3 -8/3, допуск 1e-8.'
-        state: Без аргументов; пустой stdin, сразу EOF.
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#mandatory
-      - id: boundary
-        name: Постоянные строки и крайние значения
-        input: 'Без аргументов; stdin: 3 3 3\n-3 -3 -3\n0 0 0; EOF.'
-        expected: Три строки по три нуля.
-        state: 'Без аргументов; stdin: 3 3 3\n-3 -3 -3\n0 0 0; EOF.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#constant
     java-sort-matrix-rows:
       source-profile: java-gradle
       additional-java-sources:
@@ -825,23 +669,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Переставленные строки обязательного примера
-        input: 'Без аргументов; stdin: 1 3 -2\n-3 0 3\n2 -1 0; EOF.'
-        expected: 'Три строки: -3 0 3; 2 -1 0; 1 3 -2.'
-        state: 'Без аргументов; stdin: 1 3 -2\n-3 0 3\n2 -1 0; EOF.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#permuted
-      - id: boundary
-        name: Разные строки с равной суммой
-        input: 'Без аргументов; stdin: 2 -1 0\n0 1 0\n0 0 0; EOF.'
-        expected: 'Три строки: 0 0 0; 2 -1 0; 0 1 0.'
-        state: 'Без аргументов; stdin: 2 -1 0\n0 1 0\n0 0 0; EOF.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#stable
     java-replace-word-letter:
       source-profile: java-gradle
       additional-java-sources:
@@ -874,23 +701,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Замена и короткое слово
-        input: 'Аргументы: "кот, я!", "2", "*"; stdin не используется.'
-        expected: Точный текст к*т, я! и завершающий LF либо CRLF.
-        state: 'Аргументы: "кот, я!", "2", "*"; stdin не используется.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#normal
-      - id: boundary
-        name: Пустой текст
-        input: 'Аргументы: "", "2", "*"; stdin не используется.'
-        expected: Только один завершающий LF либо CRLF.
-        state: 'Аргументы: "", "2", "*"; stdin не используется.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#boundary
     java-word-length-extrema:
       source-profile: java-gradle
       additional-java-sources:
@@ -923,23 +733,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Разные длины и повторное вхождение
-        input: 'Аргумент: "кот, дом и кот!"; stdin не используется.'
-        expected: 'Максимумы: кот дом кот\nМинимумы: и; после последней строки LF/CRLF необязателен.'
-        state: 'Аргумент: "кот, дом и кот!"; stdin не используется.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#normal
-      - id: boundary
-        name: Все слова равной длины
-        input: 'Аргумент: "кот дом кот"; stdin не используется.'
-        expected: 'Максимумы: кот дом кот\nМинимумы: кот дом кот; после последней строки LF/CRLF необязателен.'
-        state: 'Аргумент: "кот дом кот"; stdin не используется.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#boundary
     java-compress-character-runs:
       source-profile: java-gradle
       additional-java-sources:
@@ -972,23 +765,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Регистр и последняя одиночная буква
-        input: 'Аргумент: "aaBBa"; stdin не используется.'
-        expected: Точный текст a2B2a и завершающий LF либо CRLF.
-        state: 'Аргумент: "aaBBa"; stdin не используется.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#normal
-      - id: boundary
-        name: Многозначная длина серии
-        input: 'Аргумент: двенадцать букв a; stdin не используется.'
-        expected: Точный текст a12 и завершающий LF либо CRLF.
-        state: 'Аргумент: двенадцать букв a; stdin не используется.'
-        action: Выполнить именно указанный старый открытый сценарий; статус относится ко всей существующей группе. Статус
-          относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        test: ContractTest#boundary
     java-objects-variadic-sum:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1020,25 +796,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Сумма и сохранённый массив
-        test: PublicExamplesTest#normal
-        input: sum([3,-2,4])
-        expected: Массив[3,-2,4] →5, значения массива прежние.
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-      - id: boundary
-        name: Вызов без аргументов
-        test: PublicExamplesTest#boundary
-        input: sum()
-        expected: Вызов без аргументов →0.
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-      feedback:
-        requirement: int сумма, пустой вызов0, переданный массив сохраняется.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-objects-swap-object-fields:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1070,25 +827,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Два объекта сохраняют свою идентичность
-        test: PublicExamplesTest#normal
-        input: Test(3), Test(8); swap(x,y)
-        expected: Два разных Test(3),Test(8); swap → значения8/3 через прежние ссылки.
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-      - id: boundary
-        name: Две ссылки на один объект
-        test: PublicExamplesTest#boundary
-        input: Test(-2); swap(x,x)
-        expected: Test(-2), swap(x,x) сохраняет -2.
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-      feedback:
-        requirement: Обмен значений a существующих Test; самопередача сохраняет состояние.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-objects-character-stack:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1120,26 +858,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Последний символ извлекается первым
-        test: PublicExamplesTest#normal
-        input: 'Stack(2): push A/B, pop/pop'
-        expected: 'Stack2: push A,B; pop B,A; сообщений операций нет.'
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-      - id: boundary
-        name: Ёмкость один и сохранение после отказов
-        test: PublicExamplesTest#boundary
-        input: 'Stack(1): pop, push X/Y, pop/pop, push Z, pop'
-        expected: 'Stack1: pop, push X,Y, pop,pop,push Z,pop → char0,X,char0,Z. Ровно три строки сообщений: «Стек пуст», «Стек
-          переполнен», «Стек пуст»; успешные действия молчат.'
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-      feedback:
-        requirement: LIFO; точные сообщения отказов, успешные операции молчат, отказ сохраняет состояние.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-objects-book-selection:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1171,68 +889,6 @@ project-checks:
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
-      public-cases:
-      - id: demo-example
-        state: B1=(1,Массивы,[Анна,Борис],Свет,2024,120,10,Мягкий); B2=(2,Объекты,[Вера],Мир,2025,200,15,Твёрдый).
-        action: Book.author([B1,B2], "Борис") Статус относится ко всей проверяемой группе, включая другие входы; отдельного
-          балла у этого примера нет.
-        expected: Одна выбранная книга, id=1. Сохраняются порядок и исходные данные.
-        name: Автор не первый в списке
-        test: BookSelectionTest#nonFirstAuthor
-      - id: normal-author
-        name: Отбор по автору
-        input: 'Book: B1=(id1, Первая, [Ann,Bob], Север,2001,100стр,цена10,Твёрдый); B2=(id2,Вторая,[Ann],Юг,2020,100стр,цена10,Твёрдый);
-          B3=(id3,Третья,[Bob],Север,2020,100стр,цена10,Твёрдый). Массив[B1,B2,B1,B3]. Отбор Ann, Север, год>2010.'
-        expected: id=[1,2,1]; исходные данные сохраняются.
-        state: 'Book: B1=(id1, Первая, [Ann,Bob], Север,2001,100стр,цена10,Твёрдый); B2=(id2,Вторая,[Ann],Юг,2020,100стр,цена10,Твёрдый);
-          B3=(id3,Третья,[Bob],Север,2020,100стр,цена10,Твёрдый). Массив[B1,B2,B1,B3]. Отбор Ann, Север, год>2010.'
-        action: Book.author([B1,B2,B1,B3], "Ann") Статус относится ко всей проверяемой группе, включая другие входы; отдельного
-          балла у этого примера нет.
-        test: BookSelectionTest#authorOrderAndMultiplicity
-      - id: normal-publisher
-        name: Отбор по издательству
-        input: 'Book: B1=(id1, Первая, [Ann,Bob], Север,2001,100стр,цена10,Твёрдый); B2=(id2,Вторая,[Ann],Юг,2020,100стр,цена10,Твёрдый);
-          B3=(id3,Третья,[Bob],Север,2020,100стр,цена10,Твёрдый). Массив[B1,B2,B1,B3]. Отбор Ann, Север, год>2010.'
-        expected: id=[1,1,3]; исходные данные сохраняются.
-        state: 'Book: B1=(id1, Первая, [Ann,Bob], Север,2001,100стр,цена10,Твёрдый); B2=(id2,Вторая,[Ann],Юг,2020,100стр,цена10,Твёрдый);
-          B3=(id3,Третья,[Bob],Север,2020,100стр,цена10,Твёрдый). Массив[B1,B2,B1,B3]. Отбор Ann, Север, год>2010.'
-        action: Book.publisher([B1,B2,B1,B3], "Север") Статус относится ко всей проверяемой группе, включая другие входы;
-          отдельного балла у этого примера нет.
-        test: BookSelectionTest#publisherOrderAndMultiplicity
-      - id: normal-after
-        name: Отбор после года
-        input: 'Book: B1=(id1, Первая, [Ann,Bob], Север,2001,100стр,цена10,Твёрдый); B2=(id2,Вторая,[Ann],Юг,2020,100стр,цена10,Твёрдый);
-          B3=(id3,Третья,[Bob],Север,2020,100стр,цена10,Твёрдый). Массив[B1,B2,B1,B3]. Отбор Ann, Север, год>2010.'
-        expected: id=[2,3]; исходные данные сохраняются.
-        state: 'Book: B1=(id1, Первая, [Ann,Bob], Север,2001,100стр,цена10,Твёрдый); B2=(id2,Вторая,[Ann],Юг,2020,100стр,цена10,Твёрдый);
-          B3=(id3,Третья,[Bob],Север,2020,100стр,цена10,Твёрдый). Массив[B1,B2,B1,B3]. Отбор Ann, Север, год>2010.'
-        action: Book.after([B1,B2,B1,B3], 2010) Статус относится ко всей проверяемой группе, включая другие входы; отдельного
-          балла у этого примера нет.
-        test: BookSelectionTest#yearOrderAndMultiplicity
-      - id: boundary-author
-        name: Нет указанного автора
-        input: B3=(id3,Третья,[Bob],Север,2020,100стр,цена10,Твёрдый), массив[B3]; отбор Ann, север, год>2020.
-        expected: id=[]; исходные данные сохраняются.
-        state: B3=(id3,Третья,[Bob],Север,2020,100стр,цена10,Твёрдый), массив[B3]; отбор Ann, север, год>2020.
-        action: Book.author([B3], "Ann") Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла
-          у этого примера нет.
-        test: BookSelectionTest#unknownAuthor
-      - id: boundary-publisher
-        name: Нет указанного издательства
-        input: B3=(id3,Третья,[Bob],Север,2020,100стр,цена10,Твёрдый), массив[B3]; отбор Ann, север, год>2020.
-        expected: id=[]; исходные данные сохраняются.
-        state: B3=(id3,Третья,[Bob],Север,2020,100стр,цена10,Твёрдый), массив[B3]; отбор Ann, север, год>2020.
-        action: Book.publisher([B3], "север") Статус относится ко всей проверяемой группе, включая другие входы; отдельного
-          балла у этого примера нет.
-        test: BookSelectionTest#unknownPublisher
-      - id: boundary-after
-        name: Год равен границе
-        input: B3=(id3,Третья,[Bob],Север,2020,100стр,цена10,Твёрдый), массив[B3]; отбор Ann, север, год>2020.
-        expected: id=[]; исходные данные сохраняются.
-        state: B3=(id3,Третья,[Bob],Север,2020,100стр,цена10,Твёрдый), массив[B3]; отбор Ann, север, год>2020.
-        action: Book.after([B3], 2020) Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла
-          у этого примера нет.
-        test: BookSelectionTest#yearEqualBoundary
     java-objects-car-selection:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1267,30 +923,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Три отбора с сохранением повторов
-        test: PublicExamplesTest#normal
-        input: 'Car: C1=(id1,Вектор,M1,2010,Синий,цена10,A1); C2=(id2,Вектор,M1,2012,Синий,цена20,A2); C3=(id3,Линия,M2,2020,Синий,цена30,A3).
-          Массив[C1,C2,C1,C3], текущий год2025. Отбор марки Вектор, модели M1 с возрастом>5, года2010 с ценой>5.'
-        expected: C1=(1,Вектор,M1,2010,Синий,10,A1), C2=(2,Вектор,M1,2012,Синий,20,A2), C3=(3,Линия,M2,2020,Синий,30,A3);
-          вход[C1,C2,C1,C3]. make Вектор →[C1,C2,C1]; model M1,currentYear2025,age5 →[C1,C2,C1]; year2010,price5 →[C1,C1].
-          После каждого отбора входные ячейки и все свойства прежние.
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-      - id: boundary
-        name: Равные возраст и цена
-        test: PublicExamplesTest#boundary
-        input: C4=(id4,Вектор,M1,2020,Синий,цена10,A4), массив[C4], текущий год2025; марка вектор, модельM1 с возрастом>5,
-          год2020 с ценой>10.
-        expected: C4=(4,Вектор,M1,2020,Синий,10,A4). make вектор, model M1/currentYear2025/age5, year2020/price10 → три пустые
-          подборки; вход прежний.
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-      feedback:
-        requirement: Три отбора Car, параметр текущего года, строгие возраст/цена, порядок/кратность и вход сохранены.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-polymorphism-circle-subclass:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1322,22 +954,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: "Размеры, имя и площадь круга: r=2"
-        test: PublicExamplesTest#normal
-        action: Circle(2), ссылка TwoDShape; чтение размеров/имени/area
-        expected: 4,4,circle; площадь12.566370614359172 в допуске.
-      - id: boundary
-        name: "Максимальный допустимый радиус: r=1e150"
-        test: PublicExamplesTest#boundary
-        action: Circle(1e150), вызов через TwoDShape
-        expected: 2e150,2e150,circle; конечная площадьπ*10^300 в допуске.
-      feedback:
-        requirement: Диаметр и имя одного радиуса; конечная площадь с допуском max(1e-9,1e-12*|πr²|).
-        what-check: >-
-          После допуска API каждый радиус проверяется как отдельный случай: размеры, имя, конечность и площадь
-          с заданным допуском через базовую ссылку TwoDShape. Нарушенные свойства сообщают обычные JUnit assertions.
     java-polymorphism-vehicle-interface:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1369,21 +985,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Чтение и допустимое изменение характеристик
-        test: PublicExamplesTest#normal
-        action: Vehicle(2,10,25):50миль; затем setters(0,12,30),90миль
-        expected: (2,10,25),250,2.0; затем(0,12,30),360,3.0; допуск1e-6.
-      - id: boundary
-        name: Отказ изменения и отрицательного расстояния
-        test: PublicExamplesTest#boundary
-        action: Новый Vehicle(2,10,25):setFuelcap(0),fuelNeeded(-1),fuelNeeded(0)
-        expected: Два IllegalArgumentException; прежние(2,10,25),range250; fuelNeeded(0)=0.0.
-      feedback:
-        requirement: Чтение/изменение через IVehicle, вещественное топливо, отказ до записи с сохранением состояния.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-polymorphism-animal-hierarchy:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1415,21 +1016,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Переопределённые голоса и действия
-        test: PublicExamplesTest#normal
-        action: Animal(Зверь),Dog(Рекс),Puppy(Луч); голос через Animal, действия Dog/Puppy
-        expected: Вид и имя различимы, действия доступны, имена сохранены.
-      - id: boundary
-        name: Одно имя у разных классов
-        test: PublicExamplesTest#boundary
-        action: Два Dog(Рекс),Puppy(Рекс),Dog(Иной),null; equals/hash/toString
-        expected: Dog равны и хеши равны; Dog/Puppy в обе стороны false; иной/null false; вид/имя видны в toString.
-      feedback:
-        requirement: Animal→Dog→Puppy; голоса различают вид/имя; имя сохранено; equals точного класса/имени и согласованный хеш.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-polymorphism-reset-character-queues:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1461,21 +1047,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Сброс после частичного извлечения
-        test: PublicExamplesTest#normal
-        action: Fixed/Circular/Dyn(2):put A/B,get A,reset,put X/Y,get/get
-        expected: 'Все три дают X/Y, старый B удалён; успешные операции молчат. Ёмкость: отдельное чтение.'
-      - id: boundary
-        name: Пустой сброс и уже выросшая очередь
-        test: PublicExamplesTest#boundary
-        action: Fixed/Circular(1) пусты; Dyn(1) содержит A/B/C; reset, повторный пустой reset Dyn,put X,get,get пустой
-        expected: 'Все дают X, затем0 и строку Очередь пуста. Пустые reset молчат. Dyn сохраняет фактическое k>=3: отдельное чтение.'
-      feedback:
-        requirement: FIFO после reset всех трёх; текущая ёмкость сохраняется и проверяется по исходнику отдельно.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-polymorphism-copy-character-queues:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1507,21 +1078,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Выросший источник и кольцевой приёмник
-        test: PublicExamplesTest#normal
-        action: Dyn(2) содержит A/B/C; Circular(3) пуст; transfer3, чтение приёмника и пустого источника
-        expected: Transfer молчит; приёмник A/B/C; get источника после transfer даёт0 и строку Очередь пуста.
-      - id: boundary
-        name: Нулевой перенос в исчерпанный линейный приёмник
-        test: PublicExamplesTest#boundary
-        action: Circular(1) пуст; Fixed(1) послеput/get Q пуст, линейное место исчерпано; transfer0
-        expected: Сам transfer молчит; обе прежние очереди пусты, без reset или новых помещений.
-      feedback:
-        requirement: Перенос только put/get сохраняет FIFO и объекты, опустошает источник; count0 не требует места.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-generics-range-maximum:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1553,23 +1109,6 @@ project-checks:
         files:
         - src/api/java/**/*.java
         entry: ApiContract
-      public-cases:
-      - id: normal
-        name: Максимум внутреннего диапазона
-        state: Integer[99,2,7,4], [1,4)
-        action: Найти максимум
-        expected: Исходная ссылка7; массив сохранён
-        test: ContractTest#ra1
-      - id: boundary
-        name: Одноэлементный диапазон строки
-        state: String[я,б,в], [1,2)
-        action: Найти максимум
-        expected: Исходная ссылкаб; массив сохранён
-        test: ContractTest#ra2
-      feedback:
-        requirement: Один обобщённый метод возвращает исходный максимальный элемент полуоткрытого диапазона и сохраняет массив.
-        what-check: Проверьте объявления опубликованного API и результат сборки submission.jar, затем сопоставьте наблюдение
-          с указанными входными данными. Допустимые внутренние имена, пакеты и способы реализации сохраняются.
     java-generics-property-count:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1601,23 +1140,6 @@ project-checks:
         files:
         - src/api/java/**/*.java
         entry: ApiContract
-      public-cases:
-      - id: normal
-        name: Два переданных свойства
-        state: Integer[1,2,3]; String[one,four,пустая строка]
-        action: Посчитать нечётность и длину>3
-        expected: 2 и1
-        test: ContractTest#pa1
-      - id: boundary
-        name: Пустые массивы двух типов
-        state: Пустые Integer[] и String[]
-        action: Выполнить подсчёт с теми же свойствами
-        expected: 0 и0
-        test: ContractTest#pa3
-      feedback:
-        requirement: Количество определяется переданным объектом свойства; массив сохранён, пустой даёт0.
-        what-check: Проверьте объявления опубликованного API и результат сборки submission.jar, затем сопоставьте наблюдение
-          с указанными входными данными. Допустимые внутренние имена, пакеты и способы реализации сохраняются.
     java-generics-generic-queue:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1652,42 +1174,6 @@ project-checks:
         files:
         - src/api/java/**/*.java
         entry: ApiContract
-      public-cases:
-      - id: normal
-        name: Порядок и повторное место
-        state: 'String[2]: Лист,Ветка; извлечение; Плод'
-        action: Добавить/извлечь по опубликованной последовательности
-        expected: Лист,Ветка,Плод
-        test: ContractTest#gqa3
-      - id: boundary-initial
-        name: Начальная пустота
-        state: Передан Integer[]{42}
-        action: Извлечь из нового контейнера
-        expected: Проверяемый Empty
-        test: ContractTest#gqa1
-      - id: boundary-full
-        name: Сохранность при полном контейнере
-        state: Integer[]{42}; помещено7
-        action: Попытаться добавить8; извлечь
-        expected: Проверяемый Full; прежняя7
-        test: ContractTest#gqa2
-      - id: boundary-empty
-        name: Пустой отказ после извлечения
-        state: Integer[]{42};7 помещена и извлечена
-        action: Выполнить извлечение
-        expected: Проверяемый Empty
-        test: ContractTest#gqa5
-      - id: boundary-reuse
-        name: Повторное помещение после извлечения
-        state: Integer[]{42};7 помещена и извлечена
-        action: Добавить9; извлечь
-        expected: '9'
-        test: ContractTest#gqa4
-      feedback:
-        requirement: Переданный T[] задаёт вместимость; новая очередь пуста, FIFO возвращает помещённые ссылки, отказы сохраняют
-          состояние.
-        what-check: Проверьте объявления опубликованного API и результат сборки submission.jar, затем сопоставьте наблюдение
-          с указанными входными данными. Допустимые внутренние имена, пакеты и способы реализации сохраняются.
     java-generics-generic-stack:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1719,42 +1205,6 @@ project-checks:
         files:
         - src/api/java/**/*.java
         entry: ApiContract
-      public-cases:
-      - id: normal
-        name: Порядок и повторное место
-        state: 'String[2]: Лист,Ветка; извлечение; Плод'
-        action: Добавить/извлечь по опубликованной последовательности
-        expected: Ветка,Плод,Лист
-        test: ContractTest#gsa3
-      - id: boundary-initial
-        name: Начальная пустота
-        state: Передан Integer[]{42}
-        action: Извлечь из нового контейнера
-        expected: Проверяемый Empty
-        test: ContractTest#gsa1
-      - id: boundary-full
-        name: Сохранность при полном контейнере
-        state: Integer[]{42}; помещено7
-        action: Попытаться добавить8; извлечь
-        expected: Проверяемый Full; прежняя7
-        test: ContractTest#gsa2
-      - id: boundary-empty
-        name: Пустой отказ после извлечения
-        state: Integer[]{42};7 помещена и извлечена
-        action: Выполнить извлечение
-        expected: Проверяемый Empty
-        test: ContractTest#gsa5
-      - id: boundary-reuse
-        name: Повторное помещение после извлечения
-        state: Integer[]{42};7 помещена и извлечена
-        action: Добавить9; извлечь
-        expected: '9'
-        test: ContractTest#gsa4
-      feedback:
-        requirement: IGenStack<T> использует переданный T[]; новый стек пуст, LIFO возвращает помещённые ссылки, отказы сохраняют
-          состояние.
-        what-check: Проверьте объявления опубликованного API и результат сборки submission.jar, затем сопоставьте наблюдение
-          с указанными входными данными. Допустимые внутренние имена, пакеты и способы реализации сохраняются.
     java-collections-set-union-intersection:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1786,23 +1236,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Общий элемент двух множеств
-        test: PublicExamplesTest#normal
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: 'A={1,2},B={2,3}: union={1,2,3}, intersection={2}; оба входа прежние.'
-      - id: boundary
-        name: Пустой вход и независимость результата
-        test: PublicExamplesTest#boundary
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: 'A={}, B={4}: union={4}, intersection={}; после обоих вызовов входы прежние; добавление5 в B не меняет результаты.'
-      feedback:
-        requirement: Отдельные методы дают самостоятельные по составу объединение и пересечение и сохраняют оба входа.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-balanced-brackets:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1834,23 +1267,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Вложенные пары разных видов
-        test: PublicExamplesTest#normal
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: ([]{}) → true.
-      - id: boundary
-        name: Пустое состояние и лишняя закрывающая
-        test: PublicExamplesTest#boundary
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: Пустая строка → true, строка ) → false; это одна исходная граничная группа.
-      feedback:
-        requirement: Стек проверяет виды и вложенность пар для строки из шести допустимых скобок; пустая строка допустима.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-polynomial-map-addition:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1885,25 +1301,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Общая степень с нулевой суммой
-        test: PublicExamplesTest#normal
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: '{0:1,2:3}+{1:2,2:-3} → коэффициенты0:1,1:2, остальные0 в опубликованном допуске; нулевые записи можно оставить.
-          Входы прежние, отдельная HashMap.'
-      - id: boundary
-        name: Два нулевых многочлена
-        test: PublicExamplesTest#boundary
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: Две пустые HashMap → самостоятельная нулевая HashMap, возможны явные нули; входы прежние.
-      feedback:
-        requirement: Самостоятельная HashMap складывает коэффициенты и сохраняет входы; abs(a-r)<=1e-9+1e-12*abs(r), отсутствующая
-          пара означает ноль.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-pipelines-divisibility-function:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1935,21 +1332,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Кратное и соседнее число
-        test: PublicExamplesTest#normal
-        action: '`31` и `32`.; вызвать метод через переменную собственного функционального интерфейса для каждого аргумента.'
-        expected: соответственно `true` и `false`.
-      - id: boundary
-        name: Ноль и отрицательное кратное
-        test: PublicExamplesTest#boundary
-        action: '`0` и `-31`.; вызвать тот же метод интерфейса для каждого аргумента.'
-        expected: оба результата `true`.
-      feedback:
-        requirement: Собственный интерфейс и лямбда проверяют делимость int на 31, включая ноль и отрицательные.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-pipelines-filter-string-array:
       additional-java-sources:
         archive: additional-sources.zip
@@ -1981,21 +1363,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Строгая длина и повтор
-        test: PublicExamplesTest#normal
-        action: массив `{"a", "bb", "bb", "ccc"}`, порог `1`.; выполнить фильтрацию и сравнить вход с исходным состоянием.
-        expected: новый `String[]` с последовательностью `{"bb", "bb", "ccc"}`; исходный массив прежний.
-      - id: boundary
-        name: Пустой вход при нулевом пороге
-        test: PublicExamplesTest#boundary
-        action: пустой `String[]`, порог `0`.; выполнить фильтрацию.
-        expected: пустой `String[]`, отличный от входного объекта; вход сохраняется пустым.
-      feedback:
-        requirement: Stream получает новый String[] по строгому порогу char-длины, сохраняя порядок, повторы и вход.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-pipelines-order-points:
       additional-java-sources:
         archive: additional-sources.zip
@@ -2027,21 +1394,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Геометрическая удалённость
-        test: PublicExamplesTest#normal
-        action: упорядоченный список точек `(1:10)`, `(2:0)`.; выполнить обработку и вывести отсортированные точки.
-        expected: '`(2:0) (1:10)`; исходный список и точки прежние.'
-      - id: boundary
-        name: Равные расстояния и повтор
-        test: PublicExamplesTest#boundary
-        action: упорядоченный список `(3:4)`, `(0:5)`, `(3:4)`.; выполнить ту же обработку и вывести результат.
-        expected: '`(3:4) (0:5) (3:4)` в этом порядке; исходный список и точки прежние. Разделители допустимы как выше.'
-      feedback:
-        requirement: Stream и лямбда-компаратор устойчиво выводят точки (X:Y) по геометрическому расстоянию, сохраняя вход.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-pipelines-count-selected-words:
       additional-java-sources:
         archive: additional-sources.zip
@@ -2073,22 +1425,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Регистр, отсутствие и повтор запроса
-        test: PublicExamplesTest#normal
-        action: текст `"one, two two; One"`, запросы `[one, two, absent, one]`.; получить и вывести отчёт, проверить сохранность
-          входных данных.
-        expected: '`[one-1, two-2, absent-0, one-1]`; входные данные прежние.'
-      - id: boundary
-        name: Пустой текст с повторяющимся запросом
-        test: PublicExamplesTest#boundary
-        action: текст `""`, запросы `[One, One]`.; выполнить тот же подсчёт и вывести отчёт.
-        expected: '`[One-0, One-0]`; входы прежние. Завершающий перевод строки допустим, но не обязателен.'
-      feedback:
-        requirement: Stream выводит точный отчёт частот латинских слов с регистром, порядком и повторами запросов.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-pipelines-conditional-function:
       additional-java-sources:
         archive: additional-sources.zip
@@ -2120,29 +1456,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Создание, обе ветви и повторный apply
-        test: PublicExamplesTest#normal
-        action: условие проверяет пустоту ненулевой строки; истинная ветвь возвращает `0`, ложная — длину. Наблюдения вызовов
-          этих трёх функций до создания результата пусты.; создать функцию, затем последовательно применить её к `""`, `"abc"`,
-          `"abc"`.
-        expected: создание не вызывает переданные функции. Результаты apply — `0`, `3`, `3`. Для первого apply вызваны condition
-          и истинная ветвь; для второго и третьего — condition и ложная ветвь. В каждом apply обе вызванные функции получают тот
-          же аргумент ровно по одному разу. Всего condition вызван 3 раза, истинная ветвь — 1, ложная — 2.
-      - id: boundary
-        name: Допустимый null и невыбранный отказ
-        test: PublicExamplesTest#boundary
-        action: ненулевое условие принимает null и возвращает true; ненулевая истинная ветвь принимает null и возвращает null;
-          ненулевая ложная ветвь при вызове выбросила бы IllegalStateException.; создать функцию и один раз вызвать apply с аргументом
-          null.
-        expected: при создании вызовов нет. В apply условие и истинная ветвь получают null ровно по одному разу, ложная ветвь
-          не вызвана; возвращается null, исключения нет.
-      feedback:
-        requirement: Точная обобщённая сигнатура ternaryOperator и отложенный выбор с одним condition и одной выбранной ветвью
-          на apply.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-pipelines-count-characters:
       additional-java-sources:
         archive: additional-sources.zip
@@ -2174,21 +1487,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Буквы и пробел
-        test: PublicExamplesTest#normal
-        action: строка `"ab a"`.; получить коллекцию частот через выбранный API решения.
-        expected: 'ровно три ключа: `a` (97) → `2`, `b` (98) → `1`, пробел (32) → `1`.'
-      - id: boundary
-        name: Одна суррогатная пара
-        test: PublicExamplesTest#boundary
-        action: строка, задаваемая Java-литералом `"\uD83D\uDE00"`.; получить коллекцию частот тем же способом.
-        expected: ровно два ключа со значениями кодовых единиц `55357` и `56832`, частота каждого `1`.
-      feedback:
-        requirement: Stream считает каждую кодовую единицу char, включая пробел и суррогаты; коллекция и тип точной частоты свободны.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-pipelines-discriminant-function:
       additional-java-sources:
         archive: additional-sources.zip
@@ -2220,21 +1518,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Ненулевые коэффициенты
-        test: PublicExamplesTest#normal
-        action: '`(a, b, c) = (1, -3, 2)`.; вызвать метод через переменную собственного интерфейса.'
-        expected: конечное значение v с математическим эталоном r = `1`, удовлетворяющее `|v − r| ≤ 1e-8 + 1e-12 · |r|`.
-      - id: boundary
-        name: Нулевой a и край допустимых коэффициентов
-        test: PublicExamplesTest#boundary
-        action: '`(a, b, c) = (0, -1000, 1000)`.; вызвать тот же метод собственного интерфейса.'
-        expected: конечное значение v с r = `1000000`, удовлетворяющее тому же опубликованному смешанному допуску.
-      feedback:
-        requirement: Собственный интерфейс и лямбда вычисляют конечный b²−4ac с допуском 1e-8+1e-12*abs(r).
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-files-byte-file-copy:
       additional-java-sources:
         archive: additional-sources.zip
@@ -2266,24 +1549,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Кириллица без последнего перевода строки
-        test: PublicExamplesTest#normal
-        state: UTF-8 Java text\nвторая строка, LF внутри и без LF в конце; выход отсутствует
-        action: Запустить с двумя путями
-        expected: Java-text\nвторая-строка, вход прежний; успех лишь после завершения
-      - id: boundary
-        name: Отсутствующий вход при прежнем выходе
-        test: PublicExamplesTest#boundary
-        state: Вход отсутствует; выход UTF-8 Сохранить без LF
-        action: Передать два пути программе
-        expected: Причина отказа сообщена; прежний выход и отсутствие входа сохранены; успех не заявлен
-      feedback:
-        requirement: Только байт 0x20 заменяется на 0x2D; сохранность файлов и отказ до усечения. Байтовые потоки, явный close
-          каждого открытого ресурса и смысл диагностики проверяются вручную.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-files-character-file-copy:
       additional-java-sources:
         archive: additional-sources.zip
@@ -2315,24 +1580,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Пробел, TAB, NBSP и CRLF
-        test: PublicExamplesTest#normal
-        state: UTF-8 A B\tC\u00A0D\r\nE F без LF в конце; выход отсутствует
-        action: Запустить с двумя путями
-        expected: Точные UTF-8 A-B\tC\u00A0D\r\nE-F; вход прежний
-      - id: boundary
-        name: Две записи пути к одному файлу
-        test: PublicExamplesTest#boundary
-        state: text.txt содержит A B без LF; ./text.txt обозначает тот же файл
-        action: Запустить с аргументами text.txt и ./text.txt из этого cwd
-        expected: Объяснённый отказ до усечения; содержимое A B прежнее; успех не заявлен
-      feedback:
-        requirement: Только U+0020 заменяется на U+002D в UTF-8; сохранность данных и отказ самокопирования до усечения. Reader/Writer,
-          UTF-8 и TWR проверяются вручную.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-files-gradeapp-report:
       additional-java-sources:
         primary-required: false
@@ -2365,24 +1612,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Отбор и строковый порядок кодов
-        test: PublicExamplesTest#normal
-        state: UTF-8 s2;Lin;70\ns3;Ann;90\ns10;Ada;90\n; порог 80
-        action: Запустить настоящий JAR по абсолютному пути из другого cwd с абсолютным путём входа
-        expected: Код 0, stdout s10;Ada;90 и s3;Ann;90 с платформенным переводом после каждой строки; stderr пуст, вход прежний
-      - id: boundary
-        name: Поздний повтор после пропущенной строки
-        test: PublicExamplesTest#boundary
-        state: UTF-8 s1;Ada;90\n   \n s1 ;Other;80\n; порог 80
-        action: Запустить настоящий JAR с этим входом
-        expected: 'Код 3, stdout пуст; stderr ошибка данных: строка 3: повтор кода s1 плюс платформенный перевод; вход прежний'
-      feedback:
-        requirement: Пять опубликованных методов, полный проверенный каталог до stdout, независимые неизменяемые списки, точные
-          строки и коды; настоящий Gradle JAR вне проекта.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-numbers-lunar-weight:
       additional-java-sources:
         archive: additional-sources.zip
@@ -2433,29 +1662,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: demo-normal
-        state: args=[]; stdin="100", EOF.
-        action: Выполнить Main. Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого
-          примера нет.
-        expected: Одно конечное число17; допуск max(1e-8,1e-12*17).
-        name: Прежний открытый обычный пример
-        test: ContractTest#normal
-      - id: boundary
-        name: Нулевая сила
-        state: Новый процесс; аргументов нет; stdin содержит `0`, затем EOF.
-        action: Запустить решение и прочитать stdout. Статус относится ко всей проверяемой группе, включая другие входы; отдельного
-          балла у этого примера нет.
-        expected: Одно конечное число, отличающееся от `0` не больше чем на `1e-8`. Числовой нуль не включает режим пустого
-          ввода.
-        test: ContractTest#zero
-      - id: normal
-        name: Дробная исходная сила
-        state: Новый процесс; аргументов нет; stdin содержит `7.5`, затем EOF.
-        action: Запустить решение и прочитать stdout. Статус относится ко всей проверяемой группе, включая другие входы; отдельного
-          балла у этого примера нет.
-        expected: Одно конечное число `1.275` с допуском `max(1e-8, 1e-12*1.275)`. Десятичная и экспоненциальная запись допустимы.
-        test: ContractTest#fraction
     java-numbers-lightning-distance:
       additional-java-sources:
         archive: additional-sources.zip
@@ -2491,24 +1697,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Расстояние по заданной задержке
-        state: Константы находятся в решении; аргументов и входных данных нет.
-        action: Запустить решение и найти первую непустую строку stdout. Статус относится ко всей проверяемой группе, включая
-          другие входы; отдельного балла у этого примера нет.
-        expected: В этой строке только число `2412` с абсолютной погрешностью не больше `1e-8`.
-        test: ContractTest#first_required_result
-      - id: boundary
-        name: Граница обязательного результата
-        state: То же допустимое состояние и запуск без данных; дополнительная часть может отсутствовать или быть выполнена
-          студентом.
-        action: Наблюдать границу первой непустой строки. Не требовать вывода для эхо и не считать последующий допустимый
-          вывод лишним результатом задачи. Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла
-          у этого примера нет.
-        expected: Первая непустая строка содержит только расстояние `2412` с тем же допуском. Отсутствие последующих строк
-          допустимо; их наличие не меняет результат для молнии. Значение эхо не является автоматическим критерием.
-        test: ContractTest#first_required_result
     java-numbers-boolean-truth-table:
       additional-java-sources:
         archive: additional-sources.zip
@@ -2544,23 +1732,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Разные значения P и Q
-        state: Запуск без входных данных и аргументов.
-        action: Найти строку сочетания true,false после заголовка. Статус относится ко всей проверяемой группе, включая другие
-          входы; отдельного балла у этого примера нет.
-        expected: Заголовок — `P\tQ\tAND\tOR\tXOR\tNOT`, где `\t` обозначает настоящую табуляцию. Строка содержит `true\tfalse\tfalse\ttrue\ttrue\tfalse`
-          с настоящими табуляциями.
-        test: ContractTest#all_operations_and_pairs
-      - id: boundary
-        name: Оба операнда ложны
-        state: Тот же предусмотренный запуск без данных.
-        action: Найти строку false,false; убедиться, что в таблице представлены ровно четыре различные пары P,Q. Статус относится
-          ко всей проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: Строка `false\tfalse\tfalse\tfalse\tfalse\ttrue` с настоящими табуляциями. Четыре пары встречаются по одному
-          разу, в любом порядке; требование первого или последнего места для этой строки отсутствует.
-        test: ContractTest#all_operations_and_pairs
     java-numbers-short-circuit-and:
       additional-java-sources:
         archive: additional-sources.zip
@@ -2599,21 +1770,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: boundary
-        name: Нулевой делитель
-        state: Аргументов нет; stdin `7 0`, затем EOF.
-        action: Запустить решение и наблюдать результат и отсутствие необработанной ошибки деления. Статус относится ко всей
-          проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '`false`, без исключения деления на нуль.'
-        test: ContractTest#zero_divisor
-      - id: normal
-        name: Положительное частное
-        state: Аргументов нет; stdin `7 2`, затем EOF.
-        action: Запустить решение и наблюдать логический результат. Статус относится ко всей проверяемой группе, включая другие
-          входы; отдельного балла у этого примера нет.
-        expected: '`true`.'
-        test: ContractTest#positive
     java-numbers-gallon-conversion:
       additional-java-sources:
         archive: additional-sources.zip
@@ -2649,22 +1805,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Дробный результат преобразования
-        state: В решении заданы 10 галлонов и 3,7854 литра на галлон; входных данных и аргументов нет.
-        action: Запустить решение и сопоставить вторую выведенную величину. Статус относится ко всей проверяемой группе, включая
-          другие входы; отдельного балла у этого примера нет.
-        expected: Вторая величина — `37.854` литра с абсолютной погрешностью не больше `1e-8`.
-        test: ContractTest#required_pair
-      - id: boundary
-        name: Полный результат без ввода
-        state: Тот же запуск; stdin завершён без данных, список аргументов пуст. Константы не меняются.
-        action: Прочитать полный stdout. Новые параметры не передавать. Статус относится ко всей проверяемой группе, включая
-          другие входы; отдельного балла у этого примера нет.
-        expected: Два числа в порядке `10 37.854`, с допустимыми пробельными разделителями и абсолютным допуском `1e-8` для
-          вещественных результатов. Требовать ввод исходного объёма для этого запуска не нужно.
-        test: ContractTest#required_pair
     java-numbers-random-console-values:
       additional-java-sources:
         archive: additional-sources.zip
@@ -2712,25 +1852,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Десять ограниченных значений
-        state: 'Исходное состояние генератора: seed 42. Получены десять значений nextInt(100); отдельный протокол передачи
-          seed не задаётся.'
-        action: Запустить выбранную демонстрацию и прочитать горизонтальное представление. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: В одной строке десять целых значений; каждое от `0` до `99` включительно. Соответствие конкретному генератору
-          устанавливается вместе с исходником; одних границ значений для этого недостаточно.
-        test: ContractTest#same_ten_values_two_views
-      - id: boundary
-        name: Сохранение последовательности при смене формы
-        state: Та же последовательность и тот же запуск; новые случайные данные или другой seed не подаются.
-        action: Сопоставить десять вертикальных строк с десятью значениями горизонтального представления по позициям; порядок
-          двух представлений может быть любым. Статус относится ко всей проверяемой группе, включая другие входы; отдельного
-          балла у этого примера нет.
-        expected: В каждой вертикальной строке одно число. Все десять значений совпадают с горизонтальным представлением в
-          том же порядке. Наличие 0 или 99 среди этих десяти не требуется; `100` вне разрешённого диапазона.
-        test: ContractTest#same_ten_values_two_views
     java-numbers-argument-sum-product:
       additional-java-sources:
         archive: additional-sources.zip
@@ -2775,21 +1896,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Несколько целых аргументов
-        state: 'Аргументы запуска: `3`, `-2`, `4`; стандартный ввод не используется.'
-        action: Запустить фактически выбранный класс и прочитать смысловые результаты. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: Только два десятичных целых — `5 -24`; пробельные разделители свободны, без подписей.
-        test: ContractTest#mixed_signs
-      - id: boundary
-        name: Пустой набор
-        state: Список аргументов пуст; stdin не используется.
-        action: Запустить решение и сопоставить сумму и произведение. Статус относится ко всей проверяемой группе, включая
-          другие входы; отдельного балла у этого примера нет.
-        expected: Только два десятичных целых — `0 1`; пробельные разделители свободны, без подписей.
-        test: ContractTest#empty
     java-numbers-quadratic-roots:
       additional-java-sources:
         archive: additional-sources.zip
@@ -2834,22 +1940,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Два различных корня
-        state: 'Три аргумента: `1`, `-3`, `2`.'
-        action: Запустить выбранный класс; сопоставить смысловые числовые результаты. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: Два корня `1` и `2` в любом порядке. Для каждого корня x допустимо отклонение `1e-8 + 1e-12*abs(x)`; оформление
-          свободно.
-        test: ContractTest#two_roots
-      - id: boundary
-        name: Нулевой дискриминант
-        state: 'Три аргумента: `1`, `-2`, `1`.'
-        action: Запустить решение и наблюдать количество и значение корней. Статус относится ко всей проверяемой группе, включая
-          другие входы; отдельного балла у этого примера нет.
-        expected: Один корень `1` с допуском `1e-8 + 1e-12`. Не требуются два одинаковых числа или определённая фраза.
-        test: ContractTest#double_root
     java-numbers-radix-conversion:
       additional-java-sources:
         archive: additional-sources.zip
@@ -2894,21 +1984,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Шестнадцатеричная запись
-        state: 'Аргументы: `31`, `16`.'
-        action: Запустить выбранный класс и сопоставить позиционную запись результата. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '`1F` либо `1f`; ведущих нулей нет.'
-        test: ContractTest#hex_letter
-      - id: boundary
-        name: Нуль при наибольшем основании
-        state: 'Аргументы: `0`, `36`.'
-        action: Запустить решение и прочитать запись числа. Статус относится ко всей проверяемой группе, включая другие входы;
-          отдельного балла у этого примера нет.
-        expected: '`0`, а не пустая строка и не несколько нулей.'
-        test: ContractTest#zero_base36
     java-numbers-binary-truth-table:
       additional-java-sources:
         archive: additional-sources.zip
@@ -2956,23 +2031,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Разные числовые значения истинности
-        state: Демонстрация таблицы без новых входных параметров.
-        action: Найти строку для P=1,Q=0 под заголовком P,Q,AND,OR,XOR,NOT. Статус относится ко всей проверяемой группе, включая
-          другие входы; отдельного балла у этого примера нет.
-        expected: Значения строки — `1 0 0 1 1 0` в порядке колонок. Допустимое оформление колонок выбирает студент; табуляция
-          не обязательна.
-        test: ContractTest#pair_1_0
-      - id: boundary
-        name: Оба значения ложны
-        state: Та же демонстрация таблицы.
-        action: Найти строку P=0,Q=0 и проверить наличие всех четырёх сочетаний по одному разу. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: Значения строки — `0 0 0 0 0 1`. Всего заголовок и четыре строки значений в любом порядке; обязательного
-          точного разделителя заголовка нет.
-        test: ContractTest#pair_0_0
     java-control-month-name:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3008,21 +2066,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Правильный номер
-        state: Новый процесс; stdin `1`, затем EOF.
-        action: Запустить решение и прочитать результат. Статус относится ко всей проверяемой группе, включая другие входы;
-          отдельного балла у этого примера нет.
-        expected: '`январь` в нижнем регистре.'
-        test: ContractTest#month_1
-      - id: boundary
-        name: Отсутствующий токен
-        state: Новый процесс; stdin пуст и завершён EOF.
-        action: Запустить решение и наблюдать обработку отсутствия первого токена. Статус относится ко всей проверяемой группе,
-          включая другие входы; отдельного балла у этого примера нет.
-        expected: Точный текст `Некорректный месяц`. Ожидание на открытом потоке не используется как этот сценарий.
-        test: ContractTest#empty
     java-control-multiplication-table:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3058,30 +2101,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: demo-row1
-        state: Без stdin/args; множители1..10.
-        action: Наблюдать первую строку прежнего опубликованного Demo. Статус относится ко всей проверяемой группе, включая
-          другие входы; отдельного балла у этого примера нет.
-        expected: 1 2 3 4 5 6 7 8 9 10; всего десять строк по десять чисел.
-        name: Первая строка таблицы
-        test: ContractTest#row_1
-      - id: boundary
-        name: Последняя строка и столбец
-        state: То же состояние и допустимый запуск без данных.
-        action: Наблюдать структуру 10 строк по 10 чисел и последнюю строку. Статус относится ко всей проверяемой группе,
-          включая другие входы; отдельного балла у этого примера нет.
-        expected: Последняя строка `10 20 30 40 50 60 70 80 90 100`; последняя ячейка 100. Дополнительные размеры через stdin
-          или args не передаются.
-        test: ContractTest#row_10
-      - id: normal
-        name: Произведения внутри таблицы
-        state: Запуск без входных данных; множители 1..10 заданы условием.
-        action: Наблюдать третью строку таблицы. Статус относится ко всей проверяемой группе, включая другие входы; отдельного
-          балла у этого примера нет.
-        expected: Десять чисел `3 6 9 12 15 18 21 24 27 30`; число в четвёртом столбце равно 12. Пробельные разделители и
-          ширина колонок свободны.
-        test: ContractTest#row_3
     java-control-toggle-console-case:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3117,23 +2136,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: ASCII рядом с Unicode
-        state: UTF-8 stdin `AБяz 👋🙂.`, затем EOF.
-        action: Запустить решение и сопоставить весь текст и счётчик. Статус относится ко всей проверяемой группе, включая
-          другие входы; отдельного балла у этого примера нет.
-        expected: Префикс stdout точно `aБяZ 👋🙂`, затем один дополнительный перевод строки, `2` и перевод строки. При LF полная
-          запись — `aБяZ 👋🙂\n2\n`, где `\n` обозначает перевод строки.
-        test: ContractTest#published
-      - id: boundary
-        name: Точка в начале
-        state: UTF-8 stdin `.Az`, затем EOF.
-        action: Запустить решение и прочитать весь stdout. Статус относится ко всей проверяемой группе, включая другие входы;
-          отдельного балла у этого примера нет.
-        expected: 'Пустая строка, затем `0` и перевод строки: при LF это `\n0\n`. Буквы после точки не выводятся и не увеличивают
-          счётчик.'
-        test: ContractTest#immediate_point
     java-control-primes-to-hundred:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3172,21 +2174,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Простое и составное внутри диапазона
-        state: Запуск без входных данных для диапазона 2..100.
-        action: Наблюдать наличие 7 и отсутствие 9 в последовательности. Статус относится ко всей проверяемой группе, включая
-          другие входы; отдельного балла у этого примера нет.
-        expected: 7 выведено один раз, 9 отсутствует; значения идут по возрастанию с пробельными разделителями.
-        test: ContractTest#case_1
-      - id: boundary
-        name: Границы фиксированного диапазона
-        state: То же допустимое состояние и запуск.
-        action: Наблюдать начало и конец последовательности. Статус относится ко всей проверяемой группе, включая другие входы;
-          отдельного балла у этого примера нет.
-        expected: Первое число 2, последнее 97; 1 и 100 отсутствуют. Каждое найденное простое выводится один раз.
-        test: ContractTest#case_1
     java-control-distinct-three-digits:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3225,22 +2212,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Знак и повторы
-        state: stdin `6 123 -123 112 99 1000 123`, затем EOF. Первое число задаёт количество значений.
-        action: Запустить выбранное решение и сопоставить отобранную последовательность. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '`123 -123 123` в таком порядке. Знак и повтор сохраняются; 112, 99 и 1000 не подходят. Между числами допустимы
-          пробельные разделители.'
-        test: ContractTest#case_1
-      - id: boundary
-        name: Пустой набор
-        state: stdin `0`, затем EOF; элементов после количества нет.
-        action: Запустить решение и прочитать результат. Статус относится ко всей проверяемой группе, включая другие входы;
-          отдельного балла у этого примера нет.
-        expected: Точный текст `Подходящих чисел нет`.
-        test: ContractTest#case_2
     java-control-numeric-palindromes:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3279,22 +2250,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Отрицательные, одноцифровые и повторные значения
-        state: stdin `6 -121 121 7 0 10 -121`, затем EOF.
-        action: Запустить выбранное решение и сопоставить последовательность. Статус относится ко всей проверяемой группе,
-          включая другие входы; отдельного балла у этого примера нет.
-        expected: '`-121 121 7 0 -121` в исходном порядке. 10 отсутствует; знак, 0 и повтор -121 сохранены. Пробельное разделение
-          свободно.'
-        test: ContractTest#case_1
-      - id: boundary
-        name: Пустой набор
-        state: stdin `0`, затем EOF.
-        action: Запустить решение и наблюдать пустую выборку. Статус относится ко всей проверяемой группе, включая другие
-          входы; отдельного балла у этого примера нет.
-        expected: Точный текст `Подходящих чисел нет`.
-        test: ContractTest#case_2
     java-control-increasing-digits:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3333,21 +2288,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Строгость и первое совпадение
-        state: stdin `4 122 -128 137 0`, затем EOF.
-        action: Запустить решение и наблюдать выбранное значение. Статус относится ко всей проверяемой группе, включая другие
-          входы; отдельного балла у этого примера нет.
-        expected: 'Только `-128`: 122 отклоняется, исходный знак сохраняется, более поздние 137 и 0 не заменяют первое совпадение.'
-        test: ContractTest#case_1
-      - id: boundary
-        name: Одноцифровой нуль
-        state: stdin `1 0`, затем EOF.
-        action: Запустить решение и прочитать результат. Статус относится ко всей проверяемой группе, включая другие входы;
-          отдельного балла у этого примера нет.
-        expected: '`0` как найденное число, а не сообщение об отсутствии подходящих значений.'
-        test: ContractTest#case_2
     java-arrays-array-average:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3380,21 +2320,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Дробное среднее десяти чисел
-        state: stdin 1 2 3 4 5 6 7 8 9 10, затем EOF.
-        action: Выполнить опубликованное наблюдение; не добавлять новый вход или обязательный API. Статус относится ко всей
-          проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: Одно число 5.5; абсолютный допуск 1e-8.
-        test: ContractTest#published
-      - id: boundary
-        name: Нижняя граница значений
-        state: 'stdin: десять значений -1000000, затем EOF.'
-        action: Выполнить опубликованное наблюдение; не добавлять новый вход или обязательный API. Статус относится ко всей
-          проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: Одно число -1000000; абсолютный допуск 1e-8.
-        test: ContractTest#lower
     java-arrays-move-row-zeros:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3427,21 +2352,6 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
         main-class: Main
-      public-cases:
-      - id: normal
-        name: Обязательная матрица при пустом вводе
-        state: stdin пуст и завершён EOF.
-        action: Выполнить опубликованное наблюдение; не добавлять новый вход или обязательный API. Статус относится ко всей
-          проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: Строки -3 3 0 / 2 -1 0 / 1 3 -2, по три числа; абсолютный допуск 1e-8.
-        test: ContractTest#mandatory
-      - id: boundary
-        name: Три состояния строки
-        state: stdin 0 0 -3 / 3 -1 2 / 0 0 0, затем EOF.
-        action: Выполнить опубликованное наблюдение; не добавлять новый вход или обязательный API. Статус относится ко всей
-          проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: Строки -3 0 0 / 3 -1 2 / 0 0 0.
-        test: ContractTest#threeStates
     java-arrays-cyclic-matrix-shift:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3479,56 +2389,6 @@ project-checks:
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
-      public-cases:
-      - id: normal-right
-        name: Сдвиг вправо на один
-        state: '[[-3,0,3],[2,-1,0],[1,3,-2]]; k=1; направление=0'
-        action: Study.shift(source, 1, 0) Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла
-          у этого примера нет.
-        expected: '[[3,-3,0],[0,2,-1],[-2,1,3]]'
-        test: ContractTest#shift_1_right
-      - id: normal-left
-        name: Сдвиг влево на один
-        state: '[[-3,0,3],[2,-1,0],[1,3,-2]]; k=1; направление=1'
-        action: Study.shift(source, 1, 1) Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла
-          у этого примера нет.
-        expected: '[[0,3,-3],[-1,0,2],[3,-2,1]]'
-        test: ContractTest#shift_1_left
-      - id: normal-up
-        name: Сдвиг вверх на один
-        state: '[[-3,0,3],[2,-1,0],[1,3,-2]]; k=1; направление=2'
-        action: Study.shift(source, 1, 2) Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла
-          у этого примера нет.
-        expected: '[[2,-1,0],[1,3,-2],[-3,0,3]]'
-        test: ContractTest#shift_1_up
-      - id: normal-down
-        name: Сдвиг вниз на один
-        state: '[[-3,0,3],[2,-1,0],[1,3,-2]]; k=1; направление=3'
-        action: Study.shift(source, 1, 3) Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла
-          у этого примера нет.
-        expected: '[[1,3,-2],[-3,0,3],[2,-1,0]]'
-        test: ContractTest#shift_1_down
-      - id: boundary-0
-        name: Нулевой сдвиг
-        state: '[[-3,0,3],[2,-1,0],[1,3,-2]]; k=0; направление=0'
-        action: Study.shift(source, 0, 0) Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла
-          у этого примера нет.
-        expected: '[[-3,0,3],[2,-1,0],[1,3,-2]]'
-        test: ContractTest#shift_0_right
-      - id: boundary-3
-        name: Полный цикл сдвига
-        state: '[[-3,0,3],[2,-1,0],[1,3,-2]]; k=3; направление=0'
-        action: Study.shift(source, 3, 0) Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла
-          у этого примера нет.
-        expected: '[[-3,0,3],[2,-1,0],[1,3,-2]]'
-        test: ContractTest#shift_3_right
-      - id: boundary-4
-        name: Сдвиг больше размера
-        state: '[[-3,0,3],[2,-1,0],[1,3,-2]]; k=4; направление=0'
-        action: Study.shift(source, 4, 0) Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла
-          у этого примера нет.
-        expected: '[[3,-3,0],[0,2,-1],[-2,1,3]]'
-        test: ContractTest#shift_4_right
     java-arrays-rotate-matrix:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3563,36 +2423,6 @@ project-checks:
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
-      public-cases:
-      - id: normal-90
-        name: Поворот на 90°
-        state: '[[-3,0,3],[2,-1,0],[1,3,-2]]'
-        action: Study.rotate(source, 90); наблюдать результат, исходник и отдельность массивов. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '[[3,0,-2],[0,-1,3],[-3,2,1]]; source=[[-3,0,3],[2,-1,0],[1,3,-2]]; result != source.'
-        test: ContractTest#rotate_90
-      - id: normal-180
-        name: Поворот на 180°
-        state: '[[-3,0,3],[2,-1,0],[1,3,-2]]'
-        action: Study.rotate(source, 180); наблюдать результат, исходник и отдельность массивов. Статус относится ко всей
-          проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '[[-2,3,1],[0,-1,2],[3,0,-3]]; source=[[-3,0,3],[2,-1,0],[1,3,-2]]; result != source.'
-        test: ContractTest#rotate_180
-      - id: normal-270
-        name: Поворот на 270°
-        state: '[[-3,0,3],[2,-1,0],[1,3,-2]]'
-        action: Study.rotate(source, 270); наблюдать результат, исходник и отдельность массивов. Статус относится ко всей
-          проверяемой группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '[[1,2,-3],[3,-1,0],[-2,0,3]]; source=[[-3,0,3],[2,-1,0],[1,3,-2]]; result != source.'
-        test: ContractTest#rotate_270
-      - id: boundary
-        name: Исходник после трёх поворотов
-        test: ContractTest#rotate_270
-        state: Одна исходная матрица [[-3,0,3],[2,-1,0],[1,3,-2]].
-        action: Вызвать Study.rotate(source,90), затем180, затем270 с тем же исходником. Статус относится ко всей группе поворота270,
-          включая прежний отдельный сценарий.
-        expected: Исходник после всех вызовов равен [[-3,0,3],[2,-1,0],[1,3,-2]]. Новые результаты и места их создания сохраняют
-          прежние требования и проверку исходника.
     java-arrays-remove-max-rows-columns:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3633,28 +2463,6 @@ project-checks:
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
-      public-cases:
-      - id: normal
-        name: Опубликованный пример
-        state: '[[-3,0,3],[2,-1,0],[1,3,-2]]'
-        action: Study.remove(source) Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла у
-          этого примера нет.
-        expected: rows=1, columns=1, values=[[2]].
-        test: ContractTest#remove_main
-      - id: boundary-0x1
-        name: Результат размера 0×1
-        state: '[[9,1],[9,2]]'
-        action: Study.remove(source) Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла у
-          этого примера нет.
-        expected: rows=0, columns=1, values=[].
-        test: ContractTest#remove_0x1
-      - id: boundary-1x0
-        name: Результат размера 1×0
-        state: '[[9,9],[1,2]]'
-        action: Study.remove(source) Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла у
-          этого примера нет.
-        expected: rows=1, columns=0, values=[[]].
-        test: ContractTest#remove_1x0
     java-arrays-sort-array:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3692,29 +2500,6 @@ project-checks:
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
-      public-cases:
-      - id: normal
-        name: Опубликованный пример
-        state: '[7,-2,7,0,3,-5]'
-        action: Study.sort(source) Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого
-          примера нет.
-        expected: '[-5,-2,0,3,7,7]. Показ исходного массива/результата и пузырьковый способ отдельно сохраняются в ручных20%,
-          без нового Main API.'
-        test: ContractTest#sort_main
-      - id: boundary-empty
-        name: Пустой массив
-        state: '[]'
-        action: Study.sort(source) Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого
-          примера нет.
-        expected: '[]'
-        test: ContractTest#sort_empty
-      - id: boundary-single
-        name: Один элемент
-        state: '[7]'
-        action: Study.sort(source) Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла у этого
-          примера нет.
-        expected: '[7]'
-        test: ContractTest#sort_single
     java-text-insert-substring:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3746,37 +2531,6 @@ project-checks:
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
-      public-cases:
-      - id: insert-substring-01
-        name: Внутренняя граница исходных частей
-        state: '"Java", "!", 2'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '"Ja!va"'
-        input: '"Java", "!", 2'
-        test: ContractTest#case01
-      - id: insert-substring-02
-        name: Вставка перед первым
-        state: '"Java", "!", 0'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '"!Java"'
-        input: '"Java", "!", 0'
-        test: ContractTest#case02
-      - id: insert-substring-03
-        name: Вставка после последнего символа
-        state: s="Java", fragment="!", k=4.
-        action: Study.insert(s, fragment, k) Статус относится ко всей проверяемой группе, включая другие входы; отдельного
-          балла у этого примера нет.
-        expected: Java!
-        test: ContractTest#case03
-      - id: insert-substring-04
-        name: Вставка в пустую строку
-        state: s="", fragment="код", k=0.
-        action: Study.insert(s, fragment, k) Статус относится ко всей проверяемой группе, включая другие входы; отдельного
-          балла у этого примера нет.
-        expected: код
-        test: ContractTest#case04
     java-text-strong-password:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3808,23 +2562,6 @@ project-checks:
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
-      public-cases:
-      - id: strong-password-01
-        name: Все требования, длина ровно 10
-        state: '"Abcdefghi1"'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: 'true'
-        input: '"Abcdefghi1"'
-        test: ContractTest#case01
-      - id: strong-password-02
-        name: Только недостаточная длина 9
-        state: '"Abcdefgh1"'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: 'false'
-        input: '"Abcdefgh1"'
-        test: ContractTest#case02
     java-text-insert-after-word-ending:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3856,23 +2593,6 @@ project-checks:
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
-      public-cases:
-      - id: insert-after-word-ending-01
-        name: Суффикс, целое слово и исходная пунктуация
-        state: '"кот, скот!", "кот", "дом"'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '"кот дом, скот дом!"'
-        input: '"кот, скот!", "кот", "дом"'
-        test: ContractTest#case01
-      - id: insert-after-word-ending-02
-        name: Регистр и вставка совпадающего слова без повторной обработки
-        state: '"Кот кот!", "кот", "кот"'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '"Кот кот кот!"'
-        input: '"Кот кот!", "кот", "кот"'
-        test: ContractTest#case02
     java-text-remove-nonletters:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3907,24 +2627,6 @@ project-checks:
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
-      public-cases:
-      - id: remove-nonletters-01
-        name: Удаление без слияния, исходные два пробела
-        state: '"кот,дом  2я!"'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: Слова кот, дом, я в прежнем регистре/порядке; исходные два пробела сохранены; между кот и дом ≥1. Допустимы
-          кот дом  я и кот   дом  я. Применяются все принятые P1–P4, включая допустимые краевые пробелы.
-        input: '"кот,дом  2я!"'
-        test: ContractTest#case01
-      - id: remove-nonletters-02
-        name: Явное исключение для пустого входа
-        state: '""'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: Пустая строка ("").
-        input: '""'
-        test: ContractTest#case02
     java-text-longest-nonletter-substring:
       additional-java-sources:
         archive: additional-sources.zip
@@ -3956,23 +2658,6 @@ project-checks:
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
-      public-cases:
-      - id: longest-nonletter-substring-01
-        name: Непрерывность, уникальный максимум
-        state: '"a12!б3"'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '"12!"'
-        input: '"a12!б3"'
-        test: ContractTest#case01
-      - id: longest-nonletter-substring-02
-        name: Первый из равных максимумов
-        state: '"a12!б34?"'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '"12!"'
-        input: '"a12!б34?"'
-        test: ContractTest#case02
     java-text-sum-text-digits:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4004,23 +2689,6 @@ project-checks:
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
-      public-cases:
-      - id: sum-text-digits-01
-        name: Соседние цифры и ноль
-        state: '"a2b109"'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '12'
-        input: '"a2b109"'
-        test: ContractTest#case01
-      - id: sum-text-digits-02
-        name: Пустая сумма
-        state: '""'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '0'
-        input: '""'
-        test: ContractTest#case02
     java-text-count-normalized-word:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4052,23 +2720,6 @@ project-checks:
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
-      public-cases:
-      - id: count-normalized-word-01
-        name: е/ё, регистр, целое слово
-        state: '"Ёлка, елка; елками", "елка"'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '2'
-        input: '"Ёлка, елка; елками", "елка"'
-        test: ContractTest#case01
-      - id: count-normalized-word-02
-        name: и/й, регистр и более длинное слово
-        state: '"май МАЙ, маи; маий", "МАИ"'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '3'
-        input: '"май МАЙ, маи; маий", "МАИ"'
-        test: ContractTest#case02
     java-text-decompress-character-runs:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4100,30 +2751,6 @@ project-checks:
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
-      public-cases:
-      - id: decompress-character-runs-01
-        name: Несколько серий, регистр и финальная одиночная
-        state: '"a2B3c"'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '"aaBBBc"'
-        input: '"a2B3c"'
-        test: ContractTest#case01
-      - id: decompress-character-runs-02
-        name: Двузначный счётчик целиком
-        state: '"a12b"'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: 12 букв a, затем b
-        input: '"a12b"'
-        test: ContractTest#case02
-      - id: decompress-character-runs-03
-        name: Пустая сжатая запись
-        state: s=""
-        action: Study.decompress(s) Статус относится ко всей проверяемой группе, включая другие входы; отдельного балла у
-          этого примера нет.
-        expected: Пустая строка.
-        test: ContractTest#case03
     java-text-left-align-text:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4155,23 +2782,6 @@ project-checks:
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
-      public-cases:
-      - id: left-align-text-01
-        name: Заполнение ровно до width, нормализация разделителей
-        state: '"one   two\nthree", 7'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '[`"one two"`, `"three"`]'
-        input: '"one   two\nthree", 7'
-        test: ContractTest#case01
-      - id: left-align-text-02
-        name: Только разделители
-        state: '" \t\n ", 1'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: '[]'
-        input: '" \t\n ", 1'
-        test: ContractTest#case02
     java-text-bubble-sort-strings:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4203,30 +2813,6 @@ project-checks:
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
-      public-cases:
-      - id: bubble-sort-strings-01
-        name: Регистр, естественный порядок, повторы и мутация
-        state: '["beta", "alpha", "beta", "Gamma"]'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: В том же массиве [`"Gamma"`, `"alpha"`, `"beta"`, `"beta"`]
-        input: '["beta", "alpha", "beta", "Gamma"]'
-        test: ContractTest#case01
-      - id: bubble-sort-strings-02
-        name: Пустая граница
-        state: '[]'
-        action: Вызвать опубликованную операцию канонического API на указанных данных. Статус относится ко всей проверяемой
-          группе, включая другие входы; отдельного балла у этого примера нет.
-        expected: Тот же пустой массив
-        input: '[]'
-        test: ContractTest#case02
-      - id: bubble-sort-strings-03
-        name: Уже упорядоченный массив
-        state: '[Gamma,alpha,beta,beta]'
-        action: Study.sort(values); наблюдать исходный массив. Статус относится ко всей проверяемой группе, включая другие
-          входы; отдельного балла у этого примера нет.
-        expected: '[Gamma,alpha,beta,beta]; число сравнений и identity равных строк не фиксируются.'
-        test: ContractTest#case03
     java-files-transpose-file-matrix:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4258,23 +2844,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Строки становятся столбцами
-        test: PublicExamplesTest#normal
-        state: UTF-8 1 2 3 / 4 5 6 / 7 8 9, новый каталог и результат.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: Сохранены исходная и транспонированная матрицы 1 4 7 / 2 5 8 / 3 6 9 с различимыми подписями.
-      - id: boundary
-        name: Матрица из одного элемента
-        test: PublicExamplesTest#boundary
-        state: Одна строка -7, новый выход.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: Обе обозначенные матрицы равны [[-7]].
-      feedback:
-        requirement: Обе матрицы и обмен индексов. Минимальный допустимый размер.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-files-poem-word-frequency:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4306,23 +2875,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Нулевая частота и равные частоты
-        test: PublicExamplesTest#normal
-        state: Зорка Вэнэра ўзыйшла над зямлёю; зорка, няма, зямлёю. Unicode-буквы, нижний регистр.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: няма:0; зорка:1; зямлёю:1.
-      - id: boundary
-        name: Строка без совпадений
-        test: PublicExamplesTest#boundary
-        state: Та же строка; светлыя, згадкі; те же объявленные правила.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: светлыя:0; згадкі:0; строка не пропущена.
-      feedback:
-        requirement: Все слова списка, устойчивый порядок по частоте. Нули и порядок списка при равенстве.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-files-poem-letter-word-frequency:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4354,24 +2906,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Общий подсчёт двух строк
-        test: PublicExamplesTest#normal
-        state: Polały się łzy me czyste, rzęsiste, / Na me dzieciństwo sielskie, anielskie,; Unicode-буквы, нижний регистр, первое
-          появление.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: 11 вхождений слов, me=2; 60 букв; точные публичные пары и порядок из PUBLIC.md.
-      - id: boundary
-        name: Пустой файл
-        test: PublicExamplesTest#boundary
-        state: Пустой UTF-8-файл; те же объявленные правила.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: Два пустых набора частот; оформление свободно.
-      feedback:
-        requirement: Общие наборы букв и слов, повтор me в разных строках. Отсутствие данных без выдуманных частот.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-files-compare-files:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4403,23 +2937,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Одинаковые файлы
-        test: PublicExamplesTest#normal
-        state: Два UTF-8-файла Java text без LF; CompFiles получает два пути.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: Сообщено совпадение; входы неизменны.
-      - id: boundary
-        name: Одинаковое начало, разная длина
-        test: PublicExamplesTest#boundary
-        state: Java и Java text без LF; два пути.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: Сообщено различие, не файловый отказ; входы неизменны.
-      feedback:
-        requirement: Соответствующие байты и сохранность входов. EOF одного файла не заменяет равенство.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-files-sort-file-numbers:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4451,23 +2968,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Отрицательные числа и повтор
-        test: PublicExamplesTest#normal
-        state: Файл 7 -2 7 0 3 -5; новый каталог и результат.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: -5 -2 0 3 7 7, ровно один пробел, необязательный конечный перевод строки.
-      - id: boundary
-        name: Границы int
-        test: PublicExamplesTest#boundary
-        state: 2147483647\t-2147483648\n2147483647; новый выход.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: -2147483648 2147483647 2147483647; конечный перевод строки необязателен.
-      feedback:
-        requirement: Порядок и кратность int. Порядок крайних допустимых значений.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-files-final-line-words:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4499,23 +2999,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Суффиксы строк и слов
-        test: PublicExamplesTest#normal
-        state: one two three / four five / six seven eight nine; m=2,n=2.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: Две строки four five / eight nine.
-      - id: boundary
-        name: Ноль слов в двух выбранных строках
-        test: PublicExamplesTest#boundary
-        state: Тот же вход; m=0,n=2.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: Ровно две пустые физические строки.
-      feedback:
-        requirement: Последние строки, затем последние слова. Пустые физические строки отличаются от пустого файла.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-files-remove-short-words:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4547,23 +3030,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Чётное и нечётное число кандидатов
-        test: PublicExamplesTest#normal
-        state: one two elephant four / a cat dog bee house.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: Две строки elephant four / a.
-      - id: boundary
-        name: Три кодовые точки вне BMP
-        test: PublicExamplesTest#boundary
-        state: Одна UTF-8-строка 😀😀😀 cat.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: Одна пустая физическая строка.
-      feedback:
-        requirement: Максимальное чётное удаление и порядок оставшихся. Длина в кодовых точках и очищенная строка.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-files-phone-owner-records:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4595,23 +3061,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Объединение двух префиксов
-        test: PublicExamplesTest#normal
-        state: 291234567;Анна / 331234567;Борис / 441234567;Вера; k=29,j=33.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: Первые две записи в исходном формате и порядке.
-      - id: boundary
-        name: Одинаковые префиксы и повтор записи
-        test: PublicExamplesTest#boundary
-        state: 291234567;Анна дважды / 441234567;Вера; k=29,j=29.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: Ровно два вхождения 291234567;Анна.
-      feedback:
-        requirement: Отбор и исходный порядок. Повтор входа отличается от двойного совпадения.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-files-matching-line-numbers:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4643,23 +3092,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Два полных совпадения
-        test: PublicExamplesTest#normal
-        state: alpha / beta / alpha; поиск alpha одним аргументом.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: Сохранены все три строки и отдельный список 1,3.
-      - id: boundary
-        name: Пустая строка поиска
-        test: PublicExamplesTest#boundary
-        state: alpha\n\n alpha\n; пустой поиск одним аргументом.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: Все три строки сохранены; совпал только номер 2.
-      feedback:
-        requirement: Все строки и номера совпадений. Пустая физическая строка и краевой пробел.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-files-disk-help-menu:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4691,23 +3123,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Два последовательных запроса
-        test: PublicExamplesTest#normal
-        state: Открытый helpfile.txt; выбор if, затем for через getSelection().
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: Оба helpOn дают true, напечатаны соответствующие разделы; System.in не закрыт.
-      - id: boundary
-        name: Неизвестная тема и ошибка чтения
-        test: PublicExamplesTest#boundary
-        state: 'Существующий файл: If; отсутствующий файл: if.'
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: Оба false; сообщения различают отсутствие темы и файловый отказ.
-      feedback:
-        requirement: Поиск тем, порядок текста, доступность общего ввода. Разные причины false.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-files-remove-java-comments:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4739,23 +3154,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Комментарии и литералы
-        test: PublicExamplesTest#normal
-        state: Точные bytes examples/publicInput.txt из original220.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: Точные bytes examples/publicExpected.txt, включая хвостовой пробел и два CRLF.
-      - id: boundary
-        name: Пустой комментарий между токенами
-        test: PublicExamplesTest#boundary
-        state: class Demo { int/**/x; }\n с LF.
-        action: Действительная файловая операция выбранного решения через обычную привязку/запуск, по опубликованным правилам.
-        expected: class Demo { int x; }\n с прежним LF.
-      feedback:
-        requirement: Три вида комментариев и сохранение литералов. Сохранение границы токенов.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-collections-digit-stack:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4793,25 +3191,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Ноль в начале результата
-        test: PublicExamplesTest#normal
-        state: '120'
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: 120 → строка 021.
-      - id: boundary
-        name: Входной ноль
-        test: PublicExamplesTest#boundary
-        state: '0'
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: 0 → строка 0.
-      feedback:
-        requirement: Обратный порядок всех цифр без потери нуля. Одна цифра вместо пустого результата.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-word-frequency:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4843,25 +3222,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Повторы и значимый регистр
-        test: PublicExamplesTest#normal
-        state: Java java, code! Code code
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: Java java, code! Code code → {Java:1,java:1,code:2,Code:1}, порядок пар свободен.
-      - id: boundary
-        name: Нет английских букв
-        test: PublicExamplesTest#boundary
-        state: 123 — абв!
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: 123 — абв! → пустая карта.
-      feedback:
-        requirement: Состав слов и их частоты. Пустой результат без пустого ключа.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-poem-line-order:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4893,27 +3253,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Равные длины и устойчивый порядок
-        test: PublicExamplesTest#normal
-        state: Четыре опубликованные строки Пушкина в порядке1,2,3,4
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: 'Вход по строкам: «Всё ходит по цепи кругом;», «Златая цепь на дубе том:», «У лукоморья дуб зелёный;», «И
-          днём и ночью кот учёный». Результат по исходным позициям2,3,1,4; вход прежний, копия. Это открытый фрагмент А. С.
-          Пушкина, не единственный разрешённый собственный текст.'
-      - id: boundary
-        name: Пустой список строк
-        test: PublicExamplesTest#boundary
-        state: Пустой список
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: Пустой список → пустой результат; вход прежний.
-      feedback:
-        requirement: Копия по char-длине и сохранение исходного списка. Допустимый пустой результат.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-distinct-word-set:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4945,25 +3284,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Одно слово в разных регистрах
-        test: PublicExamplesTest#normal
-        state: one, ONE! two
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: one, ONE! two → состав{one,two}.
-      - id: boundary
-        name: Локаль с иным правилом буквы I
-        test: PublicExamplesTest#boundary
-        state: I I, i; tr-TR
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: При tr-TR строка I I, i → {i}; проверяющий код восстанавливает прежнюю локаль.
-      feedback:
-        requirement: Устранение повторов после преобразования регистра. Независимость состава от языка среды.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-elimination-circle:
       additional-java-sources:
         archive: additional-sources.zip
@@ -4995,25 +3315,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Переход через начало круга
-        test: PublicExamplesTest#normal
-        state: N=5
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: 'N5: для обоих вариантов удаления[2,4,1,5], остаётся3; через входы результат[2,4,1,5,3].'
-      - id: boundary
-        name: Один участник
-        test: PublicExamplesTest#boundary
-        state: N=1
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: 'N1: обе реализации без удалений, остаётся1; входы возвращают[1].'
-      feedback:
-        requirement: Одинаковый порядок двух реализаций. Завершение без удаления последнего.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-partition-list:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5045,25 +3346,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Две группы с повторяющимся значением
-        test: PublicExamplesTest#normal
-        state: '[3,1,4,2,3]; X=2'
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: '[3,1,4,2,3], X2: сначала мультимножество{1,2}, затем{3,3,4}, любой порядок внутри; тот же список/размер/кратности.'
-      - id: boundary
-        name: Пустой список
-        test: PublicExamplesTest#boundary
-        state: '[]; X=0'
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: Пустой список, X0 остаётся тем же пустым списком.
-      feedback:
-        requirement: Сохранение объекта, размера, кратностей и границы <=X. Сохранение допустимого пустого состояния.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-graph-model:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5095,27 +3377,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Симметрия и сохранение вершин
-        test: PublicExamplesTest#normal
-        state: Graph(3); дважды добавить0—1, удалить, повторно удалить
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: 'Graph3: дважды добавить0—1; соседи0{1},1{0},2{}, оба направления есть. Дважды удалить0—1: все три списка
-          соседей пусты, оба направления отсутствуют. Наблюдения до/после снимаются отдельно.'
-      - id: boundary
-        name: Ноль вершин
-        test: PublicExamplesTest#boundary
-        state: Graph(0)
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: Graph0 создаётся как реальный ненулевой объект; отсутствие хранения вершин/рёбер также проверяется прежней
-          ручной частью. Нет обращений к недопустимым индексам.
-      feedback:
-        requirement: Наблюдение рёбер и соседей при изменениях. Создание при n=0 без вызова операций с индексами.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-nearest-value:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5147,25 +3408,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: По обе стороны и на равном расстоянии
-        test: PublicExamplesTest#normal
-        state: Добавить2,8; запросы3,7,5
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: Добавить2,8; запросы3,7,5 → OptionalDouble2,8,2.
-      - id: boundary
-        name: Равенство расстояний после округления
-        test: PublicExamplesTest#boundary
-        state: -100,0,100; запрос1e150
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: Добавить-100,0,100; query=1e150 → OptionalDouble[-100], минимум среди ВСЕХ равных вычисленных расстояний.
-      feedback:
-        requirement: Выбор ближайшего и обычная ничья. Ничья среди всех значений по вычисленному Math.abs.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-collections-polynomial-list-multiplication:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5200,25 +3442,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Совпадающие суммы степеней
-        test: PublicExamplesTest#normal
-        state: '[1,2] и [3,4]'
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: '[1,2]×[3,4] → самостоятельный список[3,10,8], длина3 и прежние входы; смешанный допуск.'
-      - id: boundary
-        name: Один пустой множитель
-        test: PublicExamplesTest#boundary
-        state: '[1,0] и []'
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: '[1,0]×[] → пустой результат, оба входа прежние.'
-      feedback:
-        requirement: Коэффициенты произведения и сохранение входов. Пустое представление нулевого многочлена.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-pipelines-longer-string:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5250,23 +3473,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Разные длины
-        test: PublicExamplesTest#normal
-        state: ab и XYZ
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: XYZ
-      - id: boundary
-        name: Равные длины
-        test: PublicExamplesTest#boundary
-        state: ab и cd
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: ab
-      feedback:
-        requirement: Значение более длинной строки. Значение первой строки при ничьей; идентичность не требуется.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-pipelines-remove-even-values:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5298,23 +3504,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Повторы нечётного значения
-        test: PublicExamplesTest#normal
-        state: '[2,3,4,3]'
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: '[3,3,0,0]'
-      - id: boundary
-        name: Отрицательные нечётные
-        test: PublicExamplesTest#boundary
-        state: '[-3,0,-2,-1]'
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: '[-3,-1,0,0]'
-      feedback:
-        requirement: Порядок, повторы и нулевой хвост в том же массиве. Нечётность отрицательных значений.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-pipelines-descending-array:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5346,23 +3535,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Повторы и отрицательное число
-        test: PublicExamplesTest#normal
-        state: '[2,-1,2,0]'
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: '[2,2,0,-1]'
-      - id: boundary
-        name: Крайние значения int
-        test: PublicExamplesTest#boundary
-        state: '[MIN_VALUE,0,MAX_VALUE]'
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: '[MAX_VALUE,0,MIN_VALUE]'
-      feedback:
-        requirement: Убывающий числовой порядок в исходном массиве. Правильный порядок без переполнения сравнения.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-pipelines-vowels-before-consonants:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5394,23 +3566,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Две группы и повтор гласной
-        test: PublicExamplesTest#normal
-        state: java
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: aajv
-      - id: boundary
-        name: Только согласные
-        test: PublicExamplesTest#boundary
-        state: zyb
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: byz
-      feedback:
-        requirement: Порядок групп и сохранение каждой буквы. Сортировка при отсутствии гласных; y согласная.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-pipelines-first-primes:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5442,23 +3597,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Первые пять простых
-        test: PublicExamplesTest#normal
-        state: N=5
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: 2,3,5,7,11; пробелы или переводы строк
-      - id: boundary
-        name: Ноль результатов
-        test: PublicExamplesTest#boundary
-        state: N=0
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Пустой вывод последовательности
-      feedback:
-        requirement: Реальный вывод первых пяти простых. Реальный пустой вывод последовательности.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-pipelines-price-transformation:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5490,23 +3628,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Ставка, нулевая цена и повтор
-        test: PublicExamplesTest#normal
-        state: '[100,0,100], ставка0.20; заранее выбранные тип и HALF_UP/HALF_EVEN'
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: '[120.00,0.00,120.00] в новом списке, исходник прежний'
-      - id: boundary
-        name: Пустой список при верхней границе ставки
-        test: PublicExamplesTest#boundary
-        state: Пустой список, ставка1
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Другой пустой список
-      feedback:
-        requirement: Новый список, значения с налогом, порядок и сохранение входа. Новый пустой список без изменения исходного.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-pipelines-distinct-object-array:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5538,23 +3659,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Отдельные равные объекты
-        test: PublicExamplesTest#normal
-        state: A=(1,A),B=(2,B),C=(1,A); отдельные объекты[A,B,C]
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Новый массив[A,B] с исходными ссылками
-      - id: boundary
-        name: Пустой массив объектов
-        test: PublicExamplesTest#boundary
-        state: Пустой массив модели
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Новый пустой массив
-      feedback:
-        requirement: Первые реальные ссылки, новый массив и сохранность входа. Другой массив для пустого результата.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-pipelines-select-initial-length:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5586,23 +3690,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Регистр и повтор совпадения
-        test: PublicExamplesTest#normal
-        state: '[Ab,ac,Ab,A,пустая]; A,N=2'
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Новый String[][Ab,Ab]
-      - id: boundary
-        name: Нулевая длина
-        test: PublicExamplesTest#boundary
-        state: '[пустая,A,пустая]; A,N=0'
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: Новый пустой String[]
-      feedback:
-        requirement: Совместный отбор, порядок, повторы и сохранение входа. Пустая строка не начинается с буквы.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-pipelines-curried-functions:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5634,24 +3721,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Повторное применение сохранённых функций
-        test: PublicExamplesTest#normal
-        state: '+7: -2,3; [A-Z]+: ABC,Ab; split comma: a,,b, и x,y'
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: 5,10; true,false; [a,пустая,b,пустая] и[x,y]
-      - id: boundary
-        name: Крайние целые и пустые части
-        test: PublicExamplesTest#boundary
-        state: '-1000000: -1000000,1000000; .*: пустая,A; split comma: пустая,comma'
-        action: Выполнить опубликованное действие через согласованную обычную привязку выбранного API.
-        expected: -2000000,0; true,true; длины частей1 и2
-      feedback:
-        requirement: Три операции, по одной сохранённой функции на два вторых аргумента. Границы суммы и различимые конечные пустые
-          части.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-exceptions-queue-exceptions:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5683,29 +3752,6 @@ project-checks:
         files:
         - src/api/java/**/*.java
         entry: ApiContract
-      public-cases:
-      - id: normal
-        name: FIFO после заполнения
-        state: FixedQueue(2), символы A,Б
-        action: put A,Б; get,get
-        expected: A,Б; успешные операции ничего не выводят
-        test: ContractTest#qa1
-      - id: boundary-full
-        name: Линейные позиции после частичного извлечения
-        state: FixedQueue(2), put A,Б; get A
-        action: Попытаться put В; затем get
-        expected: QueueFullException; затем Б
-        test: ContractTest#qa4
-      - id: boundary-empty
-        name: Отказ пустого извлечения
-        state: После извлечения A,Б из FixedQueue(2)
-        action: Выполнить get
-        expected: QueueEmptyException
-        test: ContractTest#qa3
-      feedback:
-        requirement: Успешные операции молчат, A затем Б. Частичное извлечение не освобождает позицию; отказы сохраняют состояние.
-        what-check: Проверьте объявления опубликованного API и результат сборки submission.jar, затем сопоставьте наблюдение
-          с указанными входными данными. Допустимые внутренние имена, пакеты и способы реализации сохраняются.
     java-exceptions-locale-number-errors:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5737,29 +3783,6 @@ project-checks:
         files:
         - src/api/java/**/*.java
         entry: ApiContract
-      public-cases:
-      - id: normal-read
-        name: Исходные поля чтения
-        state: UTF-8:1,5 TAB ru-BY;2.5 TAB en-US
-        action: Вызвать read
-        expected: Две исходные строки без изменений
-        test: ContractTest#la1
-      - id: normal
-        name: Сумма и среднее двух локалей
-        state: UTF-8:1,5 TAB ru-BY;2.5 TAB en-US
-        action: read; analyze
-        expected: count2,sum4,average2
-        test: ContractTest#la2
-      - id: boundary
-        name: Пустой файл
-        state: Существующий UTF-8 файл0B
-        action: read; analyze
-        expected: count0; среднее отсутствует; сообщение собственной демонстрации проверяется вручную
-        test: ContractTest#la3
-      feedback:
-        requirement: Исходные поля чтения и числовые сумма/среднее. Нет записей; сообщение об отсутствии данных, без среднего.
-        what-check: Проверьте объявления опубликованного API и результат сборки submission.jar, затем сопоставьте наблюдение
-          с указанными входными данными. Допустимые внутренние имена, пакеты и способы реализации сохраняются.
     java-exceptions-stack-exceptions:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5791,30 +3814,6 @@ project-checks:
         files:
         - src/api/java/**/*.java
         entry: ApiContract
-      public-cases:
-      - id: normal
-        name: LIFO двух символов
-        state: Стек ёмкости2; push A,Б
-        action: Выполнить pop,pop
-        expected: Б,A
-        test: ContractTest#sa1
-      - id: boundary-full
-        name: Нулевой char и полный стек
-        state: Ёмкость1; помещён нулевой char
-        action: push X; затем pop
-        expected: StackFullException; нулевой char
-        test: ContractTest#sa2
-      - id: boundary-empty
-        name: Пустой отказ и последующее помещение
-        state: Ёмкость1; нулевой char уже извлечён
-        action: pop; push Я; pop
-        expected: StackEmptyException; затем Я
-        test: ContractTest#sa3
-      feedback:
-        requirement: Последним помещённый извлекается первым. Оба отказа сохраняют состояние, освобождённое место используется
-          снова.
-        what-check: Проверьте объявления опубликованного API и результат сборки submission.jar, затем сопоставьте наблюдение
-          с указанными входными данными. Допустимые внутренние имена, пакеты и способы реализации сохраняются.
     java-objects-customer-registry:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5849,30 +3848,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Стабильный порядок имён и обе границы карточки
-        test: PublicExamplesTest#normal
-        input: В/Б/А из опубликованной таблицы; интервал карточек10..20
-        state: А=(11,Иванов,Антон,Ильич,Учебный адрес,0000000000000010,Счёт11); Б=(12,Белов,Борис,Петрович,Учебный адрес,0000000000000020,Счёт12);
-          В=(13,Иванов,Антон,Ильич,Учебный адрес,0000000000000030,Счёт13). Массив [В,Б,А], интервал 0000000000000010..0000000000000020.
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: 'A=(11,Иванов,Антон,Ильич,Учебный адрес,0000000000000010,Счёт11); Б=(12,Белов,Борис,Петрович,Учебный адрес,0000000000000020,Счёт12);
-          В=(13,Иванов,Антон,Ильич,Учебный адрес,0000000000000030,Счёт13). Вход[В,Б,А]: sorted=[Б,В,А] (стабильность общей
-          тройки); диапазон[...10,...20] содержит А и Б в любом порядке; вход прежний.'
-      - id: boundary
-        name: Пустой реестр
-        test: PublicExamplesTest#boundary
-        input: Пустой Customer[]
-        state: Пустой ненулевой массив; тот же корректный интервал.
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: 'Пустой массив: обе подборки пусты для того же диапазона.'
-      feedback:
-        requirement: Сопоставить фактические значения и состояние с принятым предметным условием.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-objects-patient-registry:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5904,30 +3879,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Точный диагноз, порядок и повторное вхождение
-        test: PublicExamplesTest#normal
-        input: '[В,А,Б,А], точный Грипп, карты101..102'
-        state: 'А: id41,карта101,Грипп; Б:id42,карта102,грипп; В:id43,карта103,Грипп. У всех ФИО Учебный Иван Иванович, адрес
-          Учебный адрес, телефон00123. Массив[В,А,Б,А] с общей ссылкойА.'
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: 'A=(41,Учебный,Иван,Иванович,Учебный адрес,00123,101,Грипп), Б с id42/card102/диагнозом грипп, В с id43/card103/диагнозом
-          Грипп; прочие свойства те же. Вход[В,А,Б,А]: диагноз Грипп →[В,А,А], карты[101,102] →[А,Б,А]; после каждого вызова
-          вход прежний.'
-      - id: boundary
-        name: Пустой массив пациентов
-        test: PublicExamplesTest#boundary
-        input: Пустой Patient[]
-        state: Пустой ненулевой Patient[], диагнозГрипп, интервал101..102.
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: 'Пустой Patient[]: диагноз Грипп и диапазон[101,102] дают пустые подборки.'
-      feedback:
-        requirement: Сопоставить фактические значения и состояние с принятым предметным условием.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-objects-rational-fractions:
       additional-java-sources:
         archive: additional-sources.zip
@@ -5962,28 +3913,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Четыре операции и непарный последний элемент
-        test: PublicExamplesTest#normal
-        input: 1/2,1/3 и[1/2,1/3,2/5]
-        state: Для каждой операции отдельно исходные1/2 и1/3; массив[1/2,1/3,2/5] из разных объектов.
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: 'На свежих аргументах1/2,1/3: сумма5/6, разность1/6, произведение1/6, частное3/2. Массив[1/2,1/3,2/5] →[5/6,1/3,2/5]
-          по рациональным значениям.'
-      - id: boundary
-        name: Одна дробь в четырёх позициях
-        test: PublicExamplesTest#boundary
-        input: '[x,x,x,x], x=1/2'
-        state: Один объектx=1/2, массив[x,x,x,x].
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: Один x=1/2 в [x,x,x,x] →[1,1/2,1,1/2] по значениям; тождество результирующих ссылок свободно.
-      feedback:
-        requirement: Сопоставить фактические значения и состояние с принятым предметным условием.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-objects-complex-values:
       additional-java-sources:
         archive: additional-sources.zip
@@ -6015,28 +3944,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Арифметика и сопряжённые значения
-        test: PublicExamplesTest#normal
-        input: 1+2i,3-4i; [1+i,1-i]
-        state: Для каждой операции отдельно a=1+2i,b=3-4i; массив[1+i,1-i].
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: 'На свежих a=1+2i,b=3-4i: сумма4-2i; разность-2+6i; произведение11+2i; частное-0.2+0.4i. Массив[1+i,1-i]:
-          сумма и произведение2+0i; исходные компоненты прежние после каждого вызова. Все ошибки компонент<=1e-8.'
-      - id: boundary
-        name: Сумма и произведение пустого массива
-        test: PublicExamplesTest#boundary
-        input: Пустой массив
-        state: Пустой ненулевой массив.
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: 'Пустой массив: сумма0+0i, произведение1+0i.'
-      feedback:
-        requirement: Сопоставить фактические значения и состояние с принятым предметным условием.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-objects-recursive-string-reversal:
       additional-java-sources:
         archive: additional-sources.zip
@@ -6068,27 +3975,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Пробел и знак препинания
-        test: PublicExamplesTest#normal
-        input: Java 25!
-        state: Строка Java 25! со значимым пробелом.
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: Java 25! печатает !52 avaJ; необязателен один завершающий LF/CRLF.
-      - id: boundary
-        name: Пустая строка
-        test: PublicExamplesTest#boundary
-        input: Пустая строка
-        state: Ненулевая пустая строка.
-        action: Выполнить опубликованное действие через входы Study и сопоставить фактическое наблюдение со всем ожиданием
-          группы.
-        expected: 'Пустой вход: пустой вывод либо один LF/CRLF.'
-      feedback:
-        requirement: Сопоставить фактические значения и состояние с принятым предметным условием.
-        what-check: Проверьте объявления входов Study и сборку JAR, затем сопоставьте всё наблюдение группы с опубликованными
-          входными данными и результатом. Внутренние имена и допустимые способы решения сохраняются.
     java-polymorphism-queue-package:
       additional-java-sources:
         primary-required: false
@@ -6120,24 +4006,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Три очереди из другого пакета
-        test: PublicExamplesTest#normal
-        state: FixedQueue(2), CircularQueue(2), DynQueue(2); put A,B; get,get
-        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
-        expected: Для каждой A,B; вывод операций пуст.
-      - id: boundary
-        name: Освободившееся линейное место
-        test: PublicExamplesTest#boundary
-        state: 'Для каждой: put A,B; get A; put C; извлечь остаток и пустой get'
-        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
-        expected: 'Fixed: отказ C, B; другие: B,C; пустой get печатает Очередь пуста и даёт U+0000.'
-      feedback:
-        requirement: FIFO и молчание успешных операций всех трёх очередей. Различие FixedQueue и двух остальных после частичного
-          извлечения.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-polymorphism-truck-subclass:
       additional-java-sources:
         archive: additional-sources.zip
@@ -6169,24 +4037,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Унаследованные характеристики
-        test: PublicExamplesTest#normal
-        state: Vehicle(2,10,25), Truck(2,10,25,100); range, fuelNeeded(50), getCargo
-        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
-        expected: 250 и 2.0 у обоих; cargo100; абсолютная погрешность 1e-6.
-      - id: boundary
-        name: Отказ до записи
-        test: PublicExamplesTest#boundary
-        state: Vehicle.setFuelcap(0), fuelNeeded(-1); Truck.putCargo(-1)
-        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
-        expected: Все три IllegalArgumentException; базовое состояние2,10,25/range250, cargo100.
-      feedback:
-        requirement: Дальность и расход Vehicle/Truck и грузоподъёмность. Три IllegalArgumentException и прежнее состояние после
-          отказов.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-polymorphism-circular-dynamic-queue:
       additional-java-sources:
         archive: additional-sources.zip
@@ -6218,24 +4068,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: 'Переход и рост: FIFO'
-        test: PublicExamplesTest#normal
-        state: 'DynQueue(3): put A,B,C; get A,B; put D,E,F; get4'
-        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
-        expected: A,B затем C,D,E,F; операции молчат. Физический splitgrowth предъявляется отдельно.
-      - id: boundary
-        name: Пустая очередь и заполнение
-        test: PublicExamplesTest#boundary
-        state: 'DynQueue(1): get; put Q; get'
-        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
-        expected: Очередь пуста и U+0000; затем Q без сообщения.
-      feedback:
-        requirement: Фиксированная последовательность сохраняет оставшиеся C,D,E,F. Отказ get сохраняет возможность продолжить
-          работу.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-polymorphism-fraction-number-subclass:
       additional-java-sources:
         archive: additional-sources.zip
@@ -6267,24 +4099,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Равенство и четыре операции
-        test: PublicExamplesTest#normal
-        state: 1/2,2/4; арифметика1/3 и1/6
-        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
-        expected: Равны, равные хеши, не равна null; результаты1/2,1/6,1/18,2/1; исходные значения прежние.
-      - id: boundary
-        name: Ноль и недопустимый делитель
-        test: PublicExamplesTest#boundary
-        state: 0/-5; создание1/0; деление3/4 на ноль
-        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
-        expected: Ноль0/1; два ArithmeticException; операнды сохранены.
-      feedback:
-        requirement: Нормализация, равенство/хеш/null и сохранение операндов. Канонический ноль и два ArithmeticException без
-          изменения операндов.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-polymorphism-compatible-queue-reset:
       additional-java-sources:
         archive: additional-sources.zip
@@ -6316,23 +4130,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Поддерживаемый сброс
-        test: PublicExamplesTest#normal
-        state: 'Новая: put A,B; get A; reset; get; put C; get'
-        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
-        expected: 'Пустой get: Очередь пуста/U+0000; затем C, успешные put/get молчат; вывод/reset-return свободен.'
-      - id: boundary
-        name: Старая реализация без сброса
-        test: PublicExamplesTest#boundary
-        state: 'Старая только put/get: put A; reset; get'
-        action: Обычная привязка вызывает реальные операции выбранной реализации; API студента не задаётся привязкой.
-        expected: UnsupportedOperationException; затем A без сообщения. Совместимость исходника отдельно по реальной компиляции.
-      feedback:
-        requirement: B исчезает, новая очередь принимает C после сброса. Унаследованный default отказывает без удаления A.
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-generics-generic-circular-queue:
       additional-java-sources:
         archive: additional-sources.zip
@@ -6364,42 +4161,6 @@ project-checks:
         files:
         - src/api/java/**/*.java
         entry: ApiContract
-      public-cases:
-      - id: normal
-        name: FIFO двух типов
-        state: String[3]:А,Б,В/get2/Г,Д/get3; Integer[2]:10,20/get/30/get2
-        action: Выполнить опубликованные операции
-        expected: А,Б,В,Г,Д;10,20,30
-        test: ContractTest#cqa3
-      - id: boundary-initial
-        name: Начальная пустота
-        state: Передан Integer[]{99}
-        action: Выполнить get
-        expected: null и сообщение
-        test: ContractTest#cqa1
-      - id: boundary-full
-        name: Сохранность полного контейнера
-        state: Integer[]{99}; помещено7
-        action: put8; get
-        expected: Сообщение отказа;7
-        test: ContractTest#cqa2
-      - id: boundary-reuse
-        name: Повторное место
-        state: Integer[]{99};7 помещена и извлечена
-        action: put8; get
-        expected: '8'
-        test: ContractTest#cqa4
-      - id: boundary-empty
-        name: Пустота после извлечений
-        state: 7 и затем8 извлечены из Integer-контейнера
-        action: Выполнить get
-        expected: null и сообщение
-        test: ContractTest#cqa5
-      feedback:
-        requirement: FIFO и два типа после извлечения из полной очереди. Начальная пустота на массиве99, отказ полной очереди
-          сохраняет7.
-        what-check: Проверьте объявления опубликованного API и результат сборки submission.jar, затем сопоставьте наблюдение
-          с указанными входными данными. Допустимые внутренние имена, пакеты и способы реализации сохраняются.
     java-generics-generic-dynamic-queue:
       additional-java-sources:
         archive: additional-sources.zip
@@ -6431,36 +4192,6 @@ project-checks:
         files:
         - src/api/java/**/*.java
         entry: ApiContract
-      public-cases:
-      - id: normal
-        name: FIFO при увеличении для двух типов
-        state: String[2]:А,Б,В/get/Г/get3; Integer[2]:10,20,30/get/40/get3
-        action: Выполнить опубликованные операции
-        expected: А,Б,В,Г;10,20,30,40
-        test: ContractTest#dqa2
-      - id: boundary-initial
-        name: Начальная пустота
-        state: Передан Integer[]{99}
-        action: Выполнить get
-        expected: null и сообщение
-        test: ContractTest#dqa1
-      - id: boundary-growth
-        name: Помещение сверх начальной длины
-        state: Передан Integer[]{99}
-        action: put7,8; get,get
-        expected: 7,8
-        test: ContractTest#dqa2
-      - id: boundary-empty
-        name: Пустота после извлечений
-        state: Извлечены7,8 из переданного Integer-контейнера
-        action: Выполнить get
-        expected: null и сообщение
-        test: ContractTest#dqa4
-      feedback:
-        requirement: Короткая трасса сохраняет оставшиеся элементы; несколько ростов предъявляются отдельно. Предзаполненный
-          массив задаёт пустую очередь, рост сохраняет7,8.
-        what-check: Проверьте объявления опубликованного API и результат сборки submission.jar, затем сопоставьте наблюдение
-          с указанными входными данными. Допустимые внутренние имена, пакеты и способы реализации сохраняются.
     java-projects-airline-persistence-project:
       additional-java-sources:
         archive: additional-sources.zip
@@ -6492,27 +4223,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Парк до и после сохранения
-        test: PublicExamplesTest#normal
-        state: Пассажирский150мест/12т/3000км/2400лч;грузовой2/20/4500/3000;пассажирский80/6/1800/1500. Уникальные ID; выбранные
-          направление/сериализация/файлы.
-        action: Суммы, сортировка, поиск[1500,2400], сохранение, загрузка, изменение мест третьего на100 через коннектор и новая
-          загрузка.
-        expected: 232места и38т; выбранный порядок1800/3000/4500 или обратный;один либо несколько подходящих;виды/параметры после
-          загрузки сохранены, новое значение100 после обновления.
-      - id: boundary
-        name: Включённые границы поиска
-        test: PublicExamplesTest#boundary
-        state: Тот же исходный парк независимо от обновления первого случая.
-        action: Поиск[1500,1500], [2400,2400], [4000,4100].
-        expected: Первый/второй поиск находят пассажирский самолёт с соответствующим концом диапазона;последний не имеет совпадения,
-          форма результата свободна.
-      feedback:
-        requirement: Парк до и после сохранения; Включённые границы поиска
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-projects-timetable-interfaces-project:
       additional-java-sources:
         archive: additional-sources.zip
@@ -6544,26 +4254,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Выборки после изменения расписания
-        test: PublicExamplesTest#normal
-        state: Два предметаS1/S2,преподавателяT1/T2,группыG1/G2;L1:19.10,09,S1,T1,G1,101;L2:19.10,10,S2,T2,G1,102;L3:20.10,09,S1,T1,G2,101;L4:20.10,10,S2,T2,G2,102.
-          Год/названия/идентификаторы выбраны.
-        action: Выборки/числаT1,G1; отменаL1; переносL3 в выбранную аудиториюC.
-        expected: T1:L1/L3 и2→L3 и1;G1:L1/L2 и2→L2 и1;L3 новаяаудитория, принадлежностьT1/G2 сохранена. Порядок выборок свободен.
-      - id: boundary
-        name: Политики и специализации
-        test: PublicExamplesTest#boundary
-        state: Независимые исходные состояния PUBLIC1; заранее выбранные политики удаления/выходных,пределшколы и модельавтомобилей.
-        action: УдалениеT1;выходной20.10;школа на объявленном пределе и после превышения;теория/практика и наличие/отсутствие
-          автомобиля.
-        expected: Состояние соответствует выбранной политике;выходной исключаетL3/L4,выборки/числа согласованы;предел отличим
-          от превышения;отсутствие учебного автомобиля для практики выявляется.
-      feedback:
-        requirement: Выборки после изменения расписания; Политики и специализации
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
     java-projects-huffman-word-coding-project:
       additional-java-sources:
         archive: additional-sources.zip
@@ -6595,25 +4285,6 @@ project-checks:
         optional: false
       scoring:
         mode: weighted
-      public-cases:
-      - id: normal
-        name: Частоты, коды и девять битов
-        test: PublicExamplesTest#normal
-        state: one two two three three three; объявленное воспроизводимое правило равных весов, включая внутренние узлы.
-        action: Построить таблицу слово/частота/код и биты исходной последовательности.
-        expected: Частоты1/2/3;двоичные префиксные коды;взвешенная длина9;конкатенация кодов соответствует порядку шести слов.
-          Конкретные дерево/коды/порядок таблицы свободны.
-      - id: boundary
-        name: Пустой, однословный и равновесный вход
-        test: PublicExamplesTest#boundary
-        state: 'Независимые тексты: пустой;one one one;red blue green.'
-        action: Закодировать каждый;последний повторить с тем же выбранным правилом.
-        expected: Пустые таблица/биты;единственный код0 и000;равныечастоты1/1/1,оптимальная длина5;повтор воспроизводит свой результат.
-          Другие допустимые коды законны.
-      feedback:
-        requirement: Частоты, коды и девять битов; Пустой, однословный и равновесный вход
-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
-          задаются заранее преподавательской привязкой.
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
