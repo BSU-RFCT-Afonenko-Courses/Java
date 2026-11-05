@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Arrays;
 import coursesupport.JavaProcess;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 class ContractTest {
     private static String run(TestReporter publicReporter, String[] publicCaseIds, String input, String... args) throws Exception { return publicOutput(publicReporter, publicCaseIds, JavaProcess.runCheckingUncaught(Main.class,input,args).stdout()); }
@@ -26,7 +27,8 @@ class ContractTest {
             assertArrayEquals(new String[]{""+p,""+q,""+(p&&q),""+(p||q),""+(p^q),""+!p},values);
         }
     }
-    @Test void all_operations_and_pairs(TestReporter publicReporter) throws Exception { table(publicReporter, new String[]{"normal","boundary"}); }
+    @Test @DisplayName("Таблица истинности: все операции и четыре пары")
+    void all_operations_and_pairs(TestReporter publicReporter) throws Exception { table(publicReporter, new String[]{"normal","boundary"}); }
 
     /** Только прежние PUBLIC вызовы передают reporter; private-вызовы передают null. */
     private static String publicOutput(TestReporter reporter, String[] ids, String actual) {

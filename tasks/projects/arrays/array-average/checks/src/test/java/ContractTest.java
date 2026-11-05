@@ -15,6 +15,12 @@ class ContractTest {
         String text = publicOutput(publicReporter, publicCaseIds, JavaProcess.runCheckingUncaught(Main.class, input).stdout()).strip();
         assertTrue(text.matches("[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?"), "Выведите только одно конечное среднее с десятичной точкой");
         var delta = new BigDecimal(text).subtract(new BigDecimal(expected)).abs();
+        if (publicReporter != null) {
+            String actual = text.length() > 2000 ? text.substring(0, 2000) + "…" : text;
+            publicReporter.publishEntry(Map.of(
+                "expected", expected + " (абсолютный допуск ≤ 0.00000001)",
+                "actual", actual));
+        }
         assertTrue(delta.compareTo(new BigDecimal("0.00000001")) <= 0, "Математическое среднее: абсолютный допуск 1e-8");
     }
     @Test @DisplayName("Опубликованный пример")
