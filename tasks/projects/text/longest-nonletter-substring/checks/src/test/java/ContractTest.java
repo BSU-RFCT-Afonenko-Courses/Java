@@ -1,72 +1,67 @@
-import java.lang.Object;
-import org.junit.jupiter.api.TestReporter;
-import java.util.Map;
-import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestReporter;
 
 class ContractTest {
   @Test
-  @DisplayName("longest-nonletter-substring-01 — Непрерывность, уникальный максимум; public normal")
+  @DisplayName("Непрерывность, уникальный максимум")
   void case01(TestReporter publicReporter) {
     var publicActual = Study.longest("a12!б3");
-    publicReporter.publishEntry(Map.of("public-case", "longest-nonletter-substring-01", "actual", "result=" + publicActual));
+    publicReporter.publishEntry(Map.of("public-case", "longest-nonletter-substring-01", "input",
+        "Вызов: Study.longest(\"a12!б3\")", "expected", String.valueOf("12!"), "actual",
+        "result=" + publicActual));
 
-    assertEquals(
-        "12!", publicActual, "Непрерывность, уникальный максимум; public normal");
+    assertEquals("12!", publicActual, "Непрерывность, уникальный максимум");
   }
 
   @Test
-  @DisplayName("longest-nonletter-substring-02 — Первый из равных максимумов; public boundary")
+  @DisplayName("Первый из равных максимумов")
   void case02(TestReporter publicReporter) {
     var publicActual = Study.longest("a12!б34?");
-    publicReporter.publishEntry(Map.of("public-case", "longest-nonletter-substring-02", "actual", "result=" + publicActual));
+    publicReporter.publishEntry(Map.of("public-case", "longest-nonletter-substring-02", "input",
+        "Вызов: Study.longest(\"a12!б34?\")", "expected", String.valueOf("12!"), "actual",
+        "result=" + publicActual));
 
-    assertEquals("12!", publicActual, "Первый из равных максимумов; public boundary");
+    assertEquals("12!", publicActual, "Первый из равных максимумов");
   }
 
   @Test
-  @DisplayName("longest-nonletter-substring-03 — Пробел/TAB/LF внутри единого фрагмента; private")
+  @DisplayName("Пробел/TAB/LF внутри единого фрагмента")
   void case03() {
-    assertEquals("1 \t\n!!", Study.longest("a1 \t\n!!б??"),
-        "Пробел/TAB/LF внутри единого фрагмента; private");
+    assertEquals(
+        "1 \t\n!!", Study.longest("a1 \t\n!!б??"), "Пробел/TAB/LF внутри единого фрагмента");
   }
 
   @Test
-  @DisplayName("longest-nonletter-substring-04 — Максимум в начале; private")
+  @DisplayName("Максимум в начале")
   void case04() {
-    assertEquals("!?", Study.longest("!?аб!"), "Максимум в начале; private");
+    assertEquals("!?", Study.longest("!?аб!"), "Максимум в начале");
   }
 
   @Test
-  @DisplayName(
-      "longest-nonletter-substring-05 — Весь текст без букв, конечный пробел сохранён; private")
-  void
-  case05() {
-    assertEquals(
-        "123 ", Study.longest("123 "), "Весь текст без букв, конечный пробел сохранён; private");
+  @DisplayName("Весь текст без букв, конечный пробел сохранён")
+  void case05() {
+    assertEquals("123 ", Study.longest("123 "), "Весь текст без букв, конечный пробел сохранён");
   }
 
   @Test
-  @DisplayName("longest-nonletter-substring-06 — Только буквы, включая Ё; private")
+  @DisplayName("Только буквы, включая Ё")
   void case06() {
-    assertEquals("", Study.longest("ЁжABC"), "Только буквы, включая Ё; private");
+    assertEquals("", Study.longest("ЁжABC"), "Только буквы, включая Ё");
   }
 
   @Test
-  @DisplayName("longest-nonletter-substring-07 — Пустой вход; private")
+  @DisplayName("Пустой вход")
   void case07() {
-    assertEquals("", Study.longest(""), "Пустой вход; private");
+    assertEquals("", Study.longest(""), "Пустой вход");
   }
 
   @Test
-  @DisplayName(
-      "longest-nonletter-substring-08 — Максимум в конце после меньшего; уточняющий случай")
-  void
-  case08() {
-    assertEquals(
-        "123?", Study.longest("а!б123?"), "Максимум в конце после меньшего; уточняющий случай");
+  @DisplayName("Максимум в конце после меньшего")
+  void case08() {
+    assertEquals("123?", Study.longest("а!б123?"), "Максимум в конце после меньшего");
   }
 }

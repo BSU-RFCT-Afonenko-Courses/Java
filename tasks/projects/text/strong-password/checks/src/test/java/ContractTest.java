@@ -1,125 +1,114 @@
-import java.lang.Object;
-import org.junit.jupiter.api.TestReporter;
-import java.util.Map;
-import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestReporter;
 
 class ContractTest {
   @Test
-  @DisplayName("strong-password-01 — Все требования, длина ровно 10; public normal")
+  @DisplayName("Все требования, длина ровно 10")
   void case01(TestReporter publicReporter) {
     var publicActual = Study.accepts("Abcdefghi1");
-    publicReporter.publishEntry(Map.of("public-case", "strong-password-01", "actual", "result=" + publicActual));
+    publicReporter.publishEntry(
+        Map.of("public-case", "strong-password-01", "input", "Вызов: Study.accepts(\"Abcdefghi1\")",
+            "expected", String.valueOf(true), "actual", "result=" + publicActual));
 
-    assertEquals(
-        true, publicActual, "Все требования, длина ровно 10; public normal");
+    assertEquals(true, publicActual, "Все требования, длина ровно 10");
   }
 
   @Test
-  @DisplayName("strong-password-02 — Только недостаточная длина 9; public boundary")
+  @DisplayName("Только недостаточная длина 9")
   void case02(TestReporter publicReporter) {
     var publicActual = Study.accepts("Abcdefgh1");
-    publicReporter.publishEntry(Map.of("public-case", "strong-password-02", "actual", "result=" + publicActual));
+    publicReporter.publishEntry(
+        Map.of("public-case", "strong-password-02", "input", "Вызов: Study.accepts(\"Abcdefgh1\")",
+            "expected", String.valueOf(false), "actual", "result=" + publicActual));
 
-    assertEquals(
-        false, publicActual, "Только недостаточная длина 9; public boundary");
+    assertEquals(false, publicActual, "Только недостаточная длина 9");
   }
 
   @Test
-  @DisplayName("strong-password-03 — Нет латинской прописной; private")
+  @DisplayName("Нет латинской прописной")
   void case03() {
-    assertEquals(false, Study.accepts("abcdefghij1"), "Нет латинской прописной; private");
+    assertEquals(false, Study.accepts("abcdefghij1"), "Нет латинской прописной");
   }
 
   @Test
-  @DisplayName("strong-password-04 — Нет латинской строчной; private")
+  @DisplayName("Нет латинской строчной")
   void case04() {
-    assertEquals(false, Study.accepts("ABCDEFGHIJ1"), "Нет латинской строчной; private");
+    assertEquals(false, Study.accepts("ABCDEFGHIJ1"), "Нет латинской строчной");
   }
 
   @Test
-  @DisplayName("strong-password-05 — Нет цифры; private")
+  @DisplayName("Нет цифры")
   void case05() {
-    assertEquals(false, Study.accepts("Abcdefghij"), "Нет цифры; private");
+    assertEquals(false, Study.accepts("Abcdefghij"), "Нет цифры");
   }
 
   @Test
-  @DisplayName("strong-password-06 — Пустой допустимый вход; private")
+  @DisplayName("Пустой допустимый вход")
   void case06() {
-    assertEquals(false, Study.accepts(""), "Пустой допустимый вход; private");
+    assertEquals(false, Study.accepts(""), "Пустой допустимый вход");
   }
 
   @Test
-  @DisplayName(
-      "strong-password-07 — Запрещённый пробел при выполнении остальных требований; private")
-  void
-  case07() {
+  @DisplayName("Запрещённый пробел при выполнении остальных требований")
+  void case07() {
     assertEquals(false, Study.accepts("Abcdefgh 1"),
-        "Запрещённый пробел при выполнении остальных требований; private");
+        "Запрещённый пробел при выполнении остальных требований");
   }
 
   @Test
-  @DisplayName("strong-password-08 — Запрещённая ASCII-пунктуация; private")
+  @DisplayName("Запрещённая ASCII-пунктуация")
   void case08() {
-    assertEquals(false, Study.accepts("Abcdefghi1!"), "Запрещённая ASCII-пунктуация; private");
+    assertEquals(false, Study.accepts("Abcdefghi1!"), "Запрещённая ASCII-пунктуация");
   }
 
   @Test
-  @DisplayName("strong-password-09 — Русская буква не заменяет латинскую прописную; private")
+  @DisplayName("Русская буква не заменяет латинскую прописную")
   void case09() {
-    assertEquals(false, Study.accepts("Абcdefghi1"),
-        "Русская буква не заменяет латинскую прописную; private");
-  }
-
-  @Test
-  @DisplayName("strong-password-10 — Подчёркивание разрешено; private")
-  void case10() {
-    assertEquals(true, Study.accepts("A1bcdefgh_"), "Подчёркивание разрешено; private");
-  }
-
-  @Test
-  @DisplayName("strong-password-11 — Цифра 0 и свободное расположение классов; private")
-  void case11() {
     assertEquals(
-        true, Study.accepts("0_Aabcdefg"), "Цифра 0 и свободное расположение классов; private");
+        false, Study.accepts("Абcdefghi1"), "Русская буква не заменяет латинскую прописную");
   }
 
   @Test
-  @DisplayName("strong-password-12 — Русская буква запрещена даже при наличии обоих латинских "
-               + "регистров и цифры; уточняющий случай")
-  void
-  case12() {
+  @DisplayName("Подчёркивание разрешено")
+  void case10() {
+    assertEquals(true, Study.accepts("A1bcdefgh_"), "Подчёркивание разрешено");
+  }
+
+  @Test
+  @DisplayName("Цифра 0 и свободное расположение классов")
+  void case11() {
+    assertEquals(true, Study.accepts("0_Aabcdefg"), "Цифра 0 и свободное расположение классов");
+  }
+
+  @Test
+  @DisplayName("Русская буква запрещена даже при наличии обоих латинских регистров и цифры")
+  void case12() {
     assertEquals(false, Study.accepts("Abcdefgh1я"),
-        "Русская буква запрещена даже при наличии обоих латинских регистров и цифры; уточняющий "
-        + "случай");
+        "Русская буква запрещена даже при наличии обоих латинских регистров и цифры");
   }
 
   @Test
-  @DisplayName(
-      "strong-password-13 — TAB запрещён форматом, но допустим во входе; уточняющий случай")
-  void
-  case13() {
-    assertEquals(false, Study.accepts("Abcdefghi1\t"),
-        "TAB запрещён форматом, но допустим во входе; уточняющий случай");
+  @DisplayName("TAB запрещён форматом, но допустим во входе")
+  void case13() {
+    assertEquals(
+        false, Study.accepts("Abcdefghi1\t"), "TAB запрещён форматом, но допустим во входе");
   }
 
   @Test
-  @DisplayName("strong-password-14 — LF запрещён форматом, включая конец строки; уточняющий случай")
+  @DisplayName("LF запрещён форматом, включая конец строки")
   void case14() {
-    assertEquals(false, Study.accepts("Abcdefghi1\n"),
-        "LF запрещён форматом, включая конец строки; уточняющий случай");
+    assertEquals(
+        false, Study.accepts("Abcdefghi1\n"), "LF запрещён форматом, включая конец строки");
   }
 
   @Test
-  @DisplayName("strong-password-15 — Допустимая длина 11 при выполнении остальных четырёх "
-               + "требований; I1, канон text.qmd:148–154")
-  void
-  case15() {
+  @DisplayName("Допустимая длина 11 при выполнении остальных четырёх требований")
+  void case15() {
     assertEquals(true, Study.accepts("Abcdefghi12"),
-        "Допустимая длина 11 при выполнении остальных четырёх требований; I1, канон "
-        + "text.qmd:148–154");
+        "Допустимая длина 11 при выполнении остальных четырёх требований");
   }
 }

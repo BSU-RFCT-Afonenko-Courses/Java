@@ -1,70 +1,67 @@
-import java.lang.Object;
-import org.junit.jupiter.api.TestReporter;
-import java.util.Map;
-import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestReporter;
 
 class ContractTest {
   @Test
-  @DisplayName("count-normalized-word-01 — е/ё, регистр, целое слово; public normal")
+  @DisplayName("е/ё, регистр, целое слово")
   void case01(TestReporter publicReporter) {
     var publicActual = Study.count("Ёлка, елка; елками", "елка");
-    publicReporter.publishEntry(Map.of("public-case", "count-normalized-word-01", "actual", "result=" + publicActual));
+    publicReporter.publishEntry(Map.of("public-case", "count-normalized-word-01", "input",
+        "Вызов: Study.count(\"Ёлка, елка", "expected", String.valueOf(2L), "actual",
+        "result=" + publicActual));
 
-    assertEquals(
-        2L, publicActual, "е/ё, регистр, целое слово; public normal");
+    assertEquals(2L, publicActual, "е/ё, регистр, целое слово");
   }
 
   @Test
-  @DisplayName("count-normalized-word-02 — и/й, регистр и более длинное слово; public boundary")
+  @DisplayName("и/й, регистр и более длинное слово")
   void case02(TestReporter publicReporter) {
     var publicActual = Study.count("май МАЙ, маи; маий", "МАИ");
-    publicReporter.publishEntry(Map.of("public-case", "count-normalized-word-02", "actual", "result=" + publicActual));
+    publicReporter.publishEntry(Map.of("public-case", "count-normalized-word-02", "input",
+        "Вызов: Study.count(\"май МАЙ, маи", "expected", String.valueOf(3L), "actual",
+        "result=" + publicActual));
 
-    assertEquals(3L, publicActual,
-        "и/й, регистр и более длинное слово; public boundary");
+    assertEquals(3L, publicActual, "и/й, регистр и более длинное слово");
   }
 
   @Test
-  @DisplayName("count-normalized-word-03 — Цифра и _ как границы, целое слово; private")
+  @DisplayName("Цифра и _ как границы, целое слово")
   void case03() {
-    assertEquals(2L, Study.count("x1X_xx", "X"), "Цифра и _ как границы, целое слово; private");
+    assertEquals(2L, Study.count("x1X_xx", "X"), "Цифра и _ как границы, целое слово");
   }
 
   @Test
-  @DisplayName(
-      "count-normalized-word-04 — Нормализация искомого слова и повторные вхождения; private")
-  void
-  case04() {
-    assertEquals(3L, Study.count("е Ё ёж е", "ё"),
-        "Нормализация искомого слова и повторные вхождения; private");
+  @DisplayName("Нормализация искомого слова и повторные вхождения")
+  void case04() {
+    assertEquals(
+        3L, Study.count("е Ё ёж е", "ё"), "Нормализация искомого слова и повторные вхождения");
   }
 
   @Test
-  @DisplayName("count-normalized-word-05 — Нет слов; private")
+  @DisplayName("Нет слов")
   void case05() {
-    assertEquals(0L, Study.count("123!", "я"), "Нет слов; private");
+    assertEquals(0L, Study.count("123!", "я"), "Нет слов");
   }
 
   @Test
-  @DisplayName("count-normalized-word-06 — Пустой текст; private")
+  @DisplayName("Пустой текст")
   void case06() {
-    assertEquals(0L, Study.count("", "е"), "Пустой текст; private");
+    assertEquals(0L, Study.count("", "е"), "Пустой текст");
   }
 
   @Test
-  @DisplayName("count-normalized-word-07 — TAB/_, обе формы и целое слово; private")
+  @DisplayName("TAB/_, обе формы и целое слово")
   void case07() {
-    assertEquals(2L, Study.count("Й\tи_ий", "И"), "TAB/_, обе формы и целое слово; private");
+    assertEquals(2L, Study.count("Й\tи_ий", "И"), "TAB/_, обе формы и целое слово");
   }
 
   @Test
-  @DisplayName("count-normalized-word-08 — Нормализация запроса с Ё и регистра; уточняющий случай")
+  @DisplayName("Нормализация запроса с Ё и регистра")
   void case08() {
-    assertEquals(2L, Study.count("ЕЛКА елка", "ЁЛКА"),
-        "Нормализация запроса с Ё и регистра; уточняющий случай");
+    assertEquals(2L, Study.count("ЕЛКА елка", "ЁЛКА"), "Нормализация запроса с Ё и регистра");
   }
 }

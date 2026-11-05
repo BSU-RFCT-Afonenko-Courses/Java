@@ -1,53 +1,54 @@
-import java.lang.Object;
-import org.junit.jupiter.api.TestReporter;
-import java.util.Map;
-import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestReporter;
 
 class ContractTest {
   @Test
-  @DisplayName("sum-text-digits-01 — Соседние цифры и ноль; public normal")
+  @DisplayName("Соседние цифры и ноль")
   void case01(TestReporter publicReporter) {
     var publicActual = Study.sum("a2b109");
-    publicReporter.publishEntry(Map.of("public-case", "sum-text-digits-01", "actual", "result=" + publicActual));
+    publicReporter.publishEntry(
+        Map.of("public-case", "sum-text-digits-01", "input", "Вызов: Study.sum(\"a2b109\")",
+            "expected", String.valueOf(12L), "actual", "result=" + publicActual));
 
-    assertEquals(12L, publicActual, "Соседние цифры и ноль; public normal");
+    assertEquals(12L, publicActual, "Соседние цифры и ноль");
   }
 
   @Test
-  @DisplayName("sum-text-digits-02 — Пустая сумма; public boundary")
+  @DisplayName("Пустая сумма")
   void case02(TestReporter publicReporter) {
     var publicActual = Study.sum("");
-    publicReporter.publishEntry(Map.of("public-case", "sum-text-digits-02", "actual", "result=" + publicActual));
+    publicReporter.publishEntry(
+        Map.of("public-case", "sum-text-digits-02", "input", "Вызов: Study.sum(\"\")", "expected",
+            String.valueOf(0L), "actual", "result=" + publicActual));
 
-    assertEquals(0L, publicActual, "Пустая сумма; public boundary");
+    assertEquals(0L, publicActual, "Пустая сумма");
   }
 
   @Test
-  @DisplayName("sum-text-digits-03 — Каждое повторное вхождение; private")
+  @DisplayName("Каждое повторное вхождение")
   void case03() {
-    assertEquals(27L, Study.sum("99x9"), "Каждое повторное вхождение; private");
+    assertEquals(27L, Study.sum("99x9"), "Каждое повторное вхождение");
   }
 
   @Test
-  @DisplayName("sum-text-digits-04 — Накопление многих отдельных значений; private")
+  @DisplayName("Накопление многих отдельных значений")
   void case04() {
-    assertEquals(
-        36000L, Study.sum("9".repeat(4000)), "Накопление многих отдельных значений; private");
+    assertEquals(36000L, Study.sum("9".repeat(4000)), "Накопление многих отдельных значений");
   }
 
   @Test
-  @DisplayName("sum-text-digits-05 — Непустой текст без цифр; private")
+  @DisplayName("Непустой текст без цифр")
   void case05() {
-    assertEquals(0L, Study.sum("Ёж_!?\t\n"), "Непустой текст без цифр; private");
+    assertEquals(0L, Study.sum("Ёж_!?\t\n"), "Непустой текст без цифр");
   }
 
   @Test
-  @DisplayName("sum-text-digits-06 — Все десять значений; private")
+  @DisplayName("Все десять значений")
   void case06() {
-    assertEquals(45L, Study.sum("0123456789"), "Все десять значений; private");
+    assertEquals(45L, Study.sum("0123456789"), "Все десять значений");
   }
 }
