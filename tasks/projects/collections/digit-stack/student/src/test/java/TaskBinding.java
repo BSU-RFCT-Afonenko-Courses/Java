@@ -1,1 +1,6 @@
-class TaskBinding {static String digits(long n){throw new UnsupportedOperationException("Подготовьте вызов своего решения");}}
+
+class TaskBinding {
+    static String digits(long n) {
+        throw new UnsupportedOperationException("Подготовьте вызов своего решения");
+    }
+}

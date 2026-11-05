@@ -1,1 +1,10 @@
-import java.util.*;class TaskBinding{static List<String>ordered(List<String>input){throw new UnsupportedOperationException("Подготовьте вызов своего решения");}static List<String>poem(){throw new UnsupportedOperationException("Подготовьте вызов своего решения");}}
+import java.util.*;
+
+class TaskBinding {
+    static List<String> ordered(List<String> input) {
+        throw new UnsupportedOperationException("Подготовьте вызов своего решения");
+    }
+    static List<String> poem() {
+        throw new UnsupportedOperationException("Подготовьте вызов своего решения");
+    }
+}
