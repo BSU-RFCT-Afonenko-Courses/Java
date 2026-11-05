@@ -2,6 +2,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.DisplayName;
@@ -52,7 +53,8 @@ class ContractTest {
     }
     static Object[] select(Object[] input, Supplier<Object[]> action) {
         Object[] before = input.clone();
-        var states = Arrays.stream(before).map(TaskBinding::value).toList();
+        // Копируем каждую строку свойств до вызова отбора: исходный список может быть живым.
+        var states = Arrays.stream(before).map(item -> new ArrayList<>(TaskBinding.value(item))).toList();
         Object[] result = action.get();
         assertEquals(before.length, input.length);
         for (int i = 0; i < before.length; i++)

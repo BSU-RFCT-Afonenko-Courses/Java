@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -29,8 +30,13 @@ public class PublicChecks {
         "Подборки C1/C2/C1; C1/C2/C1; C1/C1, вход сохранён.";
     public static final String BOUNDARY_EXPECTED = "Все три подборки пусты, вход сохранён.";
 
+    // Снимок свойств принадлежит наблюдателю, даже если адаптер вернул живой список.
+    private static List<?> value(Object object) {
+        return new ArrayList<>(TaskBinding.value(object));
+    }
+
     private static List<?> values(Object[] a) {
-        return a == null ? null : Arrays.stream(a).map(TaskBinding::value).toList();
+        return a == null ? null : Arrays.stream(a).map(PublicChecks::value).toList();
     }
     private static boolean unchanged(Object[] before, List<?> states, Object[] after) {
         if (before.length != after.length)
@@ -53,23 +59,26 @@ public class PublicChecks {
                                   List.of(1L, "Вектор", "M1", 2010L, "Синий", 10.0, "A1"),
                                   List.of(3L, "Линия", "M2", 2020L, "Синий", 30.0, "A3")));
         StringBuilder actual = new StringBuilder("Исходные записи=" + states + "; ");
+        List<?> expectedMake = values(new Object[] {a, b, a});
+        List<?> expectedOlder = values(new Object[] {a, b, a});
+        List<?> expectedDearer = values(new Object[] {a, a});
         Object[] r0 = TaskBinding.make(input, "Вектор");
         actual.append("Отбор1=").append(values(r0)).append("; ");
-        okay &= Objects.equals(values(r0), values(TaskBinding.array(a, b, a)))
+        okay &= Objects.equals(values(r0), expectedMake)
                 && unchanged(before, states, input);
         if (!unchanged(before, states, input))
             return new Observation(
                        actual.append("Исходный массив или объекты изменены.").toString(), false);
         Object[] r1 = TaskBinding.older(input, "M1", 2025, 5);
         actual.append("Отбор2=").append(values(r1)).append("; ");
-        okay &= Objects.equals(values(r1), values(TaskBinding.array(a, b, a)))
+        okay &= Objects.equals(values(r1), expectedOlder)
                 && unchanged(before, states, input);
         if (!unchanged(before, states, input))
             return new Observation(
                        actual.append("Исходный массив или объекты изменены.").toString(), false);
         Object[] r2 = TaskBinding.dearer(input, 2010, 5);
         actual.append("Отбор3=").append(values(r2)).append("; ");
-        okay &= Objects.equals(values(r2), values(TaskBinding.array(a, a)))
+        okay &= Objects.equals(values(r2), expectedDearer)
                 && unchanged(before, states, input);
         if (!unchanged(before, states, input))
             return new Observation(
