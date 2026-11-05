@@ -4,7 +4,42 @@ public class PublicChecks {
  public record Observation(String actual,boolean passed){}
 
  public static Observation observeNormal()throws Exception{Object s=TaskBinding.create();var initialT=TaskBinding.teacherIds(s,"t1");var initialG=TaskBinding.groupIds(s,"g1");boolean ok=initialT.equals(Set.of("l1","l3"))&&initialG.equals(Set.of("l1","l2"))&&TaskBinding.teacherCount(s,"t1")==2&&TaskBinding.groupCount(s,"g1")==2;TaskBinding.cancelFirst(s);ok&=TaskBinding.teacherIds(s,"t1").equals(Set.of("l3"))&&TaskBinding.groupIds(s,"g1").equals(Set.of("l2"))&&TaskBinding.teacherCount(s,"t1")==1&&TaskBinding.groupCount(s,"g1")==1;TaskBinding.moveThird(s);ok&=TaskBinding.thirdRoom(s).equals("C")&&TaskBinding.teacherIds(s,"t1").equals(Set.of("l3"))&&TaskBinding.groupIds(s,"g2").contains("l3");return new Observation("до: T1="+initialT+",G1="+initialG+"; после отмены: T1="+TaskBinding.teacherIds(s,"t1")+",G1="+TaskBinding.groupIds(s,"g1")+"; аудитория L3="+TaskBinding.thirdRoom(s),ok);}
- public static Observation observeBoundary()throws Exception{Object s=TaskBinding.create();boolean deleted=TaskBinding.deleteT1(s);boolean policy=TaskBinding.deletionPolicy().equals("cascade")?deleted&&!TaskBinding.teachers(s).containsKey("t1")&&TaskBinding.teacherIds(s,"t1").isEmpty():!deleted&&TaskBinding.teachers(s).containsKey("t1")&&TaskBinding.teacherIds(s,"t1").equals(Set.of("l1","l3"));Object holiday=TaskBinding.create();TaskBinding.secondDayOff(holiday);boolean day=TaskBinding.teacherIds(holiday,"t1").equals(Set.of("l1"))&&TaskBinding.teacherIds(holiday,"t2").equals(Set.of("l2"))&&TaskBinding.groupIds(holiday,"g2").isEmpty()&&TaskBinding.teacherCount(holiday,"t1")==1&&TaskBinding.groupCount(holiday,"g2")==0;Object school=TaskBinding.school();boolean limit=TaskBinding.classSize(school)==TaskBinding.schoolLimit()&&TaskBinding.schoolValid(school);TaskBinding.extra(school);limit&=!TaskBinding.schoolValid(school);Object driving=TaskBinding.driving();boolean cars=TaskBinding.theory(driving)==2&&TaskBinding.practice(driving)==1&&TaskBinding.car(driving,"c1")&&!TaskBinding.car(driving,"absent")&&TaskBinding.practiceWithoutCarRejected();return new Observation("политика="+TaskBinding.deletionPolicy()+", удалён="+deleted+"; выходной: G2="+TaskBinding.groupIds(holiday,"g2")+"; предел="+TaskBinding.schoolLimit()+", соблюдение/превышение="+limit+"; теория="+TaskBinding.theory(driving)+",практика="+TaskBinding.practice(driving)+",автомобили="+cars,policy&&day&&limit&&cars); }
+ public static Observation observeBoundary() throws Exception {
+  Object s=TaskBinding.create();
+  boolean deleted=TaskBinding.deleteT1(s);
+  boolean policy=switch(TaskBinding.deletionPolicy()) {
+   case "cascade" -> deleted&&!TaskBinding.teachers(s).containsKey("t1")
+    &&TaskBinding.teacherIds(s,"t1").isEmpty();
+   case "retain-lessons" -> deleted&&!TaskBinding.teachers(s).containsKey("t1")
+    &&TaskBinding.teacherIds(s,"t1").equals(Set.of("l1","l3"))&&TaskBinding.teacherCount(s,"t1")==2;
+   case "reject" -> !deleted&&TaskBinding.teachers(s).containsKey("t1")
+    &&TaskBinding.teacherIds(s,"t1").equals(Set.of("l1","l3"));
+   default -> throw new LinkageError("Привязка: неизвестная политика удаления "+TaskBinding.deletionPolicy());
+  };
+  Object holiday=TaskBinding.create();
+  TaskBinding.secondDayOff(holiday);
+  boolean day=TaskBinding.teacherIds(holiday,"t1").equals(Set.of("l1"))
+   &&TaskBinding.teacherIds(holiday,"t2").equals(Set.of("l2"))
+   &&TaskBinding.groupIds(holiday,"g2").isEmpty()
+   &&TaskBinding.teacherCount(holiday,"t1")==1&&TaskBinding.groupCount(holiday,"g2")==0;
+  Object school=TaskBinding.school();
+  boolean limit=TaskBinding.classSize(school)==TaskBinding.schoolLimit()&&TaskBinding.schoolValid(school);
+  boolean refused=false;
+  try {TaskBinding.extra(school);} catch(RuntimeException failure) {refused=true;}
+  // Превышение можно выявить отказом без изменения состояния либо отдельной проверкой.
+  limit&=refused
+   ?TaskBinding.classSize(school)==TaskBinding.schoolLimit()&&TaskBinding.schoolValid(school)
+   :!TaskBinding.schoolValid(school);
+  Object driving=TaskBinding.driving();
+  boolean cars=TaskBinding.theory(driving)==2&&TaskBinding.practice(driving)==1
+   &&TaskBinding.car(driving,"c1")&&!TaskBinding.car(driving,"absent")
+   &&TaskBinding.practiceWithoutCarRejected();
+  return new Observation("политика="+TaskBinding.deletionPolicy()+", удалён="+deleted
+   +"; выходной: G2="+TaskBinding.groupIds(holiday,"g2")
+   +"; предел="+TaskBinding.schoolLimit()+", соблюдение/превышение="+limit
+   +"; теория="+TaskBinding.theory(driving)+",практика="+TaskBinding.practice(driving)
+   +",автомобили="+cars,policy&&day&&limit&&cars);
+ }
  public static void checkNormal(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте обычный результат с условием.");}
  public static void checkBoundary(Observation o){if(!o.passed())throw new AssertionError("Сопоставьте граничный результат с условием.");}
  static int example(boolean normal){
