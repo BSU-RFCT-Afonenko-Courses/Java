@@ -4,7 +4,7 @@
 
 | Пакет | PR | Точный коммит | Статус |
 | --- | --- | --- | --- |
-| Java, весь учебный пакет и передача | Ветка `codex/course-labs-20261105`, PR создаётся вместе с этим пакетом | Учебный HEAD `859c5f7499bb2e03b3504e5ec35e41d3dd79e368`; текущий HEAD смотрите в PR | Полный экспорт на `8e9d618`, отдельная Download-дельта проверена; общая приёмка открыта |
+| Java, весь учебный пакет и передача | [PR34](https://github.com/BSU-RFCT-Afonenko-Courses/Java/pull/34), ветка `codex/course-labs-20261105` | Учебный HEAD `859c5f7499bb2e03b3504e5ec35e41d3dd79e368`; последующие коммиты сохраняют этот пакет передачи, текущий HEAD смотрите в PR | Полный экспорт на `8e9d618`, отдельная Download-дельта проверена; общая приёмка открыта |
 | Core | [PR72](https://github.com/Afonenko-Course-Tools/quarto-course/pull/72) | `d21ddfdc9e4fde58145275751dccfc1c997777df` | Независимая техническая приёмка |
 | PL | [PR37](https://github.com/Afonenko-Course-Tools/quarto-course-prairielearn/pull/37) | `5862e66dcc96e2a6920ba4fe19f1df2bf0746a94` | Основной `fcd3320` принят; последний коммит сохраняет незавершённые CI fixtures |
 | Download, основная работа | [PR20](https://github.com/Afonenko-Course-Tools/quarto-project-download/pull/20) | `de1f3aa859a3d949223b7230a6377a4fc0c3572d` | Технические проверки/рецензии; прежний CI красный |
