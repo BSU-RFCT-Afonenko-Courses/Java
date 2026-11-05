@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -27,8 +28,13 @@ public class PublicChecks {
     public static final String NORMAL_EXPECTED =
         "Б,В,А; карточки А и Б в любом порядке; вход сохранён";
     public static final String BOUNDARY_EXPECTED = "Обе подборки пусты";
+    // Скалярные свойства копирует наблюдатель: адаптер вправе вернуть живое представление.
+    static List<?> value(Object object) {
+        return new ArrayList<>(TaskBinding.value(object));
+    }
+
     static List<?> values(Object[] a) {
-        return a == null ? null : Arrays.stream(a).map(TaskBinding::value).toList();
+        return a == null ? null : Arrays.stream(a).map(PublicChecks::value).toList();
     }
     static boolean kept(Object[] input, Object[] before, List<?> state) {
         if (input.length != before.length)
@@ -51,7 +57,7 @@ public class PublicChecks {
                b = TaskBinding.customer(12, "Белов", "Борис", "Петрович", "0000000000000020"),
                c = TaskBinding.customer(13, "Иванов", "Антон", "Ильич", "0000000000000030");
         Object[] in = TaskBinding.array(c, b, a), before = in.clone();
-        List<?> state = values(in);
+        List<?> state = values(in), expectedSorted = values(new Object[] {b, c, a});
         Object[] sorted = TaskBinding.sorted(in);
         List<?> actualSorted = values(sorted);
         boolean keep1 = kept(in, before, state);
@@ -64,13 +70,15 @@ public class PublicChecks {
         if (!keep1)
             return new Observation(
                        "Алфавит=" + actualSorted + "; исходный массив или объекты изменены.", false);
+        Object[] beforeRange = in.clone();
+        List<?> rangeState = values(in), expectedRange = values(new Object[] {a, b});
         Object[] range = TaskBinding.range(in, "0000000000000010", "0000000000000020");
         List<?> actualRange = values(range);
-        boolean keep2 = kept(in, before, state);
+        boolean keep2 = kept(in, beforeRange, rangeState);
         return new Observation("Алфавит=" + actualSorted + "; карточки=" + actualRange
                                + "; вход сохранён=" + (keep1 && keep2),
-                               Objects.equals(actualSorted, values(TaskBinding.array(b, c, a)))
-                               && Objects.equals(bag(actualRange), bag(values(TaskBinding.array(a, b)))) && keep1
+                               Objects.equals(actualSorted, expectedSorted)
+                               && Objects.equals(bag(actualRange), bag(expectedRange)) && keep1
                                && keep2 && model);
     }
     public static Observation observeBoundary() {

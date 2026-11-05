@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +27,13 @@ public class PublicChecks {
     public static final String BOUNDARY_INPUT = "Пустой Patient[], Грипп, интервал101..102";
     public static final String NORMAL_EXPECTED = "Диагноз В/А/А; карты А/Б/А; вход сохранён";
     public static final String BOUNDARY_EXPECTED = "Обе подборки пусты";
+    // Скалярные свойства копирует наблюдатель: адаптер вправе вернуть живое представление.
+    static List<?> value(Object object) {
+        return new ArrayList<>(TaskBinding.value(object));
+    }
+
     static List<?> values(Object[] a) {
-        return a == null ? null : Arrays.stream(a).map(TaskBinding::value).toList();
+        return a == null ? null : Arrays.stream(a).map(PublicChecks::value).toList();
     }
     static boolean kept(Object[] input, Object[] before, List<?> state) {
         if (input.length != before.length)
@@ -49,7 +55,7 @@ public class PublicChecks {
         Object a = TaskBinding.patient(41, 101, "Грипп"), b = TaskBinding.patient(42, 102, "грипп"),
                c = TaskBinding.patient(43, 103, "Грипп");
         Object[] in = TaskBinding.array(c, a, b, a), before = in.clone();
-        List<?> state = values(in);
+        List<?> state = values(in), expectedD = values(new Object[] {c, a, a});
         Object[] d = TaskBinding.diagnosis(in, "Грипп");
         List<?> actualD = values(d);
         boolean k1 = kept(in, before, state);
@@ -65,13 +71,15 @@ public class PublicChecks {
         if (!k1)
             return new Observation(
                        "Диагноз=" + actualD + "; исходный массив или объекты изменены.", false);
+        Object[] beforeRange = in.clone();
+        List<?> rangeState = values(in), expectedRange = values(new Object[] {a, b, a});
         Object[] r = TaskBinding.range(in, 101, 102);
         List<?> actualR = values(r);
-        boolean k2 = kept(in, before, state);
+        boolean k2 = kept(in, beforeRange, rangeState);
         return new Observation(
                    "Диагноз=" + actualD + "; номера=" + actualR + "; вход сохранён=" + (k1 && k2),
-                   Objects.equals(actualD, values(TaskBinding.array(c, a, a)))
-                   && Objects.equals(actualR, values(TaskBinding.array(a, b, a))) && k1 && k2
+                   Objects.equals(actualD, expectedD)
+                   && Objects.equals(actualR, expectedRange) && k1 && k2
                    && model);
     }
     public static Observation observeBoundary() {
