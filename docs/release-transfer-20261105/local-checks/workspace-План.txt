@@ -1,0 +1,57 @@
+Стенд предназначен только для локальной приёмки существующего SP restore-selected-state.
+До завершения root review live worker не запускается. Candidate D уже доступен:
+codex/sp-workspace-delivery:20261105
+sha256:d7eaa4558c866b495371ffd7e478a0a4e1d172f66f8a5eda7f532a0d5aaead34
+
+Соединения:
+браузер → 127.0.0.1:3307 → новый PL:3000 → штатная workspace auth/proxy middleware
+PL control → 127.0.0.1:8081 внутри того же контейнера → worker
+worker health и PL proxy → host.docker.internal:34000..34019 → private gateway bridge
+Docker NAT только на этом private gateway → настоящий Workspace:8080
+
+Новый internal bridge feedback-sp-native-20261105 создаёт Docker с автоматически
+выбранной непересекающейся подсетью. Фактический gateway читается из network inspect.
+Он задаётся одновременно в --add-host host.docker.internal:<gateway> и
+FEEDBACK_SP_BIND_IP. Docker создаёт Workspace в этом же bridge. Обычный HostIp=0.0.0.0
+заменяется только в copied upstream source/dist worker на точный private gateway.
+Глобальные Docker daemon/firewall/config не изменяются. Host network не применяется.
+Наружу опубликован только PL на loopback 3307. Worker 8081, Postgres 5432, Redis и S3
+остаются внутри нового контейнера. Editor не публикуется на host LAN/0.0.0.0/::.
+
+workspaceDevHostHostname=127.0.0.1 регистрирует control endpoint worker в новой DB.
+workspaceDevContainerHostname=host.docker.internal используется двумя реальными
+upstream местами: _checkServer и запись workspace.hostname. PL workspaceProxy
+берёт это поле из running workspace и сохраняет штатные auth/cookie/path rewrite.
+Таким образом, proxy не требует собственного нового маршрута или JavaScript shim.
+
+Upstream startup/periodic cleanup был глобальным по workspace labels/names.
+Temporary override добавляет feedback.sp-worker=feedback-sp-native-20261105 новым
+Workspace и ограничивает все четыре Docker list/lookup этим label. Global volume
+prune в temporary worker заменён сообщением. Старые containers/volumes не выбираются.
+
+После root review:
+FEEDBACK_SP_ROOT_REVIEW_GO=yes python -B /tmp/java-release-work-20261105/workspace-worker-handoff/launch-after-review.py
+Команда проверяет точный D image ID, занятость 3307 и отсутствие старых своих имён,
+копирует D private course в собственный runtime-course, заменяет image только в
+private info.json+matching delivery payload на CANDIDATE_EXPECTED_ID. Дополнительные
+флаги в delivery не добавляются; private qualification записана во внешнем отчёте.
+Уже имеющийся pinned PL native image проверяется через Docker inspect, получает
+собственный local tag и используется в FROM без Hub metadata lookup. Используется обычный
+BuildKit --pull=false, без переопределения builder env. Затем строится только
+локальный test image, создаёт новые bridge/volume/jobs и запускает новый PL+worker.
+Source SP599, D private course, старые 3305/3306 и их БД не изменяются.
+После штатного Load from disk Main открывает существующий restore question.
+
+После настоящего Workspace launch:
+python -B /tmp/java-release-work-20261105/workspace-worker-handoff/verify-live-isolation.py
+Проверяется Docker actual PortBindings, private network, own bind paths, gateway
+HTTP reachability, отсутствие связи с редактором через обычные IP самой машины.
+Worker /status должен видеть собственную Docker scope и новую DB.
+В evidence/live-isolation.json появится фактический результат. До запуска его нет.
+Main отдельно проверяет настоящий браузерный proxy и save-close-resume-resubmit.
+Остановка/повторный старт этого же стенда должны использовать штатный docker stop/start
+его единственного контейнера; launcher не перезаписывает существующие рабочие данные.
+
+Миграция и HTTP server запускаются одним compiled node apps/prairielearn/dist/server.js
+с одним config path; PNPM/TS startup не включается. Root выполняет запуск после
+финального чтения; в этой роли запуск не выполнялся.

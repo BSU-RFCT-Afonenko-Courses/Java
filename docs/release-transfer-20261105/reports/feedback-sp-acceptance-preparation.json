@@ -1,0 +1,311 @@
+{
+  "status": "PASS bounded actual native export3questions2works; ready for MainUI/Dworker",
+  "updated_at": "2026-11-04T23:39:17.409665+00:00",
+  "owner": "/root/local_pl_ui",
+  "chat_id": "01a1a897-9931-79c0-868d-633f7fd88ea8",
+  "admission": {
+    "evidence": "/tmp/java-release-discussion-20261105/coordination/feedback-ui-admission.json",
+    "original_turn_id": "01a1a897-9960-7580-9b14-5f7ed9714092",
+    "result": "PASS, весь исходный интервал,5 turn_context"
+  },
+  "sources": {
+    "sp": {
+      "path": "/tmp/java-release-work-20261105/course-sp",
+      "HEAD": "599c9847bbd3119c19e7f3f4dbdd97b805e3e123"
+    },
+    "core": {
+      "path": "/tmp/java-release-work-20261105/core",
+      "HEAD": "d21ddfdc9e4fde58145275751dccfc1c997777df"
+    },
+    "pl": {
+      "path": "/tmp/java-release-work-20261105/course-pl",
+      "HEAD": "fcd3320eb6dcbe0fde897ecafafcb9c0b31fb9fc",
+      "state": "exact Git archive, live tree не копировалось"
+    },
+    "workspace_runtime": {
+      "owner": "D, platform-delivery",
+      "observed_HEAD": "b76b82728ef5292f89a4293b2d2a8a6dca51516b",
+      "production_pin_from_SP": "ghcr.io/afonenko-course-tools/sp-git-workspace@sha256:a547a7419726857eb391476edcf8906ee4acc062250e1c29acaee4733d9de930",
+      "production_pin_local": "отсутствует; не переписывался",
+      "candidate": "ожидается D после freeze",
+      "manifest_contract": "D entrypoint принимает {schema,files:[строки]}, совпадает с B workspace-seed"
+    }
+  },
+  "canonical": {
+    "input_documents": [
+      "tasks/labs/version-control.qmd",
+      "tasks/delivery/units/sec-unit-version-control-restore-selected-state.qmd"
+    ],
+    "upload": {
+      "id": "exr-version-control-local-history",
+      "project": "tasks/projects/version-control/local-history",
+      "starter": "tasks/projects/version-control/local-history/student",
+      "condition_lines": 34,
+      "grading": "Manual",
+      "required_result": "A/B/F/D, merge conflict resolution, threshold 0.030s/0.03s, preserved measurements, history.bundle+project files+explanation",
+      "public_checks": [
+        "Обычный: согласованный порог и сохранённые линии",
+        "Граничный: короткая запись того же результата"
+      ],
+      "reference": {
+        "answer": "/tmp/java-release-work-20261105/sp-acceptance-preparation/local-history-answer.zip",
+        "ids": {
+          "A": "fcc2fe6167be7d72e56ab30be6b9a9b8933606fc",
+          "B": "69da2cd150ff5c3b91d641f40902bb86e2204f5a",
+          "F": "e4fbf11b4e153616eef493013f1e7f8df506d152",
+          "D": "c102fe4d98052f5782cd3eae5f8013e946ce02f8"
+        },
+        "branch": "seconds",
+        "bundleVerified": true,
+        "gitIncludedInUpload": false,
+        "grading": "manual",
+        "reviewStatus": "provisional, ожидает root closure",
+        "precommitObservation": "После actual add до F: выбранный HEAD A, рабочие файлы, индекс, status, пустой unstaged diff и непустой staged diff",
+        "execution": "Git вызван напрямую из Python на Linux; интерактивный fish не заявляется"
+      },
+      "ui_submit": "Настоящий exported question qid system-practice/exr-version-control-local-history; загрузить local-history-answer.zip через native pl-file-upload, штатно Save/Submit. Проверить _files actual attachment filename/bytes и сохранённую сдачу; score не объявлять автоматически."
+    },
+    "workspace": {
+      "id": "exr-version-control-restore-selected-state",
+      "project": "tasks/projects/version-control/restore-selected-state",
+      "starter": "tasks/projects/version-control/restore-selected-state/student",
+      "seed_recipe": "tasks/projects/version-control/restore-selected-state/seed_recipe.py",
+      "condition_lines": 373,
+      "grading": "Manual",
+      "public_checks": [
+        "Снятие подготовки одного файла: git restore --staged notes.txt",
+        "Восстановление единственной рабочей правки: git restore notes.txt"
+      ],
+      "initial_fixture": {
+        "initial": "/tmp/java-release-work-20261105/sp-acceptance-preparation/workspace-initial",
+        "seedIdentity": {
+          "A": "2f12c0ccccc3c10c483502559fa7efee33a52607",
+          "refs": [
+            "2f12c0ccccc3c10c483502559fa7efee33a52607 refs/heads/main"
+          ],
+          "head": "refs/heads/main",
+          "status": ""
+        },
+        "grading": "manual",
+        "note": "Начальный A, не решение. Для PL используется штатный exporter seed, этот каталог только проверка фактической canonical recipe."
+      },
+      "commands": "/tmp/java-release-work-20261105/sp-acceptance-preparation/workspace-actions.txt",
+      "home": "/home/coder/workspace",
+      "port": 8080,
+      "rewriteUrl": true,
+      "gradedFiles": [
+        "work/**",
+        "work/.git/**",
+        "work/.*",
+        "explanation.m[d]",
+        ".pl-seed/identity.jso[n]"
+      ],
+      "native_question_control": "pl-workspace плюс альтернативный upload *.zip,*.tar.gz",
+      "save_close_resume_resubmit": "Сохранить после restore --staged: HEAD A, staged README, unstaged notes Tuesday; штатно отправить, закрыть/открыть тот же Workspace, подтвердить именно промежуточное состояние. Затем commit B, restore notes, сохранить прежнее explanation и повторно отправить. Проверить .git/index/refs/objects, files, explanation, seed identity в преподавательской сдаче."
+    }
+  },
+  "bounded_export": {
+    "script": "/tmp/java-release-work-20261105/sp-acceptance-preparation/export-bounded.sh",
+    "private_profile": "/tmp/java-release-work-20261105/sp-acceptance-preparation/quarto-sp-acceptance.yml",
+    "execution": "PASS native entrypoint exit0; Source metadata/API не менялись, обычные фильтры/hooks активны",
+    "source_policy": "git archive exact SP в новый temp owner; замены Core/PL только там после freeze, исходные checkout не меняются",
+    "command": "SP_ACCEPTANCE_PL_FROZEN_REF=<точный B commit> SP_ACCEPTANCE_RUNTIME_REGISTRY=<точный D registry> SP_ACCEPTANCE_QRC_SOURCE=<actual каталоги prereqs> bash /tmp/java-release-work-20261105/sp-acceptance-preparation/export-bounded.sh",
+    "source_inputs": "index.qmd + labs/version-control.qmd + existing restore-selected-state wrapper;2selected works, ожидается3canonical question. Только временные списки render/chapters/instanceworks ограничены; filters/hooks/actualQMD сохранены.",
+    "runtime_registry": "Источник runtime registry — platform-delivery/runtime-profiles.json после D freeze. Manual 2 routes не требуют grader runtime. Workspace image задаёт actual QMD metadata; отдельный candidate image от D нужен private integration, canonical production pin не переписывается.",
+    "dependencies": [
+      "Для live Workspace Main/D подключают actual D local candidate отдельным private override; canonical production pin сохранён",
+      "Main выполняет UI и живой worker; эта роль их не запускала"
+    ],
+    "observed_exact_registry": {
+      "git_source": "/tmp/java-release-work-20261105/platform-delivery",
+      "ref": "79abcf3412fedc21c0008d9c7a4662e112e1b795",
+      "path": "runtime-profiles.json",
+      "copy": "/tmp/java-release-work-20261105/sp-acceptance-preparation/runtime-profiles-final-d.json"
+    },
+    "actual_command_script": "/tmp/java-release-work-20261105/sp-acceptance-preparation/run-bounded-export.sh",
+    "private_owner": "/tmp/java-release-work-20261105/sp-acceptance-preparation/course",
+    "qrc_prerequisites": [
+      {
+        "owner": "theory",
+        "wall": "1:00.50",
+        "native_inputs": 9,
+        "quarto_inspect": 2,
+        "quarto_version": 1,
+        "pandoc": 10,
+        "exit": 0,
+        "targets": 74,
+        "catalog": "/tmp/java-release-work-20261105/sp-acceptance-preparation/course/theory/_output/student/reference-catalog-local.json"
+      },
+      {
+        "owner": "practice",
+        "wall": "0:24.35",
+        "native_inputs": 2,
+        "quarto_inspect": 2,
+        "quarto_version": 1,
+        "pandoc": 2,
+        "exit": 0,
+        "targets": 2,
+        "catalog": "/tmp/java-release-work-20261105/sp-acceptance-preparation/course/practice/_output/student/reference-catalog-local.json"
+      },
+      {
+        "owner": "handbook",
+        "wall": "0:24.33",
+        "native_inputs": 2,
+        "quarto_inspect": 2,
+        "quarto_version": 1,
+        "pandoc": 2,
+        "exit": 0,
+        "targets": 15,
+        "catalog": "/tmp/java-release-work-20261105/sp-acceptance-preparation/course/handbook/_output/student/reference-catalog-local.json"
+      }
+    ],
+    "output": "/tmp/java-release-work-20261105/sp-acceptance-preparation/native",
+    "private_checks": "/tmp/java-release-work-20261105/sp-acceptance-preparation/private-checks.json",
+    "initial_script_state": "export-bounded.sh — первоначальный план подготовки; фактический запуск уже выполнен по run-bounded-export.sh в existing exactarchiveowner",
+    "handoff": {
+      "goal": "Приёмка Main двух actual SP transports",
+      "inputs": "SP599c9847,Core d21ddfd,PLfcd3320,Download106b958,Dregistry79abcf3",
+      "owner": "Main UI; DWorkspacecandidate; preparation owner sources не менял",
+      "ready": "Native output3questions2works verified; exactQRCsource-derived catalog references present; actual seed A/main only",
+      "checks": "/tmp/java-release-work-20261105/sp-acceptance-preparation/native-export-verification.json",
+      "next": "Main импортирует bounded output в новый local testcourse namespace и включает private candidate override без изменения Source; выполняет upload+save/close/resume/resubmit с actual worker"
+    }
+  },
+  "worker": {
+    "state": "не запускался; существующий feedback-ui PL стартует без workspace-host",
+    "command_inside_isolated_PL": "pnpm start-workspace-host --config <изолированный worker config> либо node /PrairieLearn/apps/workspace-host/dist/interface.js --config <config>",
+    "jobs": "HOST_JOBS_DIR=/tmp/java-release-work-20261105/feedback-ui/jobs; worker workspaceHostHomeDirRoot=/jobs/workspaces; host bind maps /tmp/.../jobs/workspaces/<remote_name>/current",
+    "parameters": [
+      "workspacePullImagesFromDockerHub=false",
+      "workspaceDevHostInstanceId отдельный feedback-ui-20261105",
+      "workspaceHostMinPortRange/MaxPortRange узкий незанятый диапазон",
+      "worker port8081 доступен только локальному PL, наружу не публиковать",
+      "использовать только новые workspace paths/containers/volumes"
+    ],
+    "network_boundary": "Pinned upstream worker createContainer PortBindings задаёт только HostPort без HostIp, по умолчанию публикация на all interfaces. Native networkMode bridge либо fixed no-internet. Нет config HostIp. Для согласованного loopback-only режима интегратор должен выбрать и подтвердить isolated worker сетевую схему; подготовитель не запускал worker и не менял глобальный Docker config.",
+    "evidence_needed": [
+      "живой editor/terminal и health endpoint настоящего candidate image",
+      "два настоящих PL submissions до/после resume",
+      "раздельно закрытие браузерной вкладки и фактический stop/start контейнера",
+      "сохранность intermediate index/worktree и конечной Git history/seed identity",
+      "доступность преподавателю hidden Git data и explanation"
+    ],
+    "limits": [
+      "Local fixture reference/manual проверка не является live worker/UI PASS",
+      "Архив/финальные файлы не доказывают обязательные действия restore/merge; короткий след сохраняется отдельно",
+      "Native PL manual не получает фиктивные 0/1 autograde rows"
+    ],
+    "temporary_handoff": "/tmp/java-release-discussion-20261105/coordination/feedback-workspace-worker-handoff.json"
+  },
+  "verification": {
+    "local_history": "Rebuilt: настоящий staged diff после add до F и selected snapshot A; bundle verify/clone, two parents D, branch F, measurements preserved PASS. Root closure ещё не получен: reference artifact provisional.",
+    "workspace_initial": "Actual canonical seed_recipe + actual PL trusted-git helpers создали только один A/main; clean status; reference solution не в seed",
+    "export_script": "bash -n PASS",
+    "render_or_export_pass": true,
+    "ui_pass": false,
+    "worker_pass": false,
+    "qrc_prerequisites": "PASS actualsource-derived3catalogs, требуемые12targets присутствуют",
+    "native_export": {
+      "result": "PASS",
+      "delivery_schema": 5,
+      "questions": [
+        "system-practice/exr-version-control-github-ssh",
+        "system-practice/exr-version-control-local-history",
+        "system-practice/exr-version-control-restore-selected-state"
+      ],
+      "works": [
+        "sec-lab-version-control",
+        "sec-unit-version-control-restore-selected-state"
+      ],
+      "upstream_grading": "Manual, никакого автоматического student score",
+      "question_controls": {
+        "local-history": "pl-file-upload file-patterns=* optional-file-patterns=*",
+        "restore-selected-state": "pl-workspace + pl-file-upload optional-file-patterns=*.zip,*.tar.gz"
+      },
+      "unresolved_qrc_markers": false,
+      "workspace_seed": {
+        "manifest_keys": [
+          "schema",
+          "files"
+        ],
+        "file_count": 11,
+        "git_head": "2f12c0ccccc3c10c483502559fa7efee33a52607",
+        "history_count": 1,
+        "branch": "main",
+        "clean": true,
+        "fsck": "PASS",
+        "only_reachable_A_objects": true,
+        "initial_README_notes": "PASS",
+        "runtime_identity": "создаётся actual Workspace entrypoint; не предзаполнена решением"
+      },
+      "cost": {
+        "wall_seconds": 91.91,
+        "native_inputs": 3,
+        "question_count": 3,
+        "work_count": 2,
+        "quarto_inspect": 2,
+        "quarto_render": 1,
+        "quarto_pandoc": 18,
+        "quarto_version": 1,
+        "pandoc_binary": 21,
+        "python": 2,
+        "git": 45,
+        "exit": 0
+      },
+      "ui_pass": false,
+      "worker_pass": false
+    }
+  },
+  "costs": {
+    "quarto_inspect": 6,
+    "quarto_render": "3 prereq owners +1 native child render",
+    "native_export": 1,
+    "docker_build_or_pull": 0,
+    "workspace_jobs": 0,
+    "source_changes": 0,
+    "fixture_script_wall_seconds": 0.43,
+    "prerequisite_pandoc": 14,
+    "export": {
+      "wall_seconds": 91.91,
+      "native_inputs": 3,
+      "question_count": 3,
+      "work_count": 2,
+      "quarto_inspect": 2,
+      "quarto_render": 1,
+      "quarto_pandoc": 18,
+      "quarto_version": 1,
+      "pandoc_binary": 21,
+      "python": 2,
+      "git": 45,
+      "exit": 0
+    },
+    "total_quarto_inspect": 8,
+    "total_pandoc_binary": 35,
+    "cost_chain_note": "strace собственных subprocess: startup wrappers shell/Deno считаются как один Quarto CLI; никакого per-project inspect. Theory9 один раз из-за union profile arrays; practice2/handbook2 ограничены в temp config, tasks3actualdocs."
+  },
+  "artifacts": {
+    "upload_zip": "/tmp/java-release-work-20261105/sp-acceptance-preparation/local-history-answer.zip",
+    "reference_trace": "/tmp/java-release-work-20261105/sp-acceptance-preparation/local-history-reference/versioning/explanation.md",
+    "initial_seed": "/tmp/java-release-work-20261105/sp-acceptance-preparation/workspace-initial",
+    "preparation_script": "/tmp/java-release-work-20261105/sp-acceptance-preparation/prepare-fixtures.py",
+    "summary": "/tmp/java-release-work-20261105/sp-acceptance-preparation/fixture-summary.json",
+    "native_export_verification": "/tmp/java-release-work-20261105/sp-acceptance-preparation/native-export-verification.json",
+    "prerequisite_costs": "/tmp/java-release-work-20261105/sp-acceptance-preparation/prerequisite-costs.json",
+    "staged_source_inputs": "/tmp/java-release-work-20261105/sp-acceptance-preparation/staged-source-inputs.json"
+  },
+  "reference_review": {
+    "status": "provisional-awaiting-root-closure",
+    "finding": "P2: прежний след не показывал подготовленное изменение/selected snapshot и объяснение ordinary commit",
+    "fix": "actual add перед наблюдением; HEAD A+содержимое A; status/diff/stageddiff/indexfiles/workfiles; прямое объяснение commit=index; Python/Linux execution описано честно",
+    "scope": "Только local-history fixturebuilder/reference ZIP/explanation. Workspacecommands/seed/nativeexport не изменялись. Предыдущий собственный artifact сохранён в *-before-review",
+    "checks": [
+      "bundle verify",
+      "новый clone из bundle",
+      "D имеет родителей B/F",
+      "seconds сохраняется на F",
+      "исходные measurements сохранены в reference и clone",
+      "ZIP содержит новые explanation и bundle"
+    ],
+    "updated_at": "2026-11-04T23:39:17.409665+00:00"
+  }
+}

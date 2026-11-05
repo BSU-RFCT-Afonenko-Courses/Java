@@ -1,0 +1,122 @@
+{
+  "дата_utc": "2026-11-04T23:57:02.866854+00:00",
+  "решение": "APPROVE в узкой границе явного Native gradable=false: инфраструктурный результат не записывается как нулевая оценка и не обновляет баллы assessment.",
+  "область": "Независимый read-only review downstream Native CLI exit0 → externalGraderCommon → generic external grading → grading-job model → SQL. Source/UI/SQLwrites не менялись; prod/старые БД/volumes не затрагивались.",
+  "допуск": {
+    "свидетельство": "/tmp/java-release-discussion-20261105/coordination/feedback-review-admission.json",
+    "исходный_ход": "01a1a890-9d74-7d92-a65c-eccacfb9ceab",
+    "полный_исходный_интервал_turn_contexts": 13,
+    "результат": true
+  },
+  "контейнер": {
+    "имя": "feedback-ui-20261105",
+    "id": "d3dfc6e458feb28191e939106a70056683b0673e8c1e91b4facca4a69ae86428",
+    "image": "sha256:e4f4164ace146dd46b1272c84a55ae94d460bd894f2721315eca2fccc43d1a9d"
+  },
+  "первичная_цепочка": [
+    {
+      "путь": "/PrairieLearn/apps/prairielearn/src/lib/externalGraderLocal.ts",
+      "свидетельство": "Exit0 разрешает чтение JSON; makeGradingResult сохраняет results в feedback."
+    },
+    {
+      "путь": "/tmp/java-release-work-20261105/feedback-ui/evidence/externalGraderCommon.ts",
+      "свидетельство": "Отсутствующий score становится промежуточным 0; весь data.results остаётся в feedback. grading_error напрямую не учитывается."
+    },
+    {
+      "путь": "/PrairieLearn/apps/prairielearn/src/lib/externalGrader.ts",
+      "строки": [
+        161,
+        171,
+        210,
+        216,
+        220
+      ],
+      "sha256": "bbdf56ec262226bdccc9d3f1a02484e0535b5eafca7ba4f2d6402c42a56e51fd",
+      "свидетельство": "gradable = jobSucceeded && !!(feedback.results.gradable ?? true); явный false передаётся в updateGradingJobAfterGrading, независимо от format_errors и промежуточного score."
+    },
+    {
+      "путь": "/PrairieLearn/apps/prairielearn/src/models/grading-job.ts",
+      "строки": [
+        163,
+        164,
+        165,
+        184,
+        191
+      ],
+      "sha256": "d6e813fe2dccb286ca37f592e0899474895ce4e1e7275062ed2d08475688f590",
+      "свидетельство": "При !gradable score=null, partial_scores=null, correct=null. updateInstanceQuestionGrade и updateAssessmentInstanceGrade вызываются только при gradable=true. Следующий LTI updateScore использует существующие assessment баллы, не этот промежуточный 0."
+    },
+    {
+      "путь": "/PrairieLearn/apps/prairielearn/src/models/grading-job.sql",
+      "строки": [
+        152,
+        156,
+        158,
+        188,
+        194,
+        214,
+        221,
+        233,
+        234
+      ],
+      "sha256": "06ab60d1d0382fe44ff94bf82e1d84fff4730c6a494ed712e862ed2d2349d63c",
+      "свидетельство": "SQL сохраняет submission/job gradable=false, score=NULL; correct=NULL из модели. num_tries и закрытие варианта требуют $gradable. Для assessment instance_question устанавливается invalid без изменения баллов. format_errors — отдельное сохраняемое поле, не gate начисления."
+    }
+  ],
+  "compiled_подтверждение": [
+    {
+      "путь": "/PrairieLearn/apps/prairielearn/dist/lib/externalGrader.js",
+      "строки": [
+        122,
+        130,
+        166
+      ],
+      "sha256": "3f7f130cd447ee05c41b6f6224ccb8cebe8999bbf6d07883cc01db76ff8fd0dc",
+      "результат": "Тот же explicit gradable gate."
+    },
+    {
+      "путь": "/PrairieLearn/apps/prairielearn/dist/models/grading-job.js",
+      "строки": [
+        83,
+        84,
+        85,
+        101,
+        105
+      ],
+      "sha256": "df226ebcbab9d5993d4b1e08b3bbeece98cf02238ee975461b9e735901f22812",
+      "результат": "Тот же score=NULL и запрет assessment update при !gradable."
+    }
+  ],
+  "actual_readonly_select": {
+    "контейнер": "feedback-ui-20261105",
+    "база": "postgres",
+    "ограничение": "PGOPTIONS=-cdefault_transaction_read_only=on; только SELECT",
+    "job_id": 6,
+    "submission_id": 6,
+    "qid": "toolerror",
+    "submission_gradable": false,
+    "submission_score": null,
+    "submission_correct": null,
+    "job_gradable": false,
+    "job_score": null,
+    "feedback_results_gradable": "false",
+    "grading_error": "true",
+    "format_errors": {
+      "_external_grader": []
+    },
+    "variant_num_tries": 0,
+    "instance_question_id": null,
+    "граница": "Это фактический preview. Реальный assessment переход с ненулевой исходной оценкой не воспроизводился; его защита установлена первичным actual source+compiled+SQL, а не только renderer."
+  },
+  "находки": [],
+  "рекомендация": "Не добавлять обязательный format_errors ради защиты оценки: explicit gradable=false уже является действующим downstream контрактом. Сохранять false в каждой infra/error проекции и no-score; grading_error/no-score сами по себе недостаточны, поскольку без gradable upstream использует true и common score=0. Русский контекст можно оставить в feedback.message; format_errors нужен лишь при отдельном продуктовом требовании к отображению.",
+  "проверки_и_стоимость": {
+    "повтор_baseline": false,
+    "новые_сборки_или_тесты": 0,
+    "sql_selects": 2,
+    "sql_writes": 0,
+    "docker_и_source": "Только чтение кода/compiled/SQL/hash/inspect нового контейнера; процессовые затраты малые, основная wall стоимость — policy review инструментов. Одна пакетная попытка остановилась по timeout automatic approval, затем узкие read-only вызовы успешно разрешены. Во второй пакетной попытке rg отсутствовал в контейнере; compiled проверен штатным grep.",
+    "wall_секунд_приблизительно": 550,
+    "перепроверка_допуска": "Полный исходный интервал повторён перед заключением."
+  }
+}
