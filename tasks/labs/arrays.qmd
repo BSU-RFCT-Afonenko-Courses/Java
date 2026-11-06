@@ -7,29 +7,29 @@ assessment:
   kind: lab
   prairielearn:
     pass:
-      at-least: 3
+      at-least: 6
     max-points: 100
-    auto-points: 26.666666666666664
-    manual-points: 6.666666666666666
+    auto-points: 13.333333333333334
+    manual-points: 3.3333333333333335
     slot-overrides:
       exr-arrays-reverse-array:
-        auto-points: 26.666666666666664
-        manual-points: 6.666666666666666
+        auto-points: 13.333333333333334
+        manual-points: 3.3333333333333335
       exr-arrays-subtract-array-average:
-        auto-points: 26.666666666666664
-        manual-points: 6.666666666666666
+        auto-points: 13.333333333333334
+        manual-points: 3.3333333333333335
       exr-arrays-sort-matrix-rows:
-        auto-points: 26.666666666666664
-        manual-points: 6.666666666666666
+        auto-points: 13.333333333333334
+        manual-points: 3.3333333333333335
       exr-arrays-array-average:
-        auto-points: 0
-        manual-points: 0
+        auto-points: 13.333333333333334
+        manual-points: 3.3333333333333335
       exr-arrays-move-row-zeros:
-        auto-points: 0
-        manual-points: 0
+        auto-points: 13.333333333333334
+        manual-points: 3.3333333333333335
       exr-arrays-sort-array:
-        auto-points: 0
-        manual-points: 0
+        auto-points: 13.333333333333334
+        manual-points: 3.3333333333333335
       exr-arrays-cyclic-matrix-shift:
         auto-points: 0
         manual-points: 0
@@ -60,12 +60,13 @@ default-exercise-statement-visibility: open
 @handbook:sec-api-arrays. Введение к работе:
 @practice:sec-practice-arrays.
 
-## Самостоятельные задачи
-
-::: {.task-items stage="homework"}
+::: {.task-items stage="homework" requirement="required"}
 1. @exr-arrays-reverse-array
 1. @exr-arrays-subtract-array-average
 1. @exr-arrays-sort-matrix-rows
+1. @exr-arrays-array-average
+1. @exr-arrays-move-row-zeros
+1. @exr-arrays-sort-array
 :::
 
 Обратный вывод сохраняет входной массив. Вычитание среднего создаёт новый
@@ -86,27 +87,12 @@ default-exercise-statement-visibility: open
 почему одного `matrix.clone()` недостаточно для независимого изменения чисел
 в строках.
 
-Дополнительные упражнения: @tasks:exr-arrays-array-average и
-@tasks:exr-arrays-move-row-zeros. В них отрабатываются вычисление среднего
-и сохранение порядка при перемещении элементов.
+При вычислении среднего учитывайте тип результата, а при перемещении
+элементов — сохранение требуемого порядка.
 
 ## Условия задач
 
 Полные условия и общие правила находятся в темах банка: {{< xref tasks sec-bank-arrays style="title" >}}.
-
-## Задания по желанию
-
-Эти задания можно выполнить для дополнительной практики. Они не входят в обязательный состав работы и не увеличивают её обязательный балл. Выберите интересующую задачу; выполнять остальные задания этого раздела предварительно не требуется.
-
-## Обход и перестановка элементов
-
-::: {.task-items stage="homework" requirement="optional"}
-1. @exr-arrays-array-average
-1. @exr-arrays-move-row-zeros
-1. @exr-arrays-sort-array
-:::
-
-## Координаты и свойства матрицы
 
 ::: {.task-items stage="homework" requirement="optional"}
 1. @exr-arrays-cyclic-matrix-shift
