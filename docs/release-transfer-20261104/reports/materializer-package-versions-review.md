@@ -8,7 +8,7 @@
 
 ## Область
 
-Read-only review Java `b65ea6a..99e31148`: `tools/materialize-providers.py`, `tools/test-materialize-providers.py`, `docs/provider-installation.md`, окружающий prewrite путь и авторский `materializer-package-versions.md`. Повтор tests, materializer, whole-course, render/build или hash запрещён поручением и не выполняется. Прочитаны полный diff трёх файлов и полный materializer/test source; новые опыты не выполнялись.
+Read-only review Java `b65ea6a..99e31148`: `tools/materialize-providers.py`, `tools/test-materialize-providers.py`, `docs/provider-installation.md`, окружающий prewrite путь и авторский [materializer-package-versions.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/materializer-package-versions.md). Повтор tests, materializer, whole-course, render/build или hash запрещён поручением и не выполняется. Прочитаны полный diff трёх файлов и полный materializer/test source; новые опыты не выполнялись.
 
 
 ## Результат: Clean

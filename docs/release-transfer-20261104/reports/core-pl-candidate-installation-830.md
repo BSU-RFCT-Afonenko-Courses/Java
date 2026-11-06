@@ -1,6 +1,6 @@
 # Адресная установка Core 830 + PrairieLearn da
 
-3 ноября 2026. После отдельного разрешения root с независимым ACCEPT Core830 и `pl-ci-core-map-gate-review.md` установлены exact Core `830381697beea4106655965e10605cc13987199b` + PL `da2ad6b6c00891590e59e5abccf3d1eb4ff552f7`. Один вызов --write: начало UTC `2026-11-03T17:26:38.704555+00:00`, wall `0.234216331` s, exit0. Отдельного preflight не было.
+3 ноября 2026. После отдельного разрешения root с независимым ACCEPT Core830 и [pl-ci-core-map-gate-review.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-ci-core-map-gate-review.md) установлены exact Core `830381697beea4106655965e10605cc13987199b` + PL `da2ad6b6c00891590e59e5abccf3d1eb4ff552f7`. Один вызов --write: начало UTC `2026-11-03T17:26:38.704555+00:00`, wall `0.234216331` s, exit0. Отдельного preflight не было.
 
 Минимальная копия `core-pl-candidate-installation-830.py` отличается от047script только PL constant и именем result JSON. Полные command/time в [core-pl-candidate-installation-830-execution.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-pl-candidate-installation-830-execution.json), stdout в `.log`, scopes/path/status/hashes в [core-pl-candidate-installation-830-result.json](core-pl-candidate-installation-830-result.json). Прежние332/f10/047scripts/results/evidence сохранены. Target читается из exact committed Git blobs, live dirty Source не читался.
 

@@ -1,6 +1,6 @@
 # Согласование release currentness fixture с Native bridge
 
-Исходный head поручения: `0cf20ccc0a4853b704544c7252fcaf3ccb84a518`; checkout `core-native-bridge`. Изменён только `tests/release-generated-resource-currentness.ts`. Production, конфигурации и runner не менялись. Основание — [hosted CI 0cf](core-ci-0cf20cc-20261104.md): actual A3 прошёл, следующий первый отказ принадлежал старому требованию whole-owner membership.
+Исходный head поручения: `0cf20ccc0a4853b704544c7252fcaf3ccb84a518`; checkout `core-native-bridge`. Изменён только `tests/release-generated-resource-currentness.ts`. Production, конфигурации и runner не менялись. Основание — [hosted CI 0cf](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-ci-0cf20cc-20261104.md): actual A3 прошёл, следующий первый отказ принадлежал старому требованию whole-owner membership.
 
 Прочитаны весь тест, helper producer, `tools/check-core-operation-ts.sh`, адресные участки `operation.ts:validateRelease` и `source-snapshot.ts:ownedPhysical/assertSources`. Действующий bridge сохраняет initial provenance, guards выбранных raw QMD и physical project path; byte/role acquisition проекта принадлежит actual post-child A1. Изменение соседей и bytes непрочитанного project source не требует полного freeze initial owner.
 

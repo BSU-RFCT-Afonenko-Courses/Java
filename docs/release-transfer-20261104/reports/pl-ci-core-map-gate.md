@@ -1,6 +1,6 @@
 # PL CI: переносимая карта типов Core и gate-before-env
 
-3 ноября 2026. Отдельная партия после типового commit `4e4ab0cd5499006826f5ab21d1e3fdeef9c313b1`. Исходное дерево PL чистое. Причины первоначального отказа hosted run `41680971465` сохранены координатором в `pl-ci-f9-failure.md`; повторный hosted workflow этим исполнителем не запускался.
+3 ноября 2026. Отдельная партия после типового commit `4e4ab0cd5499006826f5ab21d1e3fdeef9c313b1`. Исходное дерево PL чистое. Причины первоначального отказа hosted run `41680971465` сохранены координатором в [pl-ci-f9-failure.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-ci-f9-failure.md); повторный hosted workflow этим исполнителем не запускался.
 
 ## Собственный допуск и границы
 
