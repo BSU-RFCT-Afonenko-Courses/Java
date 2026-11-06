@@ -51,62 +51,62 @@
 
 **Интерфейс:** caller `PUT /internal/gateway/enrollment` с `userUid`, `instance`, `courseKey`, `role: student|teacher`, `email: string|null`. Ответ: `schemaVersion`, `userUid`, `instance`, `courseKey`, `enrolled`, `path`. Изменения этого договора сначала согласовать с S1.
 
-- [ ] Проверить отрицательные сценарии и закрепить осмысленные падающие тесты до изменения поведения.
-- [ ] Реализовать новое auth-only приложение, временный immutable snapshot и точное credential binding; убрать users registry и часовую возможность повторного handoff.
-- [ ] Сохранить UID; проверять saved/current регистрацию и course mapping; consume flow до Bridge.
-- [ ] Проверить replay, expiry, direct callback, forged headers, parallel callback, mapping change, failure/timeout и logout/rebootstrap.
-- [ ] Private signing key удалять только после сверки действующей регистрации Moodle.
-- [ ] Независимая рецензия, адресные проверки, отдельный архитектурный PR; передать S1 принятую версию для собственного стенда.
+- [x] Проверить отрицательные сценарии и закрепить осмысленные падающие тесты до изменения поведения.
+- [x] Реализовать новое auth-only приложение, временный immutable snapshot и точное credential binding; убрать users registry и часовую возможность повторного handoff.
+- [x] Сохранить UID; проверять saved/current регистрацию и course mapping; consume flow до Bridge.
+- [x] Проверить replay, expiry, direct callback, forged headers, parallel callback, mapping change, failure/timeout и logout/rebootstrap.
+- [x] Private signing key удалять только после сверки действующей регистрации Moodle.
+- [x] Независимая рецензия, адресные проверки, отдельный архитектурный PR; передать S1 принятую версию для собственного стенда.
 
 ## S1: приватный адаптер и собственный стенд — high
 
 **Файлы:** Platform `bridge/server.mjs`, `bridge/native.sql`, enrollment schema, proxy, относящиеся bridge/proxy tests/docs. Общий CI и Docker patch/hash инструменты принадлежат S3.
 
-- [ ] Зафиксировать единственный фактический enrollment договор с S2; удалить прежний альтернативный контракт.
-- [ ] Удалить legacy HTTP/assignment/grade handlers и SQL, сохранив native grants/audit/advisory lock и blocked/access guards.
-- [ ] Проверить три роли, включая owner с Moodle Learner; email не объединяет аккаунты, автоматического отзыва прав нет.
-- [ ] Принять очищенные Platform-коммиты S3 и опубликовать единый проверенный Platform PR.
-- [ ] Выполнить сопоставимые полные измерения экспорта Java до/после в одинаковых условиях кеша; не повторять без причины.
-- [ ] Развернуть новый Gateway только на собственном тестовом стенде; сохранить БД и ранее импортированные курсы.
+- [x] Зафиксировать единственный фактический enrollment договор с S2; удалить прежний альтернативный контракт.
+- [x] Удалить legacy HTTP/assignment/grade handlers и SQL, сохранив native grants/audit/advisory lock и blocked/access guards.
+- [x] Проверить три роли, включая owner с Moodle Learner; email не объединяет аккаунты, автоматического отзыва прав нет.
+- [x] Принять очищенные Platform-коммиты S3 и опубликовать единый проверенный Platform PR.
+- [x] Выполнить сопоставимые полные измерения экспорта Java до/после в одинаковых условиях кеша; не повторять без причины.
+- [x] Развернуть новый Gateway только на собственном тестовом стенде; сохранить БД и ранее импортированные курсы.
 - [ ] После доступности доверия CA выполнить настоящий browser LTI и Workspace save/stop/resume; получить снимки без секретов.
-- [ ] Подготовить изолированную проверку переноса и отката; историческое восстановление не считать принятым без выполнения.
+- [x] Подготовить изолированную проверку переноса и отката; историческое восстановление не считать принятым без выполнения.
 - [ ] По дополнительному запросу пользователя: подготовить и выполнить перенос курса на назначенную VM к19:00, затем пользователей сегодня после фактической сверки identity/history и проверки восстановления. Доставить реальные принятые образы без ослабления production/candidate guards; источник и назначение предварительно установить из локального контекста.
 
 ## S3: собственные hashes/proofs и Git — medium
 
 **Файлы:** Platform `tools/delivery_verification.py`, `vendor-native-schemas.py`, `delivery4.py`, Docker patch scripts и относящиеся tests/CI/docs; Java/SP `CI/check-production-pins.py`, `CI/toolchain.json` и исключительно связанные устаревшие tests/docs.
 
-- [ ] Удалить SHA manifest/циклы схем; сохранить функциональную schema validation.
-- [ ] Удалить собственные SHA исходников Docker; сохранить native OCI identity и применимость патчей.
-- [ ] Удалить собственную квалификацию Git object/index; необходимые функциональные проверки выполнять штатным Git.
-- [ ] Удалить отключённые course proof consumers, runner/asset proof fields и обращения к удалённому release assembly.
-- [ ] Проверить положительные пакеты и содержательные отрицательные случаи без зеркальных внутренних тестов.
-- [ ] Независимая рецензия; Platform-коммиты передать S1, отдельные Java/SP-коммиты root. Публичные общие ветки одновременно не отправлять.
+- [x] Удалить SHA manifest/циклы схем; сохранить функциональную schema validation.
+- [x] Удалить собственные SHA исходников Docker; сохранить native OCI identity и применимость патчей.
+- [x] Удалить собственную квалификацию Git object/index; необходимые функциональные проверки выполнять штатным Git.
+- [x] Удалить отключённые course proof consumers, runner/asset proof fields и обращения к удалённому release assembly.
+- [x] Проверить положительные пакеты и содержательные отрицательные случаи без зеркальных внутренних тестов.
+- [x] Независимая рецензия; Platform-коммиты передать S1, отдельные Java/SP-коммиты root. Публичные общие ветки одновременно не отправлять.
 
 ## S5: Core и экспорт PrairieLearn — medium
 
 **Файлы:** Core `artifacts/project.ts`, Pandoc runner, `runtime/operation.ts`, `assignment-admission.ts`, `assignment-provenance.ts`, `body-export/model.ts`, `package-contracts.ts`; PL `application/native-materialize.ts`, `export-course.ts` и относящиеся tests/docs.
 
-- [ ] Установить необходимость каждого materialization/Pandoc прохода и переиспользовать готовый AST/результат внутри операции.
-- [ ] Сократить доказанные дубликаты qualification/provenance envelopes, сохранив реальные privacy и ownership guards.
-- [ ] Разобрать оба Core inspect пути и передавать имеющийся контекст там, где это сохраняет профили и выбранные входы.
-- [ ] Сузить `any` на конкретных используемых границах без нового AST framework.
-- [ ] Проверить teacher/student/private, linked resources/conflicts, unsupported raw и действующие публичные API. Не возвращать удалённые aliases ради старых тестов.
-- [ ] Согласовать с S4 передачу готового контекста, пройти независимую рецензию и обновить Core/PL PR.
+- [x] Установить необходимость каждого materialization/Pandoc прохода и переиспользовать готовый AST/результат внутри операции.
+- [x] Сократить доказанные дубликаты qualification/provenance envelopes, сохранив реальные privacy и ownership guards.
+- [x] Разобрать оба Core inspect пути и передавать имеющийся контекст там, где это сохраняет профили и выбранные входы.
+- [x] Сузить `any` на конкретных используемых границах без нового AST framework.
+- [x] Проверить teacher/student/private, linked resources/conflicts, unsupported raw и действующие публичные API. Не возвращать удалённые aliases ради старых тестов.
+- [x] Согласовать с S4 передачу готового контекста, пройти независимую рецензию и обновить Core/PL PR.
 
 ## S4: Site, QRC, Download — medium
 
 **Файлы:** Site root/child config/compose и `tests/site-domains.ts`; QRC `entrypoints/post.ts`; Download standalone runtime; относящиеся tests/docs.
 
-- [ ] Исправить реальный CI failure: `tests/site-domains.ts:294` обращается к удалённому `op.resourceInventory`; использовать действующий API без alias.
-- [ ] Сократить повторный inspect Site root/children и QRC post-render/version только при наличии равноценного готового контекста.
-- [ ] Сохранить функциональный standalone fallback Download; на integrated native пути отдельного inspect нет.
-- [ ] Явно обозначить существующие format boundaries Core HTML/Reveal и QRC HTML; не добавлять неподтверждённую поддержку форматов.
-- [ ] Согласовать контекст с S5; Core-файлы редактирует только S5. Адресные проверки, независимая рецензия и PR.
+- [x] Исправить реальный CI failure: `tests/site-domains.ts:294` обращается к удалённому `op.resourceInventory`; использовать действующий API без alias.
+- [x] Сократить повторный inspect Site root/children и QRC post-render/version только при наличии равноценного готового контекста.
+- [x] Сохранить функциональный standalone fallback Download; на integrated native пути отдельного inspect нет.
+- [x] Явно обозначить существующие format boundaries Core HTML/Reveal и QRC HTML; не добавлять неподтверждённую поддержку форматов.
+- [x] Согласовать контекст с S5; Core-файлы редактирует только S5. Адресные проверки, независимая рецензия и PR.
 
 ## Координация root
 
 - [ ] Следить за интерфейсами и владением файлами, поднимать сюда вопросы разрешений.
-- [ ] Интегрировать проверенные Java/SP-коммиты и установленные расширения после source review.
+- [x] Интегрировать проверенные Java/SP-коммиты и установленные расширения после source review.
 - [ ] Контрольный итог до 15:20; после реализации независимый Sol/ultra обзор без нового доказательного механизма.
 - [ ] После 15:00 включить browser/Workspace результаты и снимки в окончательный отчёт; отправить изменения и отчёты в PR, проверить readback.
