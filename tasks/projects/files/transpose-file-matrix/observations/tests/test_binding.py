@@ -10,7 +10,7 @@ JAVA = Path(os.environ.get('JAVA_HOME', '/usr/lib/jvm/java-25-openjdk')) / 'bin'
 
 
 class TransposeBinding(unittest.TestCase):
-    def execute(self, body, student='public class Study {public static void process(java.nio.file.Path in, java.nio.file.Path out) throws java.lang.Exception {throw new IllegalStateException("PRIVATE_STUDENT_FAILURE");}}'):
+    def execute(self, body: str, student: str='public class Study {public static void process(java.nio.file.Path in, java.nio.file.Path out) throws java.lang.Exception {throw new IllegalStateException("PRIVATE_STUDENT_FAILURE");}}') -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             tests, answer = root/'tests', root/'student'
@@ -27,7 +27,7 @@ class TransposeBinding(unittest.TestCase):
                 result = subprocess.run(command, cwd=root, capture_output=True, text=True, timeout=30)
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
-    def test_free_distinct_labels_and_row_punctuation(self):
+    def test_free_distinct_labels_and_row_punctuation(self) -> None:
         self.execute('''
           for(String report : List.of("Исходные данные:\\n1 2\\n3 4\\nПосле обмена индексов:\\n1 3\\n2 4\\n", "Матрица A (2 × 2):\\n[1, 2]\\n[3, 4]\\nМатрица B:\\n[1, 3]\\n[2, 4]\\n", "До: -7\\nПосле: -7\\n")) {
             Path p=Path.of("result.txt"); Files.writeString(p,report);
@@ -37,7 +37,7 @@ class TransposeBinding(unittest.TestCase):
           }
         ''')
 
-    def test_labels_after_values_frames_and_single_line_matrices(self):
+    def test_labels_after_values_frames_and_single_line_matrices(self) -> None:
         self.execute('''for(java.lang.String report:List.of(
           "1 2\\n3 4\\nИсходная\\n1 3\\n2 4\\nТранспонированная\\n",
           "До\\n|1 2|\\n|3 4|\\nПосле\\n|1 3|\\n|2 4|\\n",
@@ -52,25 +52,25 @@ class TransposeBinding(unittest.TestCase):
         Path p=Path.of("result.txt");Files.writeString(p,"До\\n-7;\\nПосле\\n-7;\\n");
         if(TaskBinding.read(p).transposed()[0][0]!=-7)throw new AssertionError("terminator");''')
 
-    def test_trusted_launcher_missing_class_is_not_a_student_refusal(self):
+    def test_trusted_launcher_missing_class_is_not_a_student_refusal(self) -> None:
         self.execute('''Path empty=Files.createDirectory(Path.of("empty"));
           try {TaskBinding.refused(()->coursesupport.JavaProcess.runCheckingUncaught(empty,"ProcessPort",""));
             throw new AssertionError("trusted bootstrap failure was accepted");
           }catch(java.io.IOException expected){}''')
 
-    def test_wrong_values_are_observed_without_repair(self):
+    def test_wrong_values_are_observed_without_repair(self) -> None:
         self.execute('''Path p=Path.of("result.txt");Files.writeString(p,"До\\n1 2\\n3 4\\nПосле\\n9 8\\n7 6\\n");
           if(!Arrays.deepEquals(new int[][]{{9,8},{7,6}},TaskBinding.read(p).transposed()))throw new AssertionError("reader corrected student data");''')
 
-    def test_invalid_report_is_student_assertion_not_trusted_exception(self):
+    def test_invalid_report_is_student_assertion_not_trusted_exception(self) -> None:
         self.execute('''Path p=Path.of("result.txt");Files.writeString(p,"До\\n1 2\\nПосле\\n3\\n");
           try{TaskBinding.read(p);throw new RuntimeException("invalid report accepted");}catch(AssertionError expected){}''')
 
-    def test_child_exception_preserves_typed_student_failure(self):
+    def test_child_exception_preserves_typed_student_failure(self) -> None:
         self.execute('''try{FileInvocation.run("input.txt","result.txt");throw new AssertionError("child failure lost");}
           catch(coursesupport.JavaProcess.UncaughtStudentException expected){}''')
 
-    def test_expected_io_refusal_is_accepted_with_input_preserved(self):
+    def test_expected_io_refusal_is_accepted_with_input_preserved(self) -> None:
         self.execute('''TaskBinding.refused(()->TaskBinding.run(Path.of("missing"),Path.of("result.txt")));''', 'public class Study {public static void process(java.nio.file.Path in,java.nio.file.Path out)throws java.lang.Exception {throw new java.io.IOException("Нет входного файла");}}')
 
 

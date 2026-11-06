@@ -4,13 +4,28 @@
 Запуск: python observation-regressions.py --java-bin /path/to/jdk25/bin
     --junit /path/to/junit-platform-console-standalone.jar --output /tmp/files-checks
 Собирает только эталон, наблюдатель и малые регрессии, без Gradle и course build.
-Для узкой проверки сообщений опубликованных комплектов добавьте --student-messages.
 """
 import argparse
 import json
 from pathlib import Path
 import subprocess
 import time
+from typing import Literal, TypedDict
+
+
+class Arguments(argparse.Namespace):
+    java_bin: Path
+    junit: Path
+    output: Path
+    task: list[str] | None
+    protocol_only: bool
+
+
+class TaskResult(TypedDict):
+    task: str
+    status: Literal['PASS', 'FAIL']
+    seconds: float
+    log: str
 
 READABILITY = r'''
 import org.junit.jupiter.api.Test;
@@ -84,21 +99,19 @@ public class ProcessPort {
 }
 '''
 
-def main():
+def main() -> int:
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--java-bin',required=True,type=Path)
     parser.add_argument('--junit',required=True,type=Path)
     parser.add_argument('--output',required=True,type=Path)
     parser.add_argument('--task',action='append')
-    mode=parser.add_mutually_exclusive_group()
-    mode.add_argument('--protocol-only',action='store_true')
-    mode.add_argument('--student-messages',action='store_true')
-    args=parser.parse_args()
+    parser.add_argument('--protocol-only',action='store_true')
+    args=parser.parse_args(namespace=Arguments())
     tasks=sorted(task for task in Path(__file__).parent.iterdir() if (task/'observations/src/test/java').is_dir())
     unknown=set(args.task or [])-{task.name for task in tasks}
     if unknown:
         parser.error('Неизвестные проекты: '+', '.join(sorted(unknown)))
-    results=[]
+    results: list[TaskResult]=[]
     for task in tasks:
         observations=task/'observations/src/test/java'
         if not observations.is_dir() or args.task and task.name not in args.task:
@@ -114,25 +127,19 @@ def main():
             directory.mkdir(parents=True,exist_ok=True)
         (fixtures/'ObservationReadabilityTest.java').write_text(READABILITY)
         public=(observations/'PublicChecks.java').read_text()
-        if not args.student_messages and 'static int example(' in public:
+        if 'static int example(' in public:
             (fixtures/'ObservationInfrastructureTest.java').write_text(INFRASTRUCTURE)
-        if not args.student_messages and (observations/'FileInvocation.java').exists():
+        if (observations/'FileInvocation.java').exists():
             (fixtures/'ObservationRefusalTest.java').write_text(REFUSAL)
         sources=sorted(observations.rglob('*.java'))
-        if args.student_messages:
-            replacements={'PublicChecks.java':task/'student/src/test/java/PublicChecks.java'}
-            student_binding=task/'student/src/test/java/TaskBinding.java'
-            if student_binding.exists():
-                replacements['TaskBinding.java']=student_binding
-            sources=[replacements.get(source.name,source) for source in sources]
-        commands=[
+        commands: list[list[str | Path]]=[
             [args.java_bin/'javac','--release','25','-encoding','UTF-8','-d',main_classes,*sorted((task/'reference/src/main/java').rglob('*.java'))],
             [args.java_bin/'javac','--release','25','-encoding','UTF-8','-cp',str(main_classes)+':'+str(args.junit),'-d',test_classes,*sources,*sorted(fixtures.glob('*.java'))],
             [args.java_bin/'java','-jar',args.junit,'execute','--class-path',str(test_classes)+':'+str(main_classes),'--scan-class-path','--disable-banner','--details=summary'],
         ]
         if args.protocol_only:
             commands=[]
-        if not args.student_messages and (observations/'FileInvocation.java').exists():
+        if (observations/'FileInvocation.java').exists():
             protocol=work/'protocol'
             protocol.mkdir(exist_ok=True)
             (protocol/'ProcessPort.java').write_text(PORT_FIXTURE)
@@ -143,14 +150,17 @@ def main():
                 [args.java_bin/'javac','--release','25','-encoding','UTF-8','-cp',args.junit,'-d',protocol,observations/'FileInvocation.java',observations/'coursesupport/JavaProcess.java',*sorted(protocol.glob('*.java'))],
                 [args.java_bin/'java','-jar',args.junit,'execute','--class-path',str(protocol),'--scan-class-path','--disable-banner','--details=summary'],
             ])
-        log=[]
+        log: list[str]=[]
+        result: subprocess.CompletedProcess[str] | None=None
         for command in commands:
             result=subprocess.run(list(map(str,command)),text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
             log.append('$ '+' '.join(map(str,command))+'\n'+result.stdout)
             if result.returncode:
                 break
+        if result is None:
+            parser.error('Для выбранного проекта не сформированы команды проверки')
         (work/'run.log').write_text('\n'.join(log))
-        record={'task':task.name,'status':'PASS' if result.returncode==0 else 'FAIL','seconds':round(time.monotonic()-start,3),'log':str(work/'run.log')}
+        record: TaskResult={'task':task.name,'status':'PASS' if result.returncode==0 else 'FAIL','seconds':round(time.monotonic()-start,3),'log':str(work/'run.log')}
         results.append(record)
         print(json.dumps(record,ensure_ascii=False),flush=True)
     if not results:
