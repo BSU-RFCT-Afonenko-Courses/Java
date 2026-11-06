@@ -107,7 +107,7 @@ static <T extends Comparable<? super T>> T flexible(T a, T b)
 результате. Причины вывода подробно разобраны в
 @theory:sec-t-type-relations-comparison-target. [@bib-jls-invocation-inference]
 
-Полная программа: [Demo.java](../examples/generics/java/comparison/Demo.java). Из
+Полная программа: [Demo.java](examples/generics/java/comparison/Demo.java). Из
 каталога `java/comparison` распакованного комплекта:
 
 ```bash
@@ -123,8 +123,8 @@ java -cp out Demo
 
 ## Полные примеры и запуск {#sec-h-generic-methods-examples}
 
-[Скачать исходники примеров](../examples/generics-examples.zip). В
-[README комплекта](../examples/generics/README.md) собраны готовые команды и
+[Скачать исходники примеров](examples/generics-examples.zip). В
+[README комплекта](examples/generics/README.md) собраны готовые команды и
 ожидаемые результаты. Комплект содержит самостоятельные программы из теории: коробку
 и мостовой метод, сравнение `Person`/`Student`, операции над массивом и списками,
 проверяемое исключение, сумму произведений в четырёх языках. Названия каталогов
@@ -159,7 +159,7 @@ java -cp out EarlyCheckedDemo
 Этот пример выводит `7`, `empty`, `дальше`; отказ пропускает оставшуюся часть `try`,
 а `catch` позволяет продолжить выполнение.
 
-Для [Java-версии dot](../examples/generics/java/dot/Demo.java) из `java/dot`:
+Для [Java-версии dot](examples/generics/java/dot/Demo.java) из `java/dot`:
 
 ```bash
 javac --release 25 -Xlint:unchecked -d out Demo.java
@@ -174,7 +174,7 @@ java -cp out Demo
 
 ## C++20: требования к выражениям и длине {#sec-h-generic-methods-cpp-setup}
 
-Файл [main.cpp](../examples/generics/cpp/main.cpp) включает необходимые заголовки,
+Файл [main.cpp](examples/generics/cpp/main.cpp) включает необходимые заголовки,
 концепт `DotElement`, варианты `dot` для `std::vector<T>` и `std::array<T, N>`,
 действительные и комплексные данные. Из каталога `cpp`:
 
@@ -188,7 +188,7 @@ g++ -std=c++20 -Wall -Wextra -pedantic main.cpp -o dot
 проверяет допустимость выражений; нейтральность `T{}` остаётся требованием к
 выбранным операциям и значениям. [@bib-cpp-requires]
 
-Отдельный [negative.cpp](../examples/generics/cpp/negative.cpp) вызывает вариант для
+Отдельный [negative.cpp](examples/generics/cpp/negative.cpp) вызывает вариант для
 массивов длины 2 и 3:
 
 ```bash
@@ -201,10 +201,10 @@ g++ -std=c++20 -fsyntax-only negative.cpp
 
 ## C#: статические операции интерфейса {#sec-h-generic-methods-csharp-setup}
 
-[Program.cs](../examples/generics/csharp/Program.cs) использует
+[Program.cs](examples/generics/csharp/Program.cs) использует
 `IAdditionOperators`, `IMultiplyOperators`, `IAdditiveIdentity` из
 `System.Numerics`. Эта форма требует C# 11 и .NET 7 или новее; поставляемый
-[Dot.csproj](../examples/generics/csharp/Dot.csproj) выбирает C# 11 и .NET 10.
+[Dot.csproj](examples/generics/csharp/Dot.csproj) выбирает C# 11 и .NET 10.
 Конфигурация комплекта использует установленный SDK 10.0.1xx и его библиотеки:
 внешних пакетов у этого примера нет. Из каталога `csharp`:
 
@@ -223,9 +223,9 @@ dotnet run --project Dot.csproj
 
 | Файл | Назначение |
 |---|---|
-| [python_dot.py](../examples/generics/python/python_dot.py) | Обычный `dot` без аннотаций, с числовыми `+` и `*` |
-| [python_typed.py](../examples/generics/python/python_typed.py) | Тот же цикл с аннотациями `Sequence[float | complex]` |
-| [python_negative.py](../examples/generics/python/python_negative.py) | Передача строки аннотированной числовой функции |
+| [python_dot.py](examples/generics/python/python_dot.py) | Обычный `dot` без аннотаций, с числовыми `+` и `*` |
+| [python_typed.py](examples/generics/python/python_typed.py) | Тот же цикл с аннотациями `Sequence[float | complex]` |
+| [python_negative.py](examples/generics/python/python_negative.py) | Передача строки аннотированной числовой функции |
 
 Из каталога `python`:
 
@@ -263,7 +263,7 @@ python3 python_negative.py
 
 ### Переданные операции и Protocol {#sec-h-generic-methods-python-protocol}
 
-[python_protocol.py](../examples/generics/python/python_protocol.py) передаёт
+[python_protocol.py](examples/generics/python/python_protocol.py) передаёт
 операции отдельным объектом. `Arithmetic[T](Protocol)` связывает типы элементов,
 входов и результатов операций; реализации для `float` и `complex` подходят по
 структуре, без наследования от `Arithmetic`. Объявления параметров типов в
@@ -277,7 +277,7 @@ python3 python_protocol.py
 Первые два результата — `11.0` и `(11+1j)`. Третья строка `2` показывает число
 умножений, сохранённое объектом `FloatArithmetic` после первого вычисления. Наличие
 состояния у объекта операций не меняет связь типов протокола. В отдельном
-[python_protocol_negative.py](../examples/generics/python/python_protocol_negative.py)
+[python_protocol_negative.py](examples/generics/python/python_protocol_negative.py)
 метод `WrongArithmetic.zero()` возвращает `str` вместо `float`:
 
 ```bash
