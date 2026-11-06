@@ -28,7 +28,8 @@ class DemoTest {
 
     private static int[] values() throws Exception {
         return Arrays.stream(run("").strip().split("\\p{javaWhitespace}+"))
-                .mapToInt(Integer::parseInt)
+                .mapToInt(value -> assertDoesNotThrow(() -> Integer.parseInt(value),
+                        "Выведите простые числа в виде целых чисел, разделённых пробелами"))
                 .toArray();
     }
 
