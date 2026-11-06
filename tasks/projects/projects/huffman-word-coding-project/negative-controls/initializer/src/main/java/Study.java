@@ -2,7 +2,7 @@ import java.util.Map;
 import java.util.*;
 class Main {public static void main(String[]args){Object r=Study.encode(args.length==0?"one two two three three three":String.join(" ",args));Study.frequencies(r).forEach((word,count)->System.out.println(word+" — "+count+" — "+Study.codes(r).get(word)));System.out.println(Study.bits(r));}}
 
-public class Study {static {if(java.lang.System.getProperty("course.initializer.marker")!=null){try{java.nio.file.Files.writeString(java.nio.file.Path.of(java.lang.System.getProperty("course.initializer.marker")),"student initializer executed");}catch(java.io.IOException e){throw new java.lang.RuntimeException(e);}throw new java.lang.IllegalStateException("initializer sentinel");}}public static Object encode(String text){return Huffman.encode(text);}public static Map<String,Long>frequencies(Object result){return ((Huffman.Encoded)result).frequencies();}public static Map<String,String>codes(Object result){return ((Huffman.Encoded)result).codes();}public static String bits(Object result){return ((Huffman.Encoded)result).bits();}}
+public class Study {static {if(true)throw new java.lang.IllegalStateException("initializer sentinel");}public static Object encode(String text){return Huffman.encode(text);}public static Map<String,Long>frequencies(Object result){return ((Huffman.Encoded)result).frequencies();}public static Map<String,String>codes(Object result){return ((Huffman.Encoded)result).codes();}public static String bits(Object result){return ((Huffman.Encoded)result).bits();}}
 
 final class Huffman {
  public record Encoded(Map<String,Long>frequencies,Map<String,String>codes,String bits){}

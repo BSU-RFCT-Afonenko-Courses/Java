@@ -8,7 +8,7 @@ import java.util.regex.*;
 class RunFile {public static void main(String[]args){try{Study.process(Path.of(args[0]),Path.of(args[1]));}catch(Exception failure){System.err.println("Ошибка файловой операции: "+failure.getMessage());}}}
 
 /** Выбор: Unicode-буквы, нижний регистр, порядок первого появления. */
-public class Study {static {if(java.lang.System.getProperty("course.initializer.marker")!=null){try{java.nio.file.Files.writeString(java.nio.file.Path.of(java.lang.System.getProperty("course.initializer.marker")),"student initializer executed");}catch(java.io.IOException e){throw new java.lang.RuntimeException(e);}throw new java.lang.IllegalStateException("initializer sentinel");}}
+public class Study {static {if(true)throw new java.lang.IllegalStateException("initializer sentinel");}
  public static void process(Path input,Path output)throws IOException{
   String text=Files.readString(input,StandardCharsets.UTF_8).toLowerCase(Locale.ROOT);
   var letters=new LinkedHashMap<String,Integer>();var words=new LinkedHashMap<String,Integer>();

@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 class RunFile {public static void main(String[]args){try{Study.process(Path.of(args[0]),Path.of(args[1]),Integer.parseInt(args[2]),Integer.parseInt(args[3]));}catch(Exception failure){System.err.println("Ошибка файловой операции: "+failure.getMessage());}}}
 
-public class Study {static {if(java.lang.System.getProperty("course.initializer.marker")!=null){try{java.nio.file.Files.writeString(java.nio.file.Path.of(java.lang.System.getProperty("course.initializer.marker")),"student initializer executed");}catch(java.io.IOException e){throw new java.lang.RuntimeException(e);}throw new java.lang.IllegalStateException("initializer sentinel");}}
+public class Study {static {if(true)throw new java.lang.IllegalStateException("initializer sentinel");}
 public static void process(Path in,Path out,int m,int n)throws IOException{var all=Files.readAllLines(in,StandardCharsets.UTF_8);var result=new ArrayList<String>();for(String line:all.subList(Math.max(0,all.size()-n),all.size())){var words=Arrays.stream(line.split(" +")).filter(s->!s.isEmpty()).toList();result.add(words.stream().skip(Math.max(0,words.size()-m)).collect(Collectors.joining(" ")));}FileDestination.create(out);Files.write(out,result,StandardCharsets.UTF_8);}
 }
 
