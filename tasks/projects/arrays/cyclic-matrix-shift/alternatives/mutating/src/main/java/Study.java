@@ -1,5 +1,9 @@
 public class Study {
     public static int[][] shift(int[][] matrix, int k, int direction) {
-        return new variant.Turn().apply(matrix, k, new char[]{'R', 'L', 'U', 'D'}[direction]);
+        return new Turn().apply(matrix, k, new char[]{'R', 'L', 'U', 'D'}[direction]);
     }
 }
+
+class Show { void main() { for(int direction=0;direction<4;direction++) { int[][] input={{-3,0,3},{2,-1,0},{1,3,-2}}; System.out.println(java.util.Arrays.deepToString(input)); System.out.println(java.util.Arrays.deepToString(Study.shift(input,4,direction))); } } }
+
+class Turn {public int[][] apply(int[][] a,int k,char direction){int n=a.length;for(int step=0;step<k%n;step++){if(direction=='R'||direction=='L'){for(int[] row:a){int saved=row[direction=='R'?n-1:0];if(direction=='R'){for(int j=n-1;j>0;j--)row[j]=row[j-1];row[0]=saved;}else{for(int j=0;j<n-1;j++)row[j]=row[j+1];row[n-1]=saved;}}}else{for(int j=0;j<n;j++){int saved=a[direction=='D'?n-1:0][j];if(direction=='D'){for(int i=n-1;i>0;i--)a[i][j]=a[i-1][j];a[0][j]=saved;}else{for(int i=0;i<n-1;i++)a[i][j]=a[i+1][j];a[n-1][j]=saved;}}}}return a;}}

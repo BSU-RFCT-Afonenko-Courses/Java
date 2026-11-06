@@ -1,1 +1,0 @@
-package helper; public class Size { public static java.math.BigInteger bytes(int w,int h,int d) { return java.math.BigInteger.valueOf(w).multiply(java.math.BigInteger.valueOf(h)).multiply(java.math.BigInteger.valueOf(d)); } }

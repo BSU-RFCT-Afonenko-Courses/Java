@@ -1,3 +1,5 @@
-// Реализуйте меню справочной системы в FileHelp.java.
-// Имя класса и допустимую форму main выберите самостоятельно.
-class HelpMenu {void main(String[] args){throw new UnsupportedOperationException("Реализуйте минимальное меню");}}
+public class FileHelp {
+    public static void main(String[] args) {
+        throw new UnsupportedOperationException("TODO: интерактивное меню справки");
+    }
+}

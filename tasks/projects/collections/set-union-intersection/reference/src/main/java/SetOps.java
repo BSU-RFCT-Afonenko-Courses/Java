@@ -1,1 +1,0 @@
-public class SetOps {public static java.util.Set<Integer> union(java.util.Set<Integer>a,java.util.Set<Integer>b){var out=new java.util.HashSet<>(a);out.addAll(b);return out;}public static java.util.Set<Integer> intersection(java.util.Set<Integer>a,java.util.Set<Integer>b){var out=new java.util.HashSet<>(a);out.retainAll(b);return out;}}

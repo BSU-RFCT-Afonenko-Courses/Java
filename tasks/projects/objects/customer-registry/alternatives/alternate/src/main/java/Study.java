@@ -1,12 +1,15 @@
 import java.util.*;
+
 /** Связь входов с реальной моделью и её операциями. */
 public class Study {
- public static Object customer(long id, String surname, String name, String patronymic, String address, String card, String account){return new alternate.Customer(id,surname,name,patronymic,address,card,account);}
- public static Object secondConstructor(){return new alternate.Customer(9,"Short");}
- public static List<?> values(Object customer){alternate.Customer c=(alternate.Customer)customer;return List.of(c.id(),c.last(),c.first(),c.middle(),c.address(),c.card(),c.account());}
- public static void edit(Object customer, long id, String surname, String name, String patronymic, String address, String card, String account){alternate.Customer c=(alternate.Customer)customer;c.id(id);c.last(surname);c.first(name);c.middle(patronymic);c.address(address);c.card(card);c.account(account);}
+ public static Object customer(long id, String surname, String name, String patronymic, String address, String card, String account){return new Customer(id,surname,name,patronymic,address,card,account);}
+ public static Object secondConstructor(){return new Customer(9,"Short");}
+ public static List<?> values(Object customer){Customer c=(Customer)customer;return List.of(c.id(),c.last(),c.first(),c.middle(),c.address(),c.card(),c.account());}
+ public static void edit(Object customer, long id, String surname, String name, String patronymic, String address, String card, String account){Customer c=(Customer)customer;c.id(id);c.last(surname);c.first(name);c.middle(patronymic);c.address(address);c.card(card);c.account(account);}
  public static String text(Object customer){return customer.toString();}
- public static Object[] array(Object... customers){return Arrays.copyOf(customers,customers.length,alternate.Customer[].class);}
- public static Object[] sorted(Object[] customers){return alternate.Customer.sorted((alternate.Customer[])customers);}
- public static Object[] inCardRange(Object[] customers, String lower, String upper){return alternate.Customer.range((alternate.Customer[])customers,lower,upper);}
+ public static Object[] array(Object... customers){return Arrays.copyOf(customers,customers.length,Customer[].class);}
+ public static Object[] sorted(Object[] customers){return Customer.sorted((Customer[])customers);}
+ public static Object[] inCardRange(Object[] customers, String lower, String upper){return Customer.range((Customer[])customers,lower,upper);}
 }
+
+class Customer{private long id;private String last;private String first;private String middle;private String address;private String card;private String account;public Customer(long id,String last,String first,String middle,String address,String card,String account){this.id=id;this.last=last;this.first=first;this.middle=middle;this.address=address;this.card=card;this.account=account;}public Customer(long id,String last){this(id,last,"F","M","A","0000000000000001","AC");}public long id(){return id;}public void id(long value){id=value;}public String last(){return last;}public void last(String value){last=value;}public String first(){return first;}public void first(String value){first=value;}public String middle(){return middle;}public void middle(String value){middle=value;}public String address(){return address;}public void address(String value){address=value;}public String card(){return card;}public void card(String value){card=value;}public String account(){return account;}public void account(String value){account=value;}public String toString(){return id+"|"+last+"|"+first+"|"+middle+"|"+address+"|"+card+"|"+account;}public static Customer[]sorted(Customer[]a){Customer[]out=a.clone();java.util.Arrays.sort(out,new java.util.Comparator<Customer>(){public int compare(Customer a,Customer b){int c=a.last.compareTo(b.last);if(c==0)c=a.first.compareTo(b.first);if(c==0)c=a.middle.compareTo(b.middle);return c;}});return copies(out);}public static Customer[]range(Customer[]a,String lo,String hi){int count=0;for(Customer c:a)if(c.card.compareTo(lo)>=0&&c.card.compareTo(hi)<=0)count++;Customer[]out=new Customer[count];int i=0;for(Customer c:a)if(c.card.compareTo(lo)>=0&&c.card.compareTo(hi)<=0)out[i++]=c;return copies(out);}private static Customer[]copies(Customer[]values){Customer[]out=new Customer[values.length];for(int j=0;j<values.length;j++){Customer c=values[j];out[j]=new Customer(c.id,c.last,c.first,c.middle,c.address,c.card,c.account);}return out;}}

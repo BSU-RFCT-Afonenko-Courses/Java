@@ -1,5 +1,7 @@
 package airline;
-import java.nio.file.*;import java.io.*;
+import java.nio.file.*;
+import java.io.*;
+
 public final class Connector {
  public void save(Airline company,Path directory)throws IOException{Files.createDirectories(directory);try(ObjectOutputStream output=new ObjectOutputStream(Files.newOutputStream(directory.resolve("fleet.bin")))){output.writeObject(company);}}
  public Airline load(Path directory)throws IOException,ClassNotFoundException{try(ObjectInputStream input=new ObjectInputStream(Files.newInputStream(directory.resolve("fleet.bin")))){return (Airline)input.readObject();}}

@@ -1,2 +1,0 @@
-package schedule;import java.time.LocalDate;
-public interface Administration {void create();void delete();void createSubject(String id,String name);void changeSubject(String id,String name);void deleteSubject(String id);void createTeacher(String id,String name);void changeTeacher(String id,String name);void deleteTeacher(String id);void group(String id,String name);void add(Lesson lesson);void cancel(String id);void changeRoom(String id,String room);void dayOff(LocalDate day);}

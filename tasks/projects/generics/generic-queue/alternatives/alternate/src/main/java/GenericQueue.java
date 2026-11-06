@@ -1,4 +1,6 @@
 
+class Example {static <T>void show(T[] storage,T a,T b,T c)throws Throwable {GenericQueue<T> q=new GenericQueue<>(storage);try{q.get();}catch(QueueEmptyException e){System.out.println("Обработана начальная пустота");}q.put(a);q.put(b);try{q.put(c);}catch(QueueFullException e){System.out.println("Обработано переполнение");}System.out.println(q.get());q.put(c);System.out.println(q.get());System.out.println(q.get());try{q.get();}catch(QueueEmptyException e){System.out.println("Обработана пустота");}}void main()throws Throwable{show(new String[]{"старое","содержимое"},"Лист","Ветка","Плод");show(new Integer[]{42,43},7,8,9);}}
+
 public class GenericQueue<E> {
     private final E[] values;
     private int size;

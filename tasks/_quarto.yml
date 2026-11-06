@@ -415,8 +415,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       tests:
       - src/api/java/**/*.java
       - src/test/java/**/*.java
@@ -452,8 +452,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       tests:
       - src/api/java/**/*.java
       - src/test/java/**/*.java
@@ -489,8 +489,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       tests:
       - src/api/java/**/*.java
       - src/test/java/**/*.java
@@ -526,8 +526,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       tests:
       - src/api/java/**/*.java
       - src/test/java/**/*.java
@@ -563,8 +563,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       tests:
       - src/api/java/**/*.java
       - src/test/java/**/*.java
@@ -600,8 +600,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       tests:
       - src/api/java/**/*.java
       - src/test/java/**/*.java
@@ -634,8 +634,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       tests:
       - src/api/java/**/*.java
       - src/test/java/**/*.java
@@ -668,8 +668,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       tests:
       - src/api/java/**/*.java
       - src/test/java/**/*.java
@@ -702,8 +702,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       tests:
       - src/api/java/**/*.java
       - src/test/java/**/*.java
@@ -733,8 +733,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       tests:
       - src/api/java/**/*.java
       - src/test/java/**/*.java
@@ -764,8 +764,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       tests:
       - src/api/java/**/*.java
       - src/test/java/**/*.java
@@ -794,7 +794,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -824,8 +824,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
       java-build:
@@ -854,8 +854,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
       java-build:
@@ -884,7 +884,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       source-profile: java-gradle
       tests:
@@ -914,7 +914,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -947,67 +947,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
-      runtime: java25-gradle-junit-v1
-      source-profile: java-gradle
-      java-build:
-        kind: gradle-jar-v1
-        artifact: submission.jar
-      tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
-      api-precheck:
-        files:
-        - src/api/java/**/*.java
-        entry: ApiContract
-      references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
-        optional: false
-      scoring:
-        mode: weighted
-    java-polymorphism-vehicle-interface:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
-      runtime: java25-gradle-junit-v1
-      source-profile: java-gradle
-      java-build:
-        kind: gradle-jar-v1
-        artifact: submission.jar
-      tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
-      api-precheck:
-        files:
-        - src/api/java/**/*.java
-        entry: ApiContract
-      references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
-        optional: false
-      scoring:
-        mode: weighted
-    java-polymorphism-animal-hierarchy:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -1025,8 +965,59 @@ project-checks:
       - name: reference
         root: author/reference/src/main/java
         optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
+      scoring:
+        mode: weighted
+    java-polymorphism-vehicle-interface:
+      additional-java-sources:
+        archive: additional-sources.zip
+        max-files: 128
+        max-file-bytes: 1048576
+        max-total-bytes: 4194304
+        max-archive-bytes: 2097152
+        allow-additional: false
+        primary-required: true
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
+      tests:
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      references:
+      - name: reference
+        root: author/reference/src/main/java
+        optional: false
+      scoring:
+        mode: weighted
+    java-polymorphism-animal-hierarchy:
+      additional-java-sources:
+        archive: additional-sources.zip
+        max-files: 128
+        max-file-bytes: 1048576
+        max-total-bytes: 4194304
+        max-archive-bytes: 2097152
+        allow-additional: false
+        primary-required: true
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
+      tests:
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      references:
+      - name: reference
+        root: author/reference/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -1037,8 +1028,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
       java-build:
@@ -1054,9 +1045,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -1067,8 +1055,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
       java-build:
@@ -1085,9 +1073,6 @@ project-checks:
       - name: reference
         root: author/reference/src/main/java
         optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
-        optional: false
       scoring:
         mode: weighted
     java-generics-range-maximum:
@@ -1097,7 +1082,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       source-profile: java-gradle
       tests:
@@ -1127,7 +1112,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       source-profile: java-gradle
       tests:
@@ -1157,8 +1142,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        primary-required: false
-        allow-additional: true
+        primary-required: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -1190,7 +1175,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       source-profile: java-gradle
       tests:
@@ -1220,7 +1205,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -1250,7 +1235,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -1280,7 +1265,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -1313,7 +1298,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -1330,9 +1315,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -1343,7 +1325,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -1360,9 +1342,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -1373,7 +1352,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -1390,9 +1369,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -1403,7 +1379,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -1420,9 +1396,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -1433,7 +1406,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -1450,9 +1423,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -1463,7 +1433,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -1480,9 +1450,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -1493,7 +1460,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -1511,9 +1478,6 @@ project-checks:
       - name: reference
         root: author/reference/src/main/java
         optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
-        optional: false
       scoring:
         mode: weighted
     java-files-byte-file-copy:
@@ -1523,8 +1487,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
       java-build:
@@ -1540,9 +1504,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -1553,8 +1514,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
       java-build:
@@ -1571,15 +1532,12 @@ project-checks:
       - name: reference
         root: author/reference/src/main/java
         optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
-        optional: false
       scoring:
         mode: weighted
     java-files-gradeapp-report:
       additional-java-sources:
-        primary-required: false
-        allow-additional: true
+        primary-required: true
+        allow-additional: false
         archive: solution.zip
         max-files: 128
         max-file-bytes: 1048576
@@ -1602,9 +1560,6 @@ project-checks:
       - name: reference
         root: author/reference/src/main/java
         optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
-        optional: false
       scoring:
         mode: weighted
     java-numbers-lunar-weight:
@@ -1614,8 +1569,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -1663,8 +1618,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -1697,8 +1652,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -1731,8 +1686,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -1768,8 +1723,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -1802,8 +1757,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        primary-required: false
-        allow-additional: true
+        primary-required: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -1848,8 +1803,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        primary-required: false
-        allow-additional: true
+        primary-required: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -1891,8 +1846,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        primary-required: false
-        allow-additional: true
+        primary-required: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -1934,8 +1889,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        primary-required: false
-        allow-additional: true
+        primary-required: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -1977,8 +1932,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        primary-required: false
-        allow-additional: true
+        primary-required: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2023,8 +1978,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2057,8 +2012,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2091,8 +2046,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2125,8 +2080,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        primary-required: false
-        allow-additional: true
+        primary-required: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2162,8 +2117,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        primary-required: false
-        allow-additional: true
+        primary-required: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2199,8 +2154,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        primary-required: false
-        allow-additional: true
+        primary-required: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2236,8 +2191,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        primary-required: false
-        allow-additional: true
+        primary-required: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2273,8 +2228,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2304,8 +2259,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2336,7 +2291,7 @@ project-checks:
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
         primary-required: true
-        allow-additional: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2372,7 +2327,7 @@ project-checks:
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
         primary-required: true
-        allow-additional: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2404,8 +2359,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        primary-required: false
-        allow-additional: true
+        primary-required: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2444,7 +2399,7 @@ project-checks:
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
         primary-required: true
-        allow-additional: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2480,7 +2435,7 @@ project-checks:
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
         primary-required: true
-        allow-additional: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2510,7 +2465,7 @@ project-checks:
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
         primary-required: true
-        allow-additional: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2540,7 +2495,7 @@ project-checks:
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
         primary-required: true
-        allow-additional: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2570,7 +2525,7 @@ project-checks:
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
         primary-required: true
-        allow-additional: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2603,7 +2558,7 @@ project-checks:
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
         primary-required: true
-        allow-additional: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2633,7 +2588,7 @@ project-checks:
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
         primary-required: true
-        allow-additional: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2663,7 +2618,7 @@ project-checks:
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
         primary-required: true
-        allow-additional: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2693,7 +2648,7 @@ project-checks:
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
         primary-required: true
-        allow-additional: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2723,7 +2678,7 @@ project-checks:
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
         primary-required: true
-        allow-additional: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2753,7 +2708,7 @@ project-checks:
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
         primary-required: true
-        allow-additional: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -2782,7 +2737,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -2799,9 +2754,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -2812,7 +2764,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -2829,9 +2781,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -2842,7 +2791,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -2859,9 +2808,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -2872,8 +2818,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
       java-build:
@@ -2889,9 +2835,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -2902,7 +2845,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -2919,9 +2862,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -2932,7 +2872,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -2949,9 +2889,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -2962,7 +2899,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -2979,9 +2916,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -2992,7 +2926,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3009,9 +2943,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -3022,7 +2953,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3039,9 +2970,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -3052,37 +2980,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
-      runtime: java25-gradle-junit-v1
-      source-profile: java-gradle
-      java-build:
-        kind: gradle-jar-v1
-        artifact: submission.jar
-      tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
-      api-precheck:
-        files:
-        - src/api/java/**/*.java
-        entry: ApiContract
-      references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
-        optional: false
-      scoring:
-        mode: weighted
-    java-files-remove-java-comments:
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3100,8 +2998,32 @@ project-checks:
       - name: reference
         root: author/reference/src/main/java
         optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
+      scoring:
+        mode: weighted
+    java-files-remove-java-comments:
+      additional-java-sources:
+        archive: additional-sources.zip
+        max-files: 128
+        max-file-bytes: 1048576
+        max-total-bytes: 4194304
+        max-archive-bytes: 2097152
+        allow-additional: false
+        primary-required: true
+      runtime: java25-gradle-junit-v1
+      source-profile: java-gradle
+      java-build:
+        kind: gradle-jar-v1
+        artifact: submission.jar
+      tests:
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
+      api-precheck:
+        files:
+        - src/api/java/**/*.java
+        entry: ApiContract
+      references:
+      - name: reference
+        root: author/reference/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -3112,7 +3034,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3148,7 +3070,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3178,7 +3100,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3208,7 +3130,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3238,7 +3160,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3268,7 +3190,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3298,7 +3220,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3328,7 +3250,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3358,7 +3280,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3391,7 +3313,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3408,9 +3330,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -3421,7 +3340,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3438,9 +3357,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -3451,7 +3367,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3468,9 +3384,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -3481,7 +3394,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3498,9 +3411,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -3511,7 +3421,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3528,9 +3438,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -3541,7 +3448,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3558,9 +3465,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -3571,7 +3475,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3588,9 +3492,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -3601,7 +3502,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3618,9 +3519,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -3631,7 +3529,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3649,9 +3547,6 @@ project-checks:
       - name: reference
         root: author/reference/src/main/java
         optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
-        optional: false
       scoring:
         mode: weighted
     java-exceptions-queue-exceptions:
@@ -3661,8 +3556,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        primary-required: false
-        allow-additional: true
+        primary-required: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -3692,7 +3587,7 @@ project-checks:
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
         primary-required: true
-        allow-additional: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -3722,7 +3617,7 @@ project-checks:
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
         primary-required: true
-        allow-additional: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -3751,7 +3646,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3784,7 +3679,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3814,7 +3709,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3847,7 +3742,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3877,7 +3772,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -3902,8 +3797,8 @@ project-checks:
         mode: weighted
     java-polymorphism-queue-package:
       additional-java-sources:
-        primary-required: false
-        allow-additional: true
+        primary-required: true
+        allow-additional: false
         archive: solution.zip
         max-files: 128
         max-file-bytes: 1048576
@@ -3925,9 +3820,6 @@ project-checks:
       - name: reference
         root: author/reference/src/main/java
         optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
-        optional: false
       scoring:
         mode: weighted
     java-polymorphism-truck-subclass:
@@ -3937,8 +3829,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
       java-build:
@@ -3954,9 +3846,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -3967,8 +3856,8 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
-        primary-required: false
+        allow-additional: false
+        primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
       java-build:
@@ -3984,9 +3873,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -3997,7 +3883,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -4014,9 +3900,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -4027,7 +3910,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -4044,9 +3927,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -4058,7 +3938,7 @@ project-checks:
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
         primary-required: true
-        allow-additional: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -4088,7 +3968,7 @@ project-checks:
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
         primary-required: true
-        allow-additional: true
+        allow-additional: false
       source-profile: java-gradle
       tests:
       - src/api/java/**/*.java
@@ -4112,12 +3992,12 @@ project-checks:
         entry: ApiContract
     java-projects-airline-persistence-project:
       additional-java-sources:
-        archive: additional-sources.zip
+        archive: solution.zip
         max-files: 128
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -4134,9 +4014,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -4147,7 +4024,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -4164,9 +4041,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
@@ -4177,7 +4051,7 @@ project-checks:
         max-file-bytes: 1048576
         max-total-bytes: 4194304
         max-archive-bytes: 2097152
-        allow-additional: true
+        allow-additional: false
         primary-required: true
       runtime: java25-gradle-junit-v1
       source-profile: java-gradle
@@ -4194,9 +4068,6 @@ project-checks:
       references:
       - name: reference
         root: author/reference/src/main/java
-        optional: false
-      - name: namespace
-        root: author/namespace/src/main/java
         optional: false
       scoring:
         mode: weighted
