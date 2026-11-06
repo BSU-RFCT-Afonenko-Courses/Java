@@ -655,14 +655,14 @@
 | [reports/pattern-pass-performance-ci-20261104.md](reports/pattern-pass-performance-ci-20261104.md) | 44093 |
 | [reports/pattern-pass-platform-20261104.md](reports/pattern-pass-platform-20261104.md) | 24212 |
 | [reports/pattern-pass-summary-20261104.md](reports/pattern-pass-summary-20261104.md) | 27181 |
-| [reports/performance-backend-copy-20261104.md](reports/performance-backend-copy-20261104.md) | 12647 |
+| [reports/performance-backend-copy-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-backend-copy-20261104.md) | 12647 |
 | [reports/performance-backend-copy-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-backend-copy-review-20261104.md) | 2174 |
 | [reports/performance-capabilities-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-capabilities-review-admission.json) | 1143 |
 | [reports/performance-capabilities-review.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-capabilities-review.md) | 4002 |
 | [reports/performance-command-table-preview-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-command-table-preview-20261104.md) | 3091 |
 | [reports/performance-command-table-preview-20261104.ts](reports/performance-command-table-preview-20261104.ts) | 1564 |
 | [reports/performance-deno-signal-source.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-deno-signal-source.json) | 13163 |
-| [reports/performance-event-types-20261104.md](reports/performance-event-types-20261104.md) | 10194 |
+| [reports/performance-event-types-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-event-types-20261104.md) | 10194 |
 | [reports/performance-event-types-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-event-types-review-20261104.md) | 2451 |
 | [reports/performance-exec-signal-masks.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-exec-signal-masks.json) | 1242 |
 | [reports/performance-fixed-pair-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-fixed-pair-review-admission.json) | 1468 |
