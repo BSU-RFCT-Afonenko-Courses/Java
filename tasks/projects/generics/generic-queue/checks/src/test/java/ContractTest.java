@@ -38,10 +38,12 @@ class ContractTest {
         return bytes.toString(StandardCharsets.UTF_8);
     }
     static class Box<T> {
+        private final Class<T> elementType;
         final QueueAccess access;
         final Object value;
         final Class<? extends Throwable> full, empty;
-        Box(T[] storage) throws Throwable {
+        Box(Class<T> elementType, T[] storage) throws Throwable {
+            this.elementType = elementType;
             access = QueueAccess.select();
             value = access.create(storage);
             full = access.full;
@@ -50,9 +52,8 @@ class ContractTest {
         void put(T v) throws Throwable {
             access.put(value, v);
         }
-        @SuppressWarnings("unchecked")
         T get() throws Throwable {
-            return (T) access.get(value);
+            return elementType.cast(access.get(value));
         }
     }
     private static void empty(Box<?> b) throws Throwable {
@@ -66,7 +67,7 @@ class ContractTest {
     @DisplayName("Начальная пустота и проверяемый отказ")
     void gqa1(TestReporter reporter) throws Throwable {
         {
-            var q = new Box<Integer>(new Integer[] {42});
+            var q = new Box<Integer>(Integer.class, new Integer[] {42});
             boolean empty = false;
             try {
                 q.get();
@@ -79,12 +80,12 @@ class ContractTest {
                 "QueueEmptyException.", "actual", "Проверяемый Empty=" + empty));
             assertTrue(empty);
         }
-        var i = new Box<Integer>(new Integer[] {42});
+        var i = new Box<Integer>(Integer.class, new Integer[] {42});
         empty(i);
         Integer fresh = 1000;
         i.put(fresh);
         assertSame(fresh, i.get());
-        var s = new Box<String>(new String[] {"old", "values"});
+        var s = new Box<String>(String.class, new String[] {"old", "values"});
         empty(s);
         String x = new String("fresh");
         s.put(x);
@@ -95,7 +96,7 @@ class ContractTest {
     @DisplayName("Полная очередь сохраняет ссылки и порядок при отказе")
     void gqa2(TestReporter reporter) throws Throwable {
         {
-            var q = new Box<Integer>(new Integer[] {42});
+            var q = new Box<Integer>(Integer.class, new Integer[] {42});
             q.put(7);
             boolean full = false;
             try {
@@ -113,7 +114,7 @@ class ContractTest {
             assertEquals(7, actual);
         }
         for (int capacity : new int[] {1, 2, 5}) {
-            var q = new Box<Payload>(new Payload[capacity]);
+            var q = new Box<Payload>(Payload.class, new Payload[capacity]);
             Payload[] data = new Payload[capacity];
             for (int i = 0; i < capacity; i++) {
                 data[i] = new Payload(i);
@@ -124,7 +125,7 @@ class ContractTest {
             for (int j = 0; j < capacity; j++)
                 assertSame(data[j], q.get());
         }
-        var i = new Box<Integer>(new Integer[1]);
+        var i = new Box<Integer>(Integer.class, new Integer[1]);
         i.put(7);
         full(i, 8);
         assertEquals(7, i.get());
@@ -134,7 +135,7 @@ class ContractTest {
     @DisplayName("FIFO, ссылки и элементы разных типов")
     void gqa3(TestReporter reporter) throws Throwable {
         {
-            var q = new Box<String>(new String[2]);
+            var q = new Box<String>(String.class, new String[2]);
             String a = new String("Лист"), b = new String("Ветка"), c = new String("Плод");
             q.put(a);
             q.put(b);
@@ -149,7 +150,7 @@ class ContractTest {
             assertSame(b, y);
             assertSame(c, z);
         }
-        var q = new Box<String>(new String[2]);
+        var q = new Box<String>(String.class, new String[2]);
         String a = new String("Лист"), b = new String("Ветка"), c = new String("Плод");
         q.put(a);
         q.put(b);
@@ -157,7 +158,7 @@ class ContractTest {
         q.put(c);
         assertSame(b, q.get());
         assertSame(c, q.get());
-        var v = new Box<Number>(new Number[2]);
+        var v = new Box<Number>(Number.class, new Number[2]);
         Number x = Integer.valueOf(17), y = Double.valueOf(2.5);
         v.put(x);
         v.put(y);
@@ -169,7 +170,7 @@ class ContractTest {
     @DisplayName("Извлечение освобождает место для нового добавления")
     void gqa4(TestReporter reporter) throws Throwable {
         {
-            var q = new Box<Integer>(new Integer[] {42});
+            var q = new Box<Integer>(Integer.class, new Integer[] {42});
             q.put(7);
             q.get();
             q.put(9);
@@ -179,7 +180,7 @@ class ContractTest {
             assertEquals(9, actual);
         }
         for (int capacity : new int[] {2, 3}) {
-            var q = new Box<Payload>(new Payload[capacity]);
+            var q = new Box<Payload>(Payload.class, new Payload[capacity]);
             var expected = new ArrayDeque<Payload>();
             for (int i = 0; i < capacity; i++) {
                 Payload p = new Payload(i);
@@ -195,7 +196,7 @@ class ContractTest {
             while (!expected.isEmpty())
                 assertSame(expected.remove(), q.get());
         }
-        var four = new Box<Payload>(new Payload[4]);
+        var four = new Box<Payload>(Payload.class, new Payload[4]);
         Payload[] values = {new Payload(71), new Payload(29), new Payload(83), new Payload(47)};
         for (Payload p : values)
             four.put(p);
@@ -204,7 +205,7 @@ class ContractTest {
         four.put(values[0]);
         for (int j : new int[] {1, 2, 3, 0})
             assertSame(values[j], four.get());
-        var single = new Box<Integer>(new Integer[1]);
+        var single = new Box<Integer>(Integer.class, new Integer[1]);
         for (int j = 0; j < 10; j++) {
             Integer p = 1000 + j;
             single.put(p);
@@ -218,7 +219,7 @@ class ContractTest {
     @DisplayName("Повторный отказ пустой очереди сохраняет состояние")
     void gqa5(TestReporter reporter) throws Throwable {
         {
-            var q = new Box<Integer>(new Integer[] {42});
+            var q = new Box<Integer>(Integer.class, new Integer[] {42});
             q.put(7);
             q.get();
             boolean empty = false;
@@ -233,7 +234,7 @@ class ContractTest {
                 "actual", "Проверяемый Empty=" + empty));
             assertTrue(empty);
         }
-        var q = new Box<String>(new String[2]);
+        var q = new Box<String>(String.class, new String[2]);
         empty(q);
         empty(q);
         String a = new String("a");
@@ -249,8 +250,8 @@ class ContractTest {
     @Test
     @DisplayName("Независимое состояние двух очередей")
     void gqa6() throws Throwable {
-        var a = new Box<String>(new String[2]);
-        var b = new Box<String>(new String[1]);
+        var a = new Box<String>(String.class, new String[2]);
+        var b = new Box<String>(String.class, new String[1]);
         String x = new String("A"), y = new String("B");
         a.put(x);
         b.put(y);

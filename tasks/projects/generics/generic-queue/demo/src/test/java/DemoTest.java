@@ -32,10 +32,12 @@ class DemoTest {
     }
     record Payload(int value) {}
     static class Box<T> {
+        private final Class<T> elementType;
         final QueueAccess access;
         final Object value;
         final Class<? extends Throwable> full, empty;
-        Box(T[] storage) throws Throwable {
+        Box(Class<T> elementType, T[] storage) throws Throwable {
+            this.elementType = elementType;
             access = QueueAccess.select();
             value = access.create(storage);
             full = access.full;
@@ -44,9 +46,8 @@ class DemoTest {
         void put(T v) throws Throwable {
             access.put(value, v);
         }
-        @SuppressWarnings("unchecked")
         T get() throws Throwable {
-            return (T) access.get(value);
+            return elementType.cast(access.get(value));
         }
     }
     private static void empty(Box<?> b) throws Throwable {
@@ -59,7 +60,7 @@ class DemoTest {
     @Test
     @DisplayName("FIFO и сохранение исходных ссылок")
     void normal() throws Throwable {
-        var s = new Box<String>(new String[2]);
+        var s = new Box<String>(String.class, new String[2]);
         String a = new String("Лист"), b = new String("Ветка"), c = new String("Плод");
         s.put(a);
         s.put(b);
@@ -72,7 +73,7 @@ class DemoTest {
     @Test
     @DisplayName("Проверяемые отказы и освобождение места")
     void boundary() throws Throwable {
-        var q = new Box<Integer>(new Integer[] {42});
+        var q = new Box<Integer>(Integer.class, new Integer[] {42});
         empty(q);
         q.put(7);
         full(q, 8);
