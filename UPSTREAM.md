@@ -15,5 +15,5 @@ Platform source/release refs, native OCI identities и адреса функци
 assets. Отключённая проверка `CI/check-production-pins.py` и собственные
 runner/asset proof-поля удалены. Собственный vendor inventory курса удалён.
 
-История прежних поставок доступна в Git и `docs/provider-history/`.
+История прежних поставок доступна в [точном снимке Git](https://github.com/BSU-RFCT-Afonenko-Courses/Java/tree/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/provider-history).
 Её hashes, receipts и команды `--check` относятся к прежним этапам.
