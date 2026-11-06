@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.util.Arrays;
 
 /** Два опубликованных наблюдения; внутренние имена решения свободны. */
@@ -23,13 +24,13 @@ public class PublicChecks {
     public static final String NORMAL_EXPECTED = "Возврат5, тот же массив [3,-2,4].";
     public static final String BOUNDARY_EXPECTED = "Возврат0.";
 
-    public static Observation observeNormal() {
+    public static Observation observeNormal() throws Throwable {
         int[] input = {3, -2, 4};
         int result = TaskBinding.sum(input);
         return new Observation("Возвращено " + result + "; массив " + Arrays.toString(input),
                                result == 5 && Arrays.equals(input, new int[] {3, -2, 4}));
     }
-    public static Observation observeBoundary() {
+    public static Observation observeBoundary() throws Throwable {
         int result = TaskBinding.sum();
         return new Observation("Возвращено " + result, result == 0);
     }

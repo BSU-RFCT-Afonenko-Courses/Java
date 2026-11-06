@@ -1,6 +1,7 @@
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.lang.Throwable;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ class ContractTest {
     }
     @Test
     @DisplayName("Отрицательные слагаемые и сохранность переданного массива")
-    void negativeAndArrayUnchanged() {
+    void negativeAndArrayUnchanged() throws Throwable {
         int[] a = {-9, 4, 0, 3};
         assertEquals(-2, TaskBinding.sum(a));
         assertArrayEquals(new int[] {-9, 4, 0, 3}, a);
