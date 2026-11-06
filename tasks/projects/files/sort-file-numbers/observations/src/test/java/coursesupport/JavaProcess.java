@@ -1,15 +1,11 @@
 package coursesupport;
-import coursesupport.JavaProcess.CheckedLauncher;
-import coursesupport.JavaProcess.Result;
-import coursesupport.JavaProcess.StudentOutputLimit;
-import coursesupport.JavaProcess.StudentTimeout;
-import coursesupport.JavaProcess.UncaughtStudentException;
-import coursesupport.JavaProcess;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.io.Serial;
 import java.lang.AssertionError;
 import java.lang.Boolean;
 import java.lang.Class;
@@ -42,7 +38,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -65,6 +60,9 @@ public final class JavaProcess {
 
     /** Наблюдённое необработанное исключение в запущенной программе. */
     public static final class UncaughtStudentException extends AssertionError {
+        @Serial
+        private static final long serialVersionUID = 1L;
+
         private UncaughtStudentException(String stderr) {
             super("Программа завершила поток необработанным исключением:\n" + stderr);
         }
@@ -72,11 +70,17 @@ public final class JavaProcess {
 
     /** Истечение времени именно вложенного процесса или захвата его вывода. */
     public static final class StudentTimeout extends AssertionError {
+        @Serial
+        private static final long serialVersionUID = 1L;
+
         private StudentTimeout() { super("Программа не завершилась в пределах времени проверки"); }
     }
 
     /** Превышение совокупного бюджета stdout и stderr вложенного процесса. */
     public static final class StudentOutputLimit extends AssertionError {
+        @Serial
+        private static final long serialVersionUID = 1L;
+
         private StudentOutputLimit(int limit) { super("Превышено ограничение вывода " + limit + " байт"); }
     }
 
