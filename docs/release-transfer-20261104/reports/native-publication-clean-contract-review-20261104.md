@@ -30,7 +30,7 @@
 
 Нужно дополнить уже предложенный vertical slice реальным PL decoder typing, явными pre/post cleanup semantics и достижимой future fixture acceptance. Новые certificate/receipt/hash/registry/cache/proof механизмы не требуются. Исторические внешние артефакты не мигрировать; неизменность содержимого курса не превращать в новую publication authority. После этих точечных поправок возможен delta review того же design без runtime и без общего нового аудита.
 
-Собственный high admission прежний: [existing reference](core-late-cleanup-reuse-20261104.md#собственный-допуск). Роль/model/effort/globals/mainstate не менялись; subagents не создавались.
+Собственный high admission прежний: [existing reference](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-late-cleanup-reuse-20261104.md). Роль/model/effort/globals/mainstate не менялись; subagents не создавались.
 
 ## Final delta review другим независимым reviewer — 4 ноября
 

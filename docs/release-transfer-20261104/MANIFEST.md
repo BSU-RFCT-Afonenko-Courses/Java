@@ -144,9 +144,9 @@
 | [reports/core-empty-scratch-green.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-empty-scratch-green.log) | 765 |
 | [reports/core-empty-scratch-red.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-empty-scratch-red.log) | 561 |
 | [reports/core-empty-scratch-review.md](reports/core-empty-scratch-review.md) | 9956 |
-| [reports/core-late-cleanup-reuse-20261104.md](reports/core-late-cleanup-reuse-20261104.md) | 5376 |
+| [reports/core-late-cleanup-reuse-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-late-cleanup-reuse-20261104.md) | 5376 |
 | [reports/core-late-cleanup-reuse-20261104.patch](reports/core-late-cleanup-reuse-20261104.patch) | 2075 |
-| [reports/core-late-cleanup-reuse-review-20261104.md](reports/core-late-cleanup-reuse-review-20261104.md) | 8203 |
+| [reports/core-late-cleanup-reuse-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-late-cleanup-reuse-review-20261104.md) | 8203 |
 | [reports/core-native-boundary-viability-20261104.md](reports/core-native-boundary-viability-20261104.md) | 25236 |
 | [reports/core-native-bridge-controls.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-bridge-controls.log) | 6456 |
 | [reports/core-native-bridge-implementation-20261104.md](reports/core-native-bridge-implementation-20261104.md) | 19936 |
@@ -385,7 +385,7 @@
 | [reports/download-ownership-snapshot-compiler-final-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-ownership-snapshot-compiler-final-20261104.log) | 29 |
 | [reports/download-ownership-snapshot-final-check-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-ownership-snapshot-final-check-20261104.json) | 1570 |
 | [reports/download-ownership-snapshot-review-20261104.md](reports/download-ownership-snapshot-review-20261104.md) | 6149 |
-| [reports/download-package-bytes-20261104.md](reports/download-package-bytes-20261104.md) | 16737 |
+| [reports/download-package-bytes-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-package-bytes-20261104.md) | 16737 |
 | [reports/download-package-bytes-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-package-bytes-review-20261104.md) | 2481 |
 | [reports/download-pl-test-alignment-pin-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-pl-test-alignment-pin-20261104.md) | 789 |
 | [reports/download-preflight-types-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-preflight-types-20261104.md) | 5178 |
@@ -408,12 +408,12 @@
 | [reports/download-typed-runner.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-typed-runner.json) | 3500 |
 | [reports/download-typed-runtime-review.md](reports/download-typed-runtime-review.md) | 12059 |
 | [reports/download-typed-runtime.md](reports/download-typed-runtime.md) | 15553 |
-| [reports/download-wrapped-functions-20261104.md](reports/download-wrapped-functions-20261104.md) | 6115 |
+| [reports/download-wrapped-functions-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-wrapped-functions-20261104.md) | 6115 |
 | [reports/download-wrapped-functions-20261104.patch](reports/download-wrapped-functions-20261104.patch) | 8484 |
 | [reports/download-wrapped-functions-admission-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-wrapped-functions-admission-20261104.json) | 780 |
 | [reports/download-wrapped-functions-check-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-wrapped-functions-check-20261104.json) | 1399 |
 | [reports/download-wrapped-functions-compiler-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-wrapped-functions-compiler-20261104.log) | 29 |
-| [reports/download-wrapped-functions-review-20261104.md](reports/download-wrapped-functions-review-20261104.md) | 5447 |
+| [reports/download-wrapped-functions-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-wrapped-functions-review-20261104.md) | 5447 |
 | [reports/editor-test-feedback-status-20261104.md](reports/editor-test-feedback-status-20261104.md) | 29107 |
 | [reports/evening-a1-a3-local-commits-20261104-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/evening-a1-a3-local-commits-20261104-admission.json) | 818 |
 | [reports/evening-a1-a3-local-commits-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/evening-a1-a3-local-commits-20261104.json) | 58446 |
@@ -546,9 +546,9 @@
 | [reports/materializer-package-versions.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/materializer-package-versions.md) | 2169 |
 | [reports/native-course-mutable-delivery-next-task-20261104.md](reports/native-course-mutable-delivery-next-task-20261104.md) | 36916 |
 | [reports/native-course-mutable-delivery-next-task-review-20261104.md](reports/native-course-mutable-delivery-next-task-review-20261104.md) | 11121 |
-| [reports/native-file-editor-course-fix-20261104.md](reports/native-file-editor-course-fix-20261104.md) | 4644 |
+| [reports/native-file-editor-course-fix-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/native-file-editor-course-fix-20261104.md) | 4644 |
 | [reports/native-file-editor-course-fix-20261104.patch](reports/native-file-editor-course-fix-20261104.patch) | 1029 |
-| [reports/native-file-editor-course-fix-review-20261104.md](reports/native-file-editor-course-fix-review-20261104.md) | 4382 |
+| [reports/native-file-editor-course-fix-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/native-file-editor-course-fix-review-20261104.md) | 4382 |
 | [reports/native-file-editor-course-model-evidence-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/native-file-editor-course-model-evidence-20261104.json) | 797 |
 | [reports/native-file-editor-course-review-model-evidence-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/native-file-editor-course-review-model-evidence-20261104.json) | 1017 |
 | [reports/native-file-editor-evening-20261104.md](reports/native-file-editor-evening-20261104.md) | 8900 |

@@ -40,4 +40,4 @@ Historical runtime control **NOT RUN**: последовательный runner 
 
 Patch передан root как **неквалифицированный candidate для Source решения**, не готовое исправление TERM recovery. Listener не может гарантировать EOF при продолжающемся pipe holder, остановку всех descendants через direct-child kill или recovery после SIGKILL. Новый incomplete report contract также требует независимого review; наличие TS PASS не подтверждает нужное runtime поведение.
 
-Все RED/неудачные GREEN/timeout/EXDEV сохранены, budget не расширялся. Новых signals/контрольных процессов/Native попыток после последнего отказа нет. Действующий high admission — [существующий reference](core-late-cleanup-reuse-20261104.md#собственный-допуск); роль/model/effort/globals не менялись.
+Все RED/неудачные GREEN/timeout/EXDEV сохранены, budget не расширялся. Новых signals/контрольных процессов/Native попыток после последнего отказа нет. Действующий high admission — [существующий reference](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-late-cleanup-reuse-20261104.md); роль/model/effort/globals не менялись.
