@@ -339,16 +339,17 @@ class Child extends Base {
     static String category() { return "child static"; }
 }
 
-Base ref = new Child();
+Child child = new Child();
+Base ref = child;
 System.out.println(ref.label);             // base field
 System.out.println(((Child) ref).label);   // child field
 System.out.println(ref.label());           // child method
-System.out.println(((Base) ref).label());  // child method
+System.out.println(((Base) child).label()); // child method
 System.out.println(Base.category());       // base static
 System.out.println(Child.category());      // child static
 ```
 
-Приведение `((Base) ref)` сохраняет ссылку на `Child`, поэтому вызов
+Приведение `((Base) child)` сохраняет ссылку на `Child`, поэтому вызов
 метода остаётся динамическим. Для прямого обращения к реализации
 суперкласса из подкласса служит `super.label()`. Эта запись выбирает
 базовое тело для текущего вызова и сохраняет прежнего получателя `this`.
