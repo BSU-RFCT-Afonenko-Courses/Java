@@ -30,7 +30,7 @@ Initial `snapshot` всё ещё обходит и хеширует owner. Ег�
 README/resource inventory → Download, когда первая ячейка создаёт штатный knitr
 cache, а второй global render использует его без повторного исполнения ячейки?
 
-Переиспользовать [существующий computed probe](core-native-computed-probe.ts) и
+Переиспользовать [существующий computed probe](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-computed-probe.ts) и
 его staging/Performance wrapper. Никакого нового runner, cache key, proof,
 parser/schema или собственного engine. Новый disposable stage; прежний evidence
 не перезаписывать. Whole-package Core4a, принятый Download и Performancee726;
