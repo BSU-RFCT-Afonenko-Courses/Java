@@ -1,5 +1,9 @@
 # SP: один installed native route принятой пары
 
+Исторический registry и его локальные пути ниже относятся к описанному запуску;
+[точные исходные данные](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-native-paired-published-runtime-profiles.json) сохранены в Git.
+Записанные команды не являются инструкцией выбора нынешнего runtime/image.
+
 План записан до запуска. Exact SP HEAD66c4c5110b03e7ac9e9132eff6b9f0bfff0b6190, installed Core332ea585d7b09f07c3f3886943d58a97a528078a + PL3a6c1c14254f1ca547c3bc2577d80007c83bdcf0. Source обеих зависимостей independently clean; installation/provenance отдельно принята. Source/пины/UUID/файлы студентов/сервер не менять, субагентов нет. Только один штатный tasks export-course.ts, pilot пятьworks/семьprojects, upload+Workspace. Старый failed sp-batch-smoke.log/output сохраняются. Java native route не запускается.
 
 ## Primary admission

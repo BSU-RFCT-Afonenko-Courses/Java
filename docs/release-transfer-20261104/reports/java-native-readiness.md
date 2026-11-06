@@ -1,5 +1,9 @@
 # Готовность полного Java native export
 
+Исторический registry и его локальные пути ниже относятся к описанному запуску;
+[точные исходные данные](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-native-paired-published-runtime-profiles.json) сохранены в Git.
+Записанные команды не являются инструкцией выбора нынешнего runtime/image.
+
 3 ноября 2026. Только read-only подготовка к одному полезному запуску. Actual Java HEAD `76da97e5b72b03aae3484109b37378769eb0519e`, statusclean при входе; installed Core `d7cc10eaa21fa35bbe32d73cc4afa216002393da`, PL `da2ad6b6c00891590e59e5abccf3d1eb4ff552f7`. State docs пишет другой owner; здесь единственная запись — отчёт. Pipeline/render/inspect/hash/compile/checks/CI/fetch/network не запускались, Source/config не менялись.
 
 **Readiness: недостающих дорогих foreign artifact builds не найдено.** Следующий минимальный полезный action — один полный existing native export Java tasks после отдельного решения root. Full-course actual success, complete inventory и runtime grading ещё не установлены.

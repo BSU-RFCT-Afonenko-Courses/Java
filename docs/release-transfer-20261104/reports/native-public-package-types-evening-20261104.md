@@ -40,7 +40,7 @@ Workspace origin comparisons получают optional lookup только та�
 
 ## Один следующий compiler graph
 
-Точные 13 настоящих roots находятся в [native-public-package-types-compiler-roots-20261104.json](native-public-package-types-compiler-roots-20261104.json), относительно `/home/tolya/JavaCodex/java-release-20261110/prairielearn`:
+Точные 13 настоящих roots находятся в [native-public-package-types-compiler-roots-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/native-public-package-types-compiler-roots-20261104.json), относительно `/home/tolya/JavaCodex/java-release-20261110/prairielearn`:
 
 ```text
 _extensions/course-prairielearn/application/native-entry.ts

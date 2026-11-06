@@ -1,5 +1,9 @@
 # Java128: следующий ограниченный Performance эксперимент
 
+Исторический registry и его локальные пути ниже относятся к описанному запуску;
+[точные исходные данные](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-native-paired-published-runtime-profiles.json) сохранены в Git.
+Записанные команды не являются инструкцией выбора нынешнего runtime/image.
+
 ## Решение и один вопрос
 
 Предлагается **один наблюдаемый prefix настоящего full128 PL export** в новой disposable копии, через принятый Performance `e7267f1dd8b186d5b95a213f7a03a9bed71559a8`, Core `4a2903e6d03d1dd489b6922d113100826913cf67`, existing launchers/trace/`executeScenario`. Общий cap **120 s вместе с preparation и grace**, retry0. Это план: Source/driver/config/stage сейчас не создавались, Native/inspect/render/compiler/probes/hash/network не запускались.
@@ -10,7 +14,7 @@
 
 ## Что установлено прежними первичными данными
 
-Прочитаны [java-native-cost-next.md](java-native-cost-next.md), [decode report](java-state-decode-20261104.md), его raw [result.json](java-state-decode-20261104/result.json) и [probe.ts](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-state-decode-20261104/probe.ts), прежние exact [execution](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-native-d7-execution.json) и [partial evidence](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-native-d7-partial-evidence.json), адресные acceptance sections. Дополнительно прочитаны только allowlisted поля самих saved `state.json` и `reservation.json`, без вывода environment/raw metadata:
+Прочитаны [java-native-cost-next.md](java-native-cost-next.md), [decode report](java-state-decode-20261104.md), его raw [result.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-state-decode-20261104/result.json) и [probe.ts](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-state-decode-20261104/probe.ts), прежние exact [execution](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-native-d7-execution.json) и [partial evidence](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-native-d7-partial-evidence.json), адресные acceptance sections. Дополнительно прочитаны только allowlisted поля самих saved `state.json` и `reservation.json`, без вывода environment/raw metadata:
 
 `java/tasks/_generated/course-spec/native-ts/f7da2eb2-c4da-41cd-b7e3-1b9ed89a37ea/`.
 

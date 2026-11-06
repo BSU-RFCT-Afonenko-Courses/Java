@@ -28,7 +28,7 @@ Output `symbols` содержит только выбранные/наблюда
 
 ## Фактическая проверка
 
-Один sequential driver с outer timeout13 s + kill grace1 s внутри общего cap15 s, retry0. **Оба шага PASS, общий elapsed1.745083381 s.** Exact evidence: [results.json](performance-targeted-transform-20261104-evidence/results.json), per-step JSON/stdout/stderr в том же каталоге.
+Один sequential driver с outer timeout13 s + kill grace1 s внутри общего cap15 s, retry0. **Оба шага PASS, общий elapsed1.745083381 s.** Exact evidence: [results.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-targeted-transform-20261104-evidence/results.json), per-step JSON/stdout/stderr в том же каталоге.
 
 | Единственный запуск | Результат | Elapsed |
 | --- | --- | ---: |

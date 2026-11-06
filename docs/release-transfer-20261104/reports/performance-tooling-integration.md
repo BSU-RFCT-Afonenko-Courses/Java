@@ -44,7 +44,7 @@ Run `b2b5cee6-0382-4326-83e3-457b113d4562`, durable outputs:
 
 - [performance-sp-summary-capture/runs/b2b5cee6-0382-4326-83e3-457b113d4562/report.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-sp-summary-capture/runs/b2b5cee6-0382-4326-83e3-457b113d4562/report.md) — существующий отчёт Performance;
 - рядом `run.json`, `summary.json`, `coverage.json`, raw `events/`, `processes/`, `wall.trace.json`, `lua-cpu.trace.json`, `causal.json`, новые `public/` и `private/`;
-- [performance-sp-summary-capture/capture-timings.json](performance-sp-summary-capture/capture-timings.json) — host clocks; внешний полный wall в execution JSON.
+- [performance-sp-summary-capture/capture-timings.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-sp-summary-capture/capture-timings.json) — host clocks; внешний полный wall в execution JSON.
 
 Внешний wall **44.816 s**, host script interval **44.587 s**; подготовка launchers/backend/data-dir **0.368 s**; native command wall **41.972 s**; host post-command status/normalize/report stage **2.245 s**; pre-command bookkeeping **0.002 s**. CPU user/system и peak RSS **null**, `resourceScope=unavailable`: GNU time в этом запуске не использован, native wall получен direct command clock в existing `executeScenario`, а не `resource-child`. Это исправляет предварительное ожидание в плане/поле `timingScope` raw capture; raw не переписывается.
 

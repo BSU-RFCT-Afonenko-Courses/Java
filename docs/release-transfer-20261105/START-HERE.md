@@ -60,6 +60,12 @@ Core, основной PL/Download, SP migration, Platform/Gateway и Performanc
 проверка host/auth/proxy/save-resume/server требует отдельного разрешения
 и фактического выполнения.
 
+В исторических [course.json](reports/course.json) и
+[delivery-actual-private-jobs.json](evidence/delivery-actual-private-jobs.json)
+поля `runtimeRegistry` сохраняют записанные локальные пути. Их
+[исходный registry](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-native-paired-published-runtime-profiles.json) доступен в Git;
+эти поля не задают нынешние runtime pins и не подтверждают публикацию образов.
+
 `reports/` содержит исторические свидетельства, включая RED и незавершённые результаты. Некоторые progress/remaining поля записаны раньше итоговых коммитов. Не использовать их как сертификат свежести. `local-checks/` — временные квалификационные скрипты, а не production launcher; не запускать их автоматически, особенно сетевой Workspace worker.
 
 Для будущей реализации: Sol6.1 Standard, medium для простых устойчивых задач, high для сложного кода и независимой рецензии. До роли — собственный первичный допуск по `docs/model-admission.md`, с сохранением исходного интервала. Глобальные настройки не менять. Постоянный Ultra не применять. Сессии и независимые субагенты могут общаться по явному разрешению пользователя; у файла/контракта один владелец, рецензент не принимает свою работу.

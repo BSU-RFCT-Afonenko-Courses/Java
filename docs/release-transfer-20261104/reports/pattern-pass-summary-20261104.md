@@ -56,7 +56,7 @@
 
 Один Deno2.7.14 process, один read сохранённого2,184,627B state,8 чистых JSON parse + exact extracted d7 schema decode, cap15s/retry0. Весь process443.053ms, exit0. Read6.131ms; первая parse10.087ms/decode25.495ms; медианы8 parse8.257ms/decode11.445ms. Actual operation/guard/correlation, Native child, inspect/render/build и Source hash не запускались. State/environment никуда не копировались и не печатались.
 
-Это **не подтверждает** гипотезу, что один лишь чистый decode большого state объясняет900s. Оно измеряет конкретные микростадии; per-document startup/import graph, repeated actual IO, correlation, AST и HTML writer остаются неразложенными. Нельзя выдавать8итераций за total128 или новый прогноз полного курса. [Метод/предел](java-state-decode-20261104.md), [raw timings](java-state-decode-20261104/result.json).
+Это **не подтверждает** гипотезу, что один лишь чистый decode большого state объясняет900s. Оно измеряет конкретные микростадии; per-document startup/import graph, repeated actual IO, correlation, AST и HTML writer остаются неразложенными. Нельзя выдавать8итераций за total128 или новый прогноз полного курса. [Метод/предел](java-state-decode-20261104.md), [raw timings](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-state-decode-20261104/result.json).
 
 ## Следующие границы решений
 

@@ -8,7 +8,7 @@
 
 ## Состав и область сохранности
 
-Новый stage `/home/tolya/JavaCodex/java-release-20261110/reports/java-current-guard-summary-20261104-actual`. [Actual source refs](java-current-guard-summary-20261104-actual/source-refs.json):
+Новый stage `/home/tolya/JavaCodex/java-release-20261110/reports/java-current-guard-summary-20261104-actual`. [Actual source refs](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-current-guard-summary-20261104-actual/source-refs.json):
 
 | Source | Exact ref |
 | --- | --- |
@@ -28,9 +28,9 @@ Report-local копии прежних drivers: [Python](https://github.com/BSU-
 - operation.ts: assertNativeAssignmentCapture/json/readReservation/assertReservationCurrent — **ровно4** actual map entries;
 - contracts.ts: decode — **ровно1** actual entry.
 
-Проверка до Native требует точный размер maps, единственное совпадение каждого имени по original Source range и отсутствие manuallyWrapped для этих пяти declarations. Actual skipped[] в обоих maps. Recursive visit/body helpers не оборачиваются; исполняемые guards/normalization не удалены. [targeted-preparation.json](java-current-guard-summary-20261104-actual/targeted-preparation.json) сохранён до Native.
+Проверка до Native требует точный размер maps, единственное совпадение каждого имени по original Source range и отсутствие manuallyWrapped для этих пяти declarations. Actual skipped[] в обоих maps. Recursive visit/body helpers не оборачиваются; исполняемые guards/normalization не удалены. [targeted-preparation.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-current-guard-summary-20261104-actual/targeted-preparation.json) сохранён до Native.
 
-ExecuteScenario mode — **summary**, actual [mode receipt](java-current-guard-summary-20261104-actual/runs/358cfcd7-354e-4b79-bc09-42c2a32622d9/mode.json). Scope completefalse, luaModules[], luaAutomaticTracefalse. Existing Lua init при summary не вызывает Performance start_trace/debug hook; работают только existing manual Lua phases. Runtime hook probe не выполнялся. TS named wrappers устанавливает explicit preparer через существующий API; generic summary CLI сам этот transform не включает. Automatic Lua request CPU и поузловая trace coverage не заявляются.
+ExecuteScenario mode — **summary**, actual [mode receipt](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-current-guard-summary-20261104-actual/runs/358cfcd7-354e-4b79-bc09-42c2a32622d9/mode.json). Scope completefalse, luaModules[], luaAutomaticTracefalse. Existing Lua init при summary не вызывает Performance start_trace/debug hook; работают только existing manual Lua phases. Runtime hook probe не выполнялся. TS named wrappers устанавливает explicit preparer через существующий API; generic summary CLI сам этот transform не включает. Automatic Lua request CPU и поузловая trace coverage не заявляются.
 
 Это не повтор предыдущего broad trace: selector и mode изменены до новой попытки; старые events/maps не подправлялись. Никаких event-cap увеличений, новых API/supervisor/frameworks или runtime event filters нет.
 
@@ -45,9 +45,9 @@ ExecuteScenario mode — **summary**, actual [mode receipt](java-current-guard-s
 
 Последняя строка включает две предыдущие TS стадии; не складывать её с ними. Driver/module startup до первой statement отдельной чистой метрикой не выделен.
 
-Запуск `python3 reports/java-current-guard-summary-20261104.py` из release-root. [outer-command.json](java-current-guard-summary-20261104-actual/outer-command.json) сохраняет exact timeout command/cwd/env. TERM deadline чуть меньше114 s + разрешённый grace5 s,1 s оставлен на outer bookkeeping в cap120. [outer-result.json](java-current-guard-summary-20261104-actual/outer-result.json): exit124 за114.003086282 s; KILL grace не потребовалась. Финальный product status этим outer exit не подменяется.
+Запуск `python3 reports/java-current-guard-summary-20261104.py` из release-root. [outer-command.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-current-guard-summary-20261104-actual/outer-command.json) сохраняет exact timeout command/cwd/env. TERM deadline чуть меньше114 s + разрешённый grace5 s,1 s оставлен на outer bookkeeping в cap120. [outer-result.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-current-guard-summary-20261104-actual/outer-result.json): exit124 за114.003086282 s; KILL grace не потребовалась. Финальный product status этим outer exit не подменяется.
 
-Native argv — штатный PL export-course.ts над root полной копии, instance2026-2027-s1, `--book tasks`, outputs/checks внутри нового run, existing [sp-native-paired-published-runtime-profiles.json](sp-native-paired-published-runtime-profiles.json). Использованы известные Quarto1.11.5/bundled Deno2.7.14/Pandoc paths и existing XDG/Deno caches, offline env и actual launchers. Cap включает штатную setup Pandoc builtin-init подготовку; новых capability/version/writable-cache probes не было. Source preparation не потребовала нового runner/API. Отдельный compiler/test перед запуском не назначался и не выполнялся.
+Native argv — штатный PL export-course.ts над root полной копии, instance2026-2027-s1, `--book tasks`, outputs/checks внутри нового run, existing [sp-native-paired-published-runtime-profiles.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-native-paired-published-runtime-profiles.json). Использованы известные Quarto1.11.5/bundled Deno2.7.14/Pandoc paths и existing XDG/Deno caches, offline env и actual launchers. Cap включает штатную setup Pandoc builtin-init подготовку; новых capability/version/writable-cache probes не было. Source preparation не потребовала нового runner/API. Отдельный compiler/test перед запуском не назначался и не выполнялся.
 
 Перед Native выведено заметное сообщение, сохранён native-start marker с честной границей invocation, не spawn/status proof. Реальный capture подтверждают receipts/progress/sidecars. На timeout исполнение остановлено; второй попытки/альтернативного fallback не было.
 

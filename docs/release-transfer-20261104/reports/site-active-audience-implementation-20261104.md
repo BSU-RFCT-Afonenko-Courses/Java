@@ -29,7 +29,7 @@ Parent разрешил удаление ordinary alternate-audience preflight �
 
 ## Выполненная проверка
 
-Один sequential check driver, `retry=0`, общий outer cap `timeout --signal=TERM --kill-after=3s 42s`: вместе с kill grace максимум 45 s. Фактический elapsed driver **6.951663 s**, exit0. Команды, env и индивидуальные результаты сохранены в [commands.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/site-active-audience-implementation-20261104/commands.json) и [results.json](site-active-audience-implementation-20261104/results.json), stdout/stderr каждого шага — в том же каталоге.
+Один sequential check driver, `retry=0`, общий outer cap `timeout --signal=TERM --kill-after=3s 42s`: вместе с kill grace максимум 45 s. Фактический elapsed driver **6.951663 s**, exit0. Команды, env и индивидуальные результаты сохранены в [commands.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/site-active-audience-implementation-20261104/commands.json) и [results.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/site-active-audience-implementation-20261104/results.json), stdout/stderr каждого шага — в том же каталоге.
 
 Рабочая папка — указанная isolated worktree. Actual bundled executable `/opt/quarto/bin/tools/x86_64/deno`, runtime Native executable `/opt/quarto/bin/quarto`. Общие параметры `--deny-import --no-config --no-lock --import-map=/home/tolya/JavaCodex/java-release-20261110/reports/site-active-audience-implementation-20261104/imports.json`; `--cached-only` не использовался. Env overrides:
 

@@ -158,10 +158,10 @@ checks не было. stdout пуст; stderr содержит выбранны�
 `Ran 1 test in 0.348s`, `OK`.
 
 Точная команда/argv/cwd, timestamp, exit code и wall time:
-[run.json](course-ci-native-tools-public-cli-case-20261104/run.json).
+[run.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/course-ci-native-tools-public-cli-case-20261104/run.json).
 Исходные потоки сохранены отдельно:
-[stdout](course-ci-native-tools-public-cli-case-20261104/stdout.log),
-[stderr](course-ci-native-tools-public-cli-case-20261104/stderr.log).
+[stdout](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/course-ci-native-tools-public-cli-case-20261104/stdout.log),
+[stderr](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/course-ci-native-tools-public-cli-case-20261104/stderr.log).
 
 Полный модельный интервал перед запуском: PASS, три `turn_context` от прежнего
 исходного baseline; верхние и вложенные `gpt-6.1-sol/high` совпадают.

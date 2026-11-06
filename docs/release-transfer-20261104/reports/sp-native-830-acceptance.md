@@ -1,5 +1,9 @@
 # Штатная SP native попытка с Core 830 + PL da
 
+Исторический registry и его локальные пути ниже относятся к описанному запуску;
+[точные исходные данные](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-native-paired-published-runtime-profiles.json) сохранены в Git.
+Записанные команды не являются инструкцией выбора нынешнего runtime/image.
+
 3 ноября 2026. Один root-authorized attempt на exact installed Core `830381697beea4106655965e10605cc13987199b` + PL `da2ad6b6c00891590e59e5abccf3d1eb4ff552f7`, SP HEAD `904fed875d546247cd84df23c8128b50071344f4`. Результат **FAIL_PL_REFERENCE_BINDING**, exit1, wall `22.238540228` s. Начало UTC `2026-11-03T17:27:02.355577+00:00`, конец `2026-11-03T17:27:24.594132+00:00`. Timeout120s/TERM grace5s не достигнут, retry0.
 
 Полные command/cwd/env/exact refs в [sp-native-830-execution.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-native-830-execution.json), stdout/stderr в [sp-native-830.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-native-830.log). Existing entry `quarto run tasks/_extensions/Afonenko-Course-Tools/course-prairielearn/entrypoints/export-course.ts`, book tasks, instance pilot, новые `reports/sp-native-830-public`/`reports/sp-native-830-private`. Тот же exact published Platform2.5.2 registry `reports/sp-native-paired-published-runtime-profiles.json`, persistent `XDG_CACHE_HOME=/home/tolya/JavaCodex/.cache`, `QUARTO_RUN_NO_NETWORK=true`, `DENO_NO_PACKAGE_JSON=1`; fetch/pull/build не было.

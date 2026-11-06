@@ -4,7 +4,7 @@
 
 Сопоставимая830baseline:38.195870446s, generation45515b7e-dc8b-48d6-87ad-c6af6428a2f5. Этот d7sample37.882386316s не объявляется доказанным time speedup по одной паре; повторных benchmark/status прогонов не назначено и не было. Успех подтверждает targeted counter reductions и сохранность проверенного export состава.
 
-Остались те же authoredSPsource/configbabe83d1,3readyforeignstudentcatalogs, PLda, exactpublishedPlatform2.5.2registry [sp-native-paired-published-runtime-profiles.json](sp-native-paired-published-runtime-profiles.json) и persistentXDG `/home/tolya/JavaCodex/.cache`; QUARTO_RUN_NO_NETWORK=true/DENO_NO_PACKAGE_JSON=1. Между baseline и attempt в SP изменены только принятые2Corevendorpaths в6scopes+cumulativeCorepatch/provenance. Новые SourceHEAD не подбирались, прежние exports/генерации не очищались.
+Остались те же authoredSPsource/configbabe83d1,3readyforeignstudentcatalogs, PLda, exactpublishedPlatform2.5.2registry [sp-native-paired-published-runtime-profiles.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-native-paired-published-runtime-profiles.json) и persistentXDG `/home/tolya/JavaCodex/.cache`; QUARTO_RUN_NO_NETWORK=true/DENO_NO_PACKAGE_JSON=1. Между baseline и attempt в SP изменены только принятые2Corevendorpaths в6scopes+cumulativeCorepatch/provenance. Новые SourceHEAD не подбирались, прежние exports/генерации не очищались.
 
 ## Actual native результат и counters
 

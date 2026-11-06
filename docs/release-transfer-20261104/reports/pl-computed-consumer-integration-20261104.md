@@ -8,7 +8,7 @@
 
 ## Состав и допуск
 
-Read-only refs/branches зафиксированы в [`source-refs.json`](pl-computed-consumer-integration-20261104/source-refs.json): Core `0cf20ccc0a4853b704544c7252fcaf3ccb84a518`, `/home/tolya/JavaCodex/java-release-20261110/core-native-bridge`, ветка `codex/core-native-bridge-20261110`; PL `f3a09cd060609b57e516779588d635abedb1ca21` + единственный local test diff `tests/native-a1-builder-integration.ts`; Download `944ca76dbdef5bb4842116950621f82449b631b3`.
+Read-only refs/branches зафиксированы в [`source-refs.json`](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-computed-consumer-integration-20261104/source-refs.json): Core `0cf20ccc0a4853b704544c7252fcaf3ccb84a518`, `/home/tolya/JavaCodex/java-release-20261110/core-native-bridge`, ветка `codex/core-native-bridge-20261110`; PL `f3a09cd060609b57e516779588d635abedb1ca21` + единственный local test diff `tests/native-a1-builder-integration.ts`; Download `944ca76dbdef5bb4842116950621f82449b631b3`.
 
 По explicit root evidence Core имел посторонний test fix в dirty tree; production `_extensions/course-core` оставался exact0cf. Fixture импортировал/копировал именно extension и genuine Download sibling с matching Core module identity; полная equality dirty Core tree не заявляется. Новый archive/hash/preflight guarantee не создавался.
 
@@ -85,6 +85,8 @@ PL body HTML command был вызван один раз по пройденно
 ## Evidence, зависимости и ограничения
 
 Исходные отказы не переписаны: `compiler.json/log`, `compiler-corrected.json/log`, первый `execution.json`, `stdout.log`, `stderr.log`, `saved-native-inline.json`, `saved-native-bank.html`, `saved-core-complete-observations.json`. Последний Core complete snapshot относится к первому capture до PL/A1 consumer и не является final whole-run metric.
+
+Точные свидетельства первого отказа в Git: [execution.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-computed-consumer-integration-20261104/execution.json), [stdout.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-computed-consumer-integration-20261104/stdout.log), [stderr.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-computed-consumer-integration-20261104/stderr.log).
 
 Исправленный compiler: `compiler-diagnostic-corrected.json/log`. Actual success: [`attempt-2/execution.json`](pl-computed-consumer-integration-20261104/attempt-2/execution.json), `fixture-result.json`, `inline-html-observation.json`, `zip-verification.json`, `stdout.log`, `stderr.log` и сохранённый artifact.
 
