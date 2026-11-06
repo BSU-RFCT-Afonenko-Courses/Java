@@ -29,11 +29,13 @@ jobs:
           cache: npm
       - name: Установить закреплённый анализатор
         run: npm ci --ignore-scripts --no-audit --no-fund
-      - name: Проверить типы всего собственного Python в tools и test-support
+      - name: Проверить типы собственного Python
         run: npm run typecheck
       - name: Проверить Bash
         run: |
-          bash -n CI/check-projects.sh CI/render.sh
+          for script in CI/check-projects.sh CI/render.sh; do
+            bash -n "$script"
+          done
           shellcheck --version
           shellcheck --shell=bash --severity=style CI/check-projects.sh CI/render.sh
   render:
