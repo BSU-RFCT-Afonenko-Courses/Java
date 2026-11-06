@@ -46,4 +46,4 @@ Launcher слушает TERM/INT, ждёт status, пишет final receipt и �
 
 ## Область работы
 
-Только чтение existing saved evidence/current Source/installed timeout docs, запись этого отчёта. Product edits, новые signals/Native/process reproductions, status probes, tests, compiler, network/install —0. Действующий own high admission остаётся прежним: [предыдущий admission reference](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-late-cleanup-reuse-20261104.md); роль/model/effort/globals не менялись.
+Только чтение existing saved evidence/current Source/installed timeout docs, запись этого отчёта. Product edits, новые signals/Native/process reproductions, status probes, tests, compiler, network/install —0. Действующий own high admission остаётся прежним: [предыдущий admission reference](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-late-cleanup-reuse-20261104.md#собственный-допуск); роль/model/effort/globals не менялись.

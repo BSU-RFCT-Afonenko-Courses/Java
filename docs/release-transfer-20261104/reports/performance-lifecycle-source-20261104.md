@@ -39,7 +39,7 @@ Actual cwd — новый checkout; native `deno.json` autodiscovery, DENO_DIR u
 
 ## Пределы приёмки
 
-Runner/tests/signals/Native/Quarto/render/inspect/hash/build/CI/network/install — **0**. Commit/stage/push/mainstate/audit отсутствуют; делегирования не было. Собственный Sol6.1/high origin/admission остаётся прежним: [existing reference](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-late-cleanup-reuse-20261104.md), globals не менялись.
+Runner/tests/signals/Native/Quarto/render/inspect/hash/build/CI/network/install — **0**. Commit/stage/push/mainstate/audit отсутствуют; делегирования не было. Собственный Sol6.1/high origin/admission остаётся прежним: [existing reference](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-late-cleanup-reuse-20261104.md#собственный-допуск), globals не менялись.
 
 Нужен delta Source review исправленной production ревизии и общий changed-graph compiler после отдельного freeze medium fixtures по решению root; затем отдельно разрешённая bounded behavioral qualification. Ни своевременность partial при удержанном pipe, ни delivery TERM, ни failure/initial-write race сейчас не доказаны исполнением. Отсутствует обещание descendant termination через direct-child kill, fsync/SIGKILL recovery, атомарности всего набора JSON/report либо прежнего host-hang объяснения. Disk failure может оставить только initial checkpoint; successful native code сам по себе не означает successful publication. Старые full suites/fixture shapes вне адресного execute control не мигрировали и не проверялись этой единственной compiler-командой.
 
