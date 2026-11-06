@@ -22,7 +22,7 @@ Writer `/root/performance_module_root_writer` — единственный Sourc
 
 `/root/ordinary_gradle_publication_review`: **Scoped APPROVE**, конкретных findings нет. Проверены absolute module root/свои config-lock при чужом cwd, прежнее shell quoting, TS/Lua paths, trace URL с пробелами/#/%, isolated mutable Pandoc data, отсутствие записей в installed tree и custom resolver.
 
-Предел: installed root должен оставаться доступным до завершения child processes; generated workspace больше не самодостаточная копия приложения. Это Source approval одного изменения, не whole Performance/runtime qualification. [Review](runtime-performance-module-root-review-20261104.md).
+Предел: installed root должен оставаться доступным до завершения child processes; generated workspace больше не самодостаточная копия приложения. Это Source approval одного изменения, не whole Performance/runtime qualification. [Review](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/runtime-performance-module-root-review-20261104.md).
 
 ## Один affected graph и остановка
 

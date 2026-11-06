@@ -95,7 +95,7 @@
 | [reports/core-ci-0cf20cc-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-ci-0cf20cc-20261104.md) | 1793 |
 | [reports/core-ci-4a2903e-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-ci-4a2903e-20261104.md) | 1206 |
 | [reports/core-ci-5a28314-20261104.md](reports/core-ci-5a28314-20261104.md) | 4294 |
-| [reports/core-ci-5f4590a-20261104.md](reports/core-ci-5f4590a-20261104.md) | 1328 |
+| [reports/core-ci-5f4590a-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-ci-5f4590a-20261104.md) | 1328 |
 | [reports/core-ci-cost-scope.md](reports/core-ci-cost-scope.md) | 13894 |
 | [reports/core-ci-d7-addressed-tests.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-ci-d7-addressed-tests.json) | 1049 |
 | [reports/core-ci-d7-addressed-tests.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-ci-d7-addressed-tests.log) | 4455 |
@@ -133,13 +133,13 @@
 | [reports/core-condition-walk-types-check-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-condition-walk-types-check-20261104.json) | 1123 |
 | [reports/core-condition-walk-types-compiler-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-condition-walk-types-compiler-20261104.log) | 90 |
 | [reports/core-condition-walk-types-control-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-condition-walk-types-control-20261104.log) | 88 |
-| [reports/core-condition-walk-types-review-20261104.md](reports/core-condition-walk-types-review-20261104.md) | 1711 |
-| [reports/core-counter-assertion-review.md](reports/core-counter-assertion-review.md) | 2627 |
+| [reports/core-condition-walk-types-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-condition-walk-types-review-20261104.md) | 1711 |
+| [reports/core-counter-assertion-review.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-counter-assertion-review.md) | 2627 |
 | [reports/core-current-cache-next-20261104.md](reports/core-current-cache-next-20261104.md) | 5608 |
 | [reports/core-download-defer-green.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-download-defer-green.json) | 288 |
 | [reports/core-download-defer-green.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-download-defer-green.log) | 82 |
 | [reports/core-download-defer-red.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-download-defer-red.log) | 1289 |
-| [reports/core-download-defer-review.md](reports/core-download-defer-review.md) | 2905 |
+| [reports/core-download-defer-review.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-download-defer-review.md) | 2905 |
 | [reports/core-empty-scratch-green.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-empty-scratch-green.json) | 176 |
 | [reports/core-empty-scratch-green.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-empty-scratch-green.log) | 765 |
 | [reports/core-empty-scratch-red.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-empty-scratch-red.log) | 561 |
@@ -158,7 +158,7 @@
 | [reports/core-native-bridge-test-align-policy-admission-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-bridge-test-align-policy-admission-20261104.json) | 1896 |
 | [reports/core-native-bridge-test-alignment-check-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-bridge-test-alignment-check-20261104.json) | 1739 |
 | [reports/core-native-bridge-test-alignment-check-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-bridge-test-alignment-check-20261104.log) | 325 |
-| [reports/core-native-bridge-test-alignment-review-20261104.md](reports/core-native-bridge-test-alignment-review-20261104.md) | 3001 |
+| [reports/core-native-bridge-test-alignment-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-bridge-test-alignment-review-20261104.md) | 3001 |
 | [reports/core-native-bridge-test-contracts-next-20261104.md](reports/core-native-bridge-test-contracts-next-20261104.md) | 16604 |
 | [reports/core-native-bridge-typecheck.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-bridge-typecheck.log) | 1798 |
 | [reports/core-native-cache-integration-20261104/capture-1-completed.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-cache-integration-20261104/capture-1-completed.json) | 249 |
@@ -205,7 +205,7 @@
 | [reports/core-native-cache-integration-20261104-execution.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-cache-integration-20261104-execution.json) | 470 |
 | [reports/core-native-cache-integration-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-cache-integration-20261104.log) | 78 |
 | [reports/core-native-cache-integration-20261104.md](reports/core-native-cache-integration-20261104.md) | 13199 |
-| [reports/core-native-cache-integration-review-20261104.md](reports/core-native-cache-integration-review-20261104.md) | 2551 |
+| [reports/core-native-cache-integration-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-cache-integration-review-20261104.md) | 2551 |
 | [reports/core-native-cache-integration.py](reports/core-native-cache-integration.py) | 5633 |
 | [reports/core-native-cache-performance.ts](reports/core-native-cache-performance.ts) | 3707 |
 | [reports/core-native-cache-probe.ts](reports/core-native-cache-probe.ts) | 7685 |
@@ -258,7 +258,7 @@
 | [reports/core-navigation-document-types-compiler-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-navigation-document-types-compiler-20261104.log) | 13220 |
 | [reports/core-navigation-document-types-control-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-navigation-document-types-control-20261104.log) | 248 |
 | [reports/core-navigation-document-types-next-20261104.md](reports/core-navigation-document-types-next-20261104.md) | 5134 |
-| [reports/core-navigation-wrappers-20261104.md](reports/core-navigation-wrappers-20261104.md) | 2998 |
+| [reports/core-navigation-wrappers-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-navigation-wrappers-20261104.md) | 2998 |
 | [reports/core-navigation-wrappers-20261104.patch](reports/core-navigation-wrappers-20261104.patch) | 1606 |
 | [reports/core-navigation-wrappers-check-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-navigation-wrappers-check-20261104.json) | 726 |
 | [reports/core-navigation-wrappers-compiler-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-navigation-wrappers-compiler-20261104.log) | 91 |
@@ -301,7 +301,7 @@
 | [reports/core-pl-candidate-installation-d7-model-evidence.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-pl-candidate-installation-d7-model-evidence.json) | 587 |
 | [reports/core-pl-candidate-installation-d7-result.json](reports/core-pl-candidate-installation-d7-result.json) | 2989 |
 | [reports/core-pl-candidate-installation-d7.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-pl-candidate-installation-d7.log) | 2989 |
-| [reports/core-pl-candidate-installation-d7.md](reports/core-pl-candidate-installation-d7.md) | 3006 |
+| [reports/core-pl-candidate-installation-d7.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-pl-candidate-installation-d7.md) | 3006 |
 | [reports/core-pl-candidate-installation-d7.py](reports/core-pl-candidate-installation-d7.py) | 7948 |
 | [reports/core-pl-candidate-installation-f10-model-evidence.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-pl-candidate-installation-f10-model-evidence.json) | 498 |
 | [reports/core-pl-candidate-installation-f10-result.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-pl-candidate-installation-f10-result.json) | 3003 |
@@ -318,7 +318,7 @@
 | [reports/core-release-currentness-test-fix-20261104.md](reports/core-release-currentness-test-fix-20261104.md) | 5528 |
 | [reports/core-resource-walk-20261104.md](reports/core-resource-walk-20261104.md) | 7078 |
 | [reports/core-resource-walk-admission-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-resource-walk-admission-20261104.json) | 1311 |
-| [reports/core-resource-walk-review-20261104.md](reports/core-resource-walk-review-20261104.md) | 2237 |
+| [reports/core-resource-walk-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-resource-walk-review-20261104.md) | 2237 |
 | [reports/core-typed-owner-boundary-review.md](reports/core-typed-owner-boundary-review.md) | 9521 |
 | [reports/core-typed-owner-boundary.md](reports/core-typed-owner-boundary.md) | 11367 |
 | [reports/core-typed-owner-check.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-typed-owner-check.log) | 564 |
@@ -353,7 +353,7 @@
 | [reports/discussion-20261104-native-build-no-custom-hashes.md](reports/discussion-20261104-native-build-no-custom-hashes.md) | 8538 |
 | [reports/discussion-20261104-tests-ci.md](reports/discussion-20261104-tests-ci.md) | 9993 |
 | [reports/discussion-20261104-typed-libraries-yaml.md](reports/discussion-20261104-typed-libraries-yaml.md) | 9806 |
-| [reports/download-a1-count-tests-alignment-20261104.md](reports/download-a1-count-tests-alignment-20261104.md) | 2852 |
+| [reports/download-a1-count-tests-alignment-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-a1-count-tests-alignment-20261104.md) | 2852 |
 | [reports/download-a1-count-tests-alignment-20261104.patch](reports/download-a1-count-tests-alignment-20261104.patch) | 2920 |
 | [reports/download-ast-envelope-types-20261104.md](reports/download-ast-envelope-types-20261104.md) | 9738 |
 | [reports/download-ast-envelope-types-20261104.patch](reports/download-ast-envelope-types-20261104.patch) | 4868 |
@@ -403,7 +403,7 @@
 | [reports/download-recognizer-types-checks-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-recognizer-types-checks-20261104.json) | 1084 |
 | [reports/download-recognizer-types-compiler-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-recognizer-types-compiler-20261104.log) | 92 |
 | [reports/download-recognizer-types-control-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-recognizer-types-control-20261104.log) | 139 |
-| [reports/download-recognizer-types-review-20261104.md](reports/download-recognizer-types-review-20261104.md) | 2566 |
+| [reports/download-recognizer-types-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-recognizer-types-review-20261104.md) | 2566 |
 | [reports/download-typed-compiler.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-typed-compiler.json) | 843 |
 | [reports/download-typed-runner.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-typed-runner.json) | 3500 |
 | [reports/download-typed-runtime-review.md](reports/download-typed-runtime-review.md) | 12059 |
@@ -541,7 +541,7 @@
 | [reports/jdk-official-preflight-review-20261104.md](reports/jdk-official-preflight-review-20261104.md) | 9029 |
 | [reports/jdk-official-preflight-runner-20261104.txt](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/jdk-official-preflight-runner-20261104.txt) | 65 |
 | [reports/jdk-per-job-read-boundary-20261104.md](reports/jdk-per-job-read-boundary-20261104.md) | 7267 |
-| [reports/live-image-sources-20261104.md](reports/live-image-sources-20261104.md) | 2669 |
+| [reports/live-image-sources-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/live-image-sources-20261104.md) | 2669 |
 | [reports/materializer-package-versions-review.md](reports/materializer-package-versions-review.md) | 6239 |
 | [reports/materializer-package-versions.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/materializer-package-versions.md) | 2169 |
 | [reports/native-course-mutable-delivery-next-task-20261104.md](reports/native-course-mutable-delivery-next-task-20261104.md) | 36916 |
@@ -649,7 +649,7 @@
 | [reports/paired-ci-publication-test-align-20261104.patch](reports/paired-ci-publication-test-align-20261104.patch) | 1843 |
 | [reports/paired-ci-publication-test-align-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/paired-ci-publication-test-align-review-20261104.md) | 1397 |
 | [reports/paired-ci-second-failure-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/paired-ci-second-failure-20261104.json) | 5707 |
-| [reports/paired-ci-test-cleanup-review-20261104.md](reports/paired-ci-test-cleanup-review-20261104.md) | 1705 |
+| [reports/paired-ci-test-cleanup-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/paired-ci-test-cleanup-review-20261104.md) | 1705 |
 | [reports/pattern-pass-core-20261104.md](reports/pattern-pass-core-20261104.md) | 37730 |
 | [reports/pattern-pass-export-20261104.md](reports/pattern-pass-export-20261104.md) | 46360 |
 | [reports/pattern-pass-performance-ci-20261104.md](reports/pattern-pass-performance-ci-20261104.md) | 44093 |
@@ -659,14 +659,14 @@
 | [reports/performance-backend-copy-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-backend-copy-review-20261104.md) | 2174 |
 | [reports/performance-capabilities-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-capabilities-review-admission.json) | 1143 |
 | [reports/performance-capabilities-review.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-capabilities-review.md) | 4002 |
-| [reports/performance-command-table-preview-20261104.md](reports/performance-command-table-preview-20261104.md) | 3091 |
+| [reports/performance-command-table-preview-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-command-table-preview-20261104.md) | 3091 |
 | [reports/performance-command-table-preview-20261104.ts](reports/performance-command-table-preview-20261104.ts) | 1564 |
 | [reports/performance-deno-signal-source.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-deno-signal-source.json) | 13163 |
 | [reports/performance-event-types-20261104.md](reports/performance-event-types-20261104.md) | 10194 |
 | [reports/performance-event-types-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-event-types-review-20261104.md) | 2451 |
 | [reports/performance-exec-signal-masks.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-exec-signal-masks.json) | 1242 |
 | [reports/performance-fixed-pair-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-fixed-pair-review-admission.json) | 1468 |
-| [reports/performance-fixed-pair-review.md](reports/performance-fixed-pair-review.md) | 2559 |
+| [reports/performance-fixed-pair-review.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-fixed-pair-review.md) | 2559 |
 | [reports/performance-lifecycle-clean-contract-20261104.md](reports/performance-lifecycle-clean-contract-20261104.md) | 28055 |
 | [reports/performance-lifecycle-clean-contract-review-20261104-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-lifecycle-clean-contract-review-20261104-admission.json) | 1625 |
 | [reports/performance-lifecycle-clean-contract-review-20261104.md](reports/performance-lifecycle-clean-contract-review-20261104.md) | 22040 |
@@ -699,7 +699,7 @@
 | [reports/performance-own-cost.md](reports/performance-own-cost.md) | 4419 |
 | [reports/performance-pandoc-layer-reading.md](reports/performance-pandoc-layer-reading.md) | 7742 |
 | [reports/performance-pending-supervision-20261104.md](reports/performance-pending-supervision-20261104.md) | 12551 |
-| [reports/performance-pending-supervision-review-20261104.md](reports/performance-pending-supervision-review-20261104.md) | 3623 |
+| [reports/performance-pending-supervision-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-pending-supervision-review-20261104.md) | 3623 |
 | [reports/performance-process-reading.md](reports/performance-process-reading.md) | 5982 |
 | [reports/performance-process-timing-plan.md](reports/performance-process-timing-plan.md) | 23484 |
 | [reports/performance-process-timing-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-process-timing-review-admission.json) | 1186 |
@@ -771,7 +771,7 @@
 | [reports/performance-targeted-transform-20261104-evidence/results.json](reports/performance-targeted-transform-20261104-evidence/results.json) | 824 |
 | [reports/performance-targeted-transform-20261104.md](reports/performance-targeted-transform-20261104.md) | 8192 |
 | [reports/performance-targeted-transform-20261104.patch](reports/performance-targeted-transform-20261104.patch) | 9262 |
-| [reports/performance-targeted-transform-review-20261104.md](reports/performance-targeted-transform-review-20261104.md) | 2278 |
+| [reports/performance-targeted-transform-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-targeted-transform-review-20261104.md) | 2278 |
 | [reports/performance-term-recovery-20261104-evidence/compiler.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-term-recovery-20261104-evidence/compiler.json) | 455 |
 | [reports/performance-term-recovery-20261104-evidence/compiler.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-term-recovery-20261104-evidence/compiler.log) | 193 |
 | [reports/performance-term-recovery-20261104-evidence/final-execute.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-term-recovery-20261104-evidence/final-execute.json) | 412 |
@@ -789,7 +789,7 @@
 | [reports/pl-assessment-uuid-review.md](reports/pl-assessment-uuid-review.md) | 7157 |
 | [reports/pl-assessment-uuid.diff](reports/pl-assessment-uuid.diff) | 23789 |
 | [reports/pl-assessment-uuid.md](reports/pl-assessment-uuid.md) | 8371 |
-| [reports/pl-candidate-35496cdd.md](reports/pl-candidate-35496cdd.md) | 1963 |
+| [reports/pl-candidate-35496cdd.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-candidate-35496cdd.md) | 1963 |
 | [reports/pl-canonical-instrumentation-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-canonical-instrumentation-review-admission.json) | 1834 |
 | [reports/pl-canonical-instrumentation-review.md](reports/pl-canonical-instrumentation-review.md) | 3767 |
 | [reports/pl-canonical-instrumentation.md](reports/pl-canonical-instrumentation.md) | 6025 |
@@ -810,7 +810,7 @@
 | [reports/pl-computed-consumer-integration-20261104/stderr.log](reports/pl-computed-consumer-integration-20261104/stderr.log) | 1470 |
 | [reports/pl-computed-consumer-integration-20261104/stdout.log](reports/pl-computed-consumer-integration-20261104/stdout.log) | 0 |
 | [reports/pl-computed-consumer-integration-20261104.md](reports/pl-computed-consumer-integration-20261104.md) | 13949 |
-| [reports/pl-computed-consumer-integration-review-20261104.md](reports/pl-computed-consumer-integration-review-20261104.md) | 2906 |
+| [reports/pl-computed-consumer-integration-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-computed-consumer-integration-review-20261104.md) | 2906 |
 | [reports/pl-computed-native-consumer-next-20261104.md](reports/pl-computed-native-consumer-next-20261104.md) | 23493 |
 | [reports/pl-core-paired-ci-next-20261104.md](reports/pl-core-paired-ci-next-20261104.md) | 13552 |
 | [reports/pl-core-paired-ci-next-admission-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-core-paired-ci-next-admission-20261104.json) | 2057 |
@@ -878,19 +878,19 @@
 | [reports/qrc-lua-attr-native-20261104.patch](reports/qrc-lua-attr-native-20261104.patch) | 9297 |
 | [reports/qrc-lua-attr-native-admission-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-lua-attr-native-admission-20261104.json) | 3048 |
 | [reports/qrc-lua-attr-native-check-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-lua-attr-native-check-20261104.json) | 456 |
-| [reports/qrc-lua-attr-native-review-20261104.md](reports/qrc-lua-attr-native-review-20261104.md) | 2051 |
+| [reports/qrc-lua-attr-native-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-lua-attr-native-review-20261104.md) | 2051 |
 | [reports/qrc-native-metadata-20261104.md](reports/qrc-native-metadata-20261104.md) | 9602 |
 | [reports/qrc-native-metadata-review-20261104.md](reports/qrc-native-metadata-review-20261104.md) | 12663 |
 | [reports/qrc-performance-companion-implementation-20261104.md](reports/qrc-performance-companion-implementation-20261104.md) | 13488 |
 | [reports/qrc-performance-companion-next-20261104.md](reports/qrc-performance-companion-next-20261104.md) | 22194 |
-| [reports/qrc-performance-companion-review-20261104.md](reports/qrc-performance-companion-review-20261104.md) | 2910 |
+| [reports/qrc-performance-companion-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-performance-companion-review-20261104.md) | 2910 |
 | [reports/qrc-post-inspection-types-20261104.md](reports/qrc-post-inspection-types-20261104.md) | 7768 |
 | [reports/qrc-post-inspection-types-20261104.patch](reports/qrc-post-inspection-types-20261104.patch) | 7962 |
 | [reports/qrc-post-inspection-types-admission-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-post-inspection-types-admission-20261104.json) | 2284 |
 | [reports/qrc-post-inspection-types-checks-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-post-inspection-types-checks-20261104.json) | 1271 |
 | [reports/qrc-post-inspection-types-compiler-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-post-inspection-types-compiler-20261104.log) | 148 |
 | [reports/qrc-post-inspection-types-control-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-post-inspection-types-control-20261104.log) | 110 |
-| [reports/qrc-post-inspection-types-review-20261104.md](reports/qrc-post-inspection-types-review-20261104.md) | 1852 |
+| [reports/qrc-post-inspection-types-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-post-inspection-types-review-20261104.md) | 1852 |
 | [reports/qrc-search-types-20261104.md](reports/qrc-search-types-20261104.md) | 12718 |
 | [reports/qrc-search-types-20261104.patch](reports/qrc-search-types-20261104.patch) | 11525 |
 | [reports/qrc-search-types-admission-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-search-types-admission-20261104.json) | 1428 |
@@ -902,7 +902,7 @@
 | [reports/qrc-search-types-control-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-search-types-control-20261104.log) | 211 |
 | [reports/qrc-search-types-control_after_duplicate_path_fix-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-search-types-control_after_duplicate_path_fix-20261104.log) | 318 |
 | [reports/qrc-search-types-control_after_test_unknown_narrowing-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-search-types-control_after_test_unknown_narrowing-20261104.log) | 318 |
-| [reports/qrc-search-types-review-20261104.md](reports/qrc-search-types-review-20261104.md) | 3159 |
+| [reports/qrc-search-types-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-search-types-review-20261104.md) | 3159 |
 | [reports/quarto-cache-boundary-20261104.md](reports/quarto-cache-boundary-20261104.md) | 23660 |
 | [reports/quarto-execution-boundary-20261104.md](reports/quarto-execution-boundary-20261104.md) | 25355 |
 | [reports/release-evidence-checkpoint-20261103-2000.md](reports/release-evidence-checkpoint-20261103-2000.md) | 35548 |
@@ -1004,7 +1004,7 @@
 | [reports/runtime-performance-module-root-20261104.md](reports/runtime-performance-module-root-20261104.md) | 10514 |
 | [reports/runtime-performance-module-root-plan-20261104.md](reports/runtime-performance-module-root-plan-20261104.md) | 4219 |
 | [reports/runtime-performance-module-root-result-20261104.md](reports/runtime-performance-module-root-result-20261104.md) | 9057 |
-| [reports/runtime-performance-module-root-review-20261104.md](reports/runtime-performance-module-root-review-20261104.md) | 1281 |
+| [reports/runtime-performance-module-root-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/runtime-performance-module-root-review-20261104.md) | 1281 |
 | [reports/runtime-performance-module-root-writer-20261104.md](reports/runtime-performance-module-root-writer-20261104.md) | 7473 |
 | [reports/runtime-performance-summary-20261104-evidence/invocation.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/runtime-performance-summary-20261104-evidence/invocation.json) | 632 |
 | [reports/runtime-performance-summary-20261104-evidence/plan.md](reports/runtime-performance-summary-20261104-evidence/plan.md) | 2292 |
@@ -1099,7 +1099,7 @@
 | [reports/sp-batch-verification.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-batch-verification.json) | 608 |
 | [reports/sp-ci-render-repeat-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-ci-render-repeat-review-admission.json) | 1142 |
 | [reports/sp-ci-render-repeat-review.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-ci-render-repeat-review.md) | 3638 |
-| [reports/sp-ci-render-repeat.md](reports/sp-ci-render-repeat.md) | 1630 |
+| [reports/sp-ci-render-repeat.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-ci-render-repeat.md) | 1630 |
 | [reports/sp-download-post-lifetime.md](reports/sp-download-post-lifetime.md) | 14128 |
 | [reports/sp-materializer-transfer.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-materializer-transfer.json) | 608 |
 | [reports/sp-native-047-acceptance.md](reports/sp-native-047-acceptance.md) | 4815 |
@@ -1135,7 +1135,7 @@
 | [reports/sp-native-qrc-ready.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-native-qrc-ready.log) | 3750 |
 | [reports/sp-native-source-fence-cost.md](reports/sp-native-source-fence-cost.md) | 13692 |
 | [reports/sp-qrc-handbook-student.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-qrc-handbook-student.log) | 1348 |
-| [reports/sp-qrc-imports-review.md](reports/sp-qrc-imports-review.md) | 3203 |
+| [reports/sp-qrc-imports-review.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-qrc-imports-review.md) | 3203 |
 | [reports/sp-qrc-known-refs-readiness.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-qrc-known-refs-readiness.json) | 8826 |
 | [reports/sp-qrc-practice-student.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-qrc-practice-student.log) | 1329 |
 | [reports/sp-qrc-reference-readiness.md](reports/sp-qrc-reference-readiness.md) | 21038 |
@@ -1173,7 +1173,7 @@
 | [reports/sp-site-native-render-evidence-20261104/model-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-site-native-render-evidence-20261104/model-admission.json) | 817 |
 | [reports/sp-site-native-render-implementation-20261104.md](reports/sp-site-native-render-implementation-20261104.md) | 12882 |
 | [reports/sp-site-native-render-next-20261104.md](reports/sp-site-native-render-next-20261104.md) | 22114 |
-| [reports/sp-site-shared-owner-config-20261104.md](reports/sp-site-shared-owner-config-20261104.md) | 2891 |
+| [reports/sp-site-shared-owner-config-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-site-shared-owner-config-20261104.md) | 2891 |
 | [reports/title-acceptance-20261104/a5-affected-typegraph.stderr.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/title-acceptance-20261104/a5-affected-typegraph.stderr.log) | 608 |
 | [reports/title-acceptance-20261104/a5-affected-typegraph.stdout.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/title-acceptance-20261104/a5-affected-typegraph.stdout.log) | 0 |
 | [reports/title-acceptance-20261104/a5-book-cli.py](reports/title-acceptance-20261104/a5-book-cli.py) | 4869 |
