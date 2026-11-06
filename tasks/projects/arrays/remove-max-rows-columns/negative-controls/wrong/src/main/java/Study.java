@@ -7,3 +7,5 @@ public class Study {
         return new MatrixResult(flat[0], flat[1], values);
     }
 }
+
+class FlatRemoval { public static int[] remove(int[][] a) { return new int[]{0,0}; } }

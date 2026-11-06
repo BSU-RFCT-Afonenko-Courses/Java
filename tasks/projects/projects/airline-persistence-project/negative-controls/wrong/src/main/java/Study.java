@@ -1,4 +1,9 @@
-import airline.*;import java.util.List;import java.nio.file.Path;
+import java.nio.file.Path;
+import java.util.*;
+import airline.*;
+import java.util.List;
+class Main {public static void main(String[]args)throws Exception{Object company=Study.company(List.of(Study.plane("a",0,150,12,3000,2400),Study.plane("b",1,2,20,4500,3000),Study.plane("c",0,80,6,1800,1500)));Path directory=Path.of(args.length==0?"airline-data":args[0]);Scanner input=new Scanner(System.in);for(;;){System.out.println("1 — суммы; 2 — дальность по возрастанию; 3 — поиск [1500,2400]; 4 — сохранить; 5 — загрузить и обновить c до 100 мест; 0 — выход");if(!input.hasNextLine())return;switch(input.nextLine()){case "0":return;case "1":System.out.println(Study.totalSeats(company)+" мест, "+Study.totalTonnes(company)+" т");break;case "2":Study.ordered(company).forEach(System.out::println);break;case "3":Study.find(company,1500,2400).forEach(System.out::println);break;case "4":Study.save(company,directory);break;case "5":company=Study.load(directory);Study.updateSeats(directory,"c",100);company=Study.load(directory);System.out.println(Study.totalSeats(company));break;default:System.out.println("Неизвестная команда");}}}}
+
 public class Study {
  public static Object plane(String fixtureId,int kind,int seats,double tonnes,double range,double fuel){return kind==0?new Passenger(fixtureId,seats,tonnes,range,fuel):new Cargo(fixtureId,seats,tonnes,range,fuel);}
  public static Object company(List<?>planes){return new Airline(planes);}public static List<?>planes(Object company){return ((Airline)company).planes();}public static List<?>ordered(Object company){return ((Airline)company).ordered();}public static List<?>find(Object company,double lo,double hi){return ((Airline)company).find(lo,hi);}

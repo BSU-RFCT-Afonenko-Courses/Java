@@ -1,5 +1,6 @@
 package airline;
-import java.util.*;import java.io.Serializable;
+import java.util.*;
+import java.io.Serializable;
 public final class Airline implements Serializable {
  private static final long serialVersionUID=1L;private final List<Plane>park=new ArrayList<>();
  public Airline(Collection<?>planes){for(Object value:planes)park.add((Plane)value);}
