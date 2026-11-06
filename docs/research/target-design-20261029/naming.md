@@ -25,7 +25,7 @@
 | Нынешний источник | Что видно буквально | Что из этого не следует |
 | --- | --- | --- |
 | [tasks/bank/arrays.qmd:8](../../../tasks/bank/arrays.qmd#L8), [62](../../../tasks/bank/arrays.qmd#L62) | `sec-bank-arrays`; `exr-arrays-reverse-array` и `/projects/arrays/reverse-array` | `reverse-array` не два каталога |
-| [theory/chapters/arrays.qmd:5](../../../theory/chapters/arrays.qmd#L5), [238](../../../theory/chapters/arrays.qmd#L238) | `sec-theory-arrays`, `sec-theory-arrays-row-references` | Подраздел не обязан иметь отдельный QMD; вся иерархия заголовков не кодируется в ID |
+| [theory/arrays.qmd:5](../../../theory/arrays.qmd#L5), [238](../../../theory/arrays.qmd#L238) | `sec-theory-arrays`, `sec-theory-arrays-row-references` | Подраздел не обязан иметь отдельный QMD; вся иерархия заголовков не кодируется в ID |
 | [tasks/labs/objects.qmd:45](../../../tasks/labs/objects.qmd#L45) | Span `alt-objects-book-selection-car-selection` с двумя ссылками на упражнения | Состав choice берётся из ссылок, не из разрезания имени `alt` |
 | [QRC targets.lua:20–24](../../../tasks/_extensions/Afonenko-Course-Tools/reference-catalog/lua/targets.lua#L20), [catalog.ts:3–14](../../../tasks/_extensions/Afonenko-Course-Tools/reference-catalog/domain/catalog.ts#L3) | Тип цели определяется префиксом до первого дефиса; ключ каталога — `namespace:id`, дубли отвергаются | ID не является обратимым адресом файла |
 
@@ -33,7 +33,7 @@
 
 [Официальный Quarto](https://quarto.org/docs/authoring/cross-references) требует соответствующего типа (`sec-`, `fig-`, `tbl-`, `exr-`, `sol-` и другие), нижнего регистра для crossref ID и рекомендует избегать `_` из-за LaTeX/PDF. Зарезервированный префикс нельзя произвольно давать любому техническому блоку. [Pandoc](https://pandoc.org/MANUAL.html#extension-auto_identifiers) сохраняет двойной дефис в примере `dogs--in-my-house`: `--` сам по себе не запрещён. Это не доказательство нового соглашения или работы всех экспортёров с ним. Документация проверена 29 октября; новых render-проб в этом исследовании нет.
 
-[Скрипт лексической сверки](evidence/project-id-check.py) и [компактный результат](evidence/project-id-summary.json), воспроизведённый root, охватили 206 QMD и все 128 нынешних Java упражнений с явным `project`; установлено совпадение **прямой** проекции из уже известного пути: `exr-` + путь без `/projects/` + `/` → `-`. Это лексическая сверка исходников, не квалификация сайта. Обратная операция неоднозначна: условные `/projects/a-b/c` и `/projects/a/b-c` дадут одинаковый `exr-a-b-c`. Дубликат ID нужно обнаруживать, а не угадывать нужную границу.
+[Скрипт лексической сверки](evidence/project-id-check.py) и [компактный результат](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/research/target-design-20261029/evidence/project-id-summary.json), воспроизведённый root, охватили 206 QMD и все 128 нынешних Java упражнений с явным `project`; установлено совпадение **прямой** проекции из уже известного пути: `exr-` + путь без `/projects/` + `/` → `-`. Это лексическая сверка исходников, не квалификация сайта. Обратная операция неоднозначна: условные `/projects/a-b/c` и `/projects/a/b-c` дадут одинаковый `exr-a-b-c`. Дубликат ID нужно обнаруживать, а не угадывать нужную границу.
 
 ## 3 Принятое общее правило
 

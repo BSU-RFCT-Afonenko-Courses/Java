@@ -697,10 +697,10 @@ Notes предлагают сопоставить успешный поиск б
 объяснить, какая ранее накопленная сумма сохранится.
 
 Отдельно проверяется смысл входящей ссылки. В конце раздела об исходах
-[главы о потоках](../theory/chapters/streams.qmd#sec-j25-theory-streams-outcomes)
+[главы о потоках](../theory/streams.qmd#sec-theory-streams-outcomes)
 в проверенном снимке описаны `grade.Main input threshold`, участники и отказ
 всего входа.
-Цель ссылки — [приложение поставок](../theory/chapters/application.qmd#sec-j25-theory-application-behavior)
+Цель ссылки — [приложение поставок](../theory/application.qmd#sec-theory-application-behavior)
 с одним аргументом и продолжением после неверной строки. Адрес существует,
 но утверждение о его содержании ошибочно. Вариант согласованного перехода:
 
