@@ -9,17 +9,22 @@ import subprocess
 import tempfile
 
 
-def main():
+class Arguments(argparse.Namespace):
+    junit_jar: Path
+    report: Path | None
+
+
+def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--junit-jar', required=True, type=Path)
     parser.add_argument('--report', type=Path)
-    args = parser.parse_args()
+    args = parser.parse_args(namespace=Arguments())
     root = Path(__file__).resolve().parent
     java_home = os.environ.get('JAVA_HOME')
     java = Path(java_home) / 'bin/java' if java_home else Path('java')
     javac = Path(java_home) / 'bin/javac' if java_home else Path('javac')
     sources = sorted((root / 'src').rglob('*.java'))
-    results = []
+    results: list[dict[str, object]] = []
     with tempfile.TemporaryDirectory(prefix='course-test-support-') as temporary:
         commands = [
             [str(javac), '--release', '25', '-encoding', 'UTF-8', '-proc:none',

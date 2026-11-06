@@ -2,19 +2,51 @@
 """Отдельная компиляция решения и обычная преподавательская Java/JUnit привязка.
 Это локальный диагностический запуск существующего Platform, не новый student API.
 """
-import argparse,hashlib,json,os,re,shutil,signal,subprocess,sys,tempfile,time
+import argparse,hashlib,json,os,re,signal,subprocess,sys,tempfile,time
 from pathlib import Path,PurePosixPath
+from typing import TypedDict
+from json_contracts import read_record, texts, text
+
+class ApiConfig(TypedDict):
+    files: list[str]
+    entry: str
+
+
+def read_api_config(path: Path) -> ApiConfig:
+    value = read_record(path)
+    if set(value) != {'files', 'entry'}:
+        raise ValueError('нужен closed api config files/entry')
+    files = texts(value['files'], 'files')
+    if not files or len(set(files)) != len(files):
+        raise ValueError('нужны непустые уникальные API files')
+    entry = text(value['entry'], 'entry')
+    if not re.fullmatch(r'[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*', entry):
+        raise ValueError('неверный API entry')
+    return {'files': files, 'entry': entry}
+
+
+class Arguments(argparse.Namespace):
+    project: Path
+    sources: Path
+    binding: Path
+    work: Path
+    platform: Path
+    api_config: Path | None
+    public: bool
+    only: list[str] | None
+    backend: str
+    image: str
 
 IMAGE='sha256:9bcfbe69320f54cfff34e3dedb3e32fab67d7ee768c4d1df2b41df20636aad63'
-def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
-def guarded(path):
+def sha(path: Path) -> str:return hashlib.sha256(path.read_bytes()).hexdigest()
+def guarded(path: Path) -> Path:
     absolute=path.absolute()
     if any(p.is_symlink() for p in [absolute,*absolute.parents]):raise ValueError('symlink в пути запрещён: '+str(path))
     return absolute.resolve()
-def inventory(root):
+def inventory(root: Path) -> dict[str,Path]:
     root=guarded(root)
     if not root.is_dir():raise ValueError('нужен существующий каталог: '+str(root))
-    files={}
+    files: dict[str,Path]={}
     for path in sorted(root.rglob('*')):
         if path.is_symlink():raise ValueError('symlink в source inventory запрещён: '+str(path))
         if path.is_file() and path.suffix=='.java':
@@ -24,7 +56,7 @@ def inventory(root):
             files[name]=path
     return files
 
-def main():
+def main() -> int:
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ['project','sources','binding','work','platform']:parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--api-config',type=Path)
@@ -32,9 +64,9 @@ def main():
     parser.add_argument('--only',action='append',help='relative путь suite внутри tests/junit, например public/ExampleTest.java')
     parser.add_argument('--backend',choices=['host','container'],default='host')
     parser.add_argument('--image',default=IMAGE)
-    args=parser.parse_args()
+    args=parser.parse_args(namespace=Arguments())
     try:
-        project,sources,binding,work,platform=[guarded(getattr(args,n)) for n in ['project','sources','binding','work','platform']]
+        project,sources,binding,work,platform=map(guarded,[args.project,args.sources,args.binding,args.work,args.platform])
         if work.exists():raise ValueError('work уже существует; никакие файлы не удаляются')
         for protected in [project,sources,binding,platform,Path(__file__).resolve().parent]:
             if work==protected or work.is_relative_to(protected) or protected.is_relative_to(work):raise ValueError('work пересекается с source/project/binding/runtime/support')
@@ -45,13 +77,11 @@ def main():
         selected={n:p for n,p in available.items() if not args.only or n in args.only}
         if not student or not bound or not selected:raise ValueError('пустая source/binding/suite выборка не является успешной проверкой; нужна ручная привязка')
         trusted={**{'binding/'+n:p for n,p in bound.items()},**{n:p for n,p in selected.items()},**{n:p for n,p in alltests.items() if n.startswith('support/')}}
-        api=None;configpath=None
+        api: ApiConfig | None=None;configpath: Path | None=None
         if args.api_config:
-            configpath=guarded(args.api_config);api=json.loads(configpath.read_text())
-            if not isinstance(api,dict) or set(api)!={'files','entry'} or not isinstance(api['files'],list) or not api['files'] or len(api['files'])!=len(set(api['files'])):raise ValueError('нужен closed api config files/entry')
-            if not isinstance(api['entry'],str) or not re.fullmatch(r'[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*',api['entry']):raise ValueError('неверный API entry')
+            configpath=guarded(args.api_config);api=read_api_config(configpath)
             for name in api['files']:
-                if not isinstance(name,str) or not name.endswith('.java') or '\\' in name or name!=PurePosixPath(name).as_posix() or PurePosixPath(name).is_absolute() or any(p.startswith('.') for p in PurePosixPath(name).parts):raise ValueError('небезопасный API путь')
+                if not name.endswith('.java') or '\\' in name or name!=PurePosixPath(name).as_posix() or PurePosixPath(name).is_absolute() or any(p.startswith('.') for p in PurePosixPath(name).parts):raise ValueError('небезопасный API путь')
                 path=guarded(configpath.parent/name)
                 if not path.is_relative_to(configpath.parent) or not path.is_file() or path.stat().st_size>1048576:raise ValueError('небезопасный/отсутствующий API файл')
                 if name in trusted:raise ValueError('API path collision с trusted binding/suite')
@@ -60,14 +90,16 @@ def main():
         runner=guarded(platform/'images/java25-grader/grade.py');registry=guarded(platform/'runtime-profiles.json')
         if not runner.is_file() or not registry.is_file():raise ValueError('не найден существующий Platform runtime')
         if args.backend=='container' and not re.fullmatch('sha256:[0-9a-f]{64}',args.image):raise ValueError('container image должен быть exact local config ID sha256')
-        tracked=sorted(set([*student.values(),*trusted.values(),runner,registry,Path(__file__).resolve(),*([configpath] if configpath else [])]))
+        tracked_paths: set[Path]=set(student.values()) | set(trusted.values()) | {runner,registry,Path(__file__).resolve(),Path(__file__).with_name('json_contracts.py').resolve()}
+        if configpath is not None:tracked_paths.add(configpath)
+        tracked=sorted(tracked_paths)
         before={str(p):sha(p) for p in tracked}
     except (OSError,ValueError,TypeError) as error:parser.error(str(error))
     work.mkdir(parents=True,exist_ok=False);job=work/'job';(job/'student').mkdir(parents=True);(job/'tests').mkdir()
     for folder,files in [('student',student),('tests',trusted)]:
         for name,path in files.items():
             target=job/folder/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(path.read_bytes())
-    cfg={'schemaVersion':1,'runtime':'java25-junit-v1','mode':'implementation','java':{'release':25,'encoding':'UTF-8','compiler-options':['-proc:none','-Xmaxerrs','5']},'limits':{'outer-seconds':60,'compile-seconds':15,'run-seconds':15,'max-output-bytes':65536,'networking':False},'scoring':{'mode':'all-pass'},'discovery':{'min-executed':1,'allow-skipped':False},'sourceFiles':list(student),'testFiles':list(trusted)}
+    cfg: dict[str,object]={'schemaVersion':1,'runtime':'java25-junit-v1','mode':'implementation','java':{'release':25,'encoding':'UTF-8','compiler-options':['-proc:none','-Xmaxerrs','5']},'limits':{'outer-seconds':60,'compile-seconds':15,'run-seconds':15,'max-output-bytes':65536,'networking':False},'scoring':{'mode':'all-pass'},'discovery':{'min-executed':1,'allow-skipped':False},'sourceFiles':list(student),'testFiles':list(trusted)}
     if api:cfg['apiPrecheck']=api
     (job/'tests/grading-job.json').write_text(json.dumps(cfg,ensure_ascii=False,indent=2)+'\n')
     argv=[sys.executable,str(runner),'--job-dir',str(job),'--verification'] if args.backend=='host' else ['docker','run','--rm','--pull','never','--network','none','--cpus','0.9','--memory','512m','--cidfile',str(work/'container.cid'),'--mount',f'type=bind,src={job},dst=/grade',args.image,'--verification']
@@ -85,7 +117,10 @@ def main():
             if reason and args.backend=='container' and cid.is_file():subprocess.run(['docker','kill',cid.read_text().strip()],capture_output=True,timeout=15,env=env)
     (work/'runner.log').write_text(output)
     rawpath=job/'results/results.json'
-    try:value=json.loads(rawpath.read_text()) if not reason else {}
+    try:
+        value: dict[str,object]=read_record(rawpath) if not reason else {}
+        if value and not isinstance(value.get('classification'),str):
+            raise ValueError('Platform receipt не содержит строковую classification')
     except (OSError,ValueError):value={}
     rawvalue=dict(value)
     if not value:value={'classification':'infrastructure-failure','gradable':False,'manualRequired':True,'message':reason or 'Platform не создал читаемый receipt'}

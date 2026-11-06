@@ -14,6 +14,28 @@ concurrency:
 env:
   PYTHONDONTWRITEBYTECODE: '1'
 jobs:
+  source-checks:
+    name: Строгая проверка служебного кода
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Подготовить закреплённый Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - name: Установить закреплённый анализатор
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Проверить типы всего собственного Python в tools и test-support
+        run: npm run typecheck
+      - name: Проверить Bash
+        run: |
+          bash -n CI/check-projects.sh CI/render.sh
+          shellcheck --version
+          shellcheck --shell=bash --severity=style CI/check-projects.sh CI/render.sh
   render:
     name: Публичная student-сборка
     runs-on: ubuntu-latest

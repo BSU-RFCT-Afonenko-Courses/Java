@@ -5,7 +5,18 @@ from pathlib import Path
 import subprocess
 import sys
 
-def main(argv=None):
+class Arguments(argparse.Namespace):
+    root: Path
+    model: Path
+    output_root: Path
+    audience: str
+    task: list[str]
+    teacher_root: Path | None
+    write: bool
+    check: bool
+
+
+def main(argv: list[str] | None = None) -> int:
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1])
     parser.add_argument('--model',required=True,type=Path)
@@ -15,7 +26,7 @@ def main(argv=None):
     parser.add_argument('--teacher-root',type=Path)
     mode=parser.add_mutually_exclusive_group(required=True)
     mode.add_argument('--write',action='store_true');mode.add_argument('--check',action='store_true')
-    args=parser.parse_args(argv);root=args.root.resolve(strict=True)
+    args=parser.parse_args(argv,namespace=Arguments());root=args.root.resolve(strict=True)
     entries=[root/'_extensions/course-core/entrypoints/materialize-projects.ts',root/'_extensions/Afonenko-Course-Tools/course-core/entrypoints/materialize-projects.ts']
     entries=[p for p in entries if p.is_file() and not p.is_symlink()]
     if len(entries)!=1:raise ValueError('Требуется ровно один установленный Core с materialize-projects.ts')
