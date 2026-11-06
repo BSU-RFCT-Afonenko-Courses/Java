@@ -16,6 +16,6 @@
 
 **3 probes PASS, 0.0236 s.** `git diff --check -- images/java25-grader/grade.py tests/test_native_result_exit.py docs/student-feedback.md` завершился0. Новый full JDK/runtime matrix не запускался.
 
-Собственный admission до роли и перед приёмкой повторён за **весь исходный интервал** от `01a1a890-9d74-7d92-a65c-eccacfb9ceab`, chat `01a1a890-9d42-7772-bd99-f2f954898515`, агент `/root/platform_candidate_review`: **9 turn_context, PASS gpt-6.1-sol/high**, Standard, `feedback-review-admission.json`.
+Собственный admission до роли и перед приёмкой повторён за **весь исходный интервал** от `01a1a890-9d74-7d92-a65c-eccacfb9ceab`, chat `01a1a890-9d42-7772-bd99-f2f954898515`, агент `/root/platform_candidate_review`: **9 turn_context, PASS gpt-6.1-sol/high**, Standard, [feedback-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261105/reports/feedback-review-admission.json).
 
 **Performance GO не дан.** По последнему сообщению actual daemon не получил java.security.egd из org.gradle.jvmargs; следующая entropy flags дельта на момент поручения ещё не применялась. Предыдущее Source review entropy не является доказательством соблюдения compile30. Actual image qualification, UI и дальнейшие entropy flags требуют своих подтверждений. VM, production, DB, deploy и публикация образов рецензент не затрагивал.

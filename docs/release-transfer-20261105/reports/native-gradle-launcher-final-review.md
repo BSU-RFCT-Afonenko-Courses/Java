@@ -2,7 +2,7 @@
 
 **APPROVE Source дельты относительно `b79291184a1c52bd1b2e59247b01d19171b16d0c` и bounded GO для проверенного cold Circle.** Область: `images/java25-grader/grade.py` — ранний daemon seed через JDK_JAVA_OPTIONS при сохранённом explicit JAVA_OPTS клиента; `tests/test_plain_image.py` — очистка только собственного временного bind. Подтверждённых новых ошибок не найдено. Source рецензент не менял. Владение возвращено исполнителю для commit.
 
-Точный diff: `native-gradle-launcher-approved.diff`. Собственный первичный admission и весь исходный интервал от `01a1a890-9d74-7d92-a65c-eccacfb9ceab` повторены до роли и перед приёмкой: 10 turn_context, gpt-6.1-sol/high, Standard, PASS; chat `01a1a890-9d42-7772-bd99-f2f954898515`, `/root/platform_candidate_review`, `feedback-review-admission.json`.
+Точный diff: `native-gradle-launcher-approved.diff`. Собственный первичный admission и весь исходный интервал от `01a1a890-9d74-7d92-a65c-eccacfb9ceab` повторены до роли и перед приёмкой: 10 turn_context, gpt-6.1-sol/high, Standard, PASS; chat `01a1a890-9d42-7772-bd99-f2f954898515`, `/root/platform_candidate_review`, [feedback-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261105/reports/feedback-review-admission.json).
 
 ## Проверенный механизм и безопасность
 

@@ -2,7 +2,7 @@
 
 Проверена frozen dirty дельта относительно `6616222206d3e0843ebc560af38c2dc3519557f0` в `/tmp/java-release-work-20261105/platform-feedback`: grader upload admission, student_feedback, junit_result, 60 точных overloads Assertions, targeted tests и узкое расширение grading-job schema. **Пакет пока не принят: три подтверждённых замечания.** Source не менялся. Точный tracked diff сохранён в `final-platform-reviewed.diff`; новые tests/test_assertion_message_overloads.py, tests/test_feedback_leaf_context.py и tests/test_upload_java_sources.py также прочитаны.
 
-Рецензент независим от этих изменений: `/root/platform_candidate_review`, chat `01a1a890-9d42-7772-bd99-f2f954898515`. Первичный admission и весь интервал от исходного `01a1a890-9d74-7d92-a65c-eccacfb9ceab` повторно проверены: gpt-6.1-sol/high, Standard, 5 turn_context; `feedback-review-admission.json`.
+Рецензент независим от этих изменений: `/root/platform_candidate_review`, chat `01a1a890-9d42-7772-bd99-f2f954898515`. Первичный admission и весь интервал от исходного `01a1a890-9d74-7d92-a65c-eccacfb9ceab` повторно проверены: gpt-6.1-sol/high, Standard, 5 turn_context; [feedback-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261105/reports/feedback-review-admission.json).
 
 ## P1. Protocol 2 fallback подтверждает публичный случай по чужому outcome
 
@@ -83,4 +83,4 @@ P1 исправлен для всех-unbound fallback и для отсутст�
 
 Действует ограничение приёмки: отдельный D producer→functional descriptor/schema→prepare_job closure (`allowAdditional`/selected v3), его интеграция, пересобранный Docker image и реальный UI не приняты этим Source review. Прежние незавершённые/ошибочные общие прогоны не превращаются в PASS этой записью. Подробные собственные и writer проверки выше сохраняют свои точные границы и wall costs.
 
-Перед итоговой приёмкой вновь проверен **весь исходный admission interval**, без сдвига начала: **7 turn_context, PASS gpt-6.1-sol/high**, Standard; `feedback-review-admission.json`. Исходные chat/turn ID прежние.
+Перед итоговой приёмкой вновь проверен **весь исходный admission interval**, без сдвига начала: **7 turn_context, PASS gpt-6.1-sol/high**, Standard; [feedback-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261105/reports/feedback-review-admission.json). Исходные chat/turn ID прежние.

@@ -77,4 +77,4 @@ Agent `/root/core_yaml_types`, chat `01a1a54c-ab39-7a83-808d-a190428ff628`,
 Назначение `gpt-6.1-sol/medium`; весь primary interval проверен:
 **13 turn_context**, top-level model/effort и nested settings соответствуют — PASS.
 Standard назначен; hidden routing не утверждается, globals не менялись.
-[Первичное свидетельство](download-core-paired-ci-pin-admission-20261104.json).
+[Первичное свидетельство](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-core-paired-ci-pin-admission-20261104.json).

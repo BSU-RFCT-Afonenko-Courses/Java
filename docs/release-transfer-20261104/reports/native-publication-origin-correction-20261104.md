@@ -8,7 +8,7 @@ Base Core HEAD: `f90713ff3480d5c77deccef4979e98e09279b099`.
 ## Исходный факт и причина
 
 Сохранённый root запуск
-[native-publication-bounded-acceptance-20261104-r2.stderr.log](native-publication-bounded-acceptance-20261104-r2.stderr.log)
+[native-publication-bounded-acceptance-20261104-r2.stderr.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/native-publication-bounded-acceptance-20261104-r2.stderr.log)
 дошёл до Site finalization / PL inspection и отказал в
 `publicationAdapterInput:207`: strict Zod origin получил лишний `runtime`.
 Запуск занял 12.893534791 s, общий Native used 18.623064679/60 s.
@@ -90,7 +90,7 @@ fixture roots остаются на root changed compiler graph, без fixture 
 
 [Exact patch](native-publication-origin-correction-20261104.patch).
 Source writer `/root/native_publication_consumers`; own primary Sol6.1/high
-admission: [evidence](native-publication-consumer-source-20261104-admission.json).
+admission: [evidence](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/native-publication-consumer-source-20261104-admission.json).
 Standard назначен, hidden routing независимо не удостоверяется. Новых агентов
 нет. Source freeze действует после этой записи.
 

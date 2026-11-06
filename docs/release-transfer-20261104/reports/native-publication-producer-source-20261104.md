@@ -1,6 +1,6 @@
 # Core/PL: ordinary publication, Source candidate
 
-> Root qualification update: final independent Source **APPROVE_SOURCE**, affected combined compiler **PASS** (34roots, r2 4.875085435s; total9.800762860s/20). Four exact local commits saved in [commit evidence](native-publication-local-commits-20261104.json). One bounded Native fixture **BLOCKED before publication assertions** at Quarto Sass KV; runtime **NOT QUALIFIED**. No push/install/production. Earlier author statements below retain their original evidence/time scope.
+> Root qualification update: final independent Source **APPROVE_SOURCE**, affected combined compiler **PASS** (34roots, r2 4.875085435s; total9.800762860s/20). Four exact local commits saved in [commit evidence](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/native-publication-local-commits-20261104.json). One bounded Native fixture **BLOCKED before publication assertions** at Quarto Sass KV; runtime **NOT QUALIFIED**. No push/install/production. Earlier author statements below retain their original evidence/time scope.
 
 Producer Source заморожен для общего affected compiler и независимого review. **Compiler/runtime/Native не запускались; PASS и готовая установленная композиция не заявлены.** Consumer-владелец отдельно заморозил Download/Site. Ни stage/commit/push, ни курсы/pins/installed/state/audit не изменялись.
 

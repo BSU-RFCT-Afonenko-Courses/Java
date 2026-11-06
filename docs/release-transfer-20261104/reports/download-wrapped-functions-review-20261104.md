@@ -16,6 +16,6 @@
 
 ## Evidence и пределы
 
-Прочитаны [единственный saved affected check](download-wrapped-functions-check-20261104.json) и [compiler log](download-wrapped-functions-compiler-20261104.log): actual bundled compiler, `tests/runtime-types.ts`, существующая map реальных Core5f/PL4d sibling modules, exit `0`, `4.5574s`, cap `15s`, retry `0`. Проверка действительно импортирует runtime и его `publish/files` dependencies. Повторного compiler/tests/runtime/Native/hash/CI/network запуска в review не было; production Source не менялся.
+Прочитаны [единственный saved affected check](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-wrapped-functions-check-20261104.json) и [compiler log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-wrapped-functions-compiler-20261104.log): actual bundled compiler, `tests/runtime-types.ts`, существующая map реальных Core5f/PL4d sibling modules, exit `0`, `4.5574s`, cap `15s`, retry `0`. Проверка действительно импортирует runtime и его `publish/files` dependencies. Повторного compiler/tests/runtime/Native/hash/CI/network запуска в review не было; production Source не менялся.
 
 Роль reviewer high прежняя; собственный допуск остаётся по существующему admission reference в предыдущих отчётах этой роли, глобальные настройки не менялись. Verdict относится к обозрённому patch, а не к новой проверке installed composition или производительности.

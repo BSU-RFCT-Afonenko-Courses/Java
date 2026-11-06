@@ -1,6 +1,6 @@
 # Quarto pandoc → Pandoc: чтение сохранённого SP capture
 
-Только существующий run `a4ac5976-790a-4160-bc40-45794995dea7`, 107 receipts, causal.json и events; без новых course/fixture/compiler/network запусков и без Source edits. Exact пары с обоими process ID, argv, cwd и длительностями: [pandoc-pairs.json](performance-sp-pl9c-delta/pandoc-pairs.json).
+Только существующий run `a4ac5976-790a-4160-bc40-45794995dea7`, 107 receipts, causal.json и events; без новых course/fixture/compiler/network запусков и без Source edits. Exact пары с обоими process ID, argv, cwd и длительностями: [pandoc-pairs.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-sp-pl9c-delta/pandoc-pairs.json).
 
 ## Что установлено
 

@@ -4,7 +4,7 @@
 
 ## Собственный допуск
 
-Прочитан `java/docs/model-admission.md`, нормативный файл не менялся. Собственные первичные записи: `/home/tolya/.codex/sessions/2026/11/03/rollout-2026-11-03T18-06-18-01a1a1f2-6186-7cf3-bda9-86bc7b2a34b5.jsonl`; чат `01a1a1f2-6186-7cf3-bda9-86bc7b2a34b5`, путь `/root/platform_ci_additional_sources`, исходный ход `01a1a1f2-61b2-7973-9ca4-791d38a9bec4`, root turn `01a1a1ee-79d1-7653-865d-9c6e1955f926`. Назначение `gpt-6.1-sol` / `high` совпало с верхнеуровневыми `model` / `effort` и вложенными `collaboration_mode.settings`. Standard задан поручением; отдельного `service_tier` в этих записях нет. Машинное свидетельство: `platform-additional-source-ci-admission.json` рядом с отчётом.
+Прочитан `java/docs/model-admission.md`, нормативный файл не менялся. Собственные первичные записи: `/home/tolya/.codex/sessions/2026/11/03/rollout-2026-11-03T18-06-18-01a1a1f2-6186-7cf3-bda9-86bc7b2a34b5.jsonl`; чат `01a1a1f2-6186-7cf3-bda9-86bc7b2a34b5`, путь `/root/platform_ci_additional_sources`, исходный ход `01a1a1f2-61b2-7973-9ca4-791d38a9bec4`, root turn `01a1a1ee-79d1-7653-865d-9c6e1955f926`. Назначение `gpt-6.1-sol` / `high` совпало с верхнеуровневыми `model` / `effort` и вложенными `collaboration_mode.settings`. Standard задан поручением; отдельного `service_tier` в этих записях нет. Машинное свидетельство: [platform-additional-source-ci-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/platform-additional-source-ci-admission.json) рядом с отчётом.
 
 ## Причина
 

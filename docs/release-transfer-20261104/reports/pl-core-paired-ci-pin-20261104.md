@@ -51,4 +51,4 @@ Agent `/root/core_yaml_types`, chat `01a1a54c-ab39-7a83-808d-a190428ff628`,
 **9 turn_context**, top-level model/effort и nested collaboration settings
 соответствуют назначению — PASS. Standard назначен, hidden routing не утверждается;
 globals не менялись.
-[Первичное свидетельство](pl-core-paired-ci-pin-admission-20261104.json).
+[Первичное свидетельство](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-core-paired-ci-pin-admission-20261104.json).

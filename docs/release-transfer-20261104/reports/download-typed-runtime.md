@@ -90,7 +90,7 @@ child выполняет bundled Deno `check --deny-import --no-config --no-lock
 4. В scratch добавлен symlink фактического Core `_extensions/course-navigation`; другие external literal imports
    Core просмотрены. Исправленный affected compiler graph **PASS**, exit 0, 6.424s,
    `/tmp/download-typed-eebfe497b5ffb12c`. Два отрицательных DTO cases и четыре `NotAny` включены в этот один
-   проход. Финальные args/stdout/stderr/env cache: `download-typed-compiler.json`.
+   проход. Финальные args/stdout/stderr/env cache: [download-typed-compiler.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-typed-compiler.json).
    Dependency cache `/home/tolya/.cache/quarto/deno_std/cache`, `--deny-import`; сеть не использовалась.
 
 `git diff --check` после production/test diff — PASS. Полных suite, render/inspect/hash, install/setup,
@@ -121,7 +121,7 @@ QUARTO_RUN_NO_NETWORK=true quarto run tests/contract-consistency.ts`:
 **PASS**, cap 30s, retry 0, 10.204s. Positive exit 0; прежний meaningful numeric-path drift exit 1,
 8 ожидаемых diagnostics (включая actual consumer `contract-types.ts`), `consumerDriftCaught=true`.
 В positive включены два новых предметных отрицательных DTO cases и четыре `NotAny` assertions;
-это не процент покрытия всего Download. Полный результат: `download-typed-runner.json`.
+это не процент покрытия всего Download. Полный результат: [download-typed-runner.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-typed-runner.json).
 Existing drift fixture копирует Download во временный scratch, как делал до этой партии;
 это не provider install и не копирование sibling Source. После успеха compiler не повторялся.
 

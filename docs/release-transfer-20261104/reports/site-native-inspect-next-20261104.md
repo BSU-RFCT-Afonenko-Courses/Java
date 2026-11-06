@@ -4,7 +4,7 @@
 
 Назначение `gpt-6.1-sol/high`, Standard. Chat `01a1a514-165b-7ae2-bff1-b9ca9f7e3bb1`, agent `/root/perf_event_types`; primary `/home/tolya/.codex/sessions/2026/11/04/rollout-2026-11-04T08-41-59-01a1a514-165b-7ae2-bff1-b9ca9f7e3bb1.jsonl`, session_meta1. Origin `01a1a514-1688-7662-80fc-58bf7a272ae0`; полный собственный interval turn_context8/171/270/405/734/918 согласован по верхним и вложенным `gpt-6.1-sol/high`, вход PASS. Отдельный service tier primary не содержит, глобальные настройки не менялись.
 
-Только Source и сохранённые данные одного SP stage: Site `d16f2322c1da3c96c2e93d32225f5428ae347756`, QRC `8732dbbe0d8502f8b6a77049e27907ae8a66e46a`, Core `0cf20ccc0a4853b704544c7252fcaf3ccb84a518`. Stage exact refs/destinations — `sp-shared-site6-stage-20261104-actual/stage-metadata.json`; не заменяются позднейшими HEAD/installed composition. Прочитаны applicable Site AGENTS, spec/index, адресные contract paragraphs и действующее русское языковое правило. Print/Cloud не рассматриваются.
+Только Source и сохранённые данные одного SP stage: Site `d16f2322c1da3c96c2e93d32225f5428ae347756`, QRC `8732dbbe0d8502f8b6a77049e27907ae8a66e46a`, Core `0cf20ccc0a4853b704544c7252fcaf3ccb84a518`. Stage exact refs/destinations — [sp-shared-site6-stage-20261104-actual/stage-metadata.json](sp-shared-site6-stage-20261104-actual/stage-metadata.json); не заменяются позднейшими HEAD/installed composition. Прочитаны applicable Site AGENTS, spec/index, адресные contract paragraphs и действующее русское языковое правило. Print/Cloud не рассматриваются.
 
 ## Основной вывод
 

@@ -84,8 +84,8 @@ Native Pandoc constructors настоящие, QRC modules настоящие; d
 
 Результат: exit0, `PASS native Attr map: QRC links/source-export/probes сохраняют refs, labels и hidden/data-*`.
 Команда/elapsed/limits:
-[qrc-lua-attr-native-check-20261104.json](qrc-lua-attr-native-check-20261104.json).
-Полный вывод: [qrc-lua-attr-native-20261104.log](qrc-lua-attr-native-20261104.log).
+[qrc-lua-attr-native-check-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-lua-attr-native-check-20261104.json).
+Полный вывод: [qrc-lua-attr-native-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-lua-attr-native-20261104.log).
 Точный diff: [qrc-lua-attr-native-20261104.patch](qrc-lua-attr-native-20261104.patch).
 `git diff --check` — PASS; `git diff -- targets.lua` пуст.
 
@@ -108,4 +108,4 @@ Agent `/root/core_yaml_types`, chat `01a1a54c-ab39-7a83-808d-a190428ff628`,
 назначение `gpt-6.1-sol/medium`. Весь первичный интервал проверен:
 **12 turn_context**, top-level model/effort и nested settings соответствуют — PASS.
 Standard назначен; hidden routing не утверждается, globals не менялись.
-[Свидетельство](qrc-lua-attr-native-admission-20261104.json).
+[Свидетельство](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-lua-attr-native-admission-20261104.json).

@@ -20,7 +20,7 @@ No such file or directory (os error 2): readdir '/home/tolya/JavaCodex/java-rele
 
 Использован существующий Python `measure`/Linux `wait4` harness прежней пары; из него убраны оба старых invocation, оставлен один summary. Нового framework, author instrumentation и product code нет. QMD побайтно совпадает с прежним синтетическим QMD. HTML не создан, эквивалентность выдачи не проверена.
 
-До запуска сохранён [plan](runtime-performance-summary-20261104-evidence/plan.md). Child watchdog12с + cleanup до2с + harness allowance1с. Внешний `timeout --signal=KILL 15s` завершился supervisor exit0, то есть не сработал; это не успех CLI, который вернул2. Полный wall Python отдельно не измерялся; измеренный1.714872273с относится к интервалу `measure()` и включает CLI preparation/probes, но исключает предварительную запись Python fixtures. [Invocation и предел измерения](runtime-performance-summary-20261104-evidence/invocation.json).
+До запуска сохранён [plan](runtime-performance-summary-20261104-evidence/plan.md). Child watchdog12с + cleanup до2с + harness allowance1с. Внешний `timeout --signal=KILL 15s` завершился supervisor exit0, то есть не сработал; это не успех CLI, который вернул2. Полный wall Python отдельно не измерялся; измеренный1.714872273с относится к интервалу `measure()` и включает CLI preparation/probes, но исключает предварительную запись Python fixtures. [Invocation и предел измерения](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/runtime-performance-summary-20261104-evidence/invocation.json).
 
 | Показатель | Реальный исход |
 | --- | ---: |
@@ -35,7 +35,7 @@ No such file or directory (os error 2): readdir '/home/tolya/JavaCodex/java-rele
 
 wait4 peak RSS — high-water учтённого child/process, не сумма одновременной памяти дерева. Python RSS — high-water всего процесса, не прирост от наблюдения. Отдельная wall-стоимость Python observer не выделена;1.7149с не является инструментальным overhead успешного render. CPU может превышать wall при нескольких процессах/потоках. Memory preparation заметна относительно малого QMD, но какой внутренний шаг дал этот пик, по этому опыту не установлено.
 
-Сохранены [исходный wrapper outcome](runtime-performance-summary-20261104-evidence/wrapper-outcome.json), [stderr](runtime-performance-summary-20261104-evidence/wrapper.stderr), [результат и границы](runtime-performance-summary-20261104-evidence/result.json), harness и частичный staging. RunRecord, summary, coverage и initial snapshots отсутствуют. Их поля/статусы не выдуманы. `phaseCoverage=unmeasured`, не0 и неPASS.
+Сохранены [исходный wrapper outcome](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/runtime-performance-summary-20261104-evidence/wrapper-outcome.json), [stderr](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/runtime-performance-summary-20261104-evidence/wrapper.stderr), [результат и границы](runtime-performance-summary-20261104-evidence/result.json), harness и частичный staging. RunRecord, summary, coverage и initial snapshots отсутствуют. Их поля/статусы не выдуманы. `phaseCoverage=unmeasured`, не0 и неPASS.
 
 ## Полезность для следующего ограниченного анализа
 

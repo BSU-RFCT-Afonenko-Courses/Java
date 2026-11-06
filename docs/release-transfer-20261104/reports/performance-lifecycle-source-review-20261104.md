@@ -4,7 +4,7 @@
 
 Прочитаны [brief](../briefs/performance-lifecycle-source-20261104.md), [approved design](performance-lifecycle-clean-contract-20261104.md), [Source report](performance-lifecycle-source-20261104.md), [saved patch](performance-lifecycle-source-20261104.patch) и actual diff/read изменённых15 production/tool files + `tests/runner/execute.test.ts` в `/home/tolya/JavaCodex/java-release-20261110/performance-lifecycle` относительно `c2dcf002a7396aa3b507e49b99e0ecf00ed9f438`. Дополнительно выполнен только адресный поиск прямых собственных TS consumers по удалённым API/полям, не общий census или новая проверочная матрица.
 
-Ни Source edits, ни compiler/tests/runner/signals/Native/Quarto/hash/network/DB/production действий не было. Сохранённое [compiler evidence](performance-lifecycle-source-20261104-evidence/compiler.json) действительно содержит exit0,16 roots,1.229189803s/cap15s/retry0; [log](performance-lifecycle-source-20261104-evidence/compiler.log) перечисляет эти roots. Это evidence автора, а не новый запуск reviewer и не проверка оставшихся direct consumers/generated probe исполнения. Прежний runtime-budget не восстанавливался; compiler consumption также не сбрасывается этим review.
+Ни Source edits, ни compiler/tests/runner/signals/Native/Quarto/hash/network/DB/production действий не было. Сохранённое [compiler evidence](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-lifecycle-source-20261104-evidence/compiler.json) действительно содержит exit0,16 roots,1.229189803s/cap15s/retry0; [log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-lifecycle-source-20261104-evidence/compiler.log) перечисляет эти roots. Это evidence автора, а не новый запуск reviewer и не проверка оставшихся direct consumers/generated probe исполнения. Прежний runtime-budget не восстанавливался; compiler consumption также не сбрасывается этим review.
 
 ## Findings
 
@@ -57,7 +57,7 @@
 
 После трёх адресных исправлений нужен delta Source review изменённой ревизии и согласованный changed-graph check в **оставшемся**, уже начатом compiler лимите, по решению root. Этот review не даёт нового лимита, не требует full-suite запуска и не заменяет будущую отдельно разрешённую behavioral qualification. Frozen original Performance6dirty, старые failures/evidence, student data/results/UUID и worktrees сохранены. Mainstate/audit не менялись; новых агентов не было.
 
-Собственный допуск: [Source-review admission](performance-lifecycle-source-review-20261104-admission.json), chat `01a1a61b-3db5-75b2-9e4c-eb949da79c4f`, agent `/root/performance_lifecycle_review`; исходный own high interval от `01a1a61b-3de4-79b3-917c-225fa400a1ba` не сдвигался. Все первичные top/nested `gpt-6.1-sol/high` согласованы; Standard назначен, globals не менялись, hidden routing не удостоверяется.
+Собственный допуск: [Source-review admission](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-lifecycle-source-review-20261104-admission.json), chat `01a1a61b-3db5-75b2-9e4c-eb949da79c4f`, agent `/root/performance_lifecycle_review`; исходный own high interval от `01a1a61b-3de4-79b3-917c-225fa400a1ba` не сдвигался. Все первичные top/nested `gpt-6.1-sol/high` согласованы; Standard назначен, globals не менялись, hidden routing не удостоверяется.
 
 ## Delta review frozen prod/tools correction — 4 ноября
 

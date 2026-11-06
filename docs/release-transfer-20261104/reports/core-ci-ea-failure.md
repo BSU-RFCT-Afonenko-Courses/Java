@@ -1,6 +1,6 @@
 # CI ea197ad: import map restricted Deno child
 
-3 ноября 2026. Exact hosted Core `ea197ad7e88a3410c4eea52f293d975aea63db4c`, [run41694056884/job126119794613](https://github.com/Afonenko-Course-Tools/quarto-course/actions/runs/41694056884/job/126119794613), draft [PR70](https://github.com/Afonenko-Course-Tools/quarto-course/pull/70). Existing job log получен primary GitHub `fetch_workflow_job_logs`; полный decoded ответ сохранён в `core-ci-ea-job-126119794613.log`. Нового CI rerun, canonical/full suite/native pipeline здесь не запускалось.
+3 ноября 2026. Exact hosted Core `ea197ad7e88a3410c4eea52f293d975aea63db4c`, [run41694056884/job126119794613](https://github.com/Afonenko-Course-Tools/quarto-course/actions/runs/41694056884/job/126119794613), draft [PR70](https://github.com/Afonenko-Course-Tools/quarto-course/pull/70). Existing job log получен primary GitHub `fetch_workflow_job_logs`; полный decoded ответ сохранён в [core-ci-ea-job-126119794613.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-ci-ea-job-126119794613.log). Нового CI rerun, canonical/full suite/native pipeline здесь не запускалось.
 
 ## Первая hosted причина
 
@@ -43,7 +43,7 @@ Existing fake Performance ABI fixture — прежний test observer, не pro
 |`quarto run tests/performance-context.ts`|PASS: ordinary parent/context и actual3 restricted Deno children|0.744s|
 |Targeted bundled `deno check` только `tests/performance-context.ts`|PASS, typed Metrics fixture проверена compiler|3.454s|
 
-Суммарно4.198s. Commands/codes/output: `core-ci-ea-performance-context.log`/`.json`, `core-ci-ea-performance-context-typecheck.log`/`.json`. Compiler использовал known Quarto cache `/home/tolya/JavaCodex/.cache/quarto/deno_std/cache` и existing type-only map `/tmp/core-typed-owner-check-6lu44p5j/imports.json`; новых downloads/escalation/install не было. Это маленький test graph, не повтор общей Core→PL matrix. Bundled Deno format и `git diff --check` PASS.
+Суммарно4.198s. Commands/codes/output: [core-ci-ea-performance-context.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-ci-ea-performance-context.log)/`.json`, [core-ci-ea-performance-context-typecheck.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-ci-ea-performance-context-typecheck.log)/`.json`. Compiler использовал known Quarto cache `/home/tolya/JavaCodex/.cache/quarto/deno_std/cache` и existing type-only map `/tmp/core-typed-owner-check-6lu44p5j/imports.json`; новых downloads/escalation/install не было. Это маленький test graph, не повтор общей Core→PL matrix. Bundled Deno format и `git diff --check` PASS.
 
 Hosted failure служит RED; локальный redundant RED не запускался. Старые4 runtime/compiler greens не повторялись. Render/inspect/course hash/build, actual SP/Java attempt, production/deploy/install и PL Source writer не затронуты; frozen Java owner остаётся на installed d7/PLda. Новый hosted CI green/вся release готовность этим адресным PASS не заявляются.
 

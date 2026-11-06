@@ -9,7 +9,7 @@
 - Affected compiler `document.ts` + `tests/navigation-composition.ts`: **FAIL**, 0.8592 s, cap10/retry0,28 diagnostics.
 - Existing small pure navigation-composition control: **PASS**, 0.2647 s, cap10/retry0. Проверены HTML/Reveal menu, relative links/URL prefixes, repository/search preservation, missing input и повторный вызов. `--deny-run --deny-net`; Native/render/browser не запускались.
 
-[Commands/elapsed/exits](core-navigation-document-types-check-20261104.json), [полный первый compiler log](core-navigation-document-types-compiler-20261104.log), [control log](core-navigation-document-types-control-20261104.log). До запусков `git diff --check` PASS. Bundled Deno/cache/existing actual import map использованы без install/network/cached-only check.
+[Commands/elapsed/exits](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-navigation-document-types-check-20261104.json), [полный первый compiler log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-navigation-document-types-compiler-20261104.log), [control log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-navigation-document-types-control-20261104.log). До запусков `git diff --check` PASS. Bundled Deno/cache/existing actual import map использованы без install/network/cached-only check.
 
 ## Точный gap и следующий выбор root
 
@@ -19,4 +19,4 @@
 
 Root может отдельно выбрать wrapper-only candidate, сохранив unresolved FFI cast до настоящего declaration graph, либо разрешить ограниченное связывание существующих vendor declarations. Автоматически ни один вариант не применён; повтор compiler не выполнялся. Runtime PASS не превращает failed type candidate в принятую типизацию.
 
-Own роль/model/effort неизменны; [существующий origin admission](core-condition-walk-types-admission-20261104.json). История failed attempt и scope сохранены.
+Own роль/model/effort неизменны; [существующий origin admission](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-condition-walk-types-admission-20261104.json). История failed attempt и scope сохранены.

@@ -26,7 +26,7 @@ RuntimeError: existing writable cache unavailable: /home/tolya/.cache/quarto/den
 
 Новая Python адаптация проверяет оба cache paths через `is_dir()` и `os.access(..., os.W_OK)`. Для XDG это соответствует прежнему Sass KV отказу и corrected environment. Для DENO_DIR writable — более сильное требование, чем обосновано cached-only reuse. Существующий successful Site6 fixture уже использовал тот же DENO_DIR. Этот preflight не различает отсутствие каталога и отсутствие writable доступа, поэтому из его сообщения нельзя выводить ни unavailable cached graph, ни необходимый install, ни неспособность Quarto выполнить render. Это собственная ошибка подготовки; Core/Site/PL/Download/QRC semantic coverage не достигнута.
 
-Записан [preparation-failure.json](sp-shared-site6-stage-20261104/preparation-failure.json): preparation0.012329218s, `nativeAttempted:false`. [Полный stderr](sp-shared-site6-stage-20261104/preparation.stderr.log) сохранён из tool result без повторного исполнения. Root немедленно получил точную причину и различие между own preflight и product miss.
+Записан [preparation-failure.json](sp-shared-site6-stage-20261104/preparation-failure.json): preparation0.012329218s, `nativeAttempted:false`. [Полный stderr](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-shared-site6-stage-20261104/preparation.stderr.log) сохранён из tool result без повторного исполнения. Root немедленно получил точную причину и различие между own preflight и product miss.
 
 ### Что не было достигнуто первой подготовкой
 
@@ -61,7 +61,7 @@ Root затем прямо разрешил минимальную коррек�
 
 Run `6d0026fe-08a9-45ca-8e94-023083fa5056`. Сохранены existing [manifest](sp-shared-site6-stage-20261104-actual/runs/6d0026fe-08a9-45ca-8e94-023083fa5056/manifest.json), mode/coverage/expectations и143 process receipts, partial events/preparation artifacts. Область чтения — только этот direct `processes` directory с cap500 файлов, конкретные known output paths и Site state path; full tree/inventory/hash прохода не было.
 
-[Partial analysis](sp-shared-site6-stage-20261104-actual/partial-analysis.json):139 receipts с exit0, один handbook Pandoc с exit143/SIGTERM, три initial pending receipts. Из них actual five child render boundaries:
+[Partial analysis](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-shared-site6-stage-20261104-actual/partial-analysis.json):139 receipts с exit0, один handbook Pandoc с exit143/SIGTERM, три initial pending receipts. Из них actual five child render boundaries:
 
 | Child owner | Receipt result | `native_command.wall_seconds` |
 |---|---|---:|
@@ -79,7 +79,7 @@ Root `_site-student/index.html` отсутствует; `_generated/course-site/
 
 Внешние [stdout](sp-shared-site6-stage-20261104-actual/native-driver.stdout.log)/[stderr](sp-shared-site6-stage-20261104-actual/native-driver.stderr.log) пусты. Existing `executeScenario` использует `Deno.Command.output()` и пишет child stdout/stderr после полученного status; interrupted driver не дошёл до этих writes. Поэтому **полного Native stdout/stderr этого timeout нет**, нельзя выдавать partial receipts за full logs. Итоговые run.json/summary/report/dataValid/capture-timings не сформировались: `VALID` не утверждается. Это сохраняет известное ограничение status/flush на TERM, не доказывает его исправление и не назначает новую signal matrix.
 
-У трёх pending receipts `os_pid:null`: launcher записывает initial receipt до spawn, а фактический PID в final write после status. Null не доказывает живой process. Первая попытка `ps` по этим null PID была невалидна и доказательством не является; затем отдельный bounded process-name snapshot не нашёл deno/quarto/pandoc/timeout в доступной process namespace. [Наблюдение](sp-shared-site6-stage-20261104-actual/pending-process-status.txt) сохраняет эту границу, без env/full argv. Никаких сигналов чужим процессам/production запросов не было.
+У трёх pending receipts `os_pid:null`: launcher записывает initial receipt до spawn, а фактический PID в final write после status. Null не доказывает живой process. Первая попытка `ps` по этим null PID была невалидна и доказательством не является; затем отдельный bounded process-name snapshot не нашёл deno/quarto/pandoc/timeout в доступной process namespace. [Наблюдение](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-shared-site6-stage-20261104-actual/pending-process-status.txt) сохраняет эту границу, без env/full argv. Никаких сигналов чужим процессам/production запросов не было.
 
 Старые39.798s tasks-only PL export не сравниваются как speedup с этим прерванным five-part root render. Новый результат устанавливает, что whole SP route **не уложился в заданный outer cap**, а не product semantic refusal. Следующий запуск/больший budget этим отчётом автоматически не назначается; root independently review потребления/бюджета — отдельный шаг.
 

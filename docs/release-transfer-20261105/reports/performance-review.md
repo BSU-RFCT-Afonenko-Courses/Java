@@ -4,7 +4,7 @@
 
 Точный диапазон: `7a1645936924ba0dd710c9121a8871a13d67a84b..86f762e317b237320657a3319c70701d03c72a2e`. Функциональный код и тесты frozen в `6c01f315819201df06970f168920d98e6d72708f`; `86f762e` меняет только 3 строки README и просмотрен отдельно без повторения проверок неизменного кода. Checkout `/tmp/java-release-work-20261105/performance`, ветка `codex/performance-files-20261105`; итоговый status пуст, `git diff --check` PASS. Действующий PR6 сохранён; новый stacked draft — PR8.
 
-Рецензент `/root/core_review`, собственный chat `01a1a8a1-ab5c-7620-8830-6eb20fed81e5`. Исходный ход **не сдвинут**: `01a1a8a1-ab93-7852-9946-77d0cb6ffb64`. Перед ролью и при завершении проверен весь прежний интервал: 3 `turn_context`, верхнеуровневые и вложенные `gpt-6.1-sol/high` совпадают, Standard. Первичные записи и итог: `performance-review-admission.json`; та же исходная привязка сохранена в прежнем `core-review-admission.json`. Рецензент source/fixtures/index/HEAD не менял, продукт не писал, субагентов не запускал.
+Рецензент `/root/core_review`, собственный chat `01a1a8a1-ab5c-7620-8830-6eb20fed81e5`. Исходный ход **не сдвинут**: `01a1a8a1-ab93-7852-9946-77d0cb6ffb64`. Перед ролью и при завершении проверен весь прежний интервал: 3 `turn_context`, верхнеуровневые и вложенные `gpt-6.1-sol/high` совпадают, Standard. Первичные записи и итог: [performance-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261105/reports/performance-review-admission.json); та же исходная привязка сохранена в прежнем [core-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261105/reports/core-review-admission.json). Рецензент source/fixtures/index/HEAD не менял, продукт не писал, субагентов не запускал.
 
 Требования: прямое поручение ограниченного пакета A, `performance-plan.md`, `core-consumer-audit.md`, договор удаления собственных digest/snapshot/PreparationReceipt/proof/freshness producers → DTO → readers/tools/tests без compatibility и новых version fences. Шаблон: `superpowers/requesting-code-review/code-reviewer.md`.
 
@@ -53,7 +53,7 @@
 - `performance-final-focused.log`: 27 PASS за 9 с.
 - `performance-boundaries-final.log`: 9 PASS, включая actual TS instrumentation и новые boundaries, 275 мс.
 - `performance-types-final.log`: whole actual src/bridge/tools/tests graph PASS; `performance-types-closure.log`: последний tools/proof closure PASS. Реальные TypeScript 5.9.3, luaparse 0.3.1, @types/node/undici установлены физической локальной копией существующего cache; CommonJS resolution не подменён shim/stub.
-- `performance-tools.json`: digest-disabled output microcomparison PASS; formatter/diffcheck и последняя коррекция tool claims PASS. Их стоимость и scope не выданы за измерение курса.
+- [performance-tools.json](performance-tools.json): digest-disabled output microcomparison PASS; formatter/diffcheck и последняя коррекция tool claims PASS. Их стоимость и scope не выданы за измерение курса.
 
 ## Отказ от суждения (Declined to judge)
 

@@ -2,7 +2,7 @@
 
 **APPROVE узкой Source дельты** `images/java25-grader/grade.py` относительно `b6e626de6cc6c3f87094114a2542fc441e5b07f0`. Подтверждённых ошибок безопасности, JDK semantics, очистки или выхода за согласованный scope не найдено. Рецензент Source не менял. Точный diff сохранён в `native-gradle-entropy-reviewed.diff`. Доказательство ускорения ниже рабочего compile budget эта рецензия не подменяет: фактическая новая Docker-квалификация выполняется отдельно.
 
-Рецензент `/root/platform_candidate_review`, chat `01a1a890-9d42-7772-bd99-f2f954898515`. До роли и перед приёмкой проверен весь исходный model-admission interval от `01a1a890-9d74-7d92-a65c-eccacfb9ceab`: 8 turn_context, PASS gpt-6.1-sol/high, Standard. Свидетельство `feedback-review-admission.json`.
+Рецензент `/root/platform_candidate_review`, chat `01a1a890-9d42-7772-bd99-f2f954898515`. До роли и перед приёмкой проверен весь исходный model-admission interval от `01a1a890-9d74-7d92-a65c-eccacfb9ceab`: 8 turn_context, PASS gpt-6.1-sol/high, Standard. Свидетельство [feedback-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261105/reports/feedback-review-admission.json).
 
 ## Основание и границы изменения
 

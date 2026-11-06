@@ -4,7 +4,7 @@
 
 ## Подтверждённая первая причина
 
-Сохранённый [CI evidence](paired-ci-publication-failure-20261104.json): PL41800068684 failed на line121 `assert.rejects(inspect,/OPERATION_CHANGED/)`; отдельный Installed native questions and Java/Gradle job SUCCESS. Download41800150679 failed на imported PLdf8 line117 того же fixture, вызванного `tests/ordinary-publication.ts`. Новых CI queries/reruns не делалось.
+Сохранённый [CI evidence](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/paired-ci-publication-failure-20261104.json): PL41800068684 failed на line121 `assert.rejects(inspect,/OPERATION_CHANGED/)`; отдельный Installed native questions and Java/Gradle job SUCCESS. Download41800150679 failed на imported PLdf8 line117 того же fixture, вызванного `tests/ordinary-publication.ts`. Новых CI queries/reruns не делалось.
 
 Оба хвоста меняют bytes `common/visible.txt` после успешного ordinary capture. Это не выбранный raw QMD и не наблюдённый published resource `assets/public.txt`. Accepted Core4a больше не требует whole-owner same-S: operation.guard (`runtime/operation.ts:2280–2310`) передаёт `assertSources(...,false,selectedDocuments)`, а `source-snapshot.ts:155–236` возвращается после selected input signatures/physical ancestors до whole membership/equality. Даже full currentness guard теперь не означает сверку всех owner rows.
 

@@ -33,7 +33,7 @@ Read-only Source review Java `3128c77b..b65ea6a96c2606633befbe2ece3ecaec7301b449
 
 ## Переиспользованные свидетельства и границы
 
-Сохранённый `circle-junit-plain.log` подтверждает ровно шесть начатых, завершённых и не пропущенных plain JUnit tests эталона (6/6), wrong (2/6), две открытые проверки student-набора с namespace (2/2) после явных imports и console exit0. Первоначальная namespace compilation error в логе сохранена и не названа результатом решения. Все эти прогоны переиспользованы без повторения.
+Сохранённый [circle-junit-plain.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/circle-junit-plain.log) подтверждает ровно шесть начатых, завершённых и не пропущенных plain JUnit tests эталона (6/6), wrong (2/6), две открытые проверки student-набора с namespace (2/2) после явных imports и console exit0. Первоначальная namespace compilation error в логе сохранена и не названа результатом решения. Все эти прогоны переиспользованы без повторения.
 
 Новых JUnit, grading, Gradle, compilation, render, inspect, image или hash запусков не было. Source/ветка не изменялись, субагенты не создавались. Известный отказ Platform Transform не повторялся и не исправлялся в этом поручении. Source review и plain JUnit не доказывают Platform feedback/scoring интеграцию: после отдельного исправления Transform остаётся согласованная root проверка полного набора reference/starter/wrong/alternative, expected/actual/delta и классификации ошибок. Clean относится к этому исходному diff, а не к уже выполненному выпуску.
 

@@ -57,7 +57,7 @@ Existing semantic summary содержит49 completed spans: Core process.comma
 
 ## Evidence и передача
 
-- [Exact execution/cap/outcome](core-native-computed-integration-20261104-execution.json), [outer log](core-native-computed-integration-20261104.log), [stage Source refs](core-native-computed-integration-20261104/stage-metadata.json).
+- [Exact execution/cap/outcome](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-computed-integration-20261104-execution.json), [outer log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-computed-integration-20261104.log), [stage Source refs](core-native-computed-integration-20261104/stage-metadata.json).
 - [Analysis: actual counts/argv/intervals/quality](core-native-computed-integration-20261104/analysis.json), [capture timings](core-native-computed-integration-20261104/capture-timings.json), [Performance report](core-native-computed-integration-20261104/runs/ade920b1-3657-4273-a63b-b2f47773982b/report.md), [summary](core-native-computed-integration-20261104/runs/ade920b1-3657-4273-a63b-b2f47773982b/summary.json).
 - [Actual condition/publicPackage/inventory counters](core-native-computed-integration-20261104/artifact/result.json), [student README](core-native-computed-integration-20261104/artifact/inventory/README.md), [ZIP](core-native-computed-integration-20261104/artifact/artifact.zip), [independent ZIP CRC/bytes result](core-native-computed-integration-20261104/zip-verification.json).
 

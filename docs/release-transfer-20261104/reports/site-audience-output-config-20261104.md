@@ -4,7 +4,7 @@
 
 ## Принятый Source Site
 
-`site-java` был clean на `d16f2322c1da3c96c2e93d32225f5428ae347756`. Отдельно проверены наличие exact commit `85080c730ad54c8fd81fa4a3c7c806a8771c4f68`, ancestor relation и clean working tree; выполнен разрешённый `git merge --ff-only 85080…`. Итоговый HEAD85080c7 clean. Это перенос уже принятого candidate:2 production files, contract и existing focused test; нового runtime implementation в этом проходе нет. [FF evidence](site-audience-output-config-20261104-ff.json).
+`site-java` был clean на `d16f2322c1da3c96c2e93d32225f5428ae347756`. Отдельно проверены наличие exact commit `85080c730ad54c8fd81fa4a3c7c806a8771c4f68`, ancestor relation и clean working tree; выполнен разрешённый `git merge --ff-only 85080…`. Итоговый HEAD85080c7 clean. Это перенос уже принятого candidate:2 production files, contract и existing focused test; нового runtime implementation в этом проходе нет. [FF evidence](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/site-audience-output-config-20261104-ff.json).
 
 Исходный isolated `site-native-audience` и старый `site-sp` не изменены. Core/PL/Download/Navigation/QRC Source, course installed extensions/providers/pins, mainstate и existing outputs не менялись. Никакого нового commit/push/install; FF не был push. Последнее user decision заменяет прежний pending status из [implementation](site-active-audience-implementation-20261104.md)/[review](site-active-audience-review-20261104.md), но production остаётся до финального review.
 

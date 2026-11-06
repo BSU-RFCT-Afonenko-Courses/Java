@@ -6,7 +6,7 @@
 
 Root выбрал общий Site `6.0.1` из existing `site-java` exact `d16f2322c1da3c96c2e93d32225f5428ae347756`. Отдельный legacy `site-sp` backport остаётся невыбранным и сохранён без commit/push. Этот запуск отвечает только на вопрос о маленькой mixed HTML/Reveal + QRC composition выбранного общего owner; полный SP курс, профили student/full и installed release не квалифицируются.
 
-Исполнитель `/root/site_sp_native`, собственный chat `01a1a527-b7f3-7aa0-b1d7-735711254e02`, исходный ход полного интервала `01a1a527-b819-7bf1-af20-d26fd3269eb5`. Primary `/home/tolya/.codex/sessions/2026/11/04/rollout-2026-11-04T09-03-26-01a1a527-b7f3-7aa0-b1d7-735711254e02.jsonl`: session_meta line1 подтверждает собственные chat/path; все три turn_context от origin (lines8,277,344) согласованы top-level и nested `gpt-6.1-sol/high`. Итог PASS, [свидетельство](sp-shared-site6-integration-evidence-20261104/model-admission.json). Standard назначен; скрытая server routing не удостоверяется. Globals не менялись.
+Исполнитель `/root/site_sp_native`, собственный chat `01a1a527-b7f3-7aa0-b1d7-735711254e02`, исходный ход полного интервала `01a1a527-b819-7bf1-af20-d26fd3269eb5`. Primary `/home/tolya/.codex/sessions/2026/11/04/rollout-2026-11-04T09-03-26-01a1a527-b7f3-7aa0-b1d7-735711254e02.jsonl`: session_meta line1 подтверждает собственные chat/path; все три turn_context от origin (lines8,277,344) согласованы top-level и nested `gpt-6.1-sol/high`. Итог PASS, [свидетельство](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-shared-site6-integration-evidence-20261104/model-admission.json). Standard назначен; скрытая server routing не удостоверяется. Globals не менялись.
 
 Прочитан exact existing `site-java/tests/site-web-selection.ts` и его `command-probe.ts`; Source не редактировался. `site-java` и `qrc` были чистыми до и после attempt. QRC source `qrc` подтверждён на `8732dbbe0d8502f8b6a77049e27907ae8a66e46a`, descriptor `3.2.0`; Quarto `1.11.5`. В установленный SP или toolchain ничего не добавлялось; существующий fixture копировал расширения штатным local `quarto add` только в собственный temporary project.
 
@@ -37,7 +37,7 @@ Cwd — `/home/tolya/JavaCodex/java-release-20261110/site-java`. Имеющий�
 
 ## Первый actual Native результат
 
-**Exit1**, timeout не исчерпан. Source-repository QRC preparation прошла: выполнены три local add (Site, QRC root, QRC child), после них fixture вошла в native root render. Полный [mixed-fixture.log](sp-shared-site6-integration-evidence-20261104/mixed-fixture.log) содержит:
+**Exit1**, timeout не исчерпан. Source-repository QRC preparation прошла: выполнены три local add (Site, QRC root, QRC child), после них fixture вошла в native root render. Полный [mixed-fixture.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-shared-site6-integration-evidence-20261104/mixed-fixture.log) содержит:
 
 ```text
 course-site: Планирование корня: … — готово (0.8 с)
@@ -57,7 +57,7 @@ Temporary fixture `/tmp/course-site-web-selection-d7135a4112ba8fb0` удален
 
 ## Связь с прежней prep attempt
 
-Ранее legacy attempt передавала в `QRC_PROVIDER` напрямую installed extension directory и остановилась в `quarto add` с `Found 0 extensions / Invalid extension`, **до любого native render**. Её [исходный log](sp-site-native-render-evidence-20261104/mixed-fixture.log) и [отчёт](sp-site-native-render-implementation-20261104.md) сохранены. Corrected run использовал целый уже имеющийся repository root `qrc`; прежний setup отказ не является продуктовым Native Source failure и не скрывается за новым результатом.
+Ранее legacy attempt передавала в `QRC_PROVIDER` напрямую installed extension directory и остановилась в `quarto add` с `Found 0 extensions / Invalid extension`, **до любого native render**. Её [исходный log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-site-native-render-evidence-20261104/mixed-fixture.log) и [отчёт](sp-site-native-render-implementation-20261104.md) сохранены. Corrected run использовал целый уже имеющийся repository root `qrc`; прежний setup отказ не является продуктовым Native Source failure и не скрывается за новым результатом.
 
 Для выбранного shared Site6 первая actual Native attempt зафиксирована отдельным Native Sass KV отказом. На момент этой первой передачи integration PASS не был получен; последующее отдельное разрешение root и corrected результат приведены ниже. Source-only SP миграция пяти `{path,to:default}` records остаётся совместимой по договору, но ни её полная курсная выдача, ни публикация этой attempt не подтверждены.
 
@@ -85,7 +85,7 @@ QRC_PROVIDER=/home/tolya/JavaCodex/java-release-20261110/qrc \
 
 Те же cwd `site-java`, exact Site d16, QRC873, fixture и default inputs. Source edits, установка новых зависимостей, очистка cache, изменение Quarto flags/форматов/профилей отсутствуют. Local add внутри синтетического fixture использует прежний existing runner. Дополнительных compiler/Quarto probes и третьей Site6 attempt не было.
 
-**Exit0, PASS.** [Полный corrected log](sp-shared-site6-integration-evidence-20261104/mixed-fixture-corrected-xdg.log):
+**Exit0, PASS.** [Полный corrected log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-shared-site6-integration-evidence-20261104/mixed-fixture-corrected-xdg.log):
 
 ```text
 PASS native HTML-first default, nested QRC, circular HTML/Reveal links, одна child команда и один body на документ
@@ -102,6 +102,6 @@ PASS native HTML-first default, nested QRC, circular HTML/Reveal links, одна
 
 Raw trace/HTML существовали в собственном temporary fixture во время assertions; existing `finally` после PASS удалил fixture. Здесь они не выдаются за отдельно сохранённые artifacts. Сохранены exact неизменённый existing runner в site-java и внешний PASS log. Эта fixture не включает Core/Download, поэтому selected-source Core catalog guards, S6/noDownload, privacy/full role projection и freeze/cache hit ею не квалифицируются. Actual SP course metadata сама по себе не выдаётся за полный course PASS.
 
-Собственное primary tool metadata corrected process36223, line375: actual wall `10s + 151312033ns`. Сумма обеих Site6 attempts — **17.151281199s**, меньше общего cap60s; [run-budget.json](sp-shared-site6-integration-evidence-20261104/run-budget.json) сохраняет точные duration/exit values и строки первичного источника. Это budget accounting конкретных attempts, не performance benchmark.
+Собственное primary tool metadata corrected process36223, line375: actual wall `10s + 151312033ns`. Сумма обеих Site6 attempts — **17.151281199s**, меньше общего cap60s; [run-budget.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-shared-site6-integration-evidence-20261104/run-budget.json) сохраняет точные duration/exit values и строки первичного источника. Это budget accounting конкретных attempts, не performance benchmark.
 
 Перед передачей подтверждены чистые `site-java` и `qrc`. Legacy `site-sp`, SP Source/pins/installed, production и mainstate этой ролью не редактировались. Commit/push отсутствуют. Выбранный общий owner квалифицирован в этой маленькой mixed native/QRC composition; полный SP stage, независимое review и release остаются отдельными действиями root.

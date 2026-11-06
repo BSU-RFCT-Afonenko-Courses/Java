@@ -4,7 +4,7 @@
 
 Точный итоговый диапазон: `010ba917909fa7d44179d4a1a05291f88f061775..e8a989222266ede20fc037a1fe3e6f66efcaceb9`, ветка `codex/core-yaml-20261105`, checkout `/tmp/java-release-work-20261105/core`. Production сначала рассмотрен до `433fa5a`, tests-only migration — до `7795967`; исправляющий delta `7795967..e8a9892` просмотрен целиком после freeze. `git status --porcelain` пуст; `git diff --check` PASS. Рецензент не менял checkout/index/HEAD и не писал продукт.
 
-Рецензент: `/root/core_review`, собственный chat `01a1a8a1-ab5c-7620-8830-6eb20fed81e5`, исходный ход `01a1a8a1-ab93-7852-9946-77d0cb6ffb64`. Назначение `gpt-6.1-sol/high`, Standard. Первичный и итоговый допуск: `core-review-admission.json`; весь исходный интервал проверен от того же хода, оба уровня model/effort совпадают. Субагенты не запускались.
+Рецензент: `/root/core_review`, собственный chat `01a1a8a1-ab5c-7620-8830-6eb20fed81e5`, исходный ход `01a1a8a1-ab93-7852-9946-77d0cb6ffb64`. Назначение `gpt-6.1-sol/high`, Standard. Первичный и итоговый допуск: [core-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261105/reports/core-review-admission.json); весь исходный интервал проверен от того же хода, оба уровня model/effort совпадают. Субагенты не запускались.
 
 Требования: `EXECUTION-BRIEF-20261105.txt`, `core-plan.md`, согласованный договор `coordination/core.json`, исполняемые схемы и обновлённый `spec/index.md`. Шаблон review: `superpowers/requesting-code-review/code-reviewer.md`.
 
@@ -55,7 +55,7 @@
 - `core-private-resource-green.log`: один реальный native render и оба ordinary privacy bypass regression — PASS.
 - `core-default-final.log`: actual native student/full default runtime, actual version и resources — PASS.
 
-Ранние ограниченные результаты из `core.json`, `core-runtime.json`, `core-tests.json` рассмотрены как исполнительские проверки, а не выданы за независимые повторные запуски. Неизменные A1–A5 и весь canonical не повторялись.
+Ранние ограниченные результаты из [core.json](core.json), `core-runtime.json`, `core-tests.json` рассмотрены как исполнительские проверки, а не выданы за независимые повторные запуски. Неизменные A1–A5 и весь canonical не повторялись.
 
 ## Отказ от суждения (Declined to judge)
 

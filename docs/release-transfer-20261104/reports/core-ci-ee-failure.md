@@ -1,6 +1,6 @@
 # CI ee3aa08: устаревший whole-operation digest count
 
-3 ноября 2026. Exact Core `ee3aa0897fefadff2543528e45032231b90c13c4`, [run41695552507/job126124992977](https://github.com/Afonenko-Course-Tools/quarto-course/actions/runs/41695552507/job/126124992977), draft [PR70](https://github.com/Afonenko-Course-Tools/quarto-course/pull/70). Existing hosted log получен primary GitHub `fetch_workflow_job_logs`, полностью сохранён в `core-ci-ee-job-126124992977.log`. Новый hosted rerun/push не выполнялся.
+3 ноября 2026. Exact Core `ee3aa0897fefadff2543528e45032231b90c13c4`, [run41695552507/job126124992977](https://github.com/Afonenko-Course-Tools/quarto-course/actions/runs/41695552507/job/126124992977), draft [PR70](https://github.com/Afonenko-Course-Tools/quarto-course/pull/70). Existing hosted log получен primary GitHub `fetch_workflow_job_logs`, полностью сохранён в [core-ci-ee-job-126124992977.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-ci-ee-job-126124992977.log). Новый hosted rerun/push не выполнялся.
 
 ## Фактический first cause
 
@@ -39,7 +39,7 @@ Read-only `rg` по active tests на `fullSourceFences`, `localSourceFences`, `
 |native-operation-pointer-race-a4c|PASS, newer active pointer preserved|2.129s|
 |pending-a4a|PASS, ordinary pending IO/metadata/adapter/lifetime/final fences|15.152s|
 
-**8/8 PASS**, wall162.676s (<240), timeout0, retry0. Commands/exit codes/per-test times: `core-ci-ee-tail.json`; aggregate output `core-ci-ee-tail.log` и восемь `core-ci-ee-tail-<test>.log`. Согласованный stop-on-first-failure не потребовался, расширения batch после запуска не было.
+**8/8 PASS**, wall162.676s (<240), timeout0, retry0. Commands/exit codes/per-test times: [core-ci-ee-tail.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-ci-ee-tail.json); aggregate output [core-ci-ee-tail.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-ci-ee-tail.log) и восемь `core-ci-ee-tail-<test>.log`. Согласованный stop-on-first-failure не потребовался, расширения batch после запуска не было.
 
 Изменённый scope test фактически напечатал внутри current callback `inspectCalls1`, `fullWalks1`, `fullSourceFences3`, `runtimeHashReads4`, `localSourceFences11`, `childRenders2`. Это подтверждает точную причину прежнего assertion failure; новый контракт на эти числа не введён. Это также не новые SP performance/capture counters и не обещание ускорения курса. Batch использовал existing actual Quarto/native fixtures на собственных временных owners; записи root/выводов сохранены. Это root-разрешённый новый integrity вопрос, а не повтор ранее PASS на unchanged Source.
 

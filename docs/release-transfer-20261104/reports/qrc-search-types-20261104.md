@@ -120,15 +120,15 @@ metadata при text update и full merge. Дополнительный duplicat
 `git diff --check` — PASS.
 
 Точные команды/результаты/elapsed:
-[qrc-search-types-checks-20261104.json](qrc-search-types-checks-20261104.json).
+[qrc-search-types-checks-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-search-types-checks-20261104.json).
 Логи:
-[qrc-search-types-control-20261104.log](qrc-search-types-control-20261104.log),
-[qrc-search-types-compiler-20261104.log](qrc-search-types-compiler-20261104.log),
-[qrc-search-types-compiler-final-20261104.log](qrc-search-types-compiler-final-20261104.log),
-[qrc-search-types-control_after_duplicate_path_fix-20261104.log](qrc-search-types-control_after_duplicate_path_fix-20261104.log),
-[qrc-search-types-compiler_after_duplicate_path_fix-20261104.log](qrc-search-types-compiler_after_duplicate_path_fix-20261104.log),
-[qrc-search-types-control_after_test_unknown_narrowing-20261104.log](qrc-search-types-control_after_test_unknown_narrowing-20261104.log),
-[qrc-search-types-compiler_after_test_unknown_narrowing-20261104.log](qrc-search-types-compiler_after_test_unknown_narrowing-20261104.log).
+[qrc-search-types-control-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-search-types-control-20261104.log),
+[qrc-search-types-compiler-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-search-types-compiler-20261104.log),
+[qrc-search-types-compiler-final-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-search-types-compiler-final-20261104.log),
+[qrc-search-types-control_after_duplicate_path_fix-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-search-types-control_after_duplicate_path_fix-20261104.log),
+[qrc-search-types-compiler_after_duplicate_path_fix-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-search-types-compiler_after_duplicate_path_fix-20261104.log),
+[qrc-search-types-control_after_test_unknown_narrowing-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-search-types-control_after_test_unknown_narrowing-20261104.log),
+[qrc-search-types-compiler_after_test_unknown_narrowing-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-search-types-compiler_after_test_unknown_narrowing-20261104.log).
 
 Не запускались Native, Quarto render/inspect/build, full suite, hashes,
 network/install или скачивание типов. No commit/push/state edits.
@@ -146,5 +146,5 @@ network/install или скачивание типов. No commit/push/state edi
 turn_context от исходного turn: 4 записи. Верхнеуровневые model/effort и вложенные
 collaboration_mode model/reasoning_effort совпадают с назначением — PASS.
 Свидетельство:
-[qrc-search-types-admission-20261104.json](qrc-search-types-admission-20261104.json).
+[qrc-search-types-admission-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-search-types-admission-20261104.json).
 Глобальные настройки не менялись; скрытая серверная маршрутизация не утверждается.

@@ -11,4 +11,4 @@
 
 [Exact combined patch](download-a1-count-tests-alignment-20261104.patch). git diff --check PASS — только редакционный контроль diff. Native/compiler/tests/CI/network не запускались; commit/push/mainstate отсутствуют. Это готовый Source review candidate, **не runtime PASS**. Root принимает партию и выбирает следующий hosted push; самостоятельных rechecks нет.
 
-Own роль/model/effort неизменны; [существующий origin reference](core-condition-walk-types-admission-20261104.json).
+Own роль/model/effort неизменны; [существующий origin reference](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-condition-walk-types-admission-20261104.json).

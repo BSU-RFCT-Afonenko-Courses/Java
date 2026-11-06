@@ -33,7 +33,7 @@
 
 После внесения этих требований дизайн можно повторно рассмотреть без implementation и runtime. Они не требуют compatibility, нового supervisor/watchdog, receipt family, registry или framework. Student data/results/UUID не читаются для изменения и не затрагиваются; production qualification остаётся отдельной обязательной приёмкой.
 
-Собственный допуск: [primary admission](performance-lifecycle-clean-contract-review-20261104-admission.json). Agent `/root/performance_lifecycle_review`, собственный chat `01a1a61b-3db5-75b2-9e4c-eb949da79c4f`, исходный turn `01a1a61b-3de4-79b3-917c-225fa400a1ba`; первичные `session_meta`/все `turn_context` исходного интервала подтверждают `gpt-6.1-sol/high`. Standard назначен root; globals/mainstate/audit не менялись. Новые агенты не создавались.
+Собственный допуск: [primary admission](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/performance-lifecycle-clean-contract-review-20261104-admission.json). Agent `/root/performance_lifecycle_review`, собственный chat `01a1a61b-3db5-75b2-9e4c-eb949da79c4f`, исходный turn `01a1a61b-3de4-79b3-917c-225fa400a1ba`; первичные `session_meta`/все `turn_context` исходного интервала подтверждают `gpt-6.1-sol/high`. Standard назначен root; globals/mainstate/audit не менялись. Новые агенты не создавались.
 
 ## Итог delta review исправленного дизайна — 4 ноября
 

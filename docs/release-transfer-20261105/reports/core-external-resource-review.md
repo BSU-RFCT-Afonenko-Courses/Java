@@ -4,7 +4,7 @@
 
 Точный диапазон: `e8a989222266ede20fc037a1fe3e6f66efcaceb9..f8ea942ba72c6bf0093862c72ea3f6620eec71ec`, 7 файлов. Checkout `/tmp/java-release-work-20261105/core`, ветка `codex/core-yaml-20261105`. Во время review 4 отдельных документа имели незакоммиченные редакторские изменения координатора; они не входят в данный verdict и не затрагивают frozen functional code. Рецензент source, fixture, index, HEAD не менял.
 
-Рецензент `/root/core_review`, собственный chat `01a1a8a1-ab5c-7620-8830-6eb20fed81e5`, **исходный ход сохранён**: `01a1a8a1-ab93-7852-9946-77d0cb6ffb64`. Возобновление и финальная проверка всего исходного интервала: 2 `turn_context`, верхнеуровневые и вложенные `gpt-6.1-sol/high` совпадают; Standard. Свидетельство `core-review-admission.json`, секция `externalFinalAdmission`. Субагенты не запускались.
+Рецензент `/root/core_review`, собственный chat `01a1a8a1-ab5c-7620-8830-6eb20fed81e5`, **исходный ход сохранён**: `01a1a8a1-ab93-7852-9946-77d0cb6ffb64`. Возобновление и финальная проверка всего исходного интервала: 2 `turn_context`, верхнеуровневые и вложенные `gpt-6.1-sol/high` совпадают; Standard. Свидетельство [core-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261105/reports/core-review-admission.json), секция `externalFinalAdmission`. Субагенты не запускались.
 
 ## Сильные стороны
 

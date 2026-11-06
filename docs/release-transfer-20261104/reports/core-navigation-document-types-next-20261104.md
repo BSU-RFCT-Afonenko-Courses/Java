@@ -17,4 +17,4 @@ Scope — только `_extensions/course-navigation/html/document.ts` в `core
 
 Существующий meaningful контроль `tests/navigation-composition.ts` создаёт небольшой временный HTML output fixture и вызывает composeNavigation без Quarto render/Core; подходящий будущий affected compiler должен включать этот consumer. На данной Source-only стадии ничего не исполнялось. Если явная привязка vendored declarations обнаружит transitive declaration dependency gap — остановиться с точным diagnostic, не компенсировать local AST fiction/absolute imports/any casts.
 
-Own роль/model/effort неизменны; [существующий origin admission](core-condition-walk-types-admission-20261104.json). Глобальные настройки, основной state, vendor и bridge не менялись.
+Own роль/model/effort неизменны; [существующий origin admission](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-condition-walk-types-admission-20261104.json). Глобальные настройки, основной state, vendor и bridge не менялись.

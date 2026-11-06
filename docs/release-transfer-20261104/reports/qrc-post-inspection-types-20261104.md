@@ -93,10 +93,10 @@ Compiler не использовал `--cached-only`. Total1.2346 s, retry0.
 Точный diff, включая **новый untracked helper**:
 [qrc-post-inspection-types-20261104.patch](qrc-post-inspection-types-20261104.patch).
 Команды/elapsed/exit:
-[qrc-post-inspection-types-checks-20261104.json](qrc-post-inspection-types-checks-20261104.json).
+[qrc-post-inspection-types-checks-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-post-inspection-types-checks-20261104.json).
 Полные логи:
-[qrc-post-inspection-types-control-20261104.log](qrc-post-inspection-types-control-20261104.log),
-[qrc-post-inspection-types-compiler-20261104.log](qrc-post-inspection-types-compiler-20261104.log).
+[qrc-post-inspection-types-control-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-post-inspection-types-control-20261104.log),
+[qrc-post-inspection-types-compiler-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-post-inspection-types-compiler-20261104.log).
 
 Не запускались actual post/Native/render/inspect/build/hash/full suite,
 network/install или CI. Actual Quarto inspect integration этим scoped pure
@@ -112,4 +112,4 @@ Agent `/root/core_yaml_types`, собственный chat
 Весь исходный интервал проверен по session_meta и всем turn_context, включая
 вложенные collaboration settings: **8 записей, PASS**. Origin не сдвигался.
 Standard назначен; hidden routing не удостоверяется, globals не менялись.
-[Машинное свидетельство](qrc-post-inspection-types-admission-20261104.json).
+[Машинное свидетельство](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-post-inspection-types-admission-20261104.json).

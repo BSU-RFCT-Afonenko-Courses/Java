@@ -2,7 +2,7 @@
 
 ## Граница и допуск
 
-Исполнитель `/root/site_sp_native`, собственный chat `01a1a527-b7f3-7aa0-b1d7-735711254e02`, исходный ход `01a1a527-b819-7bf1-af20-d26fd3269eb5`. Назначение `gpt-6.1-sol/high`, Standard. Собственный primary `/home/tolya/.codex/sessions/2026/11/04/rollout-2026-11-04T09-03-26-01a1a527-b7f3-7aa0-b1d7-735711254e02.jsonl`: session_meta line1 подтверждает chat/path; весь доступный интервал от origin — turn_context line8 — согласован по top-level и nested `gpt-6.1-sol/high`. Итог PASS, [машиночитаемое свидетельство](sp-site-native-render-evidence-20261104/model-admission.json). Скрытая server routing не удостоверяется; глобальные настройки не менялись.
+Исполнитель `/root/site_sp_native`, собственный chat `01a1a527-b7f3-7aa0-b1d7-735711254e02`, исходный ход `01a1a527-b819-7bf1-af20-d26fd3269eb5`. Назначение `gpt-6.1-sol/high`, Standard. Собственный primary `/home/tolya/.codex/sessions/2026/11/04/rollout-2026-11-04T09-03-26-01a1a527-b7f3-7aa0-b1d7-735711254e02.jsonl`: session_meta line1 подтверждает chat/path; весь доступный интервал от origin — turn_context line8 — согласован по top-level и nested `gpt-6.1-sol/high`. Итог PASS, [машиночитаемое свидетельство](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-site-native-render-evidence-20261104/model-admission.json). Скрытая server routing не удостоверяется; глобальные настройки не менялись.
 
 Прочитаны целиком `reports/sp-site-native-render-next-20261104.md`, адресно cache/native Site границы `reports/quarto-cache-boundary-20261104.md`, actual `system-practice/AGENTS.md`, actual Site `AGENTS.md`, `spec/index.md`, `spec/contract.md`, `docs/public-operation.md`, `java/docs/model-admission.md` и `core/docs/russian-language-policy.md`.
 
@@ -43,7 +43,7 @@ _extensions/course-site/infrastructure/config.ts \
 tests/site-effective-formats.ts tests/site-web-selection.ts tests/site-owner-release.ts
 ```
 
-Exit0, [compiler.log](sp-site-native-render-evidence-20261104/compiler.log). Все пять указанных roots проверены; новых Source правок после compiler не было.
+Exit0, [compiler.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-site-native-render-evidence-20261104/compiler.log). Все пять указанных roots проверены; новых Source правок после compiler не было.
 
 Единственная разрешённая runtime attempt — existing `tests/site-web-selection.ts`, timeout60s/retry0, Deno `run --cached-only`, тот же actual cache/map, `QUARTO_RUN_NO_NETWORK=true`. `QRC_PROVIDER` указывал на существующий установленный `system-practice/tasks/_extensions/Afonenko-Course-Tools/reference-catalog`; собственный fixture сохранялся через `COURSE_SITE_KEEP=1`.
 
@@ -55,7 +55,7 @@ ERROR: Invalid extension
 The extension staged at /tmp/quarto-session3eed0e3542f17d5b/115dd3336f5577a2/652ee2a208135115 does not provide any valid extensions.
 ```
 
-Причина этой attempt — существующий runner принимает source package layout, а directly installed extension directory не является допустимым `quarto add` package. Повтор, другая раскладка provider, новая установка, Core/native серия и второй render не выполнялись. Точный stderr/stack сохранён в [mixed-fixture.log](sp-site-native-render-evidence-20261104/mixed-fixture.log), fixture сохранён `/tmp/course-site-web-selection-10ca71f074aa82ce`.
+Причина этой attempt — существующий runner принимает source package layout, а directly installed extension directory не является допустимым `quarto add` package. Повтор, другая раскладка provider, новая установка, Core/native серия и второй render не выполнялись. Точный stderr/stack сохранён в [mixed-fixture.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-site-native-render-evidence-20261104/mixed-fixture.log), fixture сохранён `/tmp/course-site-web-selection-10ca71f074aa82ce`.
 
 Следовательно, фактические mixed HTML/Reveal outputs, QRC circular links, количество реально выполненных children, отсутствие document inspect при runtime, native freeze hit и consumer privacy в этой attempt **UNKNOWN**. Проверка не дошла до изменённого render пути и не является ни его успешной приёмкой, ни доказанным production отказом. Performance improvement, полная совместимость установленной composition и готовность выпуска не заявляются.
 

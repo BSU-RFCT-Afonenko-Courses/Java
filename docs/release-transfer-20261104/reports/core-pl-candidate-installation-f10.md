@@ -4,7 +4,7 @@
 
 ## Собственный допуск
 
-Назначение Sol6.1/medium, Standard. Собственный chat01a1a253-e067-7583-bf86-ecc79bd9b33f, path `/root/install_shortcode_candidate`, исходный ход01a1a253-e09d-7bd0-b06a-09436efd3df6. Первичный rollout указан в `core-pl-candidate-installation-f10-model-evidence.json`: session_meta строка1 и turn_context строка8; верхние и nested поля Sol6.1/medium согласованы. Service tier отсутствует; Standard назначен root, скрытая серверная маршрутизация не аттестуется. Глобальные настройки и нормативные документы моделей не менялись.
+Назначение Sol6.1/medium, Standard. Собственный chat01a1a253-e067-7583-bf86-ecc79bd9b33f, path `/root/install_shortcode_candidate`, исходный ход01a1a253-e09d-7bd0-b06a-09436efd3df6. Первичный rollout указан в [core-pl-candidate-installation-f10-model-evidence.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-pl-candidate-installation-f10-model-evidence.json): session_meta строка1 и turn_context строка8; верхние и nested поля Sol6.1/medium согласованы. Service tier отсутствует; Standard назначен root, скрытая серверная маршрутизация не аттестуется. Глобальные настройки и нормативные документы моделей не менялись.
 
 ## Установка и проверка
 
@@ -17,8 +17,8 @@ Existing script проверил bytes/mode затронутых targets до и
 - Java installation commit: `38cb70176c3f4c1abfcbcc974fe03e90c4198ba7` поверхbbd92a82ff73ac4594daa0aaa513eeae6269393a.
 - SP installation commit: `e579e0e0bfe20403f6b07df2f04a64e5e6c5d7d8` поверх66c4c5110b03e7ac9e9132eff6b9f0bfff0b6190.
 
-Сообщение обоих commits: «Установлен Core f10c4e65 с допуском зарегистрированных shortcode». Root release-cycle не stage/commit. Java pipeline, hash/inventory/rebuild, дополнительный render/inspect, push и PR не запускались. Машинный результат: `core-pl-candidate-installation-f10-result.json`. Прежние отчёт/JSON сохранены как `core-pl-candidate-installation-332-history.md` и `core-pl-candidate-installation-332-history-result.json`.
+Сообщение обоих commits: «Установлен Core f10c4e65 с допуском зарегистрированных shortcode». Root release-cycle не stage/commit. Java pipeline, hash/inventory/rebuild, дополнительный render/inspect, push и PR не запускались. Машинный результат: [core-pl-candidate-installation-f10-result.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-pl-candidate-installation-f10-result.json). Прежние отчёт/JSON сохранены как `core-pl-candidate-installation-332-history.md` и [core-pl-candidate-installation-332-history-result.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-pl-candidate-installation-332-history-result.json).
 
-Один разрешённый SP native attempt фиксируется отдельно в `sp-native-f10-execution.json` и `sp-native-f10.log`; он определяет фактическую native приёмку, installation success её не заменяет.
+Один разрешённый SP native attempt фиксируется отдельно в [sp-native-f10-execution.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-native-f10-execution.json) и [sp-native-f10.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-native-f10.log); он определяет фактическую native приёмку, installation success её не заменяет.
 
 После единственного SP attempt оба git status clean; native результат exit1 за28.143593671s, отказ финализации OPERATION_CHANGED/labs, описан в `sp-native-f10-acceptance.md`. Перед передачей повторно проверен весь исходный model interval: единственный turn_context8 Sol6.1/medium согласован.

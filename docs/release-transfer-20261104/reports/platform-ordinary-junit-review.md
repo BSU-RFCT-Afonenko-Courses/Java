@@ -6,7 +6,7 @@
 
 Рецензент `/root/review_ordinary_junit`, собственный чат `01a1a213-d42a-7230-8b4b-cdf6feaddf3e`, исходный turn `01a1a213-d45b-77d2-8491-08cc6965b7ed`. Назначение по критичной технической роли: `gpt-6.1-sol` / `high`, Standard. Первичный источник: `/home/tolya/.codex/sessions/2026/11/03/rollout-2026-11-03T18-42-50-01a1a213-d42a-7230-8b4b-cdf6feaddf3e.jsonl`. Собственный ID установлен по `session_meta.payload.id`, а не по унаследованному `session_id` родителя.
 
-Проверен весь текущий интервал от исходного turn: все присутствующие `turn_context` (1 запись, ordinal7), верхние `model/effort` и вложенные `collaboration_mode.settings` совпадают с назначением. Допуск пройден; машинная запись — `platform-ordinary-junit-review-admission.json`. Standard задан поручением; отдельного speed-поля в первичной записи нет. Проверка подтверждает зарегистрированную пару, а не скрытую серверную маршрутизацию. Нормативный `java/docs/model-admission.md` и глобальная конфигурация не менялись.
+Проверен весь текущий интервал от исходного turn: все присутствующие `turn_context` (1 запись, ordinal7), верхние `model/effort` и вложенные `collaboration_mode.settings` совпадают с назначением. Допуск пройден; машинная запись — [platform-ordinary-junit-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/platform-ordinary-junit-review-admission.json). Standard задан поручением; отдельного speed-поля в первичной записи нет. Проверка подтверждает зарегистрированную пару, а не скрытую серверную маршрутизацию. Нормативный `java/docs/model-admission.md` и глобальная конфигурация не менялись.
 
 ## Основания вывода
 

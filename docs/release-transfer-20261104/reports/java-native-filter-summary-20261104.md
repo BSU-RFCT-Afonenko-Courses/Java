@@ -44,7 +44,7 @@ Actual command: `python3 reports/java-native-filter-summary-20261104.py` из re
 
 ## Actual native filter records и envelopes
 
-Run `5763e000-387f-4561-b45d-77cf062d3454`. Первичный [stderr.log](java-native-filter-summary-20261104-actual/runs/5763e000-387f-4561-b45d-77cf062d3454/stderr.log) сохранён streaming; извлечённые номера строк/markers/records и полные receipts — [saved-evidence.json](java-native-filter-summary-20261104-actual/saved-evidence.json).
+Run `5763e000-387f-4561-b45d-77cf062d3454`. Первичный [stderr.log](java-native-filter-summary-20261104-actual/runs/5763e000-387f-4561-b45d-77cf062d3454/stderr.log) сохранён streaming; извлечённые номера строк/markers/records и полные receipts — [saved-evidence.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-native-filter-summary-20261104-actual/saved-evidence.json).
 
 | Документ | Pandoc receipt / status | Pandoc wall | `main.lua` emitted ms | citeproc emitted ms |
 | --- | --- | ---: | ---: | ---: |
@@ -60,7 +60,7 @@ Log lines51–82 относятся к первому документу;164–1
 
 ## TS/manual Lua рядом с coarse timings
 
-Actual direct-child связи: первый Pandoc → wrapper486c7abd → TSaa7e779f; второй → wrapper26b9411f → TS70c0939a. Подробные matched begin/end пары, clocks, sequence и parents сохранены в [semantic-intervals.json](java-native-filter-summary-20261104-actual/semantic-intervals.json), без повторного исполнения/report pipeline.
+Actual direct-child связи: первый Pandoc → wrapper486c7abd → TSaa7e779f; второй → wrapper26b9411f → TS70c0939a. Подробные matched begin/end пары, clocks, sequence и parents сохранены в [semantic-intervals.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-native-filter-summary-20261104-actual/semantic-intervals.json), без повторного исполнения/report pipeline.
 
 | Документ | Wrapper wall | Early TS wall | Guard inclusive wall | Direct state json wall | Direct state decode wall | Normalize wall |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -90,4 +90,4 @@ Final run.json/summary.json/report.md/tool-status.json и capture-result.json о
 
 ## Собственный primary admission
 
-[own-model-admission.json](java-native-filter-summary-20261104-actual/own-model-admission.json) сохраняет own chat `01a1a514-165b-7ae2-bff1-b9ca9f7e3bb1`, immutable origin `01a1a514-1688-7662-80fc-58bf7a272ae0`, expected `gpt-6.1-sol/high`, Standard и primary rollout path. Полный origin interval turn_context lines8/171/270/405/734/918/1031/1046/1192/1274/1437/1655/1749/1809/1997/2098 проверен: top-level model/effort и nested collaboration settings согласованы, PASS. Hidden server routing этим не подтверждается.
+[own-model-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-native-filter-summary-20261104-actual/own-model-admission.json) сохраняет own chat `01a1a514-165b-7ae2-bff1-b9ca9f7e3bb1`, immutable origin `01a1a514-1688-7662-80fc-58bf7a272ae0`, expected `gpt-6.1-sol/high`, Standard и primary rollout path. Полный origin interval turn_context lines8/171/270/405/734/918/1031/1046/1192/1274/1437/1655/1749/1809/1997/2098 проверен: top-level model/effort и nested collaboration settings согласованы, PASS. Hidden server routing этим не подтверждается.

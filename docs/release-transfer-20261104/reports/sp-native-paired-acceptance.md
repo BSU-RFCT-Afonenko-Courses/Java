@@ -20,14 +20,14 @@ Root указал сохранённый R0 `/home/tolya/JavaCodex/java-research
 XDG_CACHE_HOME=/home/tolya/JavaCodex/.cache QUARTO_RUN_NO_NETWORK=true DENO_NO_PACKAGE_JSON=1 timeout --signal=TERM --kill-after=5s 120s /opt/quarto/bin/quarto run tasks/_extensions/Afonenko-Course-Tools/course-prairielearn/entrypoints/export-course.ts /home/tolya/JavaCodex/java-release-20261110/system-practice /home/tolya/JavaCodex/java-release-20261110/reports/sp-native-paired-public --instance pilot --checks-output /home/tolya/JavaCodex/java-release-20261110/reports/sp-native-paired-private --runtime-registry /home/tolya/JavaCodex/java-release-20261110/reports/sp-native-paired-published-runtime-profiles.json --book tasks
 ```
 
-Глобальный timeout120s на process tree, kill grace5s; один параллелизм. Cache с самого старта существует и writable. HOME/global config не меняется. Новый stdout/stderr log `reports/sp-native-paired.log`; wall time/exit — `sp-native-paired-execution.json`. Public/private outputs до запуска отсутствуют; прежние artifacts не удаляются.
+Глобальный timeout120s на process tree, kill grace5s; один параллелизм. Cache с самого старта существует и writable. HOME/global config не меняется. Новый stdout/stderr log `reports/sp-native-paired.log`; wall time/exit — [sp-native-paired-execution.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-native-paired-execution.json). Public/private outputs до запуска отсутствуют; прежние artifacts не удаляются.
 
 На успехе читаются только уже созданные generation/coverage/descriptors/ZIP/conditions/private bundles; actual grader-image/deploy отдельно. Ранее successful Source/R0–R6/ordinary UUID/Circle/PLtests, full inventories/hash не повторяются. При новой ошибке exact stage/error передаётся root, без fixture retry chain/guard bypass/Source edits. Source `nativeProjectContextMetrics` существует на prepared result, но CLI не печатает return value и publishNativePrepared возвращает delivery; если эти counters не сохранены штатными artifacts, числовой batch count останется unavailable, новые instrumentation/подмены API для него не добавляются. Capture success не означает завершённый export.
 
 
 ## Фактический результат единственного запуска
 
-**FAIL_NATIVE_CAPTURE**, exit1, wall8.234322895998048s;120s timeout не достигнут. Это одна новая попытка на принятой installed паре, без повторного render/inspect/smoke. Новый log `sp-native-paired.log`, точная команда/env/exit/time `sp-native-paired-execution.json`.
+**FAIL_NATIVE_CAPTURE**, exit1, wall8.234322895998048s;120s timeout не достигнут. Это одна новая попытка на принятой installed паре, без повторного render/inspect/smoke. Новый log [sp-native-paired.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-native-paired.log), точная команда/env/exit/time [sp-native-paired-execution.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-native-paired-execution.json).
 
 Достигнутый путь:
 

@@ -37,7 +37,7 @@ Writer ZIP verification использовал stdlib `ZipFile.testzip` плюс
 
 ## Performance и counts без лишних выводов
 
-`core-native-computed-integration-20261104-execution.json`: один запуск06:16:09–06:16:17UTC, exit0, timedOut false, retry0, cap120s; outer8.535722s. `capture-timings.json`/run outcome: executeScenario wall8.130922s. Это wall всего wrapper/probe, **не только** одного render и не чистое время R. Сохранённый render process envelope3.964474s включает свои descendants.
+[core-native-computed-integration-20261104-execution.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-computed-integration-20261104-execution.json): один запуск06:16:09–06:16:17UTC, exit0, timedOut false, retry0, cap120s; outer8.535722s. `capture-timings.json`/run outcome: executeScenario wall8.130922s. Это wall всего wrapper/probe, **не только** одного render и не чистое время R. Сохранённый render process envelope3.964474s включает свои descendants.
 
 `summary.json`/`export.json`: dataValid true, droppedEvents0, incompleteSpans0, errors[], coverageComplete false. CPU user/system и peakRSS null по выбранному summary scope. Это корректные частичные данные; не полная семантическая/OS coverage и не «R process count0».
 

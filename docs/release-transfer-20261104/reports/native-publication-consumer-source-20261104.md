@@ -1,6 +1,6 @@
 # Native publication: Source Download/Site
 
-> Root qualification update: final independent Source **APPROVE_SOURCE**, affected combined compiler **PASS** (34roots, r2 4.875085435s; total9.800762860s/20). Four exact local commits saved in [commit evidence](native-publication-local-commits-20261104.json). One bounded Native fixture **BLOCKED before publication assertions** at Quarto Sass KV; runtime **NOT QUALIFIED**. No push/install/production. Earlier author statements below retain their original evidence/time scope.
+> Root qualification update: final independent Source **APPROVE_SOURCE**, affected combined compiler **PASS** (34roots, r2 4.875085435s; total9.800762860s/20). Four exact local commits saved in [commit evidence](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/native-publication-local-commits-20261104.json). One bounded Native fixture **BLOCKED before publication assertions** at Quarto Sass KV; runtime **NOT QUALIFIED**. No push/install/production. Earlier author statements below retain their original evidence/time scope.
 
 **Consumer Source frozen для одного root combined compiler/review; compiler/runtime acceptance ещё не выполнена.**
 Работа выполнена `/root/native_publication_consumers`, single writer Download+Site,
@@ -12,7 +12,7 @@ UUID/native IDs/results/student files сохранены. Core/PL/Performance/Pl
 
 ## Собственный допуск
 
-[Primary admission](native-publication-consumer-source-20261104-admission.json)
+[Primary admission](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/native-publication-consumer-source-20261104-admission.json)
 ссылается на собственный primary session `01a1a634-c243-7c83-a0ed-b89c7035ebf1`:
 `session_meta` ordinal0 содержит `/root/native_publication_consumers`,
 `turn_context` ordinal7 — `gpt-6.1-sol`/`high`. Standard назначен root;

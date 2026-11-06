@@ -2,7 +2,7 @@
 
 Проверен read-only WIP diff относительно `c2e35e7ed3ec4ca2412dd66c9d71d9ce94e6290c` в `/tmp/java-release-work-20261105/java-feedback`, только `tasks/projects/files/transpose-file-matrix/observations`: TaskBinding, FileInvocation, ProcessPort, coursesupport/JavaProcess, tests/test_binding.py. Прочитано каноническое условие `tasks/bank/files.qmd:119–153`, сохранены сигнатуры Study.process и обязательный предметный договор. **Приёмка пока не дана: два замечания.** Код рецензент не изменял. Владение Java передано исполнителю обратно сообщением после завершения воспроизведений.
 
-Собственный admission повторён до роли и перед передачей по всему исходному интервалу, от `01a1a890-9d74-7d92-a65c-eccacfb9ceab`, chat `01a1a890-9d42-7772-bd99-f2f954898515`, `/root/platform_candidate_review`, `gpt-6.1-sol/high`, Standard; свидетельство `feedback-review-admission.json`.
+Собственный admission повторён до роли и перед передачей по всему исходному интервалу, от `01a1a890-9d74-7d92-a65c-eccacfb9ceab`, chat `01a1a890-9d42-7772-bd99-f2f954898515`, `/root/platform_candidate_review`, `gpt-6.1-sol/high`, Standard; свидетельство [feedback-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261105/reports/feedback-review-admission.json).
 
 ## P1. Reader по-прежнему сужает свободный формат отчёта
 
@@ -70,4 +70,4 @@ TaskBinding.refused(() -> coursesupport.JavaProcess.runCheckingUncaught(
 
 Сценарий и результат: `transpose-final-review-probe.py`, `transpose-final-review-probe.json`. `git diff --check c2e35e7 -- tasks/projects/files/transpose-file-matrix/observations` завершился 0. Лог writer `transpose-final-tests.log` прочитан: 7 regressions OK, **28.737 s**, они не повторялись. Ранее закрытый bootstrap сохранён без смысловой дельты; его успешная независимая проверка 6.403 s из предыдущего раздела переиспользована. Дополнительных подтверждённых проблем сохранности входа, namespace/API или отличения toolfail/student failure в финальной дельте не найдено.
 
-Допуск перед ролью и перед приёмкой повторён за весь исходный интервал, от неизменного исходного turn ID: **4 turn_context, PASS gpt-6.1-sol/high**, Standard. Свидетельство обновлено в `feedback-review-admission.json`. Рецензент исходный код не менял. Владение Java возвращено исполнителю сообщением после final probe.
+Допуск перед ролью и перед приёмкой повторён за весь исходный интервал, от неизменного исходного turn ID: **4 turn_context, PASS gpt-6.1-sol/high**, Standard. Свидетельство обновлено в [feedback-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261105/reports/feedback-review-admission.json). Рецензент исходный код не менял. Владение Java возвращено исполнителю сообщением после final probe.

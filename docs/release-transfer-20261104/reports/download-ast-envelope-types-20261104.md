@@ -86,11 +86,11 @@ pure control отдельно разрешён root с cap5 s/retry0. Общий
 ни одного unchanged retry. `git diff --check` — PASS. Compiler после test-only
 alignment по прямому указанию root не повторялся: product Source не менялся.
 Все commands/elapsed/exits:
-[download-ast-envelope-types-checks-20261104.json](download-ast-envelope-types-checks-20261104.json).
+[download-ast-envelope-types-checks-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-ast-envelope-types-checks-20261104.json).
 Логи:
-[control](download-ast-envelope-types-control-20261104.log),
-[compiler](download-ast-envelope-types-compiler-20261104.log),
-[изменённый pure control](download-ast-envelope-types-control-aligned-20261104.log).
+[control](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-ast-envelope-types-control-20261104.log),
+[compiler](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-ast-envelope-types-compiler-20261104.log),
+[изменённый pure control](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-ast-envelope-types-control-aligned-20261104.log).
 
 Первый точный отказ:
 
@@ -137,4 +137,4 @@ Agent `/root/core_yaml_types`, chat `01a1a54c-ab39-7a83-808d-a190428ff628`,
 ожидаемая пара `gpt-6.1-sol/medium`. Весь primary origin interval проверен:
 **11 turn_context**, top-level и nested model/effort соответствуют назначению — PASS.
 Standard назначен; hidden routing не утверждается; globals не менялись.
-[Машинное свидетельство](download-ast-envelope-types-admission-20261104.json).
+[Машинное свидетельство](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-ast-envelope-types-admission-20261104.json).

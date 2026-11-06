@@ -4,7 +4,7 @@
 
 ## Scope и независимость
 
-Checkout `/home/tolya/JavaCodex/java-release-20261110/core-native-types`:3production modules (`infrastructure/native-owner-inspection.ts`, `infrastructure/project-context.ts`, `runtime/operation.ts`) и2existing controls. Новый pure helper79lines учтён отдельно от tracked diff; unchanged accepted bridge worktree не редактировалась. Reviewer прочёл AGENTS, [writer report](core-a1-inspection-types-20261104.md), полный production/test diff и [checks JSON](core-a1-inspection-types-checks-20261104.json). Source reviewer не писал/не менял; tests/compiler/Native/render/inspect/hash/network не повторялись. DB/state/pins/production/commit/push не затрагивались.
+Checkout `/home/tolya/JavaCodex/java-release-20261110/core-native-types`:3production modules (`infrastructure/native-owner-inspection.ts`, `infrastructure/project-context.ts`, `runtime/operation.ts`) и2existing controls. Новый pure helper79lines учтён отдельно от tracked diff; unchanged accepted bridge worktree не редактировалась. Reviewer прочёл AGENTS, [writer report](core-a1-inspection-types-20261104.md), полный production/test diff и [checks JSON](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-a1-inspection-types-checks-20261104.json). Source reviewer не писал/не менял; tests/compiler/Native/render/inspect/hash/network не повторялись. DB/state/pins/production/commit/push не затрагивались.
 
 ## Проверенные границы
 

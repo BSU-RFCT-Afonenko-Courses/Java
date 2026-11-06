@@ -18,17 +18,17 @@ Source candidate готов для независимого review root. Баз�
 
 ## Единственная affected compiler-проверка
 
-Использована существующая исправленная composition из [ownership evidence](download-ownership-snapshot-final-check-20261104.json), без новых aliases/stubs/install/network:
+Использована существующая исправленная composition из [ownership evidence](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-ownership-snapshot-final-check-20261104.json), без новых aliases/stubs/install/network:
 
 ```text
 DENO_DIR=/home/tolya/.cache/quarto/deno_std/cache
 /opt/quarto/bin/tools/x86_64/deno check --deny-import --no-config --no-lock --import-map=/tmp/download-ownership-snapshot-imports-20261104.json tests/runtime-types.ts
 ```
 
-Результат **PASS**, exit `0`, elapsed `4.5574s`, cap `15s`, retry `0`. Реальный Core `5f4590aa4eb524830715f8020c8ff3c504197f73`, PL `4d39a6648d2816bab9a372877deded3320ff35e1`; использованы существующие literal public-prefix mappings и bare `course-core/`, `pl-native/`. Полная сохранённая map и команда: [check evidence](download-wrapped-functions-check-20261104.json); [compiler log](download-wrapped-functions-compiler-20261104.log). `git diff --check` после удаления лишних пустых строк PASS. После успешного compiler production Source не менялся.
+Результат **PASS**, exit `0`, elapsed `4.5574s`, cap `15s`, retry `0`. Реальный Core `5f4590aa4eb524830715f8020c8ff3c504197f73`, PL `4d39a6648d2816bab9a372877deded3320ff35e1`; использованы существующие literal public-prefix mappings и bare `course-core/`, `pl-native/`. Полная сохранённая map и команда: [check evidence](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-wrapped-functions-check-20261104.json); [compiler log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-wrapped-functions-compiler-20261104.log). `git diff --check` после удаления лишних пустых строк PASS. После успешного compiler production Source не менялся.
 
 Существующие semantic suites не повторялись. Native/render/inspect/build/hash/full CI/matrix не запускались. Compiler подтверждает типы actual consumer graph, но не заявляет новую runtime/native acceptance. Новых известных source concerns нет; независимый review root ещё PENDING.
 
 ## Собственный допуск
 
-Прочитаны Download AGENTS, `spec/index.md`, `spec/contract.md`, существующий Core `docs/russian-language-policy.md` и Java `docs/model-admission.md`. Собственные первичные записи дают agent `/root/download_wrapped_functions`, chat `01a1a603-4b23-7c93-9982-94c8c75c106e`, origin turn `01a1a603-4b96-7f73-8cdb-98caae4aa3df`. Все доступные `turn_context` от исходного хода, включая nested collaboration settings, согласуются с назначенными `gpt-6.1-sol`/`medium`; финальный интервал PASS. Standard назначен; глобальные/runtime настройки не менялись, скрытая маршрутизация не утверждается. [Собственное admission evidence](download-wrapped-functions-admission-20261104.json).
+Прочитаны Download AGENTS, `spec/index.md`, `spec/contract.md`, существующий Core `docs/russian-language-policy.md` и Java `docs/model-admission.md`. Собственные первичные записи дают agent `/root/download_wrapped_functions`, chat `01a1a603-4b23-7c93-9982-94c8c75c106e`, origin turn `01a1a603-4b96-7f73-8cdb-98caae4aa3df`. Все доступные `turn_context` от исходного хода, включая nested collaboration settings, согласуются с назначенными `gpt-6.1-sol`/`medium`; финальный интервал PASS. Standard назначен; глобальные/runtime настройки не менялись, скрытая маршрутизация не утверждается. [Собственное admission evidence](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-wrapped-functions-admission-20261104.json).

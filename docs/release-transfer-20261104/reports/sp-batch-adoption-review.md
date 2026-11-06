@@ -6,7 +6,7 @@
 
 Продолжается та же независимая техническая роль `/root/review_ordinary_junit`, собственный чат `01a1a213-d42a-7230-8b4b-cdf6feaddf3e`; исходный turn всей роли `01a1a213-d45b-77d2-8491-08cc6965b7ed` не сдвигался. Назначение `gpt-6.1-sol/high`, Standard. Первичный источник: `/home/tolya/.codex/sessions/2026/11/03/rollout-2026-11-03T18-42-50-01a1a213-d42a-7230-8b4b-cdf6feaddf3e.jsonl`.
 
-Проверены собственные `session_meta` и весь интервал от исходной точки: два `turn_context`, ordinals7/171, включая resumed turn `01a1a21a-53fd-7f50-bb14-5dce5a9183e8`. Верхние model/effort и вложенные `collaboration_mode.settings` совпадают с `gpt-6.1-sol/high`. Standard назначен поручением; отдельного speed/service-tier поля нет. Машинная запись: `sp-batch-adoption-review-admission.json`. Нормативный `java/docs/model-admission.md` и глобальная конфигурация не менялись; скрытая маршрутизация этим не подтверждается.
+Проверены собственные `session_meta` и весь интервал от исходной точки: два `turn_context`, ordinals7/171, включая resumed turn `01a1a21a-53fd-7f50-bb14-5dce5a9183e8`. Верхние model/effort и вложенные `collaboration_mode.settings` совпадают с `gpt-6.1-sol/high`. Standard назначен поручением; отдельного speed/service-tier поля нет. Машинная запись: [sp-batch-adoption-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-batch-adoption-review-admission.json). Нормативный `java/docs/model-admission.md` и глобальная конфигурация не менялись; скрытая маршрутизация этим не подтверждается.
 
 ## Что установлено обзором
 

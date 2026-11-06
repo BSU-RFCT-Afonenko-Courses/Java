@@ -69,7 +69,7 @@ Saved native generation `3c894c95-ca11-4c64-bfff-7928379cecc7`: requests128, ear
 
 ## Наблюдение потеряно в early executor
 
-[Saved evidence extraction](java-current-performance-20261104-actual/saved-evidence.json) относится только к уже сохранённым JSON/JSONL; Native/normalize/report pipeline не повторялся.
+[Saved evidence extraction](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-current-performance-20261104-actual/saved-evidence.json) относится только к уже сохранённым JSON/JSONL; Native/normalize/report pipeline не повторялся.
 
 Actual early summary: dropped_events**93088**, incomplete_spans0, errors[], **data_valid=false**. Counter recursive `document/contracts.ts:3955:4626` (`boundDocument.visit`) — **101571 calls**. Existing module-level transform обернул его вместе с top-level decode; выбранный module scope оказался существенно шире пяти required functions. Это наблюдение overhead/coverage механизма trace, не причина старого900 s. Default200000 event cap достигнут, нормализация целиком VALID не заявляется.
 

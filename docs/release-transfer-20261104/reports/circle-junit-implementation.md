@@ -31,7 +31,7 @@
 
 ## Выполненная проверка
 
-Подробные команды, дерево настоящих JUnit исходов, полные ошибки и exit codes находятся в [circle-junit-plain.log](circle-junit-plain.log). Компилятор и JVM — `/usr/lib/jvm/java-25-openjdk/bin/{javac,java}`, фактическая версия `25.0.4.1`; компиляция с `--release 25 -encoding UTF-8`. Имеющийся JAR — `platform/runtime/java25-junit-v1/junit-platform-console-standalone-1.14.1.jar`. Никакой Transform/facade при этом не вызывается.
+Подробные команды, дерево настоящих JUnit исходов, полные ошибки и exit codes находятся в [circle-junit-plain.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/circle-junit-plain.log). Компилятор и JVM — `/usr/lib/jvm/java-25-openjdk/bin/{javac,java}`, фактическая версия `25.0.4.1`; компиляция с `--release 25 -encoding UTF-8`. Имеющийся JAR — `platform/runtime/java25-junit-v1/junit-platform-console-standalone-1.14.1.jar`. Никакой Transform/facade при этом не вызывается.
 
 | Сценарий | Компиляция / JUnit | Наблюдение |
 | --- | --- | --- |

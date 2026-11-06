@@ -42,7 +42,7 @@ Selected raw-source bytes по-прежнему связаны с initial source
 
 ## Проверки
 
-[Controls log](core-native-bridge-controls.log) содержит реальные команды, времена и выводы; [affected program log](core-native-bridge-typecheck.log) — единственный compiler. Успешные неизменённые controls/suites не повторялись.
+[Controls log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-bridge-controls.log) содержит реальные команды, времена и выводы; [affected program log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-bridge-typecheck.log) — единственный compiler. Успешные неизменённые controls/suites не повторялись.
 
 1. Existing `assignment-owner-boundary` изменён до production: **RED**, прежний `OPERATION_SOURCE_POLICY` на Jupyter native bind, exit1/0,268s. После реализации **GREEN**0,349s: owner/input/runtime/projection/output guards сохраняются; Native computing engine принимается.
 2. `assignment-closing-source-fence`: **GREEN**0,269s. Изменение/подмена selected raw QMD отказывает; config/vendor/unselected/sibling и новый `_metadata` принимаются. Перед этим CLI с `--allow-write=/tmp` отказал на Deno.symlink capability (0,268s), до symlink assertion; Source не менялся, только исправлен permission набор тестового запуска. Полный filesystem sandbox продолжал действовать; фикстура собственная temporary.

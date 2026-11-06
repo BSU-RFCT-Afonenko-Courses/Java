@@ -34,7 +34,7 @@ Semantic дельта заранее согласована с root: malformed t
 
 `tests/native-context-a1.ts` получил только честное narrowing `ownerMetadata.project` перед проверкой type book. Он включён в compiler, но **его actual Native сценарий не запускался**. Native knitr/png/readme ZIP qualification accepted 5a не повторялась и не приписана текущим unit doubles.
 
-Все GREEN команды и полные выводы сохранены в [`core-a1-inspection-types-checks-20261104.json`](core-a1-inspection-types-checks-20261104.json). Общая среда: `DENO_DIR=/home/tolya/.cache/quarto/deno_std/cache`, `DENO_NO_PACKAGE_JSON=1`, `QUARTO=/opt/quarto/bin/quarto`. Runtime `/opt/quarto/bin/tools/x86_64/deno`; cwd — новая core-native-types. Actual map `/tmp/core-a1-types-imports.json` — копия существующей `/tmp/core-native-bridge-imports.json`, изменён только `course-core/` на новую worktree; stdlib и настоящий PL prefix сохранены. Это не новый resolver и не подмена dependent DTO fixtures.
+Все GREEN команды и полные выводы сохранены в [core-a1-inspection-types-checks-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-a1-inspection-types-checks-20261104.json). Общая среда: `DENO_DIR=/home/tolya/.cache/quarto/deno_std/cache`, `DENO_NO_PACKAGE_JSON=1`, `QUARTO=/opt/quarto/bin/quarto`. Runtime `/opt/quarto/bin/tools/x86_64/deno`; cwd — новая core-native-types. Actual map `/tmp/core-a1-types-imports.json` — копия существующей `/tmp/core-native-bridge-imports.json`, изменён только `course-core/` на новую worktree; stdlib и настоящий PL prefix сохранены. Это не новый resolver и не подмена dependent DTO fixtures.
 
 Behavioral команды:
 

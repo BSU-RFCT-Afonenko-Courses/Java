@@ -144,5 +144,5 @@ root review и согласованного coalesced CI.
 turn: **5 turn_context**, все верхнеуровневые model/effort и вложенные
 collaboration_mode model/reasoning_effort соответствуют назначению — PASS.
 Свидетельство:
-[core-native-bridge-test-align-policy-admission-20261104.json](core-native-bridge-test-align-policy-admission-20261104.json).
+[core-native-bridge-test-align-policy-admission-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-bridge-test-align-policy-admission-20261104.json).
 Скрытая серверная маршрутизация не утверждается; globals не менялись.

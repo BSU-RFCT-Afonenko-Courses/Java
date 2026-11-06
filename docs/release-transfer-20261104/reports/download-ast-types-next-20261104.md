@@ -142,4 +142,4 @@ Agent `/root/core_yaml_types`, собственный chat
 Весь primary interval проверен: **10 turn_context**, top-level model/effort и
 nested collaboration model/reasoning_effort соответствуют назначению — PASS.
 Standard назначен; hidden routing не утверждается, globals не менялись.
-[Первичное свидетельство](download-ast-types-next-admission-20261104.json).
+[Первичное свидетельство](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-ast-types-next-admission-20261104.json).

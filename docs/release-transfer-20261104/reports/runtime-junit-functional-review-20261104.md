@@ -13,12 +13,12 @@
 
 Все данные вымышленные, настоящий установленный JDK25. Ни курсы, ни image не собирались.
 
-- `runtime-junit-class-maximum-red-20261104.log`: RED1test0.003с,1!=4.
-- `runtime-junit-class-maximum-green-20261104.log`:5PASS0.006с.
-- `runtime-junit-empty-red-20261104.log`: настоящий grader + обычный correct42 test + empty factory + empty DynamicContainer. RED1test2.960с, `Invalid JUnit XML report: JUnit XML and feedback differ`.
-- `runtime-junit-empty-green-20261104.log`: первая исправленная попытка **не PASS**,2.961с, JSONDecodeError: json-simple не сериализует Java Set как массив. Исправлен producer на `new ArrayList<>(...)`; этот промежуточный исход сохранён.
-- `runtime-junit-empty-corrected-20261104.log`: после material serialization correction1PASS2.931с,score1,executed1,passed1.
-- `runtime-junit-reader-final-20261104.log`:6pure reader tests PASS0.006с, включая explicit container metadata requirement и сохранённую формулу maxpoints.
+- [runtime-junit-class-maximum-red-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/runtime-junit-class-maximum-red-20261104.log): RED1test0.003с,1!=4.
+- [runtime-junit-class-maximum-green-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/runtime-junit-class-maximum-green-20261104.log):5PASS0.006с.
+- [runtime-junit-empty-red-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/runtime-junit-empty-red-20261104.log): настоящий grader + обычный correct42 test + empty factory + empty DynamicContainer. RED1test2.960с, `Invalid JUnit XML report: JUnit XML and feedback differ`.
+- [runtime-junit-empty-green-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/runtime-junit-empty-green-20261104.log): первая исправленная попытка **не PASS**,2.961с, JSONDecodeError: json-simple не сериализует Java Set как массив. Исправлен producer на `new ArrayList<>(...)`; этот промежуточный исход сохранён.
+- [runtime-junit-empty-corrected-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/runtime-junit-empty-corrected-20261104.log): после material serialization correction1PASS2.931с,score1,executed1,passed1.
+- [runtime-junit-reader-final-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/runtime-junit-reader-final-20261104.log):6pure reader tests PASS0.006с, включая explicit container metadata requirement и сохранённую формулу maxpoints.
 - `git diff --check`:exit0 после исправлений.
 
 До новой существенной дельты записан отдельный cap12с: фактические Java calls2.960+2.961+2.931=8.852с, плюс final pure6tests0.006с —8.858с. Ошибочная первая исправленная попытка не скрыта; дополнительный вызов сделан только после установленной причины и изменения сериализации, внутри прежнего остатка cap12. Старый cap120 не сброшен: прежний учёт~111.4с + изменённый Gradle smoke6.859с + pure maxpoints RED/GREEN0.009с = ~118.268с. Суммарно оба бюджета~127.126с, плюс0.531с отдельного read-only javap анализа; это не новая Performance квалификация.

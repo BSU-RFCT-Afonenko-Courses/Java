@@ -4,7 +4,7 @@
 
 ## Собственный допуск
 
-Та же роль и исходная точка: чат `01a1a1fb-6d1d-7760-9a87-e2f25f95f8ef`, путь `/root/platform_single_compilation`, исходный turn `01a1a1fb-6d49-7130-b885-1043eed45e08`, назначение `gpt-6.1-sol/high`, Standard. Полный `session_meta`/`turn_context` интервал от исходного turn повторно проверяется и сохраняется рядом в `platform-public-case-status-admission.json`; нормативный файл и глобальные настройки не меняются.
+Та же роль и исходная точка: чат `01a1a1fb-6d1d-7760-9a87-e2f25f95f8ef`, путь `/root/platform_single_compilation`, исходный turn `01a1a1fb-6d49-7130-b885-1043eed45e08`, назначение `gpt-6.1-sol/high`, Standard. Полный `session_meta`/`turn_context` интервал от исходного turn повторно проверяется и сохраняется рядом в [platform-public-case-status-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/platform-public-case-status-admission.json); нормативный файл и глобальные настройки не меняются.
 
 ## Конкретный путь
 

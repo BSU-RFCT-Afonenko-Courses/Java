@@ -98,9 +98,9 @@ Download/Site production, написанный мною, этим review пов�
 
 ## Compiler evidence, поступившее от root во время review
 
-[Root execution](native-publication-combined-compiler-20261104.json): один
+[Root execution](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/native-publication-combined-compiler-20261104.json): один
 34-roots affected `deno check`, elapsed **4.925677425 s**, exit1, timeout=false.
-[Diagnostics](native-publication-combined-compiler-20261104.stderr.log): 21 errors
+[Diagnostics](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/native-publication-combined-compiler-20261104.stderr.log): 21 errors
 только в PL tests/owner-contract.test.ts и grading-policy.test.ts — literal
 widening и optional assessment/assignment union. Production diagnostics в этом
 логе нет, но весь graph FAIL; его нельзя называть GREEN или completed type closure.
@@ -113,7 +113,7 @@ Root сообщил remaining **15.074322575 s** из cap20 для изменё�
 
 Reviewer `/root/native_publication_consumers` не автор Core/PL Source. Собственный
 primary origin/admission остаётся
-[native-publication-consumer-source-20261104-admission.json](native-publication-consumer-source-20261104-admission.json):
+[native-publication-consumer-source-20261104-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/native-publication-consumer-source-20261104-admission.json):
 Sol6.1/high подтверждены session_meta/turn_context собственного полного интервала;
 Standard назначен, hidden routing независимо не удостоверяется. Globals не
 менялись, subagents не создавались. Root явно поручил этот peer review; нового

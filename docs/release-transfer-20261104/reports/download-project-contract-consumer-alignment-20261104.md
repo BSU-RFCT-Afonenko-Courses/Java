@@ -12,4 +12,4 @@
 
 [Exact patch](download-project-contract-consumer-alignment-20261104.patch). `git diff --check` PASS — редакционная проверка diff, не runtime evidence. Product/workflow/Core/registration/прочие tests не менялись; commit/push/mainstate отсутствуют. Дельта готова к независимому root Source review и его одному согласованному CI; локальный Native repeat не назначался.
 
-Own роль/model/effort неизменны; [существующий origin reference](core-condition-walk-types-admission-20261104.json). Это устранение теста удалённого контракта, не claim полной Download/A1 acceptance.
+Own роль/model/effort неизменны; [существующий origin reference](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-condition-walk-types-admission-20261104.json). Это устранение теста удалённого контракта, не claim полной Download/A1 acceptance.

@@ -6,7 +6,7 @@
 
 ## Причина воспроизведённого отказа и её устранение
 
-Сохранённые `native-publication-bounded-acceptance-20261104-r2.json` и stderr подтверждают exit 1 после 12.893534791 s, без timeout: Site дошёл до проверки PL и strict origin отверг `runtime` в `publicationAdapterInput`. Суммарный Native расход этого evidence — 18.623064679 s. Это отказ прежней версии, не результат проверки исправления.
+Сохранённые [native-publication-bounded-acceptance-20261104-r2.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/native-publication-bounded-acceptance-20261104-r2.json) и stderr подтверждают exit 1 после 12.893534791 s, без timeout: Site дошёл до проверки PL и strict origin отверг `runtime` в `publicationAdapterInput`. Суммарный Native расход этого evidence — 18.623064679 s. Это отказ прежней версии, не результат проверки исправления.
 
 `NativeOperationIdentitySchema` действительно добавляет `runtime`; TypeScript `Pick` у параметра не удаляет поле у настоящего объекта. Оба исправленных builder в `publication.ts:235` и `publication.ts:255` явно выбирают только operation, captureWitness, source, format, projection и profiles. `runtime` остаётся в operation identity и не попадает в adapter DTO. Canonical `NativeAdapterValidationInputSchema` не расширялась.
 

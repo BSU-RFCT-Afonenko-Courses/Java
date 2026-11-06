@@ -21,7 +21,7 @@ Root прямо разрешил primitive narrowing existing external recognize
 
 ## Проверки и пределы coverage
 
-[Checks JSON](download-recognizer-types-checks-20261104.json), [compiler log](download-recognizer-types-compiler-20261104.log), [existing control log](download-recognizer-types-control-20261104.log):
+[Checks JSON](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-recognizer-types-checks-20261104.json), [compiler log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-recognizer-types-compiler-20261104.log), [existing control log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/download-recognizer-types-control-20261104.log):
 
 1. Один affected compiler (`early-filter.ts`, `tests/literal-request.ts`): **PASS0.815893s**.
 2. Один unchanged existing pure control: **PASS15,0.365261s**. Он охватывает saved actual reader fixture lowering, прежние hostile Attr/args/UUID/reserved markers и сохранение другого handler для Core refusal.

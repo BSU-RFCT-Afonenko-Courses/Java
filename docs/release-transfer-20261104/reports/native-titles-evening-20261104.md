@@ -8,7 +8,7 @@
 Собственный первичный допуск `gpt-6.1-sol` / `high` подтверждён для
 `/root/a4_native_titles`, исходный ход
 `01a1a6d0-3d63-7440-b89f-9c8d9dad14d1`:
-`native-titles-model-admission-20261104.json`. Проверен весь доступный интервал
+[native-titles-model-admission-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/native-titles-model-admission-20261104.json). Проверен весь доступный интервал
 от этого хода, включая вложенные настройки collaboration mode.
 
 ## Причина и предлагаемое поведение

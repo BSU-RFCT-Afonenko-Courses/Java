@@ -10,7 +10,7 @@
 
 ## Что установлено прежними первичными данными
 
-Прочитаны [java-native-cost-next.md](java-native-cost-next.md), [decode report](java-state-decode-20261104.md), его raw [result.json](java-state-decode-20261104/result.json) и [probe.ts](java-state-decode-20261104/probe.ts), прежние exact [execution](java-native-d7-execution.json) и [partial evidence](java-native-d7-partial-evidence.json), адресные acceptance sections. Дополнительно прочитаны только allowlisted поля самих saved `state.json` и `reservation.json`, без вывода environment/raw metadata:
+Прочитаны [java-native-cost-next.md](java-native-cost-next.md), [decode report](java-state-decode-20261104.md), его raw [result.json](java-state-decode-20261104/result.json) и [probe.ts](java-state-decode-20261104/probe.ts), прежние exact [execution](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-native-d7-execution.json) и [partial evidence](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-native-d7-partial-evidence.json), адресные acceptance sections. Дополнительно прочитаны только allowlisted поля самих saved `state.json` и `reservation.json`, без вывода environment/raw metadata:
 
 `java/tasks/_generated/course-spec/native-ts/f7da2eb2-c4da-41cd-b7e3-1b9ed89a37ea/`.
 

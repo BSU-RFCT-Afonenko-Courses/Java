@@ -29,7 +29,7 @@ Parent разрешил удаление ordinary alternate-audience preflight �
 
 ## Выполненная проверка
 
-Один sequential check driver, `retry=0`, общий outer cap `timeout --signal=TERM --kill-after=3s 42s`: вместе с kill grace максимум 45 s. Фактический elapsed driver **6.951663 s**, exit0. Команды, env и индивидуальные результаты сохранены в [commands.json](site-active-audience-implementation-20261104/commands.json) и [results.json](site-active-audience-implementation-20261104/results.json), stdout/stderr каждого шага — в том же каталоге.
+Один sequential check driver, `retry=0`, общий outer cap `timeout --signal=TERM --kill-after=3s 42s`: вместе с kill grace максимум 45 s. Фактический elapsed driver **6.951663 s**, exit0. Команды, env и индивидуальные результаты сохранены в [commands.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/site-active-audience-implementation-20261104/commands.json) и [results.json](site-active-audience-implementation-20261104/results.json), stdout/stderr каждого шага — в том же каталоге.
 
 Рабочая папка — указанная isolated worktree. Actual bundled executable `/opt/quarto/bin/tools/x86_64/deno`, runtime Native executable `/opt/quarto/bin/quarto`. Общие параметры `--deny-import --no-config --no-lock --import-map=/home/tolya/JavaCodex/java-release-20261110/reports/site-active-audience-implementation-20261104/imports.json`; `--cached-only` не использовался. Env overrides:
 
@@ -41,7 +41,7 @@ XDG_CACHE_HOME=/home/tolya/JavaCodex/.cache
 QUARTO_RUN_NO_NETWORK=true
 ```
 
-[Actual import map](site-active-audience-implementation-20261104/imports.json) указывает на реальные Core и PL public modules, `stdlib/path` и `stdlib/fs`. Read-only HEAD перед check: Core `/core-native-bridge` — `4a2903e6d03d1dd489b6922d113100826913cf67`; PL `/prairielearn` — `d8efb030ee6435f3c1f7d242e7388803b55b3299`. Это текущие checkout зависимости проверки типов; прежние 0cf/f3, installed или hosted CI provenance ими не подменяются. Runtime controls отказывают до Core hooks и не квалифицируют исполнение этих соседей.
+[Actual import map](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/site-active-audience-implementation-20261104/imports.json) указывает на реальные Core и PL public modules, `stdlib/path` и `stdlib/fs`. Read-only HEAD перед check: Core `/core-native-bridge` — `4a2903e6d03d1dd489b6922d113100826913cf67`; PL `/prairielearn` — `d8efb030ee6435f3c1f7d242e7388803b55b3299`. Это текущие checkout зависимости проверки типов; прежние 0cf/f3, installed или hosted CI provenance ими не подменяются. Runtime controls отказывают до Core hooks и не квалифицируют исполнение этих соседей.
 
 | Единственный запуск | Результат | Elapsed | Что проверено |
 | --- | --- | ---: | --- |
@@ -60,4 +60,4 @@ QUARTO_RUN_NO_NETWORK=true
 
 Назначение `gpt-6.1-sol/high`, Standard. Собственный chat `01a1a514-165b-7ae2-bff1-b9ca9f7e3bb1`, agent path `/root/perf_event_types`; неизменный origin turn `01a1a514-1688-7662-80fc-58bf7a272ae0`. Применены Site AGENTS/spec index и общее правило русского языка; допуск по `java/docs/model-admission.md`.
 
-Источник `/home/tolya/.codex/sessions/2026/11/04/rollout-2026-11-04T08-41-59-01a1a514-165b-7ae2-bff1-b9ca9f7e3bb1.jsonl`. Перед Source и перед итогом перечитан весь собственный интервал от того же origin: session_meta строка1 подтверждает собственный chat/path; все turn_context строки **8/171/270/405/734/918/1031/1046** имеют верхние `model=gpt-6.1-sol`, `effort=high` и согласованные `collaboration_mode.settings.model/reasoning_effort`. Итог PASS, [сохранённые значения](site-active-audience-implementation-20261104/primary-admission.json). Глобальные настройки не менялись; явного `service_tier` в первичных записях нет, скрытая серверная маршрутизация не удостоверяется.
+Источник `/home/tolya/.codex/sessions/2026/11/04/rollout-2026-11-04T08-41-59-01a1a514-165b-7ae2-bff1-b9ca9f7e3bb1.jsonl`. Перед Source и перед итогом перечитан весь собственный интервал от того же origin: session_meta строка1 подтверждает собственный chat/path; все turn_context строки **8/171/270/405/734/918/1031/1046** имеют верхние `model=gpt-6.1-sol`, `effort=high` и согласованные `collaboration_mode.settings.model/reasoning_effort`. Итог PASS, [сохранённые значения](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/site-active-audience-implementation-20261104/primary-admission.json). Глобальные настройки не менялись; явного `service_tier` в первичных записях нет, скрытая серверная маршрутизация не удостоверяется.

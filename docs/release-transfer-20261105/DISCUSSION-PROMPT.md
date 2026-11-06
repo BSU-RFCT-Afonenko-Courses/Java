@@ -8,7 +8,7 @@
 1. `docs/release-transfer-20261105/START-HERE.md`.
 2. `docs/release-transfer-20261105/REMOTE-REFS.md` — точные PR/коммиты и отличие принятого кода от сохранённого WIP.
 3. `docs/release-transfer-20261105/REPORT.txt` и `EXECUTION-BRIEF.txt` — отчёт после сбоя и последние согласованные решения. Исторические расписания не возобновлять.
-4. `reports/java-full-export-verification.json`, `reports/ui-main-handoff.json`, `reports/delivery.json`, `reports/feedback.json`, `reports/feedback-workspace-worker-handoff.json` внутри этого пакета.
+4. [reports/java-full-export-verification.json](reports/java-full-export-verification.json), [reports/ui-main-handoff.json](reports/ui-main-handoff.json), [reports/delivery.json](reports/delivery.json), [reports/feedback.json](reports/feedback.json), [reports/feedback-workspace-worker-handoff.json](reports/feedback-workspace-worker-handoff.json) внутри этого пакета.
 5. Применимые `AGENTS.md`, `docs/model-admission.md` и `docs/agent-execution-proposal-20261029.md`. Старые требования из пакета 4 ноября уточняй адресно, без повторного чтения всей истории.
 
 Зафиксированный результат: полный экспорт Java завершился за 19:44 — 10 лабораторных, 128 задач, 35 обязательных слотов/41 прежний кандидат и 87 добровольных задач с нулевым обязательным весом. Задания доступны через лабораторные. Проверены публичные ZIP/README и приватность. Core/YAML, основной PL/Download, Platform/Gateway, SP paths и Performance имеют технические рецензии в своих границах. Это не общая приёмка выпуска.

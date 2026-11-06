@@ -42,7 +42,7 @@ Offline install failure0.117151116с + отдельно разрешённая n
 
 ## Сохранённые доказательства
 
-- [Final result](runtime-performance-module-root-20261104-evidence/final-summary-result.json), [проверки сохранённой выдачи](runtime-performance-module-root-20261104-evidence/final-evidence-checks.json), [полное время](runtime-performance-module-root-20261104-evidence/final-fullwall.txt).
+- [Final result](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/runtime-performance-module-root-20261104-evidence/final-summary-result.json), [проверки сохранённой выдачи](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/runtime-performance-module-root-20261104-evidence/final-evidence-checks.json), [полное время](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/runtime-performance-module-root-20261104-evidence/final-fullwall.txt).
 - [RunRecord](runtime-performance-module-root-20261104-evidence/runs/6541d83d-809d-4151-adf2-1637c2d41074/run.json), [summary](runtime-performance-module-root-20261104-evidence/runs/6541d83d-809d-4151-adf2-1637c2d41074/summary.json), [coverage](runtime-performance-module-root-20261104-evidence/runs/6541d83d-809d-4151-adf2-1637c2d41074/coverage.json), [публичный report](runtime-performance-module-root-20261104-evidence/runs/6541d83d-809d-4151-adf2-1637c2d41074/report.md).
 - [Source closure и вся история проверки](runtime-performance-module-root-20261104.md), [setup и прежний corrected failure](runtime-performance-summary-correction-20261104.md).
 

@@ -22,7 +22,7 @@ Saved data не содержит timestamps доставки TERM каждому
 
 ## Почему часть child receipts закрыта, а parent pending
 
-[Saved receipts](java-native-filter-summary-20261104-actual/saved-evidence.json):15 процессов,9 exit0,1 Pandoc exit143/SIGTERM,5 pending. Закрытый третий Pandoc `9ff41d98…` имеет wall2.085585818s; это **его status**, не статус outer Quarto/whole capture. Pending: early wrapper26fcc13d, direct early TS5d5956da, capture render2df7a37c, PL61dff649, outer Quarto7d3bb75e.
+[Saved receipts](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-native-filter-summary-20261104-actual/saved-evidence.json):15 процессов,9 exit0,1 Pandoc exit143/SIGTERM,5 pending. Закрытый третий Pandoc `9ff41d98…` имеет wall2.085585818s; это **его status**, не статус outer Quarto/whole capture. Pending: early wrapper26fcc13d, direct early TS5d5956da, capture render2df7a37c, PL61dff649, outer Quarto7d3bb75e.
 
 [tool.ts:101](../performance/src/launchers/tool.ts:101) пишет initial receipt **до spawn** с pid/status/wall null. После spawn pid присваивается только in-memory, а следующая запись — после child.status и поиска started summaries ([строки143–171](../performance/src/launchers/tool.ts:143)). Поэтому pending pidnull **не означает, что child не запускался**: nested receipts/started files могут уже подтвердить descendants. Pending нельзя закрыть кодом дочернего процесса либо124 от timeout.
 

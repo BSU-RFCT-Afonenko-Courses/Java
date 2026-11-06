@@ -6,7 +6,7 @@
 
 ## Область счётчиков
 
-Источник: `system-practice/tasks/_generated/course-spec/native-ts/45515b7e-dc8b-48d6-87ad-c6af6428a2f5/complete.json`, state.metrics; краткая сохранённая копия `sp-native-qrc-ready-output-evidence.json`. Core capture complete: fullSourceFences4, localSourceFences9, sourceDirectoryReads710, fullWalks1, sourceHashReads873/sourceHashBytes5134554, runtimeHashReads4/runtimeHashBytes32244, outputHashReads14, childRenders1, inspectCalls1. Это persisted capture/seal counters, не total всех PL/QRC/Site процессов или всего38.195870446s export.
+Источник: `system-practice/tasks/_generated/course-spec/native-ts/45515b7e-dc8b-48d6-87ad-c6af6428a2f5/complete.json`, state.metrics; краткая сохранённая копия [sp-native-qrc-ready-output-evidence.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/sp-native-qrc-ready-output-evidence.json). Core capture complete: fullSourceFences4, localSourceFences9, sourceDirectoryReads710, fullWalks1, sourceHashReads873/sourceHashBytes5134554, runtimeHashReads4/runtimeHashBytes32244, outputHashReads14, childRenders1, inspectCalls1. Это persisted capture/seal counters, не total всех PL/QRC/Site процессов или всего38.195870446s export.
 
 После seal PL открывает current native operation: operation.ts:2463 entry guard(true), :2452 exit guard(true), :2381 вызывает full assertSources и :2359 assertPrivate. Эти последующие callback counters не записаны обратно в complete.json; их нельзя выдать за часть исходных4full. QRC собственный inspect также не входит в CoreinspectCalls1. Нельзя по complete4 утверждать «всего4fences за весь экспорт».
 

@@ -168,7 +168,7 @@ Agent `/root/core_yaml_types`, собственный chat
 Standard назначен, hidden routing не утверждается. Весь исходный интервал
 проверен по собственным primary session_meta/turn_context и вложенным settings;
 свидетельство рядом:
-[pl-core-paired-ci-next-admission-20261104.json](pl-core-paired-ci-next-admission-20261104.json).
+[pl-core-paired-ci-next-admission-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-core-paired-ci-next-admission-20261104.json).
 
 No product/CI edits, CI runs/polls, compiler/build/test/render/inspect/hash,
 network/install, commit/push/mainstate. Созданы только этот план и свидетельство

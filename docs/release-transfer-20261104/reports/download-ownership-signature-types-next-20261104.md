@@ -12,4 +12,4 @@
 
 Existing `tests/ownership.ts` вызывает Quarto add/render через Deno.Command, поэтому не подходит как pure контроль под запретом Native. Для будущего bounded candidate достаточно affected compiler с существующим `tests/runtime-types.ts`; runtime integration здесь не обещается. Новых tests/framework/probes не предлагаю. Полезность удаления самой currentness signature — отдельный architectural вопрос по принятой hash-карте.
 
-Own роль/model/effort неизменны; [существующий origin admission](core-condition-walk-types-admission-20261104.json). Root GO требуется только на реализацию следующего среза; пока сохранён этот Source plan.
+Own роль/model/effort неизменны; [существующий origin admission](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-condition-walk-types-admission-20261104.json). Root GO требуется только на реализацию следующего среза; пока сохранён этот Source plan.

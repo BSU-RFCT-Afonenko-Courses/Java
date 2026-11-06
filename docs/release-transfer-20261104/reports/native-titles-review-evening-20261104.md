@@ -11,7 +11,7 @@ Quarto/Native и exporter в этой проверке не запускалис
 `01a1a6d8-47d1-7152-a7d0-562789054c89`. Первичные `session_meta` и все
 доступные `turn_context` от этого хода подтверждают `gpt-6.1-sol` / `high`,
 включая вложенные настройки `collaboration_mode`. Свидетельство:
-`native-titles-review-model-admission-20261104.json`; перед verdict интервал
+[native-titles-review-model-admission-20261104.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/native-titles-review-model-admission-20261104.json); перед verdict интервал
 проверен повторно, в нём один `turn_context` с той же парой.
 
 ## Исходники и поведение

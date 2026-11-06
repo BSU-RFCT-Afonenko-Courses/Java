@@ -4,7 +4,7 @@
 
 Объём: новая upload-only optional `submission.layout` (`files`, `zip`, `files-or-zip`) в delivery v5; Platform `bridge/delivery.mjs`, `tools/delivery_verification.py`, их новые tests; Gateway `config.py` и новые tests. Изучены точные реальные файлы и дельта. Предыдущие исправления пакета D целиком не пересматривались. Product files, index и HEAD не изменялись рецензентом.
 
-Рецензент — чат `01a1a8c4-d73d-7aa1-9329-d4826606af6f`. При возобновлении и перед этим вердиктом повторно проверен весь первичный модельный интервал от неизменного исходного turn `01a1a8c4-d7de-7bc2-b21d-46fb1a56d969`: два turn_context, верхние и nested model/effort `gpt-6.1-sol/high`, без Fast/Ultrafast override. PASS сохранён в `delivery-review-admission.json`.
+Рецензент — чат `01a1a8c4-d73d-7aa1-9329-d4826606af6f`. При возобновлении и перед этим вердиктом повторно проверен весь первичный модельный интервал от неизменного исходного turn `01a1a8c4-d7de-7bc2-b21d-46fb1a56d969`: два turn_context, верхние и nested model/effort `gpt-6.1-sol/high`, без Fast/Ultrafast override. PASS сохранён в [delivery-review-admission.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261105/reports/delivery-review-admission.json).
 
 ## Important
 
