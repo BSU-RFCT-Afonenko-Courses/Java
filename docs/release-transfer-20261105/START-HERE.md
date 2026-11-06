@@ -49,6 +49,17 @@ Core, основной PL/Download, SP migration, Platform/Gateway и Performanc
 
 Старые абсолютные пути в отчётах относятся к текущему локальному стенду; на другом устройстве используйте исходники PR и относительные пути пакета. Артефакты в `/tmp` не являются обязательным API. Полные сгенерированные поставки, node_modules, Docker layers, реальные студенческие данные и секреты не включены в Git. Их результаты и необходимые входы/скрипты сохранены.
 
+Четыре временных скрипта Workspace сняты после переноса гарантий в
+[действующую процедуру будущей изолированной квалификации Platform](https://github.com/Afonenko-Course-Tools/prairielearn-platform/blob/main/docs/sp-git-workspace.md).
+Их точные исторические исходники сохранены в Git:
+[workspace-launch-after-review.py](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261105/local-checks/workspace-launch-after-review.py),
+[workspace-patch-worker.py](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261105/local-checks/workspace-patch-worker.py),
+[workspace-start-local.sh](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261105/local-checks/workspace-start-local.sh),
+[workspace-verify-live-isolation.py](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261105/local-checks/workspace-verify-live-isolation.py).
+Результаты старых запусков и их `/tmp` пути остаются историческими; будущая
+проверка host/auth/proxy/save-resume/server требует отдельного разрешения
+и фактического выполнения.
+
 `reports/` содержит исторические свидетельства, включая RED и незавершённые результаты. Некоторые progress/remaining поля записаны раньше итоговых коммитов. Не использовать их как сертификат свежести. `local-checks/` — временные квалификационные скрипты, а не production launcher; не запускать их автоматически, особенно сетевой Workspace worker.
 
 Для будущей реализации: Sol6.1 Standard, medium для простых устойчивых задач, high для сложного кода и независимой рецензии. До роли — собственный первичный допуск по `docs/model-admission.md`, с сохранением исходного интервала. Глобальные настройки не менять. Постоянный Ultra не применять. Сессии и независимые субагенты могут общаться по явному разрешению пользователя; у файла/контракта один владелец, рецензент не принимает свою работу.
