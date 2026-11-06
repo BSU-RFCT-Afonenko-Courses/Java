@@ -21,12 +21,13 @@ CI не сравнивает content SHA, immutable inventories, proof или re
 
 ## Оставшийся внешний переход
 
-Отдельные `CI/check-production-pins.py`, `CI/check-local-candidate.py`,
-`CI/check-projects-candidate.sh` и данные `CI/toolchain.json` пока используют
-прежний Platform release/OCI/delivery contract. Они исключены из default CI;
-их переход требует согласованного изменения producer/consumer Platform.
-Пакет курса не объявляет этот маршрут исправленным и не предписывает
-новую ручную hash-проверку как замену удалённого CI.
+Отключённые `CI/check-production-pins.py`, его тесты и прежний local-candidate
+маршрут удалены: они проверяли собственные hashes и обращались к удалённой
+Platform release assembly. `CI/toolchain.json` сохраняет версии инструментов,
+Platform source/release refs, native OCI identities и адреса функциональных
+assets. Собственные runner/asset hashes, Git tree/tag-object proof и ссылка
+на больше не выпускаемый toolchain lock удалены. Исторические отчёты
+сохранены как записи прежних проверок.
 
 Полный Native export и фактическое контейнерное оценивание требуют отдельного
 ограниченного запуска штатных команд Platform после согласования его нового
