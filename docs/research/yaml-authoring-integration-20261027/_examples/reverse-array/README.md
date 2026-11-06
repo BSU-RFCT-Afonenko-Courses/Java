@@ -1,5 +1,7 @@
 # Reverse-array: два варианта авторской записи и выдачи
 
+Описание и команды ниже относятся к [историческому снимку исследовательского комплекта](https://github.com/BSU-RFCT-Afonenko-Courses/Java/tree/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/research/yaml-authoring-integration-20261027/_examples/reverse-array). Java/Gradle-файлы этого снимка доступны в Git; оставшиеся YAML и таблицы здесь объясняют прежний пример и не задают действующий проект курса.
+
 Исследовательский пример от 28 октября 2026 года: реальные файлы собраны для просмотра и сравнения, рабочий курс не изменён.
 Ключи YAML ниже — **предложение**, не поддержанный API установленного Core. Состав выписан и материализован как снимок; native metadata-мост и новый producer этим не реализованы.
 
@@ -61,14 +63,14 @@ outputs/author-full/
 ```
 
 Имя `author-full` обозначает проверяемую структуру будущего комплекта, **не готовый полный grader**.
-[Исторический reference](canon/projects/arrays/reverse-array/solutions/reference/src/main/java/Main.java) — образец авторского решения из выпуска 18 октября, не выбранный финальный teacher input.
-Недоступные текущие проверки не заменены demo. Оба `Main` не объединяются в один compilation context; [обычный Gradle-код](canon/components/gradle/java-junit/author-contexts.gradle) задаёт `test` и `referenceTest` раздельно.
+[Исторический reference](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/research/yaml-authoring-integration-20261027/_examples/reverse-array/canon/projects/arrays/reverse-array/solutions/reference/src/main/java/Main.java) — образец авторского решения из выпуска 18 октября, не выбранный финальный teacher input.
+Недоступные текущие проверки не заменены demo. Оба `Main` не объединяются в один compilation context; [обычный Gradle-код](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/research/yaml-authoring-integration-20261027/_examples/reverse-array/canon/components/gradle/java-junit/author-contexts.gradle) задаёт `test` и `referenceTest` раздельно.
 
 ## Один канон и состав выдачи
 
 - Полное условие — в QMD; оба выходных README получены из него, без ручного повторного авторства условия.
 - Локальный `_metadata.yml` выбирает каталоги наборов, объявленные helper-зависимости, решения и выдачи; внешние Maven-версии там не перечисляются.
-- [Настоящий общий build](canon/components/gradle/java-junit/build.gradle) и settings хранятся один раз; Gradle разрешает внешние зависимости, YAML не генерирует скрипт.
+- [Настоящий общий build](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/research/yaml-authoring-integration-20261027/_examples/reverse-array/canon/components/gradle/java-junit/build.gradle) и settings хранятся один раз; Gradle разрешает внешние зависимости, YAML не генерирует скрипт.
 - JavaProcess/OutputNumbers имеют один канон в `components/java`; выбранные копии попадают в студенческий test-каталог. Это объявленный состав, не автоматический вывод Java-import closure.
 - В student включён только явно выбранный demo. Авторское решение, полный набор и PL API-precheck туда не добавлены.
 - `ReverseArrayDemoTest` → `PublicChecks` — переходная механическая адаптация прежних normal/boundary, без нового случая или runner; окончательный вид обычных JUnit-тестов этим не утверждён.

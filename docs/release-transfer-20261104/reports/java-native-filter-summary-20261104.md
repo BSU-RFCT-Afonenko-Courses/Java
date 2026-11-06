@@ -10,7 +10,7 @@
 
 ## Exact Source и изоляция
 
-Новый [stage](java-native-filter-summary-20261104-actual/) и новые копии [Python driver](java-native-filter-summary-20261104.py), [TS driver](java-native-filter-summary-20261104.ts). Старые stages/drivers не редактировались. [Source refs](java-native-filter-summary-20261104-actual/source-refs.json) сохраняет раздельно exact used archive и actual checkout HEAD:
+Новый [stage](java-native-filter-summary-20261104-actual/) и новые копии [Python driver](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-native-filter-summary-20261104.py), [TS driver](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-native-filter-summary-20261104.ts). Старые stages/drivers не редактировались. [Source refs](java-native-filter-summary-20261104-actual/source-refs.json) сохраняет раздельно exact used archive и actual checkout HEAD:
 
 | Source | Использованный archive | Actual checkout HEAD перед archive |
 | --- | --- | --- |

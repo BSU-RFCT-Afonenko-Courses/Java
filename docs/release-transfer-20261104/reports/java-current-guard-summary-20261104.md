@@ -17,7 +17,7 @@
 | PL whole package в tasks | `d8efb030ee6435f3c1f7d242e7388803b55b3299` |
 | Performance | `c2dcf002a7396aa3b507e49b99e0ecf00ed9f438` |
 
-Report-local копии прежних drivers: [Python](java-current-guard-summary-20261104.py), [TS](java-current-guard-summary-20261104.ts). Whole exact Java archive сохраняет composition128 и package corridors; native pre действительно сообщил inputs128. Отдельные QMD/delivery units, source/grade/privacy/role/currentness guards не исключались. Installed/pins provenance в source не переименовывался в actual overlays. Старый `java-current-performance-20261104-actual` остаётся прежним INVALID evidence.
+Report-local копии прежних drivers: [Python](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-current-guard-summary-20261104.py), [TS](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/java-current-guard-summary-20261104.ts). Whole exact Java archive сохраняет composition128 и package corridors; native pre действительно сообщил inputs128. Отдельные QMD/delivery units, source/grade/privacy/role/currentness guards не исключались. Installed/pins provenance в source не переименовывался в actual overlays. Старый `java-current-performance-20261104-actual` остаётся прежним INVALID evidence.
 
 Изменялись только новые report-local drivers, новый disposable stage и этот report. Original product Source/state/installed/pins/userdata/outputs/UUID/propsGrade/баллы не менялись. Новый Native state создан самим настоящим capture внутри stage. Commit/push/install/network/production/SSH отсутствуют.
 

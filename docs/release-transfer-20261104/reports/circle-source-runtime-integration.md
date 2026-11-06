@@ -10,7 +10,7 @@
 
 ## Метод и точные артефакты
 
-Переиспользован существующий R1 `run_cases.py`: копия [run_circle_source.py](circle-source-runtime-integration/run_circle_source.py) меняет только COURSE/PLATFORM/output BASE и конечный цикл четырёх вариантов с timeout. Старые R1 jobs и setup не перезаписывались; нового framework нет. Один процесс, строго последовательные reference → starter → wrong → namespace. Команда:
+Переиспользован существующий R1 `run_cases.py`: копия [run_circle_source.py](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/circle-source-runtime-integration/run_circle_source.py) меняет только COURSE/PLATFORM/output BASE и конечный цикл четырёх вариантов с timeout. Старые R1 jobs и setup не перезаписывались; нового framework нет. Один процесс, строго последовательные reference → starter → wrong → namespace. Команда:
 
 ```console
 python /home/tolya/JavaCodex/java-release-20261110/reports/circle-source-runtime-integration/run_circle_source.py

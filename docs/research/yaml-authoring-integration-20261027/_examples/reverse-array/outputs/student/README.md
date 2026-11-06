@@ -1,5 +1,7 @@
 # Элементы массива в обратном порядке
 
+Описание и команды ниже относятся к [историческому снимку исследовательского комплекта](https://github.com/BSU-RFCT-Afonenko-Courses/Java/tree/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/research/yaml-authoring-integration-20261027/_examples/reverse-array/outputs/student). Java/Gradle-файлы этого снимка доступны в Git; оставшиеся YAML и таблицы здесь объясняют прежний пример и не задают действующий проект курса.
+
 Выведите элементы заданного `int[]` от последнего к первому,
 не изменяя сам массив.
 
@@ -36,7 +38,7 @@ gradle test
 Эти проверки не доказывают сохранность массива, обработку пустого stdin или полный зачёт.
 Полный автоматический набор, API-precheck, observations и ручная часть оценки проверяются отдельно.
 
-Исходный файл находится в `src/main/java/Main.java`; для отдельной компиляции достаточно JDK:
+Исходный файл находится в [src/main/java/Main.java](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/research/yaml-authoring-integration-20261027/_examples/reverse-array/outputs/student/src/main/java/Main.java); для отдельной компиляции достаточно JDK:
 
 ```console
 javac --release 25 -encoding UTF-8 -d out src/main/java/Main.java
