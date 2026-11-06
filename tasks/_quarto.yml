@@ -340,71 +340,12 @@ project-checks:
       min-executed: 1
       allow-skipped: false
   source-profiles:
-    java-main:
-      mode: implementation
-      root: student/src/main/java
-      include:
-      - '**/*.java'
     java-gradle:
       mode: implementation
       root: src/main/java
       include:
       - '**/*.java'
   profiles:
-    java-labs:
-      source-profile: java-main
-      tests:
-      - tests/junit/**/*.java
-      scoring:
-        mode: all-pass
-      contract-cases: tests/contract-cases.json
-    java-cli:
-      source-profile: java-main
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-      tests:
-      - tests/junit/**/*.java
-      api-precheck:
-        files:
-        - tests/junit/api/CliPrecheck.java
-        entry: CliPrecheck$StringArrayMain
-      verification-api-precheck:
-        files:
-        - student/src/test/java/api/CliPrecheck.java
-        entry: CliPrecheck$StringArrayMain
-      scoring:
-        mode: all-pass
-      contract-cases: tests/contract-cases.json
-    java-queue:
-      source-profile: java-main
-      tests:
-      - tests/junit/**/*.java
-      api-precheck:
-        files:
-        - tests/junit/api/QueueApi.java
-        - tests/junit/queuecheck/QueueAccess.java
-        entry: QueueApi
-      verification-api-precheck:
-        files:
-        - student/src/test/java/api/QueueApi.java
-        - student/src/test/java/queuecheck/QueueAccess.java
-        entry: QueueApi
-      limits:
-        outer-seconds: 300
-        run-seconds: 30
-      additional-java-sources:
-        archive: additional-sources.zip
-        max-files: 128
-        max-file-bytes: 1048576
-        max-total-bytes: 4194304
-        max-archive-bytes: 2097152
-      scoring:
-        mode: all-pass
-      contract-cases: tests/contract-cases.json
     java-console-greeting:
       source-profile: java-gradle
       additional-java-sources:
