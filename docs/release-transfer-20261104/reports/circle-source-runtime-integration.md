@@ -16,7 +16,7 @@
 python /home/tolya/JavaCodex/java-release-20261110/reports/circle-source-runtime-integration/run_circle_source.py
 ```
 
-Как в R1, для каждого решения скопированы его реальные Java sources, canonical observations/checks/api и common api-support; grading-job.json построен из текущего Circle project-check profile. Runtime — **java25-junit-v1**, а runtime объявленной полной поставки курса остаётся java25-gradle-junit-v1. Локальный registry фиксирует actual Source bundle/runner/shared closure и синтетическую source image identity; это не новый OCI digest и не замена course/providers pins. [isolated-runtime-registry.json](circle-source-runtime-integration/isolated-runtime-registry.json), а также executionEvidence.dependencyHashes каждого результата сохраняют потреблённую source closure.
+Как в R1, для каждого решения скопированы его реальные Java sources, canonical observations/checks/api и common api-support; grading-job.json построен из текущего Circle project-check profile. Runtime — **java25-junit-v1**, а runtime объявленной полной поставки курса остаётся java25-gradle-junit-v1. Локальный registry фиксирует actual Source bundle/runner/shared closure и синтетическую source image identity; это не новый OCI digest и не замена course/providers pins. [isolated-runtime-registry.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/circle-source-runtime-integration/isolated-runtime-registry.json), а также executionEvidence.dependencyHashes каждого результата сохраняют потреблённую source closure.
 
 Фактическая JVM/компилятор: `/usr/lib/jvm/java-25-openjdk`, `25.0.4.1`, `--release 25`; JUnit standalone 1.14.1 и существующие JAR из текущего Platform. Запуск выполнен вне известного sandbox UID mapping с сохранением штатного parent identity guard; никаких патчей/подмен защит нет. Grader сообщает `containment=host-diagnostic`, не official/OCI admission.
 
@@ -27,7 +27,7 @@ python /home/tolya/JavaCodex/java-release-20261110/reports/circle-source-runtime
 - [wrong/result.json](circle-source-runtime-integration/jobs/polymorphism-circle-subclass/negative-controls-wrong/result.json);
 - [namespace/result.json](circle-source-runtime-integration/jobs/polymorphism-circle-subclass/alternatives-namespace/result.json).
 
-[summary.json](circle-source-runtime-integration/summary.json) — компактное извлечение уже сохранённых четырёх результатов, не новый запуск и не второй источник оценки.
+[summary.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/circle-source-runtime-integration/summary.json) — компактное извлечение уже сохранённых четырёх результатов, не новый запуск и не второй источник оценки.
 
 ## Четыре фактических исхода и стоимость
 
@@ -40,7 +40,7 @@ python /home/tolya/JavaCodex/java-release-20261110/reports/circle-source-runtime
 
 У всех четырёх: studentCompilation/trustedCompilation/API-precheck=`success`, infrastructure/dependentExecution=`complete`, `counts.complete=true`, discovered=executed=6, skipped=aborted=eventErrors=containerFailures=0. По шесть registered/started/outcomes/cases, native tests также шесть с max_points=1; maxPoints и сумма native max_points равны 6. Четыре parameterized invocation и два normal/boundary метода — реальные самостоятельные leaves; assertAll и контейнеры баллов не добавили.
 
-Полная последовательность заняла **16.546660s** ([wall-time.json](circle-source-runtime-integration/wall-time.json)); параллелизм 1, ограничения 60s на сценарий /180s суммарно. В каждом scenario 13 штатных дочерних Java-команд, всего 52; все exit0 без timeout/reason. В частности, student/trusted compilation и observer/transformer/runner/API compilation выполнялись штатной цепочкой, с API и зависимым JUnit запуском. Время собственно JUnit execution соответственно 0.447854/0.457112/0.441478/0.431896s. Стоимость относится только к этому проходу, не является новым R1 benchmark или заявлением об ускорении курса. Повторов не было.
+Полная последовательность заняла **16.546660s** ([wall-time.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/circle-source-runtime-integration/wall-time.json)); параллелизм 1, ограничения 60s на сценарий /180s суммарно. В каждом scenario 13 штатных дочерних Java-команд, всего 52; все exit0 без timeout/reason. В частности, student/trusted compilation и observer/transformer/runner/API compilation выполнялись штатной цепочкой, с API и зависимым JUnit запуском. Время собственно JUnit execution соответственно 0.447854/0.457112/0.441478/0.431896s. Стоимость относится только к этому проходу, не является новым R1 benchmark или заявлением об ускорении курса. Повторов не было.
 
 Wrong проходит только минимальный положительный и малый 1e-100 радиусы: абсолютный допуск законно принимает их площадь. Отвергнуты 0.25, 3, 1e150 и 2. Starter проходит API, но каждый из шести объектов падает в TODO базового конструктора; это корректная student-runtime-failure с достоверным 0/6, не инфраструктурный ноль.
 
