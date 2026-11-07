@@ -1,1 +1,0 @@
-public class Stack { private final char[] data; public Stack(int capacity) { data=new char[capacity]; } public void push(char value) { throw new UnsupportedOperationException("TODO: добавить символ"); } public char pop() { throw new UnsupportedOperationException("TODO: извлечь символ"); } }

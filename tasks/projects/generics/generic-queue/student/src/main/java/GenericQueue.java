@@ -1,1 +1,0 @@
-public class GenericQueue<T>{private final T[]data;public GenericQueue(T[]data){this.data=data;}public void put(T value)throws QueueFullException{throw new UnsupportedOperationException("TODO: FIFO-помещение");}public T get()throws QueueEmptyException{throw new UnsupportedOperationException("TODO: FIFO-извлечение");}}
