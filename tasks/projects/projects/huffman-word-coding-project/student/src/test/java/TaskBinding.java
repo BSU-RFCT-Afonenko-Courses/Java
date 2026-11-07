@@ -1,1 +1,0 @@
-import java.util.*;class TaskBinding{static Object encode(String input){return Huffman.encode(input);}static Map<String,Integer>frequencies(Object result){return ((Huffman.Encoded)result).frequency();}static Map<String,String>codes(Object result){return ((Huffman.Encoded)result).codes();}static String bits(Object result){return ((Huffman.Encoded)result).bits();}}
