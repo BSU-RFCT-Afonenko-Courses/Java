@@ -4,7 +4,7 @@ class Example {static <T>void show(T[] storage,T a,T b,T c)throws Throwable {Gen
 public class GenericQueue<E> {
     private final E[] values;
     private int size;
-    public <U extends E> GenericQueue(U... storage) { values=storage; }
+    public <U extends E> GenericQueue(U[] storage) { values=storage; }
     public void put(E value) throws QueueFullException {
         if(size==values.length)throw new QueueFullException(values.length);
         values[size++]=value;

@@ -1,3 +1,49 @@
-import java.util.*;import java.util.function.*;import java.nio.file.Path;
-import java.util.stream.*;
-public class Study{public static Object addition(){IntFunction<IntUnaryOperator>outer=a->b->a+b;return outer;}public static Object matcher(){Function<String,Predicate<String>>outer=regex->text->text.matches(regex);return outer;}public static Object splitter(){Function<String,Function<String,String[]>>outer=regex->text->text.split(regex);return outer;}@SuppressWarnings("unchecked")public static Object bindAddition(Object outer,int first){return ((IntFunction<IntUnaryOperator>)outer).apply(first);}@SuppressWarnings("unchecked")public static Object bindText(Object outer,String regex){return ((Function<String,?>)outer).apply(regex);}public static int sum(Object bound,int second){return ((IntUnaryOperator)bound).applyAsInt(second);}@SuppressWarnings("unchecked")public static boolean matches(Object bound,String text){return ((Predicate<String>)bound).test(text);}@SuppressWarnings("unchecked")public static String[]split(Object bound,String text){return ((Function<String,String[]>)bound).apply(text);}}
+import java.util.function.*;
+
+public class Study {
+    private interface Addition extends IntFunction<IntUnaryOperator> {}
+    private interface TextOuter extends Function<String, Object> {}
+    private interface TextPredicate extends Predicate<String> {}
+    private interface TextSplit extends Function<String, String[]> {}
+
+    public static Object addition() {
+        Addition outer = a -> b -> a + b;
+        return outer;
+    }
+
+    public static Object matcher() {
+        TextOuter outer = regex -> {
+            TextPredicate inner = text -> text.matches(regex);
+            return inner;
+        };
+        return outer;
+    }
+
+    public static Object splitter() {
+        TextOuter outer = regex -> {
+            TextSplit inner = text -> text.split(regex);
+            return inner;
+        };
+        return outer;
+    }
+
+    public static Object bindAddition(Object outer, int first) {
+        return Addition.class.cast(outer).apply(first);
+    }
+
+    public static Object bindText(Object outer, String regex) {
+        return TextOuter.class.cast(outer).apply(regex);
+    }
+
+    public static int sum(Object bound, int second) {
+        return ((IntUnaryOperator) bound).applyAsInt(second);
+    }
+
+    public static boolean matches(Object bound, String text) {
+        return TextPredicate.class.cast(bound).test(text);
+    }
+
+    public static String[] split(Object bound, String text) {
+        return TextSplit.class.cast(bound).apply(text);
+    }
+}
