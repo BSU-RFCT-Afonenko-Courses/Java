@@ -6,6 +6,8 @@
 
 Прочитаны целиком `reports/sp-site-native-render-next-20261104.md`, адресно cache/native Site границы `reports/quarto-cache-boundary-20261104.md`, actual `system-practice/AGENTS.md`, actual Site `AGENTS.md`, `spec/index.md`, `spec/contract.md`, `docs/public-operation.md`, `java/docs/model-admission.md` и `core/docs/russian-language-policy.md`.
 
+Точный [исторический отчёт](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/quarto-cache-boundary-20261104.md) сохраняет исходные результаты и ограничения этого упоминания.
+
 Manual linked worktree создан существующим bare `provider-sources/quarto-project-publish`:
 
 - `site-sp`, ветка `codex/sp-native-render-20261110`, исходный exact `e0efd6b5428412500569d0da5a5e0b33d62a5663`.

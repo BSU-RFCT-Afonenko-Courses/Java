@@ -6,7 +6,7 @@
 
 ## Что изменилось относительно прежнего вывода
 
-В [cache boundary](quarto-cache-boundary-20261104.md) гипотеза отказа при записи
+В [cache boundary](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/quarto-cache-boundary-20261104.md) гипотеза отказа при записи
 `<input>_cache` относилась к Core46b и whole-owner currentness. На Core4a все
 прочитанные production вызовы `assertSources` в operation и assignment-admission
 передают `full=false` и выбранные inputs. В `runtime/source-snapshot.ts:155–236`

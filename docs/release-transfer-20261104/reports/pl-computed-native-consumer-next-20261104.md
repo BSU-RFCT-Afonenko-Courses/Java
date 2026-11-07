@@ -1,6 +1,6 @@
 # PrairieLearn: ближайшая граница обычного computed Native body
 
-Последующее отдельно разрешённое исполнение завершилось scoped consumer PASS; см. [фактический отчёт](pl-computed-consumer-integration-20261104.md). Ниже сохранены первоначальный Source-only вывод и подготовительный план, без подмены их исторического статуса.
+Последующее отдельно разрешённое исполнение завершилось scoped consumer PASS; см. [фактический отчёт](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-computed-consumer-integration-20261104.md). Ниже сохранены первоначальный Source-only вывод и подготовительный план, без подмены их исторического статуса.
 
 ## Допуск и прочитанная композиция
 
@@ -17,6 +17,8 @@
 ## Что уже реально прошло
 
 Источник — новый `reports/core-native-computed-integration-20261104.md` и его actual artifact/result.json, не повтор R3. Exact Core5a, Download944, Performance5365; единственный actual запуск exit0/8.536 s, Quarto1.11.5/knitr1.51. Один bank QMD с R: Table42, PNG15196bytes, inline42. Путь: authentic prepared assignment capture → current Native operation → один actual A1 batch → assignmentDelivery → student materializeProject → Download ZIP. Student/full планы, condition/README/ZIP использовали ту же A1 batch.
+
+Точный [исторический отчёт](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-computed-integration-20261104.md) сохраняет исходные результаты и ограничения этого упоминания.
 
 Сохранённый actual `publicPackage` содержит Table1/Image1/inline42; RawBlock/RawInline/Note в этом package отсутствуют. README содержит42 и `resources/index_files/figure-html/computed-1.png`; PNG совпал с Core inventory bytes, ZIP entries побайтно совпали с inventory и прошли CRC. Solution/reference sentinels и reference path отсутствуют в student condition/package/HTML/README/ZIP. Это проверка declared roles/private block этого fixture, не taint analysis произвольного R. Selected starter при этом не генерировался cell.
 

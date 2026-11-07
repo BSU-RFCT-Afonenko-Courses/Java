@@ -24,6 +24,8 @@ SHA прочитаны через локальные Git commit metadata, без
 `tests/native-a1-builder-integration.ts`; сопоставлены сохранённые local evidence
 `pl-computed-consumer-integration-20261104.md`. Этот план не повторяет их запуск.
 
+Точный [исторический отчёт](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-computed-consumer-integration-20261104.md) сохраняет исходные результаты и ограничения этого упоминания.
+
 ## Минимальная pin-дельта после Core gate
 
 В `.github/workflows/ci.yml` текущий Core

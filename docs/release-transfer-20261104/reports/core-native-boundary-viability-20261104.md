@@ -15,6 +15,8 @@
 
 Прочитаны `core-owner-boundary-next-20261104.md`, `core-owner-boundary-implementation-20261104.md`, собственный `core-owner-boundary-review-20261104.md`, `quarto-cache-boundary-20261104.md` и `quarto-execution-boundary-20261104.md`, applicable Core AGENTS/spec index/языковая политика, actual Core/PL Source и локальные `/opt/quarto/bin/quarto.js`, `/opt/quarto/share/pandoc/datadir/init.lua`. Quarto ref — установленный 1.11.5 Source, уже установленный в предыдущих evidence, без нового вызова version/inspect. Core candidate остаётся против `46b35909c9878196294f54b6be2d7505b336fe8d`; те же шесть dirty paths видны при чтении статуса. Предыдущий writer не считается продолжающим работу.
 
+Точный [исторический отчёт](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/quarto-cache-boundary-20261104.md) сохраняет исходные результаты и ограничения этого упоминания.
+
 Ниже Core paths относительно `_extensions/course-core/`; Quarto строки относительно `/opt/quarto/bin/quarto.js`. Source lines относятся к текущему pending candidate, поэтому отличаются от stable46b reports. Чисел wall/performance не добавлено. Вся новая запись — этот отчёт.
 
 ## Что Native действительно отдаёт

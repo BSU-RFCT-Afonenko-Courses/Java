@@ -19,6 +19,19 @@ CI не сравнивает content SHA, immutable inventories, proof или re
 проверками результата у соответствующих владельцев. Их учебный договор,
 баллы и hidden cases этим пакетом не меняются.
 
+Адресный [тест Core](https://github.com/Afonenko-Course-Tools/quarto-course/blob/ee461578fe8ba704395cd86eeb3847a0930ea22d/tests/release-generated-resource-currentness.ts) с `--r-cache` проверяет два захвата неизменного QMD с R/knitr:
+однократное исполнение ячейки, позднее тело и ресурсы, выбранные роли,
+материализованные README/PNG и настоящий Download ZIP с проверкой состава,
+CRC и байтов. Этот узкий состав не подтверждает все режимы cache/freeze,
+другие движки, PL, Site или полный курс.
+
+Выбор исполнения, cache/freeze и обновления остаётся у автора средствами Quarto.
+[Авторская инструкция](https://github.com/Afonenko-Course-Tools/quarto-course/blob/0ee57462e4fa41465540ae7ccc7cd4ac30338d40/docs/authoring-style-guide.md#L284) описывает неполноту автоматического учёта внешних зависимостей
+и условный риск повторного использования неразмеченного вычисляемого текста
+между аудиториями. Для Site сохраняются [договор строкового списка subprojects](https://github.com/Afonenko-Course-Tools/quarto-project-publish/blob/main/spec/contract.md)
+и [границы публичной Native-композиции](https://github.com/Afonenko-Course-Tools/quarto-project-publish/blob/main/docs/public-operation.md);
+адресная проверка R/knitr не заменяет их отдельную приёмку.
+
 ## Оставшийся внешний переход
 
 Отключённые `CI/check-production-pins.py`, его тесты и прежний local-candidate

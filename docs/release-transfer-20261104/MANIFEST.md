@@ -204,7 +204,7 @@
 | [reports/core-native-cache-integration-20261104/zip-verification.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-cache-integration-20261104/zip-verification.json) | 462 |
 | [reports/core-native-cache-integration-20261104-execution.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-cache-integration-20261104-execution.json) | 470 |
 | [reports/core-native-cache-integration-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-cache-integration-20261104.log) | 78 |
-| [reports/core-native-cache-integration-20261104.md](reports/core-native-cache-integration-20261104.md) | 13199 |
+| [reports/core-native-cache-integration-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-cache-integration-20261104.md) | 13199 |
 | [reports/core-native-cache-integration-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-cache-integration-review-20261104.md) | 2551 |
 | [reports/core-native-cache-integration.py](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-cache-integration.py) | 5633 |
 | [reports/core-native-cache-performance.ts](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-cache-performance.ts) | 3707 |
@@ -229,8 +229,8 @@
 | [reports/core-native-computed-integration-20261104/zip-verification.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-computed-integration-20261104/zip-verification.json) | 199 |
 | [reports/core-native-computed-integration-20261104-execution.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-computed-integration-20261104-execution.json) | 349 |
 | [reports/core-native-computed-integration-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-computed-integration-20261104.log) | 62 |
-| [reports/core-native-computed-integration-20261104.md](reports/core-native-computed-integration-20261104.md) | 13887 |
-| [reports/core-native-computed-integration-review-20261104.md](reports/core-native-computed-integration-review-20261104.md) | 14470 |
+| [reports/core-native-computed-integration-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-computed-integration-20261104.md) | 13887 |
+| [reports/core-native-computed-integration-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-computed-integration-review-20261104.md) | 14470 |
 | [reports/core-native-computed-integration.py](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-computed-integration.py) | 4699 |
 | [reports/core-native-computed-performance.ts](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-computed-performance.ts) | 3228 |
 | [reports/core-native-computed-probe.ts](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-native-computed-probe.ts) | 6749 |
@@ -809,7 +809,7 @@
 | [reports/pl-computed-consumer-integration-20261104/source-refs.json](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-computed-consumer-integration-20261104/source-refs.json) | 2535 |
 | [reports/pl-computed-consumer-integration-20261104/stderr.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-computed-consumer-integration-20261104/stderr.log) | 1470 |
 | [reports/pl-computed-consumer-integration-20261104/stdout.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-computed-consumer-integration-20261104/stdout.log) | 0 |
-| [reports/pl-computed-consumer-integration-20261104.md](reports/pl-computed-consumer-integration-20261104.md) | 13949 |
+| [reports/pl-computed-consumer-integration-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-computed-consumer-integration-20261104.md) | 13949 |
 | [reports/pl-computed-consumer-integration-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/pl-computed-consumer-integration-review-20261104.md) | 2906 |
 | [reports/pl-computed-native-consumer-next-20261104.md](reports/pl-computed-native-consumer-next-20261104.md) | 23493 |
 | [reports/pl-core-paired-ci-next-20261104.md](reports/pl-core-paired-ci-next-20261104.md) | 13552 |
@@ -903,7 +903,7 @@
 | [reports/qrc-search-types-control_after_duplicate_path_fix-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-search-types-control_after_duplicate_path_fix-20261104.log) | 318 |
 | [reports/qrc-search-types-control_after_test_unknown_narrowing-20261104.log](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-search-types-control_after_test_unknown_narrowing-20261104.log) | 318 |
 | [reports/qrc-search-types-review-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/qrc-search-types-review-20261104.md) | 3159 |
-| [reports/quarto-cache-boundary-20261104.md](reports/quarto-cache-boundary-20261104.md) | 23660 |
+| [reports/quarto-cache-boundary-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/quarto-cache-boundary-20261104.md) | 23660 |
 | [reports/quarto-execution-boundary-20261104.md](reports/quarto-execution-boundary-20261104.md) | 25355 |
 | [reports/release-evidence-checkpoint-20261103-2000.md](reports/release-evidence-checkpoint-20261103-2000.md) | 35548 |
 | [reports/release-state-history-20261104-before-native-type-chain.md](reports/release-state-history-20261104-before-native-type-chain.md) | 56065 |
@@ -1086,7 +1086,7 @@
 | [reports/site-audience-output-config-20261104.md](reports/site-audience-output-config-20261104.md) | 10504 |
 | [reports/site-backup-pr-next-20261104.md](reports/site-backup-pr-next-20261104.md) | 6139 |
 | [reports/site-native-inspect-next-20261104.md](reports/site-native-inspect-next-20261104.md) | 20332 |
-| [reports/site-native-selection-cache-followup-20261104.md](reports/site-native-selection-cache-followup-20261104.md) | 10937 |
+| [reports/site-native-selection-cache-followup-20261104.md](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/site-native-selection-cache-followup-20261104.md) | 10937 |
 | [reports/site-type-boundary-reading.md](reports/site-type-boundary-reading.md) | 16847 |
 | [reports/site-typed-core-pl-review.md](reports/site-typed-core-pl-review.md) | 9948 |
 | [reports/site-typed-core-pl.md](reports/site-typed-core-pl.md) | 10174 |

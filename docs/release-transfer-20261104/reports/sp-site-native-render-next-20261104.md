@@ -6,6 +6,8 @@
 
 Прочитаны `reports/quarto-cache-boundary-20261104.md`, pattern-pass-export S1/S2/S6, Site/SP AGENTS и SP Site current contract из exact blob. Общее языковое правило и model-admission прочитаны в предыдущей части того же полного интервала. Местный SP AGENTS содержит старое high для code/fixtures; здесь прямое назначение root — medium и только Source-only план, без изменения курса/кода.
 
+Точный [исторический отчёт](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/quarto-cache-boundary-20261104.md) сохраняет исходные результаты и ограничения этого упоминания.
+
 SP Site — **только** `git show/git grep` существующего bare `/home/tolya/JavaCodex/java-release-20261110/provider-sources/quarto-project-publish` на exact `e0efd6b5428412500569d0da5a5e0b33d62a5663`. Java Site прочитан через `git show` exact `d16f2322c1da3c96c2e93d32225f5428ae347756`, composition runtime pin координатора `e8b345cec235c2c8438c479892f6bca2a4ce3ee7`. Авторский SP config прочитан в `system-practice` на HEAD `3bb0e0789545420b9947bdd85fac3d71715d0e36`. Ни checkout/clone, ни Source/provider/installed pins, ни курсы, ни state не изменялись. Создан только этот отчёт.
 
 ## Вывод и рекомендуемая граница
