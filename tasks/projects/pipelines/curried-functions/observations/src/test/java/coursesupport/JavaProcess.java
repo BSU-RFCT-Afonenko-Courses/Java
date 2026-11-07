@@ -106,12 +106,8 @@ public final class JavaProcess {
 
     private static Result runCheckingUncaught(Path classes, String mainClass,
             boolean trustedEntry, String input, String... arguments) throws Exception {
-        // Для выбора main используется механизм запускателя установленного JDK 25.
-        try {
-            Class.forName("jdk.internal.misc.MethodFinder").getMethod("findMainMethod", Class.class);
-        } catch (ReflectiveOperationException | LinkageError problem) {
-            throw new IOException("В установленном JDK отсутствует выбор main для проверки", problem);
-        }
+
+
         // CREATE_NEW сохраняет чужие файлы; счётчик не требует источника энтропии
         // в песочнице, где createTempFile запускает медленный резервный механизм SecureRandom.
         Path scratch = Files.createDirectory(Path.of(System.getProperty("java.io.tmpdir"),
@@ -133,7 +129,7 @@ public final class JavaProcess {
             launchArguments.addAll(List.of(arguments));
             Result result = run(classes, CheckedLauncher.class.getName(), input, launchArguments, null,
                 Duration.ofSeconds(10), 65536,
-                List.of("--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED"), launcher);
+                List.of(), launcher);
             byte[] observed = Files.readAllBytes(status);
             if (observed.length == 0 || observed[0] != 'R') {
                 throw new IOException("Не удалось подготовить проверку исключений в JDK 25:\n" + result.stderr());
@@ -151,18 +147,42 @@ public final class JavaProcess {
 
     /** Отдельная JVM: ошибки загрузки, создания экземпляра и main видимы проверке. */
     public static final class CheckedLauncher {
+        // JLS 12.1.4: String[] имеет приоритет; доступны не private методы void main.
+        private static Method findMain(Class<?> type) {
+            for (Class<?>[] parameters : new Class<?>[][]{{String[].class}, {}}) {
+                for (Class<?> owner = type; owner != null; owner = owner.getSuperclass()) {
+                    try {
+                        Method method = owner.getDeclaredMethod("main", parameters);
+                        int access = method.getModifiers();
+                        if (method.getReturnType() != void.class || Modifier.isPrivate(access)) continue;
+                        if (!Modifier.isPublic(access) && !Modifier.isProtected(access)) {
+                            boolean inherited = true;
+                            for (Class<?> child = type; child != owner; child = child.getSuperclass())
+                                if (!child.getPackageName().equals(owner.getPackageName())) inherited = false;
+                            if (!inherited) continue;
+                        }
+                        return method;
+                    } catch (NoSuchMethodException absent) { }
+                }
+                try {
+                    Method method = type.getMethod("main", parameters);
+                    if (method.getReturnType() == void.class) return method;
+                } catch (NoSuchMethodException absent) { }
+            }
+            return null;
+        }
+
         public static void main(String[] arguments) throws Exception {
             // Служебный файл статуса открыт через RandomAccessFile до запуска программы.
             // Закрытие или замена stderr оставляет его открытым.
             var status = new RandomAccessFile(arguments[0], "rw");
-            Method selector = Class.forName("jdk.internal.misc.MethodFinder")
-                .getMethod("findMainMethod", Class.class);
-            selector.invoke(null, CheckedLauncher.class);
+
+
             // Trusted адаптер должен быть найден до отметки готовности:
             // его отсутствие или ошибка инициализации не являются отказом решения.
             if (Boolean.parseBoolean(arguments[2])) {
                 Class<?> port = Class.forName(arguments[1], true, ClassLoader.getSystemClassLoader());
-                if (selector.invoke(null, port) == null)
+                if (findMain(port) == null)
                     throw new NoSuchMethodException("Не найден main в " + port.getName());
             }
             status.write('R');
@@ -180,7 +200,7 @@ public final class JavaProcess {
             Thread.setDefaultUncaughtExceptionHandler(monitor);
             try {
                 Class<?> entry = Class.forName(arguments[1], false, ClassLoader.getSystemClassLoader());
-                var main = (Method) selector.invoke(null, entry);
+                var main = findMain(entry);
                 if (main == null) throw new NoSuchMethodException("Не найден main в " + entry.getName());
                 Object instance = null;
                 Class.forName(entry.getName(), true, entry.getClassLoader());
