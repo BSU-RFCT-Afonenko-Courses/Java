@@ -5,31 +5,26 @@ categories: [java, java-core, java-project]
 # Сборка и запуск консольного Java-проекта {#sec-api-project}
 
 `gradeapp` запускается командой
-`java -jar target/gradeapp.jar путь-к-файлу порог`.
+`java -jar build/libs/gradeapp.jar путь-к-файлу порог`.
 Она читает UTF-8-каталог участников и печатает отобранные записи.
 Разобранный журнал поставок в @theory:sec-theory-application показывает
 устройство другого приложения: суммирование с сохранением сведений об ошибках строк.
 У `gradeapp` собственная политика: ошибка строки отменяет весь отчёт,
 допустимые участники отбираются по порогу и упорядочиваются.
 
-Подготовленный Maven Wrapper собирает исходники заготовки, запускает тесты
-и создаёт `target/gradeapp.jar`.
+Предоставленный Gradle-проект собирает исходники заготовки, запускает
+открытые проверки и создаёт `build/libs/gradeapp.jar`.
 Методы заготовки завершаются исключением `UnsupportedOperationException`,
 пока студент не реализует их поведение.
 
 ## Исходники, тесты и артефакт {#sec-api-project-layout}
 
-Исходный каталог заготовки в репозитории — `tasks/projects/files/gradeapp-report/student/`.
-В его корне лежат:
+Распакуйте заготовку и откройте каталог с `build.gradle`.
+Сокращённая структура проекта:
 
 ```text
 README.md
-pom.xml
-build.sh
-build.cmd
-mvnw
-mvnw.cmd
-wrapper/maven-wrapper.properties
+build.gradle
 src/main/java/grade/
   Student.java
   DataFormatException.java
@@ -37,7 +32,7 @@ src/main/java/grade/
   StudentFiles.java
   Reports.java
   Main.java
-src/test/java/grade/PublicExamplesTest.java
+src/test/java/
 samples/
   students.txt
   blank.txt
@@ -46,10 +41,8 @@ samples/
 
 `src/main/java` содержит приложение; `src/test/java` — открытые примеры JUnit.
 Все Java-файлы объявляют `package grade;`. Имя публичного типа
-совпадает с именем файла. Maven помещает классы в `target/classes/grade`
-и тестовые классы отдельно в `target/test-classes/grade`.
-`target/gradeapp.jar` содержит классы приложения. Тестовые классы остаются
-в отдельном каталоге сборки.
+совпадает с именем файла. `build/libs/gradeapp.jar` содержит классы приложения;
+открытые проверки остаются в отдельной части проекта.
 Запуск с `-jar` читает `Main-Class: grade.Main` из манифеста. Зависимость от
 JUnit не нужна для запуска готового приложения.
 
@@ -72,58 +65,35 @@ JUnit не нужна для запуска готового приложени�
 открытые проверки поведения до реализации не проходят. Неверная команда
 может уже дать код 2, поскольку эта граница предоставлена.
 
-## Maven Wrapper {#sec-api-project-wrapper}
+## Подготовка и сборка Gradle {#sec-api-project-wrapper}
 
-Версии Maven, подключаемых модулей и JUnit закреплены в предоставленных
-`wrapper/maven-wrapper.properties` и `pom.xml`. Команды `build.sh` и
-`build.cmd` подготавливают Wrapper из файлов заготовки и запускают его.
-На первом запуске нужны доступ к указанным серверам загрузки и установленный
-JDK 25. Последующие команды используют локальный кэш загруженных зависимостей.
+Нужны установленный Gradle 9.8.0 и JDK 25; `JAVA_HOME` указывает на каталог JDK.
+Команды выполняются из распакованного каталога с предоставленным `build.gradle`.
+Один раз подготовьте зависимости через сеть:
 
-Для запуска в POSIX-оболочке подготовьте `sh`, `unzip` и одну из команд `sha256sum`
-или `shasum`: архив Maven сверяется с опубликованной контрольной суммой.
-На Windows требуется PowerShell. Подготовку проверяют до работы с исходниками
-командой `--version`. Устройство Wrapper описано в
-[документации Maven](https://maven.apache.org/tools/wrapper/).
-
-Существенные свойства `pom.xml`:
-
-```xml
-<maven.compiler.release>25</maven.compiler.release>
-<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+```console
+gradle prepareDependencies
 ```
 
-`release` задаёт целевую платформу компиляции. Полный POM уже лежит
-в заготовке: `finalName` равен `gradeapp`, модуль сборки JAR задаёт
-`mainClass` равным `grade.Main`. Версию Java, на которой выполняется Maven,
-проверяйте командой Wrapper `--version`. JDK выбирается окружением запуска:
-[compiler release](https://maven.apache.org/plugins/maven-compiler-plugin/examples/set-compiler-release.html).
+До реализации TODO соберите JAR и скомпилируйте тесты:
 
-Из корня скачанного `student` в POSIX-оболочке:
-
-```bash
-export JAVA_HOME=/usr/lib/jvm/java-25-openjdk
-export PATH="$JAVA_HOME/bin:$PATH"
-sh ./build.sh --version
-sh ./build.sh -DskipTests package
+```console
+gradle --offline assemble testClasses
 ```
 
-В `JAVA_HOME` укажите фактический каталог своего JDK 25; путь выше
-показывает форму настройки для Linux. `-DskipTests package` компилирует также
-тестовые исходники, но пропускает их исполнение. Эта команда проверяет
-сборку заготовки и создаёт JAR с ещё не реализованными методами.
-Проверки поведения в обычном `test package` выявляют эти TODO.
+Эта команда не исполняет проверки поведения. Сборка заготовки с ещё
+не реализованными методами не подтверждает готовность приложения.
+После реализации выполните сборку с открытыми проверками и запустите JAR:
 
-После реализации соберите проект с выполнением тестов и запустите JAR:
-
-```bash
-sh ./build.sh test package
-java -jar target/gradeapp.jar samples/students.txt 80
+```console
+gradle --offline clean build
+java -jar build/libs/gradeapp.jar samples/students.txt 80
 ```
 
-`test` выполняет открытые примеры, `package` создаёт JAR и тоже проходит
-предшествующие фазы, включая тесты. В Windows те же цели вызываются через
-`.\build.cmd test package`.
+Открытые проверки в `src/test/java` запускаются задачей `test`, входящей
+в `build`; часть из них наблюдает настоящий JAR из другого рабочего каталога.
+После первоначальной подготовки эти команды используют загруженные зависимости
+с `--offline`.
 
 После реализации обычный пример печатает:
 
@@ -132,18 +102,16 @@ s10;Ada;90
 s3;Ann;90
 ```
 
-Чтобы проверить запуск вне каталога проекта, создайте другой пустой
-рабочий каталог и передайте **абсолютные** пути к JAR и входу:
+Пути с пробелами заключайте в кавычки. Относительные пути разрешаются
+от текущего рабочего каталога. Чтобы проверить запуск вне каталога проекта,
+создайте другой пустой рабочий каталог и передайте **абсолютные** пути к JAR и входу:
 
-```bash
-java -jar /absolute/path/student/target/gradeapp.jar /absolute/path/student/samples/students.txt 80
+```console
+java -jar /absolute/path/project/build/libs/gradeapp.jar /absolute/path/project/samples/students.txt 80
 ```
 
-Замените оба `/absolute/path/student` фактическим адресом своего проекта.
-Рабочий каталог не меняет адреса этих двух абсолютных файлов. Класс `grade.Main`
-можно также запустить, указав каталог классов `target/classes`:
-`java -cp target/classes grade.Main samples/students.txt 80`.
-Это тот же артефакт классов и тот же двухаргументный интерфейс.
+Замените оба `/absolute/path/project` фактическим адресом своего проекта.
+Рабочий каталог не меняет адреса этих двух абсолютных файлов.
 
 ## Вход, результат и коды {#sec-api-project-contract}
 
@@ -181,7 +149,7 @@ stdout пуст. Весь вход проверяется до вывода; п�
 | Отчёт | Включённый порог, пустой результат, равные баллы и порядок кодов `String`, сохранение исходного порядка |
 | Команда | Два аргумента, неверный порог, отсутствующий файл, запуск из другого каталога |
 
-Открытые примеры из `PublicExamplesTest` запускаются вместе с проектом.
+Открытые проверки из `src/test/java` запускаются задачей `test`, входящей в `build`.
 Дополните собственную проверку граничными случаями таблицы. На защите
 объясните выбранные коллекции, сохранение причины и момент закрытия файла.
 
