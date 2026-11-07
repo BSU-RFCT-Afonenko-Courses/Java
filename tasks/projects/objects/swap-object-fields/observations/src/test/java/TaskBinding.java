@@ -1,7 +1,5 @@
 import java.lang.FunctionalInterface;
 import java.lang.Object;
-import java.lang.RuntimeException;
-import java.lang.SuppressWarnings;
 import java.lang.Throwable;
 import java.util.*;
 import java.io.*;
@@ -12,25 +10,16 @@ class TaskBinding {
     private interface Invocation<T> {
         T run() throws Throwable;
     }
-   private
-    static<T> T invoke(Invocation<T> call) {
-        try {
-            return call.run();
-        } catch (Throwable failure) {
-            return TaskBinding.<RuntimeException, T>raise(failure);
-        }
+    private static <T> T invoke(Invocation<T> call) throws Throwable {
+        return call.run();
     }
-    @SuppressWarnings("unchecked")
-    private static<E extends Throwable, T> T raise(Throwable failure) throws E {
-        throw (E)failure;
-    }
-    static Object create(int a) {
+    static Object create(int a) throws Throwable {
         return invoke(()->Study.create(a));
     }
-    static int value(Object x) {
+    static int value(Object x) throws Throwable {
         return invoke(()->Study.value(x));
     }
-    static void swap(Object a, Object b) {
+    static void swap(Object a, Object b) throws Throwable {
         invoke(()->{
             Study.swap(a, b);
             return null;

@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -6,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class HiddenContractTest {
     @Test
     @DisplayName("Порядок имён и включительный интервал без требования порядка")
-    void nameTieBreakAndRangeOrderFree() {
+    void nameTieBreakAndRangeOrderFree() throws Throwable {
         Object z = TaskBinding.customer(91, "Я", "Б", "Г", "9000000000000001"),
                a = TaskBinding.customer(92, "Я", "А", "Г", "9000000000000002"),
                b = TaskBinding.customer(93, "Я", "А", "В", "9000000000000003");

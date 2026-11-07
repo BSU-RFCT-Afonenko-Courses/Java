@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -20,7 +21,7 @@ class ContractTest {
     }
     @Test
     @DisplayName("Самопередача и обмен крайних значений int")
-    void selfAndExtremes() {
+    void selfAndExtremes() throws Throwable {
         Object x = TaskBinding.create(-2147483648);
         TaskBinding.swap(x, x);
         assertEquals(-2147483648, TaskBinding.value(x));

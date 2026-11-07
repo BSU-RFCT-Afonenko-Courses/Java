@@ -1,9 +1,7 @@
 import java.lang.AssertionError;
 import java.lang.Class;
 import java.lang.Exception;
-import java.lang.RuntimeException;
 import java.lang.String;
-import java.lang.SuppressWarnings;
 import java.lang.System;
 import java.lang.Throwable;
 import java.nio.file.Files;
@@ -20,9 +18,8 @@ public class PublicChecks {
   CheckFailure(String expected,String actual){super("Ожидается: "+expected+"\nПолучено: "+actual);}}
  public static void checkNormal(Observation o){if(!o.passed())throw new CheckFailure("Выход: "+CopySupport.escaped("A-B\tC\u00A0D\r\nE-F".getBytes(StandardCharsets.UTF_8))+"; вход прежний",o.actual());}
  public static void checkBoundary(Observation o){if(!o.passed())throw new CheckFailure("Прежний файл A B; сообщена причина отказа",o.actual());}
- @SuppressWarnings("unchecked") private static <E extends Throwable,R>R forward(Throwable e)throws E{throw(E)e;}
- public static Observation observeNormal(){try{return normal();}catch(Throwable e){return PublicChecks.<RuntimeException,Observation>forward(e);}}
- public static Observation observeBoundary(){try{return boundary();}catch(Throwable e){return PublicChecks.<RuntimeException,Observation>forward(e);}}
+ public static Observation observeNormal()throws Exception{return normal();}
+ public static Observation observeBoundary()throws Exception{return boundary();}
  public static void main(String[]args){try{var n=observeNormal();System.out.println("PUBLIC normal | Пробел, TAB, NBSP, CRLF без последнего LF; ожидается только замена U+0020 | ВХОД: A B\\tC\\u00A0D\\r\\nE F; выход отсутствует, после последнего слова нет перевода строки | ДЕЙСТВИЕ: запустить с путями входа и выхода | ОЖИДАЕТСЯ: A-B\\tC\\u00A0D\\r\\nE-F; вход прежний | ФАКТИЧЕСКИ: "+n.actual());checkNormal(n);System.out.println("СТАТУС: открытое состояние подтверждено; техника, диагностика и объяснение предъявляются преподавателю.");var b=observeBoundary();System.out.println("PUBLIC boundary | text.txt и ./text.txt; ожидается объяснённый отказ до усечения и прежнее содержимое A B | ДЕЙСТВИЕ: передать два опубликованных пути программе; отказ до усечения, причина сообщена, успех не заявлен | ФАКТИЧЕСКИ: "+b.actual());checkBoundary(b);System.out.println("СТАТУС: открытое состояние подтверждено; смысл свободной диагностики и отсутствие преждевременного успеха проверяет преподаватель.");}catch(JavaProcess.StudentTimeout e){System.err.println("СТАТУС: программа не завершилась вовремя.");System.exit(2);}catch(JavaProcess.StudentOutputLimit e){System.err.println("СТАТУС: превышен объём вывода программы.");System.exit(2);}catch(JavaProcess.UncaughtStudentException e){System.err.println("СТАТУС: необработанное исключение при ожидаемом успешном копировании.");System.exit(2);}catch(CheckFailure e){System.err.println("СТАТУС: предметное несоответствие открытому состоянию файлов.");System.exit(1);}catch(Throwable e){System.err.println("СТАТУС: проверка не завершена; нужна проверка запуска, файлов и привязки.");System.exit(2);}}
  private static String diagnostic(JavaProcess.Result r){return "код завершения="+r.exitCode()+"; stdout="+r.stdout().getBytes(StandardCharsets.UTF_8).length+" байт; stderr="+r.stderr().getBytes(StandardCharsets.UTF_8).length+" байт; смысл диагностики проверяет преподаватель";}
 

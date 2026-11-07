@@ -1,9 +1,7 @@
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.FunctionalInterface;
-import java.lang.RuntimeException;
 import java.lang.String;
-import java.lang.SuppressWarnings;
 import java.lang.System;
 import java.lang.Throwable;
 import java.util.*;
@@ -15,19 +13,10 @@ class TaskBinding {
     private interface Invocation<T> {
         T run() throws Throwable;
     }
-   private
-    static<T> T invoke(Invocation<T> call) {
-        try {
-            return call.run();
-        } catch (Throwable failure) {
-            return TaskBinding.<RuntimeException, T>raise(failure);
-        }
+    private static <T> T invoke(Invocation<T> call) throws Throwable {
+        return call.run();
     }
-    @SuppressWarnings("unchecked")
-    private static<E extends Throwable, T> T raise(Throwable failure) throws E {
-        throw (E)failure;
-    }
-    static String printed(String s) {
+    static String printed(String s) throws Throwable {
         PrintStream old = System.out;
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         try

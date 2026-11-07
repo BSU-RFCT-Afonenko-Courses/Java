@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -6,7 +7,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class ContractTest {
-    static String capture(Runnable action) {
+    @java.lang.FunctionalInterface
+    interface Action {
+        void run() throws Throwable;
+    }
+    static String capture(Action action) throws Throwable {
         PrintStream previous = System.out;
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         try
@@ -20,7 +25,7 @@ class ContractTest {
     }
     @Test
     @DisplayName("Пустой стек и повторное использование для разных char")
-    void reuseAndEveryCharDomain() {
+    void reuseAndEveryCharDomain() throws Throwable {
         Object q = TaskBinding.create(1);
         assertEquals("Стек пуст\n", capture(() -> assertEquals('\0', TaskBinding.pop(q))));
         assertEquals("", capture(() -> {

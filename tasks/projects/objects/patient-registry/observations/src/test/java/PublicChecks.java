@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,13 +29,18 @@ public class PublicChecks {
     public static final String NORMAL_EXPECTED = "Диагноз В/А/А; карты А/Б/А; вход сохранён";
     public static final String BOUNDARY_EXPECTED = "Обе подборки пусты";
     // Снимок скалярных свойств принадлежит наблюдателю; student values вправе быть live view.
-    static List<?> value(Object object) {
+    static List<?> value(Object object) throws Throwable {
         return new ArrayList<>(TaskBinding.value(object));
     }
-    static List<?> values(Object[] a) {
-        return a == null ? null : Arrays.stream(a).map(PublicChecks::value).toList();
+    static List<?> values(Object[] a) throws Throwable {
+        if (a == null)
+            return null;
+        List<List<?>> rows = new ArrayList<>(a.length);
+        for (Object item : a)
+            rows.add(value(item));
+        return java.util.Collections.unmodifiableList(rows);
     }
-    static boolean kept(Object[] input, Object[] before, List<?> state) {
+    static boolean kept(Object[] input, Object[] before, List<?> state) throws Throwable {
         if (input.length != before.length)
             return false;
         for (int i = 0; i < input.length; i++)
@@ -50,7 +56,7 @@ public class PublicChecks {
             m.merge(row, 1, Integer::sum);
         return m;
     }
-    public static Observation observeNormal() {
+    public static Observation observeNormal() throws Throwable {
         Object a = TaskBinding.patient(41, 101, "Грипп"), b = TaskBinding.patient(42, 102, "грипп"),
                c = TaskBinding.patient(43, 103, "Грипп");
         Object[] in = TaskBinding.array(c, a, b, a), before = in.clone();
@@ -80,7 +86,7 @@ public class PublicChecks {
                    Objects.equals(actualD, expectedD) && Objects.equals(actualR, expectedRange) && k1 && k2
                    && model);
     }
-    public static Observation observeBoundary() {
+    public static Observation observeBoundary() throws Throwable {
         Object[] a = TaskBinding.array();
         Object[] d = TaskBinding.diagnosis(a, "Грипп");
         List<?> actualD = values(d);

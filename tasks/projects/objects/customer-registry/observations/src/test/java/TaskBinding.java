@@ -2,9 +2,7 @@ import java.lang.AssertionError;
 import java.lang.FunctionalInterface;
 import java.lang.Long;
 import java.lang.Object;
-import java.lang.RuntimeException;
 import java.lang.String;
-import java.lang.SuppressWarnings;
 import java.lang.Throwable;
 import java.util.List;
 import java.util.*;
@@ -16,50 +14,41 @@ class TaskBinding {
     private interface Invocation<T> {
         T run() throws Throwable;
     }
-   private
-    static<T> T invoke(Invocation<T> call) {
-        try {
-            return call.run();
-        } catch (Throwable failure) {
-            return TaskBinding.<RuntimeException, T>raise(failure);
-        }
+    private static <T> T invoke(Invocation<T> call) throws Throwable {
+        return call.run();
     }
-    @SuppressWarnings("unchecked")
-    private static<E extends Throwable, T> T raise(Throwable failure) throws E {
-        throw (E)failure;
-    }
-    static Object customer(long id, String l, String f, String m, String c) {
+    static Object customer(long id, String l, String f, String m, String c) throws Throwable {
         return invoke(()->Study.customer(id, l, f, m, "Учебный адрес", c, "Счёт" + id));
     }
-    static Object shortValue(long id, String s) {
+    static Object shortValue(long id, String s) throws Throwable {
         Object c = invoke(()->Study.secondConstructor());
         validRecord(c);
         return c;
     }
-    static Object[] array(Object... v) {
+    static Object[] array(Object... v) throws Throwable {
         Object[] a = invoke(()->Study.array(v));
         typed(a, v);
         return a;
     }
-    static Object[] sorted(Object[] a) {
+    static Object[] sorted(Object[] a) throws Throwable {
         return invoke(()->Study.sorted(a));
     }
-    static Object[] range(Object[] a, String l, String h) {
+    static Object[] range(Object[] a, String l, String h) throws Throwable {
         return invoke(()->Study.inCardRange(a, l, h));
     }
-    static List < ? > value(Object x) {
+    static List < ? > value(Object x) throws Throwable {
         return invoke(()->Study.values(x));
     }
-    static void edit(Object c, long id, String l, String f, String m, String a, String card, String account) {
+    static void edit(Object c, long id, String l, String f, String m, String a, String card, String account) throws Throwable {
         invoke(()->{
             Study.edit(c, id, l, f, m, a, card, account);
             return null;
         });
     }
-    static String text(Object c) {
+    static String text(Object c) throws Throwable {
         return invoke(()->Study.text(c));
     }
-    static void validRecord(Object c) {
+    static void validRecord(Object c) throws Throwable {
         List < ? > v = invoke(()->Study.values(c));
         if (v.size() != 7 || !(v.get(0) instanceof Long id) || id <= 0)
             throw new AssertionError("Недопустимая запись второго конструктора");
@@ -67,7 +56,7 @@ class TaskBinding {
             if (!(v.get(i) instanceof String s) || s.isEmpty()) throw new AssertionError("Пустое свойство");
         if (!((String)v.get(5)).matches("[0-9]{16}")) throw new AssertionError("Номер карточки");
     }
-    static void typed(Object[] a, Object[] values) {
+    static void typed(Object[] a, Object[] values) throws Throwable {
         if (a == null || a.getClass().getComponentType() == Object.class || a.length != values.length)
             throw new AssertionError("Требуется массив класса модели");
         if (a.length == 0 && !a.getClass().getComponentType().isInstance(invoke(()->Study.customer(

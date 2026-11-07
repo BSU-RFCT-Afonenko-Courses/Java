@@ -3,9 +3,7 @@ import java.lang.Double;
 import java.lang.FunctionalInterface;
 import java.lang.Long;
 import java.lang.Object;
-import java.lang.RuntimeException;
 import java.lang.String;
-import java.lang.SuppressWarnings;
 import java.lang.Throwable;
 import java.util.List;
 import java.util.*;
@@ -17,56 +15,47 @@ class TaskBinding {
     private interface Invocation<T> {
         T run() throws Throwable;
     }
-   private
-    static<T> T invoke(Invocation<T> call) {
-        try {
-            return call.run();
-        } catch (Throwable failure) {
-            return TaskBinding.<RuntimeException, T>raise(failure);
-        }
+    private static <T> T invoke(Invocation<T> call) throws Throwable {
+        return call.run();
     }
-    @SuppressWarnings("unchecked")
-    private static<E extends Throwable, T> T raise(Throwable failure) throws E {
-        throw (E)failure;
-    }
-    static Object car(int id, String make, String model, int year, double price) {
+    static Object car(int id, String make, String model, int year, double price) throws Throwable {
         return invoke(()->Study.car(id, make, model, year, "Синий", price, "A" + id));
     }
-    static Object[] array(Object... v) {
+    static Object[] array(Object... v) throws Throwable {
         Object[] a = invoke(()->Study.array(v));
         typed(a, v);
         return a;
     }
-    static Object[] make(Object[] a, String s) {
+    static Object[] make(Object[] a, String s) throws Throwable {
         return invoke(()->Study.byMake(a, s));
     }
-    static Object[] older(Object[] a, String s, int y, int n) {
+    static Object[] older(Object[] a, String s, int y, int n) throws Throwable {
         return invoke(()->Study.olderThan(a, s, y, n));
     }
-    static Object[] dearer(Object[] a, int y, double p) {
+    static Object[] dearer(Object[] a, int y, double p) throws Throwable {
         return invoke(()->Study.dearerThan(a, y, p));
     }
-    static List < ? > value(Object x) {
+    static List < ? > value(Object x) throws Throwable {
         return invoke(()->Study.values(x));
     }
-    static String state(Object x) {
+    static String state(Object x) throws Throwable {
         return String.join("|", invoke(()->Study.values(x)).stream().map(String::valueOf).toList());
     }
-    static Object shortCar() {
+    static Object shortCar() throws Throwable {
         Object c = invoke(()->Study.secondConstructor());
         validRecord(c);
         return c;
     }
-    static void edit(Object c) {
+    static void edit(Object c) throws Throwable {
         invoke(()->{
             Study.edit(c, 7, "B", "N", 2025, "blue", 3, "Y");
             return null;
         });
     }
-    static String text(Object c) {
+    static String text(Object c) throws Throwable {
         return invoke(()->Study.text(c));
     }
-    static void validRecord(Object c) {
+    static void validRecord(Object c) throws Throwable {
         List < ? > v = invoke(()->Study.values(c));
         if (v.size() != 7 || !(v.get(0) instanceof Long id) || id <= 0 || !(v.get(3) instanceof Long y) || y < 1 ||
             y > 9999 || !(v.get(5) instanceof Double p) || !Double.isFinite(p) || p < 0)
@@ -74,7 +63,7 @@ class TaskBinding {
         for (int i : new int[]{1, 2, 4, 6})
             if (!(v.get(i) instanceof String s) || s.isEmpty()) throw new AssertionError("Пустое свойство");
     }
-    static void typed(Object[] a, Object[] values) {
+    static void typed(Object[] a, Object[] values) throws Throwable {
         if (a == null || a.getClass().getComponentType() == Object.class || a.length != values.length)
             throw new AssertionError("Требуется массив класса модели");
         if (a.length == 0 && !a.getClass().getComponentType().isInstance(

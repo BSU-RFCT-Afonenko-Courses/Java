@@ -1,10 +1,11 @@
+import java.lang.Throwable;
 import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigInteger;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class HiddenContractTest {
-    static void eq(long m, long n, Object x) {
+    static void eq(long m, long n, Object x) throws Throwable {
         long[] p = TaskBinding.parts(x);
         assertNotEquals(0, p[1]);
         assertEquals(BigInteger.valueOf(m).multiply(BigInteger.valueOf(p[1])),
@@ -12,7 +13,7 @@ class HiddenContractTest {
     }
     @Test
     @DisplayName("Четыре операции со знаками и пять позиций массива")
-    void signedOperationsAndFivePositions() {
+    void signedOperationsAndFivePositions() throws Throwable {
         long[][] e = {{7, 12}, {-23, 12}, {-5, 6}, {-8, 15}};
         for (int op = 0; op < 4; op++)
             eq(e[op][0], e[op][1],

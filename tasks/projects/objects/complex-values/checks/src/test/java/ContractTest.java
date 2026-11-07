@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -5,7 +6,7 @@ import org.junit.jupiter.api.Test;
 class ContractTest {
     @Test
     @DisplayName("Пустой массив и шесть общих ссылок: сумма, произведение, сохранность")
-    void emptyAndSixElementsKept() {
+    void emptyAndSixElementsKept() throws Throwable {
         Object[] empty = TaskBinding.array();
         assertArrayEquals(new double[] {0, 0}, TaskBinding.parts(TaskBinding.sum(empty)), 1e-8);
         assertArrayEquals(new double[] {1, 0}, TaskBinding.parts(TaskBinding.product(empty)), 1e-8);

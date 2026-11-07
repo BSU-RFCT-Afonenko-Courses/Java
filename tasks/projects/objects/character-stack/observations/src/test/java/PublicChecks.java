@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -27,7 +28,11 @@ public class PublicChecks {
     public static final String BOUNDARY_EXPECTED =
         "Возвраты0,X,0,Z; строки: Стек пуст; Стек переполнен; Стек пуст.";
 
-    private static String capture(Runnable action) {
+    @java.lang.FunctionalInterface
+    private interface Action {
+        void run() throws Throwable;
+    }
+    private static String capture(Action action) throws Throwable {
         PrintStream original = System.out;
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         try
@@ -39,7 +44,7 @@ public class PublicChecks {
         }
         return bytes.toString(StandardCharsets.UTF_8).replace("\r\n", "\n");
     }
-    public static Observation observeNormal() {
+    public static Observation observeNormal() throws Throwable {
         Object stack = TaskBinding.create(2);
         char[] returned = new char[2];
         String text = capture(() -> {
@@ -52,7 +57,7 @@ public class PublicChecks {
                    "Возвраты " + Arrays.toString(returned) + "; сообщения=" + text.replace("\n", "\\n"),
                    Arrays.equals(returned, new char[] {'B', 'A'}) && text.isEmpty());
     }
-    public static Observation observeBoundary() {
+    public static Observation observeBoundary() throws Throwable {
         Object stack = TaskBinding.create(1);
         char[] returned = new char[4];
         String text = capture(() -> {

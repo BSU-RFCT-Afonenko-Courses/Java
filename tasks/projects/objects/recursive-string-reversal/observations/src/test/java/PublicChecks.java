@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 
 
 /** Только два опубликованных наблюдения; клиент TaskBinding адаптируется к выбранному API. */
@@ -28,11 +29,11 @@ public class PublicChecks {
                + s.replace("\\", "\\\\").replace("\r", "\\r").replace("\n", "\\n").replace("\t", "\\t")
                + "\"";
     }
-    public static Observation observeNormal() {
+    public static Observation observeNormal() throws Throwable {
         String got = TaskBinding.printed("Java 25!");
         return new Observation(display(got), exact(got, "!52 avaJ"));
     }
-    public static Observation observeBoundary() {
+    public static Observation observeBoundary() throws Throwable {
         String got = TaskBinding.printed("");
         return new Observation(
                    got.isEmpty() ? "Пустой стандартный вывод." : display(got), exact(got, ""));

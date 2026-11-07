@@ -1,11 +1,15 @@
+import java.lang.Throwable;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
-import java.util.function.Supplier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class ContractTest {
-    static void select(Object[] input, Object[] expected, Supplier<Object[]> call) {
+    @java.lang.FunctionalInterface
+    private interface Selection {
+        Object[] get() throws Throwable;
+    }
+    static void select(Object[] input, Object[] expected, Selection call) throws Throwable {
         Object[] refs = input.clone();
         List<?> before = PublicChecks.values(input);
         List<?> expectedValues = PublicChecks.values(expected);
@@ -19,7 +23,7 @@ class ContractTest {
     }
     @Test
     @DisplayName("Повторения, пустые подборки и изменение свойств покупателя")
-    void duplicatesEmptyNoMatchesAndProperties() {
+    void duplicatesEmptyNoMatchesAndProperties() throws Throwable {
         Object a = TaskBinding.customer(1, "A", "B", "C", "0000000000000001"),
                b = TaskBinding.customer(2, "A", "A", "Z", "0000000000000002"),
                c = TaskBinding.customer(3, "A", "A", "A", "0000000000000003");

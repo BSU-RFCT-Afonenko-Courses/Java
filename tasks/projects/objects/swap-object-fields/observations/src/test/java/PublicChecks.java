@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 
 
 /** Два опубликованных наблюдения; внутренние имена решения свободны. */
@@ -23,7 +24,7 @@ public class PublicChecks {
     public static final String NORMAL_EXPECTED = "Прежние x/y содержат8/3.";
     public static final String BOUNDARY_EXPECTED = "Прежний x содержит-2.";
 
-    public static Observation observeNormal() {
+    public static Observation observeNormal() throws Throwable {
         Object x = TaskBinding.create(3), y = TaskBinding.create(8);
         Object oldX = x, oldY = y;
         TaskBinding.swap(x, y);
@@ -31,7 +32,7 @@ public class PublicChecks {
         return new Observation(
                    "Прежние x/y: " + a + ", " + b, a == 8 && b == 3 && x == oldX && y == oldY);
     }
-    public static Observation observeBoundary() {
+    public static Observation observeBoundary() throws Throwable {
         Object x = TaskBinding.create(-2), old = x;
         TaskBinding.swap(x, x);
         int value = TaskBinding.value(old);

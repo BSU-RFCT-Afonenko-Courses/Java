@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.math.BigInteger;
 import java.util.Arrays;
 
@@ -22,18 +23,20 @@ public class PublicChecks {
     public static final String BOUNDARY_INPUT = "Один x=1/2; [x,x,x,x]";
     public static final String NORMAL_EXPECTED = "5/6;1/6;1/6;3/2 и массив[5/6,1/3,2/5]";
     public static final String BOUNDARY_EXPECTED = "[1,1/2,1,1/2] по значениям";
-    static boolean fraction(long m, long n, Object x) {
+    static boolean fraction(long m, long n, Object x) throws Throwable {
         long[] p = TaskBinding.parts(x);
         return p[1] != 0
                && BigInteger.valueOf(m)
                .multiply(BigInteger.valueOf(p[1]))
                .equals(BigInteger.valueOf(n).multiply(BigInteger.valueOf(p[0])));
     }
-    static String fractions(Object[] a) {
-        return Arrays.toString(
-                   Arrays.stream(a).map(x -> Arrays.toString(TaskBinding.parts(x))).toArray());
+    static String fractions(Object[] a) throws Throwable {
+        String[] values = new String[a.length];
+        for (int i = 0; i < a.length; i++)
+            values[i] = Arrays.toString(TaskBinding.parts(a[i]));
+        return Arrays.toString(values);
     }
-    public static Observation observeNormal() {
+    public static Observation observeNormal() throws Throwable {
         long[][] expected = {{5, 6}, {1, 6}, {1, 6}, {3, 2}};
         boolean ok = true;
         StringBuilder actual = new StringBuilder("Операции=");
@@ -48,7 +51,7 @@ public class PublicChecks {
         return new Observation(actual + "Массив=" + fractions(a),
                                ok && fraction(5, 6, a[0]) && fraction(1, 3, a[1]) && fraction(2, 5, a[2]));
     }
-    public static Observation observeBoundary() {
+    public static Observation observeBoundary() throws Throwable {
         Object x = TaskBinding.value(1, 2);
         Object[] a = TaskBinding.array(x, x, x, x);
         TaskBinding.transform(a);

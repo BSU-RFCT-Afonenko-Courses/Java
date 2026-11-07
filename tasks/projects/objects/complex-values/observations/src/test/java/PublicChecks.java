@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.util.Arrays;
 
 /** Только два опубликованных наблюдения; клиент TaskBinding адаптируется к выбранному API. */
@@ -27,7 +28,7 @@ public class PublicChecks {
         return a.length == 2 && Double.isFinite(a[0]) && Double.isFinite(a[1])
                && Math.abs(a[0] - r) <= 1e-8 && Math.abs(a[1] - i) <= 1e-8;
     }
-    public static Observation observeNormal() {
+    public static Observation observeNormal() throws Throwable {
         double[][] e = {{4, -2}, {-2, 6}, {11, 2}, {-.2, .4}};
         boolean ok = true;
         StringBuilder actual = new StringBuilder("Операции=");
@@ -47,7 +48,7 @@ public class PublicChecks {
                                + "; произведение=" + Arrays.toString(p) + "; вход сохранён=" + kept,
                                ok && eq(s, 2, 0) && eq(p, 2, 0) && kept);
     }
-    public static Observation observeBoundary() {
+    public static Observation observeBoundary() throws Throwable {
         Object[] a = TaskBinding.array();
         double[] s = TaskBinding.parts(TaskBinding.sum(a)),
                  p = TaskBinding.parts(TaskBinding.product(a));

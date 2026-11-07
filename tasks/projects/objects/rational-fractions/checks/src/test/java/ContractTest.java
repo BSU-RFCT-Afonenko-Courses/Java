@@ -1,10 +1,11 @@
+import java.lang.Throwable;
 import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigInteger;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class ContractTest {
-    static void fraction(long m, long n, Object value) {
+    static void fraction(long m, long n, Object value) throws Throwable {
         long[] a = TaskBinding.parts(value);
         assertNotEquals(0, a[1]);
         assertEquals(BigInteger.valueOf(m).multiply(BigInteger.valueOf(a[1])),
@@ -12,7 +13,7 @@ class ContractTest {
     }
     @Test
     @DisplayName("Повторные ссылки, пустой массив и свободное представление знака")
-    void aliasesEmptyAndSignRepresentationFree() {
+    void aliasesEmptyAndSignRepresentationFree() throws Throwable {
         Object shared = TaskBinding.value(1, 2);
         Object[] a = TaskBinding.array(shared, shared, shared, shared);
         TaskBinding.transform(a);

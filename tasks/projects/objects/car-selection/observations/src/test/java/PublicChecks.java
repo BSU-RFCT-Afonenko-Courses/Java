@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,14 +32,19 @@ public class PublicChecks {
     public static final String BOUNDARY_EXPECTED = "Все три подборки пусты, вход сохранён.";
 
     // Снимок свойств принадлежит наблюдателю, даже если адаптер вернул живой список.
-    private static List<?> value(Object object) {
+    private static List<?> value(Object object) throws Throwable {
         return new ArrayList<>(TaskBinding.value(object));
     }
 
-    private static List<?> values(Object[] a) {
-        return a == null ? null : Arrays.stream(a).map(PublicChecks::value).toList();
+    private static List<?> values(Object[] a) throws Throwable {
+        if (a == null)
+            return null;
+        List<List<?>> rows = new ArrayList<>(a.length);
+        for (Object item : a)
+            rows.add(value(item));
+        return java.util.Collections.unmodifiableList(rows);
     }
-    private static boolean unchanged(Object[] before, List<?> states, Object[] after) {
+    private static boolean unchanged(Object[] before, List<?> states, Object[] after) throws Throwable {
         if (before.length != after.length)
             return false;
         for (int i = 0; i < before.length; i++)
@@ -47,7 +53,7 @@ public class PublicChecks {
         return states.equals(values(after));
     }
 
-    public static Observation observeNormal() {
+    public static Observation observeNormal() throws Throwable {
         Object a = TaskBinding.car(1, "Вектор", "M1", 2010, 10),
                b = TaskBinding.car(2, "Вектор", "M1", 2012, 20),
                c = TaskBinding.car(3, "Линия", "M2", 2020, 30);
@@ -86,7 +92,7 @@ public class PublicChecks {
         actual.append("Вход сохранён: ").append(unchanged(before, states, input));
         return new Observation(actual.toString(), okay);
     }
-    public static Observation observeBoundary() {
+    public static Observation observeBoundary() throws Throwable {
         Object c = TaskBinding.car(4, "Вектор", "M1", 2020, 10);
         Object[] input = TaskBinding.array(c), before = input.clone();
         var states = values(before);

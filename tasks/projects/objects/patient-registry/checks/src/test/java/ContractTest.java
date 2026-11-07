@@ -1,11 +1,15 @@
+import java.lang.Throwable;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
-import java.util.function.Supplier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class ContractTest {
-    static void select(Object[] input, Object[] expected, Supplier<Object[]> call) {
+    @java.lang.FunctionalInterface
+    private interface Selection {
+        Object[] get() throws Throwable;
+    }
+    static void select(Object[] input, Object[] expected, Selection call) throws Throwable {
         Object[] refs = input.clone();
         List<?> before = PublicChecks.values(input);
         List<?> expectedValues = PublicChecks.values(expected);
@@ -19,7 +23,7 @@ class ContractTest {
     }
     @Test
     @DisplayName("Точный диагноз, равные границы и свойства пациента")
-    void emptyNoMatchesSameBoundaryAndProperties() {
+    void emptyNoMatchesSameBoundaryAndProperties() throws Throwable {
         Object a = TaskBinding.patient(1, 1, "Flu"), b = TaskBinding.patient(2, 2, "flu");
         Object[] in = TaskBinding.array(a, b, a);
         select(in, new Object[] {b}, () -> TaskBinding.range(in, 2, 2));

@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,13 +30,18 @@ public class PublicChecks {
         "Б,В,А; карточки А и Б в любом порядке; вход сохранён";
     public static final String BOUNDARY_EXPECTED = "Обе подборки пусты";
     // Снимок скалярных свойств принадлежит наблюдателю; student values вправе быть live view.
-    static List<?> value(Object object) {
+    static List<?> value(Object object) throws Throwable {
         return new ArrayList<>(TaskBinding.value(object));
     }
-    static List<?> values(Object[] a) {
-        return a == null ? null : Arrays.stream(a).map(PublicChecks::value).toList();
+    static List<?> values(Object[] a) throws Throwable {
+        if (a == null)
+            return null;
+        List<List<?>> rows = new ArrayList<>(a.length);
+        for (Object item : a)
+            rows.add(value(item));
+        return java.util.Collections.unmodifiableList(rows);
     }
-    static boolean kept(Object[] input, Object[] before, List<?> state) {
+    static boolean kept(Object[] input, Object[] before, List<?> state) throws Throwable {
         if (input.length != before.length)
             return false;
         for (int i = 0; i < input.length; i++)
@@ -51,7 +57,7 @@ public class PublicChecks {
             m.merge(row, 1, Integer::sum);
         return m;
     }
-    public static Observation observeNormal() {
+    public static Observation observeNormal() throws Throwable {
         Object a = TaskBinding.customer(11, "Иванов", "Антон", "Ильич", "0000000000000010"),
                b = TaskBinding.customer(12, "Белов", "Борис", "Петрович", "0000000000000020"),
                c = TaskBinding.customer(13, "Иванов", "Антон", "Ильич", "0000000000000030");
@@ -79,7 +85,7 @@ public class PublicChecks {
                                Objects.equals(actualSorted, expectedSorted)
                                && Objects.equals(bag(actualRange), bag(expectedRange)) && keep1 && keep2 && model);
     }
-    public static Observation observeBoundary() {
+    public static Observation observeBoundary() throws Throwable {
         Object[] a = TaskBinding.array();
         Object[] s = TaskBinding.sorted(a);
         List<?> actualS = values(s);

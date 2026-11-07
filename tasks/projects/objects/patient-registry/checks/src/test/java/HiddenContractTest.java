@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -6,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class HiddenContractTest {
     @Test
     @DisplayName("Обе границы включаются, диагноз сохраняет повторные вхождения")
-    void sameBoundaryAndNoDedup() {
+    void sameBoundaryAndNoDedup() throws Throwable {
         Object a = TaskBinding.patient(97, 707, "X"), b = TaskBinding.patient(98, 708, "x");
         Object[] in = TaskBinding.array(a, b, a), before = in.clone();
         List<?> state = PublicChecks.values(in),

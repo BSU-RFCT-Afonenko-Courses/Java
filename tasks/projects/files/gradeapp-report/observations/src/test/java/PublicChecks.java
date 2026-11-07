@@ -2,9 +2,7 @@ import java.lang.AssertionError;
 import java.lang.Exception;
 import java.lang.Long;
 import java.lang.ProcessHandle;
-import java.lang.RuntimeException;
 import java.lang.String;
-import java.lang.SuppressWarnings;
 import java.lang.System;
 import java.lang.Throwable;
 import java.nio.file.Files;
@@ -22,9 +20,8 @@ public class PublicChecks {
   CheckFailure(String expected,String actual){super("Ожидается: "+expected+"\nПолучено: "+actual);}}
  public static void checkNormal(Observation o){if(!o.passed())throw new CheckFailure("Код 0; stdout: s10;Ada;90 и s3;Ann;90 с последним переводом строки; stderr пуст; вход сохранён",o.actual());}
  public static void checkBoundary(Observation o){if(!o.passed())throw new CheckFailure("Код 3; stdout пуст; stderr: ошибка данных: строка 3: повтор кода s1; вход сохранён",o.actual());}
- @SuppressWarnings("unchecked")private static <E extends Throwable,R>R forward(Throwable e)throws E{throw(E)e;}
- public static Observation observeNormal(){try{return observe(false);}catch(Throwable e){return PublicChecks.<RuntimeException,Observation>forward(e);}}
- public static Observation observeBoundary(){try{return observe(true);}catch(Throwable e){return PublicChecks.<RuntimeException,Observation>forward(e);}}
+ public static Observation observeNormal()throws Exception{return observe(false);}
+ public static Observation observeBoundary()throws Exception{return observe(true);}
  private static String quote(String s){return "\""+s.replace("\\","\\\\").replace("\"","\\\"").replace("\r","\\r").replace("\n","\\n").replace("\t","\\t")+"\"";}
  private static Observation observe(boolean boundary)throws Exception{
   Path d=Files.createDirectory(Path.of(System.getProperty("java.io.tmpdir"),"gradeapp-public-"+ProcessHandle.current().pid()+"-"+Long.toUnsignedString(System.nanoTime())));
