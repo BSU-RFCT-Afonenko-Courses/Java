@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.lang.Double;
 import java.lang.Math;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ class ContractTest {
 
     @Test
     @org.junit.jupiter.api.DisplayName("Произведение: нулевые коэффициенты, допуск и независимость входов")
-    void independentZeroLengthCancellationTolerance() {
+    void independentZeroLengthCancellationTolerance() throws Throwable {
         var a = new ArrayList<>(List.of(2.0, -2.0, 0.0));
         var b = new ArrayList<>(List.of(0.5, 0.5));
         var r = TaskBinding.multiply(a, b);

@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.lang.Double;
 import java.lang.Object;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,7 @@ class HistoricalContractTest {
 
     @Test
     @org.junit.jupiter.api.DisplayName("Знаковые нули и равные округлённые расстояния")
-    void signedZeroAndGlobalRoundedDistanceTie() {
+    void signedZeroAndGlobalRoundedDistanceTie() throws Throwable {
         Object s = TaskBinding.create();
         TaskBinding.add(s, +0.0);
         TaskBinding.add(s, -0.0);

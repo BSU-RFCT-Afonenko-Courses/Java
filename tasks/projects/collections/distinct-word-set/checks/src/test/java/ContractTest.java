@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -9,7 +10,7 @@ class ContractTest {
 
     @Test
     @org.junit.jupiter.api.DisplayName("Границы английских слов и повторения")
-    void independentBoundariesAndLanguage() {
+    void independentBoundariesAndLanguage() throws Throwable {
         Locale old = Locale.getDefault();
         try {
             for (Locale locale : List.of(Locale.ENGLISH, Locale.forLanguageTag("tr-TR"))) {

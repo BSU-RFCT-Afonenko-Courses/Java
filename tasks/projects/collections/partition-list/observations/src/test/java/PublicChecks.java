@@ -1,5 +1,5 @@
+import java.lang.Throwable;
 import java.lang.AssertionError;
-import java.lang.Exception;
 import java.lang.Integer;
 import java.lang.String;
 import java.util.ArrayList;
@@ -19,13 +19,13 @@ public class PublicChecks {
     static final String BOUNDARY_INPUT = "[]; X=0";
     static final String BOUNDARY_EXPECTED = "Тот же пустой список";
     public record Observation(String actual, boolean passed) {}
-    public static Observation observeNormal() throws Exception {
+    public static Observation observeNormal() throws Throwable {
         return partition(new ArrayList<>(List.of(3, 1, 4, 2, 3)), 2);
     }
-    public static Observation observeBoundary() throws Exception {
+    public static Observation observeBoundary() throws Throwable {
         return partition(new ArrayList<>(), 0);
     }
-    static Observation partition(List<Integer> list, int x) {
+    static Observation partition(List<Integer> list, int x) throws Throwable {
         var before = new ArrayList<>(list);
         var identity = list;
         TaskBinding.partition(list, x);

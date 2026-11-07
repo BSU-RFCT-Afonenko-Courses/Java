@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.lang.Object;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,7 @@ class HistoricalContractTest {
 
     @Test
     @org.junit.jupiter.api.DisplayName("Пустой граф и несколько независимых рёбер")
-    void noVerticesAndSeveralEdges() {
+    void noVerticesAndSeveralEdges() throws Throwable {
         Object empty = TaskBinding.graph(0);
         assertNotNull(empty);
         Object g = TaskBinding.graph(4);

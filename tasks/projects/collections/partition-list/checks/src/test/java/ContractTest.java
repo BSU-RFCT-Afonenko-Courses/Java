@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.lang.Integer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +14,7 @@ class ContractTest {
 
     @Test
     @org.junit.jupiter.api.DisplayName("Крайние int, повторы и изменяемый список фиксированного размера")
-    void extremaDuplicatesAndFixedSizeMutableList() {
+    void extremaDuplicatesAndFixedSizeMutableList() throws Throwable {
         for (List<Integer> v : List.of(new LinkedList<>(List.of(4, 0, 4, 1, -1)),
                  Arrays.asList(Integer.MAX_VALUE, Integer.MIN_VALUE, 0, Integer.MIN_VALUE))) {
             var before = new ArrayList<>(v);

@@ -1,6 +1,6 @@
+import java.lang.Throwable;
 import java.lang.AssertionError;
 import java.lang.Double;
-import java.lang.Exception;
 import java.lang.Math;
 import java.lang.String;
 import java.util.ArrayList;
@@ -19,14 +19,14 @@ public class PublicChecks {
     static final String BOUNDARY_INPUT = "[1,0] и []";
     static final String BOUNDARY_EXPECTED = "Пустой результат, входы прежние";
     public record Observation(String actual, boolean passed) {}
-    public static Observation observeNormal() throws Exception {
+    public static Observation observeNormal() throws Throwable {
         return product(
             new ArrayList<>(List.of(1.0, 2.0)), new ArrayList<>(List.of(3.0, 4.0)), List.of(3.0, 10.0, 8.0));
     }
-    public static Observation observeBoundary() throws Exception {
+    public static Observation observeBoundary() throws Throwable {
         return product(new ArrayList<>(List.of(1.0, 0.0)), new ArrayList<>(), List.of());
     }
-    static Observation product(List<Double> a, List<Double> b, List<Double> expected) {
+    static Observation product(List<Double> a, List<Double> b, List<Double> expected) throws Throwable {
         var aa = new ArrayList<>(a);
         var bb = new ArrayList<>(b);
         var r = TaskBinding.multiply(a, b);

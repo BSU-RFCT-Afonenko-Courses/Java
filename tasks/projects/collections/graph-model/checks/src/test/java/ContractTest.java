@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.lang.Object;
 import java.util.Set;
 import java.util.*;
@@ -8,7 +9,7 @@ class ContractTest {
 
     @Test
     @org.junit.jupiter.api.DisplayName("Изменение рёбер и сохранение изолированной вершины")
-    void differentEdgesAndIsolatedVertexPersistence() {
+    void differentEdgesAndIsolatedVertexPersistence() throws Throwable {
         Object g = TaskBinding.graph(5);
         TaskBinding.add(g, 0, 3);
         TaskBinding.add(g, 3, 4);

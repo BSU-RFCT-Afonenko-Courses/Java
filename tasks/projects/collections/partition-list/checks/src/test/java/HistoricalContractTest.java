@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.lang.Integer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +22,7 @@ class HistoricalContractTest {
 
     @Test
     @org.junit.jupiter.api.DisplayName("Пустой список и крайние положения границы")
-    void emptyAllNoneAndLinkedList() {
+    void emptyAllNoneAndLinkedList() throws Throwable {
         for (List<Integer> in : List.of(new ArrayList<Integer>(), new ArrayList<>(List.of(-1, 0, 1)),
                  new ArrayList<>(List.of(2, 3)), new LinkedList<>(List.of(4, 0, 4, 1)))) {
             Map<Integer, Integer> before = frequency(in);

@@ -1,5 +1,5 @@
+import java.lang.Throwable;
 import java.lang.AssertionError;
-import java.lang.Exception;
 import java.lang.String;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public class PublicChecks {
     static final String BOUNDARY_INPUT = "Пустой список";
     static final String BOUNDARY_EXPECTED = "Пустая последовательность; исходник прежний";
     public record Observation(String actual, boolean passed) {}
-    public static Observation observeNormal() throws Exception {
+    public static Observation observeNormal() throws Throwable {
         var s = new ArrayList<>(List.of("Всё ходит по цепи кругом;",
             "Златая цепь на дубе том:", "У лукоморья дуб зелёный;", "И днём и ночью кот учёный"));
         var before = new ArrayList<>(s);
@@ -25,7 +25,7 @@ public class PublicChecks {
         return new Observation(
             "Исходный=" + s + "; результат=" + a, expected.equals(a) && s.equals(before) && a != s);
     }
-    public static Observation observeBoundary() throws Exception {
+    public static Observation observeBoundary() throws Throwable {
         var s = new ArrayList<String>();
         var a = TaskBinding.ordered(s);
         return new Observation("Исходный=" + s + "; результат=" + a, a != null && a.isEmpty() && s.isEmpty());

@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.lang.Integer;
 import java.lang.String;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ class HistoricalContractTest {
 
     @Test
     @org.junit.jupiter.api.DisplayName("Пустые строки, UTF-16 и устойчивый порядок строк")
-    void utf16EmptyAndPoem() {
+    void utf16EmptyAndPoem() throws Throwable {
         assertTrue(TaskBinding.ordered(new ArrayList<>()).isEmpty());
         List<String> in = new ArrayList<>(List.of("😀", "ab", "x", "cd"));
         assertEquals(List.of("x", "😀", "ab", "cd"), TaskBinding.ordered(in));

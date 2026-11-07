@@ -1,5 +1,5 @@
+import java.lang.Throwable;
 import java.lang.AssertionError;
-import java.lang.Exception;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.String;
@@ -20,7 +20,7 @@ public class PublicChecks {
     static final String BOUNDARY_EXPECTED =
         "Конструктор завершён; пустое хранение также проверяет преподаватель по исходнику";
     public record Observation(String actual, boolean passed) {}
-    public static Observation observeNormal() throws Exception {
+    public static Observation observeNormal() throws Throwable {
         Object g = TaskBinding.graph(3);
         TaskBinding.add(g, 0, 1);
         TaskBinding.add(g, 0, 1);
@@ -41,7 +41,7 @@ public class PublicChecks {
         ok &= !TaskBinding.edge(g, 0, 1) && !TaskBinding.edge(g, 1, 0);
         return new Observation("Соседи до удаления=" + before + "; после=" + after, ok);
     }
-    public static Observation observeBoundary() throws Exception {
+    public static Observation observeBoundary() throws Throwable {
         Object g = TaskBinding.graph(0);
         return new Observation(g == null
                 ? "Объект не создан"

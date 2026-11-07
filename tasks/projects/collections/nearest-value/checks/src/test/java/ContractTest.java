@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.lang.Double;
 import java.lang.Object;
 import java.util.*;
@@ -8,7 +9,7 @@ class ContractTest {
 
     @Test
     @org.junit.jupiter.api.DisplayName("Повторы, знаковые нули и удаление значений")
-    void duplicateSignedZerosAndRemoval() {
+    void duplicateSignedZerosAndRemoval() throws Throwable {
         Object s = TaskBinding.create();
         TaskBinding.add(s, -0.0);
         TaskBinding.add(s, 0.0);

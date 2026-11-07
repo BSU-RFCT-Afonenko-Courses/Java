@@ -1,8 +1,6 @@
 import java.lang.Double;
 import java.lang.FunctionalInterface;
 import java.lang.Integer;
-import java.lang.RuntimeException;
-import java.lang.SuppressWarnings;
 import java.lang.Throwable;
 import java.util.HashMap;
 import java.util.*;
@@ -15,18 +13,10 @@ class TaskBinding {
     private interface Invocation<T> {
         T run() throws Throwable;
     }
-    private static <T> T invoke(Invocation<T> call) {
-        try {
-            return call.run();
-        } catch (Throwable failure) {
-            return TaskBinding.<RuntimeException, T>raise(failure);
-        }
+    private static <T> T invoke(Invocation<T> call) throws Throwable {
+        return call.run();
     }
-    @SuppressWarnings("unchecked")
-    private static <E extends Throwable, T> T raise(Throwable failure) throws E {
-        throw (E) failure;
-    }
-    static HashMap<Integer, Double> add(HashMap<Integer, Double> a, HashMap<Integer, Double> b) {
+    static HashMap<Integer, Double> add(HashMap<Integer, Double> a, HashMap<Integer, Double> b) throws Throwable {
         return invoke(() -> Study.add(a, b));
     }
 }

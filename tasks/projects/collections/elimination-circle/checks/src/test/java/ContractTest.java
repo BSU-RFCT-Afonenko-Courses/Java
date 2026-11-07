@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.util.List;
 import java.util.*;
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,7 @@ class ContractTest {
 
     @Test
     @org.junit.jupiter.api.DisplayName("Вычёркивание для семи и восьми участников")
-    void independentSevenEight() {
+    void independentSevenEight() throws Throwable {
         for (int k = 0; k < 2; k++) {
             assertEquals(List.of(2, 4, 6, 1, 5, 3), TaskBinding.removed(7, k));
             assertEquals(7, TaskBinding.survivor(7, k));

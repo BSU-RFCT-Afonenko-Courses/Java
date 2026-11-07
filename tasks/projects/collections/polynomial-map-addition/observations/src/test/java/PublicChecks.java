@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.lang.AssertionError;
 import java.lang.Double;
 import java.lang.Integer;
@@ -12,6 +13,9 @@ import java.util.*;
 public class PublicChecks {
     public record Observation(String actual, boolean ok) {}
     private static final class CheckFailure extends AssertionError {
+        @java.io.Serial
+        private static final long serialVersionUID = 1L;
+
         CheckFailure(String message) {
             super(message);
         }
@@ -45,7 +49,7 @@ public class PublicChecks {
         }
         return true;
     }
-    public static Observation observeNormal() {
+    public static Observation observeNormal() throws Throwable {
         var a = new HashMap<>(Map.of(0, 1.0, 2, 3.0));
         var b = new HashMap<>(Map.of(1, 2.0, 2, -3.0));
         var out = TaskBinding.add(a, b);
@@ -55,7 +59,7 @@ public class PublicChecks {
                 + "; отдельная HashMap=" + (out != null && out != a && out != b),
             ok);
     }
-    public static Observation observeBoundary() {
+    public static Observation observeBoundary() throws Throwable {
         var a = new HashMap<Integer, Double>();
         var b = new HashMap<Integer, Double>();
         var out = TaskBinding.add(a, b);

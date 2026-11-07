@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.lang.Integer;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +14,7 @@ class HistoricalContractTest {
 
     @Test
     @org.junit.jupiter.api.DisplayName("Ручные трассы и границы числа участников")
-    void handTracedSmallAndFullDomainBoundary() {
+    void handTracedSmallAndFullDomainBoundary() throws Throwable {
         List<List<Integer>> expected =
             List.of(List.of(2), List.of(2, 1), List.of(2, 4, 3), List.of(2, 4, 6, 3, 1));
         int[] n = {2, 3, 4, 6}, last = {1, 3, 1, 5};

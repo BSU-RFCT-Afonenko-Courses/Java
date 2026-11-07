@@ -2,8 +2,6 @@ import java.lang.AssertionError;
 import java.lang.FunctionalInterface;
 import java.lang.Integer;
 import java.lang.Object;
-import java.lang.RuntimeException;
-import java.lang.SuppressWarnings;
 import java.lang.Throwable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -18,36 +16,28 @@ class TaskBinding {
     private interface Invocation<T> {
         T run() throws Throwable;
     }
-    private static <T> T invoke(Invocation<T> call) {
-        try {
-            return call.run();
-        } catch (Throwable failure) {
-            return TaskBinding.<RuntimeException, T>raise(failure);
-        }
+    private static <T> T invoke(Invocation<T> call) throws Throwable {
+        return call.run();
     }
-    @SuppressWarnings("unchecked")
-    private static <E extends Throwable, T> T raise(Throwable failure) throws E {
-        throw (E) failure;
-    }
-    static Object graph(int n) {
+    static Object graph(int n) throws Throwable {
         return invoke(() -> Study.graph(n));
     }
-    static void add(Object g, int a, int b) {
+    static void add(Object g, int a, int b) throws Throwable {
         invoke(() -> {
             Study.addEdge(g, a, b);
             return null;
         });
     }
-    static void remove(Object g, int a, int b) {
+    static void remove(Object g, int a, int b) throws Throwable {
         invoke(() -> {
             Study.removeEdge(g, a, b);
             return null;
         });
     }
-    static boolean edge(Object g, int a, int b) {
+    static boolean edge(Object g, int a, int b) throws Throwable {
         return invoke(() -> Study.hasEdge(g, a, b));
     }
-    static Set<Integer> neighbors(Object g, int v) {
+    static Set<Integer> neighbors(Object g, int v) throws Throwable {
         Collection<Integer> actual = invoke(() -> Study.neighbors(g, v));
         if (actual == null)
             throw new AssertionError("Соседи не определены");

@@ -1,6 +1,6 @@
+import java.lang.Throwable;
 import java.lang.AssertionError;
 import java.lang.Double;
-import java.lang.Exception;
 import java.lang.Object;
 import java.lang.String;
 import java.util.List;
@@ -18,7 +18,7 @@ public class PublicChecks {
     static final String BOUNDARY_INPUT = "-100,0,100; запрос1e150";
     static final String BOUNDARY_EXPECTED = "OptionalDouble[-100]";
     public record Observation(String actual, boolean passed) {}
-    public static Observation observeNormal() throws Exception {
+    public static Observation observeNormal() throws Throwable {
         Object s = TaskBinding.create();
         TaskBinding.add(s, 2);
         TaskBinding.add(s, 8);
@@ -27,7 +27,7 @@ public class PublicChecks {
         var c = TaskBinding.nearest(s, 5);
         return new Observation(List.of(a, b, c).toString(), equal(a, 2) && equal(b, 8) && equal(c, 2));
     }
-    public static Observation observeBoundary() throws Exception {
+    public static Observation observeBoundary() throws Throwable {
         Object s = TaskBinding.create();
         for (double v : new double[] {-100, 0, 100})
             TaskBinding.add(s, v);

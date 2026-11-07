@@ -1,7 +1,5 @@
 import java.lang.FunctionalInterface;
 import java.lang.Integer;
-import java.lang.RuntimeException;
-import java.lang.SuppressWarnings;
 import java.lang.Throwable;
 import java.util.Set;
 import java.util.*;
@@ -14,21 +12,13 @@ class TaskBinding {
     private interface Invocation<T> {
         T run() throws Throwable;
     }
-    private static <T> T invoke(Invocation<T> call) {
-        try {
-            return call.run();
-        } catch (Throwable failure) {
-            return TaskBinding.<RuntimeException, T>raise(failure);
-        }
+    private static <T> T invoke(Invocation<T> call) throws Throwable {
+        return call.run();
     }
-    @SuppressWarnings("unchecked")
-    private static <E extends Throwable, T> T raise(Throwable failure) throws E {
-        throw (E) failure;
-    }
-    static Set<Integer> union(Set<Integer> a, Set<Integer> b) {
+    static Set<Integer> union(Set<Integer> a, Set<Integer> b) throws Throwable {
         return invoke(() -> Study.union(a, b));
     }
-    static Set<Integer> intersection(Set<Integer> a, Set<Integer> b) {
+    static Set<Integer> intersection(Set<Integer> a, Set<Integer> b) throws Throwable {
         return invoke(() -> Study.intersection(a, b));
     }
 }

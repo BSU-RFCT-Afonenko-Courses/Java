@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.*;
@@ -8,7 +9,7 @@ class ContractTest {
 
     @Test
     @org.junit.jupiter.api.DisplayName("Повторы, длина UTF-16 и независимость результата")
-    void repeatsUtf16AndIndependentResult() {
+    void repeatsUtf16AndIndependentResult() throws Throwable {
         var input = new ArrayList<>(List.of("bb", "😀", "a", "bb", "", "cd"));
         var before = new ArrayList<>(input);
         var out = TaskBinding.ordered(input);

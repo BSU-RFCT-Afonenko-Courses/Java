@@ -1,5 +1,5 @@
+import java.lang.Throwable;
 import java.lang.AssertionError;
-import java.lang.Exception;
 import java.lang.String;
 import java.util.Locale;
 import java.util.Set;
@@ -16,12 +16,12 @@ public class PublicChecks {
     static final String BOUNDARY_INPUT = "I I, i; tr-TR";
     static final String BOUNDARY_EXPECTED = "Единственный элемент i";
     public record Observation(String actual, boolean passed) {}
-    public static Observation observeNormal() throws Exception {
+    public static Observation observeNormal() throws Throwable {
         String s = "one, ONE! two";
         var a = TaskBinding.words(s);
         return new Observation(String.valueOf(a), Set.of("one", "two").equals(a));
     }
-    public static Observation observeBoundary() throws Exception {
+    public static Observation observeBoundary() throws Throwable {
         Locale old = Locale.getDefault();
         try {
             Locale.setDefault(Locale.forLanguageTag("tr-TR"));

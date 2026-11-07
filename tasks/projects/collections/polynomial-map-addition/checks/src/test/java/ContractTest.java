@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.lang.Double;
 import java.lang.Integer;
 import java.math.BigDecimal;
@@ -11,7 +12,7 @@ import java.util.*;
 import java.math.*;
 
 class ContractTest {
-    static void check(HashMap<Integer, Double> a, HashMap<Integer, Double> b) {
+    static void check(HashMap<Integer, Double> a, HashMap<Integer, Double> b) throws Throwable {
         HashMap<Integer, Double> oldA = new HashMap<>(a), oldB = new HashMap<>(b);
         HashMap<Integer, Double> actual = TaskBinding.add(a, b);
         assertNotNull(actual);
@@ -43,7 +44,7 @@ class ContractTest {
 
     @Test
     @org.junit.jupiter.api.DisplayName("Сумма многочленов: сокращение, пустые входы и конечные крайние числа")
-    void emptyCancellationAndExtremeFinite() {
+    void emptyCancellationAndExtremeFinite() throws Throwable {
         check(new HashMap<>(), new HashMap<>());
         check(new HashMap<>(Map.of(0, 1.0, 2, 3.0)), new HashMap<>(Map.of(1, 2.0, 2, -3.0)));
         check(new HashMap<>(Map.of(100, Double.MAX_VALUE, 1, 1e-300)),

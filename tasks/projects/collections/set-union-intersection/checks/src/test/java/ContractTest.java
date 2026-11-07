@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.lang.Integer;
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +13,7 @@ class ContractTest {
     @Test
     @org.junit.jupiter.api.
     DisplayName("Пустые, равные и непересекающиеся множества; независимость результата")
-    void emptyEqualDisjointAndIndependentComposition() {
+    void emptyEqualDisjointAndIndependentComposition() throws Throwable {
         var cases = List.of(new Example(Set.of(1, 2), Set.of(), Set.of(1, 2), Set.of()),
             new Example(Set.of(1, 2), Set.of(1, 2), Set.of(1, 2), Set.of(1, 2)),
             new Example(Set.of(1, 2), Set.of(3, 4), Set.of(1, 2, 3, 4), Set.of()),

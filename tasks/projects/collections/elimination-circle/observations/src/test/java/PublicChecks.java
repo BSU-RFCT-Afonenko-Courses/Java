@@ -1,5 +1,5 @@
+import java.lang.Throwable;
 import java.lang.AssertionError;
-import java.lang.Exception;
 import java.lang.Integer;
 import java.lang.String;
 import java.lang.StringBuilder;
@@ -17,13 +17,13 @@ public class PublicChecks {
     static final String BOUNDARY_INPUT = "N=1";
     static final String BOUNDARY_EXPECTED = "Для обеих:удалений нет, остаётся1";
     public record Observation(String actual, boolean passed) {}
-    public static Observation observeNormal() throws Exception {
+    public static Observation observeNormal() throws Throwable {
         return circle(5, List.of(2, 4, 1, 5), 3);
     }
-    public static Observation observeBoundary() throws Exception {
+    public static Observation observeBoundary() throws Throwable {
         return circle(1, List.of(), 1);
     }
-    static Observation circle(int n, List<Integer> expected, int last) {
+    static Observation circle(int n, List<Integer> expected, int last) throws Throwable {
         boolean ok = true;
         var actual = new StringBuilder();
         for (int kind = 0; kind < 2; kind++) {

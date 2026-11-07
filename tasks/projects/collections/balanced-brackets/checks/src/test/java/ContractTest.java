@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.lang.String;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -8,7 +9,7 @@ class ContractTest {
 
     @Test
     @org.junit.jupiter.api.DisplayName("Соседние группы и несовпадающие виды скобок")
-    void adjacentAndMismatchedKinds() {
+    void adjacentAndMismatchedKinds() throws Throwable {
         String s = "()[]{}([])";
         assertTrue(TaskBinding.valid(s));
         assertEquals("()[]{}([])", s);

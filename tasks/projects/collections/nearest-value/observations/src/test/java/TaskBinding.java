@@ -1,7 +1,5 @@
 import java.lang.FunctionalInterface;
 import java.lang.Object;
-import java.lang.RuntimeException;
-import java.lang.SuppressWarnings;
 import java.lang.Throwable;
 import java.util.OptionalDouble;
 import java.util.*;
@@ -14,33 +12,25 @@ class TaskBinding {
     private interface Invocation<T> {
         T run() throws Throwable;
     }
-    private static <T> T invoke(Invocation<T> call) {
-        try {
-            return call.run();
-        } catch (Throwable failure) {
-            return TaskBinding.<RuntimeException, T>raise(failure);
-        }
+    private static <T> T invoke(Invocation<T> call) throws Throwable {
+        return call.run();
     }
-    @SuppressWarnings("unchecked")
-    private static <E extends Throwable, T> T raise(Throwable failure) throws E {
-        throw (E) failure;
-    }
-    static Object create() {
+    static Object create() throws Throwable {
         return invoke(() -> Study.create());
     }
-    static void add(Object s, double v) {
+    static void add(Object s, double v) throws Throwable {
         invoke(() -> {
             Study.add(s, v);
             return null;
         });
     }
-    static void remove(Object s, double v) {
+    static void remove(Object s, double v) throws Throwable {
         invoke(() -> {
             Study.remove(s, v);
             return null;
         });
     }
-    static OptionalDouble nearest(Object s, double q) {
+    static OptionalDouble nearest(Object s, double q) throws Throwable {
         return invoke(() -> Study.nearest(s, q));
     }
 }

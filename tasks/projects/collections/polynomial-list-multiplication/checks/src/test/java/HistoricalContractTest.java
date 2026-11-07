@@ -1,3 +1,4 @@
+import java.lang.Throwable;
 import java.lang.Double;
 import java.lang.Math;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ class HistoricalContractTest {
 
     @Test
     @org.junit.jupiter.api.DisplayName("Старшие нулевые коэффициенты и длинное произведение")
-    void zeroHighTermsCancellationAndIndependentInputs() {
+    void zeroHighTermsCancellationAndIndependentInputs() throws Throwable {
         List<Double> a = new ArrayList<>(List.of(1.0, 1.0, 0.0)), b = new ArrayList<>(List.of(1.0, -1.0));
         List<Double> out = TaskBinding.multiply(a, b);
         assertEquals(4, out.size());
