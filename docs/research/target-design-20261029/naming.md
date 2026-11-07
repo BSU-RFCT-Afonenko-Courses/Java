@@ -33,7 +33,14 @@
 
 [Официальный Quarto](https://quarto.org/docs/authoring/cross-references) требует соответствующего типа (`sec-`, `fig-`, `tbl-`, `exr-`, `sol-` и другие), нижнего регистра для crossref ID и рекомендует избегать `_` из-за LaTeX/PDF. Зарезервированный префикс нельзя произвольно давать любому техническому блоку. [Pandoc](https://pandoc.org/MANUAL.html#extension-auto_identifiers) сохраняет двойной дефис в примере `dogs--in-my-house`: `--` сам по себе не запрещён. Это не доказательство нового соглашения или работы всех экспортёров с ним. Документация проверена 29 октября; новых render-проб в этом исследовании нет.
 
-[Скрипт лексической сверки](evidence/project-id-check.py) и [компактный результат](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/research/target-design-20261029/evidence/project-id-summary.json), воспроизведённый root, охватили 206 QMD и все 128 нынешних Java упражнений с явным `project`; установлено совпадение **прямой** проекции из уже известного пути: `exr-` + путь без `/projects/` + `/` → `-`. Это лексическая сверка исходников, не квалификация сайта. Обратная операция неоднозначна: условные `/projects/a-b/c` и `/projects/a/b-c` дадут одинаковый `exr-a-b-c`. Дубликат ID нужно обнаруживать, а не угадывать нужную границу.
+[Скрипт лексической сверки](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/research/target-design-20261029/evidence/project-id-check.py) и [компактный результат](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/research/target-design-20261029/evidence/project-id-summary.json), воспроизведённый root, охватили 206 QMD и все 128 нынешних Java упражнений с явным `project`; установлено совпадение **прямой** проекции из уже известного пути: `exr-` + путь без `/projects/` + `/` → `-`. Это лексическая сверка исходников, не квалификация сайта. Обратная операция неоднозначна: условные `/projects/a-b/c` и `/projects/a/b-c` дадут одинаковый `exr-a-b-c`. Дубликат ID нужно обнаруживать, а не угадывать нужную границу.
+
+Исторический итог этой сверки — `PASS_LEXICAL_ONLY`: 128 пар и 128 совпадений.
+Поддерживаемая диагностика реализована в [normalizeDocument](https://github.com/Afonenko-Course-Tools/quarto-course/blob/ee461578fe8ba704395cd86eeb3847a0930ea22d/_extensions/course-core/document/normalize.ts) и проверяется [отдельным тестом](https://github.com/Afonenko-Course-Tools/quarto-course/blob/ee461578fe8ba704395cd86eeb3847a0930ea22d/tests/project-id-warning.ts).
+Из известного project она получает ожидаемый ID прямой проекцией, сохраняя
+составные имена; несовпадение даёт WARNING без переименования. Известный source
+выводится достоверно, неизвестная строка не выдумывается; структурные конфликты
+остаются ERROR. Этот тест не повторяет инвентаризацию всех 128 упражнений.
 
 ## 3 Принятое общее правило
 
