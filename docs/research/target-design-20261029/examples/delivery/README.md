@@ -1,0 +1,15 @@
+Подготовлено агентом. Пользователь не просматривал; примеры целевой выдачи **НЕ ПРИНЯТЫ** и не реализуют новый producer.
+
+Gradle-код этого непринятого примера доступен в [точном снимке Git](https://github.com/BSU-RFCT-Afonenko-Courses/Java/tree/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/research/target-design-20261029/examples/delivery). Описанные команды относятся к историческому комплекту; текущий учебный build задаётся материалами курса.
+
+# Состав и обычная Gradle-сборка
+
+[Общий build](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/research/target-design-20261029/examples/delivery/profiles/java-junit/build.gradle) и [settings](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/research/target-design-20261029/examples/delivery/profiles/java-junit/settings.gradle) — настоящие текстовые Gradle-файлы с обычными source roots/Jupiter. BOM задаёт версию JUnit один раз. Версии — кандидат новой системы по официальной документации 29.10.2026; установленные файлы курса не менялись. [Общая инструкция](profiles/java-junit/README.md) показывает отдельный канон пояснений рядом с профилем. Эти файлы не запускались.
+
+[Author settings](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/research/target-design-20261029/examples/delivery/author-full/settings.gradle) — самостоятельный пример разделения starter/reference по Gradle subprojects. Каталоги `contexts/*` намеренно не выданы за материализованный полный проект: настоящие selected full sources отсутствуют в прежнем исследовательском комплекте. Несколько `Main` не должны попадать в один source root. Альтернативы включаются только по явным объявлениям, не через scan всех папок.
+
+[Inventory](reverse-array-inventory.json) вычислен по существующим байтам. Он отдельно перечисляет наблюдённые файлы прежнего комплекта и предлагаемые роли/targets нового дизайна. Поля этого JSON — исследовательская запись, не утверждённая схема. `PublicChecks`/старый demo wrapper показаны как переходный факт; они не выбраны новым универсальным runner. Два demo не объявляются полным оценочным набором. Исторический reference не объявляется принятым финальным эталоном.
+
+Достаточная однофайловая сдача `Main.java` задаётся явно и независимо от `src/main/java/Main.java` в IDE. ZIP для Pages/PL содержит одно и то же каноническое student-содержимое, а не преподавательские решения. Настоящая новая материализация, README с разрешёнными native include/assets, PL execution и Workspace требуют реализации и приёмки.
+
+Узкая проверка этого пакета — хеши/эквивалентность прежних byte copies, JSON, наличие файлов и локальные ссылки. В [свидетельстве](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/research/target-design-20261029/evidence/delivery-verification.json) результат статической проверки отделён от Gradle/JUnit/PL: они не запускались. Никакого исходника задачи, теста или учебного решения здесь не сочинено.

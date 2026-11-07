@@ -1,0 +1,819 @@
+diff --git a/README.md b/README.md
+index 3b7863b..c8bb217 100644
+--- a/README.md
++++ b/README.md
+@@ -128,7 +128,7 @@ reference-catalog: {namespace: theory}
+ 
+ Каждая часть рендерится одной штатной командой `quarto render . --to <to>` с выбранными профилями. `default` сохраняет native выбор первого формата документа, включая смешанный HTML index и Revealjs. `html` или `revealjs` явно выбирают этот native формат для всей части. Publisher не выводит формат из project inspect и не вводит собственную эвристику единственного web-формата. Если HTML/PDF конфигурация ставит PDF первым, автор выбирает `to: html` для веб-публикации; `default` следует настоящему порядку Quarto. Тип book/website, metadata, профили и hooks сохраняются.
+ 
+-До cleanup один project inspect каждого owner независимо определяет selected sources и resources. В полной композиции actual Core catalog должен точно покрывать этот selected set и текущие HTML outputs; явный `to` проверяется по actual Core format. Проверка выполняется внутри существующей live operation до упаковки ZIP соответствующего owner, без нового lease или приватного API. Для `default` формат является только native/Core фактом. Без Core успешная native команда и текущие output paths не объявляются модельным release proof. Partial render/preview сохраняет локальную область.
++До cleanup один project inspect каждого owner независимо определяет selected sources и resources. В полной композиции actual Core catalog должен точно покрывать этот selected set и текущие HTML outputs; явный `to` проверяется по actual Core format. Проверка выполняется внутри единой Core publication session до подготовки ZIP соответствующего owner, без нового lease или приватного API. Для `default` формат является только native/Core фактом. Без Core успешная native команда и текущие output paths не объявляются модельной publication authority. Partial render/preview сохраняет локальную область.
+ 
+ Свежие outputs, ресурсы и search монтируются по путям папок; QRC строго связывает
+ текущие HTML и объединяет search. `.quarto`, `_freeze` и кеши движков сохраняются.
+@@ -325,3 +325,8 @@ Navigation из того же namespace установленных расшир
+ Состав берётся из `subprojects`; отдельный список ссылок не нужен.
+ Правила standalone и явно заданных авторских ссылок сохраняются без включения
+ общей композиции. Подробности: [контракт](spec/contract.md#общее-меню-курса-530).
++
++Обычная Native публикация с Download и без него использует единый Core/PL
++маршрут; grading/seed qualification выполняется отдельно. Download публикует
++готовый draft после успешного Core closing. Ранние clean/render/mount effects
++сохраняются без общего rollback. Подробности — [публичная композиция](docs/public-operation.md).
+diff --git a/_extensions/course-site/application/compose.ts b/_extensions/course-site/application/compose.ts
+index 14551f4..0d984bd 100644
+--- a/_extensions/course-site/application/compose.ts
++++ b/_extensions/course-site/application/compose.ts
+@@ -25,8 +25,8 @@ import { profileArguments, quarto } from "../infrastructure/process.ts";
+ import { publicOutputs, readCollection } from "../infrastructure/collection.ts";
+ import type {
+   NativeCatalog,
+-  NativeOperation,
+-  NativeReleaseRequest,
++  PreparedDownloads,
++  PublicationInspection,
+   NativeSiteRecord,
+   SiblingModuleMap,
+ } from "./sibling-contracts.ts";
+@@ -42,7 +42,7 @@ function module<Name extends keyof SiblingModuleMap>(
+ ): Promise<SiblingModuleMap[Name]>;
+ // Остальные публичные соседи пока сохраняют прежнюю нетипизированную границу.
+ function module(
+-  name: "project-download" | "reference-catalog" | "course-navigation",
++  name: "reference-catalog" | "course-navigation",
+   path: "public.ts",
+   owner?: string,
+ ): Promise<any>;
+@@ -130,78 +130,12 @@ async function coreHook(root: string, config: any, phase: "pre" | "post") {
+       {},
+       true,
+     );
+-    if (phase === "pre") {
+-      const path = join(siblings, "course-prairielearn", "public.ts");
+-      let PL: SiblingModuleMap["course-prairielearn"] | undefined;
+-      try {
+-        await Deno.stat(path);
+-        PL = await import(toFileUrl(path).href);
+-      } catch (cause) {
+-        if (!(cause instanceof Deno.errors.NotFound)) throw cause;
+-      }
+-      if (PL) {
+-        await PL.prepareNativeAdapter(
+-          await module("course-core", "public.ts"),
+-          {
+-            root,
+-            profiles: (Deno.env.get("QUARTO_PROFILE") || "").split(",").filter(
+-              Boolean,
+-            ),
+-            projection: projection(config),
+-            outputDirectory: resolve(
+-              root,
+-              Deno.env.get("QUARTO_PROJECT_OUTPUT_DIR") ||
+-                config.project?.["output-dir"] || "_site",
+-            ),
+-          },
+-        );
+-      }
+-    }
+   }
+ }
+ function projection(config: any): "student" | "author" {
+   return config["course-core-projection"] ??
+     (config.course?.view === "full" ? "author" : "student");
+ }
+-async function ownerRelease(
+-  root: string,
+-  operation: NativeOperation,
+-  Core: SiblingModuleMap["course-core"],
+-  selectedSources?: string[],
+-) {
+-  let PL: SiblingModuleMap["course-prairielearn"] | undefined;
+-  const path = join(ownerSiblings(root), "course-prairielearn", "public.ts");
+-  try {
+-    await Deno.stat(path);
+-    PL = await import(toFileUrl(path).href);
+-  } catch (cause) {
+-    if (!(cause instanceof Deno.errors.NotFound)) throw cause;
+-  }
+-  const adapter = PL?.createNativeAdapter({ root, core: Core });
+-  const request = {
+-      expectedSources: selectedSources ??
+-        operation.catalog.documents.map((d) => d.source),
+-    } satisfies NativeReleaseRequest,
+-    before = operation.metrics;
+-  const coreProof = await operation.validateRelease(
+-      request,
+-      adapter ? [adapter] : [],
+-    );
+-  // Второй proof пока приходит из PL producer с возвращаемым any.
+-  let proof: unknown = coreProof, validationPasses = 1;
+-  if (coreProof.validatedAdapters.includes("prairielearn")) {
+-    // Genuine Core proof требует переданный validator для каждого имени;
+-    // единственный validator выше — этот неизменяемый optional adapter.
+-    proof = await adapter!.validateCourse(operation, request);
+-    validationPasses++;
+-  }
+-  return {
+-    proof,
+-    validationPasses,
+-    metricsBefore: before,
+-    metricsAfter: operation.metrics,
+-  };
+-}
+ function catalogCoverage(catalog: NativeCatalog, record: NativeSiteRecord) {
+   const documents = catalog.documents;
+   const sources = new Set(documents.map((document) => document.source));
+@@ -278,48 +212,57 @@ async function finalizeDownloadsImpl(
+   catalogBaseUrl: string | undefined,
+   destinationDirectory?: string,
+ ) {
+-  let catalog, release;
+-  const observeOperation = (value: any, proof: unknown) => {
+-    catalogCoverage(value, record);
+-    catalog = value;
+-    release = proof;
+-  };
+-  if (config["project-download"]) {
+-    const Download = await module("project-download", "public.ts", root);
+-    await Download.finishDownloads(root, {
+-      native: nativeCore(config),
+-      outputDirectory: record.outputDir,
+-      projection: projection(config),
+-      profiles: record.profiles,
+-      baseUrl,
+-      referenceCatalog,
+-      catalogBaseUrl,
+-      observeOperation,
+-      destinationDirectory,
+-    });
+-  } else if (nativeCore(config)) {
+-    const Core = await module("course-core", "public.ts", root);
+-    await Core.withCurrentNativeOperation(
+-      {
+-        root,
++  if (!nativeCore(config)) {
++    if (config["project-download"]) {
++      const Download = await module("project-download", "public.ts", root);
++      await Download.finishDownloads(root, {
+         profiles: record.profiles,
+-        projection: projection(config),
+         outputDirectory: record.outputDir,
+-      },
+-      async (operation) => {
+-        catalogCoverage(operation.catalog, record);
+-        catalog = operation.catalog;
+-        release = await ownerRelease(
+-          root,
+-          operation,
+-          Core,
+-          record.selectedSources,
+-        );
+-      },
+-    );
++        destinationDirectory,
++      });
++    }
++    return undefined;
++  }
++  const Core = await module("course-core", "public.ts", root);
++  const pending: { draft?: PreparedDownloads } = {};
++  try {
++    const snapshot = await Core.withNativePublication({
++      root,
++      profiles: record.profiles,
++      projection: projection(config),
++      outputDirectory: record.outputDir,
++    }, record.selectedSources ? { expectedSources: record.selectedSources } : undefined,
++    async (publication) => {
++      catalogCoverage(publication.catalog, record);
++      let inspection: PublicationInspection | undefined;
++      if (publication.course.adapters.includes("prairielearn")) {
++        const PL = await module("course-prairielearn", "public.ts", root);
++        inspection = await PL.inspectPublication(publication);
++      }
++      if (config["project-download"]) {
++        const Download = await module("project-download", "public.ts", root);
++        // Сохранить handle до await outer closing: catch должен видеть draft.
++        pending.draft = await Download.prepareNativeDownloads(publication, {
++          destinationDirectory,
++          baseUrl,
++          referenceCatalog,
++          catalogBaseUrl,
++        });
++      }
++      return {
++        catalog: publication.catalog,
++        course: publication.course,
++        ...(inspection ? { inspection } : {}),
++      };
++    });
++    await pending.draft?.publish();
++    return snapshot;
++  } catch (cause) {
++    try { await pending.draft?.discard(); } catch { /* Cleanup не маскирует primary cause. */ }
++    throw cause;
+   }
+-  return catalog ? { catalog, release } : undefined;
+ }
++
+ export async function pre(root = Deno.cwd()): Promise<void> {
+   const state = statePath(root);
+   await safePath(root, state);
+@@ -335,7 +278,7 @@ export async function pre(root = Deno.cwd()): Promise<void> {
+   );
+   if (Deno.env.get("QUARTO_PROJECT_RENDER_ALL") !== "1") {
+     if (ws.config["project-download"]) {
+-      await (await module("project-download", "public.ts")).prepareDownloads(
++      await (await module("project-download", "public.ts")).resetDownloadRequests(
+         root,
+       );
+     }
+@@ -434,7 +377,7 @@ export async function pre(root = Deno.cwd()): Promise<void> {
+     ...inspected.flatMap(({ plan }) => plan.resources || []),
+   ]);
+   if (ws.config["project-download"]) {
+-    await (await module("project-download", "public.ts")).prepareDownloads(
++    await (await module("project-download", "public.ts")).resetDownloadRequests(
+       root,
+     );
+   }
+@@ -554,7 +497,7 @@ export async function post(root = Deno.cwd()): Promise<void> {
+   if (rootFiles.includes(rootSearch)) {
+     searchIndexes.push({ path: rootSearch, mount: "" });
+   }
+-  const nativeOperations: any[] = [];
++  const nativeOperations: (NonNullable<Awaited<ReturnType<typeof finalizeDownloads>>> & { project: string })[] = [];
+   const members = [];
+   for (const { project, config, record } of records) {
+     const mount = join(ws.output, project.mount);
+diff --git a/_extensions/course-site/application/sibling-contracts.ts b/_extensions/course-site/application/sibling-contracts.ts
+index 89e338e..1722498 100644
+--- a/_extensions/course-site/application/sibling-contracts.ts
++++ b/_extensions/course-site/application/sibling-contracts.ts
+@@ -1,5 +1,6 @@
+ import type * as Core from "course-core/public.ts";
+ import type * as PrairieLearn from "course-prairielearn/public.ts";
++import type * as Download from "project-download/public.ts";
+ import type { Record as CollectionRecord } from "../infrastructure/collection.ts";
+ import type { Project, Workspace } from "../infrastructure/config.ts";
+ 
+@@ -7,6 +8,7 @@ import type { Project, Workspace } from "../infrastructure/config.ts";
+ export interface SiblingModuleMap {
+   "course-core": typeof Core;
+   "course-prairielearn": typeof PrairieLearn;
++  "project-download": typeof Download;
+ }
+ 
+ /** Поля текущего результата, используемые native операцией Java Site. */
+@@ -20,6 +22,8 @@ export type NativeSiteRecord = Pick<
+ 
+ export type {
+   NativeCatalog,
+-  NativeOperation,
+-  NativeReleaseRequest,
++  NativePublication,
+ } from "course-core/public.ts";
++
++export type { PreparedDownloads } from "project-download/public.ts";
++export type { PublicationInspection } from "course-prairielearn/public.ts";
+diff --git a/docs/public-operation.md b/docs/public-operation.md
+index 8071e38..e077adc 100644
+--- a/docs/public-operation.md
++++ b/docs/public-operation.md
+@@ -1,67 +1,55 @@
+-# Публичная native композиция Publisher
+-
+-Core проверяет каждый effective document/course/assessment через текущий
+-validateRelease, включая metadata только из QMD без root course. Actual C public
+-validator выполняет свой business договор. Catalog coverage сама по себе proof
+-не заменяет. Course без активного native Core сохраняет SITE.RELEASE_UNQUALIFIED;
+-обычный noCore Publisher остаётся независимым.
+-
+-Core 9 использует native TS по умолчанию: при `filters: [course-core]` старый
+-`course-core-runtime: native-ts` не обязателен. Это выбирает технический маршрут,
+-но не заменяет текущую операцию, проверку outputs или release proof Core.
+-Явно чужой runtime и недопустимая проекция отклоняются. В дочернем проекте
+-`collect.ts` должен завершить HTML перед Core post-hook, который фиксирует
+-окончательные outputs; изменение HTML после фиксации остаётся ошибкой.
+-
+-Publisher открывает модули нужного owner в том же installed namespace. Child
+-operation нельзя проверять validator другого root только потому, что parent
+-импортировал собственный Download. Проекты не склеиваются в одну course identity.
+-Полная коллекция сохраняет exact expectedDocuments source/format и ordered
+-native profiles; op expectation и фактические outputs проверяются вместе.
+-
+-Root с native-ts использует только Publisher pre/post. Publisher вызывает
+-штатные Core native-pre/native-post; после pre при установленном C вызывает его
+-public prepareNativeAdapter. Raw C filter должен быть подключён до Core early.
+-Root начинает Core после child renders. Для нескольких существующих sequential
+-child calls public withNativeCaptureScope объединяет их той же generation;
+-нового render или metadata parser не добавляется. Каждый child collect завершает
+-HTML/Navigation до его Core post. Child Download post deferred.
+-
+-QRC и root Navigation заканчивают HTML до root Core post. Затем public Download
+-создаёт ZIP непосредственно в final mount после child final fence. Child native
+-output не переписывается. Plain source→output URLs, self-download и fragment
+-resources назначаются до единственного README writer/упаковки. Production compose
+-не вызывает posthoc conditions ZIP mutation.
+-
+-composition.json сохраняет nativeOperations с public catalog, release proof и
+-числом validation passes. У owner с Download выполняется один проход: без PL —
+-Core `validateRelease`, с установленным PL — public C `inspectPublication` с
+-настоящим Core proof. Selected PL отражён в `proof.validatedAdapters`; ordinary
+-publication проверяет metadata/assessment/project/common sources, не запускает
+-полную grading composition и не даёт assignment прав.
+-
+-У owner без Download сохраняется отдельный Publisher маршрут: NoPL — один Core
+-проход; selected PL — Core с actual C descriptor и затем actual C.validateCourse,
+-два прохода. `root-pl` проверяет этот путь отдельно. Метрики before/after явно
+-сохраняют дополнительные local fences; actual tests проверяют отсутствие нового
+-inspect/discovery/hash.
+-Ordinary proof не выдаётся за assignment intent или квалификацию exporter.
+-
+-`tests/site-owner-release.ts` использует actual root/child hooks, temporary
+-installed layout и current Core/C public APIs. Его случаи: per-document mixed
+-course, invalid test policy, missing validator, noPL/PL positive, HTML full,
+-condition-only, default kind, reveal owner/resources, ordinary reveal model отказ,
+-sequential captures и coarse inactive-course gate. Final mounted README, suffixes,
+-anchors, privacy и exact source coverage проверяются в этих случаях.
+-
+-Текущий ref остаётся кандидатом: полный Java/SP, установленный состав, CI и
+-публикация проверяются отдельно. Исторические host finalize-conditions и reader
+-старого ZIP удалены: Publisher больше не переупаковывает готовый архив и не
+-принимает legacy receipt вместо текущей операции. Гарантии и действующие
+-проверки перечислены в [карте переноса](../tests/legacy-harness-mapping.md).
+-
+-Full fixture с kind=full не квалифицирует произвольный Java bank: explicit
+-kind=starter в author получает DOWNLOAD.STARTER_UNQUALIFIED. Сохраняется отдельный
+-actual negative; typed assignment student condition/поддержанный маршрут и actual
+-early/full135 должен принять ROOT. Production не запускает extra render и не
+-переносит opaque ZIP между operation для обхода этой границы.
++# Публичная Native композиция Publisher
++
++Обе Native ветви с Download и без него используют один
++`Core.withNativePublication(expectation, selection, use)`. Core проверяет
++семантические facts документов/course/assessment, coverage, audience и текущий
++capture. Publisher сравнивает catalog с независимо выбранными Native sources,
++HTML outputs и явным `to` внутри callback. Native course без активного Core
++сохраняет `SITE.RELEASE_UNQUALIFIED`; ordinary noCore проект самостоятельный.
++
++PL активен по фактическому `publication.course.adapters`. При активном
++PrairieLearn Publisher загружает sibling этого owner и вызывает только
++`inspectPublication(publication)`. Установленный неактивный PL не запускается;
++отсутствующий активный sibling — ошибка. Существующий module initialization
++failure не скрывается. Full `validateCourse`, grading composition и seed relation
++qualification не входят в обычную публикацию. Синтаксические parsers project
++checks/materialization/seed targets остаются у PL.
++
++Root с Core использует Publisher pre/post и штатные Core native-pre/native-post.
++Подготовка PL course-export transport для ordinary публикации не запускается. Каждый child имеет свой
++independently authored config/capture и owner-local sources. Child collect
++завершает HTML/Navigation до Core post; Download post deferred. QRC и root
++Navigation заканчивают HTML до root Core post. Модули открываются в sibling
++namespace нужного owner, identities самостоятельных курсов не объединяются.
++
++При Download callback сохраняет handle результата
++`prepareNativeDownloads(publication, options)`. Только после успешного закрытия
++Core вызывается одноразовый `publish()`: готовые bytes записываются сразу в
++конечный mount с уже назначенными Pages URLs. При callback/closing rejection
++сохранённый handle discarded; cleanup failure не маскирует исходную причину.
++Draft не хранит live Core/PL capabilities. Discard после частичной записи не
++удаляет outputs и не обещает rollback; manifest writer позволяет следующей
++обычной cleanup убрать собственные имена. Повторный publish отказывает.
++
++`resetDownloadRequests` в pre чистит только sidecars. Native preparation не
++удаляет ZIP. При этом существующие Site `cleanOutput`, render и mount-copy
++остаются ранними effects: closing failure не откатывает их. Гарантия boundary
++касается отсутствия новых archive writes подготовленного draft до Core closing.
++
++`composition.json` сохраняет public catalog/course и при активном PL plain owned
++inspection data. Release proofs, validation counters и artifacts receipts из
++этого контракта удалены. Catalog и inspection — данные результата, а не
++assignment или grading readiness authority. Post-close методы borrowed view
++не вызываются. Download упаковывает один раз, posthoc ZIP mutation отсутствует.
++
++Existing `tests/site-owner-release.ts root-pl` содержит два независимых owners:
++root с PL без Download и tasks child с Download, оба конфига authored до render.
++ZIP entries/README/resources проверяют реальные final links, suffixes, anchors и
++privacy. NoPL/inactive Native runtime этим одним запуском не квалифицируется.
++Source/typed parser controls не заменяют Native acceptance. Остальные existing
++fixtures сохраняют адресные privacy/coverage/path/currentness проверки.
++
++Полный Java/SP, assignment/P, cache freshness, CI, установленный состав и
++публикация требуют отдельных проверок. Explicit starter в author по-прежнему
++получает `DOWNLOAD.STARTER_UNQUALIFIED`; extra render или перенос ZIP между
++операциями для обхода этой границы не добавляется.
+diff --git a/spec/contract.md b/spec/contract.md
+index ff9e79c..06c65e9 100644
+--- a/spec/contract.md
++++ b/spec/contract.md
+@@ -19,9 +19,9 @@ status: current
+ Native Quarto определяет selected sources, эффективные форматы и профили.
+ Publisher сохраняет native defaults/groups при отсутствии root profile и записывает
+ фактический `QUARTO_PROFILE` post-hook; `files.config` не определяет профиль.
+-Publisher проверяет outputs только выбранной аудитории. Publisher не запускает отдельный inspect неактивных student/full профилей; сохранность старой выдачи другой аудитории при совпадающих или вложенных output-каталогах не гарантируется: cleanup текущей композиции может удалить или перезаписать её. Для одновременного хранения выдач автор задаёт непересекающиеся каталоги. Каждый child получает одну native whole-project команду `render . --to <to>`; `default` выбирает первый формат штатным правилом Quarto, явный `html|revealjs` задаёт формат всей части. Publisher не выполняет N document inspect, не вычисляет effective format и не переходит к per-document render. Невеб-результаты при `default` остаются обычным native поведением, без вымышленного Core release proof.
++Publisher проверяет outputs только выбранной аудитории. Publisher не запускает отдельный inspect неактивных student/full профилей; сохранность старой выдачи другой аудитории при совпадающих или вложенных output-каталогах не гарантируется: cleanup текущей композиции может удалить или перезаписать её. Для одновременного хранения выдач автор задаёт непересекающиеся каталоги. Каждый child получает одну native whole-project команду `render . --to <to>`; `default` выбирает первый формат штатным правилом Quarto, явный `html|revealjs` задаёт формат всей части. Publisher не выполняет N document inspect, не вычисляет effective format и не переходит к per-document render. Невеб-результаты при `default` остаются обычным native поведением, без вымышленной Core publication authority.
+ 
+-В full preflight independent project inspect корня и каждого child определяет validated selected sources до cleanup. Root native результат не запрашивается повторно. Точный owner/profile результат можно повторно использовать только внутри этого preflight; он не удостоверяет конфигурацию невыбранных профилей. В full post source set actual Core catalog точно равен независимому selected set; output set точно равен текущим HTML outputs, а явный `to` — actual format. Сравнение выполняется в уже существующем live observer до ZIP соответствующего owner; без Download — до ownerRelease, которому передаётся независимый список. Новый Core lease, metadata resolver или authority не создаётся. Partial/preview не сравнивается с полным project set. При отказе успешный composition.json не записывается; внешняя публикация требует rc0.
++В full preflight independent project inspect корня и каждого child определяет validated selected sources до cleanup. Root native результат не запрашивается повторно. Точный owner/profile результат можно повторно использовать только внутри этого preflight; он не удостоверяет конфигурацию невыбранных профилей. В full post source set actual Core catalog точно равен независимому selected set; output set точно равен текущим HTML outputs, а явный `to` — actual format. Сравнение выполняется в едином live publication callback до подготовки ZIP соответствующего owner; с Download и без него Core получает независимый список. Новый Core lease, metadata resolver или authority не создаётся. Partial/preview не сравнивается с полным project set. При отказе успешный composition.json не записывается; внешняя публикация требует rc0.
+ 
+ Явные pre/post/collect hooks передают только текущие outputs успешных native
+ процессов. Сохранённые HTML и sidecar другой попытки не включаются автоматически.
+@@ -36,7 +36,7 @@ namespace/current outputs/search. Publisher не вводит общий экс
+ [QRC](../../quarto-reference-catalog/docs/contract.md).
+ 
+ В Core 9 Publisher сохраняет отдельную genuine operation каждого владельца.
+-Источники в catalog/proof/document остаются относительными к этому owner:
++Источники в catalog/document остаются относительными к этому owner:
+ например, root, `part` и `nested/second` имеют собственный `index.qmd` и разные
+ operation identities. Mounted URL получает путь компонента в конечном сайте;
+ этот URL не переписывает Core source, project root или raw check metadata.
+@@ -150,12 +150,14 @@ QRC/Navigation завершают HTML до Core native-post; ZIP создаёт
+ Posthoc ZIP rewriting не вызывается. Core catalog проверяет текущие роли и outputs;
+ Publisher сохраняет отдельные owner scopes и не объединяет самостоятельные курсы.
+ 
+-Effective per-document course/assessment/adapter гарантии проверяет Core
+-validateRelease и actual C public validator в той же operation. Root config не
+-заменяет этот proof. Отсутствующий validator даёт owner ADAPTER_UNQUALIFIED;
+-coarse SITE.RELEASE_UNQUALIFIED остаётся course без native Core. Ordinary proof
+-не предоставляет assignment intent. Открытый generated-resource + release
+-membership blocker перечислен в packet; полный выпуск не квалифицирован.
++Effective per-document course/assessment проверяет Core `withNativePublication`.
++При активном PL Publisher вызывает `inspectPublication(publication)`, независимо
++от наличия Download. Full grading/seed qualification остаётся отдельной операцией.
++Plain catalog/course/inspection сохраняются в composition; release proof и
++validation counters удалены. Coarse `SITE.RELEASE_UNQUALIFIED` остаётся course
++без native Core. Publication data не предоставляет assignment intent.
++Native draft публикуется после успешного closing; ранние clean/render/mount effects
++сохраняются без общего rollback. Подробности — публичная композиция.
+ Исторические host finalize-conditions/helper удалены. Conditions ZIP создаёт
+ Download один раз из текущего Core inventory после окончательного назначения
+ адресов; чтение и повторная упаковка старого ZIP больше не поддерживаются.
+diff --git a/spec/index.md b/spec/index.md
+index 9c04c95..f31fdf2 100644
+--- a/spec/index.md
++++ b/spec/index.md
+@@ -31,7 +31,7 @@ Publisher владеет `subprojects`, размещением native outputs, c
+ ## Текущий публичный договор
+ 
+ Core 9 использует native TS по умолчанию. Publisher сохраняет отдельную
+-операцию каждого owner и её release proof; обычный проект без Core остаётся
++publication session каждого owner и её catalog/course/inspection; обычный проект без Core остаётся
+ самостоятельным. Project/Workspace выводятся из
+ конструкторов и действующих TS-операций владельца, отдельные ручные interfaces
+ их формы не поддерживаются.
+diff --git a/tests/legacy-harness-mapping.md b/tests/legacy-harness-mapping.md
+index a9a75e4..1dfcd75 100644
+--- a/tests/legacy-harness-mapping.md
++++ b/tests/legacy-harness-mapping.md
+@@ -6,12 +6,12 @@ fallback и не входят в установленный пакет.
+ | Прежний путь или проверка | Действующая гарантия |
+ | --- | --- |
+ | stageConditions/collectConditions/finalize-conditions, чтение и повторная упаковка ZIP | Удалены вместе с путём приёма старого архива. Core отдаёт текущий inventory; Download создаёт ZIP один раз. site-public-operation проверяет конечные адреса и exact ZIP bytes; site-owner-release conditions — отсутствие кода/build в condition-only |
+-| Legacy NativeRun/receipt v1 association | Публичная genuine operation и validateRelease с exact source/format/profile coverage. site-owner-release document-course/assessment/pl/pl-missing, Download public-runtime/model-receipts |
++| Legacy NativeRun/receipt v1 association | Публичная Native publication с exact source/format/profile coverage. site-owner-release document-course/assessment/pl/pl-missing, Download public-runtime/model-receipts |
+ | Source/catalog/hash/currentness/symlink и input drift | Core текущая operation/inventory; Download public-inventory/public-runtime. Данные не берутся из legacy receipt или старого ZIP |
+ | Deferred/custom/ordinary links, fragment/query, student/full | QRC link-styles/imports/import-safety; site-public-operation и site-owner-release positive/full/conditions/default/revealjs/reveal-model проверяют итоговые README и ZIP |
+ | Проверки unsafe ZIP reader, повторной финализации и старого host manifest | Входы удалены: ZIP больше не читается и не перепаковывается. Эти проверки не выдаются за controls нового writer |
+ | Sibling missing против foreign call/import error | site-siblings использует настоящий production public.ts Download/QRC: отсутствие модуля, сохранение code/cause/stack и import-time failure |
+-| Child profiles и legacy release sidecar | site-child-profiles читает composition.nativeOperations, genuine Core release proof и catalog identity; collect завершает HTML до Core post |
++| Child profiles и legacy release sidecar | site-child-profiles читает composition.nativeOperations, Core catalog/course/inspection и catalog identity; collect завершает HTML до Core post |
+ 
+ Карта описывает владельцев проверок. Конкретные результаты и точные refs фиксируются
+ в отчёте выполнения; наличие строки в таблице само по себе не является PASS.
+@@ -21,9 +21,9 @@ fallback и не входят в установленный пакет.
+ | Прежняя проверка или предположение | Текущая гарантия и граница |
+ | --- | --- |
+ | site-project-source: извлечение private qualify из source и bindProjectMaterializations; глобальные source prefixes, идемпотентное префиксирование и cross-owner duplicate rejection | Этот отдельный вход и CI вызов удалены: Publisher сохраняет отдельные owner operations, глобальной модели и qualify API нет. Нельзя склеивать одноимённые local sources и объявлять их одной операцией. site-project-native проверяет настоящие root/child/nested owner-local index.qmd, три разные operation identities, exact source/format/profile coverage, mounted outputs и containment |
+-| site-project-source/site-project-native: project/check/materialization DTO из глобального release.model | site-project-native использует установленный Core.public.withCurrentNativeOperation, validateRelease, document definitions и guarded withProjectContexts. Сохраняются project selector, raw native project-checks/project-materialization и origins; planProject/materializeProject проверяют реальные starter/common/full bytes. Нормализация C checks принадлежит C, не подменяется ручным DTO Publisher |
++| site-project-source/site-project-native: project/check/materialization DTO из глобального release.model | site-project-native использует установленный Core.public.withNativePublication, document definitions и guarded withProjectContexts. Сохраняются project selector, raw native project-checks/project-materialization и origins; planProject/materializeProject проверяют реальные starter/common/full bytes. Нормализация C checks принадлежит C, не подменяется ручным DTO Publisher |
+ | Core post до QRC/collect и последующий hash drift | Child hooks завершают QRC, затем collect/HTML navigation, затем Core post. Проверки читают genuine текущую операцию после конечных HTML; ошибочный OPERATION_CHANGED не обходится |
+-| site-domains: глобальный release.model/exercises, subproject- source prefix и -release.json | composition.nativeOperations даёт две независимые операции shared-course с local index.qmd, selected catalog и genuine release proof. Student/full HTML/QRC/search/resources проверяются по конечным mounted файлам, скрытое появление отвергается op.condition |
++| site-domains: глобальный release.model/exercises, subproject- source prefix и -release.json | composition.nativeOperations даёт две независимые операции shared-course с local index.qmd, selected catalog/course/inspection. Student/full HTML/QRC/search/resources проверяются по конечным mounted файлам, скрытое появление отвергается op.condition |
+ | site-domains resources: private body-export/buildBodies/collectExport | Путь старого глобального Body export снят. Режим resources проверяет actual public condition/resourceInventory владельца, одинаковые имена файлов в разных namespaces, exact owner bytes, student/full privacy и current identity. Это ordinary native ресурс, не qualified participant/assignment export; P/assignment delivery остаются отдельными Core/C gates |
+ | Retained legacy sidecar poison и NATIVE.RUN_NOT_CURRENT/native-run.json | Старый carrier не является текущим протоколом. Missing-pre control обязан получить DOCUMENT_BINDING для повторного early capture без новой pre-фазы и отсутствие финальной composition; strict missing-target control проверяет настоящую QRC ошибку. Неуспешные renders завершают свой отдельный fixture, не используют retry для сокрытия Core source fence |
+ | Preview zero-output: отсутствие старого native-run.json | site-preview требует отказ настоящего public withCurrentNativeOperation после zero-output, а не отсутствие несуществующего legacy filename. Прежние process groups, render counts, 3s no-watch observation и startup/shutdown deadlines сохранены |
+@@ -55,7 +55,7 @@ Ordinary native `.task-items` без explicit assignment capture может ос
+ Перед приёмкой курса/программы реальный qualified student assembly всех 135
+ материалов обязан
+ исключить hidden task slots и closed answer keys. Проверка проводится через
+-настоящий assignment/P producer; обычные native proof/condition/resources её
++настоящий assignment/P producer; обычные Native publication/condition/resources её
+ не заменяют. Пока этот gate открыт, все гарантии старого participant export не
+ объявляются пройденными. Это обязательный gate курса/программы; generic extension
+ tag после OTHER и необходимых собственных проверок не означает его прохождение.
+diff --git a/tests/site-child-profiles.ts b/tests/site-child-profiles.ts
+index efccd34..b15f097 100644
+--- a/tests/site-child-profiles.ts
++++ b/tests/site-child-profiles.ts
+@@ -102,9 +102,7 @@ try {
+         const release = composition.nativeOperations[0];
+         assertEquals(release.project, "core");
+         assertEquals(release.catalog.identity.profiles, profiles);
+-        assertEquals(release.release.proof.course.id, "lesson");
+-        assertEquals(release.release.proof.documents.length, 1);
+-        assertEquals(release.release.validationPasses, 1);
++        assertEquals(release.course.id, "lesson");
+         releases++;
+       }
+     }
+diff --git a/tests/site-domains.ts b/tests/site-domains.ts
+index b034079..2b7d20f 100644
+--- a/tests/site-domains.ts
++++ b/tests/site-domains.ts
+@@ -232,11 +232,7 @@ async function assertOwners(view: "student" | "full", resources = false) {
+     assertEquals(row.catalog.documents.map((d: any) => d.source), [
+       "index.qmd",
+     ]);
+-    assertEquals(row.release.proof.documents, [{
+-      source: "index.qmd",
+-      format: "html",
+-    }]);
+-    assertEquals(row.release.proof.course, {
++    assertEquals(row.course, {
+       id: "shared-course",
+       view,
+       adapters: [],
+@@ -258,10 +254,6 @@ async function assertOwners(view: "student" | "full", resources = false) {
+       projection: view === "full" ? "author" : "student",
+       outputDirectory: join(owner, `_site-${view}`),
+     }, async (op: any) => {
+-      assertEquals(
+-        await op.validateRelease({ expectedSources: ["index.qmd"] }),
+-        row.release.proof,
+-      );
+       const doc = op.document({ source: "index.qmd" });
+       assertEquals(doc.context.input, "index.qmd");
+       assert(
+@@ -489,5 +481,5 @@ if (Deno.args[0] === "rootless") {
+ console.log(
+   `PASS installed ${
+     Deno.args[0] || "all"
+-  }: owner-local genuine proofs, 2 namespace resources, student/full privacy/search/crossrefs и адресные negative guards`,
++  }: owner-local catalogs, 2 namespace resources, student/full privacy/search/crossrefs и адресные negative guards`,
+ );
+diff --git a/tests/site-native-pipeline.ts b/tests/site-native-pipeline.ts
+index 84686dc..f64366f 100644
+--- a/tests/site-native-pipeline.ts
++++ b/tests/site-native-pipeline.ts
+@@ -206,22 +206,7 @@ try {
+         "Publisher не выдал native ordinary resource корня",
+       );
+     }
+-    const receipt = JSON.parse(
+-      await Deno.readTextFile(
+-        join(root, "tasks/_generated/project-download/artifacts-receipt.json"),
+-      ),
+-    );
+     const a = await Deno.readFile(archive);
+-    const sha = Array.from(
+-      new Uint8Array(await crypto.subtle.digest("SHA-256", a)),
+-      (v) => v.toString(16).padStart(2, "0"),
+-    ).join("");
+-    assert(
+-      receipt.archives.find((item: { name: string; sha256: string }) =>
+-        item.name === "exr-demo-starter.zip"
+-      )?.sha256 === sha,
+-      "Конечный ZIP отличается от подготовленных Download bytes",
+-    );
+     const runs = join(root, "_generated/course-site/runs");
+     const dirs = await Array.fromAsync(Deno.readDir(runs));
+     const composition = JSON.parse(
+@@ -285,7 +270,7 @@ try {
+         new TextDecoder().decode(refused.stderr).includes(
+           "SITE.RELEASE_UNQUALIFIED",
+         ),
+-      "Недостающий Core release proof был молча пропущен",
++      "Недостающий Core publication session был молча пропущен",
+     );
+     const retained = await Deno.readFile(archive);
+     assert(
+@@ -293,7 +278,7 @@ try {
+       "Owner gate удалил прежнюю выдачу до проверки",
+     );
+     console.log(
+-      "PASS actual Publisher→native child→public Download: финальные mounted адреса до ZIP, exact copied ZIP, operation/output coverage",
++      "PASS actual Publisher→native child→public Download: финальные mounted адреса до ZIP, actual ZIP bytes, operation/output coverage",
+     );
+   }
+ } finally {
+diff --git a/tests/site-owner-release.ts b/tests/site-owner-release.ts
+index 447dfc3..a9c966c 100644
+--- a/tests/site-owner-release.ts
++++ b/tests/site-owner-release.ts
+@@ -76,16 +76,9 @@ try {
+         "\ncourse: {id: no-owner, view: student}\n",
+     );
+   }
+-  const plPre = withPL && mode !== "pl-missing"
+-    ? ", quarto run prepare-pl.ts"
+-    : "";
+-  await put(
+-    "tasks/prepare-pl.ts",
+-    `import * as Core from './${ext}/course-core/public.ts'; import * as PL from './${ext}/course-prairielearn/public.ts'; await PL.prepareNativeAdapter(Core,{root:Deno.cwd(),projection:'${projection}',outputDirectory:Deno.cwd()+'/_site'});`,
+-  );
+   await put(
+     "tasks/_quarto.yml",
+-    `project:\n  type: website\n  output-dir: _site\n  render: [index.qmd, other.qmd]\n  pre-render: [quarto run ${ext}/project-download/entrypoints/pre.ts, quarto run ${ext}/course-core/entrypoints/native-pre.ts${plPre}]\n  post-render: [quarto run ../${ext}/course-site/entrypoints/collect.ts, quarto run ${ext}/course-core/entrypoints/native-post.ts, quarto run ${ext}/project-download/entrypoints/post.ts --native${
++    `project:\n  type: website\n  output-dir: _site\n  render: [index.qmd, other.qmd]\n  pre-render: [quarto run ${ext}/project-download/entrypoints/pre.ts, quarto run ${ext}/course-core/entrypoints/native-pre.ts]\n  post-render: [quarto run ../${ext}/course-site/entrypoints/collect.ts, quarto run ${ext}/course-core/entrypoints/native-post.ts, quarto run ${ext}/project-download/entrypoints/post.ts --native${
+       author ? " --author" : ""
+     }]\nformat: {html: {theme: none}}\nfilters: [course-core, project-download]\ncourse-core-runtime: native-ts\ncourse-core-projection: ${projection}\nexercise-bank: true\nproject-download:\n  course-model: true\n  resources: {data: {path: assets, gitignore: false}}\ncourse-project:\n  build:\n    files: {build.gradle: shared/build.gradle, settings.gradle: shared/settings.gradle}\n  instructions:\n    gradle: {path: shared/gradle.md}\n    local: {path: README.local.md}\nreference-catalog: {namespace: tasks}\n`,
+   );
+@@ -192,7 +185,7 @@ try {
+   const expected: Record<string, string> = {
+     "document-course": "RELEASE.MIXED_COURSE",
+     assessment: "CORE.ASSESSMENT_INVALID",
+-    "pl-missing": "RELEASE.ADAPTER_UNQUALIFIED",
++    "pl-missing": "SITE.SIBLING_MISSING",
+     "reveal-model": "CONDITION_UNQUALIFIED",
+     "inactive-course": "SITE.RELEASE_UNQUALIFIED",
+     "author-starter": "DOWNLOAD.STARTER_UNQUALIFIED",
+@@ -223,13 +216,13 @@ try {
+     let success = false;
+     try {
+       await Deno.stat(
+-        join(root, "tasks/_generated/project-download/artifacts-receipt.json"),
++        join(root, `_site/tasks/_downloads/exr-demo-${kind}.zip`),
+       );
+       success = true;
+     } catch (e) {
+       if (!(e instanceof Deno.errors.NotFound)) throw e;
+     }
+-    assert(!success, "Отказ создал success receipt");
++    assert(!success, "Отказ создал новый архив");
+     console.log(
+       JSON.stringify({ mode, expected: expected[mode], status: "PASS" }),
+     );
+@@ -249,49 +242,28 @@ try {
+       ),
+     );
+     if (mode === "root-pl") {
+-      const rootProof = composition.nativeOperations.find((
++      const rootPublication = composition.nativeOperations.find((
+         row: { project: string },
+-      ) => row.project === "root")?.release;
++      ) => row.project === "root");
+       assert(
+-        rootProof?.proof.course.id === "root-course" &&
+-          rootProof.validationPasses === 2,
+-        "Root public Core/C proof без Download не выполнен",
++        rootPublication?.course.id === "root-course" &&
++          rootPublication.inspection?.course.id === "root-course",
++        "Root PL publication без Download не выполнена",
+       );
+     }
+     const current = composition.nativeOperations.find((
+       row: { project: string },
+     ) => row.project === "tasks");
+     assert(
+-      current?.release?.proof?.course?.id === "bounded-course",
+-      "Нет genuine текущего owner release proof",
+-    );
+-    assert(
+-      current.release.proof.documents.length === 2,
+-      "Proof потерял owner source coverage",
+-    );
+-    assert(
+-      current.release.validationPasses === 1,
+-      "Download owner должен сообщать один genuine validation pass",
++      current?.course?.id === "bounded-course",
++      "Нет текущего owner publication course",
+     );
+     assert(
+-      JSON.stringify(current.release.proof.validatedAdapters) ===
+-        JSON.stringify(withPL ? ["prairielearn"] : []),
+-      "Download proof потерял actual selected adapter validation",
++      JSON.stringify(current.catalog.documents.map((d: {source: string}) => d.source).sort()) ===
++        JSON.stringify(["index.qmd", "other.qmd"]),
++      "Catalog потерял owner source coverage",
+     );
+-    for (
+-      const metric of [
+-        "inspectCalls",
+-        "fullWalks",
+-        "sourceHashReads",
+-        "sourceHashBytes",
+-      ]
+-    ) {
+-      assert(
+-        current.release.metricsBefore[metric] ===
+-          current.release.metricsAfter[metric],
+-        "Owner validation добавила inspect/discovery/hash: " + metric,
+-      );
+-    }
++
+     const archive = join(
+       root,
+       "_site/tasks/_downloads",
+@@ -345,7 +317,7 @@ try {
+         "Обычный reveal resource изменился",
+       );}
+     console.log(
+-      JSON.stringify({ mode, status: "PASS", release: current.release }),
++      JSON.stringify({ mode, status: "PASS", course: current.course }),
+     );
+   }
+ } finally {
+diff --git a/tests/site-project-native.ts b/tests/site-project-native.ts
+index c154784..6af1465 100644
+--- a/tests/site-project-native.ts
++++ b/tests/site-project-native.ts
+@@ -179,11 +179,7 @@ for (const view of ["student", "full"]) {
+     assertEquals(release.catalog.documents.map((d: any) => d.source), [
+       "index.qmd",
+     ]);
+-    assertEquals(release.release.proof.documents, [{
+-      source: "index.qmd",
+-      format: "html",
+-    }]);
+-    assertEquals(release.release.proof.course, {
++    assertEquals(release.course, {
+       id: "project-source",
+       view,
+       adapters: [],
+@@ -201,10 +197,6 @@ for (const view of ["student", "full"]) {
+       projection: view === "full" ? "author" : "student",
+       outputDirectory: join(ownerRoot, `_output-${view}`),
+     }, async (op: any) => {
+-      const proof = await op.validateRelease({
+-        expectedSources: ["index.qmd"],
+-      });
+-      assertEquals(proof, release.release.proof);
+       const doc = op.document({ source: "index.qmd" });
+       assertEquals(doc.context.input, "index.qmd");
+       assertEquals(doc.definitions[`exr-${ids[i]}`].project, "/projects/demo");
+@@ -312,6 +304,6 @@ try {
+   await Deno.remove(external);
+ }
+ console.log(
+-  "PASS installed namespace, root/child/nested owner-local sources, genuine release/project contexts, native metadata/actual materialization, student/full privacy и foreign-source guard",
++  "PASS installed namespace, root/child/nested owner-local sources, owner-local catalog/project contexts, native metadata/actual materialization, student/full privacy и foreign-source guard",
+ );
+ console.log("FIXTURE " + root);
+diff --git a/tests/site-public-operation.ts b/tests/site-public-operation.ts
+index c288d85..449a692 100644
+--- a/tests/site-public-operation.ts
++++ b/tests/site-public-operation.ts
+@@ -122,22 +122,7 @@ try {
+       "Publisher не выдал native ordinary resource корня",
+     );
+   }
+-  const receipt = JSON.parse(
+-    await Deno.readTextFile(
+-      join(root, "tasks/_generated/project-download/artifacts-receipt.json"),
+-    ),
+-  );
+   const a = await Deno.readFile(archive);
+-  const sha = Array.from(
+-    new Uint8Array(await crypto.subtle.digest("SHA-256", a)),
+-    (v) => v.toString(16).padStart(2, "0"),
+-  ).join("");
+-  assert(
+-    receipt.archives.find((item: { name: string; sha256: string }) =>
+-      item.name === "exr-demo-starter.zip"
+-    )?.sha256 === sha,
+-    "Конечный ZIP отличается от подготовленных Download bytes",
+-  );
+   const runs = join(root, "_generated/course-site/runs");
+   const dirs = await Array.fromAsync(Deno.readDir(runs));
+   const composition = JSON.parse(
+@@ -178,7 +163,7 @@ try {
+       new TextDecoder().decode(refused.stderr).includes(
+         "SITE.RELEASE_UNQUALIFIED",
+       ),
+-    "Недостающий Core release proof был молча пропущен",
++    "Недостающий Core publication session был молча пропущен",
+   );
+   const retained = await Deno.readFile(archive);
+   assert(
+@@ -186,7 +171,7 @@ try {
+     "Owner gate удалил прежнюю выдачу до проверки",
+   );
+   console.log(
+-    "PASS actual Publisher→native child→public Download: финальные mounted адреса до ZIP, exact copied ZIP, operation/output coverage",
++    "PASS actual Publisher→native child→public Download: финальные mounted адреса до ZIP, actual ZIP bytes, operation/output coverage",
+   );
+ } finally {
+   if (Deno.env.get("B2_KEEP")) console.log("B2 fixture " + root);
+diff --git a/tests/site-siblings.ts b/tests/site-siblings.ts
+index dedd494..e2a28ee 100644
+--- a/tests/site-siblings.ts
++++ b/tests/site-siblings.ts
+@@ -32,7 +32,7 @@ try {
+   await Deno.mkdir(dirname(source), { recursive: true });
+   await Deno.writeTextFile(
+     source,
+-    'export function prepareDownloads() { const error = new Error("CORE_SENTINEL", {cause: "original"}); error.name = "ExtensionDiagnostic"; Object.assign(error, {code: "CORE.SENTINEL"}); throw error; }\n',
++    'export function resetDownloadRequests() { const error = new Error("CORE_SENTINEL", {cause: "original"}); error.name = "ExtensionDiagnostic"; Object.assign(error, {code: "CORE.SENTINEL"}); throw error; }\n',
+   );
+   try {
+     await pre(root);
+@@ -42,7 +42,7 @@ try {
+     assertEquals((error as Error & { code: string }).code, "CORE.SENTINEL");
+     assertEquals(error.cause, "original");
+     assert(!error.message.includes("SITE.SIBLING_MISSING"));
+-    assert(error.stack?.includes("prepareDownloads"));
++    assert(error.stack?.includes("resetDownloadRequests"));
+   }
+   // Import-time failures of a present QRC module must also stay foreign.
+   await Deno.writeTextFile(

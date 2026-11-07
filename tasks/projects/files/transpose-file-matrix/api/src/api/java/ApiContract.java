@@ -1,0 +1,3 @@
+import java.lang.Exception;
+import java.util.*;import java.util.function.*;import java.nio.file.Path;
+import org.prairielearn.api.PlatformApiPrecheck;public class ApiContract {public static void check(PlatformApiPrecheck.Api api)throws Exception{api.compiles("Inputs","import java.lang.Exception;\nimport java.lang.Throwable;\nimport java.util.*;import java.util.function.*;import java.nio.file.Path;\nclass Inputs {static void call(Path input,Path output) throws Exception{Study.process(input,output);}}",true);}}

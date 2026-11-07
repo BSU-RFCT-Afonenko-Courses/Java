@@ -1,0 +1,46 @@
+course-project:
+  instructions:
+    gradle:
+      path: ../../common/java/gradle.md
+      base: config
+  solutions:
+    recursive:
+      path: alternatives/recursive
+    exitAfterOutput:
+      path: alternatives/exit-after-output
+  components:
+    apiSupport:
+      path: ../../common/java/api-support
+      base: config
+    process:
+      path: ../../common/java/process
+      base: config
+  testsets:
+    api:
+      path: api
+      requires:
+        apiSupport: true
+    demo:
+      path: demo
+      requires:
+        api: true
+        process: true
+    contract:
+      path: checks
+      requires:
+        api: true
+        process: true
+  build:
+    files:
+      build.gradle:
+        path: ../../common/java/build.gradle
+        base: config
+  delivery:
+    student:
+      testsets:
+        api: true
+        demo: true
+  verification:
+    testsets:
+      api: true
+      contract: true

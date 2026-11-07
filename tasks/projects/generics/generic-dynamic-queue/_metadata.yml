@@ -1,0 +1,27 @@
+course-project:
+  components:
+    apiSupport:
+      path: ../../common/java/api-support
+      base: config
+  testsets:
+    api:
+      path: api
+      requires:
+        apiSupport: true
+    demo:
+      path: demo
+      requires:
+        api: true
+    contract:
+      path: checks
+      requires:
+        api: true
+  delivery:
+    student:
+      testsets:
+        api: true
+        demo: true
+  verification:
+    testsets:
+      api: true
+      contract: true

@@ -1,0 +1,101 @@
+{
+  "chatId": "01a1a88f-fb78-7281-82bf-082977c13265",
+  "initialTurn": "01a1a88f-fbad-7e32-ae9c-e0ad7381c7a3",
+  "source": "/home/tolya/.codex/sessions/2026/11/05/rollout-2026-11-05T00-56-10-01a1a88f-fb78-7281-82bf-082977c13265.jsonl",
+  "turns": [
+    {
+      "turn_id": "01a1a88f-fbad-7e32-ae9c-e0ad7381c7a3",
+      "model": "gpt-6.1-sol",
+      "effort": "high",
+      "collaboration_mode": {
+        "mode": "default",
+        "settings": {
+          "model": "gpt-6.1-sol",
+          "reasoning_effort": "high",
+          "developer_instructions": null
+        }
+      }
+    },
+    {
+      "turn_id": "01a1a8b9-1ca8-7b41-81d4-138427da1741",
+      "model": "gpt-6.1-sol",
+      "effort": "high",
+      "collaboration_mode": {
+        "mode": "default",
+        "settings": {
+          "model": "gpt-6.1-sol",
+          "reasoning_effort": "high",
+          "developer_instructions": null
+        }
+      }
+    },
+    {
+      "turn_id": "01a1a8db-5503-7e33-b393-223aa314c688",
+      "model": "gpt-6.1-sol",
+      "effort": "high",
+      "collaboration_mode": {
+        "mode": "default",
+        "settings": {
+          "model": "gpt-6.1-sol",
+          "reasoning_effort": "high",
+          "developer_instructions": null
+        }
+      }
+    }
+  ],
+  "admission": true,
+  "phase": "tools frozen after review correction",
+  "readyForReview": true,
+  "checkout": "/tmp/java-release-work-20261105/performance",
+  "branch": "codex/performance-files-20261105",
+  "base": "7a1645936924ba0dd710c9121a8871a13d67a84b",
+  "ownedPaths": [
+    "tools/check-installed.ts",
+    "tools/check-java-general-use.ts",
+    "tools/check-owners.ts",
+    "tools/instrument-owners.ts",
+    "tools/prepare-arch-source.ts",
+    "tools/repeat-java.ts",
+    "tools/scaling.ts",
+    "tools/validate-java.ts"
+  ],
+  "changes": [
+    "Удалены installed/source/execution/npm/backend/raw digest inventories и freshness assertions",
+    "SourceSelection/files.ts/preparedScripts применены во всех tools consumers",
+    "Native Git HEAD/dirty сохранены; собственные SHA inventories отсутствуют",
+    "Output compare читает только текущую пару файлов, не сохраняет SHA/bytes maps; копируются только output roots для functional compare",
+    "Arch packaging SHA сохранён локально только для штатного PKGBUILD.sha256sums",
+    "По рецензии удалены executionUnchanged/sourceUnchanged before-after claims, derived PASS gates и final assertions; status зависит completed после функциональных asserts. Git HEAD identity/preflight сохранены без after fence."
+  ],
+  "checks": [
+    {
+      "name": "tools deno fmt",
+      "result": "PASS 8files"
+    },
+    {
+      "name": "git diff --check tools",
+      "result": "PASS"
+    },
+    {
+      "name": "micro functional output comparison",
+      "result": "PASS exact equality, differences, missing, narrow dynamic exceptions; crypto.subtle.digest throws, no left/right inventories",
+      "wallSeconds": 0.75
+    },
+    {
+      "name": "review correction formatter+diffcheck+microtest",
+      "result": "PASS; no executionUnchanged/sourceUnchanged, nativeGitHEAD remains input identity; functional completed determines status; digest-disabled output comparison remains PASS",
+      "wallSeconds": 0.25
+    }
+  ],
+  "limitations": [
+    "Сборки, render matrices и installed package checks не запускались",
+    "Compiler выполняет root после объединения src/tools",
+    "Existing repeat-java output copies сохранены как данные для functional повторного сравнения, не source freshness"
+  ],
+  "admissionFinal": {
+    "pass": true,
+    "initialTurn": "01a1a88f-fbad-7e32-ae9c-e0ad7381c7a3",
+    "turnContexts": 4
+  },
+  "commit": "not created; unified commit owned by root"
+}

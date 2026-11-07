@@ -1,27 +1,68 @@
 package coursesupport;
 
-import java.io.IOException;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
+import java.io.RandomAccessFile;
+import java.io.Serial;
+import java.lang.AssertionError;
+import java.lang.Boolean;
+import java.lang.Class;
+import java.lang.ClassLoader;
+import java.lang.Exception;
+import java.lang.IllegalAccessException;
+import java.lang.IllegalArgumentException;
+import java.lang.InterruptedException;
+import java.lang.LinkageError;
+import java.lang.Long;
+import java.lang.Math;
+import java.lang.NoSuchMethodException;
+import java.lang.Object;
+import java.lang.Process;
+import java.lang.ProcessBuilder;
+import java.lang.ProcessHandle;
+import java.lang.ReflectiveOperationException;
+import java.lang.Runtime;
+import java.lang.String;
+import java.lang.System;
+import java.lang.Thread;
+import java.lang.Throwable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
 
 /** Запускает программу в отдельной JVM и получает её вывод и код завершения. */
 public final class JavaProcess {
     private JavaProcess() {}
 
-    private static final java.util.concurrent.atomic.AtomicLong launches =
-        new java.util.concurrent.atomic.AtomicLong();
+    private static final AtomicLong launches =
+        new AtomicLong();
 
     public record Result(String stdout, String stderr, int exitCode) {}
 
     /** Наблюдённое необработанное исключение в запущенной программе. */
     public static final class UncaughtStudentException extends AssertionError {
+        @Serial
+        private static final long serialVersionUID = 1L;
+
         private UncaughtStudentException(String stderr) {
             super("Программа завершила поток необработанным исключением:\n" + stderr);
         }
@@ -29,11 +70,17 @@ public final class JavaProcess {
 
     /** Истечение времени именно вложенного процесса или захвата его вывода. */
     public static final class StudentTimeout extends AssertionError {
+        @Serial
+        private static final long serialVersionUID = 1L;
+
         private StudentTimeout() { super("Программа не завершилась в пределах времени проверки"); }
     }
 
     /** Превышение совокупного бюджета stdout и stderr вложенного процесса. */
     public static final class StudentOutputLimit extends AssertionError {
+        @Serial
+        private static final long serialVersionUID = 1L;
+
         private StudentOutputLimit(int limit) { super("Превышено ограничение вывода " + limit + " байт"); }
     }
 
@@ -47,36 +94,41 @@ public final class JavaProcess {
     /** Проверка необработанного исключения без ограничения кода завершения. */
     public static Result runCheckingUncaught(Class<?> entryPoint, String input, String... arguments)
             throws Exception {
-        // Для выбора main используется механизм запускателя установленного JDK 25.
-        try {
-            Class.forName("jdk.internal.misc.MethodFinder").getMethod("findMainMethod", Class.class);
-        } catch (ReflectiveOperationException | LinkageError problem) {
-            throw new IOException("В установленном JDK отсутствует выбор main для проверки", problem);
-        }
         Path classes = Path.of(entryPoint.getProtectionDomain().getCodeSource().getLocation().toURI());
+        return runCheckingUncaught(classes, entryPoint.getName(), false, input, arguments);
+    }
+
+    /** Тот же наблюдатель для разделённых каталогов trusted адаптера и решения. */
+    public static Result runCheckingUncaught(Path classes, String trustedEntry, String input,
+            String... arguments) throws Exception {
+        return runCheckingUncaught(classes, trustedEntry, true, input, arguments);
+    }
+
+    private static Result runCheckingUncaught(Path classes, String mainClass,
+            boolean trustedEntry, String input, String... arguments) throws Exception {
         // CREATE_NEW сохраняет чужие файлы; счётчик не требует источника энтропии
         // в песочнице, где createTempFile запускает медленный резервный механизм SecureRandom.
-        Path scratch = java.nio.file.Files.createDirectory(Path.of(System.getProperty("java.io.tmpdir"),
+        Path scratch = Files.createDirectory(Path.of(System.getProperty("java.io.tmpdir"),
             "course-uncaught-" + ProcessHandle.current().pid() + "-" + launches.incrementAndGet()
                 + "-" + Long.toUnsignedString(System.nanoTime())));
         Path launcher = scratch.resolve("launcher.jar");
         Path status = scratch.resolve("uncaught.status");
         try {
-            java.nio.file.Files.createFile(status);
+            Files.createFile(status);
             String resource = CheckedLauncher.class.getName().replace('.', '/') + ".class";
             try (var bytes = JavaProcess.class.getResourceAsStream("/" + resource);
-                    var jar = new java.util.jar.JarOutputStream(java.nio.file.Files.newOutputStream(launcher))) {
+                    var jar = new JarOutputStream(Files.newOutputStream(launcher))) {
                 if (bytes == null) throw new IOException("Не найден класс запуска проверки исключений");
-                jar.putNextEntry(new java.util.jar.JarEntry(resource));
+                jar.putNextEntry(new JarEntry(resource));
                 bytes.transferTo(jar);
                 jar.closeEntry();
             }
-            var launchArguments = new ArrayList<>(List.of(status.toString(), entryPoint.getName()));
+            var launchArguments = new ArrayList<>(List.of(status.toString(), mainClass, Boolean.toString(trustedEntry)));
             launchArguments.addAll(List.of(arguments));
             Result result = run(classes, CheckedLauncher.class.getName(), input, launchArguments, null,
                 Duration.ofSeconds(10), 65536,
-                List.of("--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED"), launcher);
-            byte[] observed = java.nio.file.Files.readAllBytes(status);
+                List.of(), launcher);
+            byte[] observed = Files.readAllBytes(status);
             if (observed.length == 0 || observed[0] != 'R') {
                 throw new IOException("Не удалось подготовить проверку исключений в JDK 25:\n" + result.stderr());
             }
@@ -85,21 +137,50 @@ public final class JavaProcess {
             }
             return result;
         } finally {
-            java.nio.file.Files.deleteIfExists(launcher);
-            java.nio.file.Files.deleteIfExists(status);
-            java.nio.file.Files.deleteIfExists(scratch);
+            Files.deleteIfExists(launcher);
+            Files.deleteIfExists(status);
+            Files.deleteIfExists(scratch);
         }
     }
 
     /** Отдельная JVM: ошибки загрузки, создания экземпляра и main видимы проверке. */
     public static final class CheckedLauncher {
+        // JLS 12.1.4: String[] имеет приоритет; доступны не private методы void main.
+        private static Method findMain(Class<?> type) {
+            for (Class<?>[] parameters : new Class<?>[][]{{String[].class}, {}}) {
+                for (Class<?> owner = type; owner != null; owner = owner.getSuperclass()) {
+                    try {
+                        Method method = owner.getDeclaredMethod("main", parameters);
+                        int access = method.getModifiers();
+                        if (method.getReturnType() != void.class || Modifier.isPrivate(access)) continue;
+                        if (!Modifier.isPublic(access) && !Modifier.isProtected(access)) {
+                            boolean inherited = true;
+                            for (Class<?> child = type; child != owner; child = child.getSuperclass())
+                                if (!child.getPackageName().equals(owner.getPackageName())) inherited = false;
+                            if (!inherited) continue;
+                        }
+                        return method;
+                    } catch (NoSuchMethodException absent) { }
+                }
+                try {
+                    Method method = type.getMethod("main", parameters);
+                    if (method.getReturnType() == void.class) return method;
+                } catch (NoSuchMethodException absent) { }
+            }
+            return null;
+        }
+
         public static void main(String[] arguments) throws Exception {
             // Служебный файл статуса открыт через RandomAccessFile до запуска программы.
             // Закрытие или замена stderr оставляет его открытым.
-            var status = new java.io.RandomAccessFile(arguments[0], "rw");
-            java.lang.reflect.Method selector = Class.forName("jdk.internal.misc.MethodFinder")
-                .getMethod("findMainMethod", Class.class);
-            selector.invoke(null, CheckedLauncher.class);
+            var status = new RandomAccessFile(arguments[0], "rw");
+            // Trusted адаптер должен быть найден до отметки готовности:
+            // его отсутствие или ошибка инициализации не являются отказом решения.
+            if (Boolean.parseBoolean(arguments[2])) {
+                Class<?> port = Class.forName(arguments[1], true, ClassLoader.getSystemClassLoader());
+                if (findMain(port) == null)
+                    throw new NoSuchMethodException("Не найден main в " + port.getName());
+            }
             status.write('R');
             Thread.UncaughtExceptionHandler monitor = (thread, failure) -> {
                 try {
@@ -115,13 +196,13 @@ public final class JavaProcess {
             Thread.setDefaultUncaughtExceptionHandler(monitor);
             try {
                 Class<?> entry = Class.forName(arguments[1], false, ClassLoader.getSystemClassLoader());
-                var main = (java.lang.reflect.Method) selector.invoke(null, entry);
+                var main = findMain(entry);
                 if (main == null) throw new NoSuchMethodException("Не найден main в " + entry.getName());
                 Object instance = null;
                 Class.forName(entry.getName(), true, entry.getClassLoader());
-                if (!java.lang.reflect.Modifier.isStatic(main.getModifiers())) {
+                if (!Modifier.isStatic(main.getModifiers())) {
                     var constructor = entry.getDeclaredConstructor();
-                    if (java.lang.reflect.Modifier.isPrivate(constructor.getModifiers())) {
+                    if (Modifier.isPrivate(constructor.getModifiers())) {
                         throw new IllegalAccessException("Конструктор без параметров недоступен");
                     }
                     constructor.setAccessible(true);
@@ -129,9 +210,9 @@ public final class JavaProcess {
                 }
                 main.setAccessible(true);
                 if (main.getParameterCount() == 0) main.invoke(instance);
-                else main.invoke(instance, (Object) java.util.Arrays.copyOfRange(arguments, 2, arguments.length));
+                else main.invoke(instance, (Object) Arrays.copyOfRange(arguments, 3, arguments.length));
             } catch (Throwable failure) {
-                if (failure instanceof java.lang.reflect.InvocationTargetException wrapped) {
+                if (failure instanceof InvocationTargetException wrapped) {
                     failure = wrapped.getCause();
                 }
                 monitor.uncaughtException(Thread.currentThread(), failure);
@@ -158,7 +239,7 @@ public final class JavaProcess {
             "-Dfile.encoding=UTF-8", "-Dstdout.encoding=UTF-8", "-Dstderr.encoding=UTF-8"));
         command.addAll(vmArguments);
         String classPath = classes.toAbsolutePath().toString();
-        if (launcher != null) classPath = launcher.toAbsolutePath() + java.io.File.pathSeparator + classPath;
+        if (launcher != null) classPath = launcher.toAbsolutePath() + File.pathSeparator + classPath;
         command.addAll(List.of("-cp", classPath, mainClass));
         command.addAll(arguments);
         Process process = new ProcessBuilder(command)

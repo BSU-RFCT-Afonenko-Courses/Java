@@ -1,0 +1,4 @@
+import java.lang.Class;
+import java.lang.Exception;
+import org.prairielearn.api.PlatformApiPrecheck;import java.lang.reflect.Modifier;import java.util.*;
+public class ApiContract {public static void check(PlatformApiPrecheck.Api api)throws Exception{Class<?>s=api.type("Study");api.expect(Modifier.isPublic(s.getModifiers()),"открытый Study без пакета",s.toString());api.method("Study","partition",void.class,Modifier.PUBLIC|Modifier.STATIC,0,List.class,int.class);api.compiles("Inputs","import java.lang.Object;import java.lang.String;import java.lang.Integer;import java.lang.Double;import java.lang.Throwable;import java.util.List;import java.util.Set;import java.util.Map;import java.util.HashMap;import java.util.Collection;import java.util.OptionalDouble;class Inputs {static void call0(List<Integer> values, int threshold)throws Throwable{Study.partition(values,threshold);}}",true);}}

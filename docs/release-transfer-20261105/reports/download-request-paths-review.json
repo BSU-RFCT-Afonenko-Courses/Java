@@ -1,0 +1,97 @@
+{
+  "reviewer_chat_id": "01a1a8a7-bf27-7263-bbb7-ae016283e909",
+  "agent_path": "/root/download_review",
+  "original_turn_id": "01a1a8a7-bfa8-7942-9e90-269df79562bc",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "admission": "/tmp/java-release-discussion-20261105/coordination/download-review-admission.json",
+  "full_original_interval_pass": true,
+  "original_interval_turns": 3,
+  "checkout": "/tmp/java-release-work-20261105/download",
+  "base": "106b958bbf443cd7e220d250117466b434e279de",
+  "head": "de1f3aa859a3d949223b7230a6377a4fc0c3572d",
+  "Core": "d21ddfdc9e4fde58145275751dccfc1c997777df",
+  "PL": "fcd3320eb6dcbe0fde897ecafafcb9c0b31fb9fc",
+  "QRC": "541a44836cf5ec934a101059cbee77c9ff47d134",
+  "decision": "approveSource",
+  "findings": [],
+  "conclusion": "Узкая дельта адресации заявок одобрена. Producer и reader используют один обратимый адрес requests/<owner-relative-source>/request.json; собственный SHA удалён без совместимого старого reader, нового proof или постоянного registry. Блокирующих дефектов не найдено.",
+  "reviewed_contract": [
+    "Lua producer проверяет относительный канонический source и пишет request.json под его буквальным путём; вложенность и Unicode сохраняются.",
+    "Reader строит допустимые пути только из selected sources, обходит область заявок, отвергает неизвестные ветви/файлы, старые SHA-имена, symlink и специальные объекты. JSON source обязан совпасть с адресом. Закрытые поля, resource/artifact декодирование сохранены.",
+    "Все найденные requests проверяются до очистки. Очистка файлов и каталогов нерекурсивна; соседние файлы не удаляются. Destination/foreign ZIP guards не изменены.",
+    "Изменения affected fixtures соответствуют новой вложенной форме; новый request-paths входит в canonical tools/check.sh.",
+    "В product TS/Lua Download больше нет SHA-1/SHA-256 адресации или сертификата заявки."
+  ],
+  "fresh_checks": [
+    {
+      "name": "quarto run tests/request-paths.ts",
+      "exit_code": 0,
+      "seconds": 3.54,
+      "log": "/tmp/java-release-discussion-20261105/coordination/download-request-paths-review-native.log",
+      "result": "PASS pure nested/long Unicode, изменяемый JSON без freshness, foreign/old flat filename/source mismatch/invalid JSON/extra fields/path/symlink/special/cleanup; actual Quarto producer→reader:2документа безZIP/Core."
+    },
+    {
+      "name": "quarto run tests/model-receipts.ts",
+      "exit_code": 0,
+      "seconds": 2.0,
+      "log": "/tmp/java-release-discussion-20261105/coordination/download-request-paths-review-private.log",
+      "result": "PASS private NativeRun/resolver отказ до private resolver и ZIP с новой адресацией."
+    },
+    {
+      "name": "Deno actual affected fixture/runtime type graph",
+      "exit_code": 0,
+      "seconds": 7.32,
+      "log": "/tmp/java-release-discussion-20261105/coordination/download-request-paths-review-types.log",
+      "entries": [
+        "tests/request-paths.ts",
+        "tests/native-carriers.ts",
+        "tests/resource-membership-native.ts",
+        "tests/public-runtime.ts",
+        "tests/ownership.ts",
+        "tests/model-receipts.ts",
+        "tests/runtime-types.ts"
+      ],
+      "result": "PASS реальные Source Core/PL/Download/QRC через ранее сохранённую common import map; casts/stubs для обхода ошибок не вводились."
+    },
+    {
+      "name": "Адресная проверка public finishDownloads/ownership на новой форме",
+      "exit_code": 0,
+      "seconds": 1.76,
+      "test": "/tmp/download-request-paths-review-boundaries.ts",
+      "log": "/tmp/java-release-discussion-20261105/coordination/download-request-paths-review-boundaries.log",
+      "result": "PASS чужой data.zip того же имени отклоняется DOWNLOAD.OUTPUT_CONFLICT и сохраняет точные чужие bytes; невыбранный source отвергается до очистки выбранной заявки."
+    },
+    {
+      "name": "git diff --check base..head; status; exact HEAD",
+      "exit_code": 0,
+      "result": "PASS Download Source чистый, HEAD точный de1f3aa."
+    }
+  ],
+  "deleted_native_fixture_review": {
+    "old_test": "tests/native.ts на base106b958",
+    "conclusion": "Удаление не снимает действующую canonical гарантию: исторический тест уже не входил tools/check.sh и использовал удалённые private finish options/owner resources API. Семантические гарантии независимо сопоставлены действующим проверкам.",
+    "mapping": [
+      {
+        "old": "Связь actual profile/document/public projection",
+        "current": "public-runtime actual NativePublication bindings; public-inventory native visible/private resource отбор; ownership selected source checks."
+      },
+      {
+        "old": "Отказ private NativeRun/resources resolver",
+        "current": "model-receipts; свежий PASS2.00с."
+      },
+      {
+        "old": "Student/full и отсутствие закрытых bytes",
+        "current": "public-runtime full permissions/starter/full и public-inventory Core schema/privacy/точныеbytes; код их отбора этой дельтой не меняется."
+      },
+      {
+        "old": "Чужой output с тем же ZIP именем и unselected source",
+        "current": "Границы writer/ownership сохранены; свежая независимая current-public-API регрессия PASS1.76с прямо воспроизвела оба условия."
+      }
+    ]
+  },
+  "not_repeated": "167s public-runtime/ZIP suites и прежний43s ownership не повторялись: упаковка/выбранные байты/HTML в дельту не входят. Native capture и принадлежность request paths проверены свежими адресными пробами.",
+  "product_files_changed": false,
+  "boundary": "Приёмка узкого Source и затронутого type graph. Обновление двух installed scopes/pins,10labs/128 actual CLI, Docker/UI/full-course и publication остаются у интегратора.",
+  "checked_at": "2026-11-04T23:42:40.317946+00:00"
+}

@@ -1,0 +1,1 @@
+public class Main { public static void main(String[] a) { var s=new java.util.Scanner(System.in); int n=s.nextInt(),m=s.nextInt(),k=s.nextInt();boolean b=n<=k&&k<=m;System.out.print(b+" "+b+" "+b+" "+b); } }

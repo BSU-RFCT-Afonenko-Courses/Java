@@ -1,0 +1,1 @@
+package reference.queue;public class Base<T>{private final T[] cells;private int read,write;public Base(T[] storage){cells=storage;}public void put(T value)throws QueueFullException{if(write==cells.length)throw new QueueFullException(write);cells[write++]=value;}public T get()throws QueueEmptyException{if(read==write)throw new QueueEmptyException("empty");return cells[read++];}}

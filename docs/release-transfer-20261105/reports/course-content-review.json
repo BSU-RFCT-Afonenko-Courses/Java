@@ -1,0 +1,1100 @@
+{
+  "status": "Принято: предложение и фактическая авторская дельта",
+  "reviewerChatID": "01a1a898-8d05-7510-883c-5491b4ae1007",
+  "originalTurnID": "01a1a898-8d62-7c11-9735-c49bc05d44b5",
+  "admission": "content-review-admission.json",
+  "authorChatID": "01a1a892-6413-7381-849a-afcfcc471258",
+  "independent": true,
+  "sourceCommit": "c2e35e7ed3ec4ca2412dd66c9d71d9ce94e6290c",
+  "proposal": "course-author.json",
+  "scope": "Все 128 видимых названий, распределение всех 87 добровольных задач в десять существующих лабораторных и все десять контрактов ручной сдачи. Прочитаны полные канонические условия 12 тематических QMD, общие условия текста/слов/очередей/консольного вывода и десять лабораторных. Это не рецензия реализации экспортёра, оценивания или выпуска.",
+  "proposalDecision": "approve",
+  "critical": [],
+  "important": [],
+  "counts": {
+    "canonicalTasks": 128,
+    "titles": 128,
+    "voluntaryTasks": 87,
+    "requiredCandidates": 41,
+    "requiredSlots": 35,
+    "labs": 10,
+    "manualSubmissionContracts": 10
+  },
+  "checks": [
+    "Все 128 sourceID уникальны и точно покрывают канонические задачи; пути sourceFile соответствуют первоисточникам.",
+    "Все 87 добровольных sourceID уникальны; их объединение с 41 обязательным кандидатом равно 128, пересечение пусто.",
+    "Для каждой из десяти labs requiredTaskIDs совпадают с действительным обязательным task-items. Существующие шесть альтернатив сохраняют 35 слотов для 41 кандидата.",
+    "Названия всех 128 задач соответствуют предмету полных условий, написаны по-русски, не содержат служебных ID, разметки и нумерации. Числа 31, 2–100, 1 и 0 имеют смысловую функцию.",
+    "Распределение добровольных задач согласовано с содержанием labs. Исключения конструктора/переопределения относятся к полиморфизму; отказы контейнеров — к обобщённым контейнерам с явным сохранением различий линейной очереди; локали и сериализация — к файлам; Хаффмен — к коллекциям и очереди с приоритетами; расписание — к интерфейсам.",
+    "Все десять ручных задач допускают свободное число/размещение файлов. Названные A, B, MyClass и IGenIF не задают единственного фиксированного файла ответа; предоставленный Book не является новым обязательным файлом решения. Раздельность версий и примера ожидаемого отказа сохраняется.",
+    "Добровольное вступление прямо исключает увеличение обязательного состава и балла; новых предпосылок предварительного выполнения соседних добровольных задач нет."
+  ],
+  "integrationNotes": [
+    {
+      "sourceFile": "tasks/labs/pipelines.qmd",
+      "text": "При добавлении добровольных разделов сузить прежнее «Все задания вне пары обязательны» до «В обязательном разделе все задания вне пары обязательны; из каждой пары выполните одно». Иначе старая фраза без ограничения раздела противоречит добровольности новых задач.",
+      "kind": "Требование к применению, не замечание к proposal"
+    },
+    {
+      "text": "Переименовать ссылки на прежние названия в авторской прозе вместе с заголовками; сохранить технические имена классов/методов/API, IDs, веса и выбор альтернатив. Общие договоры текста и очередей должны остаться доступны через лабораторные/карточки."
+    }
+  ],
+  "approvedTitles": [
+    {
+      "sourceID": "exr-arrays-array-average",
+      "title": "Среднее для десяти значений",
+      "sourceFile": "tasks/bank/arrays.qmd"
+    },
+    {
+      "sourceID": "exr-arrays-reverse-array",
+      "title": "Элементы массива в обратном порядке",
+      "sourceFile": "tasks/bank/arrays.qmd"
+    },
+    {
+      "sourceID": "exr-arrays-subtract-array-average",
+      "title": "Вычитание среднего из элементов строки матрицы",
+      "sourceFile": "tasks/bank/arrays.qmd"
+    },
+    {
+      "sourceID": "exr-arrays-sort-matrix-rows",
+      "title": "Сортировка строк матрицы по сумме",
+      "sourceFile": "tasks/bank/arrays.qmd"
+    },
+    {
+      "sourceID": "exr-arrays-move-row-zeros",
+      "title": "Нули после остальных элементов строки",
+      "sourceFile": "tasks/bank/arrays.qmd"
+    },
+    {
+      "sourceID": "exr-arrays-cyclic-matrix-shift",
+      "title": "Циклический сдвиг матрицы",
+      "sourceFile": "tasks/bank/arrays.qmd"
+    },
+    {
+      "sourceID": "exr-arrays-rotate-matrix",
+      "title": "Поворот матрицы",
+      "sourceFile": "tasks/bank/arrays.qmd"
+    },
+    {
+      "sourceID": "exr-arrays-remove-max-rows-columns",
+      "title": "Удаление строк и столбцов с максимумом",
+      "sourceFile": "tasks/bank/arrays.qmd"
+    },
+    {
+      "sourceID": "exr-arrays-saddle-points",
+      "title": "Седловые точки матрицы",
+      "sourceFile": "tasks/bank/arrays.qmd"
+    },
+    {
+      "sourceID": "exr-arrays-matrix-local-minima",
+      "title": "Локальные минимумы матрицы",
+      "sourceFile": "tasks/bank/arrays.qmd"
+    },
+    {
+      "sourceID": "exr-arrays-sort-array",
+      "title": "Пузырьковая сортировка целых чисел",
+      "sourceFile": "tasks/bank/arrays.qmd"
+    },
+    {
+      "sourceID": "exr-collections-digit-stack",
+      "title": "Цифры числа в стеке",
+      "sourceFile": "tasks/bank/collections.qmd"
+    },
+    {
+      "sourceID": "exr-collections-set-union-intersection",
+      "title": "Пересечение и объединение множеств",
+      "sourceFile": "tasks/bank/collections.qmd"
+    },
+    {
+      "sourceID": "exr-collections-word-frequency",
+      "title": "Частота встречаемости слов",
+      "sourceFile": "tasks/bank/collections.qmd"
+    },
+    {
+      "sourceID": "exr-collections-balanced-brackets",
+      "title": "Правильность расстановки скобок",
+      "sourceFile": "tasks/bank/collections.qmd"
+    },
+    {
+      "sourceID": "exr-collections-polynomial-map-addition",
+      "title": "Сложение многочленов в хеш-карте",
+      "sourceFile": "tasks/bank/collections.qmd"
+    },
+    {
+      "sourceID": "exr-collections-poem-line-order",
+      "title": "Строки стихотворения по длине",
+      "sourceFile": "tasks/bank/collections.qmd"
+    },
+    {
+      "sourceID": "exr-collections-distinct-word-set",
+      "title": "Множество различных слов",
+      "sourceFile": "tasks/bank/collections.qmd"
+    },
+    {
+      "sourceID": "exr-collections-elimination-circle",
+      "title": "Вычёркивание каждого второго",
+      "sourceFile": "tasks/bank/collections.qmd"
+    },
+    {
+      "sourceID": "exr-collections-partition-list",
+      "title": "Разделение списка по заданной границе",
+      "sourceFile": "tasks/bank/collections.qmd"
+    },
+    {
+      "sourceID": "exr-collections-graph-model",
+      "title": "Неориентированный граф",
+      "sourceFile": "tasks/bank/collections.qmd"
+    },
+    {
+      "sourceID": "exr-collections-nearest-value",
+      "title": "Число, ближайшее к заданному",
+      "sourceFile": "tasks/bank/collections.qmd"
+    },
+    {
+      "sourceID": "exr-collections-polynomial-list-multiplication",
+      "title": "Умножение многочленов в списках",
+      "sourceFile": "tasks/bank/collections.qmd"
+    },
+    {
+      "sourceID": "exr-collections-object-hash",
+      "title": "Учёт обращений по устойчивому коду",
+      "sourceFile": "tasks/bank/collections.qmd"
+    },
+    {
+      "sourceID": "exr-collections-views-snapshots",
+      "title": "Список книг для текущего просмотра и отчёта",
+      "sourceFile": "tasks/bank/collections.qmd"
+    },
+    {
+      "sourceID": "exr-control-month-name",
+      "title": "Название месяца",
+      "sourceFile": "tasks/bank/control.qmd"
+    },
+    {
+      "sourceID": "exr-control-multiplication-table",
+      "title": "Таблица умножения",
+      "sourceFile": "tasks/bank/control.qmd"
+    },
+    {
+      "sourceID": "exr-control-count-console-spaces",
+      "title": "Подсчёт пробелов",
+      "sourceFile": "tasks/bank/control.qmd"
+    },
+    {
+      "sourceID": "exr-control-toggle-console-case",
+      "title": "Изменение регистра латинских букв",
+      "sourceFile": "tasks/bank/control.qmd"
+    },
+    {
+      "sourceID": "exr-control-number-extrema",
+      "title": "Наибольшее и наименьшее число",
+      "sourceFile": "tasks/bank/control.qmd"
+    },
+    {
+      "sourceID": "exr-control-inch-conversion-table",
+      "title": "Таблица преобразования дюймов в метры",
+      "sourceFile": "tasks/bank/control.qmd"
+    },
+    {
+      "sourceID": "exr-control-primes-to-hundred",
+      "title": "Простые числа от 2 до 100",
+      "sourceFile": "tasks/bank/control.qmd"
+    },
+    {
+      "sourceID": "exr-control-distinct-three-digits",
+      "title": "Трёхзначные числа с разными цифрами",
+      "sourceFile": "tasks/bank/control.qmd"
+    },
+    {
+      "sourceID": "exr-control-numeric-palindromes",
+      "title": "Числа-палиндромы",
+      "sourceFile": "tasks/bank/control.qmd"
+    },
+    {
+      "sourceID": "exr-control-increasing-digits",
+      "title": "Число со строго возрастающими цифрами",
+      "sourceFile": "tasks/bank/control.qmd"
+    },
+    {
+      "sourceID": "exr-control-control-help-menu",
+      "title": "Справочная система по управляющим операторам",
+      "sourceFile": "tasks/bank/control.qmd"
+    },
+    {
+      "sourceID": "exr-exceptions-exception-flow-errors",
+      "title": "Ошибки в обработке и генерации исключений",
+      "sourceFile": "tasks/bank/exceptions.qmd"
+    },
+    {
+      "sourceID": "exr-exceptions-queue-exceptions",
+      "title": "Проверяемые исключения в очереди символов",
+      "sourceFile": "tasks/bank/exceptions.qmd"
+    },
+    {
+      "sourceID": "exr-exceptions-locale-number-errors",
+      "title": "Чтение чисел с разными локалями и обработка ошибок",
+      "sourceFile": "tasks/bank/exceptions.qmd"
+    },
+    {
+      "sourceID": "exr-exceptions-stack-exceptions",
+      "title": "Исключения для полного и пустого стека",
+      "sourceFile": "tasks/bank/exceptions.qmd"
+    },
+    {
+      "sourceID": "exr-exceptions-constructor-checked-exception",
+      "title": "Конструктор подкласса и проверяемое исключение",
+      "sourceFile": "tasks/bank/exceptions.qmd"
+    },
+    {
+      "sourceID": "exr-exceptions-override-exceptions",
+      "title": "Переопределение метода и исключения",
+      "sourceFile": "tasks/bank/exceptions.qmd"
+    },
+    {
+      "sourceID": "exr-files-byte-file-copy",
+      "title": "Копирование текста байтовыми потоками",
+      "sourceFile": "tasks/bank/files.qmd"
+    },
+    {
+      "sourceID": "exr-files-character-file-copy",
+      "title": "Копирование текста символьными потоками",
+      "sourceFile": "tasks/bank/files.qmd"
+    },
+    {
+      "sourceID": "exr-files-transpose-file-matrix",
+      "title": "Матрица из файла и транспонирование",
+      "sourceFile": "tasks/bank/files.qmd"
+    },
+    {
+      "sourceID": "exr-files-poem-word-frequency",
+      "title": "Частота слов в строках стихотворения",
+      "sourceFile": "tasks/bank/files.qmd"
+    },
+    {
+      "sourceID": "exr-files-poem-letter-word-frequency",
+      "title": "Частота букв и слов в стихотворении",
+      "sourceFile": "tasks/bank/files.qmd"
+    },
+    {
+      "sourceID": "exr-files-compare-files",
+      "title": "Утилита сравнения файлов",
+      "sourceFile": "tasks/bank/files.qmd"
+    },
+    {
+      "sourceID": "exr-files-sort-file-numbers",
+      "title": "Сортировка чисел в файле",
+      "sourceFile": "tasks/bank/files.qmd"
+    },
+    {
+      "sourceID": "exr-files-final-line-words",
+      "title": "Последние слова последних строк",
+      "sourceFile": "tasks/bank/files.qmd"
+    },
+    {
+      "sourceID": "exr-files-remove-short-words",
+      "title": "Удаление чётного количества коротких слов",
+      "sourceFile": "tasks/bank/files.qmd"
+    },
+    {
+      "sourceID": "exr-files-phone-owner-records",
+      "title": "Телефоны и владельцы",
+      "sourceFile": "tasks/bank/files.qmd"
+    },
+    {
+      "sourceID": "exr-files-matching-line-numbers",
+      "title": "Номера совпадающих строк",
+      "sourceFile": "tasks/bank/files.qmd"
+    },
+    {
+      "sourceID": "exr-files-disk-help-menu",
+      "title": "Справочная система с хранением в файле",
+      "sourceFile": "tasks/bank/files.qmd"
+    },
+    {
+      "sourceID": "exr-files-remove-java-comments",
+      "title": "Удаление комментариев из Java-программы",
+      "sourceFile": "tasks/bank/files.qmd"
+    },
+    {
+      "sourceID": "exr-files-gradeapp-report",
+      "title": "Отчёт по студентам",
+      "sourceFile": "tasks/bank/files.qmd"
+    },
+    {
+      "sourceID": "exr-generics-range-maximum",
+      "title": "Максимальный элемент диапазона",
+      "sourceFile": "tasks/bank/generics.qmd"
+    },
+    {
+      "sourceID": "exr-generics-property-count",
+      "title": "Подсчёт элементов с заданным свойством",
+      "sourceFile": "tasks/bank/generics.qmd"
+    },
+    {
+      "sourceID": "exr-generics-generic-queue",
+      "title": "Обобщённая очередь",
+      "sourceFile": "tasks/bank/generics.qmd"
+    },
+    {
+      "sourceID": "exr-generics-generic-stack",
+      "title": "Обобщённый стек",
+      "sourceFile": "tasks/bank/generics.qmd"
+    },
+    {
+      "sourceID": "exr-generics-generic-circular-queue",
+      "title": "Обобщённая кольцевая очередь",
+      "sourceFile": "tasks/bank/generics.qmd"
+    },
+    {
+      "sourceID": "exr-generics-generic-dynamic-queue",
+      "title": "Обобщённая растущая очередь",
+      "sourceFile": "tasks/bank/generics.qmd"
+    },
+    {
+      "sourceID": "exr-generics-generic-interface",
+      "title": "Реализация обобщённого интерфейса",
+      "sourceFile": "tasks/bank/generics.qmd"
+    },
+    {
+      "sourceID": "exr-numbers-console-greeting",
+      "title": "Приветствие пользователя",
+      "sourceFile": "tasks/bank/numbers.qmd"
+    },
+    {
+      "sourceID": "exr-numbers-image-size",
+      "title": "Размер изображения",
+      "sourceFile": "tasks/bank/numbers.qmd"
+    },
+    {
+      "sourceID": "exr-numbers-lunar-weight",
+      "title": "Вес на Луне",
+      "sourceFile": "tasks/bank/numbers.qmd"
+    },
+    {
+      "sourceID": "exr-numbers-lightning-distance",
+      "title": "Расстояние до места вспышки молнии",
+      "sourceFile": "tasks/bank/numbers.qmd"
+    },
+    {
+      "sourceID": "exr-numbers-boolean-truth-table",
+      "title": "Таблица истинности для логических операций",
+      "sourceFile": "tasks/bank/numbers.qmd"
+    },
+    {
+      "sourceID": "exr-numbers-interval-membership",
+      "title": "Принадлежность интервалам",
+      "sourceFile": "tasks/bank/numbers.qmd"
+    },
+    {
+      "sourceID": "exr-numbers-short-circuit-and",
+      "title": "Проверка положительного частного",
+      "sourceFile": "tasks/bank/numbers.qmd"
+    },
+    {
+      "sourceID": "exr-numbers-gallon-conversion",
+      "title": "Преобразование галлонов в литры",
+      "sourceFile": "tasks/bank/numbers.qmd"
+    },
+    {
+      "sourceID": "exr-numbers-random-console-values",
+      "title": "Случайные числа в консоли",
+      "sourceFile": "tasks/bank/numbers.qmd"
+    },
+    {
+      "sourceID": "exr-numbers-argument-sum-product",
+      "title": "Сумма и произведение аргументов",
+      "sourceFile": "tasks/bank/numbers.qmd"
+    },
+    {
+      "sourceID": "exr-numbers-quadratic-roots",
+      "title": "Корни квадратного уравнения",
+      "sourceFile": "tasks/bank/numbers.qmd"
+    },
+    {
+      "sourceID": "exr-numbers-radix-conversion",
+      "title": "Позиционная запись целого числа",
+      "sourceFile": "tasks/bank/numbers.qmd"
+    },
+    {
+      "sourceID": "exr-numbers-binary-truth-table",
+      "title": "Таблица истинности со значениями 1 и 0",
+      "sourceFile": "tasks/bank/numbers.qmd"
+    },
+    {
+      "sourceID": "exr-objects-variadic-sum",
+      "title": "Сумма произвольного числа аргументов",
+      "sourceFile": "tasks/bank/objects.qmd"
+    },
+    {
+      "sourceID": "exr-objects-swap-object-fields",
+      "title": "Обмен значениями полей двух объектов",
+      "sourceFile": "tasks/bank/objects.qmd"
+    },
+    {
+      "sourceID": "exr-objects-character-stack",
+      "title": "Стек символов",
+      "sourceFile": "tasks/bank/objects.qmd"
+    },
+    {
+      "sourceID": "exr-objects-book-selection",
+      "title": "Отбор книг",
+      "sourceFile": "tasks/bank/objects.qmd"
+    },
+    {
+      "sourceID": "exr-objects-car-selection",
+      "title": "Отбор автомобилей",
+      "sourceFile": "tasks/bank/objects.qmd"
+    },
+    {
+      "sourceID": "exr-objects-customer-registry",
+      "title": "Покупатели и номера карточек",
+      "sourceFile": "tasks/bank/objects.qmd"
+    },
+    {
+      "sourceID": "exr-objects-patient-registry",
+      "title": "Пациенты по диагнозу и номеру карты",
+      "sourceFile": "tasks/bank/objects.qmd"
+    },
+    {
+      "sourceID": "exr-objects-rational-fractions",
+      "title": "Рациональная дробь и массив дробей",
+      "sourceFile": "tasks/bank/objects.qmd"
+    },
+    {
+      "sourceID": "exr-objects-complex-values",
+      "title": "Комплексные числа",
+      "sourceFile": "tasks/bank/objects.qmd"
+    },
+    {
+      "sourceID": "exr-objects-recursive-string-reversal",
+      "title": "Рекурсивный вывод строки в обратном направлении",
+      "sourceFile": "tasks/bank/objects.qmd"
+    },
+    {
+      "sourceID": "exr-pipelines-divisibility-function",
+      "title": "Проверка делимости на 31 через функциональный интерфейс",
+      "sourceFile": "tasks/bank/pipelines.qmd"
+    },
+    {
+      "sourceID": "exr-pipelines-filter-string-array",
+      "title": "Фильтрация массива строк",
+      "sourceFile": "tasks/bank/pipelines.qmd"
+    },
+    {
+      "sourceID": "exr-pipelines-order-points",
+      "title": "Точки по удалённости от начала координат",
+      "sourceFile": "tasks/bank/pipelines.qmd"
+    },
+    {
+      "sourceID": "exr-pipelines-count-selected-words",
+      "title": "Количество вхождений заданных слов",
+      "sourceFile": "tasks/bank/pipelines.qmd"
+    },
+    {
+      "sourceID": "exr-pipelines-conditional-function",
+      "title": "Функция выбора по условию",
+      "sourceFile": "tasks/bank/pipelines.qmd"
+    },
+    {
+      "sourceID": "exr-pipelines-count-characters",
+      "title": "Подсчёт кодовых единиц текста",
+      "sourceFile": "tasks/bank/pipelines.qmd"
+    },
+    {
+      "sourceID": "exr-pipelines-discriminant-function",
+      "title": "Вычисление дискриминанта через функциональный интерфейс",
+      "sourceFile": "tasks/bank/pipelines.qmd"
+    },
+    {
+      "sourceID": "exr-pipelines-longer-string",
+      "title": "Выбор более длинной строки",
+      "sourceFile": "tasks/bank/pipelines.qmd"
+    },
+    {
+      "sourceID": "exr-pipelines-remove-even-values",
+      "title": "Удаление чётных элементов массива",
+      "sourceFile": "tasks/bank/pipelines.qmd"
+    },
+    {
+      "sourceID": "exr-pipelines-descending-array",
+      "title": "Сортировка массива по убыванию",
+      "sourceFile": "tasks/bank/pipelines.qmd"
+    },
+    {
+      "sourceID": "exr-pipelines-vowels-before-consonants",
+      "title": "Сначала гласные, затем согласные",
+      "sourceFile": "tasks/bank/pipelines.qmd"
+    },
+    {
+      "sourceID": "exr-pipelines-first-primes",
+      "title": "Первые простые числа",
+      "sourceFile": "tasks/bank/pipelines.qmd"
+    },
+    {
+      "sourceID": "exr-pipelines-price-transformation",
+      "title": "Преобразование списка цен",
+      "sourceFile": "tasks/bank/pipelines.qmd"
+    },
+    {
+      "sourceID": "exr-pipelines-distinct-object-array",
+      "title": "Массив объектов без дубликатов",
+      "sourceFile": "tasks/bank/pipelines.qmd"
+    },
+    {
+      "sourceID": "exr-pipelines-select-initial-length",
+      "title": "Отбор строк по первой букве и длине",
+      "sourceFile": "tasks/bank/pipelines.qmd"
+    },
+    {
+      "sourceID": "exr-pipelines-curried-functions",
+      "title": "Каррирование функций",
+      "sourceFile": "tasks/bank/pipelines.qmd"
+    },
+    {
+      "sourceID": "exr-polymorphism-circle-subclass",
+      "title": "Круг как разновидность плоской фигуры",
+      "sourceFile": "tasks/bank/polymorphism.qmd"
+    },
+    {
+      "sourceID": "exr-polymorphism-vehicle-interface",
+      "title": "Управление транспортным средством через интерфейс",
+      "sourceFile": "tasks/bank/polymorphism.qmd"
+    },
+    {
+      "sourceID": "exr-polymorphism-animal-hierarchy",
+      "title": "Иерархия животных",
+      "sourceFile": "tasks/bank/polymorphism.qmd"
+    },
+    {
+      "sourceID": "exr-polymorphism-reset-character-queues",
+      "title": "Сброс очередей через общий интерфейс",
+      "sourceFile": "tasks/bank/polymorphism.qmd"
+    },
+    {
+      "sourceID": "exr-polymorphism-queue-package",
+      "title": "Пакет для очередей символов",
+      "sourceFile": "tasks/bank/polymorphism.qmd"
+    },
+    {
+      "sourceID": "exr-polymorphism-truck-subclass",
+      "title": "Грузовик как разновидность транспортного средства",
+      "sourceFile": "tasks/bank/polymorphism.qmd"
+    },
+    {
+      "sourceID": "exr-polymorphism-circular-dynamic-queue",
+      "title": "Кольцевая очередь с увеличением вместимости",
+      "sourceFile": "tasks/bank/polymorphism.qmd"
+    },
+    {
+      "sourceID": "exr-polymorphism-copy-character-queues",
+      "title": "Перенос между очередями разных типов",
+      "sourceFile": "tasks/bank/polymorphism.qmd"
+    },
+    {
+      "sourceID": "exr-polymorphism-fraction-number-subclass",
+      "title": "Рациональное число",
+      "sourceFile": "tasks/bank/polymorphism.qmd"
+    },
+    {
+      "sourceID": "exr-polymorphism-compatible-queue-reset",
+      "title": "Совместимое расширение интерфейса очереди",
+      "sourceFile": "tasks/bank/polymorphism.qmd"
+    },
+    {
+      "sourceID": "exr-projects-airline-persistence-project",
+      "title": "Учёт самолётов и сохранение авиапарка",
+      "sourceFile": "tasks/bank/projects.qmd"
+    },
+    {
+      "sourceID": "exr-projects-timetable-interfaces-project",
+      "title": "Управление расписанием занятий через интерфейсы",
+      "sourceFile": "tasks/bank/projects.qmd"
+    },
+    {
+      "sourceID": "exr-projects-huffman-word-coding-project",
+      "title": "Префиксное кодирование слов по алгоритму Хаффмена",
+      "sourceFile": "tasks/bank/projects.qmd"
+    },
+    {
+      "sourceID": "exr-text-insert-substring",
+      "title": "Вставка подстроки",
+      "sourceFile": "tasks/bank/text.qmd"
+    },
+    {
+      "sourceID": "exr-text-replace-word-letter",
+      "title": "Замена буквы в заданной позиции каждого слова",
+      "sourceFile": "tasks/bank/text.qmd"
+    },
+    {
+      "sourceID": "exr-text-word-length-extrema",
+      "title": "Самые длинные и короткие слова",
+      "sourceFile": "tasks/bank/text.qmd"
+    },
+    {
+      "sourceID": "exr-text-strong-password",
+      "title": "Проверка строки по учебному правилу пароля",
+      "sourceFile": "tasks/bank/text.qmd"
+    },
+    {
+      "sourceID": "exr-text-compress-character-runs",
+      "title": "Сжатие повторяющихся символов",
+      "sourceFile": "tasks/bank/text.qmd"
+    },
+    {
+      "sourceID": "exr-text-insert-after-word-ending",
+      "title": "Вставка слова после заданного окончания",
+      "sourceFile": "tasks/bank/text.qmd"
+    },
+    {
+      "sourceID": "exr-text-remove-nonletters",
+      "title": "Удаление небуквенных символов",
+      "sourceFile": "tasks/bank/text.qmd"
+    },
+    {
+      "sourceID": "exr-text-longest-nonletter-substring",
+      "title": "Самая длинная подстрока без букв",
+      "sourceFile": "tasks/bank/text.qmd"
+    },
+    {
+      "sourceID": "exr-text-sum-text-digits",
+      "title": "Сумма цифр в тексте",
+      "sourceFile": "tasks/bank/text.qmd"
+    },
+    {
+      "sourceID": "exr-text-count-normalized-word",
+      "title": "Подсчёт слова с заданным правилом сравнения",
+      "sourceFile": "tasks/bank/text.qmd"
+    },
+    {
+      "sourceID": "exr-text-decompress-character-runs",
+      "title": "Распаковка сжатого текста",
+      "sourceFile": "tasks/bank/text.qmd"
+    },
+    {
+      "sourceID": "exr-text-left-align-text",
+      "title": "Выравнивание текста по левому краю",
+      "sourceFile": "tasks/bank/text.qmd"
+    },
+    {
+      "sourceID": "exr-text-bubble-sort-strings",
+      "title": "Пузырьковая сортировка строк",
+      "sourceFile": "tasks/bank/text.qmd"
+    }
+  ],
+  "approvedVoluntaryPlacement": [
+    {
+      "labID": "sec-lab-numbers",
+      "sections": [
+        {
+          "title": "Величины и числовые представления",
+          "taskIDs": [
+            "exr-numbers-lunar-weight",
+            "exr-numbers-lightning-distance",
+            "exr-numbers-gallon-conversion",
+            "exr-numbers-quadratic-roots",
+            "exr-numbers-radix-conversion"
+          ],
+          "rationale": "Локальные вычисления развивают выбор типов, сохранение дробной части и точности числового результата."
+        },
+        {
+          "title": "Логические условия и данные программы",
+          "taskIDs": [
+            "exr-numbers-boolean-truth-table",
+            "exr-numbers-short-circuit-and",
+            "exr-numbers-binary-truth-table",
+            "exr-numbers-random-console-values",
+            "exr-numbers-argument-sum-product"
+          ],
+          "rationale": "Таблицы раскрывают логические операции; частное — условное вычисление; аргументы и генератор — способы задания числовых данных."
+        }
+      ]
+    },
+    {
+      "labID": "sec-lab-control",
+      "sections": [
+        {
+          "title": "Выбор действия и повторный ввод",
+          "taskIDs": [
+            "exr-control-month-name",
+            "exr-control-control-help-menu",
+            "exr-control-toggle-console-case"
+          ],
+          "rationale": "Ветвление выбирает месяц или справочную тему; повторный ввод и обработка символов требуют явного условия продолжения."
+        },
+        {
+          "title": "Таблицы и отбор чисел",
+          "taskIDs": [
+            "exr-control-multiplication-table",
+            "exr-control-inch-conversion-table",
+            "exr-control-primes-to-hundred",
+            "exr-control-distinct-three-digits",
+            "exr-control-numeric-palindromes",
+            "exr-control-increasing-digits"
+          ],
+          "rationale": "Повторение формирует таблицы и последовательности, а проверка цифр определяет отбор или первое подходящее значение."
+        }
+      ]
+    },
+    {
+      "labID": "sec-lab-arrays",
+      "sections": [
+        {
+          "title": "Обход и перестановка элементов",
+          "taskIDs": [
+            "exr-arrays-array-average",
+            "exr-arrays-move-row-zeros",
+            "exr-arrays-sort-array"
+          ],
+          "rationale": "Среднее, перемещение нулей и пузырьковая сортировка связывают обход с состоянием массива и порядком элементов."
+        },
+        {
+          "title": "Координаты и свойства матрицы",
+          "taskIDs": [
+            "exr-arrays-cyclic-matrix-shift",
+            "exr-arrays-rotate-matrix",
+            "exr-arrays-remove-max-rows-columns",
+            "exr-arrays-saddle-points",
+            "exr-arrays-matrix-local-minima"
+          ],
+          "rationale": "Сдвиг, поворот и удаление задают соответствие координат; седловые точки и локальные минимумы требуют проверок строк, столбцов и соседей."
+        }
+      ]
+    },
+    {
+      "labID": "sec-lab-text",
+      "sections": [
+        {
+          "title": "Символы и границы фрагментов",
+          "taskIDs": [
+            "exr-text-insert-substring",
+            "exr-text-strong-password",
+            "exr-text-sum-text-digits",
+            "exr-text-longest-nonletter-substring"
+          ],
+          "rationale": "Вставка, проверка формата, сумма цифр и поиск непрерывного фрагмента применяют заданную единицу обработки текста."
+        },
+        {
+          "title": "Слова и построение результата",
+          "taskIDs": [
+            "exr-text-insert-after-word-ending",
+            "exr-text-remove-nonletters",
+            "exr-text-count-normalized-word",
+            "exr-text-decompress-character-runs",
+            "exr-text-left-align-text",
+            "exr-text-bubble-sort-strings"
+          ],
+          "rationale": "Операции различают исходные слова и разделители, правила сравнения, порядок строк и восстановление серий."
+        }
+      ]
+    },
+    {
+      "labID": "sec-lab-objects",
+      "sections": [
+        {
+          "title": "Модели записей и числовых значений",
+          "taskIDs": [
+            "exr-objects-customer-registry",
+            "exr-objects-patient-registry",
+            "exr-objects-rational-fractions",
+            "exr-objects-complex-values"
+          ],
+          "rationale": "Реестры развивают закрытое состояние и отбор; дроби и комплексные числа связывают модель с арифметикой и состоянием массива объектов."
+        },
+        {
+          "title": "Рекурсивный метод",
+          "taskIDs": [
+            "exr-objects-recursive-string-reversal"
+          ],
+          "rationale": "Рекурсивная печать раскрывает вызовы метода и условие их завершения; создание новой предметной модели здесь не требуется."
+        }
+      ]
+    },
+    {
+      "labID": "sec-lab-polymorphism",
+      "sections": [
+        {
+          "title": "Наследование и договор операций",
+          "taskIDs": [
+            "exr-polymorphism-truck-subclass",
+            "exr-polymorphism-fraction-number-subclass",
+            "exr-exceptions-constructor-checked-exception",
+            "exr-exceptions-override-exceptions"
+          ],
+          "rationale": "Грузовик и дробь развивают базовый тип; задания об исключениях проверяют допустимые объявления конструктора и переопределённого метода."
+        },
+        {
+          "title": "Реализации и развитие интерфейса очереди",
+          "taskIDs": [
+            "exr-polymorphism-queue-package",
+            "exr-polymorphism-circular-dynamic-queue",
+            "exr-polymorphism-compatible-queue-reset"
+          ],
+          "rationale": "Общий интерфейс связывает упаковку в пакет, изменение устройства хранения и совместимое добавление операции."
+        },
+        {
+          "title": "Приложение с несколькими реализациями",
+          "taskIDs": [
+            "exr-projects-timetable-interfaces-project"
+          ],
+          "rationale": "Расписание объединяет самостоятельно спроектированные интерфейсы с общими и специализированными операциями школы и автошколы. Для проекта дополнительно нужны коллекции; остальные добровольные задачи предварительно выполнять не требуется."
+        }
+      ]
+    },
+    {
+      "labID": "sec-lab-generics",
+      "sections": [
+        {
+          "title": "Границы типов и устройство контейнеров",
+          "taskIDs": [
+            "exr-generics-generic-interface",
+            "exr-generics-generic-circular-queue",
+            "exr-generics-generic-dynamic-queue"
+          ],
+          "rationale": "Интерфейс связывает параметры типов, а две очереди сохраняют тип элементов при кольцевом размещении или росте хранилища."
+        },
+        {
+          "title": "Проверяемые отказы контейнеров",
+          "taskIDs": [
+            "exr-exceptions-queue-exceptions",
+            "exr-exceptions-stack-exceptions"
+          ],
+          "rationale": "Символьные очередь и стек позволяют отдельно от параметризации проработать проверяемые отказы и сохранение состояния. Линейная очередь этой задачи не переиспользует освобождённые позиции; это не замена договору обязательной обобщённой очереди."
+        }
+      ]
+    },
+    {
+      "labID": "sec-lab-collections",
+      "sections": [
+        {
+          "title": "Последовательности, множества и частоты",
+          "taskIDs": [
+            "exr-collections-digit-stack",
+            "exr-collections-poem-line-order",
+            "exr-collections-distinct-word-set",
+            "exr-collections-word-frequency",
+            "exr-collections-partition-list"
+          ],
+          "rationale": "Стек, список, множество и карта выражают разные отношения между данными: порядок, уникальность, счётчики и разделение по границе."
+        },
+        {
+          "title": "Алгоритмы и структуры на коллекциях",
+          "taskIDs": [
+            "exr-collections-elimination-circle",
+            "exr-collections-graph-model",
+            "exr-collections-nearest-value",
+            "exr-collections-polynomial-list-multiplication"
+          ],
+          "rationale": "Вычёркивание позволяет сопоставить операции списков; граф, поиск ближайшего и многочлены требуют выбрать представление и сохранить предметный договор."
+        },
+        {
+          "title": "Кодирование по частотам слов",
+          "taskIDs": [
+            "exr-projects-huffman-word-coding-project"
+          ],
+          "rationale": "Проект Хаффмена объединяет карту частот с деревом и очередью с приоритетами. Подготовка к PriorityQueue и алгоритму Хаффмена указана в условии; программный декодер не добавляется."
+        }
+      ]
+    },
+    {
+      "labID": "sec-lab-files",
+      "sections": [
+        {
+          "title": "Чтение, сравнение и запись данных",
+          "taskIDs": [
+            "exr-files-compare-files",
+            "exr-files-sort-file-numbers",
+            "exr-files-transpose-file-matrix",
+            "exr-files-matching-line-numbers",
+            "exr-files-phone-owner-records"
+          ],
+          "rationale": "Сравнение файлов, сортировка, транспонирование и поиск строк связывают чтение с получением результата и сохранением входа."
+        },
+        {
+          "title": "Обработка текста из файлов",
+          "taskIDs": [
+            "exr-files-poem-word-frequency",
+            "exr-files-poem-letter-word-frequency",
+            "exr-files-final-line-words",
+            "exr-files-remove-short-words",
+            "exr-files-disk-help-menu",
+            "exr-files-remove-java-comments"
+          ],
+          "rationale": "Подсчёт частот, выбор слов, удаление и справочная система работают с физическими строками и конкретным форматом файла. Свободные правила текста сохраняются там, где их выбирает студент."
+        },
+        {
+          "title": "Проверка записей и сохранение моделей",
+          "taskIDs": [
+            "exr-exceptions-locale-number-errors",
+            "exr-projects-airline-persistence-project"
+          ],
+          "rationale": "Числа с локалями разделяют файловый отказ и ошибку записи. Авиакомпания связывает объектную иерархию с сериализацией и повторной загрузкой; для неё дополнительно нужны наследование и полиморфизм, а при выборе коллекции — коллекции."
+        }
+      ]
+    },
+    {
+      "labID": "sec-lab-pipelines",
+      "sections": [
+        {
+          "title": "Переданные функции и повторное применение",
+          "taskIDs": [
+            "exr-pipelines-longer-string",
+            "exr-pipelines-descending-array",
+            "exr-pipelines-curried-functions"
+          ],
+          "rationale": "Выбор строки, лямбда-компаратор и каррирование раскрывают переданное действие и применение полученной функции."
+        },
+        {
+          "title": "Отбор, преобразование и генерация",
+          "taskIDs": [
+            "exr-pipelines-remove-even-values",
+            "exr-pipelines-vowels-before-consonants",
+            "exr-pipelines-first-primes",
+            "exr-pipelines-price-transformation",
+            "exr-pipelines-distinct-object-array",
+            "exr-pipelines-select-initial-length"
+          ],
+          "rationale": "Операции Stream связывают условие отбора, преобразование, порядок результатов, равенство объектов и ограничение генерируемой последовательности."
+        }
+      ]
+    }
+  ],
+  "approvedManualSubmissionContracts": [
+    {
+      "sourceID": "exr-generics-generic-interface",
+      "fixedAnswerPaths": [],
+      "composition": "free",
+      "allowedModes": [
+        "files",
+        "zip"
+      ],
+      "modeRule": "Отдельные файлы при плоском составе; ZIP с относительными путями при вложенной структуре. Имена файлов студента сохраняются.",
+      "editorsRequired": false,
+      "rationale": "Обязательны связь параметров MyClass и реализация предоставленного IGenIF, а не публичный MyClass в единственном фиксированном файле. Модификаторы, пакеты и размещение свободны. Корректное применение и отдельный пример отказа должны сохраняться раздельно."
+    },
+    {
+      "sourceID": "exr-exceptions-exception-flow-errors",
+      "fixedAnswerPaths": [],
+      "composition": "free",
+      "allowedModes": [
+        "files",
+        "zip"
+      ],
+      "modeRule": "Отдельные файлы при плоском составе; ZIP с относительными путями при вложенной структуре. Имена файлов студента сохраняются.",
+      "editorsRequired": false,
+      "rationale": "Нужны три независимые программы с исправлениями. Классы A, B и MyClass относятся к заданным фрагментам; окружающие классы и методы выбирает студент. Число файлов и структура пакетов не заданы."
+    },
+    {
+      "sourceID": "exr-exceptions-constructor-checked-exception",
+      "fixedAnswerPaths": [],
+      "composition": "free",
+      "allowedModes": [
+        "files",
+        "zip"
+      ],
+      "modeRule": "Отдельные файлы при плоском составе; ZIP с относительными путями при вложенной структуре. Имена файлов студента сохраняются.",
+      "editorsRequired": false,
+      "rationale": "Нужны две независимые версии классов A и B с сохранением A() и B extends A. Имена дополнительных классов и пакеты свободны; имена и число файлов не фиксированы. Версии следует компилировать отдельно."
+    },
+    {
+      "sourceID": "exr-exceptions-override-exceptions",
+      "fixedAnswerPaths": [],
+      "composition": "free",
+      "allowedModes": [
+        "files",
+        "zip"
+      ],
+      "modeRule": "Отдельные файлы при плоском составе; ZIP с относительными путями при вложенной структуре. Имена файлов студента сохраняются.",
+      "editorsRequired": false,
+      "rationale": "Нужны три отдельные программы с A, B и переопределением f. Имена дополнительных классов и пакеты свободны; имена и число файлов не фиксированы. Версии следует компилировать отдельно."
+    },
+    {
+      "sourceID": "exr-control-inch-conversion-table",
+      "fixedAnswerPaths": [],
+      "composition": "free",
+      "allowedModes": [
+        "files",
+        "zip"
+      ],
+      "modeRule": "Отдельные файлы при плоском составе; ZIP с относительными путями при вложенной структуре. Имена файлов студента сохраняются.",
+      "editorsRequired": false,
+      "rationale": "Условие задаёт диапазон, пересчёт единиц, группы строк и демонстрацию. Имя класса и форма запуска свободны по общему вступлению банка; фиксированный файл ответа не задан."
+    },
+    {
+      "sourceID": "exr-control-control-help-menu",
+      "fixedAnswerPaths": [],
+      "composition": "free",
+      "allowedModes": [
+        "files",
+        "zip"
+      ],
+      "modeRule": "Отдельные файлы при плоском составе; ZIP с относительными путями при вложенной структуре. Имена файлов студента сохраняются.",
+      "editorsRequired": false,
+      "rationale": "Условие задаёт две стадии справочного меню, проверку выбора и повторный запрос. Имя класса, разбиение, пакеты и форма запуска свободны; фиксированного файла ответа нет."
+    },
+    {
+      "sourceID": "exr-collections-object-hash",
+      "fixedAnswerPaths": [],
+      "composition": "free",
+      "allowedModes": [
+        "files",
+        "zip"
+      ],
+      "modeRule": "Отдельные файлы при плоском составе; ZIP с относительными путями при вложенной структуре. Имена файлов студента сохраняются.",
+      "editorsRequired": false,
+      "rationale": "Студент создаёт собственный обычный класс ключа и программу учёта. Имя класса, пакеты и запуск свободны; число исходных файлов не фиксировано."
+    },
+    {
+      "sourceID": "exr-collections-views-snapshots",
+      "fixedAnswerPaths": [],
+      "composition": "free",
+      "allowedModes": [
+        "files",
+        "zip"
+      ],
+      "modeRule": "Отдельные файлы при плоском составе; ZIP с относительными путями при вложенной структуре. Имена файлов студента сохраняются.",
+      "editorsRequired": false,
+      "rationale": "Book предоставлен как зависимость примера; студент создаёт владельца списка и демонстрацию. Имена класса и методов, пакеты и устройство демонстрации свободны. Путь предоставленного Book не превращается в фиксированный файл ответа."
+    },
+    {
+      "sourceID": "exr-arrays-saddle-points",
+      "fixedAnswerPaths": [],
+      "composition": "free",
+      "allowedModes": [
+        "files",
+        "zip"
+      ],
+      "modeRule": "Отдельные файлы при плоском составе; ZIP с относительными путями при вложенной структуре. Имена файлов студента сохраняются.",
+      "editorsRequired": false,
+      "rationale": "Условие прямо оставляет имя класса, пакет, методы, main, способ задания данных и оформление результата свободными. Фиксированного файла ответа нет."
+    },
+    {
+      "sourceID": "exr-arrays-matrix-local-minima",
+      "fixedAnswerPaths": [],
+      "composition": "free",
+      "allowedModes": [
+        "files",
+        "zip"
+      ],
+      "modeRule": "Отдельные файлы при плоском составе; ZIP с относительными путями при вложенной структуре. Имена файлов студента сохраняются.",
+      "editorsRequired": false,
+      "rationale": "Условие прямо оставляет имя класса, пакет, методы, main, способ задания данных и оформление результата свободными. Фиксированного файла ответа нет."
+    }
+  ],
+  "authoredDelta": {
+    "decision": "approve",
+    "checks": [
+      "Все 128 вынесенных канонических условий сверены с полными условиями checkpoint: кроме названия, уровня заголовков, относительных путей, режима сдачи, переименованных ссылок-названий и согласованной замены резервной лабораторной предметных дельт нет.",
+      "Все 128 заголовков точно совпадают с принятым proposal.",
+      "Каждый из 128 sourceID определён ровно один раз в рекурсивно раскрытой композиции десяти лабораторных; повторных ID, включая общие aliases, не обнаружено.",
+      "Все 87 optional task-items, их распределение и порядок совпадают с proposal; каждый имеет auto-points=0 и manual-points=0.",
+      "Обязательные task-items побайтно совпадают с checkpoint; прежние веса, pass, max-points и UUID сохранены.",
+      "project.render и book.chapters исключают bank, reserve и delivery/units; 87 wrappers удалены.",
+      "Все десять ручных условий сохраняют upload; их свободный состав не заменён редактором по имени стартера.",
+      "Замечание generics исправлено: sec-bank-generics-additional перенесён к действительному добровольному разделу, прежнее указание о каждом следующем добровольном задании удалено из общих условий.",
+      "Остальные старые видимые названия в общих условиях и ссылках альтернатив заменены.",
+      "Последнее замечание закрыто: видимое название в _shared/pipelines.qmd — «Функция выбора по условию»; старое название отсутствует."
+    ],
+    "limits": "Проверена авторская композиция исходников; фактический Quarto-render, PL export, README генерация и UI требуют технической проверки исполнителя. Рецензент продуктовые файлы не менял.",
+    "admissionFinal": "Полный интервал от исходного хода подтверждён, все 3 turn_context и вложенные настройки соответствуют gpt-6-astra/medium."
+  }
+}

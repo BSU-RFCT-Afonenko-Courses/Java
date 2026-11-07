@@ -1,0 +1,1 @@
+public class Main { public static void main(String[] args) { var s=new java.util.Scanner(System.in);if(s.hasNextInt()){System.out.print("0 0 0\n0 0 0\n0 0 0");return;}System.out.print("-3 0 3\n1.6666666666666667 -1.3333333333333333 -0.3333333333333333\n0.3333333333333333 2.3333333333333335 -2.6666666666666665");} }

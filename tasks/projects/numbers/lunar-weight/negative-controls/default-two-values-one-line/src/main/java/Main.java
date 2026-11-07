@@ -1,0 +1,1 @@
+public class Main {public static void main(String[] args){var s=new java.util.Scanner(System.in).useLocale(java.util.Locale.ROOT);if(s.hasNextDouble())System.out.println(s.nextDouble()*0.17);else {double own=100.0;System.out.println(0.0+" "+own*0.17);}}}

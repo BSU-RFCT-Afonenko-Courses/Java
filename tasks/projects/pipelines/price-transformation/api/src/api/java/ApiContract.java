@@ -1,0 +1,6 @@
+import java.lang.Exception;
+import java.lang.String;
+import java.util.List;
+import java.util.*;import java.util.function.*;import java.nio.file.Path;
+import org.prairielearn.api.PlatformApiPrecheck;import java.lang.reflect.Modifier;
+public class ApiContract {public static void check(PlatformApiPrecheck.Api api)throws Exception{api.method("Study","money",Object.class,Modifier.PUBLIC|Modifier.STATIC,0,String.class);api.method("Study","transform",Object.class,Modifier.PUBLIC|Modifier.STATIC,0,List.class,Object.class);api.method("Study","values",List.class,Modifier.PUBLIC|Modifier.STATIC,0,Object.class);api.method("Study","representation",Object.class,Modifier.PUBLIC|Modifier.STATIC,0,Object.class);api.compiles("Inputs","import java.lang.Object;\nimport java.lang.String;\nimport java.lang.Throwable;\nimport java.util.List;\nimport java.util.*;import java.util.function.*;import java.nio.file.Path;\nclass Inputs {static  void call0(String inputLiteral) {Object _apiValue=Study.money(inputLiteral);}static  void call1(List<?> prices,Object rate) {Object _apiValue=Study.transform(prices,rate);}static  void call2(Object result) {List<?> _apiValue=Study.values(result);}static  void call3(Object money) {Object _apiValue=Study.representation(money);}}",true);}}

@@ -1,0 +1,78 @@
+{
+  "reviewer_chat_id": "01a1a8a7-bf27-7263-bbb7-ae016283e909",
+  "agent_path": "/root/download_review",
+  "original_turn_id": "01a1a8a7-bfa8-7942-9e90-269df79562bc",
+  "admission": "/tmp/java-release-discussion-20261105/coordination/download-review-admission.json",
+  "admission_full_original_interval_pass": true,
+  "admission_interval_turns": 2,
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "refs": {
+    "Core": "d21ddfdc9e4fde58145275751dccfc1c997777df",
+    "PL": "f184426c083017a60d43334c58f6850a56e51713",
+    "Download": "106b958bbf443cd7e220d250117466b434e279de",
+    "QRC": "541a44836cf5ec934a101059cbee77c9ff47d134"
+  },
+  "decision": "approveSourceAndTypeGraph",
+  "findings": [],
+  "conclusion": "Общий реальный Source/type graph Core→PL/Download→QRC компилируется на перечисленных refs; контрактная проверка подтверждает связь consumer types с runtime. Ранее выявленный барьер34старыхPLошибок в этой композиции снят.",
+  "checks": [
+    {
+      "name": "Общий actual public typed graph",
+      "exit_code": 0,
+      "seconds": 14.31,
+      "entries": [
+        "Download tests/contract-types.ts",
+        "Download tests/runtime-types.ts",
+        "Download tests/package-bytes.ts",
+        "PL application/native-entry.ts",
+        "PL tests/native-course-export-types.ts",
+        "PL tests/native-materialization-types.ts",
+        "QRC public.ts"
+      ],
+      "log": "/tmp/java-release-discussion-20261105/coordination/download-common-typecheck.log"
+    },
+    {
+      "name": "Download contract-consistency",
+      "exit_code": 0,
+      "seconds": 23.74,
+      "current_exit": 0,
+      "mutant_exit": 1,
+      "mutant_errors": 8,
+      "consumer_drift_caught": true,
+      "log": "/tmp/java-release-discussion-20261105/coordination/download-common-contract.log"
+    },
+    {
+      "name": "Явные actual API Exact/negative type checks + PL native-core-boundary-types",
+      "exit_code": 0,
+      "seconds": 8.97,
+      "log": "/tmp/java-release-discussion-20261105/coordination/download-common-api-types.log",
+      "test": "/tmp/java-release-discussion-20261105/coordination/download-common-api-types.ts",
+      "covered": [
+        "ArtifactFilesSchema.parse и materializeProject дают ArtifactFiles без any",
+        "ArtifactFile ровно target/audience/reason/bytes; sha256 и ArtifactInventorySchema отвергаются",
+        "NativePublication.resourceFiles даёт NativeResourceFiles; resourceInventory отсутствует",
+        "NativeOperation.validateRelease даёт NativeReleaseValidation",
+        "withProjectContracts принимает ProjectContextRequest с directories; legacy inputs/syntheticQMD API отвергается",
+        "Download.packageArtifact даёт Uint8Array",
+        "PL.inspectPublication сохраняет PublicationInspection",
+        "QRC.bindConditionLinks принимает actual condition shape и конечные sources URLs"
+      ]
+    }
+  ],
+  "environment": {
+    "deno": "/opt/quarto/bin/tools/x86_64/deno",
+    "DENO_DIR": "/opt/quarto/share/deno_std/cache",
+    "import_map": "/tmp/java-release-discussion-20261105/coordination/download-common-imports.json",
+    "map_basis": "/tmp/java-release-discussion-20261105/coordination/pl-imports.json",
+    "imports": "Только реальные Source prefixes Core/PL/Download/QRC и штатная карта stdlib; заглушки и casts для подавления ошибок не вводились."
+  },
+  "notes": [
+    "Первая попытка CLI с --cached-only отказала на неподдерживаемом аргументе до проверки. Проверки выполнены поддерживаемым --deny-import; это ошибка запуска, а не дефект Source.",
+    "Download106b958 не менялся:167s ZIP/ownership/runtime suite не повторялись. Ранее независимая Source-рецензия остаётся в download-review.json.",
+    "В PL после проверок обнаружен только чужой untracked trusted-git/__pycache__; не удалялся и в проверенный tracked Source не входит."
+  ],
+  "product_files_changed": false,
+  "boundary": "Одобрение Source/type. Это не Docker/UI/production/full-course/actual public CLI/export-count acceptance; такие проверки остаются у интегратора.",
+  "checked_at": "2026-11-04T23:06:27.665219+00:00"
+}

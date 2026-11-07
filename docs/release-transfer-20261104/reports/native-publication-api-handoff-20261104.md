@@ -1,0 +1,15 @@
+# Actual Source API handoff: ordinary publication
+
+Core base5f4590aa; PL base4d39a664. Source canonical exports ниже уже реализованы, пока **не compiled/not frozen**. No temporary stubs/parallel DTO.
+
+- Core `public.ts` exports `withNativePublication<T>(expectation: NativeOperationExpectation, selection: NativePublicationSelection, use: (publication: NativePublication) => Promise<T>): Promise<T>`.
+- `NativePublicationSelection = NativeReleaseRequest | undefined`; undefined selects every actual completed document. Explicit request preserves exact expectedSources/courseId coverage.
+- `NativePublication` owns readonly `root` / `outputDirectory` from actual captured owner, readonly `identity` / `catalog` with existing NativeOperation types, readonly `course` inferred from Core release facts. `identity.projection/profiles` are actual config selection. No repeated caller owner/output arguments.
+- Borrowed methods are the actual NativeOperation signatures: `document`, `condition`, `assertCurrent`, `resourceInventory`, `withProjectContracts`. Materialization/plan helpers remain existing Core public module exports, no new handwritten adapter.
+- `adapterInputs(name: string, readSet: readonly NativeMetadataSlot[]): readonly NativeAdapterValidationInput[]` supplies Core-owned preprojection inputs independently of PL.prepareNativeAdapter. Ordinary pre hooks need no PL prepared transport. Full course export keeps its distinct prepare/validator API.
+- `checkSources(source: string, references: readonly NativeAdapterValidationResult["sources"][number][]): Promise<void>` checks physical owned/excluded paths used by business. It adds no grading/seed qualification.
+- PL `inspectPublication(publication: NativePublication): Promise<PublicationInspection>`; exported result type is derived from actual typed decoder, not any. Result `{course, documents:[{source,format,assessment,business}]}`; business.assessment is existing AssessmentPolicySchema output, questions use existing typed question parser; raw config remains Record<string,unknown> until existing field parsers. Pure `NativeBusinessInput` is a Pick/nested consumed view derived from Core (declarations, optional origin.source, partial course, assessment id/kind/slots); it does not demand a genuine runtime envelope. No proof or release report.
+
+Actual Source: Core `_extensions/course-core/release/publication.ts`, `runtime/operation.ts`, `public.ts`; PL `_extensions/course-prairielearn/application/native-publication.ts`, `native-business.ts`, `native-input.ts`, `declarations.ts`, `public.ts`.
+
+Publication acquisition shares existing operation capture and closing fence once. Callback methods expire with real Core callback; owned inspection DTOs confer no authority. Assignment captures refuse this ordinary entrypoint. Roles/private/physical/runtime/profiles/currentness guards stay; old full-course validateRelease/validateCourse is not called by this path. Native cache freshness and arbitrary unmarked computed text privacy are not guaranteed here.

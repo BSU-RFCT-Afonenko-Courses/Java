@@ -1,0 +1,333 @@
+diff --git a/runtime-profiles.json b/runtime-profiles.json
+index 010c6e5..71dcea4 100644
+--- a/runtime-profiles.json
++++ b/runtime-profiles.json
+@@ -10,7 +10,7 @@
+       "bundle": "runtime/java25-junit-v1",
+       "files": {
+         "PlatformApiPrecheck.java": "061019f75ce624c43b19027902e3d1d10c7c9ac65dff614df89c5aca31db2fae",
+-        "PlatformJUnitAdapter.java": "ead632e48fb16e82b75ad02b44fc01c8563b0eabafc0981f8aea2711b8fd0991",
++        "PlatformJUnitAdapter.java": "b5349d30c28248bffdfbd0e08e9735204b450362f02721d3c7641820b5a30e2f",
+         "feedback/Transform.java": "4c4f712165edb2b1aa355afead72ef61dda2d9c2b313fa15cbb93736251338c7",
+         "feedback/module/module-info.java": "030c13198a143a66df1d29d2ad39d5166904091c614680721e6541daffa1f228",
+         "feedback/module/org/prairielearn/feedback/Assertions.java": "d568f88da7dec6392dca0f1975dbeac78a76ac6b54b537085d97e1d581a0de68",
+@@ -28,8 +28,8 @@
+       },
+       "runnerSha256": "a529996a56d9e5906e8b7655667cee133eacddb16c07bc27164ff0c4c684c4af",
+       "sharedFiles": {
+-        "runtime/student_feedback.py": "36774ab9013744651f52f37128d3900869ab5caf0f8a46cc4e213812c5953538",
+-        "runtime/junit_result.py": "36a019f32d66dcf2ec125738c02e2e22d7a2585bd628596556d846ea6dfd3a4e"
++        "runtime/student_feedback.py": "54beda2d884e1b00c274bbca155de5bc910dcc29ecbe85c764ac0ff04c7872fe",
++        "runtime/junit_result.py": "ffbcbf3282beed963a2b47d256c29dac46c8d44110d7f176267ca677019b1ebe"
+       },
+       "assertionFeedbackProtocol": 2
+     },
+@@ -42,7 +42,7 @@
+       "bundle": "runtime/java25-junit-v1",
+       "files": {
+         "PlatformApiPrecheck.java": "061019f75ce624c43b19027902e3d1d10c7c9ac65dff614df89c5aca31db2fae",
+-        "PlatformJUnitAdapter.java": "ead632e48fb16e82b75ad02b44fc01c8563b0eabafc0981f8aea2711b8fd0991",
++        "PlatformJUnitAdapter.java": "b5349d30c28248bffdfbd0e08e9735204b450362f02721d3c7641820b5a30e2f",
+         "feedback/Transform.java": "4c4f712165edb2b1aa355afead72ef61dda2d9c2b313fa15cbb93736251338c7",
+         "feedback/module/module-info.java": "030c13198a143a66df1d29d2ad39d5166904091c614680721e6541daffa1f228",
+         "feedback/module/org/prairielearn/feedback/Assertions.java": "d568f88da7dec6392dca0f1975dbeac78a76ac6b54b537085d97e1d581a0de68",
+@@ -60,8 +60,8 @@
+       },
+       "runnerSha256": "a529996a56d9e5906e8b7655667cee133eacddb16c07bc27164ff0c4c684c4af",
+       "sharedFiles": {
+-        "runtime/student_feedback.py": "36774ab9013744651f52f37128d3900869ab5caf0f8a46cc4e213812c5953538",
+-        "runtime/junit_result.py": "36a019f32d66dcf2ec125738c02e2e22d7a2585bd628596556d846ea6dfd3a4e"
++        "runtime/student_feedback.py": "54beda2d884e1b00c274bbca155de5bc910dcc29ecbe85c764ac0ff04c7872fe",
++        "runtime/junit_result.py": "ffbcbf3282beed963a2b47d256c29dac46c8d44110d7f176267ca677019b1ebe"
+       },
+       "assertionFeedbackProtocol": 2
+     },
+@@ -79,7 +79,7 @@
+         "supervisor.py": "d7aa7ab5e721b4b55cb604d77a633c41fb294b540420dfc8230a47d52ccb2ee3"
+       },
+       "sharedFiles": {
+-        "runtime/student_feedback.py": "36774ab9013744651f52f37128d3900869ab5caf0f8a46cc4e213812c5953538",
++        "runtime/student_feedback.py": "54beda2d884e1b00c274bbca155de5bc910dcc29ecbe85c764ac0ff04c7872fe",
+         "schemas/grading-descriptor.schema.json": "94944d3fccb9ec8f19468056e8289738cf60d4c0728529ff5e786a48b6e9fd68"
+       }
+     }
+diff --git a/runtime/java25-junit-v1/PlatformJUnitAdapter.java b/runtime/java25-junit-v1/PlatformJUnitAdapter.java
+index 0503609..1e6ed7b 100644
+--- a/runtime/java25-junit-v1/PlatformJUnitAdapter.java
++++ b/runtime/java25-junit-v1/PlatformJUnitAdapter.java
+@@ -118,6 +118,8 @@ public final class PlatformJUnitAdapter implements TestExecutionListener {
+       Map<String, String> report = new HashMap<>();
+       report.put("id", id);
+       report.put("name", bounded(test.getDisplayName()));
++      if (test.getSource().orElse(null) instanceof MethodSource method)
++        report.put("test", method.getClassName() + "#" + method.getMethodName());
+       return report;
+     });
+   }
+diff --git a/runtime/junit_result.py b/runtime/junit_result.py
+index 50aa95e..1809ed6 100644
+--- a/runtime/junit_result.py
++++ b/runtime/junit_result.py
+@@ -146,13 +146,14 @@ def validate_counts(counts, require_cases=True):
+     for case in cases:
+         if (
+             not isinstance(case, dict)
+-            or set(case) - {"id", "name", "status", "expected", "actual", "checks"}
++            or set(case) - {"id", "name", "status", "expected", "actual", "checks", "test"}
+             or not {"id", "name", "status"} <= set(case)
+             or any(
+                 not isinstance(value, str) or len(value) > 8192
+                 for key, value in case.items()
+                 if key != "checks"
+             )
++            or ("test" in case and not case["test"])
+             or case["id"] not in outcomes
+             or case["status"]
+             != ("passed" if outcomes[case["id"]] == "successful" else "failed")
+diff --git a/runtime/student_feedback.py b/runtime/student_feedback.py
+index 0ff12a3..f95ff00 100644
+--- a/runtime/student_feedback.py
++++ b/runtime/student_feedback.py
+@@ -146,6 +146,30 @@ def student_result(result, descriptor):
+             and math.isfinite(score)
+         ):
+             native["score"] = max(0, min(1, score))
++    counts = result.get("counts", {})
++    if isinstance(counts, dict) and (
++        "cases" in counts or "feedbackProtocolVersion" in counts
++    ):
++        # Fish counts have a separate shape and no JUnit case projection.
++        # Every JUnit projection uses the same decoder before reading cases.
++        import runpy
++        from pathlib import Path
++
++        runpy.run_path(str(Path(__file__).with_name("junit_result.py")))[
++            "validate_counts"
++        ](
++            counts,
++            require_cases=not (
++                descriptor.get("mode") == "student-tests"
++                and counts.get("feedbackProtocolVersion", 1) == 1
++            ),
++        )
++    case_results = counts.get("cases") if isinstance(counts, dict) else None
++    bound_cases = (
++        [case for case in case_results if "test" in case]
++        if isinstance(case_results, list)
++        else []
++    )
+     observations = result.get("publicCaseObservations", [])
+     for case in cases:
+         # Only the declared trusted test may report this explicitly public case.
+@@ -162,14 +186,29 @@ def student_result(result, descriptor):
+             if key in case
+         }
+         value.update(actual=None, status="not-run")
+-        if (
++        reported = (
+             len(matches) == 1
+             and matches[0].get("status") in ("passed", "failed")
+             and isinstance(matches[0].get("actual"), str)
+-        ):
+-            value.update(
+-                actual=matches[0]["actual"][:8192], status=matches[0]["status"]
+-            )
++        )
++        if kind != "infrastructure":
++            if bound_cases:
++                execution = [leaf for leaf in bound_cases if leaf["test"] == case["test"]]
++                if len(execution) == 1:
++                    outcome = counts["outcomes"][execution[0]["id"]]
++                    if outcome in ("successful", "failed"):
++                        value["status"] = "passed" if outcome == "successful" else "failed"
++                        if reported and matches[0]["status"] == value["status"]:
++                            value["actual"] = matches[0]["actual"][:8192]
++            elif reported and (
++                case_results is None
++                or ("successful" if matches[0]["status"] == "passed" else "failed")
++                in counts["outcomes"].values()
++            ):
++                # Compatibility with earlier DTOs without MethodSource binding.
++                value.update(
++                    actual=matches[0]["actual"][:8192], status=matches[0]["status"]
++                )
+         feedback["publicCases"].append(value)
+     if feedback["publicCases"]:
+         labels = {
+@@ -206,25 +245,6 @@ def student_result(result, descriptor):
+             }
+             for c in feedback["publicCases"]
+         ]
+-    counts = result.get("counts", {})
+-    if isinstance(counts, dict) and (
+-        "cases" in counts or "feedbackProtocolVersion" in counts
+-    ):
+-        # Fish counts have a separate shape and no JUnit case projection.
+-        # Every JUnit projection uses the same decoder before reading cases.
+-        import runpy
+-        from pathlib import Path
+-
+-        runpy.run_path(str(Path(__file__).with_name("junit_result.py")))[
+-            "validate_counts"
+-        ](
+-            counts,
+-            require_cases=not (
+-                descriptor.get("mode") == "student-tests"
+-                and counts.get("feedbackProtocolVersion", 1) == 1
+-            ),
+-        )
+-    case_results = counts.get("cases") if isinstance(counts, dict) else None
+     if (
+         kind != "infrastructure"
+         and isinstance(case_results, list)
+diff --git a/schemas/check-result.schema.json b/schemas/check-result.schema.json
+index 2f28d19..e7948de 100644
+--- a/schemas/check-result.schema.json
++++ b/schemas/check-result.schema.json
+@@ -2555,6 +2555,11 @@
+           "items": {
+             "$ref": "#/$defs/assertionCheck"
+           }
++        },
++        "test": {
++          "type": "string",
++          "minLength": 1,
++          "maxLength": 8192
+         }
+       },
+       "required": [
+diff --git a/tests/test_student_feedback.py b/tests/test_student_feedback.py
+index 30f2051..f351c97 100644
+--- a/tests/test_student_feedback.py
++++ b/tests/test_student_feedback.py
+@@ -185,7 +185,130 @@ class StudentFeedback(unittest.TestCase):
+         self.assertNotIn("score", value)
+ 
+ 
++class PublicCaseExecution(unittest.TestCase):
++    def fixture(self):
++        import test_assertion_feedback as af
++
++        counts = af.CheckShape().counts()
++        counts["cases"][0].update(test="T#t", checks=[])
++        descriptor = {"publicCases": [{
++            "id": "public", "name": "Публичная проверка", "test": "T#t",
++            "input": "2", "expected": "5",
++        }]}
++        return {"classification": "success", "score": 1, "counts": counts}, descriptor
++
++    def test_completed_leaf_status_does_not_require_subject_observation(self):
++        for outcome, status in (("successful", "passed"), ("failed", "failed")):
++            with self.subTest(outcome=outcome):
++                result, descriptor = self.fixture()
++                counts = result["counts"]
++                counts.update(passed=int(outcome == "successful"), failed=int(outcome == "failed"))
++                counts["outcomes"]["T#t"] = outcome
++                counts["failureKinds"] = {"T#t": "wrong-answer"} if outcome == "failed" else {}
++                counts["cases"][0]["status"] = status
++                case = feedback.student_result(result, descriptor)["feedback"]["publicCases"][0]
++                self.assertEqual((case["status"], case["actual"]), (status, None))
++
++    def test_missing_duplicate_aborted_or_infrastructure_does_not_confirm_execution(self):
++        import copy
++
++        for mutation in ("missing", "duplicate", "aborted", "skipped", "infrastructure"):
++            with self.subTest(mutation=mutation):
++                result, descriptor = self.fixture()
++                counts = result["counts"]
++                if mutation == "missing":
++                    counts["cases"][0]["test"] = "Other#method"
++                elif mutation == "duplicate":
++                    extra = copy.deepcopy(counts["cases"][0]); extra["id"] = "second"
++                    counts["cases"].append(extra)
++                    counts["registered"].append("second"); counts["started"].append("second")
++                    counts["outcomes"]["second"] = "successful"
++                    counts.update(discovered=2, executed=2, passed=2)
++                elif mutation == "aborted":
++                    counts.update(passed=0, aborted=1)
++                    counts["outcomes"]["T#t"] = "aborted"
++                    counts["cases"][0]["status"] = "failed"
++                elif mutation == "skipped":
++                    counts.update(executed=0, passed=0, skipped=1, started=[], cases=[])
++                    counts["outcomes"]["T#t"] = "skipped"
++                else:
++                    result.update(classification="infrastructure-failure", infrastructure="failure")
++                result["publicCaseObservations"] = [{
++                    "id": "public", "test": "T#t", "actual": "CLOSED_UNCONFIRMED", "status": "passed",
++                }]
++                case = feedback.student_result(result, descriptor)["feedback"]["publicCases"][0]
++                self.assertEqual((case["status"], case["actual"]), ("not-run", None))
++
++    def test_reporter_actual_and_legacy_version_one_fallback_remain_available(self):
++        for legacy in (False, True):
++            with self.subTest(legacy=legacy):
++                result, descriptor = self.fixture()
++                if legacy:
++                    result["counts"]["feedbackProtocolVersion"] = 1
++                    result["counts"]["cases"][0].pop("test")
++                    result["counts"]["cases"][0].pop("checks")
++                result["publicCaseObservations"] = [{
++                    "id": "public", "test": "T#t", "actual": "явно получено", "status": "passed",
++                }]
++                case = feedback.student_result(result, descriptor)["feedback"]["publicCases"][0]
++                self.assertEqual((case["status"], case["actual"]), ("passed", "явно получено"))
++
++    def test_incomplete_counts_and_invalid_selector_are_rejected(self):
++        import runpy, jsonschema
++
++        decoder = runpy.run_path(str(ROOT / "runtime/junit_result.py"))["validate_counts"]
++        schema = json.loads((ROOT / "schemas/check-result.schema.json").read_text())
++        validator = jsonschema.Draft202012Validator({"$ref": "#/$defs/caseResult", "$defs": schema["$defs"]})
++        result, descriptor = self.fixture()
++        decoder(result["counts"])
++        validator.validate(result["counts"]["cases"][0])
++        result["counts"]["complete"] = False
++        with self.assertRaises(ValueError):
++            feedback.student_result(result, descriptor)
++        for selector in ("", 42, "x" * 8193):
++            result, _ = self.fixture()
++            case = result["counts"]["cases"][0]; case["test"] = selector
++            with self.subTest(selector_type=type(selector).__name__):
++                with self.assertRaises(ValueError):decoder(result["counts"])
++                self.assertTrue(list(validator.iter_errors(case)))
++
++
+ class ActualNativeFeedback(unittest.TestCase):
++    def test_method_source_confirms_public_status_without_reporter(self):
++        import test_grading_job as fixtures, subprocess, os
++
++        fixture = fixtures.JUnitJob(); fixture.setUp(); self.addCleanup(fixture.doCleanups)
++        fixture.cfg["publicCases"] = [
++            {"id": name, "name": name, "test": "AnswerTest#" + name, "input": "", "expected": "42"}
++            for name in ("normal", "wrong", "observed", "missing")
++        ]
++        (fixture.job / "tests/AnswerTest.java").write_text("""
++import org.junit.jupiter.api.*; import static org.junit.jupiter.api.Assertions.*;
++public class AnswerTest {
++ @Test @DisplayName("Имя не является selector") void normal(){assertEquals(42,Student.answer());}
++ @Test void wrong(){assertEquals(41,Student.answer(),"CLOSED_THROWABLE");}
++ @Test void observed(TestReporter r){r.publishEntry(java.util.Map.of("public-case","observed","actual","42"));assertEquals(42,Student.answer());}
++}
++""")
++        (fixture.job / "tests/grading-job.json").write_text(json.dumps(fixture.cfg))
++        run = subprocess.run([
++            "python3", str(unit_platform(self) / "images/java25-grader/grade.py"),
++            "--job-dir", str(fixture.job), "--verification",
++        ], text=True, capture_output=True, env=os.environ, timeout=30)
++        self.assertEqual(run.returncode, 0, run.stderr)
++        result = json.loads((fixture.job / "results/results.json").read_text())
++        public = feedback.student_result(result, fixture.cfg)
++        self.assertEqual((result["counts"]["executed"], result["counts"]["passed"]), (3, 2))
++        self.assertEqual(public["score"], 2 / 3)
++        self.assertEqual(
++            [(c["status"], c["actual"]) for c in public["feedback"]["publicCases"]],
++            [("passed", None), ("failed", None), ("passed", "42"), ("not-run", None)],
++        )
++        self.assertEqual({c["test"] for c in result["counts"]["cases"]},
++                         {"AnswerTest#normal", "AnswerTest#wrong", "AnswerTest#observed"})
++        self.assertNotIn("CLOSED_", json.dumps(public))
++        self.assertTrue(all("test" not in c for c in public["feedback"]["publicCases"] + public["feedback"]["cases"]))
++
+     def test_public_reporting_entries_and_private_canary(self):
+         import test_grading_job as fixtures, subprocess, os
+ 

@@ -1,0 +1,50 @@
+# Platform/JDK и хеши: материал к отчёту на 15:00
+
+Материал составлен по сохранённым отчётам и checkpoint. Новых исследований, запусков, чтения production/DB, изменений кода, commit или push не было. Последний четырёхфайловый SHA-candidate **заморожен и не принят** до обсуждения.
+
+## Исходная проблема
+
+Вокруг решения студента выполнялась работа, не добавлявшая нового предметного результата: повторно читалась целая установленная среда Java/Gradle, дважды компилировался один production-код, а часть стандартных JUnit-вызовов отвергалась из-за ограничений нашей обвязки. Дополнительно технические SHA поставки стали частью собственной идентичности курса и результатов. Это разные проблемы: снятие повторного чтения JDK не освобождает сервер от связей с прежними поставками.
+
+## Что уже принято
+
+**Повторные проверки установки сокращены.** Из вызова каждой JVM, промежуточных проверок сборки и завершения ответа удалены повторные полные чтения JDK/Gradle. Удалены отдельный `Gradle --version` и повторный завершающий preflight. Вместо этого официальный job один раз получает уже существующий допуск установленной среды и передаёт сведения о ней внутри текущей оценки. Проверяются состав, размеры, права и физические пути; полная проверка содержимого остаётся при подготовке/установке image. Разделение ролей сборки и проверки, очистка процессов и проверки действительно изменяемых входов/результата сохранены.
+
+Первоначальное R4 описывало семь полных проверок и номинальные 3.6 GB читаемых данных на старом Source. **Это не сегодняшняя измеренная цена.** В принятой цепочке649 Python не читает целиком `lib/modules` ради per-job SHA; он сверяет metadata. Обычные чтения JVM при работе этим не отменены. Сегодняшний выигрыш в секундах и фактический disk traffic не измерены.
+
+**Production-код компилируется один раз.** Настоящий JDK25 javac создаёт classes, которые используют API-проверка и JUnit. Настоящий Gradle собирает JAR из read-only копии тех же classes; повторная `compileJava` отключена. Это не фиктивный ZIP вместо Gradle. Для native-профиля сохранён договор отсутствия внешних production dependencies: неправильный framework import теперь становится ранней ошибкой компиляции студента, вместо позднего сбоя инфраструктурной сборки. Ошибки trusted tests, инструмента или упаковки по-прежнему отделены от нулевой оценки студента.
+
+Один сохранённый настоящий host-маршрут JDK25/Gradle9.8.0 занял **9.130 s**: одна production compilation, API/JUnit, `compileJava SKIPPED`, настоящая JAR task и запуск полученного JAR с ответом42. Это проверка одного маршрута; официальный контейнерный переход ролей в этом локальном опыте заменён тестовыми doubles. Это не benchmark курса. Для принятой версии503 отдельно сохранён успешный hosted image build/readback/synthetic smoke; он не означает publication/deployment нового image и не распространяется автоматически на последующие изменения.
+
+**Обычный JUnit работает шире.** Поддержанные нашей feedback-обвязкой вызовы получают прежнюю обработку; остальные стандартные overloads выполняет настоящий JUnit. Assertions/callbacks не исполняются повторно ради наблюдения. Показан уже разрешённый числовой допуск. Статус открытого случая теперь берётся из фактического JUnit outcome и MethodSource, даже когда optional subject observation отсутствует. Неподдержанные подробные expected/actual/message ещё могут оставаться приватными: задача полного понятного публичного feedback не закрыта. Исправление статусов не меняет знаменатель и баллы.
+
+**Отдельно принят локальный649.** Только официальный путь после существующего допуска больше не запускает вторую JVM ради `javac -version`. Первый `java -version` и host-диагностика сохранены. Синтетический control прошёл за **0.1933 s** после исправления отдельной fixture-проблемы; новый квалифицированный image с649 не создан.
+
+## Что пока только предлагается
+
+Четырёхфайловый SHA-candidate снимает повторное чтение runner, bundle и shared files только после успешного official admission и без переданного registry. Прямой preflight, host и custom registry сохраняют полный отказ при несовпадении SHA. Helper, роли, membership/paths и изменяемые job inputs в эту правку не входят.
+
+Уходит конкретная гарантия: раннее обнаружение изменения фиксированных файлов image доверенным root/оператором при старых pins. В показанном Source запуске sandbox-роли не могут писать `/platform`; монтируется job в `/grade`. Реальные production mount overrides здесь не прочитаны. Формат evidence остаётся прежним, но его нельзя называть новой проверкой фактических bytes на каждой оценке.
+
+Один существующий pure control получил RED по трём категориям SHA, затем GREEN: **0.479449 s суммарно**. Он проверяет выбор ветви и сохраняемые поля результата при явно mocked admission/JVM, не работоспособность image или реальную изоляцию. Ускорение неизвестно. Решение — принимать ли именно снятие этой гарантии; код остаётся замороженным до обсуждения.
+
+## Идентичность и оставшийся договор
+
+Whole-course SHA/canonical delivery — наша оболочка, не обязательное ограничение JSON самого PrairieLearn. Но её SHA уже используется собственными readers, startup/sync и историей Platform/Gateway. Простое удаление поля или сохранение UUID вопросов не гарантирует прежние числовые родительские записи Native DB. Требуется согласованное изменение producer/consumer с сохранением старых строк и результатов. Оно не реализовано; actual bindings/config и история не квалифицированы. Нового manifest/cache/attestation механизма вместо старого не предлагается.
+
+Учебный Circle — отдельное принятое содержательное изменение: шесть самостоятельных равных случаев вместо фактического знаменателя3, эталон6/6 и неправильное решение2/6. Старые результаты не пересчитывались. Файловый transpose-договор и происхождение student exception остаются открытыми; готовое исправление или новый student API не заявляются.
+
+## Точные anchors
+
+- Сокращение повторных inventories: `865d0170 → 0e4a12dc3f7a278081755879a95e856ae2ecc5a8`, [независимый review](platform-grading-review.md).
+- Single compilation: `503e0ccb61ab5460fe0433fa0d13d623e1e6ffef`, [Source/9.130 s](platform-single-compilation.md), [review](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/platform-single-compilation-review.md); hosted run `41664797570` — [historical checkpoint](release-evidence-checkpoint-20261103-2000.md).
+- Ordinary JUnit `a344ac90989374463dac0bda6d7efc1ba6781ea3`, [review](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/platform-ordinary-junit-review.md); public status `b37febb6e46da681b16b27eadb676e29b764130b`, [review](platform-public-case-status-review.md).
+- Remote Source `9b82e29bffd77cc462ffdef23cd3b96ca041db92`; local accepted `6491517b896b17119fd2ab44db1a2de2ff9c93b1`, [review](jdk-official-preflight-review-20261104.md), [actual read boundary](jdk-per-job-read-boundary-20261104.md). Эти Source IDs не являются published image digest.
+- Непринятый candidate: [четыре файла/RED→GREEN](jdk-official-image-hashes-20261104.md). Identity: [actual Source plan и UNKNOWN](platform-native-binding-actual-next-20261104.md). Circle: [saved integration](circle-source-runtime-integration.md); её прежний public-status дефект исправлялся отдельно вb37, без повторной Circle-интеграции.
+- Own admission: существующая ссылка/44 contexts полного Sol6.1/high интервала в [candidate report](jdk-official-image-hashes-20261104.md); нового admission/env чтения не было.
+
+## Сверка основного draft
+
+Прочитаны Platform/JDK/JUnit, Gateway/identity и Circle/filecase разделы `java/docs/extensions-work-report-20261104.md`. Существенных фактических ошибок в этих разделах не найдено: уже принятые single compilation/ordinary JUnit не названы предложениями,649 отделён от непринятого SHA-candidate, старые 3.6 GB и hosted image evidence не выданы за текущую квалификацию. Остатки public rich feedback, filecase и серверной идентичности обозначены явно.
+
+Одно уточнение формулировки для root: строка113 про связь действующих образов с Source по OCI labels должна сохранять смысл **заявленного label source**, без byte-attestation. Возможный текст: «OCI labels указывают заявленные commits; соответствие исполняемых bytes этим исходникам отдельно не удостоверялось». Это ограничение evidence, не заявление о неверном image и не новый blocker.

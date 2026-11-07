@@ -12,17 +12,9 @@ format:
     show-notes: false
 ---
 
-## Функции и последовательности {#sec-j25-lecture-functions-streams}
+## Функции и последовательности {#sec-lecture-functions-streams}
 
-- Функциональный интерфейс и передача условия отбора.
-- Лямбда: целевой тип, создание и вызов действия.
-- Стандартные интерфейсы, возвращаемое значение и побочные эффекты.
-- Ссылки на методы, захват окружения и композиция.
-- Stream: стадии, ленивость, одноразовость и порядок.
-- Редукция, коллекторы и отсутствие результата.
-- Файловые источники, владение ресурсом и параллельная обработка.
-
-### Исходный каталог {#sec-j25-lecture-functions-streams-source}
+### Исходный каталог {#sec-lecture-functions-streams-source}
 
 ```java
 var students = List.of(
@@ -42,7 +34,7 @@ var students = List.of(
 Получить два набора кодов до перехода к следующему экрану. Затем предложить мысленно изменить балл Ann на 50: эта замена позволит различить смысл двух правил.
 :::
 
-### Одинаковый обход, разные решения {#sec-j25-lecture-functions-streams-context}
+### Одинаковый обход, разные решения {#sec-lecture-functions-streams-context}
 
 Для исходных записей оба правила сохраняют `s1` и `s3`.
 Если у `Ann` станет `50` баллов, отбор по имени сохранит её,
@@ -60,18 +52,13 @@ var students = List.of(
 Сопоставить ответы с предыдущим прогнозом. Попросить назвать сигнатуру проверки: параметр `Student` и результат `boolean`. Дать операции имя `test`.
 :::
 
-## Передача условия отбора {#sec-j25-lecture-functions-streams-group-1}
-
-- Условие как параметр алгоритма.
-- Функциональный интерфейс и анонимная реализация.
-- Лямбда, целевой тип и формы тела.
-- Создание действия и вызов операции.
+## Передача условия отбора {#sec-lecture-functions-streams-group-1}
 
 ::: {.notes}
 Сформулировать переменную часть алгоритма: ответ для одного `Student`. Перейти от предметного требования к операции `test`, затем показать точку её вызова в цикле.
 :::
 
-### Условие как параметр {#sec-j25-lecture-functions-streams-step-01}
+### Условие как параметр {#sec-lecture-functions-streams-step-01}
 
 ```text
 select(исходный список, правило)
@@ -88,7 +75,7 @@ select(исходный список, правило)
 Попросить провести стрелками одну запись Lin/70. Отделить передачу правила целому алгоритму от передачи участника одному вызову правила.
 :::
 
-### Функциональный интерфейс {#sec-j25-lecture-functions-streams-step-02}
+### Функциональный интерфейс {#sec-lecture-functions-streams-step-02}
 
 ```java
 @FunctionalInterface
@@ -106,7 +93,7 @@ interface StudentTest {
 Показать три части сигнатуры `test`. Предложить добавить независимый абстрактный метод `reset`: компилятор с учётом аннотации выявит, что интерфейс перестал быть функциональным. Реализации пока нет; выбрать её предстоит вызывающему коду.
 :::
 
-### Вызов переданного правила {#sec-j25-lecture-functions-streams-step-03}
+### Вызов переданного правила {#sec-lecture-functions-streams-step-03}
 
 ```java
 static List<Student> select(List<Student> source, StudentTest rule) {
@@ -123,7 +110,7 @@ static List<Student> select(List<Student> source, StudentTest rule) {
 Проследить одну итерацию с Lin: правило возвращает `false`, добавление пропускается. Спросить, что произойдёт при пустом `source` и кто владеет структурой `result`.
 :::
 
-### Анонимная реализация интерфейса {#sec-j25-lecture-functions-streams-object-callback}
+### Анонимная реализация интерфейса {#sec-lecture-functions-streams-object-callback}
 
 ```java
 StudentTest condition = new StudentTest() {
@@ -141,7 +128,7 @@ System.out.println(select(students, condition).size());
 Отделить создание `condition` от запуска `select`. Собрать прогнозы о вызовах и размере, затем открыть трассу; при расхождении пройти именно ветвь `if`.
 :::
 
-### Один проход отбора {#sec-j25-lecture-functions-streams-selection-trace}
+### Один проход отбора {#sec-lecture-functions-streams-selection-trace}
 
 | Вызов | Ответ `test` | Коды в результате |
 |---|---|---|
@@ -157,7 +144,7 @@ System.out.println(select(students, condition).size());
 Сверить число вызовов с числом добавлений. Попросить объяснить, почему граница 80 включена и почему Lin не вызывает добавление. Затем показать ту же операцию в записи лямбды.
 :::
 
-### Лямбда условия отбора {#sec-j25-lecture-functions-streams-step-04}
+### Лямбда условия отбора {#sec-lecture-functions-streams-step-04}
 
 ```java
 var selected = select(students, s -> s.score() >= 80);
@@ -170,7 +157,7 @@ var selected = select(students, s -> s.score() >= 80);
 Попросить развернуть `s` в `Student` и назвать возвращаемый тип. Повторить проход Ada, Lin, Ann, проверяя сохранение порядка.
 :::
 
-### Замена условия {#sec-j25-lecture-functions-streams-step-05 .continuation}
+### Замена условия {#sec-lecture-functions-streams-step-05 .continuation}
 
 ```java
 var selected = select(students, s -> s.name().startsWith("A"));
@@ -183,7 +170,7 @@ var selected = select(students, s -> s.name().startsWith("A"));
 Вернуться к Ann с 50 баллами. Алгоритм `select` остаётся прежним; новый аргумент меняет решение, поэтому достаточно отдельно проверить правило имени.
 :::
 
-### Создание действия и вызов {#sec-j25-lecture-functions-streams-step-06}
+### Создание действия и вызов {#sec-lecture-functions-streams-step-06}
 
 ```java
 StudentTest passed = s -> s.score() >= 80;
@@ -196,7 +183,7 @@ System.out.println(passed.test(new Student("s1", "Ada", 90))); // true
 Поставить паузу после присваивания `passed`: участник ещё не передан. Вторую строку разобрать как обычный вызов метода объекта.
 :::
 
-### Целевой тип лямбды {#sec-j25-lecture-functions-streams-step-07}
+### Целевой тип лямбды {#sec-lecture-functions-streams-step-07}
 
 ```java
 StudentTest a = (Student s) -> s.score() >= 80;
@@ -210,7 +197,7 @@ StudentTest b = s -> s.score() >= 80;
 Попросить найти источник типа `s` в каждой строке. Ошибка `var` связана с отсутствующим целевым интерфейсом; добавление явного типа параметра само по себе не выбирает интерфейс.
 :::
 
-### Тело выражения и тело блока {#sec-j25-lecture-functions-streams-step-08}
+### Тело выражения и тело блока {#sec-lecture-functions-streams-step-08}
 
 ```java
 StudentTest valid = s -> {
@@ -225,7 +212,7 @@ StudentTest valid = s -> {
 Предложить убрать `return` и объяснить ошибку. Сравнить с уже знакомым методом `void`: для действия без результата блок заканчивается без возвращаемого значения.
 :::
 
-### Абстрактные операции интерфейса {#sec-j25-lecture-functions-streams-step-09}
+### Абстрактные операции интерфейса {#sec-lecture-functions-streams-step-09}
 
 **`default`- и статические методы не увеличивают число абстрактных действий.**
 Публичные методы `Object` не создают второе действие для определения
@@ -238,17 +225,13 @@ StudentTest valid = s -> {
 Напомнить специальное правило для публичных методов `Object` на примере `equals`. Аннотацию представить как проверку объявления при его изменении.
 :::
 
-## Форма действия и его эффект {#sec-j25-lecture-functions-streams-group-2}
-
-- Стандартные функциональные интерфейсы.
-- Преобразование, потребитель и поставщик.
-- Вычисление значения и внешний эффект.
+## Форма действия и его эффект {#sec-lecture-functions-streams-group-2}
 
 ::: {.notes}
 Для получения имени, печати и создания списка попросить назвать параметры и результат. Затем для каждого действия указать наблюдаемый эффект, если он есть.
 :::
 
-### Методы стандартных интерфейсов {#sec-j25-lecture-functions-streams-step-11}
+### Методы стандартных интерфейсов {#sec-lecture-functions-streams-step-11}
 
 | Тип | Метод клиента | Вход → результат |
 |---|---|---|
@@ -285,7 +268,7 @@ StudentTest valid = s -> {
 а для сортировки библиотека принимает Comparator.
 :::
 
-### Получение предметного значения {#sec-j25-lecture-functions-streams-step-12}
+### Получение предметного значения {#sec-lecture-functions-streams-step-12}
 
 ```java
 Function<Student, String> name = s -> s.name();
@@ -298,7 +281,7 @@ System.out.println(name.apply(new Student("s1", "Ada", 90))); // Ada
 Заменить мысленно `name` на `id`. Код останется типово корректным, но изменится смысл результата; это повод проверять содержательные примеры.
 :::
 
-### Вычисление и внешний эффект {#sec-j25-lecture-functions-streams-step-13}
+### Вычисление и внешний эффект {#sec-lecture-functions-streams-step-13}
 
 ```java
 Consumer<String> print = text -> System.out.println(text);
@@ -311,7 +294,7 @@ print.accept("готово"); // готово
 Попросить назвать наблюдаемый результат без возвращаемого значения. Указать строку в стандартном выводе, по которой виден вызов.
 :::
 
-### Отложенное получение значения {#sec-j25-lecture-functions-streams-step-14}
+### Отложенное получение значения {#sec-lecture-functions-streams-step-14}
 
 ```java
 Supplier<List<Student>> empty = () -> List.of();
@@ -325,7 +308,7 @@ System.out.println(empty.get().size()); // 0
 Спросить, выполняется ли `List.of` при присваивании `empty`. Оно будет вызвано из `get`; интерфейс не требует новой коллекции при каждом вызове.
 :::
 
-### Вычисление отдельно от эффекта {#sec-j25-lecture-functions-streams-effects}
+### Вычисление отдельно от эффекта {#sec-lecture-functions-streams-effects}
 
 У знакомого `Book` есть название и состояние выдачи:
 
@@ -345,7 +328,7 @@ static void announceAndBorrow(Book book) {
 Найти обе операции, наблюдаемые внешним кодом. Попросить назвать два способа проверки: сравнить возвращённую строку `label` и прочитать состояние `borrowed`.
 :::
 
-### Состояние после вызова {#sec-j25-lecture-functions-streams-effects-client}
+### Состояние после вызова {#sec-lecture-functions-streams-effects-client}
 
 Новая книга ещё не выдана. Предскажите три строки вывода:
 
@@ -363,7 +346,7 @@ System.out.println(book.borrowed());
 Получить прогноз для обоих `borrowed` и промежуточной печати. Попросить указать точную строку изменения состояния внутри `announceAndBorrow`; затем открыть результат.
 :::
 
-### Вычисление и наблюдаемый эффект {#sec-j25-lecture-functions-streams-effects-result}
+### Вычисление и наблюдаемый эффект {#sec-lecture-functions-streams-effects-result}
 
 ```text
 false
@@ -381,19 +364,13 @@ true
 Сверить прогноз. Попросить добавить мысленный `println` внутрь `label`: сигнатура `String` останется прежней, а договор поведения изменится. Вернуть это различие к переданным действиям.
 :::
 
-## Ссылки, захват и композиция {#sec-j25-lecture-functions-streams-group-3}
-
-- Ссылки на методы и конструкторы.
-- Захват локального значения и ссылки на объект.
-- Возвращаемое правило и изменяемая настройка.
-- Композиция предикатов и преобразований.
-- Каррирование и отложенный выбор поставщика.
+## Ссылки, захват и композиция {#sec-lecture-functions-streams-group-3}
 
 ::: {.notes}
 Сопоставить три источника данных действия: аргумент вызова, захваченное значение и текущие поля объекта. Для правила порога указать, какие из них нужны.
 :::
 
-### Ссылка на метод {#sec-j25-lecture-functions-streams-step-17}
+### Ссылка на метод {#sec-lecture-functions-streams-step-17}
 
 ```java
 Function<Student, String> name = Student::name;
@@ -406,7 +383,7 @@ Function<String, Integer> parse = Integer::parseInt;
 Развернуть ссылки в лямбды: `s -> s.name()` и `text -> Integer.parseInt(text)`. Аргумент будущего вызова занимает разные позиции.
 :::
 
-### Связанный метод и конструктор {#sec-j25-lecture-functions-streams-step-18}
+### Связанный метод и конструктор {#sec-lecture-functions-streams-step-18}
 
 ```java
 Consumer<String> print = System.out::println;
@@ -421,7 +398,7 @@ System.out.println(create.get().size()); // 0
 Найти заранее выбранный `System.out` и будущий аргумент текста. Для `create.get` выделить создание объекта как выполняемую операцию.
 :::
 
-### Захват локального значения {#sec-j25-lecture-functions-streams-step-19}
+### Захват локального значения {#sec-lecture-functions-streams-step-19}
 
 ```java
 int threshold = 80;
@@ -437,7 +414,7 @@ Predicate<Student> passed = s -> s.score() >= threshold;
 Предложить раскомментировать переприсваивание и сформулировать причину ошибки. Уточнить также инициализацию локальной переменной до захвата.
 :::
 
-### Захват ссылки на изменяемый объект {#sec-j25-lecture-functions-streams-step-20}
+### Захват ссылки на изменяемый объект {#sec-lecture-functions-streams-step-20}
 
 ```java
 Student student = students.get(0); // s1/Ada/90
@@ -454,7 +431,7 @@ System.out.println(log); // [s1]
 Попросить указать, что изменилось: ссылка `log` сохранилась, содержимое списка стало другим.
 :::
 
-### Возвращаемое правило {#sec-j25-lecture-functions-streams-returned-rule}
+### Возвращаемое правило {#sec-lecture-functions-streams-returned-rule}
 
 ```java
 static Predicate<Student> atLeast(int threshold) {
@@ -474,7 +451,7 @@ System.out.println(passed.test(ann));
 Разделить два вызова на доске. Сначала `atLeast` получает число и возвращает объект правила; попросить указать, почему в этом вызове ещё нет участника. Затем разобрать `test`.
 :::
 
-### Два момента вызова {#sec-j25-lecture-functions-streams-returned-times}
+### Два момента вызова {#sec-lecture-functions-streams-returned-times}
 
 | Вызов | Параметр | Результат |
 |---|---|---|
@@ -489,7 +466,7 @@ System.out.println(passed.test(ann));
 Предложить Jo/79 и Ada/90 для двух последующих `test`. Получить `false` и `true` без повторного `atLeast`. Отметить, что спецификация не требует нового экземпляра лямбды при каждом вычислении выражения.
 :::
 
-### Изменяемая настройка замыкания {#sec-j25-lecture-functions-streams-live-setting}
+### Изменяемая настройка замыкания {#sec-lecture-functions-streams-live-setting}
 
 Предскажите два булевых ответа одного правила:
 
@@ -509,7 +486,7 @@ System.out.println(rule.test(ann));
 Зафиксировать оба прогноза до следующего экрана. Спросить, где хранится 80: в захваченном числе или в поле общего объекта.
 :::
 
-### Сохранённая ссылка и текущее поле {#sec-j25-lecture-functions-streams-live-setting-result}
+### Сохранённая ссылка и текущее поле {#sec-lecture-functions-streams-live-setting-result}
 
 Вывод — `true`, затем `false`.
 
@@ -526,7 +503,7 @@ rule → сохранённая ссылка config → объект Settings
 Сравнить с прошлым `passed`: там значение 80 захвачено из параметра. Попросить сформулировать два разных договора — правило с фиксированным порогом и правило с живой настройкой.
 :::
 
-### Композиция предикатов {#sec-j25-lecture-functions-streams-step-21}
+### Композиция предикатов {#sec-lecture-functions-streams-step-21}
 
 ```java
 Predicate<Student> passed = s -> s.score() >= 80;
@@ -540,7 +517,7 @@ var both = passed.and(named);
 Для Lin первый предикат ложен: `named` пропускается. Предложить добавить в `named` диагностический вывод и предсказать его отсутствие при вызове `both.test` для этого участника.
 :::
 
-### Композиция преобразований {#sec-j25-lecture-functions-streams-step-22}
+### Композиция преобразований {#sec-lecture-functions-streams-step-22}
 
 ```java
 Function<String, Integer> length = String::length;
@@ -555,7 +532,7 @@ System.out.println(length.andThen(twice).apply("Java")); // 8
 Записать промежуточное значение 4, затем результат 8. Перестановка функций ограничена не только смыслом, но и типами входа.
 :::
 
-### Аргументы в двух вызовах {#sec-j25-lecture-functions-streams-curried}
+### Аргументы в двух вызовах {#sec-lecture-functions-streams-curried}
 
 ```java
 Function<Integer, Predicate<Student>> rules =
@@ -573,7 +550,7 @@ boolean b = check80.test(new Student("s3", "Ann", 80));
 Назвать тип результата `apply` до вычисления `a` и `b`. Получить прогноз обоих ответов до открытия разбора. Сравнить с вложенной записью `rules.apply(80).test(ann)`, в которой оба момента видны в одной строке.
 :::
 
-### Повторное применение возвращённого правила {#sec-j25-lecture-functions-streams-curried-result}
+### Повторное применение возвращённого правила {#sec-lecture-functions-streams-curried-result}
 
 `rules.apply(80)` один раз возвращает `Predicate<Student>`;
 ссылка на это действие сохраняется в `check80`.
@@ -594,7 +571,7 @@ boolean b = check80.test(new Student("s3", "Ann", 80));
 при создании и проследить, какой объект действия получает новое условие.
 :::
 
-### Выбор поставщика {#sec-j25-lecture-functions-streams-conditional-supplier}
+### Выбор поставщика {#sec-lecture-functions-streams-conditional-supplier}
 
 ```java
 static String choose(boolean first, Supplier<String> left,
@@ -610,7 +587,7 @@ static String choose(boolean first, Supplier<String> left,
 Разобрать ветвление внутри метода без клиента. Зафиксировать, что `left` и `right` уже являются объектами, а `get` вызывается только в выбранной ветви.
 :::
 
-### Создание поставщиков и выбор {#sec-j25-lecture-functions-streams-conditional-client}
+### Создание поставщиков и выбор {#sec-lecture-functions-streams-conditional-client}
 
 Предскажите вывод. Будет ли выполнено тело `right`?
 
@@ -632,7 +609,7 @@ System.out.println(choose(true, left, right));
 Собрать прогнозы отдельно для инициализации `left`/`right` и вызова `choose`. Затем открыть две трассы и объяснить выбор одного `get`.
 :::
 
-### Вызов выбранного поставщика {#sec-j25-lecture-functions-streams-conditional-result}
+### Вызов выбранного поставщика {#sec-lecture-functions-streams-conditional-result}
 
 | Аргумент `first` | Вывод |
 |---|---|
@@ -647,19 +624,13 @@ System.out.println(choose(true, left, right));
 Вернуться к предикату `and`: там результат первого `test` определяет необходимость второго. В обоих случаях тип действия допускает эффект, а путь вызова определяет, случится ли он.
 :::
 
-## Композиция конвейера {#sec-j25-lecture-functions-streams-group-4}
-
-- Источник, типы стадий и терминальный результат.
-- Ленивость, одноразовость и короткое замыкание.
-- Порядок операций, разворачивание и числовая агрегация.
-- Редукция, коллекторы и `Optional`.
-- Побочные эффекты, файловый ресурс и публикация результата.
+## Композиция конвейера {#sec-lecture-functions-streams-group-4}
 
 ::: {.notes}
 Перенести переданные функции в операции библиотеки. На каждом шаге спрашивать, какие сведения содержат элементы и кто начинает обработку.
 :::
 
-### Порядок отбора циклом {#sec-j25-lecture-functions-streams-step-24}
+### Порядок отбора циклом {#sec-lecture-functions-streams-step-24}
 
 Метод `select` добавляет подходящие записи в новый список. Для порога `80`
 на исходном каталоге получаются `s1`, `s3`. В `students` остаются `s1`, `s2`, `s3`.
@@ -692,7 +663,7 @@ Stream обобщает передачу управления: клиент оп
 самостоятельным полезным решением.
 :::
 
-### Конвейер отбора имён {#sec-j25-lecture-functions-streams-step-25}
+### Конвейер отбора имён {#sec-lecture-functions-streams-step-25}
 
 ```java
 List<String> names = students.stream()
@@ -711,7 +682,7 @@ System.out.println(names); // [Ada, Ann]
 Подписать тип после каждой операции. Проверить пустой вход: результатом станет пустой список строк.
 :::
 
-### Элементы после каждой стадии {#sec-j25-lecture-functions-streams-step-26}
+### Элементы после каждой стадии {#sec-lecture-functions-streams-step-26}
 
 | Стадия | Тип | Значения |
 |---|---|---|
@@ -728,7 +699,7 @@ System.out.println(names); // [Ada, Ann]
 Провести Lin через одну стадию и остановиться на `false`. Затем попросить выбрать место сортировки по баллу: она должна получить `Student` до `map`. Уточнить, что таблица не обозначает создание промежуточного списка на каждой строке.
 :::
 
-### Сведения до форматирования {#sec-j25-lecture-functions-streams-report-type}
+### Сведения до форматирования {#sec-lecture-functions-streams-report-type}
 
 ```java
 var report = students.stream()
@@ -745,7 +716,7 @@ var report = students.stream()
 Назвать два ключа сортировки и их направление. Для равных баллов добавить мысленные `s10` и `s2`: `String`-порядок ставит `s10` раньше.
 :::
 
-### Коллекция и Stream {#sec-j25-lecture-functions-streams-step-27}
+### Коллекция и Stream {#sec-lecture-functions-streams-step-27}
 
 **Коллекция хранит данные для повторного обращения.** Stream описывает один
 проход через действия; у него нет `get(index)` и возврата в начало.
@@ -758,7 +729,7 @@ var report = students.stream()
 Сравнить второй вызов `students.stream` с повтором операции на том же `Stream`. Первый создаёт новый проход над доступной коллекцией.
 :::
 
-### Построение и запуск конвейера {#sec-j25-lecture-functions-streams-step-28}
+### Построение и запуск конвейера {#sec-lecture-functions-streams-step-28}
 
 Предскажите вывод и отметьте терминальную операцию:
 
@@ -776,7 +747,7 @@ System.out.println("done");
 Собрать прогноз до следующего экрана. Попросить назвать, что уже создано до `built` и какой вызов требует пройти элементы. Связать имя `accept` с потребителем в терминальной операции.
 :::
 
-### Терминальное выполнение {#sec-j25-lecture-functions-streams-lazy-result}
+### Терминальное выполнение {#sec-lecture-functions-streams-lazy-result}
 
 ```text
 built
@@ -794,7 +765,7 @@ done
 Сверить прогноз. Указать место обязательного эффекта — тело терминального потребителя. Предложить убрать терминальный вызов целиком: останутся `built` и `done`.
 :::
 
-### Состояние сортировки {#sec-j25-lecture-functions-streams-step-29}
+### Состояние сортировки {#sec-lecture-functions-streams-step-29}
 
 **`filter` и `map` могут провести один элемент через обе стадии прежде,
 чем взять следующий.** Для общего `sorted` нужно накопить данные,
@@ -807,7 +778,7 @@ done
 Попросить объяснить, почему сортировка не может выдать первый произвольный элемент сразу. Предложить источник без последнего элемента и спросить, когда закончится накопление для сортировки.
 :::
 
-### Одноразовость Stream {#sec-j25-lecture-functions-streams-step-30}
+### Одноразовость Stream {#sec-lecture-functions-streams-step-30}
 
 ```java
 var stream = students.stream();
@@ -823,7 +794,7 @@ System.out.println(stream.count()); // 3
 Предложить получить два независимых результата и выбрать место второго `students.stream()`. Исключение — возможная диагностика нарушения, правило задаётся API заранее.
 :::
 
-### Раннее получение ответа {#sec-j25-lecture-functions-streams-step-31}
+### Раннее получение ответа {#sec-lecture-functions-streams-step-31}
 
 Для входа `1, 2, 3` определите булев результат и момент,
 после которого ответ уже известен:
@@ -842,7 +813,7 @@ System.out.println(found);
 Сначала получить ответ из самих данных; затем записать одну возможную трассу. Разделить необходимость для ответа и возможное выполнение реализации.
 :::
 
-### Ответ и отладочная трасса {#sec-j25-lecture-functions-streams-short-result}
+### Ответ и отладочная трасса {#sec-lecture-functions-streams-short-result}
 
 Ответ — `true`: двойка присутствует.
 Одна допустимая трасса — `test 1`, `test 2`, затем `true`.
@@ -858,7 +829,7 @@ System.out.println(found);
 Сверить отладочные прогнозы с договором. До следующего экрана получить три булевых ответа и объяснения через наличие совпадения или контрпримера.
 :::
 
-### Логические проверки пустого потока {#sec-j25-lecture-functions-streams-step-32}
+### Логические проверки пустого потока {#sec-lecture-functions-streams-step-32}
 
 ```java
 System.out.println(Stream.<Student>empty().anyMatch(s -> true)); // false
@@ -872,7 +843,7 @@ System.out.println(Stream.<Student>empty().noneMatch(s -> true));// true
 Объяснить `allMatch` через отсутствие контрпримера. Если отчёту нужен хотя бы один участник, отдельная непустота меняет условие.
 :::
 
-### Ограничение бесконечного источника {#sec-j25-lecture-functions-streams-step-33}
+### Ограничение бесконечного источника {#sec-lecture-functions-streams-step-33}
 
 ```java
 var first = Stream.iterate(0, n -> n + 1).limit(3).toList();
@@ -886,7 +857,7 @@ System.out.println(first); // [0, 1, 2]
 Проследить первые значения 0, 1, 2. Затем поставить `sorted` перед `limit` и объяснить, почему последнего элемента для завершения сортировки не будет.
 :::
 
-### Порядок отбора и ограничения {#sec-j25-lecture-functions-streams-stage-order}
+### Порядок отбора и ограничения {#sec-lecture-functions-streams-stage-order}
 
 Предскажите два списка:
 
@@ -905,7 +876,7 @@ System.out.println(b);
 Получить прогнозы отдельно для цепочки с `filter` в начале и цепочки с `limit` в начале. До раскрытия ответа попросить переформулировать обе задачи обычными словами.
 :::
 
-### Два разных отбора {#sec-j25-lecture-functions-streams-stage-order-result}
+### Два разных отбора {#sec-lecture-functions-streams-stage-order-result}
 
 Первый результат — `[2]`: сохранить первое подходящее число.
 Второй — `[]`: проверить единственное сохранённое число `1`.
@@ -924,7 +895,7 @@ System.out.println(b);
 Сверить два первых ответа. В таблице `skip` попросить назвать именно пропущенный элемент: 2 или 1. Перестановка стадий сохраняет типы, но меняет условие задачи.
 :::
 
-### Разворачивание вложенных групп {#sec-j25-lecture-functions-streams-step-34}
+### Разворачивание вложенных групп {#sec-lecture-functions-streams-step-34}
 
 ```java
 var topics = List.of(List.of("java", "git"), List.of("java", "io"));
@@ -939,7 +910,7 @@ System.out.println(unique); // [git, io, java]
 Раскрыть две группы в java, git, java, io. Затем отдельно применить `distinct` и сортировку, получив три элемента.
 :::
 
-### Примитивная числовая агрегация {#sec-j25-lecture-functions-streams-step-35}
+### Примитивная числовая агрегация {#sec-lecture-functions-streams-step-35}
 
 ```java
 long total = students.stream().mapToLong(Student::score).sum();
@@ -953,7 +924,7 @@ System.out.println(total); // 240
 Сложить три балла вручную. Объяснить выбор `long` диапазоном; арифметические переполнения не исчезают из-за `Stream`.
 :::
 
-### Отсутствие среднего на пустом наборе {#sec-j25-lecture-functions-streams-step-36}
+### Отсутствие среднего на пустом наборе {#sec-lecture-functions-streams-step-36}
 
 ```java
 System.out.println(IntStream.empty().sum()); // 0
@@ -967,7 +938,7 @@ System.out.println(IntStream.empty().average().isEmpty()); // true
 Сравнить нейтральную сумму и неопределённое среднее. Спросить, почему `OptionalDouble.empty` не следует автоматически превращать в оценку ноль.
 :::
 
-### Сумма как редукция {#sec-j25-lecture-functions-streams-step-37}
+### Сумма как редукция {#sec-lecture-functions-streams-step-37}
 
 ```java
 int total = Stream.of(90, 70, 80).reduce(0, Integer::sum);
@@ -984,7 +955,7 @@ System.out.println(total); // 240
 Разделить исходные числа на 90 и 70, 80. Сначала проверить нулевое начальное значение, затем получить два разных результата для десятки до следующего экрана.
 :::
 
-### Нарушение нейтральности {#sec-j25-lecture-functions-streams-reduce-identity}
+### Нарушение нейтральности {#sec-lecture-functions-streams-reduce-identity}
 
 ```text
 Один проход:  10 + 90 + 70 + 80 = 250
@@ -1001,7 +972,7 @@ System.out.println(total); // 240
 Сверить оба вычисления. Попросить заменить 10 на 0 и увидеть, почему разбиение стало безразлично. Для поиска максимума обсудить отсутствие искусственного кандидата на пустом входе.
 :::
 
-### Порядок объединения {#sec-j25-lecture-functions-streams-reduce-associativity}
+### Порядок объединения {#sec-lecture-functions-streams-reduce-associativity}
 
 Вычитание не ассоциативно:
 
@@ -1018,7 +989,7 @@ System.out.println(total); // 240
 Посчитать обе группировки вычитания. Для `double` взять 1e16, −1e16, 1: группировка слева даёт 1, справа даёт 0. Обсудить, какое численное условие требуется от отчёта.
 :::
 
-### Изменяемость результата {#sec-j25-lecture-functions-streams-step-38}
+### Изменяемость результата {#sec-lecture-functions-streams-step-38}
 
 ```java
 var fixed = students.stream().toList();
@@ -1035,7 +1006,7 @@ var mutable = students.stream()
 Проверить мысленно `set` у обоих результатов. Отдельно спросить об изменяемом объекте внутри списка: запрет изменений списка не препятствует изменениям этого объекта.
 :::
 
-### Группировка участников {#sec-j25-lecture-functions-streams-step-39}
+### Группировка участников {#sec-lecture-functions-streams-step-39}
 
 ```java
 var groups = students.stream()
@@ -1049,7 +1020,7 @@ System.out.println(groups.get(90).get(0).name()); // Ada
 Назвать тип карты и тип значения по ключу 90. Если нужен порядок печати ключей, выбрать явное правило вывода.
 :::
 
-### Политика повторных ключей {#sec-j25-lecture-functions-streams-step-40}
+### Политика повторных ключей {#sec-lecture-functions-streams-step-40}
 
 ```java
 var scores = students.stream().collect(
@@ -1064,7 +1035,7 @@ var scores = students.stream().collect(
 Добавить ещё участника с кодом `s1` и другим баллом: оба конструктора допустимы, а `toMap` без функции объединения выбросит исключение. Предложить сформулировать политику до выбора перегрузки.
 :::
 
-### Подсчёт внутри группы {#sec-j25-lecture-functions-streams-group-count}
+### Подсчёт внутри группы {#sec-lecture-functions-streams-group-count}
 
 ```java
 var frequencies = List.of("Ada", "Lin", "Jo").stream()
@@ -1081,7 +1052,7 @@ System.out.println(frequencies.getOrDefault(4, 0L)); // 0
 Разложить строки на длины 3, 3, 2. Значения карты теперь счётчики `Long`; внешний запрос длины 4 получает ноль без изменения карты.
 :::
 
-### Наличие результата поиска {#sec-j25-lecture-functions-streams-step-41}
+### Наличие результата поиска {#sec-lecture-functions-streams-step-41}
 
 Каталог может оказаться пустым. Поиск максимального балла тогда
 не находит участника; ноль баллов был бы свойством существующей записи.
@@ -1099,7 +1070,7 @@ String text = best.map(Student::name).orElse("нет участников");
 Сначала попросить различить пустой каталог и участника с нулём. Затем пройти обе ветви `Optional`. Подчеркнуть, что текст отсутствия выбирает вызывающий код, а `max` сохраняет информацию о наличии.
 :::
 
-### Отсутствие результата и ошибка данных {#sec-j25-lecture-functions-streams-absence-error}
+### Отсутствие результата и ошибка данных {#sec-lecture-functions-streams-absence-error}
 
 ```text
 никто не прошёл порог     → пустой List, успешный отбор
@@ -1108,13 +1079,13 @@ String text = best.map(Student::name).orElse("нет участников");
 не удалось прочитать     → отказ внешней операции
 ```
 **Optional не хранит причину ошибки и не заменяет типизированный отказ.**
-Политика исходов: @theory:sec-j25-theory-streams-outcomes.
+Политика исходов: @theory:sec-theory-streams-outcomes.
 
 ::: {.notes}
 Разнести четыре исхода по успешному результату и отказам с причиной. `Optional` моделирует ожидаемое отсутствие выбранного элемента.
 :::
 
-### Запасное вычисление {#sec-j25-lecture-functions-streams-step-42}
+### Запасное вычисление {#sec-lecture-functions-streams-step-42}
 
 ```java
 Supplier<String> fallback = () -> {
@@ -1133,7 +1104,7 @@ Optional<String> empty = Optional.empty();
 Записать четыре прогноза до открытия ответов. В каждом случае считать отдельно вывод поставщика и значение, которое напечатает внешний `println`.
 :::
 
-### Запасной результат при наличии {#sec-j25-lecture-functions-streams-fallback-present}
+### Запасной результат при наличии {#sec-lecture-functions-streams-fallback-present}
 
 ```java
 System.out.println(present.orElse(fallback.get()));
@@ -1151,7 +1122,7 @@ System.out.println(present.orElseGet(fallback));
 Сверить первые два прогноза. Обвести скобки `get` в первом вызове: они запускают тело до `orElse`. Во втором вызове тело остаётся доступным через переданную ссылку.
 :::
 
-### Запасной результат при отсутствии {#sec-j25-lecture-functions-streams-fallback-empty}
+### Запасной результат при отсутствии {#sec-lecture-functions-streams-fallback-empty}
 
 ```java
 System.out.println(empty.orElse(fallback.get()));
@@ -1169,7 +1140,7 @@ System.out.println(empty.orElseGet(fallback));
 Сверить оставшиеся два прогноза. Предложить другой договор — отсутствие как ошибка вызывающей операции — и выбрать `orElseThrow`, сохранив `Optional` как результат самого поиска.
 :::
 
-### Наблюдение через `peek` {#sec-j25-lecture-functions-streams-step-44}
+### Наблюдение через `peek` {#sec-lecture-functions-streams-step-44}
 
 Предскажите, какие строки обязательны:
 
@@ -1185,7 +1156,7 @@ System.out.println("count " + count);
 Получить прогнозы до следующего экрана. Попросить назвать известное свойство источника и влияние `peek` на это свойство.
 :::
 
-### Размер без обхода {#sec-j25-lecture-functions-streams-peek-result}
+### Размер без обхода {#sec-lecture-functions-streams-peek-result}
 
 Обязательна строка `count 3`. Размер источника известен; `peek`
 его не меняет. API разрешает получить ответ без вызовов `peek`.
@@ -1200,7 +1171,7 @@ System.out.println("count " + count);
 Сверить прогнозы. Попросить заменить `count` на `forEachOrdered(System.out::println)` без `peek` и назвать теперь обязательный эффект. Различить отладочное наблюдение и сохранение отчёта.
 :::
 
-### Файловый источник {#sec-j25-lecture-functions-streams-files}
+### Файловый источник {#sec-lecture-functions-streams-files}
 
 ```java
 static long countNonblank(Path path) throws IOException {
@@ -1219,7 +1190,7 @@ static long countNonblank(Path path) throws IOException {
 Восстановить `try`-with-resources: открытие, тело, закрытие. Получить 2 и закрытие до возврата числа. Спросить, к чему приведёт возврат самого `lines` из этого `try`.
 :::
 
-### Ресурс и момент ошибки {#sec-j25-lecture-functions-streams-files-failure}
+### Ресурс и момент ошибки {#sec-lecture-functions-streams-files-failure}
 
 Для трёх строк результат — `2`; завершающий перевод строки не требуется.
 Поток закрывается при выходе из `try`, включая выход через исключение.
@@ -1237,7 +1208,7 @@ static long countNonblank(Path path) throws IOException {
 Разобрать отсутствующий файл и повреждённый UTF-8 как разные моменты отказа. Попросить назвать обе формы, которые должен учитывать обработчик ввода-вывода на внешней границе.
 :::
 
-### Вычисление и публикация отчёта {#sec-j25-lecture-functions-streams-publication-effect}
+### Вычисление и публикация отчёта {#sec-lecture-functions-streams-publication-effect}
 
 ```text
 готовые участники → List<String> отчёта → печать
@@ -1247,13 +1218,13 @@ static long countNonblank(Path path) throws IOException {
 
 **Композиция операций не создаёт откат внешних эффектов.**
 Чистая обработка и ответственность внешнего слоя:
-@theory:sec-j25-theory-streams-report.
+@theory:sec-theory-streams-report.
 
 ::: {.notes}
 Сначала рассмотреть отказ вычисления до публикации. Затем отказ печати второй строки: первая уже вышла во внешний мир и не откатывается.
 :::
 
-### Повторное применение правила {#sec-j25-lecture-functions-streams-exit}
+### Повторное применение правила {#sec-lecture-functions-streams-exit}
 
 Предскажите `first` и `second`:
 
@@ -1271,7 +1242,7 @@ boolean second = students.stream()
 Зафиксировать два булевых ответа. Попросить перечислить данные, доступные check, и объяснить, почему второй `stream()` нужен даже при прежнем каталоге.
 :::
 
-### Правило и два прохода {#sec-j25-lecture-functions-streams-exit-result}
+### Правило и два прохода {#sec-lecture-functions-streams-exit-result}
 
 `first == true`: у `Ada` и `Ann` балл не меньше 80.
 `second == false`: после фильтра остаются имена `Ada`, `Ann`.
@@ -1280,20 +1251,20 @@ boolean second = students.stream()
 терминальный `anyMatch` инициирует обработку своего конвейера.
 Фиксированный порог правила одинаков в обоих проходах.
 
-Развёрнутое объяснение: @theory:sec-j25-theory-functions,
-@theory:sec-j25-theory-streams.
+Развёрнутое объяснение: @theory:sec-theory-functions,
+@theory:sec-theory-streams.
 
 ::: {.notes}
 Сверить ответы и попросить объяснить ложь второго результата через отсутствие Lin после фильтра. Предложить изменить только порог на 70 и снова проследить второй конвейер.
 :::
 
-## Дополнения {#sec-j25-lecture-functions-streams-additional}
+## Дополнения {#sec-lecture-functions-streams-additional}
 
 ::: {.notes}
 Выбрать дополнение по возникшему вопросу. Для каждого опыта сначала восстановить форму вызова, затем разобрать отличие от уже выполненного отбора.
 :::
 
-### Развитие представления поведения {#sec-j25-lecture-functions-streams-step-15}
+### Развитие представления поведения {#sec-lecture-functions-streams-step-15}
 
 В Java обработчики и компараторы передавались объектами интерфейсов
 ещё до лямбд. Проект Project Lambda сократил запись передаваемого поведения,
@@ -1308,7 +1279,7 @@ boolean second = students.stream()
 Попросить объяснить, почему метод, принимавший `Comparator` до появления лямбд, может принимать его лямбда-реализацию. Указать роль общего целевого типа.
 :::
 
-### Договор вызываемого объекта Python {#sec-j25-lecture-functions-streams-step-16}
+### Договор вызываемого объекта Python {#sec-lecture-functions-streams-step-16}
 
 `Protocol` описывает форму вызова: один позиционный `Student` → `bool`.
 
@@ -1331,7 +1302,7 @@ class StudentRule(Protocol):
 Прочитать `__call__` как договор одного позиционного аргумента и `bool`. Объяснить роль слеша: имя параметра не становится требованием для именованного вызова. Сравнить с Java-методом `test`.
 :::
 
-### Реализация вызываемого объекта {#sec-j25-lecture-functions-streams-step-16-part-1}
+### Реализация вызываемого объекта {#sec-lecture-functions-streams-step-16-part-1}
 
 ```python
 def select(source: list[Student], rule: StudentRule) -> list[Student]:
@@ -1351,7 +1322,7 @@ class AtLeast:
 Проследить `rule(student)` до `AtLeast.__call__`. Показать, что `threshold` хранится у объекта, а `Student` поступает при каждом вызове.
 :::
 
-### Вызов Python-правила {#sec-j25-lecture-functions-streams-python-client}
+### Вызов Python-правила {#sec-lecture-functions-streams-python-client}
 
 Предскажите список имён:
 
@@ -1370,7 +1341,7 @@ print([student.name for student in passed])
 Получить два имени перед следующим экраном. Связать статическую проверку `Protocol` с совместимой формой вызова; при выполнении интерпретатор вызывает доступный `__call__`.
 :::
 
-### Вызов по протоколу {#sec-j25-lecture-functions-streams-python-result}
+### Вызов по протоколу {#sec-lecture-functions-streams-python-result}
 
 Вывод — `['Ada', 'Ann']`.
 
@@ -1385,7 +1356,7 @@ Python находит `__call__` и получает булев ответ.
 Сверить положительный результат. Получить два прогноза для правила, возвращающего имя, до раскрытия кода и результата.
 :::
 
-### Истинность значения и договор `bool` {#sec-j25-lecture-functions-streams-python-negative}
+### Истинность значения и договор `bool` {#sec-lecture-functions-streams-python-negative}
 
 ```python
 def wrong(student: Student, /) -> str:
@@ -1404,7 +1375,7 @@ print([s.name for s in select(students, bad)])
 Разделить два вопроса: что отвергнет анализатор типов и что сделает прямой запуск. Непустые имена истинны в условии, поэтому при выполнении получится лишний Lin.
 :::
 
-### Область `this` {#sec-j25-lecture-functions-streams-step-10}
+### Область `this` {#sec-lecture-functions-streams-step-10}
 
 ```java
 class Context {
@@ -1425,7 +1396,7 @@ class Context {
 Сначала определить, какому объекту принадлежит `title` в каждом теле. Получить два результата до следующего экрана; подчеркнуть, что одинаковый `Supplier` не меняет правил области `this`.
 :::
 
-### Получатель внутри действия {#sec-j25-lecture-functions-streams-this-result}
+### Получатель внутри действия {#sec-lecture-functions-streams-this-result}
 
 Лямбда возвращает `outer`: `this` взят из окружающего `Context`.
 Анонимный объект возвращает `inner`: `this` обозначает его самого.
@@ -1439,7 +1410,7 @@ class Context {
 Сверить два ответа. Попросить назвать ошибку в объяснении «лямбда всегда является сокращённым анонимным классом»: оно потеряло бы различие `this` и гарантий идентичности.
 :::
 
-### Типы композиции функций {#sec-j25-lecture-functions-streams-compose-types}
+### Типы композиции функций {#sec-lecture-functions-streams-compose-types}
 
 Для `Function<T, R>` у `andThen` следующий шаг имеет тип
 `Function<? super R, ? extends V>`, а результат — `Function<T, V>`.
@@ -1455,7 +1426,7 @@ T → текущая функция → R → следующий шаг → V
 Прочитать `super` как возможность передать полученный `R` и `extends` как пригодность результата для `V`. Связать с границами типов предыдущей лекции.
 :::
 
-### Проверяемое исключение действия {#sec-j25-lecture-functions-streams-step-23}
+### Проверяемое исключение действия {#sec-lecture-functions-streams-step-23}
 
 У `Function<Path, String>` метод `apply(Path)` не объявляет `throws`.
 У `Files.readString(Path)` возможен проверяемый `IOException`.
@@ -1475,7 +1446,7 @@ TextReader read = Files::readString;
 Сопоставить сигнатуры. Попросить выбрать между собственным интерфейсом, обработкой отказа внутри действия и переносом чтения до преобразования; каждый выбор должен сохранять нужную диагностику.
 :::
 
-### Источник и состояние действий {#sec-j25-lecture-functions-streams-non-interference}
+### Источник и состояние действий {#sec-lecture-functions-streams-non-interference}
 
 Во время выполнения конвейера обычный источник, например `ArrayList`,
 сохраняют без изменений. Переданные функции его не изменяют;
@@ -1496,7 +1467,7 @@ TextReader read = Files::readString;
 даже когда состав списка остаётся прежним.
 :::
 
-### Владение накопителем {#sec-j25-lecture-functions-streams-step-43}
+### Владение накопителем {#sec-lecture-functions-streams-step-43}
 
 ```java
 var shared = new ArrayList<String>();
@@ -1517,7 +1488,7 @@ var names = students.parallelStream()
 Попросить найти владельца `shared` и момент одновременного изменения размера. Сравнить с отдельными накопителями коллектора. `forEachOrdered` решает вопрос порядка эффектов, а скорость `parallel` требует измерения на конкретной задаче.
 :::
 
-### Порядок эффектов и скорость {#sec-j25-lecture-functions-streams-parallel-effects}
+### Порядок эффектов и скорость {#sec-lecture-functions-streams-parallel-effects}
 
 У параллельного потока `forEach` не гарантирует порядок встречи элементов.
 `forEachOrdered` выполняет действия в порядке встречи, если он определён
@@ -1538,7 +1509,7 @@ var names = students.parallelStream()
 одинаковые данные и смысл результата у обоих способов выполнения.
 :::
 
-### Тип накопителя и тип элемента {#sec-j25-lecture-functions-streams-reduce-three}
+### Тип накопителя и тип элемента {#sec-lecture-functions-streams-reduce-three}
 
 ```java
 int total = students.stream().reduce(

@@ -1,0 +1,425 @@
+diff --git a/images/java25-grader/grade.py b/images/java25-grader/grade.py
+index 9260bab..1dbed5e 100644
+--- a/images/java25-grader/grade.py
++++ b/images/java25-grader/grade.py
+@@ -1452,7 +1452,14 @@ def _execute(
+                 os.pathsep.join([libs, str(trusted)]),
+             )
+         else:
+-            code, reason = compile_phase("studentCompilation", sources, student, libs)
++            # Native production has no external dependencies in the fixed recipe.
++            # An empty directory also prevents javac's empty -cp from using cwd.
++            production_classpath = (
++                str(student) if config["runtime"] == NATIVE_RUNTIME else libs
++            )
++            code, reason = compile_phase(
++                "studentCompilation", sources, student, production_classpath
++            )
+         if reason:
+             raise GraderError("Student compilation infrastructure limit: " + reason)
+         if code:
+@@ -2269,6 +2276,29 @@ def _native_build(
+             if path.is_dir():
+                 path.chmod(0o555)
+         src.chmod(0o555)
++        # Only this supervisor-created javac output crosses into the build role.
++        # API and JUnit keep using the original private stage/student bytes.
++        compiled = stage / "student"
++        classes = work / "production-classes"
++        classes.mkdir(mode=0o755)
++        class_hashes = {}
++        for path in sorted(compiled.rglob("*.class")):
++            name = path.relative_to(compiled).as_posix()
++            source = _files_any(compiled, name)
++            info = source.stat()
++            if info.st_uid != os.geteuid() or info.st_nlink != 1:
++                raise GraderError("Unsafe compiled production class")
++            data = source.read_bytes()
++            class_hashes[name] = hashlib.sha256(data).hexdigest()
++            target = classes / name
++            target.parent.mkdir(parents=True, exist_ok=True)
++            with target.open("xb") as output:
++                output.write(data)
++            target.chmod(0o444)
++        for directory in sorted(classes.rglob("*"), reverse=True):
++            if directory.is_dir():
++                directory.chmod(0o555)
++        classes.chmod(0o555)
+         for name in NATIVE_RECIPE[:2]:
+             target = work / Path(name).name
+             target.write_bytes(_files_any(PLATFORM, name).read_bytes())
+@@ -2305,6 +2335,7 @@ def _native_build(
+         }
+         admitted_copies = {
+             **{"src/" + name: sha for name, sha in inputs.items()},
++            **{"production-classes/" + name: sha for name, sha in class_hashes.items()},
+             **{Path(name).name: recipe[name] for name in NATIVE_RECIPE[:2]},
+             "native-config.json": hashlib.sha256(
+                 json.dumps(build, sort_keys=True).encode()
+@@ -2354,6 +2385,23 @@ def _native_build(
+             raise GraderError("Trusted Gradle build failed: " + (reason or str(code)))
+         relative = "build/libs/" + build["artifact"]
+         state = _artifact_state(work, relative)
++        # Bind the JAR's implementation at the actual build-to-grading handoff.
++        # No later full inventory of immutable classes is needed.
++        try:
++            with zipfile.ZipFile(_files_any(work, relative)) as archive:
++                members = [entry for entry in archive.infolist() if not entry.is_dir()]
++                names = [entry.filename for entry in members]
++                if len(names) != len(set(names)) or set(names) != {
++                    "META-INF/MANIFEST.MF", *class_hashes
++                }:
++                    raise GraderError("Native JAR differs from compiled production classes")
++                if any(
++                    hashlib.sha256(archive.read(name)).hexdigest() != digest
++                    for name, digest in class_hashes.items()
++                ):
++                    raise GraderError("Native JAR differs from compiled production classes")
++        except (zipfile.BadZipFile, RuntimeError, zlib.error) as error:
++            raise GraderError("Invalid native JAR") from error
+         libs = _files_any(work, relative).parent
+         if {p.name for p in libs.iterdir()} != {build["artifact"]}:
+             raise GraderError("Unexpected native build artifacts")
+diff --git a/runtime-profiles.json b/runtime-profiles.json
+index c301b0e..21d6487 100644
+--- a/runtime-profiles.json
++++ b/runtime-profiles.json
+@@ -26,7 +26,7 @@
+         "upstream/LICENSE": "f3fba75145cfb48af6b3f50664b12459b5a60b50500176692b06309beb1dda4d",
+         "upstream/org/prairielearn/autograder/AutograderInfo.java": "43e3e320cb5fae2840462d36dea21c9fdbb0c99fbcb51ad3e692739b2bf3683f"
+       },
+-      "runnerSha256": "d25691ae4c31afe29445b18f9e012890b798e5d4c9717ddae0bb6395f14c6b57",
++      "runnerSha256": "a529996a56d9e5906e8b7655667cee133eacddb16c07bc27164ff0c4c684c4af",
+       "sharedFiles": {
+         "runtime/student_feedback.py": "a4f5237e85866f3169f77f774f65152b57a6ccb0032aff2edd29535f4756f59e",
+         "runtime/junit_result.py": "36a019f32d66dcf2ec125738c02e2e22d7a2585bd628596556d846ea6dfd3a4e"
+@@ -58,7 +58,7 @@
+         "upstream/LICENSE": "f3fba75145cfb48af6b3f50664b12459b5a60b50500176692b06309beb1dda4d",
+         "upstream/org/prairielearn/autograder/AutograderInfo.java": "43e3e320cb5fae2840462d36dea21c9fdbb0c99fbcb51ad3e692739b2bf3683f"
+       },
+-      "runnerSha256": "d25691ae4c31afe29445b18f9e012890b798e5d4c9717ddae0bb6395f14c6b57",
++      "runnerSha256": "a529996a56d9e5906e8b7655667cee133eacddb16c07bc27164ff0c4c684c4af",
+       "sharedFiles": {
+         "runtime/student_feedback.py": "a4f5237e85866f3169f77f774f65152b57a6ccb0032aff2edd29535f4756f59e",
+         "runtime/junit_result.py": "36a019f32d66dcf2ec125738c02e2e22d7a2585bd628596556d846ea6dfd3a4e"
+diff --git a/runtime/gradle-jar-v1/README.md b/runtime/gradle-jar-v1/README.md
+index eecb184..79352e6 100644
+--- a/runtime/gradle-jar-v1/README.md
++++ b/runtime/gradle-jar-v1/README.md
+@@ -1,8 +1,9 @@
+ # Доверенная сборка production JAR
+ 
+ Новый opt-in `java25-gradle-junit-v1` использует существующий Java runner:
+-компиляция выбранных исходников → независимый API precheck → фиксированный
+-`clean jar` установленного Gradle 9.8.0 → прежние trusted JUnit/JavaProcess
++единственная компиляция выбранных исходников настоящим JDK25 javac с `--release 25`
++и без внешних production dependencies → независимый API precheck → фиксированный
++`clean jar` установленного Gradle 9.8.0 из read-only копии готовых classes → trusted JUnit/JavaProcess
+ проверки. Descriptor содержит закрытый `javaBuild` с `kind: gradle-jar-v1`,
+ безопасным basename `artifact` и необязательным `mainClass`. Если `mainClass`
+ отсутствует, собирается обычный library JAR без `Main-Class`; фиктивный main не
+@@ -12,10 +13,22 @@
+ в конфигурации recipe и input digest, без подстановки defaults. Исполняемый
+ JAR с явно указанным main сохраняет прежний manifest и запуск.
+ 
+-Сборка использует только копии выбранных production Java sources, этот recipe,
+-settings и проверенные значения descriptor. Присланные build scripts, Wrapper,
++API и JUnit используют исходный private каталог classes той же компиляции.
++Supervisor копирует эти bytes в отдельный read-only `production-classes`,
++а штатная Gradle task `jar` создаёт настоящий library/executable JAR;
++`compileJava` отключена. При передаче результата состав и bytes JAR сверяются
++с classes, использованными API/JUnit. Gradle startup сохраняется.
++
++Сборка получает только эти classes, копии выбранных production Java sources
++для provenance, этот recipe, settings и проверенные значения descriptor.
++Присланные build scripts, Wrapper,
+ init scripts, tests и внешние production dependencies не запускаются. Проверка
+ не оценивает учебную часть написания студентом Gradle scripts.
++Самостоятельный Gradle-проект студента и предметные проверки JAR сохраняются.
++Обычный `java25-junit-v1` не запускает этот recipe и сохраняет свой classpath;
++JUnit/framework доступны trusted/test коду. Неподдерживаемый import внешней
++production dependency в native профиле даёт ранний student compile error,
++до API, Gradle и зависимых тестов.
+ 
+ Требуются официальный изолированный supervisor, отдельный проверенный UID,
+ реальное отсутствие сети, недоступность private inputs и полный допущенный
+@@ -39,7 +52,8 @@ Source lock содержит ожидаемые319 JDK/716 Gradle files со с
+ `nativebuild` — фиксированная non-login учётная запись с собственной private group.
+ Оператор записывает фактически выделенные UID/GID. Только trusted builtin Gradle recipe
+ получает полный JDK319 в `/opt/native-jdk`: root-owned дерево, корень0750 и GID
+-группы `nativebuild`. Выбранные production Java sources компилируются без processors;
++группы `nativebuild`. Supervisor компилирует production Java sources без processors
++на hardened JDK25, а nativebuild получает только root-owned read-only копию classes;
+ пользовательские build scripts, тесты и bindings не являются build inputs.
+ 
+ `sbuser` выполняет API/JUnit и обычные/вложенные student JVM на неизменённом hardened
+@@ -57,8 +71,9 @@ SHA256 `6c964acad9b3c929edb97eba9acc799907a68c89011336e813c88ee26fb00e9c`.
+ 
+ Перед private фазой supervisor завершает и reap-ит build-role descendants в своём
+ container PID namespace, проверяет отсутствие оставшихся процессов и удаляет свежие
+-build work/HOME/cache. До и после grading повторно проверяются роли, группы,
+-приватный корень, core hardened payload и отказ доступа к полному JDK. Drift —
++build work/HOME/cache. На переходе build→grading проверяются роли, группы,
++приватный корень и отказ доступа к полному JDK. Metadata установки допускаются
++один раз в начале job; полные bytes сверяются при подготовке image. Drift —
+ infrastructure/noScore, а не ошибка студента. Exact null helper81cd… не изменён.
+ 
+ Dockerfile требует закрытые `.native-toolchain` inputs, подготовленные оператором;
+diff --git a/runtime/gradle-jar-v1/build.gradle b/runtime/gradle-jar-v1/build.gradle
+index e229e7d..6cf4fff 100644
+--- a/runtime/gradle-jar-v1/build.gradle
++++ b/runtime/gradle-jar-v1/build.gradle
+@@ -3,14 +3,15 @@ plugins { id 'java' }
+ def nativeConfig = new groovy.json.JsonSlurper().parse(file('native-config.json'))
+ java { toolchain { languageVersion = JavaLanguageVersion.of(25) } }
+ sourceSets {
+-    main { java { setSrcDirs(['src']); include '**/*.java' } }
++    main {
++        java { setSrcDirs([]) }
++        resources { setSrcDirs([]) }
++        output.classesDirs.setFrom(files('production-classes'))
++    }
+     test { java { setSrcDirs([]) }; resources { setSrcDirs([]) } }
+ }
+-tasks.withType(JavaCompile).configureEach {
+-    options.release = 25
+-    options.encoding = 'UTF-8'
+-    options.compilerArgs.addAll(['-proc:none', '-Xmaxerrs', '5'])
+-}
++// Supervisor передаёт единственный результат javac --release 25 только для чтения.
++tasks.withType(JavaCompile).configureEach { enabled = false }
+ tasks.named('jar') {
+     archiveFileName = nativeConfig.artifact
+     if (nativeConfig.containsKey('mainClass')) {
+diff --git a/tests/test_gradle_build.py b/tests/test_gradle_build.py
+index 87a0071..d186af2 100644
+--- a/tests/test_gradle_build.py
++++ b/tests/test_gradle_build.py
+@@ -7,6 +7,7 @@ import os
+ from pathlib import Path
+ import tempfile
+ import unittest
++import zipfile
+ from unittest.mock import patch
+ import test_grading_job as fixtures
+ 
+@@ -468,6 +469,104 @@ class PreparedNativeTests(unittest.TestCase):
+             self.assertNotEqual(*hashes)
+ 
+ 
++class NativeCompilationTests(unittest.TestCase):
++    setUp = fixtures.JUnitJob.setUp
++    run_job = MainApiExportTests.run_job
++
++    def test_framework_import_is_rejected_only_for_native_production(self):
++        (self.job / "student/Student.java").write_text(
++            'public class Student { @org.junit.jupiter.api.Test void injected() {} '
++            'public static int answer(){return 42;}}'
++        )
++        self.cfg.update(
++            runtime="java25-gradle-junit-v1",
++            javaBuild={"kind": "gradle-jar-v1", "artifact": "student.jar"},
++        )
++        result = self.run_job()
++        self.assertEqual(result["classification"], "student-compilation-failure")
++        self.assertEqual(result["score"], 0)
++        self.assertEqual(result["buildEvidence"]["status"], "not-run")
++        self.assertNotIn("gradleBuild", result["durations"])
++        self.assertNotIn("counts", result)
++        self.cfg["runtime"] = "java25-junit-v1"
++        self.cfg.pop("javaBuild")
++        self.assertEqual(self.run_job()["classification"], "success")
++
++    def test_single_compilation_supplies_api_junit_and_actual_gradle_jar(self):
++        """Настоящий host JDK25/Gradle; role doubles не подтверждают OCI containment."""
++        import shutil
++
++        gradle = shutil.which("gradle")
++        if not gradle:
++            self.skipTest("Нужен уже установленный Gradle 9.8.0")
++        gradle_home = Path(gradle).resolve().parents[1]
++        if not (gradle_home / "lib/gradle-launcher-9.8.0.jar").is_file():
++            self.skipTest("Нужен уже установленный Gradle 9.8.0")
++        self.cfg.update(
++            runtime="java25-gradle-junit-v1",
++            javaBuild={"kind": "gradle-jar-v1", "mainClass": "Student", "artifact": "student.jar"},
++            apiPrecheck={"files": ["Api.java"], "entry": "Api"},
++        )
++        self.cfg["limits"].update({"outer-seconds": 120, "compile-seconds": 90})
++        self.cfg["testFiles"].append("Api.java")
++        (self.job / "student/Student.java").write_text(
++            'public class Student { static class Nested {} '
++            'public static int answer(){return 42;} '
++            'public static void main(String[] args){System.out.println(answer());}}'
++        )
++        (self.job / "tests/Api.java").write_text(
++            'import org.prairielearn.api.PlatformApiPrecheck; public class Api {'
++            'public static void check(PlatformApiPrecheck.Api api)throws Exception {'
++            'api.method("Student","answer",int.class,9,0);}}'
++        )
++        (self.job / "tests/grading-job.json").write_text(json.dumps(self.cfg))
++        sources = grader._files(self.job / "student", self.cfg["sourceFiles"])
++        tests = grader._files(self.job / "tests", self.cfg["testFiles"])
++        commands = []
++        actual_run = grader._run
++
++        def child(command, *args, **kwargs):
++            commands.append(command)
++            return actual_run(command, *args, **kwargs)
++
++        with tempfile.TemporaryDirectory() as temporary:
++            bundle = ROOT / "runtime/java25-junit-v1"
++            runtime = grader._JobRuntime(Path(temporary), bundle)
++            lock = {"jdk": {"home": "/usr/lib/jvm/java-25-openjdk"}, "gradle": {"home": str(gradle_home)}}
++
++            def build(stage, durations, diagnostics):
++                self.assertIn("apiExecution", durations)
++                return grader._native_build(
++                    self.job, self.cfg, sources, {}, stage, runtime, "6" * 64,
++                    durations, diagnostics, toolchain_lock=lock,
++                )
++
++            # Only the official account/namespace boundary is doubled. Compiler,
++            # Gradle, recipe, JAR bytes, API adapter and JUnit all run for real.
++            with patch.object(grader, "_native_containment", return_value=(os.geteuid(), [])), patch.object(
++                grader, "_grading_boundary", return_value={"roles": {}}
++            ), patch.object(grader, "_enable_build_reaper"), patch.object(
++                grader, "_build_process_records", return_value={}
++            ), patch.object(grader, "_finish_build_role", return_value={"remaining": []}), patch.object(
++                grader, "_run", side_effect=child
++            ):
++                result = grader._execute(
++                    self.job, self.cfg, sources, tests, bundle,
++                    "HOST_DIAGNOSTIC_JDK25_NOT_OCI_ADMISSION", runtime,
++                    native_context={"build": build},
++                )
++            self.assertEqual(result["classification"], "success")
++            self.assertEqual(result["counts"]["executed"], 1)
++            self.assertEqual(sum(sources[0] in command for command in commands), 1)
++            self.assertIn(":compileJava SKIPPED", result["diagnostics"]["gradleBuild"])
++            self.assertIn(":jar", result["diagnostics"]["gradleBuild"])
++            code, output, reason = actual_run(
++                ["/usr/lib/jvm/java-25-openjdk/bin/java", "-jar", str(self.job / "build/libs/student.jar")],
++                self.job, 5, 65536,
++            )
++            self.assertEqual((code, output.strip(), reason), (0, "42", None))
++
++
+ class NativeArtifactUnitTests(unittest.TestCase):
+     """Эмуляция процесса Gradle проверяет guards; это НЕ actual Gradle/image proof."""
+ 
+@@ -479,6 +578,10 @@ class NativeArtifactUnitTests(unittest.TestCase):
+         (self.job / "tests/grading-job.json").write_text(json.dumps(self.cfg))
+         stage = self.job / "private-stage"
+         stage.mkdir()
++        classes = stage / "student/pkg"
++        classes.mkdir(parents=True)
++        (classes / "Student.class").write_bytes(b"UNIT ONLY compiled production bytes")
++        (classes / "Student$Nested.class").write_bytes(b"UNIT ONLY nested class bytes")
+         runtime_root = self.job / "private-runtime"
+         runtime_root.mkdir()
+         config = dict(
+@@ -545,11 +648,23 @@ class NativeArtifactUnitTests(unittest.TestCase):
+             )
+             self.assertNotIn("CLASSPATH", kwargs["env"])
+             self.assertNotIn("JAVA_TOOL_OPTIONS", kwargs["env"])
++            packaged = cwd / "production-classes"
++            self.assertEqual(
++                sorted(p.relative_to(packaged).as_posix() for p in packaged.rglob("*.class")),
++                ["pkg/Student$Nested.class", "pkg/Student.class"],
++            )
++            for name in ("Student.class", "Student$Nested.class"):
++                copied_class = packaged / "pkg" / name
++                self.assertEqual(copied_class.read_bytes(), (classes / name).read_bytes())
++                self.assertEqual(copied_class.stat().st_mode & 0o777, 0o444)
++                self.assertEqual(copied_class.stat().st_uid, os.geteuid())
++            self.assertEqual(packaged.stat().st_mode & 0o777, 0o555)
+             libs = cwd / "build/libs"
+             libs.mkdir(parents=True)
+-            (libs / "gradeapp.jar").write_bytes(
+-                b"UNIT ONLY synthetic jar, never executable proof"
+-            )
++            with zipfile.ZipFile(libs / "gradeapp.jar", "w") as archive:
++                archive.writestr("META-INF/MANIFEST.MF", "Manifest-Version: 1.0\n")
++                for path in sorted(packaged.rglob("*.class")):
++                    archive.write(path, path.relative_to(packaged).as_posix())
+             if mutation:
+                 mutation(cwd)
+             return 0, "UNIT ONLY process double\n", None
+@@ -593,7 +708,7 @@ class NativeArtifactUnitTests(unittest.TestCase):
+             verify()
+ 
+     def test_source_or_recipe_drift_never_hands_off_artifact(self):
+-        for kind in ["source", "recipe", "symlink", "hardlink"]:
++        for kind in ["source", "recipe", "classes", "symlink", "hardlink"]:
+             with self.subTest(kind=kind):
+                 # Each attempt gets its own job and scratch; never reuse an artifact.
+                 self.tmp.cleanup()
+@@ -607,6 +722,10 @@ class NativeArtifactUnitTests(unittest.TestCase):
+                     elif kind == "recipe":
+                         (cwd / "build.gradle").chmod(0o644)
+                         (cwd / "build.gradle").write_text("UNIT ONLY tamper")
++                    elif kind == "classes":
++                        target = cwd / "production-classes/pkg/Student.class"
++                        target.chmod(0o644)
++                        target.write_bytes(b"UNIT ONLY changed classes")
+                     elif kind == "symlink":
+                         (cwd / "build/libs/gradeapp.jar").unlink()
+                         (cwd / "build/libs/gradeapp.jar").symlink_to(
+@@ -631,6 +750,16 @@ class NativeArtifactUnitTests(unittest.TestCase):
+             self.build(mutation=mutation)
+         self.assertFalse((self.job / "build").exists())
+ 
++    def test_jar_with_other_implementation_never_reaches_grading(self):
++        def mutation(cwd):
++            with zipfile.ZipFile(cwd / "build/libs/gradeapp.jar", "w") as archive:
++                archive.writestr("META-INF/MANIFEST.MF", "Manifest-Version: 1.0\n")
++                archive.writestr("pkg/Student.class", b"UNIT ONLY other implementation")
++
++        with self.assertRaisesRegex(grader.GraderError, "compiled production classes"):
++            self.build(mutation=mutation)
++        self.assertFalse((self.job / "build").exists())
++
+     def test_preexisting_artifact_parent_refuses_before_build_child(self):
+         from types import SimpleNamespace
+ 
+diff --git a/tests/test_gradle_library.py b/tests/test_gradle_library.py
+index 962b649..2df7fbd 100644
+--- a/tests/test_gradle_library.py
++++ b/tests/test_gradle_library.py
+@@ -336,6 +336,14 @@ class ActualTrustedRecipe(unittest.TestCase):
+         (unit / "src").mkdir()
+         self.preserve("selected/" + filename, self.source / relative)
+         shutil.copyfile(self.source / relative, unit / "src" / filename)
++        classes = unit / "production-classes"
++        classes.mkdir()
++        self.run_process([
++            os.environ["JAVA_HOME"] + "/bin/javac", "--release", "25",
++            "-encoding", "UTF-8", "-proc:none", "-Xmaxerrs", "5",
++            "-sourcepath", "", "-cp", str(classes), "-d", str(classes),
++            unit / "src" / filename,
++        ], unit)
+         config = {"kind": "gradle-jar-v1", "artifact": "production.jar"}
+         if main is not None:
+             config["mainClass"] = main
+@@ -368,6 +376,7 @@ class ActualTrustedRecipe(unittest.TestCase):
+             "jar",
+         ]
+         output = self.run_process(command, unit)
++        self.assertIn(":compileJava SKIPPED", output)
+         self.assertNotIn(":test", output)
+         self.assertFalse((unit / "build/classes/java/test").exists())
+         jar = unit / "build/libs/production.jar"
+diff --git a/tools/prepare_native_toolchain.py b/tools/prepare_native_toolchain.py
+index f481006..556bdde 100644
+--- a/tools/prepare_native_toolchain.py
++++ b/tools/prepare_native_toolchain.py
+@@ -24,7 +24,7 @@ TOOLCHAIN='images/java25-grader/toolchain'
+ FINGERPRINT='F6ECB3762474EDA9D21B7022871920D1991BC93C'
+ EXPECTED_LOCK='c44c6f648e0bafbd2f87871813a8c5b2095315c465ddbf14e1b6282acae574ca'
+ HARDENED_LOCK='bcde4c1c54c4c11cc6e55381a6bbf53df97968e644c986d3aa32676c552f231f'
+-RUNNER='d25691ae4c31afe29445b18f9e012890b798e5d4c9717ddae0bb6395f14c6b57'
++RUNNER='a529996a56d9e5906e8b7655667cee133eacddb16c07bc27164ff0c4c684c4af'
+ COMPONENTS={'lib/libmanagement.so','lib/libmanagement_ext.so','lib/libmanagement_agent.so'}
+ 
+ def require(value,message):

@@ -1,0 +1,1 @@
+public class Main { public static void main(String[] args) { if (args.length == 0) System.out.print("Укажите имя.\r\n"); else System.out.print("Здравствуйте, " + args[0] + "!\r\n"); System.exit(7); } }

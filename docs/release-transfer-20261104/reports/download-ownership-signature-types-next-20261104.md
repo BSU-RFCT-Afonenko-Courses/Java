@@ -1,0 +1,15 @@
+# Download ownership signature: bounded Source plan
+
+**Точный срез — один файл:** `_extensions/project-download/infrastructure/runtime.ts`, `finishInternal`: outer state строки212–214, typed snapshot строки280–281, поздний `JSON.parse(ownedSignature).files.map((f:any)=>f.source)` строка658. Source не редактировался, compiler/tests/network/Native не запускались; workflow pins чужого владельца не тронуты.
+
+Это не новая внешняя JSON/decode boundary. `ownedSignature` создаётся только внутри этой функции через `JSON.stringify(owned)`, где `owned = await inspectOwnedRequests(root, sources)` имеет реальный exported `OwnedRequestState` из `ownership.ts`. Его files.source — string; внешний request reader уже держит JSON как unknown, проверяет record/source membership/resources/artifacts и физические пути. Сам reader содержит отдельные casts/any, но данный маленький срез их не переобъявляет исправленными.
+
+**Минимальная реализация:** рядом с ownedSignature сохранить local `ownedSources: string[] = []`; сразу при создании signature присвоить `ownedSources = owned.files.map(file => file.source)`. Поздний JSON.parse/map удалить, передать ownedSources в существующий повторный `inspectOwnedRequests`. Не использовать широкий исходный catalog `sources`: прежний parse извлекал именно sources фактически найденных owned.files, включая порядок/повторы. Проекция string[] фиксируется до awaited collect/materialization так же, как прежняя строковая signature; ссылка на изменяемый source массив не переносится через await.
+
+`JSON.stringify(await inspectOwnedRequests(root, ownedSources)) !== ownedSignature`, diagnostic и publish order остаются прежними. Unknown parse/новый DTO validator здесь не нужны: истинный DTO уже существует, а локальная string→JSON→any операция лишняя. Signature/hashes/ownership freeze этим typing-срезом не удаляются и не оправдываются заново. Никаких новых IO/parse/casts, повторных checks или изменения ZIP/publication/audience semantics.
+
+Это medium: один локальный dataflow от typed producer к consumed string[] с прямой scalar map, без generic correlation/AST/authority/нового protocol. Внешнее ownership request decoding и остальные runtime JSON receipt/config reader — отдельные долги. Если root хочет именно их разбирать, нужен отдельный scope; не маскировать их исчезновением одного any.
+
+Existing `tests/ownership.ts` вызывает Quarto add/render через Deno.Command, поэтому не подходит как pure контроль под запретом Native. Для будущего bounded candidate достаточно affected compiler с существующим `tests/runtime-types.ts`; runtime integration здесь не обещается. Новых tests/framework/probes не предлагаю. Полезность удаления самой currentness signature — отдельный architectural вопрос по принятой hash-карте.
+
+Own роль/model/effort неизменны; [существующий origin admission](https://github.com/BSU-RFCT-Afonenko-Courses/Java/blob/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/release-transfer-20261104/reports/core-condition-walk-types-admission-20261104.json). Root GO требуется только на реализацию следующего среза; пока сохранён этот Source plan.

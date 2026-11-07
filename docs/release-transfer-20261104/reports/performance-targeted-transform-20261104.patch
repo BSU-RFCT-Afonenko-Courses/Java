@@ -1,0 +1,212 @@
+diff --git a/src/instrumentation/ts/transform.ts b/src/instrumentation/ts/transform.ts
+index efc470b..dd8a2e2 100644
+--- a/src/instrumentation/ts/transform.ts
++++ b/src/instrumentation/ts/transform.ts
+@@ -14,7 +14,7 @@ export interface InstrumentedModule {
+ export function instrumentModule(
+   source: string,
+   path: string,
+-  scope: { strict: boolean; bridgeUrl?: string },
++  scope: { strict: boolean; bridgeUrl?: string; topLevelFunctions?: readonly string[] },
+ ): InstrumentedModule {
+   const file = ts.createSourceFile(path, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS),
+     symbols: SymbolReceipt[] = [],
+@@ -23,8 +23,27 @@ export function instrumentModule(
+   if (
+     (file as ts.SourceFile & { parseDiagnostics: readonly ts.Diagnostic[] }).parseDiagnostics.length
+   ) throw new Error("Ошибка разбора TypeScript");
++  // Явный partial scope не добавляет wrappers во вложенные функции.
++  const functions = scope.topLevelFunctions;
++  const selected = functions === undefined ? undefined : new Set<ts.FunctionDeclaration>();
++  if (functions !== undefined && selected) {
++    const names = new Set(functions);
++    if (names.size !== functions.length) {
++      throw new Error("Неполное coverage: повтор выбранного имени функции");
++    }
++    for (const name of names) {
++      const matches = file.statements.filter((node): node is ts.FunctionDeclaration =>
++        ts.isFunctionDeclaration(node) && node.name?.text === name
++      );
++      if (matches.length !== 1 || !matches[0].body) {
++        throw new Error(`Неполное coverage: нет единственной функции с body: ${name}`);
++      }
++      selected.add(matches[0]);
++    }
++  }
+   const manuallyWrapped = new Set<string>();
+-  function findManual(node: ts.Node) {
++  function findManual(node: ts.Node, active = selected === undefined) {
++    const observed = active || ts.isFunctionDeclaration(node) && !!selected?.has(node);
+     if (
+       ts.isBinaryExpression(node) && ts.isIdentifier(node.left) &&
+       ts.isCallExpression(node.right) && ts.isPropertyAccessExpression(node.right.expression) &&
+@@ -36,13 +55,15 @@ export function instrumentModule(
+         file.statements.some((s) => ts.isFunctionDeclaration(s) && s.name?.text === name && s.body)
+       ) {
+         manuallyWrapped.add(name);
+-      } else {skipped.push({
++      } else if (observed) {
++        skipped.push({
+           position: node.getStart(file),
+           reason: "Local/aliased manual rebind не поддержан",
+-        });}
++        });
++      }
+     }
+     if (
+-      ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression) &&
++      observed && ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression) &&
+       /^wrap(Sync|Async|Walk)$/.test(node.expression.name.text) &&
+       node.arguments.some((a) => ts.isArrowFunction(a) || ts.isFunctionExpression(a))
+     ) {
+@@ -51,10 +72,17 @@ export function instrumentModule(
+         reason: "Inline manual callback не поддержан",
+       });
+     }
+-    ts.forEachChild(node, findManual);
++    ts.forEachChild(node, (child) => findManual(child, observed));
+   }
+   findManual(file);
+   function walk(node: ts.Node) {
++    if (selected) {
++      if (node === file) {
++        for (const declaration of selected) walk(declaration);
++        return;
++      }
++      if (!ts.isFunctionDeclaration(node) || !selected.has(node)) return;
++    }
+     if (
+       ts.isConstructorDeclaration(node) || ts.isGetAccessorDeclaration(node) ||
+       ts.isSetAccessorDeclaration(node)
+@@ -101,7 +129,7 @@ export function instrumentModule(
+     ts.forEachChild(node, walk);
+   }
+   walk(file);
+-  if (scope.strict && skipped.length) {
++  if ((scope.strict || selected !== undefined) && skipped.length) {
+     throw new Error(`Неполное coverage: ${JSON.stringify(skipped)}`);
+   }
+   let result = source;
+diff --git a/tests/instrumentation/ts.test.ts b/tests/instrumentation/ts.test.ts
+index fb7267f..9eada9b 100644
+--- a/tests/instrumentation/ts.test.ts
++++ b/tests/instrumentation/ts.test.ts
+@@ -1,6 +1,7 @@
+ import { strict as assert } from "node:assert";
+ import { instrumentModule } from "../../src/instrumentation/ts/transform.ts";
+ import { join } from "node:path";
++import { installTsAgent } from "../../src/agents/ts/agent.ts";
+ const bridge = new URL("../../bridge/bridge.ts", import.meta.url).href;
+ Deno.test("automatic function trace preserves hoisting, recursion, this, args, async and error identity", async () => {
+   const root = await Deno.makeTempDir();
+@@ -44,6 +45,13 @@ Deno.test("manual wrapper registration is excluded from automatic trace", () =>
+   const result = instrumentModule(source, "manual.ts", { strict: true, bridgeUrl: bridge });
+   assert.equal(result.symbols[0].manuallyWrapped, true);
+   assert(!result.source.includes("return __coursePerf"));
++  const selected = instrumentModule(source, "manual.ts", {
++    strict: true,
++    bridgeUrl: bridge,
++    topLevelFunctions: ["f"],
++  });
++  assert.equal(selected.symbols[0].manuallyWrapped, true);
++  assert.equal(selected.source, source);
+ });
+ Deno.test("module manual binding does not hide a shadowed nested function; unsupported local rebinding is explicit", () => {
+   const source =
+@@ -63,3 +71,96 @@ Deno.test("module manual binding does not hide a shadowed nested function; unsup
+     /coverage/i,
+   );
+ });
++
++Deno.test("top-level function selection keeps recursive execution and observes only requested declarations", async () => {
++  const root = await Deno.makeTempDir();
++  const key = Symbol.for("course.performance.agent.v1");
++  const priorAgent: unknown = Reflect.get(globalThis, key);
++  const priorMode = Deno.env.get("COURSE_PERF_MODE");
++  const source = `export const failure={code:42};
++export function decode(n:number):number {
++  function visit(value:number):number {
++    if(value<0)throw failure;
++    return value===0?0:visit(value-1)+1;
++  }
++  return visit(n);
++}
++export function untouched(n:number){return n+10;}
++export class C{get value(){return 7;}}`;
++  try {
++    Deno.env.set("COURSE_PERF_MODE", "summary");
++    const agent = installTsAgent({
++      experimentId: "e",
++      runId: "r",
++      processId: "selection",
++      outputDirectory: root,
++      mode: "summary",
++    });
++    const names: readonly string[] = ["decode"];
++    const selected = instrumentModule(source, "selected.ts", {
++      strict: true,
++      bridgeUrl: bridge,
++      topLevelFunctions: names,
++    });
++    await Deno.writeTextFile(join(root, "selected.ts"), selected.source);
++    const changed = await import("file://" + join(root, "selected.ts"));
++    assert.equal(changed.decode(12), 12);
++    assert.throws(() => changed.decode(-1), (error: unknown) => error === changed.failure);
++    assert.equal(changed.untouched(5), 15);
++    assert.equal(new changed.C().value, 7);
++    assert.equal(selected.symbols.length, 1);
++    assert.equal(selected.symbols[0].start, source.indexOf("export function decode"));
++    assert.deepEqual(
++      agent.events.filter((event) => event.event === "begin").map((event) => event.operation_id),
++      [selected.symbols[0].id, selected.symbols[0].id],
++    );
++    assert.deepEqual(
++      agent.events.filter((event) => event.event === "end").map((event) => event.status),
++      ["ok", "error"],
++    );
++    const plain = instrumentModule(source, "default.ts", { strict: false, bridgeUrl: bridge });
++    const visit = plain.symbols.find((symbol) => symbol.start === source.indexOf("function visit"));
++    assert(visit);
++    await Deno.writeTextFile(join(root, "default.ts"), plain.source);
++    const before = agent.events.length;
++    const originalScope = await import("file://" + join(root, "default.ts"));
++    assert.equal(originalScope.decode(4), 4);
++    assert.equal(
++      agent.events.slice(before).filter((event) =>
++        event.event === "begin" && event.operation_id === visit.id
++      ).length,
++      5,
++    );
++  } finally {
++    if (priorMode === undefined) Deno.env.delete("COURSE_PERF_MODE");
++    else Deno.env.set("COURSE_PERF_MODE", priorMode);
++    if (priorAgent === undefined) Reflect.deleteProperty(globalThis, key);
++    else Reflect.set(globalThis, key, priorAgent);
++    await Deno.remove(root, { recursive: true });
++  }
++});
++Deno.test("top-level function selection refuses missing, ambiguous and unsupported names even in partial mode", () => {
++  for (
++    const source of [
++      "export function other(){return 1;}",
++      "function decode(){} function decode(){}",
++      "declare function decode():number;",
++      "function* decode(){yield 1;}",
++      "function decode(){return eval('1');}",
++      "function outer(){function decode(){return 1;}}",
++    ]
++  ) {
++    assert.throws(() =>
++      instrumentModule(source, "refused.ts", {
++        strict: false,
++        bridgeUrl: bridge,
++        topLevelFunctions: ["decode"],
++      }), /coverage/);
++  }
++  assert.throws(() =>
++    instrumentModule("function decode(){return 1;}", "duplicate.ts", {
++      strict: false,
++      bridgeUrl: bridge,
++      topLevelFunctions: ["decode", "decode"],
++    }), /coverage/);
++});

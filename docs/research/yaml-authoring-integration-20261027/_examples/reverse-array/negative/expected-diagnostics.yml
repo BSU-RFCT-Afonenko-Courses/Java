@@ -1,0 +1,16 @@
+# Диагностика только иллюстрирует требуемую ошибку/source YAML; это не output работающего нового validator.
+status: illustrative-not-validator-output
+unknown-helper:
+  file: unknown-helper/_metadata.yml
+  field: course-project.testsets.demo.requires[1]
+  value: numeric-output-missing
+  expected: Неизвестный компонент numeric-output-missing; комплект demo не формируется.
+conflicting-target:
+  file: conflicting-target/_metadata.yml
+  field: course-project.extra-files[0].target
+  value: src/main/java/Main.java
+  sources:
+  - starter/src/main/java/Main.java
+  - solutions/reference/src/main/java/Main.java
+  expected: Разные sources выбрали один target src/main/java/Main.java; стартер и историческое решение
+    нельзя компилировать как один Main.

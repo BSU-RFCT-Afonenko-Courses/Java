@@ -1,0 +1,164 @@
+{
+  "status": "root final review corrections завершены; владение передано root для launch",
+  "updated_at": "2026-11-05T00:03:25.131711+00:00",
+  "owner": "/root/local_pl_ui",
+  "chat_id": "01a1a897-9931-79c0-868d-633f7fd88ea8",
+  "admission": {
+    "path": "/tmp/java-release-discussion-20261105/coordination/feedback-ui-admission.json",
+    "original_turn_id": "01a1a897-9960-7580-9b14-5f7ed9714092",
+    "result": "PASS full original interval8turn_context"
+  },
+  "scope": "Только /tmp temporary integration files; Source repos, existing3305/3306/containers/DB/volumes не изменялись",
+  "upstream": {
+    "pinned_image": "docker.io/prairielearn/prairielearn@sha256:60c675a42055a430f9ad7298c7dfd2f37119aa471f806e21e2c929de28435f63",
+    "read_from": "feedback-ui-20261105, только docker exec reads/docker cp OUT",
+    "worker_source": "/PrairieLearn/apps/workspace-host/src/interface.ts",
+    "worker_runtime": "/PrairieLearn/apps/workspace-host/dist/interface.js",
+    "proxy": "/PrairieLearn/apps/prairielearn/src/middlewares/workspaceProxy.ts",
+    "worker_control": "workspaceDevHostHostname + workspaceHostPort регистрируются в workspace_hosts.hostname; PL workspace.controlContainer HTTP POST",
+    "worker_editor_health": "_checkServer использует workspaceDevContainerHostname:workspace.launch_port",
+    "proxy_target": "initSequence сохраняет workspace.hostname из тех же hostname:launch_port; workspaceProxy.router читает running hostname",
+    "auth": "server.ts makeWorkspaceContainerRoutes сохраняет authzWorkspaceCookieCheck → date → authn → authzWorkspace → authzWorkspaceCookieSet → штатный workspace proxy; HTTP/WebSocket оба штатные",
+    "upstream_issues": [
+      "HostPort без HostIp публиковал бы unauth editor на всех интерфейсах",
+      "Startup cleanup глобально выбирал PrairieLearn workspace labels; periodic cleanup глобально выбирал workspace-* в общем Docker daemon"
+    ]
+  },
+  "scheme": {
+    "name": "feedback-sp-native-20261105",
+    "private_network": "новый Docker bridge --internal; subnet/gateway выбирает Docker, конкретный gateway читается из inspect",
+    "pl_browser": "127.0.0.1:3307 -> new PL container:3000",
+    "worker_control": "PL process -> 127.0.0.1:8081 в том же контейнере; host8081 не публикуется",
+    "editor": "PL/worker -> host.docker.internal:<dynamic34000-34019> -> privatebridgegateway HostIp -> Workspace8080",
+    "host_mapping": "--add-host host.docker.internal:<actualprivategateway>; FEEDBACK_SP_BIND_IP=<samegateway>",
+    "workspace_network": "FEEDBACK_SP_NETWORK=feedback-sp-native-20261105, forced actual Docker NetworkMode; global no-internet network не используется",
+    "host_bindings": "PL только loopback3307; Workspace только newly-created private gateway, никогда0.0.0.0/::/hostLAN; support ports не публикуются",
+    "jobs": "/tmp/java-release-work-20261105/workspace-worker-handoff/jobs",
+    "postgres_volume": "feedback-sp-native-20261105-postgres",
+    "worker_id": "feedback-sp-native-20261105"
+  },
+  "temporary_override": {
+    "patcher": "/tmp/java-release-work-20261105/workspace-worker-handoff/patch-worker.py",
+    "source_diff": "/tmp/java-release-work-20261105/workspace-worker-handoff/evidence/worker-ts.diff",
+    "runtime_diff": "/tmp/java-release-work-20261105/workspace-worker-handoff/evidence/worker-js.diff",
+    "files": [
+      "source/interface.ts",
+      "compiled/interface.js"
+    ],
+    "changes": [
+      "Validate exact isolatednetwork+RFC1918IPv4gateway env before Docker operations",
+      "HostIp=feedbackBindIp; NetworkMode=ownnetwork; accidental no-internet network switch fails before create",
+      "Add unique scope label to new workspace containers",
+      "All4Dockerlist/lookup calls filter ownlabel, including startup and periodic cleanup",
+      "Global pruneVolumes removed only in temporary copied worker"
+    ],
+    "global_changes": false,
+    "source_changes": false
+  },
+  "configuration": {
+    "pl": "/tmp/java-release-work-20261105/workspace-worker-handoff/config/pl.json",
+    "worker": "/tmp/java-release-work-20261105/workspace-worker-handoff/config/worker.json",
+    "Dockerfile": "/tmp/java-release-work-20261105/workspace-worker-handoff/Dockerfile",
+    "startup": "/tmp/java-release-work-20261105/workspace-worker-handoff/start-local.sh",
+    "worker_defaults_retained": "UID/GID0 upstream defaults; actual D candidate /usr/bin/pl-gosu-helper.sh retains image ownership semantics",
+    "candidate": {
+      "tag": "codex/sp-workspace-delivery:20261105",
+      "observed_id": "sha256:d7eaa4558c866b495371ffd7e478a0a4e1d172f66f8a5eda7f532a0d5aaead34",
+      "state": "exists, read-only inspect; launcher rejects changed tag ID pending fresh review"
+    },
+    "private_course_source": "/tmp/java-release-work-20261105/delivery-sp-native-20261105/course",
+    "private_course_override": "Только собственная runtime-course copy: matching info.json/workspaceOptions.image и delivery.gradingPayloads[restore].submission.workspaceOptions.image -> CANDIDATE_EXPECTED_ID sha256:d7eaa4558c866b495371ffd7e478a0a4e1d172f66f8a5eda7f532a0d5aaead34. Новых candidate flags нет. SourceSP/каноническийproductionpin/Dcourse не меняются.",
+    "private_qualification": "Только внешний handoffreport: изолированный local acceptance input, не production publication.",
+    "migration": "node apps/prairielearn/dist/server.js --config /feedback-config/pl.json --migrate-and-exit; затем тот же compiledserver без migrationflag",
+    "offline_PL_base": {
+      "pin": "docker.io/prairielearn/prairielearn@sha256:60c675a42055a430f9ad7298c7dfd2f37119aa471f806e21e2c929de28435f63",
+      "native_inspected_id": "sha256:e4f4164ace146dd46b1272c84a55ae94d460bd894f2721315eca2fccc43d1a9d",
+      "RepoDigests": "prairielearn/prairielearn@sha256:60c675a42055a430f9ad7298c7dfd2f37119aa471f806e21e2c929de28435f63",
+      "local_tag": "codex/pl-sp-worker-base-local:20261105",
+      "approach": "На root launch проверить native identity, tag native configID локально, FROM localtag; обычный BuildKit --pull=false, без переопределения builder env. Этот путь уже подтверждён C по root review.",
+      "executed": "Только read-only native image inspect; tag/build не выполнялись"
+    }
+  },
+  "launch": {
+    "script": "/tmp/java-release-work-20261105/workspace-worker-handoff/launch-after-review.py",
+    "command": "FEEDBACK_SP_ROOT_REVIEW_GO=yes python -B /tmp/java-release-work-20261105/workspace-worker-handoff/launch-after-review.py",
+    "state": "не выполнено: default gate checked, остановилось до mutations",
+    "preconditions": [
+      "root review exact diffs/config",
+      "D candidate ID совпадает с переданным",
+      "новыеcontainer/network/volume/scope отсутствуют,3307свободен",
+      "onlynewjobs+newpostgresvolume+privatecoursecopy"
+    ],
+    "post_steps": [
+      "Main штатный Load from disk",
+      "Открыть existingrestore question в настоящем PL",
+      "Запустить read-only isolation verifier",
+      "Проверить real proxy/save-close-resume-resubmit по workspace-actions.txt"
+    ]
+  },
+  "checks": {
+    "patch_anchors": "PASS, точные ожидаемые количества в обоих actual copied source/dist",
+    "node_syntax": "PASS node --check patched/interface.js",
+    "shell_syntax": "PASS bash -n start-local.sh",
+    "python_syntax": "PASS ast.parse all ownedPython",
+    "actual_create_request_smoke": "PASS extracted actual patched _createContainer выполнен с Docker/FS stubs без Docker call; HostIp/privateNetwork/ownBind/label совпадают",
+    "list_scope": "PASS all4Dockerlist calls scopedownlabel; globalvolumeprune absent",
+    "request_evidence": "/tmp/java-release-work-20261105/workspace-worker-handoff/evidence/docker-create-request.json",
+    "live_pass": false,
+    "image_build_pass": false,
+    "network_live_pass": false,
+    "private_config_check": {
+      "result": "PASS",
+      "runtime_info_image": "sha256:d7eaa4558c866b495371ffd7e478a0a4e1d172f66f8a5eda7f532a0d5aaead34",
+      "matching_private_delivery_image": "sha256:d7eaa4558c866b495371ffd7e478a0a4e1d172f66f8a5eda7f532a0d5aaead34",
+      "new_candidate_flag_added": false,
+      "D_source_two_JSON_unchanged": true,
+      "migration_and_server": "same compiled node server.js",
+      "offline_base": "native inspected pinned ID -> unique local tag -> FROM local tag, no pull; обычный BuildKit, без переопределения env",
+      "default_launch_gate": "stopped before mutation; no Docker commands",
+      "live_launch": false
+    },
+    "private_config_check_path": "/tmp/java-release-work-20261105/workspace-worker-handoff/evidence/private-config-check.json",
+    "json_syntax": "PASS all configJSON"
+  },
+  "live_evidence": {
+    "script": "/tmp/java-release-work-20261105/workspace-worker-handoff/verify-live-isolation.py",
+    "expected_output": "/tmp/java-release-work-20261105/workspace-worker-handoff/evidence/live-isolation.json",
+    "requires": "Actual workspace already launched byMain",
+    "checks": [
+      "PL actualHostConfigPortBindings exactlyloopback3307 only",
+      "internalnetwork and actualgateway/ExtraHostmapping",
+      "Workspace actualHostIp privategateway and range34000..34019",
+      "Ownjobbind and ownlabel/network",
+      "GatewayHTTP responds from PLcontainer",
+      "Ordinaryhostinterface editorports do not connect",
+      "WorkerstatusnewDBok"
+    ],
+    "limits": "Static request smoke не заменяет живую Docker/proxy/UI приёмку; live result пока отсутствует"
+  },
+  "plan": "/tmp/java-release-work-20261105/workspace-worker-handoff/План.txt",
+  "costs": {
+    "quarto_render_or_export": 0,
+    "docker_build": 0,
+    "network_created": 0,
+    "containers_started": 0,
+    "volumes_created": 0,
+    "tests": "1 actual function request smoke + syntax + anchor checks"
+  },
+  "root_review": {
+    "network_cleanup": "без замечаний root",
+    "requested_delta": [
+      "actual candidate configID вместо tag в private data",
+      "не добавлять delivery candidate flag",
+      "compiled node migration path"
+    ],
+    "delta_state": "завершено; syntax/config/defaultgate PASS, ownership root",
+    "final_simplification": "Принудительный legacy builder удалён; core worker patch/config не менялись.",
+    "result": "APPROVE для запуска только нового 3307 стенда",
+    "reviewer_chat": "01a1a88c-2898-78d1-afc2-2b2f24e9a617",
+    "admission": "/tmp/java-release-discussion-20261105/coordination/feedback-admission.json",
+    "closure": "Прочитаны exact TS/JS diff и launch/config/startup/verifier. Все4 Docker list/lookup scoped, globalprune исключён. Bridge private/internal, editor HostIp фактический gateway, PL только loopback3307. Candidate DockerID в частной копии, no newcandidateflag, compiled startup, ordinary localbase BuildKit. Source и старые3305/3306 не затрагиваются.",
+    "live_status": "ещё не запущен"
+  },
+  "handoff_owner": "root"
+}

@@ -1,0 +1,1 @@
+public class Main {public static void main(String[] args){var rows=new java.util.ArrayList<String>();rows.add("P\tQ\tAND\tOR\tXOR\tNOT");for(int pair=3;pair>=0;pair--){boolean p=(pair&2)!=0,q=(pair&1)!=0;rows.add(p+"\t"+q+"\t"+(p&q)+"\t"+(p|q)+"\t"+(p^q)+"\t"+(p^true));}System.out.print(String.join("\r\n",rows));}}

@@ -1,0 +1,155 @@
+{
+  "chat_id": "01a1a8b0-4d92-7550-ab97-d26896b7e019",
+  "model": "gpt-6.1-sol",
+  "effort": "medium",
+  "admission": "/tmp/java-release-discussion-20261105/coordination/pl-tests-admission.json",
+  "checkout": "/tmp/java-release-work-20261105/course-pl",
+  "ownership": "assigned tests only; no product edits or commits",
+  "status": "ready-for-independent-review",
+  "checks": [
+    {
+      "kind": "final realCore compiler",
+      "entries": 20,
+      "result": "PASS",
+      "log": "/tmp/pl-tests-final-check.txt"
+    },
+    {
+      "kind": "new required contracts compiler",
+      "result": "PASS",
+      "log": "/tmp/pl-boundary-final-check.txt"
+    },
+    {
+      "kind": "publicCore positive and negative contracts",
+      "negative_cases": 12,
+      "result": "PASS",
+      "log": "/tmp/pl-negative-check.txt"
+    },
+    {
+      "kind": "pure value/projection",
+      "cases": [
+        "selection 7 controls",
+        "raw selected bytes",
+        "reference helper projection 4 negatives",
+        "provenance 6 controls"
+      ],
+      "result": "PASS",
+      "wall_seconds_approx": 4
+    },
+    {
+      "kind": "bounded runtime initial",
+      "result": "40 PASS; 6 fixture setup failures corrected",
+      "wall_seconds": 31,
+      "log": "/tmp/pl-tests-runtime.txt"
+    },
+    {
+      "kind": "whole-bank regression",
+      "result": "20/20 PASS; grouped export test stale new expectation corrected subsequently",
+      "wall_seconds_grouped": 119,
+      "log": "/tmp/pl-course-runtime2.txt"
+    },
+    {
+      "kind": "typed functional export v5 final",
+      "result": "PASS",
+      "wall_seconds": 9
+    },
+    {
+      "kind": "diff whitespace",
+      "result": "PASS"
+    }
+  ],
+  "not_run": [
+    "heavy native A1 builder/reuse renders",
+    "seed-target integration with real SP fixtures",
+    "full course render/all tests"
+  ],
+  "remaining": [
+    "independent review by parent-appointed reviewer"
+  ],
+  "updated": "2026-11-04T22:58:57.687289+00:00",
+  "ready_for_review": true,
+  "branch": "codex/course-labs-20261105",
+  "head": "1ad5516e543d07804aa09e426302413c21542e3e",
+  "elapsed_minutes": 18,
+  "notes": [
+    "Only owned tests edited; no product edits or commits.",
+    "Deleted obsolete materialized-student/publication-conditions-entry tests with their removed implementations.",
+    "Removed stale hashes/source origins/freshness/scenario inventories; retained selected bytes/names/privacy/source extensions/API subset/atomic publishing/runtime policies.",
+    "Product requireNativeChecksContract removed by parent; assertion removed.",
+    "Old full-export legacy physical fixture replaced with typed functional v5 fixture; pure semantics/declarations/UUID/policy tests preserved."
+  ],
+  "ci_closure": {
+    "status": "ready-for-independent-review",
+    "changes": [
+      "CI deleted test paths replaced/removed; both Core checkout/assert pairs pinned to f8ea942ba72c6bf0093862c72ea3f6620eec71ec",
+      "EXDEV selects functional export v5 and fixture honors PL_EXDEV_TEST_DIR",
+      "delivery4-workspace/native-answer/native-seed-packages migrated checks v3, mandatory inputs/artifact, delivery v5",
+      "native-contract-batch uses genuine Core directory loader; native-fact-owner uses genuine public provenance schema",
+      "native-seed-operation typed realCore/PL, directory withProjectContracts, removed SHA-only source currentness assertion",
+      "Standalone CLI fixtures retain explicit Core argument runtime loading with real public type annotation"
+    ],
+    "checks": [
+      {
+        "kind": "tools/check-contracts.ts",
+        "result": "PASS 419 files"
+      },
+      {
+        "kind": "uncovered TS compiler",
+        "entries": 41,
+        "result": "PASS",
+        "log": "/tmp/pl-unowned-final-compiler.txt"
+      },
+      {
+        "kind": "final changed TS compiler",
+        "entries": 11,
+        "result": "PASS",
+        "log": "/tmp/pl-ci-final-types.txt"
+      },
+      {
+        "kind": "genuine batch + provenance normalization",
+        "result": "5/5 PASS",
+        "wall_seconds": 0.421,
+        "log": "/tmp/pl-ci-pure-runtime.txt"
+      },
+      {
+        "kind": "EXDEV /dev/shm functional export",
+        "result": "1/1 PASS",
+        "wall_seconds": 24,
+        "log": "/tmp/pl-exdev-runtime.txt"
+      },
+      {
+        "kind": "native numeric answer",
+        "result": "1/1 PASS",
+        "wall_seconds": 7
+      },
+      {
+        "kind": "seeded Workspace delivery v5",
+        "result": "1/1 PASS",
+        "wall_seconds": 5
+      },
+      {
+        "kind": "actual quarto run raw/reference CLI without manual map",
+        "result": "both PASS",
+        "logs": [
+          "/tmp/pl-raw-cli.txt",
+          "/tmp/pl-reference-cli.txt"
+        ]
+      },
+      {
+        "kind": "workflow TS paths/pins/filter",
+        "result": "30 unique paths exist; 4 exact Core pins; actual EXDEV filter"
+      },
+      {
+        "kind": "git diff whitespace",
+        "result": "PASS"
+      }
+    ],
+    "not_run": [
+      "full render",
+      "heavy A1/seed-operation integration",
+      "whole-bank repeat"
+    ],
+    "admission_full_original_turns": 2,
+    "product_edits": false,
+    "commits": false
+  }
+}

@@ -1,0 +1,1069 @@
+diff --git a/_extensions/course-core/runtime/operation.ts b/_extensions/course-core/runtime/operation.ts
+--- a/_extensions/course-core/runtime/operation.ts
++++ b/_extensions/course-core/runtime/operation.ts
+@@ -13,6 +13,10 @@
+ import { ProjectContextRequestSchema } from "../contracts/project.ts";
+ import type { ProjectContextRequest } from "../contracts/project.ts";
+ import { buildAssignmentProvenance } from "./assignment-provenance.ts";
++import {
++  finishedNativeResource,
++  nativeResourceHandleIdentity,
++} from "./native-output-resources.ts";
+ import { NativeProjectFactsCaptureSchema } from "../document/project-facts.ts";
+ import {
+   NativePreparedOperationSchema,
+@@ -145,7 +149,6 @@
+     z.strictObject({
+       source: z.string(),
+       output: z.string(),
+-      sha1: z.string().regex(/^[a-f0-9]{40}$/),
+     }),
+   ),
+ });
+@@ -221,12 +224,12 @@
+     z.strictObject({
+       source: pathSchema,
+       path: z.string(),
+-      signature: z.string(),
+-      sha256: z.string(),
++      identity: z.string(),
++      sourceIdentities: z.array(z.string()).min(1),
+       documents: z.array(pathSchema),
+     }),
+   ),
+-  outputs: z.array(rowSchema),
++  outputs: z.array(z.strictObject({ path: pathSchema })),
+   releaseDocuments: z.array(
+     z.strictObject({
+       source: pathSchema,
+@@ -1440,7 +1443,7 @@
+   const documents: z.output<typeof NativePublicDocumentSchema>[] = [],
+     catalogDocuments: z.output<typeof NativeCatalogSchema>["documents"] = [],
+     resources: z.output<typeof completeSchema>["resources"] = [],
+-    outputRows: z.output<typeof rowSchema>[] = [];
++    outputRows: z.output<typeof completeSchema>["outputs"] = [];
+   const additions: string[] = [];
+   const declaredOutputs = new Set(outputs);
+   const indexTopics = new Map<string, Record<string, unknown>>();
+@@ -1466,7 +1469,6 @@
+       await json(capture + ".native.json"),
+       "OPERATION_INCOMPLETE",
+     );
+-    state.metrics.nativeResourceHashReads += native.resources.length;
+     state.metrics.nativeMetadataBytes += new TextEncoder().encode(
+       JSON.stringify(early.release?.nativeMetadata ?? {}),
+     ).length;
+@@ -1565,18 +1567,14 @@
+         "Unexpected assignment declarations",
+       );
+     }
+-    const outputBytes = await Deno.readFile(output);
+-    const outputText = new TextDecoder().decode(outputBytes);
+-    if (outputText.includes("<!--course-exercise-index")) {
+-      indexPages.set(outputPath, outputText);
++    if (!reservation) {
++      const outputText = await Deno.readTextFile(output);
++      if (outputText.includes("<!--course-exercise-index")) {
++        indexPages.set(outputPath, outputText);
++      }
+     }
+     indexTopics.set(state.inputs[index], early.ast.meta);
+-    state.metrics.outputHashReads++;
+-    outputRows.push({
+-      path: outputPath,
+-      signature: signature(await Deno.lstat(output)),
+-      sha256: await hash(outputBytes),
+-    });
++    outputRows.push({ path: outputPath });
+     let projectFacts:
+       | z.output<typeof NativeProjectFactsCaptureSchema>
+       | undefined;
+@@ -1704,29 +1702,12 @@
+         }
+         fail(
+           "RESOURCE_UNQUALIFIED",
+-          "Ресурс появился после native byte observation",
++          "Ресурс отсутствует в native path observation",
+         );
+       }
+       const expectedOutput = resolve(state.outputDirectory, canonical);
+       if (resolve(observed.output) !== expectedOutput) {
+         fail("OPERATION_BINDING", "Native resource output отличается");
+-      }
+-      let path: string;
+-      try {
+-        path = await regular(root, canonical);
+-      } catch (e) {
+-        if (!(e instanceof Deno.errors.NotFound)) throw e;
+-        try {
+-          path = await regular(root, relative(root, expectedOutput));
+-        } catch (missing) {
+-          if (missing instanceof Deno.errors.NotFound) {
+-            fail(
+-              "RESOURCE_CURRENT_BYTES_MISSING",
+-              "Не найдены наблюдавшиеся native bytes",
+-            );
+-          }
+-          throw missing;
+-        }
+       }
+       const existing = resources.find((r) => r.source === canonical);
+       if (existing) {
+@@ -1735,20 +1716,11 @@
+         }
+         continue;
+       }
+-      const bytes = await Deno.readFile(path);
+-      state.metrics.resourceHashReads += 2;
+-      if (await hash(bytes, "SHA-1") !== observed.sha1) {
+-        fail(
+-          "OPERATION_CHANGED",
+-          "Native resource bytes отличаются от late observation",
+-        );
+-      }
++      const finished = await finishedNativeResource(state, canonical);
+       resources.push({
+         source: canonical,
+         documents: [source],
+-        path,
+-        signature: signature(await Deno.lstat(path)),
+-        sha256: await hash(bytes),
++        ...finished,
+       });
+       if (!state.rows.some((r) => r.path === canonical)) {
+         additions.push(canonical);
+@@ -1798,10 +1770,6 @@
+           ),
+       );
+       await Deno.writeTextFile(resolve(root, path), rendered);
+-      const row = outputRows.find((row) => row.path === path)!;
+-      row.signature = signature(await Deno.lstat(resolve(root, path)));
+-      row.sha256 = await hash(new TextEncoder().encode(rendered));
+-      state.metrics.outputHashReads++;
+     }
+   }
+   if (
+@@ -1927,12 +1895,11 @@
+     for (const resource of child.resources) {
+       const known = resources.find((r) => r.source === resource.source);
+       if (known) {
+-        if (
+-          known.path !== resource.path || known.sha256 !== resource.sha256 ||
+-          known.signature !== resource.signature
+-        ) fail("OPERATION_CHANGED", "Child resource изменён");
+         known.documents = [
+           ...new Set([...known.documents, ...resource.documents]),
++        ];
++        known.sourceIdentities = [
++          ...new Set([...known.sourceIdentities, ...resource.sourceIdentities]),
+         ];
+       } else resources.push(resource);
+     }
+@@ -1970,23 +1937,18 @@
+       state.metrics[key]! += delta[key];
+     }
+   }
+-  for (
+-    const row of [
+-      ...outputs.map((r) => ({ ...r, resource: false })),
+-      ...resources.map((r) => ({
+-        ...r,
+-        path: relative(root, r.path),
+-        resource: true,
+-      })),
+-    ]
+-  ) {
+-    const path = await regular(root, row.path);
+-    if (row.resource) state.metrics.resourceHashReads++;
+-    else state.metrics.outputHashReads++;
+-    if (
+-      signature(await Deno.lstat(path)) !== row.signature ||
+-      await hash(await Deno.readFile(path)) !== row.sha256
+-    ) fail("OPERATION_CHANGED", "Child output/resource bytes изменены до seal");
++  // Дочерний Quarto уже завершил все post hooks. Здесь остаются выбранные
++  // пути и physical ownership ресурсов, без доказательства прежних bytes.
++  for (const output of outputs) await regular(root, output.path);
++  for (const resource of resources) {
++    Object.assign(
++      resource,
++      await finishedNativeResource(
++        state,
++        resource.source,
++        resource.sourceIdentities,
++      ),
++    );
+   }
+   const complete = completeSchema.parse({
+     state,
+@@ -2269,13 +2231,20 @@
+   const resourceBySource = new Map(
+     complete.resources.map((row) => [row.source, row]),
+   );
+-  const resourcesByDocument = new Map<string, typeof complete.resources>();
++  // Внешний вход после hooks проверяет конечные outputs один раз.
++  for (const output of complete.outputs) {
++    await regular(complete.state.root, output.path);
++  }
++  // Каталог хранит выбор ресурса; фактический путь определяется после hooks.
+   for (const resource of complete.resources) {
+-    for (const source of resource.documents) {
+-      const rows = resourcesByDocument.get(source) ?? [];
+-      rows.push(resource);
+-      resourcesByDocument.set(source, rows);
+-    }
++    Object.assign(
++      resource,
++      await finishedNativeResource(
++        complete.state,
++        resource.source,
++        resource.sourceIdentities,
++      ),
++    );
+   }
+   const additions = complete.resources.map((row) => row.source).filter((path) =>
+     !index.rows.has(path)
+@@ -2339,31 +2308,6 @@
+         ),
+     );
+     await assertSources(complete.state, additions, false, [...documents]);
+-    for (
+-      const row of [
+-        ...(full ? complete.outputs : []),
+-        ...(full ? complete.resources : [
+-          ...new Set(
+-            selectedResources
+-              ? selectedResources.flatMap((source) =>
+-                resourceBySource.get(source) ?? []
+-              )
+-              : [...documents].flatMap((source) =>
+-                resourcesByDocument.get(source) ?? []
+-              ),
+-          ),
+-        ]).map((r) => ({
+-          ...r,
+-          path: relative(expectation.root, r.path),
+-        })),
+-      ]
+-    ) {
+-      if (
+-        signature(
+-          await Deno.lstat(await regular(expectation.root, row.path)),
+-        ) !== row.signature
+-      ) fail("OPERATION_CHANGED", "Native output/resource изменён");
+-    }
+   };
+   const metrics = {
+     ...complete.state.metrics,
+@@ -2488,7 +2432,8 @@
+           : []
+       )
+     );
+-  const snapshots = new Map<string, Uint8Array>();
++  const snapshots = new Map<string, { bytes: Uint8Array; identity: string }>();
++  const physicalSnapshots = new Map<string, Uint8Array>();
+   let releaseValidated = false,
+     releaseValidationFailed = false,
+     validating = false;
+@@ -2518,7 +2463,10 @@
+   const resourcesBySource = new Map(
+     complete.resources.map((row) => [row.source, row]),
+   );
+-  async function resourceInventory(value: NativeResourceRequest) {
++  async function resourceInventory(
++    value: NativeResourceRequest,
++    assertIdentity?: (identity: string) => void,
++  ) {
+     const request = decode(
+       NativeResourceRequestSchema,
+       value,
+@@ -2550,44 +2498,54 @@
+           "Файл не является видимым обычным native ресурсом",
+         );
+       }
+-      const physicalKey = JSON.stringify([
+-        JSON.parse(row.signature).slice(0, 2),
+-        row.sha256,
+-      ]);
+-      let bytes = snapshots.get(physicalKey);
+-      if (!bytes) {
+-        readBytes = true;
+-        metrics.resourceByteReads++;
+-        metrics.resourceHashReads++;
++      let captured = snapshots.get(file.source);
++      if (!captured) {
+         const actual = await regular(
+           complete.state.root,
+           relative(complete.state.root, row.path),
+         );
+-        if (signature(await Deno.lstat(actual)) !== row.signature) {
+-          fail("OPERATION_CHANGED", "Ресурс изменён перед чтением");
++        const opened = await Deno.open(actual, { read: true });
++        try {
++          const identity = await nativeResourceHandleIdentity(
++            complete.state.root,
++            actual,
++            opened,
++          );
++          assertIdentity?.(identity);
++          let bytes = physicalSnapshots.get(identity);
++          if (!bytes) {
++            readBytes = true;
++            metrics.resourceByteReads++;
++            bytes = new Uint8Array(await new Response(opened.readable).arrayBuffer());
++            physicalSnapshots.set(identity, bytes);
++          } else metrics.resourceCacheHits++;
++          captured = { bytes, identity };
++          snapshots.set(file.source, captured);
++          row.identity = identity;
++        } finally {
++          // FsFile.readable закрывает handle после EOF; cache hit закрываем здесь.
++          try {
++            opened.close();
++          } catch (error) {
++            if (!(error instanceof Deno.errors.BadResource)) throw error;
++          }
+         }
+-        bytes = await Deno.readFile(actual);
+-        if (
+-          signature(await Deno.lstat(actual)) !== row.signature ||
+-          await hash(bytes) !== row.sha256
+-        ) {
+-          fail("OPERATION_CHANGED", "Ресурс изменён перед выдачей bytes");
+-        }
+-        snapshots.set(physicalKey, bytes);
+-      } else metrics.resourceCacheHits++;
++      } else {
++        metrics.resourceCacheHits++;
++        assertIdentity?.(captured.identity);
++      }
+       files.push({
+         target: file.target,
+-        bytes: new Uint8Array(bytes),
+-        size: bytes.length,
+-        sha256: row.sha256,
++        bytes: new Uint8Array(captured.bytes),
++        size: captured.bytes.length,
+         audience: complete.state.projection === "student"
+           ? "student" as const
+           : "full" as const,
+         reason: "native-resource" as const,
+       });
+     }
+-    // Cached bytes копируются синхронно: после entry fence нет await/read/callback.
+-    // Второй fence нужен только когда выше действительно читались/хешировались bytes.
++    // Каждый physical ресурс читается один раз на callback. Завершающий guard
++    // сохраняет lifecycle и raw-source границу; равенство bytes не обещается.
+     if (readBytes) await guard(false, request.files.map((f) => f.source));
+     return NativeResourceInventorySchema.parse({
+       schema: "course-native-resource-inventory-v1",
+@@ -3075,10 +3033,13 @@
+           complete.catalog.documents,
+           declared,
+           options.projectPlans,
+-          complete.resources.map((row) => ({
+-            path: row.source,
+-            signature: row.signature,
+-          })),
++          complete.resources.flatMap((row) => [
++            ...row.sourceIdentities.map((identity) => ({
++              path: row.source,
++              identity,
++            })),
++            { path: row.source, identity: row.identity },
++          ]),
+           generation,
+         );
+         saved = {
+@@ -3160,14 +3121,13 @@
+             );
+           }
+           const file =
+-            (await resourceInventory({ files: [{ source, target }] })).files[0];
++            (await resourceInventory(
++              { files: [{ source, target }] },
++              roles.assertIdentity,
++            )).files[0];
+           return {
+             bytes: file.bytes,
+-            sha256: file.sha256,
+-            identity: JSON.stringify([
+-              JSON.parse(observed.signature).slice(0, 2),
+-              observed.sha256,
+-            ]),
++            identity: observed.identity,
+           };
+         },
+       });
+@@ -3206,8 +3166,10 @@
+             ) {
+               return undefined;
+             }
+-            return (await resourceInventory({ files: [{ source, target }] }))
+-              .files[0].bytes;
++            return (await resourceInventory(
++              { files: [{ source, target }] },
++              roles.assertIdentity,
++            )).files[0].bytes;
+           },
+         );
+       }
+diff --git a/_extensions/course-core/runtime/contracts.ts b/_extensions/course-core/runtime/contracts.ts
+--- a/_extensions/course-core/runtime/contracts.ts
++++ b/_extensions/course-core/runtime/contracts.ts
+@@ -87,7 +87,6 @@
+     target: path,
+     bytes: z.instanceof(Uint8Array),
+     size: z.number().int().nonnegative().max(128 * 1024 * 1024),
+-    sha256: z.string().regex(/^[a-f0-9]{64}$/),
+     audience: z.enum(["student", "full"]),
+     reason: z.literal("native-resource"),
+   })).min(1).max(4096),
+diff --git a/_extensions/course-core/runtime/assignment-roles.ts b/_extensions/course-core/runtime/assignment-roles.ts
+--- a/_extensions/course-core/runtime/assignment-roles.ts
++++ b/_extensions/course-core/runtime/assignment-roles.ts
+@@ -67,9 +67,12 @@
+     roles.some((r) =>
+       !r.public && (path === r.path || r.tree && inside(r.path, path))
+     );
+-  const identities = new Map(
+-    sourceFiles.map((row) => [row.path, row.identity]),
+-  );
++  const identities = new Map<string, Set<string>>();
++  for (const row of sourceFiles) {
++    const known = identities.get(row.path) ?? new Set<string>();
++    known.add(row.identity);
++    identities.set(row.path, known);
++  }
+   const closedIdentities = new Set(
+     sourceFiles.filter((row) => lexicalClosed(row.path)).map((row) =>
+       row.identity
+@@ -87,8 +90,13 @@
+       );
+     }
+   }
+-  return (path: string) => {
+-    if (identities.has(path) && closedIdentities.has(identities.get(path)!)) {
++  const assertIdentity = (identity: string) => {
++    if (closedIdentities.has(identity)) {
++      fail("BODY.RESOURCE_PRIVATE_ROLE", "Physical alias закрытого A1 origin");
++    }
++  };
++  const assertPath = (path: string) => {
++    if ([...(identities.get(path) ?? [])].some((id) => closedIdentities.has(id))) {
+       fail(
+         "BODY.RESOURCE_PRIVATE_ROLE",
+         "Physical alias закрытого A1 origin " + path,
+@@ -110,6 +118,7 @@
+       );
+     }
+   };
++  return Object.assign(assertPath, { assertIdentity });
+ }
+ /** The exact complete plan set is required before the first Body resource lookup. */
+ export async function assignmentRoleIndex(
+@@ -118,7 +127,7 @@
+   documents: readonly { source: string; format: string }[],
+   declared: readonly AssignmentProjectDeclaration[],
+   pairs: readonly NativeAssignmentProjectPlans[],
+-  sourceRows: readonly { path: string; signature: string }[],
++  sourceRows: readonly { path: string; identity: string }[],
+   generation: object,
+ ) {
+   if (
+@@ -193,29 +202,24 @@
+       roles.push({ path, tree, public: publicRole, reason: field });
+     }
+   }
+-  const identities = new Map(
+-    sourceRows.map((
+-      row,
+-    ) => [
+-      resolve(root, row.path),
+-      JSON.stringify(JSON.parse(row.signature).slice(0, 2)),
+-    ]),
+-  );
++  const identities = sourceRows.map((row) => ({
++    path: resolve(root, row.path),
++    identity: row.identity,
++  }));
+   for (const context of contexts.keys()) {
+-    for (const row of projectContextSourceIdentities(context)) {
+-      identities.set(row.path, row.identity);
+-    }
++    identities.push(...projectContextSourceIdentities(context));
+   }
+   const assertPath = assignmentRolePredicate(
+     roles,
+     projectRoots,
+-    [...identities].map(([path, identity]) => ({ path, identity })),
++    identities,
+   );
+ 
+   return {
+     plans,
+     roles: Object.freeze(roles),
+     assertPath,
++    assertIdentity: assertPath.assertIdentity,
+     async guard() {
+       for (const context of contexts.keys()) {
+         await assertProjectContext(context);
+diff --git a/_extensions/course-core/native-resources.lua b/_extensions/course-core/native-resources.lua
+--- a/_extensions/course-core/native-resources.lua
++++ b/_extensions/course-core/native-resources.lua
+@@ -51,22 +51,18 @@
+   local publicUses={};for _,uri in ipairs(projectedUses) do publicUses[uri]=true end
+   local view=raw.meta.course.view and pandoc.utils.stringify(raw.meta.course.view) or nil
+   local generatedPrefix=input:gsub('%.[^./]+$','')..'_files/'
+-  -- Observe bytes while engine-generated files still live beside the input.
+-  -- The native writer may move them to outputRoot after this filter returns.
++  -- Наблюдаем пути до переноса generated файлов native writer в outputRoot.
+   for _,uri in ipairs(rawUses) do
+     local decoded=uri:gsub('%%(%x%x)',function(h) return string.char(tonumber(h,16)) end)
+     local source=decoded:sub(1,1)=='/' and pandoc.path.join({root,decoded:sub(2)}) or pandoc.path.join({pandoc.path.directory(input),decoded})
+     source=pandoc.path.normalize(source)
+     local file=not tool_cache(root,source) and io.open(source,'rb')
+     if file then
+-      local bytes=file:read('*a');file:close()
+-      if bytes then
+-        local observed={source=source,output=pandoc.path.join({outputRoot,pandoc.path.make_relative(source,root)}),sha1=pandoc.utils.sha1(bytes)}
+-        -- PDF compilation consumes generated figures. Transport only referenced
+-        -- bytes, and never private generated bytes in a public sidecar.
+-        if FORMAT=='latex' and source:sub(1,#generatedPrefix)==generatedPrefix and (view=='full' or publicUses[uri]) then observed._bytes=bytes end
+-        capturedFiles:insert(observed)
+-      end
++      local observed={source=source,output=pandoc.path.join({outputRoot,pandoc.path.make_relative(source,root)})}
++      -- PDF читает generated figures до native relocation.
++      if FORMAT=='latex' and source:sub(1,#generatedPrefix)==generatedPrefix and (view=='full' or publicUses[uri]) then observed._bytes=file:read('*a') end
++      file:close()
++      capturedFiles:insert(observed)
+     end
+   end
+   return {source=pandoc.path.make_relative(input,root),format=FORMAT,view=raw.meta.course.view and pandoc.utils.stringify(raw.meta.course.view) or nil,
+diff --git a/_extensions/course-core/body-export/assignment.ts b/_extensions/course-core/body-export/assignment.ts
+--- a/_extensions/course-core/body-export/assignment.ts
++++ b/_extensions/course-core/body-export/assignment.ts
+@@ -18,7 +18,7 @@
+   questions: Map<string, { condition: Node[]; publicAnswer: Node[] }>;
+   introductions: Map<string, Node[]>;
+ };
+-type Resource = { bytes: Uint8Array; sha256: string; identity: string };
++type Resource = { bytes: Uint8Array; identity: string };
+ /** Assembly of already finalized native fragments; no legacy model or capture. */
+ export async function buildAssignmentBody(input: {
+   root: string;
+@@ -260,7 +260,6 @@
+         source,
+         effectiveBase: dirname(resolve(root, source)),
+         target,
+-        sha256: resource.sha256,
+         data: btoa(binary),
+         visibility: "public",
+       });
+diff --git a/docs/native-operation-ts.md b/docs/native-operation-ts.md
+--- a/docs/native-operation-ts.md
++++ b/docs/native-operation-ts.md
+@@ -53,8 +53,9 @@
+ Точные document/condition значения связаны с живым callback и owner; последующая
+ материализация проверяет эту связь. Сериализация DTO не переносит capability. На dependent IO materializeProject точная runtime-issued authority обязательна: clone/JSON/произвольно декодированный ResolvedCondition получает CONDITION_AUTHORITY; истёкшее точное значение — OPERATION_EXPIRED. Pure normalize/finalize/select сохраняют анализ значений, но не создают полномочие на IO.
+ После callback методы операции отказывают с `OPERATION_EXPIRED`. Runtime,
+-private pointer/complete, profiles/projection/output, capture witnesses и реальные
+-resource bytes остаются привязаны к текущей операции. Initial snapshot/hash и
++private pointer/complete, profiles/projection/output и capture witnesses
++остаются привязаны к текущей операции. Child outputs/resources больше не имеют
++собственной гарантии неизменности промежуточных bytes. Initial snapshot/hash и
+ public `sourceRows` пока сохраняются: выбранные raw QMD проверяются по прежним
+ physical regular paths/signatures для совместимости source SHA consumers.
+ Все соседние файлы и ancestor membership не обязаны оставаться прежними.
+@@ -79,9 +80,9 @@
+ произвольном неразмеченном computed тексте.
+ 
+ Финальная полнота, privacy, output/resource ownership и lifecycle сохраняются.
+-Публикация допустима после успешного возврата callback. Проверка signature
+-наблюдает атрибуты выбранного файла, а не байтовое равенство против намеренного
+-восстановления атрибутов тем же доверенным процессом.
++Публикация допустима после успешного возврата callback. Проверки signature
++для выбранных raw sources остаются вне этого изменения; подписи и hashes
++промежуточных child outputs/resources удалены.
+ 
+ Обычные ресурсы запрашиваются отдельно:
+ 
+@@ -91,27 +92,44 @@
+ });
+ ```
+ 
+-Это `course-native-resource-inventory-v1`: operation, student audience и файлы
+-с target/собственными bytes/size/SHA256/reason. Он отличается от inventory
+-кодового проекта с exerciseId; `Download.packageArtifact` принимает именно
+-inventory проекта. Ordinary resource DTO предназначен для отдельного
+-resource consumer, которому больше не нужны private resource facts.
+-Возможность файла определяется фактической поздней проекцией и native byte
+-observation. Закрытые, исходные, служебные и generated/config targets
+-отклоняются. При native relocation допускаются только наблюдавшиеся source и
+-назначенный output с совпавшими байтами. Один retained output по URL такой
+-возможности не даёт. Повторный запрос возвращает копию сохранённых bytes,
+-без повторного resource hash; в общем режиме currentness guards продолжают исполняться, в static проверяется lifetime до следующей внешней границы.
++Это `course-native-resource-inventory-v1`: operation, audience и файлы с
++`target`, собственными `bytes`, `size`, `audience`, `reason`. Поля SHA256 нет.
++DTO отличается от inventory кодового проекта с exerciseId; существующий
++`Download.packageArtifact` принимает inventory проекта.
++
++Доступность ресурса задают фактическая поздняя проекция, наблюдавшийся native
++source и выбранный output. После полного child render и его обычных post hooks
++Core выбирает конечный regular output; если Quarto не перенёс ресурс, используется
++наблюдавшийся source. Retained output без такого source observation не даёт
++доступа. Owner/role/profile/path, regular/realpath/symlink и public/closed physical
++alias privacy сохраняются. Dev/inode исходного и конечного файла используются
++только для privacy; их не сравнивают с прежним output inode ради неизменности.
++Установленные source associations сохраняются при последующем переносе,
++удалении или замене source и объединяются по child captures.
++
++На внешнем входе ordinary операции конечные HTML paths проходят regular/realpath
++проверку один раз после hooks. Первое чтение ресурса после open однократно
++проверяет current regular/no-symlink pathname и его dev/inode соответствие
++открытому handle, затем проверяет identity против закрытых A1 origins и копирует
++фактические bytes. Это обнаруживает постоянную подмену между precheck и open;
++portable Deno путь не обещает защиты от adversarial double-swap. При отсутствии
++dev/inode выбранный resource I/O отказывается: переносимость этой physical-alias
++границы на платформы без этих полей ещё не квалифицирована. Повторные запросы получают отдельные копии callback snapshot
++без чтения диска или повторного resource guard. Native postprocessing вправе
++переписывать HTML и ресурсы: сравнения с прежними SHA, size, mtime/ctime нет.
++General operation guards сохраняют pointer/lifetime/raw-source договоры и больше
++не обходят outputs/resources на каждом getter.
+ 
+ `operation.metrics` отдельно считает `inspectCalls`, initial discovery
+ `fullWalks`, `sourceHashReads/sourceHashBytes`, полные и локальные проверки исходников
+ `fullSourceFences/localSourceFences`, фактические `sourceDirectoryReads`,
+-`runtimeHashReads/outputHashReads`, native resource observations, resource
+-hashes/reads/cache hits, `nativeMetadataBytes` private ранних фактов и
++`runtimeHashReads`, resource reads/cache hits, `nativeMetadataBytes` private ранних фактов и
+ `childRenders` состоявшихся scoped post. Полный traversal включает discovery и
+ полные source fences; `fullWalks=1` не означает отсутствие последующих проверок
+ состава. Pending вызовы внутри scope учитываются в seal receipt и используют
+-локальные guards. Метрики, прочитанные внутри complete callback, ещё не включают
++локальные guards. Поля `outputHashReads`, `resourceHashReads`, `nativeResourceHashReads` остаются
++в существующем DTO метрик и для удалённого механизма больше не увеличиваются.
++Метрики, прочитанные внутри complete callback, ещё не включают
+ проверку перед его возвратом. Getter сам не выполняет IO.
+ Отдельный `readProjectContexts` сохраняет свои необходимые native inquiries;
+ система не обещает один inspect на курс. Полный Publisher/Navigation rollout,
+@@ -179,9 +197,9 @@
+ unique IDs, декларации и installed targets, native assessment composition и
+ assignment policy, настоящий late solution witness, source/currentness guards.
+ Проверка dependency subtree учитывает только ресурсы, действительно наблюдённые
+-этой native операцией после исходного snapshot. Их актуальные identities
+-проверяются до и после release; такой ресурс не разрешает посторонние новые
+-файлы или изменение уже зафиксированного source. Список ресурсов caller не
++этой native операцией после исходного snapshot. Проверяются выбранные пути,
++роли и privacy; release не доказывает равенство промежуточных resource bytes.
++Такой ресурс не разрешает посторонние новые файлы или изменение выбранного raw source. Список ресурсов caller не
+ расширяет этот допуск.
+ Он не объединяет самостоятельные owner courses в один курс. Publisher продолжает
+ проверять collection/output/mount coverage.
+@@ -329,7 +347,8 @@
+ одноразовый, children последовательны. Native post закрывает только свой child;
+ exit0 без post недостаточен. Source/config guards локальны на child границах;
+ seal и complete consumption выполняют полные fences. Seal требует точный union,
+-один capture на source и отсутствие output/resource collision или изменения.
++один capture на source и отсутствие output collision. Конечные resource пути
++разрешаются после всех child post hooks без сравнения прежних bytes.
+ Обычный render без token создаёт свою новую generation и к scope не присоединяется.
+ 
+ Ошибка callback/bind/preparation/render/post/collection остаётся sticky даже
+diff --git a/tests/assignment-role-alias.ts b/tests/assignment-role-alias.ts
+--- a/tests/assignment-role-alias.ts
++++ b/tests/assignment-role-alias.ts
+@@ -9,7 +9,7 @@
+   path: "/owner/materials/golden/Answer.java",
+   identity: "dev1:ino2",
+ }, { path: "/owner/assets/public-helper.java", identity: "dev1:ino2" }];
+-const predicate = (assignmentRolePredicate as any)(roles, [], rows);
++const predicate = assignmentRolePredicate(roles, [], rows);
+ let error = "";
+ try {
+   predicate("/owner/assets/public-helper.java");
+@@ -19,4 +19,29 @@
+ if (!error.includes("BODY.RESOURCE_PRIVATE_ROLE")) {
+   throw Error("Hardlink alias раскрыл закрытый solution origin: " + error);
+ }
+-console.log("PASS source-snapshot inode alias остаётся закрытым");
++
++// Копия в output не должна скрывать закрытый hardlink исходного пути.
++for (const identities of [["dev1:ino2", "dev1:ino3"], ["dev1:ino3", "dev1:ino2"]]) {
++  const gate = assignmentRolePredicate(roles, [], [
++    rows[0],
++    ...identities.map((identity) => ({ path: "/owner/assets/copied.svg", identity })),
++  ]);
++  let refused = false;
++  try {
++    gate("/owner/assets/copied.svg");
++  } catch (error) {
++    refused = String(error).includes("BODY.RESOURCE_PRIVATE_ROLE");
++  }
++  if (!refused) throw Error("Output copy скрыла закрытый source alias");
++}
++// Первое чтение сравнивает actual inode с закрытыми ролями, а не с прежним inode.
++predicate.assertIdentity("dev1:ino4");
++let privateRead = false;
++try {
++  predicate.assertIdentity("dev1:ino2");
++} catch (error) {
++  privateRead = String(error).includes("BODY.RESOURCE_PRIVATE_ROLE");
++}
++if (!privateRead) throw Error("Первое чтение разрешило private physical alias");
++
++console.log("PASS source/output aliases и первое чтение сохраняют закрытые роли");
+diff --git a/tests/assignment-body.ts b/tests/assignment-body.ts
+--- a/tests/assignment-body.ts
++++ b/tests/assignment-body.ts
+@@ -136,7 +136,6 @@
+       reads++;
+       return {
+         bytes: new TextEncoder().encode("PUBLIC"),
+-        sha256: "a".repeat(64),
+         identity: "physical-public",
+       };
+     },
+diff --git a/tests/native-operation-a3.ts b/tests/native-operation-a3.ts
+--- a/tests/native-operation-a3.ts
++++ b/tests/native-operation-a3.ts
+@@ -441,7 +441,7 @@
+   assert(op.metrics.currentnessChecks === before.currentnessChecks + 1,
+     "Синхронная выдача cached bytes повторила одинаковый local fence без await/чтения");
+   assert(
+-    again.files[0].sha256 === inventory.files[0].sha256,
++    new TextDecoder().decode(again.files[0].bytes) === "VISIBLE_BYTES\n",
+     "repeated resource bytes",
+   );
+   assert(
+@@ -626,6 +626,19 @@
+   "unrelated source mutation prevented callback result",
+ );
+ await installed.withCurrentNativeOperation(expectation, async () => {});
++// Ordinary-вход после hooks обязан проверить HTML path, даже без запроса bytes.
++const ordinaryOutput = join(root, "_site/index.html");
++await Deno.rename(ordinaryOutput, ordinaryOutput + ".saved");
++try {
++  await Deno.symlink(join(root, "index.qmd"), ordinaryOutput);
++  await refused(
++    () => installed.withCurrentNativeOperation(expectation, async () => {}),
++    "OPERATION_CHANGED",
++  );
++} finally {
++  await Deno.remove(ordinaryOutput);
++  await Deno.rename(ordinaryOutput + ".saved", ordinaryOutput);
++}
+ const tampered = await new Deno.Command("quarto", {
+   args: ["render", "--to", "html", "--profile", "student"],
+   cwd: root,
+@@ -642,15 +655,16 @@
+   join(root, "_generated/tampered-render.log"),
+   tamperedLog,
+ );
+-assert(
+-  !tampered.success && tamperedLog.includes("OPERATION_CHANGED") &&
+-    tamperedLog.includes("late observation"),
+-  "late observed resource changed without refusal: " + tamperedLog,
+-);
+-await refused(
+-  () => installed.withCurrentNativeOperation(expectation, async () => {}),
+-  "OPERATION_INCOMPLETE",
+-);
++assert(tampered.success, "Postprocessing ресурса отклонён: " + tamperedLog);
++await installed.withCurrentNativeOperation(expectation, async (op: Core.NativeOperation) => {
++  const resource = await op.resourceInventory({
++    files: [{ source: "generated.txt", target: "assets/generated.txt" }],
++  });
++  assert(
++    new TextDecoder().decode(resource.files[0].bytes) === "CHANGED_AFTER_LATE_OBSERVATION",
++    "Потребитель не получил конечный postprocessed ресурс",
++  );
++});
+ const refreshed = await new Deno.Command("quarto", {
+   args: ["render", "--to", "html", "--profile", "student"],
+   cwd: root,
+diff --git a/tests/native-capture-currentness-a4c.ts b/tests/native-capture-currentness-a4c.ts
+--- a/tests/native-capture-currentness-a4c.ts
++++ b/tests/native-capture-currentness-a4c.ts
+@@ -102,7 +102,7 @@
+       }
+       if (mutate) {
+         await Deno.writeTextFile(
+-          join(r.root, "assets/shared.svg"),
++          join(r.root, "_site/assets/shared.svg"),
+           "<svg>changed</svg>",
+         );
+       }
+@@ -110,10 +110,19 @@
+   } catch (e) {
+     error = String(e);
+   }
++  check(!error, error);
+   if (mutate) {
+-    check(error.includes("OPERATION_CHANGED"), "stale shared resource sealed");
++    await Core.withCurrentNativeOperation(
++      { ...r, profiles: ["student"] },
++      async (op) => {
++        const resource = await op.resourceInventory({
++          files: [{ source: "assets/shared.svg", target: "images/shared.svg" }],
++        });
++        check(new TextDecoder().decode(resource.files[0].bytes) === "<svg>changed</svg>",
++          "Потерян конечный ресурс после postprocessing");
++      },
++    );
+   } else {
+-    check(!error, error);
+     let finalError = "";
+     try {
+       await Core.withCurrentNativeOperation(
+@@ -145,7 +154,7 @@
+   }
+   results.push({
+     name: mutate
+-      ? "shared resource mutation refuses seal"
++      ? "finished shared resource survives postprocessing"
+       : "shared resources and final source consumer fence",
+     passed: true,
+     root: r.root,
+diff --git a/tests/native-capture-fences-a4c.ts b/tests/native-capture-fences-a4c.ts
+--- a/tests/native-capture-fences-a4c.ts
++++ b/tests/native-capture-fences-a4c.ts
+@@ -200,17 +200,6 @@
+   );
+   results.push({ name: "output collision", passed: true, error, root: r.root });
+ }
+-await refusal("first output mutation by later child", async (scope, root) => {
+-  await scope.captureInputs(
+-    ["index.qmd"],
+-    (token) => childRender(root, "index.qmd", token),
+-  );
+-  await scope.captureInputs(
+-    ["slides.qmd"],
+-    (token) => childRender(root, "slides.qmd", token),
+-  );
+-  await Deno.writeTextFile(join(root, "_site/index.html"), "FORGED");
+-});
+ // The empty expected set refuses before invalidating an existing current pointer.
+ {
+   const r = await captureFixture();
+diff --git a/tests/static-source-policy.ts b/tests/static-source-policy.ts
+--- a/tests/static-source-policy.ts
++++ b/tests/static-source-policy.ts
+@@ -92,7 +92,9 @@
+           assert(new TextDecoder().decode(resource.files[0].bytes) === "VISIBLE\n", "Потеряны bytes наблюдённого ресурса");
+         } else if (name === "resource-read") {
+           await put("visible.txt", "CHANGED_BEFORE_RESOURCE_READ\n");
+-          await op.resourceInventory({ files: [{ source: "visible.txt", target: "visible.txt" }] });
++          await put("_site/visible.txt", "CHANGED_BEFORE_RESOURCE_READ\n");
++          const resource = await op.resourceInventory({ files: [{ source: "visible.txt", target: "visible.txt" }] });
++          assert(new TextDecoder().decode(resource.files[0].bytes) === "CHANGED_BEFORE_RESOURCE_READ\n", "Не прочитаны фактические конечные bytes");
+         } else {
+           await put("_site/index.html", "PRIVATE_OUTPUT_CHANGE");
+         }
+@@ -100,8 +102,7 @@
+     } catch (e) {
+       error = String(e);
+     }
+-    if (name === "getters" || name === "actual-read") assert(!error, name + ": " + error);
+-    else assert(error.includes("OPERATION_CHANGED"), name + " boundary accepted: " + error);
++    assert(!error, name + ": " + error);
+     assert(retained.operation, "Operation callback не начался");
+     let expired = "";
+     try {
+@@ -113,7 +114,7 @@
+     results.push({ name, ...(error ? { error } : {}) });
+   }
+   console.log(JSON.stringify({ results }));
+-  console.log("PASS source-policy enum / current A1 bytes / caller copy / short lifetime / observed resource and output guards");
++  console.log("PASS source-policy enum / current A1 bytes / caller copy / short lifetime / finished resource copies");
+   success = true;
+ } finally {
+   if (success) await Deno.remove(root, { recursive: true });
+diff --git a/tests/release-generated-resource-currentness.ts b/tests/release-generated-resource-currentness.ts
+--- a/tests/release-generated-resource-currentness.ts
++++ b/tests/release-generated-resource-currentness.ts
+@@ -229,18 +229,6 @@
+         "# Изменён выбранный raw QMD\n",
+       ),
+   );
+-  await negative(
+-    "existing-resource-drift",
+-    (root) => Deno.writeTextFile(join(root, "existing.svg"), svg),
+-  );
+-  await negative(
+-    "generated-resource-drift",
+-    (root) =>
+-      Deno.writeTextFile(
+-        join(root, "generated.svg"),
+-        "Изменён generated resource",
+-      ),
+-  );
+   await negative("project-corridor-symlink", async (root) => {
+     await Deno.rename(
+       join(root, "projects/demo"),
+diff --git a/_extensions/course-core/runtime/native-output-resources.ts b/_extensions/course-core/runtime/native-output-resources.ts
+new file mode 100644
+--- /dev/null
++++ b/_extensions/course-core/runtime/native-output-resources.ts
+@@ -0,0 +1,66 @@
++import { relative, resolve } from "stdlib/path";
++import { fail } from "../contracts/project.ts";
++import { regular } from "./source-snapshot.ts";
++
++// Physical identity связывает роли и открытый handle, а не версию bytes.
++async function resourceIdentity(path: string) {
++  const info = await Deno.lstat(path);
++  if (info.dev === null || info.ino === null) {
++    fail("RESOURCE_PATH", "Physical identity native ресурса недоступна");
++  }
++  return JSON.stringify([info.dev, info.ino]);
++}
++
++export async function finishedNativeResource(
++  state: { root: string; outputDirectory: string },
++  source: string,
++  sourceIdentities: readonly string[] = [],
++) {
++  const output = resolve(state.outputDirectory, source);
++  let original: string | undefined;
++  try {
++    original = await regular(state.root, source);
++  } catch (error) {
++    if (!(error instanceof Deno.errors.NotFound)) throw error;
++  }
++  let path: string;
++  try {
++    path = await regular(state.root, relative(state.root, output));
++  } catch (error) {
++    if (!(error instanceof Deno.errors.NotFound)) throw error;
++    if (!original) {
++      fail("RESOURCE_CURRENT_BYTES_MISSING", "Не найден конечный native ресурс");
++    }
++    path = original;
++  }
++  const identity = await resourceIdentity(path);
++  return {
++    path,
++    identity,
++    // Поздний перенос/удаление source не снимает уже установленную private роль.
++    sourceIdentities: sourceIdentities.length
++      ? [...sourceIdentities]
++      : [original ? await resourceIdentity(original) : identity],
++  };
++}
++
++export async function nativeResourceHandleIdentity(
++  root: string,
++  path: string,
++  opened: Deno.FsFile,
++) {
++  const info = await opened.stat();
++  if (!info.isFile) fail("RESOURCE_PATH", "Нужен regular native ресурс");
++  // Deno.open не даёт portable no-follow/openat. Эта однократная проверка
++  // после open отклоняет постоянную подмену пути и связывает его с handle.
++  const actual = await regular(root, relative(root, path));
++  const current = await Deno.lstat(actual);
++  if (
++    info.dev === null || info.ino === null ||
++    current.dev === null || current.ino === null ||
++    info.dev !== current.dev || info.ino !== current.ino
++  ) {
++    fail("RESOURCE_PATH", "Открытый handle не принадлежит native resource path");
++  }
++  return JSON.stringify([info.dev, info.ino]);
++}
+diff --git a/tests/native-output-resource-paths.ts b/tests/native-output-resource-paths.ts
+new file mode 100644
+--- /dev/null
++++ b/tests/native-output-resource-paths.ts
+@@ -0,0 +1,91 @@
++import {
++  finishedNativeResource,
++  nativeResourceHandleIdentity,
++} from "../_extensions/course-core/runtime/native-output-resources.ts";
++import { assignmentRolePredicate } from "../_extensions/course-core/runtime/assignment-roles.ts";
++import { join } from "stdlib/path";
++
++const root = await Deno.makeTempDir({ prefix: "native-output-resource-paths-" });
++const outside = await Deno.makeTempDir({ prefix: "native-output-resource-outside-" });
++const owner = { root, outputDirectory: join(root, "_site") };
++const source = "assets/figure.svg";
++const input = join(root, source), output = join(owner.outputDirectory, source);
++const closed = join(root, "private/figure.svg");
++async function refused(use: () => Promise<unknown>) {
++  let error = "";
++  try {
++    await use();
++  } catch (cause) {
++    error = String(cause);
++  }
++  if (!/RESOURCE_PATH|OPERATION_CHANGED|BODY.RESOURCE_PRIVATE_ROLE/.test(error)) {
++    throw Error("Ожидался отказ resource path/privacy: " + error);
++  }
++}
++try {
++  for (const directory of ["assets", "private", "_site/assets"]) {
++    await Deno.mkdir(join(root, directory), { recursive: true });
++  }
++  await Deno.writeTextFile(closed, "Закрытый original");
++  await Deno.link(closed, input);
++  await Deno.copyFile(input, output);
++  const captured = await finishedNativeResource(owner, source);
++  const closedInfo = await Deno.lstat(closed);
++  const assertClosedAssociation = async () => {
++    const finished = await finishedNativeResource(owner, source, captured.sourceIdentities);
++    const gate = assignmentRolePredicate([{
++      path: closed,
++      tree: false,
++      public: false,
++      reason: "solutions.path",
++    }], [], [
++      { path: closed, identity: JSON.stringify([closedInfo.dev, closedInfo.ino]) },
++      ...finished.sourceIdentities.map((identity) => ({ path: input, identity })),
++      { path: input, identity: finished.identity },
++    ]);
++    await refused(async () => gate(input));
++  };
++  await Deno.remove(input);
++  await assertClosedAssociation();
++  await Deno.writeTextFile(input, "Новый regular source после hooks");
++  await assertClosedAssociation();
++
++  // Законная regular rewrite до первого чтения не обязана сохранять прежний inode.
++  const replacement = join(root, "_site/replacement.svg");
++  await Deno.writeTextFile(replacement, "Конечный regular output");
++  await Deno.rename(replacement, output);
++  const current = await finishedNativeResource(owner, source);
++  const opened = await Deno.open(current.path, { read: true });
++  try {
++    await nativeResourceHandleIdentity(root, current.path, opened);
++    const bytes = new Uint8Array(1024);
++    const length = await opened.read(bytes);
++    if (new TextDecoder().decode(bytes.subarray(0, length ?? 0)) !== "Конечный regular output") {
++      throw Error("Не прочитан конечный regular output");
++    }
++  } finally {
++    opened.close();
++  }
++
++  const foreign = join(outside, "foreign.svg");
++  await Deno.writeTextFile(foreign, "Вне owner");
++  const foreignHandle = await Deno.open(foreign, { read: true });
++  try {
++    await refused(() => nativeResourceHandleIdentity(root, output, foreignHandle));
++  } finally {
++    foreignHandle.close();
++  }
++  // Постоянная подмена после open: handle остаётся regular, pathname стал symlink.
++  const beforeSwap = await Deno.open(output, { read: true });
++  try {
++    await Deno.remove(output);
++    await Deno.symlink(foreign, output);
++    await refused(() => nativeResourceHandleIdentity(root, output, beforeSwap));
++  } finally {
++    beforeSwap.close();
++  }
++  console.log("PASS конечный regular output, closed source association и actual handle path");
++} finally {
++  await Deno.remove(root, { recursive: true });
++  await Deno.remove(outside, { recursive: true });
++}

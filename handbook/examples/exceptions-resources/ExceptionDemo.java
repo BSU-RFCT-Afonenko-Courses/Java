@@ -9,6 +9,9 @@ public class ExceptionDemo {
     record ScoreFailure(ScoreProblem problem) implements ScoreResult {}
 
     static class DataFormatException extends Exception {
+        @java.io.Serial
+        private static final long serialVersionUID = 1L;
+
         DataFormatException(String message) { super(message); }
         DataFormatException(String message, Throwable cause) { super(message, cause); }
     }

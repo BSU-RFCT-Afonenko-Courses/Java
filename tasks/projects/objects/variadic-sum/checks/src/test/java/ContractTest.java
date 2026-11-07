@@ -1,0 +1,30 @@
+import static org.junit.jupiter.api.Assertions.*;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.lang.Throwable;
+import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+class ContractTest {
+    static String capture(Runnable action) {
+        PrintStream previous = System.out;
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try
+            (PrintStream out = new PrintStream(bytes, true, StandardCharsets.UTF_8)) {
+            System.setOut(out);
+            action.run();
+        } finally {
+            System.setOut(previous);
+        }
+        return bytes.toString(StandardCharsets.UTF_8).replace("\r\n", "\n");
+    }
+    @Test
+    @DisplayName("Отрицательные слагаемые и сохранность переданного массива")
+    void negativeAndArrayUnchanged() throws Throwable {
+        int[] a = {-9, 4, 0, 3};
+        assertEquals(-2, TaskBinding.sum(a));
+        assertArrayEquals(new int[] {-9, 4, 0, 3}, a);
+        assertEquals(2147483647, TaskBinding.sum(2147483647, 0));
+    }
+}

@@ -1,0 +1,200 @@
+diff --git a/_extensions/course-core/_extension.yml b/_extensions/course-core/_extension.yml
+index c2c96b2..bce1922 100644
+--- a/_extensions/course-core/_extension.yml
++++ b/_extensions/course-core/_extension.yml
+@@ -1,5 +1,5 @@
+ title: Ядро учебного курса
+-version: 9.3.1
++version: 9.3.2
+ quarto-required: ">=1.11.5"
+ contributes:
+   filters:
+diff --git a/_extensions/course-core/document/project-capture.ts b/_extensions/course-core/document/project-capture.ts
+index d984cc9..3888ad5 100644
+--- a/_extensions/course-core/document/project-capture.ts
++++ b/_extensions/course-core/document/project-capture.ts
+@@ -4,7 +4,7 @@ import { decode } from "./contracts.ts";
+ import type { EarlyDocument } from "./contracts.ts";
+ import {
+   NativeProjectFactsCaptureSchema,
+-  NativeProjectMaterializationInputSchema,
++  nativeProjectMaterializationInputSchema,
+ } from "./project-facts.ts";
+ /** Pure data projection того же preprojection EarlyDocument; нет resolver/IO/PL normalization. */
+ export function collectNativeProjectFacts(early: EarlyDocument, root: string) {
+@@ -18,7 +18,7 @@ export function collectNativeProjectFacts(early: EarlyDocument, root: string) {
+   }
+   const raw = early.release.nativeMetadata.projectMaterialization;
+   const materializations = raw === undefined ? {} : decode(
+-    NativeProjectMaterializationInputSchema,
++    nativeProjectMaterializationInputSchema(source),
+     raw,
+     "CORE.PROJECT_MATERIALIZATION_INVALID",
+     source,
+diff --git a/_extensions/course-core/document/project-facts.ts b/_extensions/course-core/document/project-facts.ts
+index 95f0668..a1dbbbb 100644
+--- a/_extensions/course-core/document/project-facts.ts
++++ b/_extensions/course-core/document/project-facts.ts
+@@ -2,6 +2,7 @@
+ // @deno-types="../vendor/zod/v4/index.d.ts"
+ import { z } from "../vendor/zod/v4/index.js";
+ import { DocumentContextSchema } from "./contracts.ts";
++import { posix } from "node:path";
+ export const NativeProjectMaterializationSchema = z.strictObject({
+   commonFiles: z.array(
+     z.strictObject({
+@@ -48,21 +49,37 @@ export const NativeProjectMaterializationSchema = z.strictObject({
+     targets.add(file.target);
+   }
+ });
+-const materializationEntryInput = z.strictObject({
+-  "common-files": NativeProjectMaterializationSchema.shape.commonFiles,
+-  "include-git": NativeProjectMaterializationSchema.shape.includeGit,
+-}).transform((value) => ({
+-  commonFiles: value["common-files"],
+-  ...(value["include-git"] !== undefined
+-    ? { includeGit: value["include-git"] }
+-    : {}),
+-})).pipe(NativeProjectMaterializationSchema);
+-export const NativeProjectMaterializationInputSchema = z.strictObject({
+-  projects: z.record(
+-    z.string().regex(/^exr-[a-z0-9][a-z0-9-]*$/),
+-    materializationEntryInput,
+-  ),
+-});
++const materializationEntryInput = (source?: string) =>
++  z.strictObject({
++    "common-files": z.array(
++      NativeProjectMaterializationSchema.shape.commonFiles.element.extend({
++        source: z.string().min(1),
++      }),
++    ),
++    "include-git": NativeProjectMaterializationSchema.shape.includeGit,
++  }).transform((value) => ({
++    commonFiles: value["common-files"].map((file) => ({
++      ...file,
++      source: source === undefined ? file.source : posix.normalize(
++        file.source.startsWith("/")
++          ? file.source.slice(1)
++          : posix.join(posix.dirname(source), file.source),
++      ),
++    })),
++    ...(value["include-git"] !== undefined
++      ? { includeGit: value["include-git"] }
++      : {}),
++  })).pipe(NativeProjectMaterializationSchema);
++/** Native metadata: /path — от owner, остальные пути — от QMD; затем строгий canon. */
++export const nativeProjectMaterializationInputSchema = (source?: string) =>
++  z.strictObject({
++    projects: z.record(
++      z.string().regex(/^exr-[a-z0-9][a-z0-9-]*$/),
++      materializationEntryInput(source),
++    ),
++  });
++export const NativeProjectMaterializationInputSchema =
++  nativeProjectMaterializationInputSchema();
+ export const NativeProjectFactSchema = z.strictObject({
+   exerciseId: z.string().regex(/^exr-/),
+   source: z.string().min(1),
+diff --git a/_extensions/course-core/runtime/assignment-declarations.ts b/_extensions/course-core/runtime/assignment-declarations.ts
+index b33dac0..915a4eb 100644
+--- a/_extensions/course-core/runtime/assignment-declarations.ts
++++ b/_extensions/course-core/runtime/assignment-declarations.ts
+@@ -1,4 +1,4 @@
+-import { dirname, resolve } from "stdlib/path";
++import { dirname, relative, resolve } from "stdlib/path";
+ import { fail } from "../contracts/project.ts";
+ /** Данные оформления private assignment HTML, не разрешение читать CSS. */
+ type PresentationContext = {
+@@ -6,6 +6,7 @@ type PresentationContext = {
+   outputDirectory: string;
+   xdg: string;
+   format: string;
++  outputs?: ReadonlySet<string>;
+ };
+ function presentationStylesheet(
+   row: any,
+@@ -73,6 +74,28 @@ function presentationStylesheet(
+     /^quarto-session-temp[a-f0-9]+\/(?:sass\/)?[a-zA-Z0-9_-][a-zA-Z0-9._-]*\.css$/
+       .test(path.slice(scratch.length));
+ }
++/** Native book navigation references existing output names; не разрешение читать HTML. */
++function paginationOutput(row: any, link: any, context?: PresentationContext) {
++  if (
++    !context || context.format !== "html" ||
++    !context.root.startsWith("/") || resolve(context.root) !== context.root ||
++    !context.outputDirectory.startsWith(context.root + "/_generated/") ||
++    resolve(context.outputDirectory) !== context.outputDirectory ||
++    row.content.name !== "website-pagination" ||
++    Object.keys(row.content).sort().join(",") !== "links,name" ||
++    !link || typeof link !== "object" || Array.isArray(link) ||
++    Object.keys(link).sort().join(",") !== "href,rel" ||
++    !["next", "prev"].includes(link.rel) || typeof link.href !== "string" ||
++    !link.href.startsWith("/") || link.href.startsWith("//") ||
++    /[\\\0?#%]/.test(link.href)
++  ) return false;
++  const target = resolve(context.outputDirectory, "." + link.href);
++  return target.startsWith(context.outputDirectory + "/") &&
++    target.endsWith(".html") &&
++    link.href ===
++      "/" + relative(context.outputDirectory, target).replaceAll("\\", "/") &&
++    context.outputs?.has(target) === true;
++}
+ /** Quarto JSONL contains declared data/resources, not a loaded-module trace. */
+ export function assertAssignmentDeclarations(
+   rows: unknown,
+@@ -129,7 +152,10 @@ export function assertAssignmentDeclarations(
+       if (c.links !== undefined && !Array.isArray(c.links)) {
+         invalid("Повреждённый HTML dependency links");
+       }
+-      for (const link of c.links ?? []) path(link?.href);
++      for (const link of c.links ?? []) {
++        if (paginationOutput(row, link, presentation)) continue;
++        path(link?.href);
++      }
+     } else if (!["text", "usepackage"].includes(row.type)) {
+       invalid("Неизвестный native declaration type " + row.type);
+     }
+diff --git a/_extensions/course-core/runtime/operation.ts b/_extensions/course-core/runtime/operation.ts
+index a595453..02eea96 100644
+--- a/_extensions/course-core/runtime/operation.ts
++++ b/_extensions/course-core/runtime/operation.ts
+@@ -1449,6 +1449,7 @@ async function finishNativeOperationInternal(
+     resources: z.output<typeof completeSchema>["resources"] = [],
+     outputRows: z.output<typeof rowSchema>[] = [];
+   const additions: string[] = [];
++  const declaredOutputs = new Set(outputs);
+   const indexTopics = new Map<string, Record<string, unknown>>();
+   const indexPages = new Map<string, string>();
+   const releaseDocuments: z.output<typeof completeSchema>["releaseDocuments"] =
+@@ -1525,6 +1526,7 @@ async function finishNativeOperationInternal(
+             assignmentProfile(state.assignment.runtime, root).native.environment
+               .XDG_CACHE_HOME,
+           format: early.context.format,
++          outputs: declaredOutputs,
+         },
+       );
+       state.metrics.nativeMetadataBytes +=
+diff --git a/_extensions/course-navigation/_extension.yml b/_extensions/course-navigation/_extension.yml
+index bf68f47..fb31ed7 100644
+--- a/_extensions/course-navigation/_extension.yml
++++ b/_extensions/course-navigation/_extension.yml
+@@ -1,6 +1,6 @@
+ title: Навигация по презентации
+ author: Анатолий Афоненко
+-version: 9.3.1
++version: 9.3.2
+ quarto-required: ">=1.11.5"
+ contributes:
+   filters:
+diff --git a/_extensions/course-presentation/_extension.yml b/_extensions/course-presentation/_extension.yml
+index 99dae40..0bc8698 100644
+--- a/_extensions/course-presentation/_extension.yml
++++ b/_extensions/course-presentation/_extension.yml
+@@ -1,5 +1,5 @@
+ title: Представление учебных материалов
+-version: 9.3.1
++version: 9.3.2
+ quarto-required: ">=1.11.5"
+ contributes:
+   filters:

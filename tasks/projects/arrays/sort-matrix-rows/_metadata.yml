@@ -1,0 +1,45 @@
+course-project:
+  instructions:
+    gradle:
+      path: ../../common/java/gradle.md
+      base: config
+  solutions:
+    helper:
+      path: alternatives/helper
+    bubble:
+      path: alternatives/bubble
+  components:
+    apiSupport:
+      path: ../../common/java/api-support
+      base: config
+    process:
+      path: ../../common/java/process
+      base: config
+  testsets:
+    api:
+      path: api
+      requires:
+        apiSupport: true
+    demo:
+      path: demo
+      requires:
+        api: true
+        process: true
+    contract:
+      path: checks
+      requires:
+        api: true
+        process: true
+  build:
+    files:
+      build.gradle:
+        path: build.gradle
+  delivery:
+    student:
+      testsets:
+        api: true
+        demo: true
+  verification:
+    testsets:
+      api: true
+      contract: true

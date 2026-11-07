@@ -1,0 +1,39 @@
+course-project:
+  instructions:
+    gradle:
+      path: ../../common/java/gradle.md
+      base: config
+  solutions:
+    instanceexit7:
+      path: alternatives/instance-exit7
+  components:
+    apiSupport:
+      path: ../../common/java/api-support
+      base: config
+    process:
+      path: ../../common/java/process
+      base: config
+  testsets:
+    api:
+      path: api
+      requires:
+        apiSupport: true
+    demo:
+      path: demo
+      requires:
+        api: true
+        process: true
+    contract:
+      path: checks
+      requires:
+        api: true
+        process: true
+  delivery:
+    student:
+      testsets:
+        api: true
+        demo: true
+  verification:
+    testsets:
+      api: true
+      contract: true

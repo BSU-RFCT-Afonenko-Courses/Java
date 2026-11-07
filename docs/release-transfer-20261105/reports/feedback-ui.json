@@ -1,0 +1,229 @@
+{
+  "status": "Main fourplain major findings closed on b792/8e9cd; finalUI narrower generatedprose ready for runtime+Circle actualUI",
+  "ui_owner": "main chat 01a1a860-2a4f-7213-b71c-b97b45610893",
+  "source_base": "6616222206d3e0843ebc560af38c2dc3519557f0",
+  "java_helper_commit": "c0b7f580e4a12cab7781c7126bb32593914fbaab",
+  "platform_final_commit": "43684896240cd46b6b860300e38ccfb181123107",
+  "image_tag": "codex/java-feedback:20261105",
+  "image_current_id": "sha256:ca8092ea9178a3d0bc8e3c9f7ee46bd205e59a5ad1603cd4f5d7b1b106e8b987",
+  "image_final": false,
+  "endpoint": "http://127.0.0.1:3305/pl",
+  "container": "feedback-ui-20261105",
+  "native_course": "/tmp/java-release-work-20261105/feedback-ui/course",
+  "native_jobs": "/tmp/java-release-work-20261105/feedback-ui/jobs",
+  "cases": {
+    "circle": {
+      "question_url": "http://127.0.0.1:3305/pl/course/1/question/1/preview",
+      "fixture": "/tmp/java-release-work-20261105/feedback-fixtures/circle",
+      "tests": "/tmp/java-release-work-20261105/feedback-fixtures/circle/tests",
+      "answers": {
+        "TwoDShape.java": "public abstract class TwoDShape {private double width,height;private String name;public TwoDShape(double w,double h,String n){width=w;height=h;name=n;}public double getWidth(){return width;}public double getHeight(){return height;}public String getName(){return name;}public abstract double area();}\n",
+        "Circle.java": "public class Circle extends TwoDShape {public Circle(double radius){super(2*radius,2*radius,\"circle\");}public double area(){double r=getWidth()/2;return Math.PI*getWidth()*getWidth();}}\n"
+      },
+      "expected": {
+        "classification": "behavior-failure",
+        "score": 0.3333333333333333,
+        "leaf_count": 6,
+        "public": [
+          "Действие Circle(2)",
+          "expected/actual/delta in same leaf",
+          "6 independent cards, grouped assertions no extra points"
+        ],
+        "alternate_answers": {
+          "reference": "6/6 score1 success",
+          "starter": "runtime failure six leaves"
+        }
+      },
+      "alternate_answer_paths": {
+        "reference": "/tmp/java-release-work-20261105/feedback-fixtures/circle/answers/reference",
+        "negative-controls/wrong": "/tmp/java-release-work-20261105/feedback-fixtures/circle/answers/negative-controls/wrong",
+        "starter": "/tmp/java-release-work-20261105/feedback-fixtures/circle/answers/starter"
+      }
+    },
+    "compile": {
+      "question_url": "http://127.0.0.1:3305/pl/course/1/question/2/preview",
+      "fixture": "/tmp/java-release-work-20261105/feedback-fixtures/compile",
+      "tests": "/tmp/java-release-work-20261105/feedback-fixtures/compile/tests",
+      "answers": {
+        "Main.java": "public class Main {public static int answer(){return ;}}"
+      },
+      "expected": {
+        "classification": "student-compilation-failure",
+        "score": 0,
+        "gradable": true,
+        "public": [
+          "Main.java:1 + Russian compile reason",
+          "dependent cases not-run, no invented failed checks"
+        ]
+      },
+      "image": {
+        "tag": "codex/java-feedback-ui:20261105",
+        "id": "sha256:8e9cd1119bd189e7d6723e03fd017b795e6e6e979f6012a181e0ebec57331fc5",
+        "source_commit": "b79291184a1c52bd1b2e59247b01d19171b16d0c",
+        "qualified": "plain Docker; Main repeats UI; ordinary sync required",
+        "questions": [
+          "compile",
+          "runtime",
+          "string",
+          "toolerror"
+        ]
+      }
+    },
+    "runtime": {
+      "question_url": "http://127.0.0.1:3305/pl/course/1/question/3/preview",
+      "fixture": "/tmp/java-release-work-20261105/feedback-fixtures/runtime",
+      "tests": "/tmp/java-release-work-20261105/feedback-fixtures/runtime/tests",
+      "answers": {
+        "Main.java": "public class Main {public static int answer(){throw new IllegalStateException(\"PRIVATE_RUNTIME_CANARY\");}}"
+      },
+      "expected": {
+        "classification": "student-runtime-failure",
+        "score": 0,
+        "leaf_count": 1,
+        "public": [
+          "runtime distinction",
+          "no PRIVATE_RUNTIME_CANARY"
+        ]
+      },
+      "image": {
+        "tag": "codex/java-feedback-ui:20261105",
+        "id": "sha256:8e9cd1119bd189e7d6723e03fd017b795e6e6e979f6012a181e0ebec57331fc5",
+        "source_commit": "b79291184a1c52bd1b2e59247b01d19171b16d0c",
+        "qualified": "plain Docker; Main repeats UI; ordinary sync required",
+        "questions": [
+          "compile",
+          "runtime",
+          "string",
+          "toolerror"
+        ]
+      }
+    },
+    "string": {
+      "question_url": "http://127.0.0.1:3305/pl/course/1/question/4/preview",
+      "fixture": "/tmp/java-release-work-20261105/feedback-fixtures/string",
+      "tests": "/tmp/java-release-work-20261105/feedback-fixtures/string/tests",
+      "answers": {
+        "Main.java": "public class Main {public static String answer(){return \"Первая строка\\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxYxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\\nТретья строка 🌟\";}}"
+      },
+      "expected": {
+        "classification": "behavior-failure",
+        "score": 0,
+        "leaf_count": 1,
+        "public": [
+          "input/state/action/expected",
+          "LF in expected/actual",
+          "first difference + line/column and local diff fragment"
+        ]
+      },
+      "image": {
+        "tag": "codex/java-feedback-ui:20261105",
+        "id": "sha256:8e9cd1119bd189e7d6723e03fd017b795e6e6e979f6012a181e0ebec57331fc5",
+        "source_commit": "b79291184a1c52bd1b2e59247b01d19171b16d0c",
+        "qualified": "plain Docker; Main repeats UI; ordinary sync required",
+        "questions": [
+          "compile",
+          "runtime",
+          "string",
+          "toolerror"
+        ]
+      }
+    },
+    "toolerror": {
+      "question_url": "http://127.0.0.1:3305/pl/course/1/question/5/preview",
+      "fixture": "/tmp/java-release-work-20261105/feedback-fixtures/toolerror",
+      "tests": "/tmp/java-release-work-20261105/feedback-fixtures/toolerror/tests",
+      "answers": {
+        "Main.java": "public class Main {public static int answer(){return 42;}}"
+      },
+      "expected": {
+        "classification": "infrastructure-failure",
+        "gradable": false,
+        "score": "absent",
+        "public": [
+          "tool failure not student zero",
+          "public case unknown, no PRIVATE_TOOL_CANARY"
+        ]
+      },
+      "image": {
+        "tag": "codex/java-feedback-ui:20261105",
+        "id": "sha256:8e9cd1119bd189e7d6723e03fd017b795e6e6e979f6012a181e0ebec57331fc5",
+        "source_commit": "b79291184a1c52bd1b2e59247b01d19171b16d0c",
+        "qualified": "plain Docker; Main repeats UI; ordinary sync required",
+        "questions": [
+          "compile",
+          "runtime",
+          "string",
+          "toolerror"
+        ]
+      }
+    }
+  },
+  "procedure": [
+    "Use native Load from disk after final image/metadata sync if required; synthetic questions already prepared",
+    "Save & Grade each actual editor answer; wait for completed native external grader job",
+    "Inspect ordinary and narrow viewport: name/context/expected/actual/delta/diff/LF, no private canaries",
+    "Navigate away and reopen same saved submission; verify feedback persists; resubmit circle reference after wrong controls",
+    "Actual B/D public lab integration is separate: pending native course one-lab-public path and v5sync; do not equate synthetic cases with student release route"
+  ],
+  "current_safe_checks": [
+    "5 native forms reachable; circle2editors correct names",
+    "pinned native renderer message/output pre vs description li"
+  ],
+  "must_wait_for_GO": [
+    "final caps/binding fixes + independent review",
+    "rebuild exact image from frozen commit",
+    "actual localDocker qualifier passed"
+  ],
+  "checks_log": "/tmp/java-release-discussion-20261105/coordination/affected-runtime-tests.log",
+  "browser_note": "CUA broken in C child/root, alive in main chat; do not retry broken CUA loop",
+  "native_external_worker": {
+    "implementation": "ExternalGraderLocal in pinned PL app; init uses it when externalGradingUseAws is false",
+    "queue": "in-process EventEmitter+Docker API, no AWS worker needed",
+    "docker_socket": "/var/run/docker.sock mounted in isolated feedback-ui-20261105",
+    "host_jobs_dir": "/tmp/java-release-work-20261105/feedback-ui/jobs",
+    "image_pull": false,
+    "job_layout": "PL copies tests/ to /grade/tests and submitted _files to /grade/student, creates /grade/data/data.json; actual grader ENTRYPOINT writes /grade/results/results.json",
+    "configuration": "/tmp/java-release-work-20261105/feedback-ui/config.json"
+  },
+  "stable_now": {
+    "image": "sha256:ca8092ea9178a3d0bc8e3c9f7ee46bd205e59a5ad1603cd4f5d7b1b106e8b987",
+    "source": "b6e626de6cc6c3f87094114a2542fc441e5b07f0",
+    "cases": [
+      "string",
+      "compile",
+      "runtime",
+      "toolerror"
+    ],
+    "note": "plain JUnit route stable; actual Docker qualifications in feedback-plain-image-qualification.log; Circle Gradle separately blocked by native build timeout"
+  },
+  "plain_image": {
+    "tag": "codex/java-feedback-ui:20261105",
+    "id": "sha256:8e9cd1119bd189e7d6723e03fd017b795e6e6e979f6012a181e0ebec57331fc5",
+    "source_commit": "b79291184a1c52bd1b2e59247b01d19171b16d0c",
+    "qualified": "plain Docker; Main repeats UI; ordinary sync required",
+    "questions": [
+      "compile",
+      "runtime",
+      "string",
+      "toolerror"
+    ]
+  },
+  "gradle_image_pending_review": {
+    "tag": "codex/java-feedback-gradle:20261105",
+    "id": "sha256:474e1845dc16e9a99e416896a83c1dc46a60b3fdc914603bc59067cc02e8f477",
+    "qualification": "coldCircle same compile30/outer90 .9CPU512MiB128pidsnetworknone sixleaves2/6 expectedscore1/3; BUILD28s; overall45.785s",
+    "existing_integration": "1PASS17.693s; previousfailurewascleanuppermissionsfixed",
+    "status": "APPROVED boundedcoldGO, tagfrozenforD actual13chain"
+  },
+  "final_ui_image": {
+    "tag": "codex/java-feedback-final-ui:20261105",
+    "id": "sha256:1f2f4c5ea37b2eab7c7a69ec325802ac9d3dad927af7c767a32f9107d272eadb",
+    "source_commit": "43684896240cd46b6b860300e38ccfb181123107",
+    "base": "qualified immutable local Gradle474e1845; new runtime/grade/registry COPY only, upstreamDockerHubTLSmetadata unavailable",
+    "questions_updated": [
+      "circle",
+      "runtime"
+    ],
+    "scope": "GO targeted UI runtime narrow + Circle wrong/reference/reopen; otherthreequestions remain8e9cd"
+  }
+}

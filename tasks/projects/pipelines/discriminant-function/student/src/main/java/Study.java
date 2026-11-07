@@ -1,1 +1,0 @@
-public class Study {interface Formula{double value(double a,double b,double c);} public static double discriminant(double a,double b,double c){throw new UnsupportedOperationException("Допишите собственный интерфейс и лямбду");}}

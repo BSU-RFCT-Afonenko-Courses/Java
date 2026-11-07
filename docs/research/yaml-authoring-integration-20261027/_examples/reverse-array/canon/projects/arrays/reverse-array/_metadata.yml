@@ -1,0 +1,22 @@
+# Редакция A: testsets непосредственно выбирают локальные каталоги. Точные ключи — предложение, не утверждённый API.
+# tests/demo — переходная механическая адаптация прежних observe/check normal/boundary, не новый runner.
+course-project:
+  testsets:
+    demo:
+      sources: tests/demo
+      requires:
+      - java-process
+      - numeric-output
+    full:
+      includes:
+      - demo
+      sources: tests/full
+  solutions:
+    reference: solutions/reference/src/main/java
+  delivery:
+    author-full:
+      build-profile: java-junit-author
+      testsets:
+      - full
+      solutions:
+      - reference

@@ -1,0 +1,143 @@
+{
+  "назначение": "Узкая read-only диагностика startup native Gradle; Source и изоляция не менялись.",
+  "agent_path": "/root/assertion_overloads",
+  "admission": "/tmp/java-release-discussion-20261105/coordination/feedback-assertions-admission.json",
+  "container": {
+    "name": "feedback-gradle-diagnostic-20261105",
+    "id": "59601e37042b4aa32776028af357704d935fe1a75054c32f1932f2a022019ce7",
+    "image": "codex/java-feedback:20261105",
+    "image_id": "sha256:ca8092ea9178a3d0bc8e3c9f7ee46bd205e59a5ad1603cd4f5d7b1b106e8b987",
+    "bounds": {
+      "cpus": 0.9,
+      "memory": 536870912,
+      "pids": 128,
+      "network": "none"
+    },
+    "state": "Проверка завершена exit0; после сохранения данных остановлен только этот контейнер. Остановленный контейнер и job сохранены."
+  },
+  "job": {
+    "path": "/tmp/java-release-work-20261105/feedback-gradle-diagnostic-20261105",
+    "source": "/tmp/java-release-work-20261105/feedback-fixtures/circle",
+    "copied": [
+      "student",
+      "tests"
+    ],
+    "diagnostic_limits": {
+      "compile-seconds": 90,
+      "outer-seconds": 150
+    },
+    "граница": "compile90 — только диагностика, не приёмка рабочих лимитов и не матрица."
+  },
+  "результат": {
+    "grade_exit": 0,
+    "classification": "behavior-failure",
+    "score": 0.3333333333333333,
+    "executed": 6,
+    "passed": 2,
+    "failed": 4,
+    "buildEvidence": {
+      "schemaVersion": 1,
+      "kind": "gradle-jar-v1",
+      "status": "success",
+      "artifact": {
+        "path": "build/libs/submission.jar",
+        "bytes": 1183
+      },
+      "durationSeconds": 44.78207308099809
+    },
+    "container_start_to_result_seconds": 54.255402,
+    "durations": {
+      "gradleBuild": 44.78207308099809,
+      "studentCompilation": 44.78207308099809,
+      "observerCompilation": 2.7814198639971437,
+      "transformerCompilation": 1.136477919000754,
+      "runnerCompilation": 1.196148004000861,
+      "apiCompilation": 0.594918653001514,
+      "apiExecution": 0.8153473479978857,
+      "trustedCompilation": 0.7826834999978018,
+      "trustedTransformation": 0.5930169229977764,
+      "execution": 1.2048456640004588
+    }
+  },
+  "primary_stacks": [
+    {
+      "file": "/tmp/native-gradle-client-stack-20261105.txt",
+      "pid": 47,
+      "jvm_elapsed_seconds": 32.46,
+      "main": "SocketConnection.receive -> DaemonClient.monitorBuild: daemon handshake уже выполнен, клиент ждёт сборку.",
+      "seed_thread": "sun.security.provider.SeedGenerator$ThreadedSeedGenerator.run",
+      "seed_thread_cpu_ms": 8679.15,
+      "seed_thread_elapsed_seconds": 30.66
+    },
+    {
+      "file": "/tmp/native-gradle-daemon-stack-20261105.txt",
+      "pid": 141,
+      "jvm_elapsed_seconds": 20.98,
+      "worker": "RUNNABLE Executable.declaredAnnotations -> AbstractClassGenerator -> DependencyManagementBuildScopeServices -> SettingsFactory: продолжается cold Gradle initialisation.",
+      "seed_thread": "sun.security.provider.SeedGenerator$ThreadedSeedGenerator.run",
+      "seed_thread_cpu_ms": 8594.36,
+      "seed_thread_elapsed_seconds": 16.48
+    }
+  ],
+  "entropy_chain": {
+    "security_property": "securerandom.source=file:/dev/random",
+    "access_probe": "nativebuild + /usr/local/bin/landlock_sandbox /usr/bin/head -c1 /dev/random: exit1 Permission denied",
+    "jdk_evidence": "javap exact native JDK SeedGenerator.static: NativeSeedGenerator constructor IOException -> instance null -> ThreadedSeedGenerator; оба реальных стека подтверждают выбранную ветвь.",
+    "combined_seed_cpu_seconds": 17.27351,
+    "вывод": "Подтверждён дорогой threaded entropy fallback в обеих JVM. Постоянного зависания нет; сборка закончилась за44.782s. Увеличение лимита не является исправлением.",
+    "evidence": [
+      "/tmp/native-gradle-environment-20261105.txt",
+      "/tmp/native-gradle-random-access-20261105.txt",
+      "/tmp/native-gradle-seedgenerator-bytecode-20261105.txt"
+    ]
+  },
+  "resources": {
+    "cpu_usage_usec": 48886825,
+    "cpu_user_usec": 47329646,
+    "cpu_system_usec": 1557178,
+    "nr_periods": 547,
+    "nr_throttled": 539,
+    "throttled_usec": 59698486,
+    "memory_peak_bytes": 523522048,
+    "memory_events": {
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0
+    },
+    "pids_events_max": 0,
+    "OOMKilled": false,
+    "оговорка": "Счётчики относятся ко всему диагностическому контейнеру, включая два jcmd attach JVM. memory peak не чистый профиль grade без диагностики."
+  },
+  "chain": {
+    "jdk": "Полный /opt/native-jdk Temurin25.0.5+8, отдельно от hardened grading JDK; management не восстанавливалось.",
+    "flags": "CLI -Xmx64m -Xms64m; daemon -Xmx128m -XX:ActiveProcessorCount=2 -XX:-UsePerfData. Exact argv снят ps.",
+    "nofile": "Source _run_unchecked preexec_fn=_child_file_limit; hard <=4096. Лимит реального PID не был снят до завершения, отдельного наблюдения /proc/pid/limits нет.",
+    "cache": "Каждый grade создаёт fresh tempfile native-gradle-build-*/{home,user-cache,project-cache,tmp}; cold cache, single-use daemon.",
+    "dependencies": "--offline --network=none; java toolchain25 явно /opt/native-jdk, auto-download/auto-detect=false; recipe java/application, local junitJar только testImplementation, jar production.",
+    "sequence": "container -> root grade -> runuser nativebuild -> Landlock -> Gradle CLI JVM47 -> single-use daemon JVM141 -> cold settings/classgen -> compileJava -> jar -> build-role reap -> отдельный hardened trusted/API/JUnit путь."
+  },
+  "recommendation": "Root может проверить стандартный -Djava.security.egd=file:<trusted job-private fresh random source> для nativebuild CLI и daemon. Источник создаёт trusted supervisor до Landlock, разные fresh seed streams/files для JVM и jobs, достаточный объём, cleanup после роли. /dev,/proc isolation не ослаблять, grading JDK не менять. Нужна адресная before/after проверка с исходными CPU/memory/compile bounds; снижение ниже30s ещё не доказано.",
+  "exact_steps": [
+    "Собственный primary admission повторно проверен от того же initial turn;2turn_contexts PASS.",
+    "Новый job: скопированы только fixture/student и fixture/tests; compile90,outer150, остальные параметры сохранены.",
+    "docker run -d --name feedback-gradle-diagnostic-20261105 --network=none --cpus=.9 --memory=512m --pids-limit=128 --entrypoint /bin/sh -v /tmp/java-release-work-20261105/feedback-gradle-diagnostic-20261105:/grade codex/java-feedback:20261105; shell запускает python3 /platform/images/java25-grader/grade.py --job-dir /grade --verification в фоне задачи shell, пишет exit и остаётся sleep для attach.",
+    "docker exec -u nativebuild <container> /opt/native-jdk/bin/jcmd -l; затем jcmd47Thread.print и jcmd141Thread.print: оба успешны.",
+    "docker exec root читает ps, cgroup cpu/memory/pids counters, java.security; src.zip в image отсутствует, поэтому JDK fallback прочитан через javap -c -p sun.security.provider.SeedGenerator.",
+    "docker exec -u nativebuild <container> /usr/local/bin/landlock_sandbox /usr/bin/head -c1 /dev/random: EACCES.",
+    "Сохранены grade result, native Gradle log и evidence files; docker stop --time=1 только своего контейнера."
+  ],
+  "wall_costs": {
+    "primary_grade_seconds": 54.255402,
+    "gradle_seconds": 44.78207308099809,
+    "jcmd_list_seconds": 0.402915998,
+    "initial_ps_snapshot_seconds": 0.367636758,
+    "jdk_javap_seconds": 0.326361283,
+    "оговорка": "Цифры API wall приведены там, где инструмент вернул завершённый вызов. Полная диагностика включала чтение evidence/stack и не является performance benchmark."
+  },
+  "remaining": [
+    "Root выбирает и реализует исправление при сохранении containment.",
+    "Адресно подтвердить рабочий Gradle compile budget после исправления.",
+    "No Source edits, no repeated baseline matrix, no changes to existing containers/volumes/prod/VM."
+  ]
+}

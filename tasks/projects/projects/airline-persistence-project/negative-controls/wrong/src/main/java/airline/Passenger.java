@@ -1,0 +1,3 @@
+package airline;
+
+public final class Passenger extends Plane {private static final long serialVersionUID=1L;public Passenger(String id,int seats,double tonnes,double range,double fuel){super(id,seats,tonnes,range,fuel);}public int kind(){return 0;}}

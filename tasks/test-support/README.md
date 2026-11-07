@@ -4,28 +4,23 @@
 данные заданий и ожидаемые значения находятся в соответствующих наборах.
 Материализация в проекты и проверка целевой поставки выполняются отдельно.
 
-Общие зависимости задаются в captured metadata Core `project-materialization.projects`.
-`source` указывает единственный файл относительно owner `tasks`, `target` — путь
-в выбранном проекте; публичные mappings включаются также в grading stage.
-Курсовой adapter вызывает установленный Core и не копирует файлы в исходные проекты:
+Выбор общих исходников и тестов задаётся действующим `course-project` проекта.
+Core выполняет `planProject` и `materializeProject` в живой native операции;
+`writeArtifactFiles` записывает выбранные файлы в новый внешний каталог.
+Действующий договор и ограничения описаны в
+[материализации Core](https://github.com/Afonenko-Course-Tools/quarto-course/blob/main/docs/condition-materialization-ts.md).
+Сериализованный model/capture не заменяет живой context. Старый Python adapter
+материализации больше не используется; отдельный CLI вместо Core не нужен.
 
-```bash
-python3 tasks/test-support/materialize.py --root tasks \
-  --model tasks/_generated/course-spec/native-run.json \
-  --output-root /absolute/fresh/student-stage --audience student \
-  --task exr-example --write
-```
-
-Замените `exr-example` действующим ID проекта. Перед сборкой нужен текущий native capture всего owner.
-`--check` вместо `--write` только сверяет ранее созданный stage и receipt.
-Для grading укажите `--audience grading --teacher-root /absolute/private/java`.
-Выход должен быть новым и находиться вне source/teacher; закрытые файлы никогда
-не включаются в student. Единственный алгоритм отбора, guards и hash receipt
-принадлежит Core. Каталог `test-support/` исключён из ресурсов сайта.
-
-Старые `projects.json` и `materialized.json` выведены из активного состава.
-Тематические проекты не содержат копий общего кода: dependencies объявлены
-в `project-materialization.projects`, а receipt генерируется Core для новой сборки.
+[Download](https://github.com/Afonenko-Course-Tools/quarto-project-download/blob/main/docs/public-runtime.md)
+получает публичный комплект через эту композицию;
+[PL](https://github.com/Afonenko-Course-Tools/quarto-course-prairielearn/blob/main/README.md)
+выбирает реальные API, тесты и исходники для проверки;
+[Platform](https://github.com/Afonenko-Course-Tools/prairielearn-platform/blob/main/README.md)
+собирает Native-поставку и запускает её runtime. Публичные файлы и приватные
+проверки имеют раздельную выдачу: закрытые тесты, данные и эталоны не включаются
+в student. Старые captured mappings и receipt не являются вторым обязательным
+договором. Каталог `test-support/` исключён из ресурсов сайта.
 
 `coursesupport.JavaProcess.run(Main.class, input, args...)` запускает новую JVM
 с JDK текущего процесса, UTF-8, памятью 128 МиБ, временем 10 секунд и общим
@@ -58,26 +53,14 @@ python3 tasks/test-support/check.py \
   --junit-jar "$PL_PLATFORM_ROOT/runtime/java25-junit-v1/junit-platform-console-standalone-1.14.1.jar"
 ```
 
+`PL_PLATFORM_ROOT` указывает checkout Platform с указанным JUnit JAR.
 Нужен JDK 25; `JAVA_HOME` выбирает конкретный JDK. Тесты проверяют отдельные
 JVM, `System.exit`, UTF-8, аргументы и рабочий каталог, раздельные потоки,
 заполненные pipes, время, суммарный объём и форму числовых/матричных ответов.
 Это библиотека тестов, а не самостоятельная песочница: изоляцию недоверенного
 решения обеспечивает внешний Platform runtime.
 
-Проверки механизма поставки выполняются отдельно:
-
-```bash
-python3 -m unittest discover -s tasks/test-support -p test_materialize.py -v
-```
-
-`api/CliPrecheck.java` — отдельный общий API precheck Platform. Явный common mapping
-поставляет его в `api/` нужной тестовой части и фиксирует в Core receipt. Профиль `java-cli` выбирает этот файл отдельным subset:
-он компилируется без student classpath и проверяет только наличие загрузочного
-класса `Main` без инициализации. Модификаторы, конструктор и форма `main`
-не ограничиваются; фактический Java 25 launcher проверяется поведенческими
-тестами. Канонический файл находится вне `src/`, поэтому JDK-only `check.py`
-не требует Platform helper. При самостоятельном JUnit-запуске не включайте
-`api/` в зависимую компиляцию: precheck выполняется отдельной стадией Platform.
+API-предпроверку задают [настройки выбранного профиля](../_quarto.yml) и API-набор конкретного проекта. В действующей конфигурации используются файлы `src/api/java/**/*.java` и вход `ApiContract`; API-набор объявлен в `course-project.testsets.api` и включается явным выбором наборов и их зависимостей. Platform выполняет эту проверку отдельной стадией. Обязательные имена, сигнатуры и форма запуска определяются условием и канонической заготовкой. API-предпроверка не входит в исходники ответа и не заменяет поведенческие тесты.
 
 `runCheckingUncaught` различает наблюдённое необработанное исключение
 (`JavaProcess.UncaughtStudentException`), истечение срока ожидания вложенного процесса
@@ -87,7 +70,4 @@ python3 -m unittest discover -s tasks/test-support -p test_materialize.py -v
 Студенческая диагностика внешней проверки использует типы и проверенное trusted
 происхождение классов, а не текст ошибки или stderr.
 
-Общая инструкция открытых JDK-проверок — `CHECKS.md`. Она генерируется рядом
-с README выбранной задачи. `junit/PublicScenarioTest.java` — общий адаптер
-только явно публичных сценариев для grading; он не входит в JDK-комплект.
-Закрытые ContractTest, данные и эталоны находятся во внешнем teacher root.
+Набор открытых примеров и их JUnit-оформление объявлены в `course-project.testsets.demo` конкретной задачи. В публичный комплект включаются явно выбранные в `delivery.student.testsets` наборы и их зависимости. Закрытые проверки выбираются через `verification.testsets`, а Platform получает фактически выбранные trusted tests. Число и содержание случаев определяются условием и соответствующими наборами. Закрытые данные и эталоны не включаются в публичный комплект; успех самопроверки не заменяет обязательные приёмы и объяснение.

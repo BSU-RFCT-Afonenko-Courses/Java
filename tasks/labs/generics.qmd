@@ -6,18 +6,36 @@ assessment:
   kind: lab
   prairielearn:
     pass:
-      at-least: 3
+      at-least: 5
     max-points: 100
     slot-overrides:
       exr-generics-range-maximum:
-        auto-points: 23.333333333333332
-        manual-points: 10.0
+        auto-points: 16.0
+        manual-points: 4.0
       exr-generics-property-count:
-        auto-points: 23.333333333333332
-        manual-points: 10.0
+        auto-points: 16.0
+        manual-points: 4.0
       alt-generics-generic-queue-generic-stack:
-        auto-points: 23.333333333333332
-        manual-points: 10.0
+        auto-points: 16.0
+        manual-points: 4.0
+      exr-generics-generic-interface:
+        auto-points: 0
+        manual-points: 20.0
+      exr-generics-generic-circular-queue:
+        auto-points: 0
+        manual-points: 0
+      exr-generics-generic-dynamic-queue:
+        auto-points: 16.0
+        manual-points: 4.0
+      exr-exceptions-queue-exceptions:
+        auto-points: 0
+        manual-points: 0
+      exr-exceptions-stack-exceptions:
+        auto-points: 0
+        manual-points: 0
+  id: sec-lab-generics
+exercise-bank: true
+default-exercise-statement-visibility: open
 ---
 
 # Обобщённые алгоритмы и контейнеры {#sec-lab-generics}
@@ -37,20 +55,17 @@ assessment:
 алгоритмов. Для контейнера нужны также ограничения создания `new T[n]` из
 @theory:sec-t-type-relations-runtime-limits, условия переданного массива из
 @handbook:sec-h-generic-classes-array и короткий разбор `throw`, `throws`,
-`try/catch` в @theory:sec-j25-theory-exceptions-early-checked.
+`try/catch` в @theory:sec-theory-exceptions-early-checked.
 
 Введение к работе — @practice:sec-p-generics. Формы объявлений можно посмотреть в
 @handbook:sec-h-generic-classes и @handbook:sec-h-generic-methods.
 
-## Состав работы
-
-Выполните оба задания на обобщённые методы и один контейнер на выбор: очередь
-**либо** стек. Полные условия открываются по ссылкам ниже.
-
-::: {.task-items stage="homework"}
+::: {.task-items stage="homework" requirement="required"}
 1. @exr-generics-range-maximum
 1. @exr-generics-property-count
 1. [@exr-generics-generic-queue; @exr-generics-generic-stack]{.task-alternatives #alt-generics-generic-queue-generic-stack selection="choice" requirement="required"}
+1. @exr-generics-generic-interface
+1. @exr-generics-generic-dynamic-queue
 :::
 
 ## Представление решения
@@ -66,3 +81,16 @@ assessment:
 
 Устройство программы выбирайте самостоятельно в пределах условий заданий. Для
 запуска используется JDK 25. Отдельный большой отчёт не требуется.
+
+## Условия задач
+
+Полные условия и общие правила находятся в темах банка: {{< xref tasks sec-bank-generics style="title" >}}, {{< xref tasks sec-bank-exceptions style="title" >}}.
+
+::: {.task-items stage="homework" requirement="optional"}
+1. @exr-generics-generic-circular-queue
+:::
+
+::: {.task-items stage="homework" requirement="optional"}
+1. @exr-exceptions-queue-exceptions
+1. @exr-exceptions-stack-exceptions
+:::

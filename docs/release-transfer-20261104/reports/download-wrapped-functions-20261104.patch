@@ -1,0 +1,202 @@
+diff --git a/_extensions/project-download/application/publish.ts b/_extensions/project-download/application/publish.ts
+index a608c35..7d9ca0d 100644
+--- a/_extensions/project-download/application/publish.ts
++++ b/_extensions/project-download/application/publish.ts
+@@ -35,13 +35,16 @@ export interface PublishPorts {
+   files(resource: Resource): Promise<ArchiveEntry[]>;
+   save(archives: { name: string; bytes: Uint8Array }[]): Promise<void>;
+ }
+-export async function publish(
++export const publish = __metrics.wrapAsync({
++  id: "project-download.application.publish.publish",
++  kind: "phase",
++}, async function publish(
+   config: Configuration,
+   profiles: string[],
+   ports: PublishPorts,
+ ): Promise<number> {
+   return await progress("Сборка материалов и ZIP", () => publishInternal(config, profiles, ports));
+-}
++});
+ async function publishInternal(config: Configuration, profiles: string[], ports: PublishPorts): Promise<number> {
+   const selected = new Map<string, Resource>();
+   const model = new Map<
+@@ -181,12 +184,6 @@ function equalBytes(a: Uint8Array, b: Uint8Array): boolean {
+   return a.length === b.length && a.every((v, i) => v === b[i]);
+ }
+ 
+-// @ts-expect-error JS допускает замену function binding; сигнатура публичного API сохраняется.
+-publish = __metrics.wrapAsync({
+-  id: "project-download.application.publish.publish",
+-  kind: "phase",
+-}, publish);
+-
+ function equalFiles(a: ArchiveEntry[], b: ArchiveEntry[]): boolean {
+   return a.length === b.length &&
+     a.every((file, i) =>
+diff --git a/_extensions/project-download/infrastructure/files.ts b/_extensions/project-download/infrastructure/files.ts
+index 2e32449..9102175 100644
+--- a/_extensions/project-download/infrastructure/files.ts
++++ b/_extensions/project-download/infrastructure/files.ts
+@@ -5,7 +5,10 @@ import { isAbsolute, join, relative, resolve } from "stdlib/path";
+ import { globToRegExp } from "stdlib/path";
+ import type { ArchiveEntry } from "../domain/zip.ts";
+ import { DEFAULT_EXCLUDES, type Resource } from "../domain/config.ts";
+-export async function exists(path: string): Promise<boolean> {
++export const exists = __metrics.wrapAsync({
++  id: "project-download.infrastructure.files.exists",
++  kind: "io",
++}, async function exists(path: string): Promise<boolean> {
+   try {
+     await Deno.lstat(path);
+     return true;
+@@ -13,8 +16,11 @@ export async function exists(path: string): Promise<boolean> {
+     if (e instanceof Deno.errors.NotFound) return false;
+     throw e;
+   }
+-}
+-export function child(root: string, path: string): string {
++});
++export const child = __metrics.wrapSync({
++  id: "project-download.infrastructure.files.child",
++  kind: "io",
++}, function child(root: string, path: string): string {
+   const value = resolve(root, path), rel = relative(root, value);
+   if (
+     !rel || rel === ".." || rel.startsWith("../") || rel.startsWith("..\\") ||
+@@ -31,8 +37,11 @@ export function child(root: string, path: string): string {
+     );
+   }
+   return value;
+-}
+-export async function noSymlinks(root: string, path: string): Promise<void> {
++});
++export const noSymlinks = __metrics.wrapAsync({
++  id: "project-download.infrastructure.files.noSymlinks",
++  kind: "io",
++}, async function noSymlinks(root: string, path: string): Promise<void> {
+   const rel = relative(root, child(root, path));
+   let current = root;
+   for (const name of rel.split(/[\\/]/)) {
+@@ -45,7 +54,7 @@ export async function noSymlinks(root: string, path: string): Promise<void> {
+       );
+     }
+   }
+-}
++});
+ /** Git применяет правила игнорирования: вложенные файлы, отрицания и исключения каталогов. */
+ async function gitIgnored(root: string, paths: string[]): Promise<Set<string>> {
+   if (!paths.length) return new Set();
+@@ -210,7 +219,10 @@ export async function resourcePaths(
+   return entries;
+ }
+ 
+-export async function resourceFiles(
++export const resourceFiles = __metrics.wrapAsync({
++  id: "project-download.infrastructure.files.resourceFiles",
++  kind: "io",
++}, async function resourceFiles(
+   root: string,
+   resource: Resource,
+ ): Promise<ArchiveEntry[]> {
+@@ -221,25 +233,4 @@ export async function resourceFiles(
+       bytes: await Deno.readFile(join(root, file.source)),
+     })),
+   );
+-}
+-
+-// @ts-expect-error JS допускает замену function binding; сигнатура публичного API сохраняется.
+-exists = __metrics.wrapAsync({
+-  id: "project-download.infrastructure.files.exists",
+-  kind: "io",
+-}, exists);
+-// @ts-expect-error JS допускает замену function binding; сигнатура публичного API сохраняется.
+-child = __metrics.wrapSync({
+-  id: "project-download.infrastructure.files.child",
+-  kind: "io",
+-}, child);
+-// @ts-expect-error JS допускает замену function binding; сигнатура публичного API сохраняется.
+-noSymlinks = __metrics.wrapAsync({
+-  id: "project-download.infrastructure.files.noSymlinks",
+-  kind: "io",
+-}, noSymlinks);
+-// @ts-expect-error JS допускает замену function binding; сигнатура публичного API сохраняется.
+-resourceFiles = __metrics.wrapAsync({
+-  id: "project-download.infrastructure.files.resourceFiles",
+-  kind: "io",
+-}, resourceFiles);
++});
+diff --git a/_extensions/project-download/infrastructure/runtime.ts b/_extensions/project-download/infrastructure/runtime.ts
+index d8399dc..41d864d 100644
+--- a/_extensions/project-download/infrastructure/runtime.ts
++++ b/_extensions/project-download/infrastructure/runtime.ts
+@@ -60,7 +60,10 @@ async function inspect(root: string) {
+ function archiveName(name: string): boolean {
+   return name.endsWith(".zip") && RESOURCE_ID.test(name.slice(0, -4));
+ }
+-export async function clearOwned(root: string, output: string): Promise<void> {
++export const clearOwned = __metrics.wrapAsync({
++  id: "project-download.infrastructure.runtime.clearOwned",
++  kind: "io",
++}, async function clearOwned(root: string, output: string): Promise<void> {
+   const outputRoot = resolve(root, output);
+   const directory = child(outputRoot, "_downloads");
+   if (!await exists(directory)) return;
+@@ -94,10 +97,13 @@ export async function clearOwned(root: string, output: string): Promise<void> {
+     }
+   }
+   await Deno.remove(manifest);
+-}
+-export async function prepare(root: string): Promise<void> {
++});
++export const prepare = __metrics.wrapAsync({
++  id: "project-download.infrastructure.runtime.prepare",
++  kind: "io",
++}, async function prepare(root: string): Promise<void> {
+   return await progress(`Подготовка материалов: ${root}`, () => prepareInternal(root));
+-}
++});
+ async function prepareInternal(root: string): Promise<void> {
+   const inspected = Deno.env.get("QUARTO_PROJECT_OUTPUT_DIR")
+     ? undefined
+@@ -187,7 +193,10 @@ async function validateRelease(
+     metricsAfter: operation.metrics,
+   };
+ }
+-export async function finish(
++export const finish = __metrics.wrapAsync({
++  id: "project-download.infrastructure.runtime.finish",
++  kind: "io",
++}, async function finish(
+   root: string,
+   options: FinishOptions = {},
+ ): Promise<number> {
+@@ -196,7 +205,7 @@ export async function finish(
+     reportProgress(`Финализация материалов — archives=${count}`);
+     return count;
+   });
+-}
++});
+ async function finishInternal(root: string, options: FinishOptions): Promise<number> {
+   const directory = join(root, "_generated/project-download/requests");
+   let native = options.native === true;
+@@ -779,19 +788,3 @@ async function publishArchives(
+     createNew: true,
+   });
+ }
+-
+-// @ts-expect-error JS binding сохраняет публичную сигнатуру для Performance ABI.
+-clearOwned = __metrics.wrapAsync({
+-  id: "project-download.infrastructure.runtime.clearOwned",
+-  kind: "io",
+-}, clearOwned);
+-// @ts-expect-error JS binding сохраняет публичную сигнатуру для Performance ABI.
+-prepare = __metrics.wrapAsync({
+-  id: "project-download.infrastructure.runtime.prepare",
+-  kind: "io",
+-}, prepare);
+-// @ts-expect-error JS binding сохраняет публичную сигнатуру для Performance ABI.
+-finish = __metrics.wrapAsync({
+-  id: "project-download.infrastructure.runtime.finish",
+-  kind: "io",
+-}, finish);

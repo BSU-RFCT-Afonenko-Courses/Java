@@ -1,0 +1,348 @@
+diff --git a/tasks/_quarto.yml b/tasks/_quarto.yml
+index 3202131a..392c25a1 100644
+--- a/tasks/_quarto.yml
++++ b/tasks/_quarto.yml
+@@ -1439,19 +1439,20 @@ project-checks:
+         mode: weighted
+       public-cases:
+       - id: normal
+-        name: Размеры и площадь через базовую ссылку
++        name: "Размеры, имя и площадь круга: r=2"
+         test: PublicExamplesTest#normal
+         action: Circle(2), ссылка TwoDShape; чтение размеров/имени/area
+         expected: 4,4,circle; площадь12.566370614359172 в допуске.
+       - id: boundary
+-        name: Максимальный допустимый радиус
++        name: "Максимальный допустимый радиус: r=1e150"
+         test: PublicExamplesTest#boundary
+         action: Circle(1e150), вызов через TwoDShape
+         expected: 2e150,2e150,circle; конечная площадьπ*10^300 в допуске.
+       feedback:
+         requirement: Диаметр и имя одного радиуса; конечная площадь с допуском max(1e-9,1e-12*|πr²|).
+-        what-check: Сначала объявления и тот же JAR; затем всё фактическое наблюдение исходной группы. Выбранные законные представления/политики
+-          задаются заранее преподавательской привязкой.
++        what-check: >-
++          После допуска API каждый радиус проверяется как отдельный случай: размеры, имя, конечность и площадь
++          с заданным допуском через базовую ссылку TwoDShape. Нарушенные свойства сообщают обычные JUnit assertions.
+     java-polymorphism-vehicle-interface:
+       runtime: java25-gradle-junit-v1
+       source-profile: java-gradle
+diff --git a/tasks/projects/polymorphism/circle-subclass/README.local.md b/tasks/projects/polymorphism/circle-subclass/README.local.md
+index d1eb8bf1..1c8ff9d6 100644
+--- a/tasks/projects/polymorphism/circle-subclass/README.local.md
++++ b/tasks/projects/polymorphism/circle-subclass/README.local.md
+@@ -2,4 +2,4 @@
+ 
+ Видимость конструктора базы достаточна для наследования, включая protected; формула площади свободна. Другие классы и package выбирает студент.
+ 
+-Открытая проверка: JDK 25, `gradle test`. Два публичных случая входят в прежние 3 равных оценочных групп. Автоматическая часть: `80 × passed/total`, прежняя ручная часть — 20%. API баллов не даёт; инфраструктурный отказ оставляет результат неустановленным. Признанные прежние оценки и решения сохраняются.
++Открытая проверка: JDK 25, `gradle test`. Полный оценочный набор содержит 6 равных самостоятельных случаев: 2 открытых и 4 скрытых параметризованных. Локальный demo повторяет только открытые случаи и не добавляет им веса. Автоматическая часть: `80 × passed/total`, прежняя ручная часть — 20%. API баллов не даёт; инфраструктурный отказ оставляет результат неустановленным. Признанные прежние оценки и решения сохраняются.
+diff --git a/tasks/projects/polymorphism/circle-subclass/checks/src/test/java/ContractTest.java b/tasks/projects/polymorphism/circle-subclass/checks/src/test/java/ContractTest.java
+index 30a02469..d801fcb5 100644
+--- a/tasks/projects/polymorphism/circle-subclass/checks/src/test/java/ContractTest.java
++++ b/tasks/projects/polymorphism/circle-subclass/checks/src/test/java/ContractTest.java
+@@ -1,9 +1,25 @@
+-import java.io.ByteArrayOutputStream;
+-import java.io.PrintStream;
+ import java.lang.Double;
+-import java.lang.Math;
+-import java.lang.Object;
+-import java.lang.Runnable;
+ import java.lang.String;
+-import java.lang.System;
+-import org.junit.jupiter.api.Test;import static org.junit.jupiter.api.Assertions.*;import java.io.*;import java.nio.charset.StandardCharsets;import java.util.*;class ContractTest{static String capture(Runnable action){PrintStream previous=System.out;ByteArrayOutputStream bytes=new ByteArrayOutputStream();try(PrintStream out=new PrintStream(bytes,true,StandardCharsets.UTF_8)){System.setOut(out);action.run();}finally{System.setOut(previous);}return bytes.toString(StandardCharsets.UTF_8).replace("\r\n","\n");}@Test void positiveDomainAndLargeRadius(){double[]r={Double.MIN_VALUE,1e-100,0.25,3,1e150};double[]expected={0,3.141592653589793e-200,0.19634954084936207,28.274333882308138,3.141592653589793e300};for(int i=0;i<r.length;i++){Object c=TaskBinding.circle(r[i]);assertEquals(2*r[i],TaskBinding.width(c));assertEquals(2*r[i],TaskBinding.height(c));double area=TaskBinding.area(c);assertTrue(Double.isFinite(area));assertEquals(expected[i],area,Math.max(1e-9,1e-12*Math.abs(expected[i])));}}}
++import java.util.stream.Stream;
++import org.junit.jupiter.api.DisplayName;
++import org.junit.jupiter.params.ParameterizedTest;
++import org.junit.jupiter.params.provider.Arguments;
++import org.junit.jupiter.params.provider.MethodSource;
++
++class ContractTest {
++    @DisplayName("Размеры, имя и площадь круга для допустимых радиусов")
++    @ParameterizedTest(name = "{0}")
++    @MethodSource("positiveRadii")
++    void positiveDomain(String caseName, double radius) {
++        PublicChecks.checkCircle(radius);
++    }
++
++    static Stream<Arguments> positiveRadii() {
++        return Stream.of(
++            Arguments.of("Минимальный положительный double: r=Double.MIN_VALUE", Double.MIN_VALUE),
++            Arguments.of("Малый положительный радиус: r=1e-100", 1e-100),
++            Arguments.of("Дробный радиус: r=0.25", 0.25),
++            Arguments.of("Целый радиус: r=3", 3)
++        );
++    }
++}
+diff --git a/tasks/projects/polymorphism/circle-subclass/checks/src/test/java/PublicExamplesTest.java b/tasks/projects/polymorphism/circle-subclass/checks/src/test/java/PublicExamplesTest.java
+index 8e146200..44f2f6c4 100644
+--- a/tasks/projects/polymorphism/circle-subclass/checks/src/test/java/PublicExamplesTest.java
++++ b/tasks/projects/polymorphism/circle-subclass/checks/src/test/java/PublicExamplesTest.java
+@@ -1,6 +1,16 @@
+-import java.lang.Throwable;
+-import org.junit.jupiter.api.Test;import org.junit.jupiter.api.TestReporter;import java.util.Map;
++import org.junit.jupiter.api.DisplayName;
++import org.junit.jupiter.api.Test;
++
+ class PublicExamplesTest {
+- @Test void normal(TestReporter reporter)throws Throwable {var observed=PublicChecks.observeNormal();reporter.publishEntry(Map.of("public-case","normal","actual",observed.actual()));PublicChecks.checkNormal(observed);}
+- @Test void boundary(TestReporter reporter)throws Throwable {var observed=PublicChecks.observeBoundary();reporter.publishEntry(Map.of("public-case","boundary","actual",observed.actual()));PublicChecks.checkBoundary(observed);}
++    @Test
++    @DisplayName("Размеры, имя и площадь круга: r=2")
++    void normal() {
++        PublicChecks.checkCircle(2);
++    }
++
++    @Test
++    @DisplayName("Максимальный допустимый радиус: r=1e150")
++    void boundary() {
++        PublicChecks.checkCircle(1e150);
++    }
+ }
+diff --git a/tasks/projects/polymorphism/circle-subclass/demo/src/test/java/PublicExamplesTest.java b/tasks/projects/polymorphism/circle-subclass/demo/src/test/java/PublicExamplesTest.java
+index 8e146200..44f2f6c4 100644
+--- a/tasks/projects/polymorphism/circle-subclass/demo/src/test/java/PublicExamplesTest.java
++++ b/tasks/projects/polymorphism/circle-subclass/demo/src/test/java/PublicExamplesTest.java
+@@ -1,6 +1,16 @@
+-import java.lang.Throwable;
+-import org.junit.jupiter.api.Test;import org.junit.jupiter.api.TestReporter;import java.util.Map;
++import org.junit.jupiter.api.DisplayName;
++import org.junit.jupiter.api.Test;
++
+ class PublicExamplesTest {
+- @Test void normal(TestReporter reporter)throws Throwable {var observed=PublicChecks.observeNormal();reporter.publishEntry(Map.of("public-case","normal","actual",observed.actual()));PublicChecks.checkNormal(observed);}
+- @Test void boundary(TestReporter reporter)throws Throwable {var observed=PublicChecks.observeBoundary();reporter.publishEntry(Map.of("public-case","boundary","actual",observed.actual()));PublicChecks.checkBoundary(observed);}
++    @Test
++    @DisplayName("Размеры, имя и площадь круга: r=2")
++    void normal() {
++        PublicChecks.checkCircle(2);
++    }
++
++    @Test
++    @DisplayName("Максимальный допустимый радиус: r=1e150")
++    void boundary() {
++        PublicChecks.checkCircle(1e150);
++    }
+ }
+diff --git a/tasks/projects/polymorphism/circle-subclass/observations/src/test/java/PublicChecks.java b/tasks/projects/polymorphism/circle-subclass/observations/src/test/java/PublicChecks.java
+index 3dcf53e1..338f1aab 100644
+--- a/tasks/projects/polymorphism/circle-subclass/observations/src/test/java/PublicChecks.java
++++ b/tasks/projects/polymorphism/circle-subclass/observations/src/test/java/PublicChecks.java
+@@ -1,51 +1,51 @@
+-import java.lang.AssertionError;
+ import java.lang.Double;
+ import java.lang.Math;
+ import java.lang.Object;
+ import java.lang.String;
+ import java.lang.System;
+ import java.lang.Throwable;
+-import java.util.*;
+-import java.io.*;
+-import java.nio.charset.StandardCharsets;
+ 
+-/** Two PUBLIC cases only. TaskBinding is an editable placement-specific client. */
++import static org.junit.jupiter.api.Assertions.assertAll;
++import static org.junit.jupiter.api.Assertions.assertEquals;
++import static org.junit.jupiter.api.Assertions.assertTrue;
++
++/** Проверки свойств одного Circle; привязка к решению находится в TaskBinding. */
+ public class PublicChecks {
+-    public record Observation(String actual, boolean passed) {}
+-    public static void checkNormal(Observation result) { if (!result.passed()) throw new AssertionError("Открытый обычный сценарий не совпал с ожиданием."); }
+-    public static void checkBoundary(Observation result) { if (!result.passed()) throw new AssertionError("Открытый граничный сценарий не совпал с ожиданием."); }
+- public static final String NORMAL_NAME="Размеры и площадь через базовую ссылку";
+- public static final String BOUNDARY_NAME="Максимальный допустимый радиус";
+- public static final String REQUIREMENT="Диаметр и имя одного радиуса; конечная площадь с допуском max(1e-9,1e-12*|πr²|).";
+- public static final String NORMAL_INPUT="Circle(2), ссылка TwoDShape; чтение размеров/имени/area";
+- public static final String BOUNDARY_INPUT="Circle(1e150), вызов через TwoDShape";
+- public static final String NORMAL_EXPECTED="4,4,circle; площадь12.566370614359172 в допуске.";
+- public static final String BOUNDARY_EXPECTED="2e150,2e150,circle; конечная площадьπ*10^300 в допуске.";
++    public static void checkCircle(double radius) {
++        Object circle = TaskBinding.circle(radius);
++        double diameter = 2 * radius;
++        double expectedArea = Math.PI * radius * radius;
++        double tolerance = Math.max(1e-9, 1e-12 * Math.abs(expectedArea));
++        double area = TaskBinding.area(circle);
++
++        assertAll(
++            () -> assertEquals(diameter, TaskBinding.width(circle),
++                "Ширина круга должна равняться диаметру"),
++            () -> assertEquals(diameter, TaskBinding.height(circle),
++                "Высота круга должна равняться диаметру"),
++            () -> assertEquals("circle", TaskBinding.name(circle),
++                "Имя фигуры должно быть circle"),
++            () -> assertTrue(Double.isFinite(area), "Площадь должна быть конечной"),
++            () -> assertEquals(expectedArea, area, tolerance,
++                "Площадь круга должна соответствовать радиусу с заданным допуском")
++        );
++    }
+ 
+- private static Observation circle(double radius) {
+-  Object value=TaskBinding.circle(radius);double width=TaskBinding.width(value),height=TaskBinding.height(value),area=TaskBinding.area(value);String name=TaskBinding.name(value);
+-  double expected=Math.PI*radius*radius,tolerance=Math.max(1e-9,1e-12*Math.abs(expected));
+-  return new Observation("width="+width+", height="+height+", name="+name+", area="+area+", допуск="+tolerance,width==2*radius && height==2*radius && "circle".equals(name) && Double.isFinite(area) && Math.abs(area-expected)<=tolerance);
+- }
+- public static Observation observeNormal(){return circle(2);}
+- public static Observation observeBoundary(){return circle(1e150);}
++    /** Консольная самопроверка использует те же assertions, что и открытый JUnit. */
+     public static void main(String[] args) {
+-        boolean success=true;
+-        for (String id: new String[]{"normal","boundary"}) {
+-            System.out.println("Проверка: " + (id.equals("normal") ? NORMAL_NAME : BOUNDARY_NAME));
+-            System.out.println("Требование: " + REQUIREMENT);
+-            System.out.println("Вход/действие: " + (id.equals("normal") ? NORMAL_INPUT : BOUNDARY_INPUT));
+-            System.out.println("Ожидается: " + (id.equals("normal") ? NORMAL_EXPECTED : BOUNDARY_EXPECTED));
+-            Observation result;
+-            try { result=id.equals("normal")?observeNormal():observeBoundary(); }
+-            catch (Throwable error) {
+-                System.out.println("Получено: выполнение операции завершилось исключением " + error.getClass().getSimpleName());
+-                System.out.println("Статус: ошибка выполнения. Проверьте действие и согласование клиента с API решения.");success=false;continue;
++        boolean success = true;
++        for (double radius : new double[]{2, 1e150}) {
++            System.out.println("Проверка круга: r=" + radius);
++            try {
++                checkCircle(radius);
++                System.out.println("Проверка пройдена; обязательная ручная часть остаётся.");
++            } catch (Throwable error) {
++                error.printStackTrace(System.out);
++                success = false;
+             }
+-            System.out.println("Получено: " + result.actual());
+-            System.out.println("Статус: " + (result.passed()?"наблюдаемое поведение совпало; обязательная ручная часть остаётся":"требует исправления"));
+-            success &= result.passed();
+         }
+-        if (!success) System.exit(1);
++        if (!success) {
++            System.exit(1);
++        }
+     }
+ }
+diff --git a/tasks/projects/polymorphism/circle-subclass/student/src/main/java/Circle.java b/tasks/projects/polymorphism/circle-subclass/student/src/main/java/Circle.java
+index 92f34ec9..c7a34bbe 100644
+--- a/tasks/projects/polymorphism/circle-subclass/student/src/main/java/Circle.java
++++ b/tasks/projects/polymorphism/circle-subclass/student/src/main/java/Circle.java
+@@ -1 +1 @@
+-public class Circle extends TwoDShape {public Circle(double radius){super(2*radius,2*radius,"circle");}public double area(){throw new UnsupportedOperationException("TODO: площадь");}}
++public class Circle extends TwoDShape {public Circle(double radius){super(0,0,"");throw new UnsupportedOperationException("TODO: конструктор Circle");}public double area(){throw new UnsupportedOperationException("TODO: площадь");}}
+diff --git a/tasks/projects/polymorphism/circle-subclass/student/src/test/java/PublicChecks.java b/tasks/projects/polymorphism/circle-subclass/student/src/test/java/PublicChecks.java
+index d075f4cd..338f1aab 100644
+--- a/tasks/projects/polymorphism/circle-subclass/student/src/test/java/PublicChecks.java
++++ b/tasks/projects/polymorphism/circle-subclass/student/src/test/java/PublicChecks.java
+@@ -1,44 +1,51 @@
+-import java.util.*;
+-import java.io.*;
+-import java.nio.charset.StandardCharsets;
++import java.lang.Double;
++import java.lang.Math;
++import java.lang.Object;
++import java.lang.String;
++import java.lang.System;
++import java.lang.Throwable;
+ 
+-/** Two PUBLIC cases only. TaskBinding is an editable placement-specific client. */
++import static org.junit.jupiter.api.Assertions.assertAll;
++import static org.junit.jupiter.api.Assertions.assertEquals;
++import static org.junit.jupiter.api.Assertions.assertTrue;
++
++/** Проверки свойств одного Circle; привязка к решению находится в TaskBinding. */
+ public class PublicChecks {
+-    public record Observation(String actual, boolean passed) {}
+-    public static void checkNormal(Observation result) { if (!result.passed()) throw new AssertionError("Открытый обычный сценарий не совпал с ожиданием."); }
+-    public static void checkBoundary(Observation result) { if (!result.passed()) throw new AssertionError("Открытый граничный сценарий не совпал с ожиданием."); }
+- public static final String NORMAL_NAME="Размеры и площадь через базовую ссылку";
+- public static final String BOUNDARY_NAME="Максимальный допустимый радиус";
+- public static final String REQUIREMENT="Диаметр и имя одного радиуса; конечная площадь с допуском max(1e-9,1e-12*|πr²|).";
+- public static final String NORMAL_INPUT="Circle(2), ссылка TwoDShape; чтение размеров/имени/area";
+- public static final String BOUNDARY_INPUT="Circle(1e150), вызов через TwoDShape";
+- public static final String NORMAL_EXPECTED="4,4,circle; площадь12.566370614359172 в допуске.";
+- public static final String BOUNDARY_EXPECTED="2e150,2e150,circle; конечная площадьπ*10^300 в допуске.";
++    public static void checkCircle(double radius) {
++        Object circle = TaskBinding.circle(radius);
++        double diameter = 2 * radius;
++        double expectedArea = Math.PI * radius * radius;
++        double tolerance = Math.max(1e-9, 1e-12 * Math.abs(expectedArea));
++        double area = TaskBinding.area(circle);
++
++        assertAll(
++            () -> assertEquals(diameter, TaskBinding.width(circle),
++                "Ширина круга должна равняться диаметру"),
++            () -> assertEquals(diameter, TaskBinding.height(circle),
++                "Высота круга должна равняться диаметру"),
++            () -> assertEquals("circle", TaskBinding.name(circle),
++                "Имя фигуры должно быть circle"),
++            () -> assertTrue(Double.isFinite(area), "Площадь должна быть конечной"),
++            () -> assertEquals(expectedArea, area, tolerance,
++                "Площадь круга должна соответствовать радиусу с заданным допуском")
++        );
++    }
+ 
+- private static Observation circle(double radius) {
+-  Object value=TaskBinding.circle(radius);double width=TaskBinding.width(value),height=TaskBinding.height(value),area=TaskBinding.area(value);String name=TaskBinding.name(value);
+-  double expected=Math.PI*radius*radius,tolerance=Math.max(1e-9,1e-12*Math.abs(expected));
+-  return new Observation("width="+width+", height="+height+", name="+name+", area="+area+", допуск="+tolerance,width==2*radius && height==2*radius && "circle".equals(name) && Double.isFinite(area) && Math.abs(area-expected)<=tolerance);
+- }
+- public static Observation observeNormal(){return circle(2);}
+- public static Observation observeBoundary(){return circle(1e150);}
++    /** Консольная самопроверка использует те же assertions, что и открытый JUnit. */
+     public static void main(String[] args) {
+-        boolean success=true;
+-        for (String id: new String[]{"normal","boundary"}) {
+-            System.out.println("Проверка: " + (id.equals("normal") ? NORMAL_NAME : BOUNDARY_NAME));
+-            System.out.println("Требование: " + REQUIREMENT);
+-            System.out.println("Вход/действие: " + (id.equals("normal") ? NORMAL_INPUT : BOUNDARY_INPUT));
+-            System.out.println("Ожидается: " + (id.equals("normal") ? NORMAL_EXPECTED : BOUNDARY_EXPECTED));
+-            Observation result;
+-            try { result=id.equals("normal")?observeNormal():observeBoundary(); }
+-            catch (Throwable error) {
+-                System.out.println("Получено: выполнение операции завершилось исключением " + error.getClass().getSimpleName());
+-                System.out.println("Статус: ошибка выполнения. Проверьте действие и согласование клиента с API решения.");success=false;continue;
++        boolean success = true;
++        for (double radius : new double[]{2, 1e150}) {
++            System.out.println("Проверка круга: r=" + radius);
++            try {
++                checkCircle(radius);
++                System.out.println("Проверка пройдена; обязательная ручная часть остаётся.");
++            } catch (Throwable error) {
++                error.printStackTrace(System.out);
++                success = false;
+             }
+-            System.out.println("Получено: " + result.actual());
+-            System.out.println("Статус: " + (result.passed()?"наблюдаемое поведение совпало; обязательная ручная часть остаётся":"требует исправления"));
+-            success &= result.passed();
+         }
+-        if (!success) System.exit(1);
++        if (!success) {
++            System.exit(1);
++        }
+     }
+ }
+diff --git a/tasks/projects/polymorphism/circle-subclass/student/src/test/java/PublicExamplesTest.java b/tasks/projects/polymorphism/circle-subclass/student/src/test/java/PublicExamplesTest.java
+new file mode 100644
+index 00000000..44f2f6c4
+--- /dev/null
++++ b/tasks/projects/polymorphism/circle-subclass/student/src/test/java/PublicExamplesTest.java
+@@ -0,0 +1,16 @@
++import org.junit.jupiter.api.DisplayName;
++import org.junit.jupiter.api.Test;
++
++class PublicExamplesTest {
++    @Test
++    @DisplayName("Размеры, имя и площадь круга: r=2")
++    void normal() {
++        PublicChecks.checkCircle(2);
++    }
++
++    @Test
++    @DisplayName("Максимальный допустимый радиус: r=1e150")
++    void boundary() {
++        PublicChecks.checkCircle(1e150);
++    }
++}
+diff --git a/tasks/projects/polymorphism/circle-subclass/student/src/test/java/TaskBinding.java b/tasks/projects/polymorphism/circle-subclass/student/src/test/java/TaskBinding.java
+index 70df8303..25010f68 100644
+--- a/tasks/projects/polymorphism/circle-subclass/student/src/test/java/TaskBinding.java
++++ b/tasks/projects/polymorphism/circle-subclass/student/src/test/java/TaskBinding.java
+@@ -1 +1,3 @@
++import java.lang.Object;
++import java.lang.String;
+ class TaskBinding {static Object circle(double r){return new Circle(r);}static double width(Object x){return ((TwoDShape)x).getWidth();}static double height(Object x){return ((TwoDShape)x).getHeight();}static String name(Object x){return ((TwoDShape)x).getName();}static double area(Object x){TwoDShape shape=(TwoDShape)x;return shape.area();}}

@@ -1,0 +1,700 @@
+diff --git a/_extensions/course-core/public.ts b/_extensions/course-core/public.ts
+index b2a17ca..f01ea54 100644
+--- a/_extensions/course-core/public.ts
++++ b/_extensions/course-core/public.ts
+@@ -78,6 +78,7 @@ export type {
+ } from "./artifacts/contracts.ts";
+ export {
+   withCurrentNativeOperation,
++  withNativePublication,
+   withPendingNativeOperation,
+ } from "./runtime/operation.ts";
+ export { withNativeCaptureScope } from "./capture.ts";
+@@ -169,3 +170,5 @@ export type {
+   NativeOperationProjectContextBatch,
+   NativeOperationProjectContextMetrics,
+ } from "./infrastructure/project-context.ts";
++
++export type { NativePublication, NativePublicationSelection } from "./release/publication.ts";
+diff --git a/_extensions/course-core/release/validate.ts b/_extensions/course-core/release/validate.ts
+index 827cb38..8a2af32 100644
+--- a/_extensions/course-core/release/validate.ts
++++ b/_extensions/course-core/release/validate.ts
+@@ -1,41 +1,18 @@
+-import vocabulary from "../contract-vocabulary.json" with { type: "json" };
+ import { fail } from "../contracts/project.ts";
+-import type {
+-  EarlyDocument,
+-  FinalizedDocument,
+-} from "../document/contracts.ts";
+ import { decode } from "../document/contracts.ts";
+ import { immutable } from "../document/condition.ts";
+-import {
+-  NativeAdapterValidationInputSchema,
+-  NativeAdapterValidationResultSchema,
+-  NativeMetadataReadSetSchema,
+-  NativeReleaseProofSchema,
+-  NativeReleaseRequestSchema,
+-} from "./contracts.ts";
+-import type {
+-  NativeAdapterValidator,
+-  NativeReleaseRequest,
+-} from "./contracts.ts";
++import { NativeAdapterValidationResultSchema, NativeMetadataReadSetSchema,
++  NativeReleaseProofSchema } from "./contracts.ts";
++import type { NativeAdapterValidator, NativeReleaseRequest } from "./contracts.ts";
++import { publicationAdapterInput, validatePublicationFacts } from "./publication.ts";
++import type { PublicationDocuments, PublicationPathCheck } from "./publication.ts";
+ export async function validateNativeRelease(
+-  documents: readonly {
+-    source: string;
+-    early: Pick<EarlyDocument, "context" | "definitions" | "release">;
+-    final: Pick<FinalizedDocument, "hasPublicSolution">;
+-  }[],
+-  identity: {
+-    operation: string;
+-    projection: "student" | "author";
+-    profiles: string[];
+-  },
++  documents: PublicationDocuments,
++  identity: { operation: string; projection: "student" | "author"; profiles: string[] },
+   requestValue: NativeReleaseRequest,
+   validators: readonly NativeAdapterValidator[],
+   installed: readonly string[],
+-  checkPath: (
+-    source: string,
+-    path: string,
+-    kind?: "file" | "directory",
+-  ) => Promise<void>,
++  checkPath: PublicationPathCheck,
+   guard: () => Promise<void>,
+ ) {
+   // Snapshot executable descriptors before the first await; later mutation cannot change authority.
+@@ -55,166 +32,14 @@ export async function validateNativeRelease(
+     projection: identity.projection,
+     profiles: identity.profiles,
+   };
+-  await guard();
+-  const request = decode(
+-    NativeReleaseRequestSchema,
+-    requestValue,
+-    "RELEASE.EXPECTED_SOURCES_INVALID",
+-  );
+-  const expected = new Set(request.expectedSources);
+-  if (expected.size !== request.expectedSources.length) {
+-    fail("RELEASE.EXPECTED_SOURCES_INVALID", "Повторные expected sources");
+-  }
+-  if (
+-    documents.length !== expected.size ||
+-    documents.some((d) => !expected.has(d.source))
+-  ) fail("RELEASE.COVERAGE", "Missing/unexpected current document");
+-  const facts = new Map<
+-      string,
+-      {
+-        source: string;
+-        declaration: EarlyDocument["definitions"][string];
+-        hasPublicSolution: boolean;
+-      }
+-    >(),
+-    assessments = new Set<string>(),
+-    bindings = new Set<string>();
+-  const first = documents[0].early.release;
+-  if (!first) {
+-    fail("RELEASE.METADATA_MISSING", "Нет current ранних release facts");
+-  }
+-  const course = first.course;
+-  const view = identity.projection === "student" ? "student" : "full";
+-  if (request.courseId !== undefined && course.id !== request.courseId) {
+-    fail("RELEASE.MIXED_COURSE", "Неожиданный course.id");
+-  }
+-  if (course.id && course.view !== view) {
+-    fail(
+-      "RELEASE.EXPECTATION_MISMATCH",
+-      "course.view отличается от native projection",
+-    );
+-  }
++  const facts = await validatePublicationFacts(documents, identity, requestValue, checkPath, guard, installed);
++  const course = facts.course;
+   const byName = new Map(validators.map((v) => [v.name, v]));
+   if (
+     byName.size !== validators.length ||
+     validators.some((v) => typeof v.validate !== "function")
+   ) fail("CORE.ADAPTER_INVALID", "Повторный/неисполнимый adapter validator");
+   for (const doc of documents) {
+-    const release = doc.early.release;
+-    if (!release) {
+-      fail("RELEASE.METADATA_MISSING", "Нет current release facts", doc.source);
+-    }
+-    if (JSON.stringify(release.course) !== JSON.stringify(course)) {
+-      fail("RELEASE.MIXED_COURSE", "Разные course/view/adapters", doc.source);
+-    }
+-    for (const item of release.declarations) {
+-      if (facts.has(item.id)) fail("CORE.DUPLICATE_EXERCISE", item.id);
+-      const declaration = doc.early.definitions[item.id];
+-      if (!declaration) {
+-        fail("CORE.METADATA_INVALID", "Нет декларации", doc.source, item.id);
+-      }
+-      const allowed = new Set([
+-        ...vocabulary.exerciseAttributes,
+-        ...vocabulary.pedagogyAttributes.filter((k) =>
+-          !["for", "requirement", "work-mode"].includes(k)
+-        ),
+-        "name",
+-        "when-profile",
+-        "unless-profile",
+-        "when-format",
+-        "unless-format",
+-        "when-meta",
+-        "unless-meta",
+-      ]);
+-      for (const key of Object.keys(item.attributes)) {
+-        if (
+-          !allowed.has(key) &&
+-          !course.adapters.some((name) => key.startsWith(name + "-"))
+-        ) {
+-          fail(
+-            "CORE.EXERCISE_INVALID",
+-            "Неизвестный атрибут упражнения: " + key,
+-            doc.source,
+-            item.id,
+-          );
+-        }
+-      }
+-      if (
+-        item.target &&
+-        (!item.head || item.head.level < 1 || item.head.level > 6 ||
+-          !item.head.title.trim())
+-      ) {
+-        fail(
+-          "CORE.EXERCISE_INVALID",
+-          "Упражнение с target требует непустой заголовок уровня 1–6",
+-          doc.source,
+-          item.id,
+-        );
+-      }
+-      facts.set(item.id, {
+-        source: doc.source,
+-        declaration,
+-        hasPublicSolution: doc.final.hasPublicSolution[item.id] === true,
+-      });
+-      if (
+-        item.target && item.target !== "manual" &&
+-        (!course.adapters.includes(item.target) ||
+-          !installed.includes(item.target))
+-      ) {
+-        fail(
+-          "CORE.UNKNOWN_TARGET",
+-          "Не установлен объявленный adapter " + item.target,
+-          doc.source,
+-          item.id,
+-        );
+-      }
+-      if (item.project) {
+-        if (bindings.has(item.id)) fail("CORE.PROJECT_CONFLICT", item.id);
+-        bindings.add(item.id);
+-        await checkPath(doc.source, item.project);
+-      }
+-    }
+-  }
+-  for (const doc of documents) {
+-    const release = doc.early.release!;
+-    const a = release.assessment;
+-    if (a) {
+-      if (assessments.has(a.id)) fail("CORE.DUPLICATE_ASSESSMENT", a.id);
+-      assessments.add(a.id);
+-      if (a.relatedExercise && !facts.has(a.relatedExercise)) {
+-        fail("CORE.RELATED_EXERCISE_MISSING", a.relatedExercise);
+-      }
+-      for (const slot of a.slots) {
+-        for (const member of slot.candidates) {
+-          const fact = facts.get(member);
+-          if (!fact) fail("CORE.UNKNOWN_MEMBER", member);
+-          const d = fact.declaration;
+-          if (
+-            (a.kind === "test" || a.kind === "practical") &&
+-            d["statement-visibility"] !== "restricted"
+-          ) {
+-            fail(
+-              "CORE.ASSESSMENT_INVALID",
+-              "test/practical требуют restricted",
+-              doc.source,
+-              member,
+-            );
+-          }
+-          if (
+-            slot.assignment.stage === "demonstration" &&
+-            (d["statement-visibility"] !== "open" ||
+-              d["course-role"] !== "demonstration" || !fact.hasPublicSolution)
+-          ) {
+-            fail(
+-              "CORE.ASSESSMENT_INVALID",
+-              "demonstration требует open, purpose и actual public solution",
+-              doc.source,
+-              member,
+-            );
+-          }
+-        }
+-      }
+-    }
+     for (const name of course.adapters) {
+       if (!installed.includes(name)) {
+         fail("CORE.ADAPTER_INVALID", "Нет установленного adapter " + name);
+@@ -230,36 +55,7 @@ export async function validateNativeRelease(
+       const result = decode(
+         NativeAdapterValidationResultSchema,
+         await validator.validate(
+-          immutable(NativeAdapterValidationInputSchema.parse({
+-            origin: {
+-              ...identity,
+-              captureWitness: doc.early.context.captureWitness,
+-              source: doc.source,
+-              format: doc.early.context.format,
+-            },
+-            course,
+-            nativeMetadata: {
+-              readSet: validator.nativeMetadataReadSet,
+-              values: Object.fromEntries(
+-                validator.nativeMetadataReadSet.flatMap((slot) => {
+-                  const source =
+-                    slot === "configuration" || slot === "assessment"
+-                      ? release.nativeMetadata.adapters[name] ?? {}
+-                      : release.nativeMetadata;
+-                  return Object.hasOwn(source, slot)
+-                    ? [[slot, source[slot as keyof typeof source]]]
+-                    : [];
+-                }),
+-              ),
+-            },
+-            declarations: release.declarations.filter((d) => d.target === name)
+-              .map((d) => ({
+-                id: d.id,
+-                attributes: d.attributes,
+-                ...(d.answer ? { answer: d.answer } : {}),
+-              })),
+-            ...(a ? { assessment: a } : {}),
+-          })),
++          publicationAdapterInput(doc, identity, name, validator.nativeMetadataReadSet),
+         ),
+         "RELEASE.ADAPTER_UNQUALIFIED",
+       );
+@@ -271,15 +67,9 @@ export async function validateNativeRelease(
+   }
+   await guard();
+   return immutable(NativeReleaseProofSchema.parse({
+-    schema: "course-native-release-proof-v1",
+-    ...identity,
+-    course,
+-    documents: documents.map((d) => ({
+-      source: d.source,
+-      format: d.early.context.format,
+-    })),
+-    exerciseIds: [...facts.keys()],
+-    assessmentIds: [...assessments],
++    schema: "course-native-release-proof-v1", ...identity, course,
++    documents: documents.map((d) => ({ source: d.source, format: d.early.context.format })),
++    exerciseIds: facts.exerciseIds, assessmentIds: facts.assessmentIds,
+     validatedAdapters: course.adapters,
+   }));
+ }
+diff --git a/_extensions/course-core/runtime/operation.ts b/_extensions/course-core/runtime/operation.ts
+index ed2d20d..af7c262 100644
+--- a/_extensions/course-core/runtime/operation.ts
++++ b/_extensions/course-core/runtime/operation.ts
+@@ -66,6 +66,8 @@ import {
+   toolCachePath,
+ } from "../infrastructure/tool-cache.ts";
+ import { validateNativeRelease } from "../release/validate.ts";
++import { createNativePublication } from "../release/publication.ts";
++import type { NativePublication, NativePublicationSelection } from "../release/publication.ts";
+ import type {
+   NativeAdapterValidator,
+   NativeReleaseRequest,
+@@ -2167,6 +2169,24 @@ export async function withPendingNativeOperation<T>(
+ export async function withCurrentNativeOperation<T>(
+   expectationValue: NativeOperationExpectation,
+   use: (operation: ReturnType<typeof publicOperation>) => Promise<T>,
++): Promise<T> {
++  return await withCapturedOperation(expectationValue, (operation) => use(operation));
++}
++
++/** Обычная публикация; full course grading/seed admission сюда не входит. */
++export async function withNativePublication<T>(
++  expectationValue: NativeOperationExpectation,
++  selection: NativePublicationSelection,
++  use: (publication: NativePublication) => Promise<T>,
++): Promise<T> {
++  return await withCapturedOperation(expectationValue, async (_operation, publication) =>
++    await use(await publication(selection)));
++}
++
++async function withCapturedOperation<T>(
++  expectationValue: NativeOperationExpectation,
++  use: (operation: ReturnType<typeof publicOperation>,
++    publication: (selection: NativePublicationSelection) => Promise<NativePublication>) => Promise<T>,
+ ): Promise<T> {
+   const expectation = decode(
+     NativeOperationExpectationSchema,
+@@ -2364,7 +2384,35 @@ export async function withCurrentNativeOperation<T>(
+       beforeOperationChild,
+       async () => {
+         try {
+-          return await use(operation);
++          return await use(operation, async (selection) => {
++            callbackGuard();
++            if (complete.state.assignment) {
++              fail("BODY.PUBLICATION_REQUIRED", "Assignment capture требует отдельный course-export маршрут");
++            }
++            return await createNativePublication(operation, complete.releaseDocuments, selection,
++              { root: complete.state.root, outputDirectory: complete.state.outputDirectory },
++              async (source, path, kind) => {
++                const absolute = resolve(kind || path.startsWith("/") ? complete.state.root
++                  : dirname(resolve(complete.state.root, source)), path.replace(/^\//, ""));
++                if (toolCachePath(complete.state.root, absolute) || excluded(complete.state, absolute)) {
++                  fail("RELEASE.SOURCE_POLICY", "Исключённый источник публикации", source);
++                }
++                let info: Deno.FileInfo;
++                try {
++                  const actual = await ownedPhysical(complete.state.root, relative(complete.state.root, absolute));
++                  info = await Deno.stat(actual);
++                } catch (cause) {
++                  if (cause instanceof Deno.errors.NotFound) {
++                    fail("RELEASE.SOURCE_POLICY", "Источник публикации отсутствует", source);
++                  }
++                  throw cause;
++                }
++                if ((kind === "file" && !info.isFile) || (kind === "directory" && !info.isDirectory) ||
++                  (!info.isFile && !info.isDirectory)) {
++                  fail("RESOURCE.PROJECT_MISSING", "Нет publication input", source);
++                }
++              }, () => guard(), () => { callbackGuard(); hostGuard(); });
++          });
+         } finally {
+           callbackLife.active = false;
+         }
+diff --git a/docs/native-operation-ts.md b/docs/native-operation-ts.md
+index e7f7be3..75cf05b 100644
+--- a/docs/native-operation-ts.md
++++ b/docs/native-operation-ts.md
+@@ -442,3 +442,25 @@ capability и сохраняет прежний lifecycle.
+ Пустой supporting scratch, cache/sibling entries и unrelated owner edits не
+ аннулируют raw-QMD provenance. Исчезновение/подмена выбранного QMD либо его
+ physical ancestor по-прежнему отклоняется.
++
++## Ordinary Native publication
++
++`withNativePublication(expectation, selection, use)` использует тот же actual
++capture/acquisition/closing fence, что NativeOperation. `selection` —
++`NativePublicationSelection` (NativeReleaseRequest либо undefined для всех completed
++sources). Core один раз проверяет общую семантику coverage/course/assessment/ролей
++и owned paths, не исполняя installed adapter validators/full grading/seed gate.
++Assignment capture использует отдельный course-export API и здесь отказывается.
++
++`NativePublication` экспортируется из public.ts: root/outputDirectory принадлежат
++actual capture, identity/catalog сохраняют canonical NativeOperation types.
++`document`, `condition`, `resourceInventory`, `withProjectContracts`, `assertCurrent`
++имеют исходные Core signatures и callback lifetime. `adapterInputs(name, readSet)`
++выдаёт Core-owned metadata input; `checkSources(source, references)` проверяет
++использованные business пути. Нового proof/certificate/session registry нет.
++Общая private/physical/runtime/profile/currentness защита остаётся, весь механизм
++source-currentness этой задачей не удалён. Role projection не обещает приватность
++произвольного немаркированного cached computed текста.
++
++Полная `operation.validateRelease(request, validators)` остаётся для отдельного
++course-export; ordinary Site/Download не должны вызывать её как publication gate.
+diff --git a/spec/index.md b/spec/index.md
+index a7ec756..4b7b9dc 100644
+--- a/spec/index.md
++++ b/spec/index.md
+@@ -24,6 +24,7 @@ updated: 2026-11-02
+ | [Материализация](../docs/condition-materialization-ts.md) | README, closure, exact inventory |
+ | [Presentation](../docs/presentation.md) | Представление, решения и Reveal |
+ | [Navigation](../_extensions/course-navigation/README.md) | Native Reveal и управление |
++| [Ordinary публикация](../_extensions/course-core/release/publication.ts) | Core-owned typed publication session без grading/certificate gate |
+ | [Core schemas](../_extensions/course-core/release/contracts.ts) | Release facts и adapter validators |
+ | [Body schema](../_extensions/course-core/body-export/package-contracts.ts) | Закрытый пакет |
+ | [Ответы](../_extensions/course-core/document/answer-contracts.ts) | Answer facts/spec |
+diff --git a/_extensions/course-core/release/publication.ts b/_extensions/course-core/release/publication.ts
+new file mode 100644
+index 0000000..7302e0d
+--- /dev/null
++++ b/_extensions/course-core/release/publication.ts
+@@ -0,0 +1,279 @@
++import vocabulary from "../contract-vocabulary.json" with { type: "json" };
++import { fail } from "../contracts/project.ts";
++import type { EarlyDocument, FinalizedDocument } from "../document/contracts.ts";
++import { decode } from "../document/contracts.ts";
++import { immutable } from "../document/condition.ts";
++import {
++  NativeAdapterValidationInputSchema,
++  NativeMetadataReadSetSchema,
++  NativeReleaseRequestSchema,
++} from "./contracts.ts";
++import type {
++  NativeAdapterValidationInput,
++  NativeAdapterValidationResult,
++  NativeMetadataSlot,
++  NativeReleaseRequest,
++} from "./contracts.ts";
++import type { NativeOperationIdentity } from "../runtime/contracts.ts";
++import type { NativeOperation } from "../runtime/operation.ts";
++
++export type PublicationDocuments = readonly {
++  source: string;
++  early: Pick<EarlyDocument, "context" | "definitions" | "release">;
++  final: Pick<FinalizedDocument, "hasPublicSolution">;
++}[];
++export type PublicationPathCheck = (
++  source: string, path: string, kind?: "file" | "directory",
++) => Promise<void>;
++type PublicationIdentity = Pick<NativeOperationIdentity, "operation" | "projection" | "profiles">;
++
++/** Только Core-семантика actual capture; full grading остаётся у course exporter. */
++export async function validatePublicationFacts(
++  documents: PublicationDocuments,
++  identity: PublicationIdentity,
++  requestValue: NativeReleaseRequest,
++  checkPath: PublicationPathCheck,
++  guard: () => Promise<void>,
++  installed?: readonly string[],
++): Promise<{ course: NonNullable<EarlyDocument["release"]>["course"]; exerciseIds: string[]; assessmentIds: string[] }> {
++  await guard();
++  const request = decode(
++    NativeReleaseRequestSchema,
++    requestValue,
++    "RELEASE.EXPECTED_SOURCES_INVALID",
++  );
++  const expected = new Set(request.expectedSources);
++  if (expected.size !== request.expectedSources.length) {
++    fail("RELEASE.EXPECTED_SOURCES_INVALID", "Повторные expected sources");
++  }
++  if (
++    documents.length !== expected.size ||
++    documents.some((d) => !expected.has(d.source))
++  ) fail("RELEASE.COVERAGE", "Missing/unexpected current document");
++  const facts = new Map<
++      string,
++      {
++        source: string;
++        declaration: EarlyDocument["definitions"][string];
++        hasPublicSolution: boolean;
++      }
++    >(),
++    assessments = new Set<string>(),
++    bindings = new Set<string>();
++  const first = documents[0].early.release;
++  if (!first) {
++    fail("RELEASE.METADATA_MISSING", "Нет current ранних release facts");
++  }
++  const course = first.course;
++  const view = identity.projection === "student" ? "student" : "full";
++  if (request.courseId !== undefined && course.id !== request.courseId) {
++    fail("RELEASE.MIXED_COURSE", "Неожиданный course.id");
++  }
++  if (course.id && course.view !== view) {
++    fail(
++      "RELEASE.EXPECTATION_MISMATCH",
++      "course.view отличается от native projection",
++    );
++  }
++  for (const doc of documents) {
++    const release = doc.early.release;
++    if (!release) {
++      fail("RELEASE.METADATA_MISSING", "Нет current release facts", doc.source);
++    }
++    if (JSON.stringify(release.course) !== JSON.stringify(course)) {
++      fail("RELEASE.MIXED_COURSE", "Разные course/view/adapters", doc.source);
++    }
++    for (const item of release.declarations) {
++      if (facts.has(item.id)) fail("CORE.DUPLICATE_EXERCISE", item.id);
++      const declaration = doc.early.definitions[item.id];
++      if (!declaration) {
++        fail("CORE.METADATA_INVALID", "Нет декларации", doc.source, item.id);
++      }
++      const allowed = new Set([
++        ...vocabulary.exerciseAttributes,
++        ...vocabulary.pedagogyAttributes.filter((k) =>
++          !["for", "requirement", "work-mode"].includes(k)
++        ),
++        "name",
++        "when-profile",
++        "unless-profile",
++        "when-format",
++        "unless-format",
++        "when-meta",
++        "unless-meta",
++      ]);
++      for (const key of Object.keys(item.attributes)) {
++        if (
++          !allowed.has(key) &&
++          !course.adapters.some((name) => key.startsWith(name + "-"))
++        ) {
++          fail(
++            "CORE.EXERCISE_INVALID",
++            "Неизвестный атрибут упражнения: " + key,
++            doc.source,
++            item.id,
++          );
++        }
++      }
++      if (
++        item.target &&
++        (!item.head || item.head.level < 1 || item.head.level > 6 ||
++          !item.head.title.trim())
++      ) {
++        fail(
++          "CORE.EXERCISE_INVALID",
++          "Упражнение с target требует непустой заголовок уровня 1–6",
++          doc.source,
++          item.id,
++        );
++      }
++      facts.set(item.id, {
++        source: doc.source,
++        declaration,
++        hasPublicSolution: doc.final.hasPublicSolution[item.id] === true,
++      });
++      if (
++        item.target && item.target !== "manual" &&
++        (!course.adapters.includes(item.target) ||
++          (installed !== undefined && !installed.includes(item.target)))
++      ) {
++        fail(
++          "CORE.UNKNOWN_TARGET",
++          "Не установлен объявленный adapter " + item.target,
++          doc.source,
++          item.id,
++        );
++      }
++      if (item.project) {
++        if (bindings.has(item.id)) fail("CORE.PROJECT_CONFLICT", item.id);
++        bindings.add(item.id);
++        await checkPath(doc.source, item.project);
++      }
++    }
++  }
++  for (const doc of documents) {
++    const release = doc.early.release!;
++    const a = release.assessment;
++    if (a) {
++      if (assessments.has(a.id)) fail("CORE.DUPLICATE_ASSESSMENT", a.id);
++      assessments.add(a.id);
++      if (a.relatedExercise && !facts.has(a.relatedExercise)) {
++        fail("CORE.RELATED_EXERCISE_MISSING", a.relatedExercise);
++      }
++      for (const slot of a.slots) {
++        for (const member of slot.candidates) {
++          const fact = facts.get(member);
++          if (!fact) fail("CORE.UNKNOWN_MEMBER", member);
++          const d = fact.declaration;
++          if (
++            (a.kind === "test" || a.kind === "practical") &&
++            d["statement-visibility"] !== "restricted"
++          ) {
++            fail(
++              "CORE.ASSESSMENT_INVALID",
++              "test/practical требуют restricted",
++              doc.source,
++              member,
++            );
++          }
++          if (
++            slot.assignment.stage === "demonstration" &&
++            (d["statement-visibility"] !== "open" ||
++              d["course-role"] !== "demonstration" || !fact.hasPublicSolution)
++          ) {
++            fail(
++              "CORE.ASSESSMENT_INVALID",
++              "demonstration требует open, purpose и actual public solution",
++              doc.source,
++              member,
++            );
++          }
++        }
++      }
++    }
++  }
++  await guard();
++  return { course, exerciseIds: [...facts.keys()], assessmentIds: [...assessments] };
++}
++
++/** Core-owned прочитанный input, без adapter callback/отдельного proof. */
++export function publicationAdapterInput(
++  doc: PublicationDocuments[number],
++  identity: PublicationIdentity,
++  name: string,
++  readSet: readonly NativeMetadataSlot[],
++): NativeAdapterValidationInput {
++  const release = doc.early.release!;
++  return immutable(NativeAdapterValidationInputSchema.parse({
++    origin: { ...identity, captureWitness: doc.early.context.captureWitness,
++      source: doc.source, format: doc.early.context.format },
++    course: release.course,
++    nativeMetadata: {
++      readSet,
++      values: Object.fromEntries(readSet.flatMap((slot) => {
++        const source: Partial<Record<NativeMetadataSlot, unknown>> = slot === "configuration" || slot === "assessment"
++          ? release.nativeMetadata.adapters[name] ?? {} : release.nativeMetadata;
++        return Object.hasOwn(source, slot) ? [[slot, source[slot]]] : [];
++      })),
++    },
++    declarations: release.declarations.filter((d) => d.target === name).map((d) => ({
++      id: d.id, attributes: d.attributes, ...(d.answer ? { answer: d.answer } : {}),
++    })),
++    ...(release.assessment ? { assessment: release.assessment } : {}),
++  }));
++}
++
++export type NativePublicationSelection = NativeReleaseRequest | undefined;
++type PublicationOperations = Pick<NativeOperation,
++  "identity" | "catalog" | "document" | "condition" | "assertCurrent" |
++  "resourceInventory" | "withProjectContracts"
++>;
++export type NativePublication = PublicationOperations & {
++  readonly root: string;
++  readonly outputDirectory: string;
++  readonly course: Awaited<ReturnType<typeof validatePublicationFacts>>["course"];
++  adapterInputs(name: string, readSet: readonly NativeMetadataSlot[]): readonly NativeAdapterValidationInput[];
++  checkSources(source: string, references: readonly NativeAdapterValidationResult["sources"][number][]): Promise<void>;
++};
++
++/** Borrowed methods истекают вместе с настоящим Core callback; data не являются authority. */
++export async function createNativePublication(
++  operation: NativeOperation,
++  documents: PublicationDocuments,
++  selection: NativePublicationSelection,
++  owner: { readonly root: string; readonly outputDirectory: string },
++  checkPath: PublicationPathCheck,
++  guard: () => Promise<void>,
++  checkLive: () => void,
++): Promise<NativePublication> {
++  const facts = await validatePublicationFacts(documents, operation.identity,
++    selection ?? { expectedSources: documents.map((d) => d.source) }, checkPath, guard);
++  const course = immutable(facts.course);
++  const sources = new Set(documents.map((d) => d.source));
++  return Object.freeze({
++    get root() { checkLive(); return owner.root; },
++    get outputDirectory() { checkLive(); return owner.outputDirectory; },
++    get identity() { checkLive(); return operation.identity; },
++    get catalog() { checkLive(); return operation.catalog; },
++    course,
++    document: operation.document,
++    condition: operation.condition,
++    assertCurrent: operation.assertCurrent,
++    resourceInventory: operation.resourceInventory,
++    withProjectContracts: operation.withProjectContracts,
++    adapterInputs(name: string, readSet: readonly NativeMetadataSlot[]) {
++      checkLive();
++      const slots = decode(NativeMetadataReadSetSchema, readSet, "CORE.ADAPTER_INVALID");
++      return course.adapters.includes(name)
++        ? documents.map((doc) => publicationAdapterInput(doc, operation.identity, name, slots)) : [];
++    },
++    async checkSources(source: string, references: readonly NativeAdapterValidationResult["sources"][number][]) {
++      checkLive();
++      if (!sources.has(source)) fail("RELEASE.COVERAGE", "Foreign publication source", source);
++      await guard();
++      for (const reference of references) await checkPath(source, reference.path, reference.kind);
++      await guard();
++      checkLive();
++    },
++  });
++}

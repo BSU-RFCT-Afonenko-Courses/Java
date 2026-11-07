@@ -1,0 +1,21 @@
+# Иллюстративная отрицательная замена того же local input; не запускается установленным validator.
+course-project:
+  testsets:
+    demo:
+      sources: tests/demo
+      requires:
+      - java-process
+      - numeric-output-missing
+    full:
+      includes:
+      - demo
+      sources: tests/full
+  solutions:
+    reference: solutions/reference/src/main/java
+  delivery:
+    author-full:
+      build-profile: java-junit-author
+      testsets:
+      - full
+      solutions:
+      - reference

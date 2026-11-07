@@ -1,0 +1,492 @@
+{
+  "date": "2026-11-03",
+  "method": "Чтение Source; без нового runtime/build/test/hash опыта",
+  "hotspots": [
+    {
+      "id": "P01",
+      "repo": "Platform",
+      "ref": "865d017 (grade.py blob = 626b665d)",
+      "scope": "ответ: official Java",
+      "entry": [
+        "images/java25-grader/grade.py:286",
+        "images/java25-grader/grade.py:354",
+        "images/java25-grader/grade.py:463"
+      ],
+      "chain": "grade → preflight/_execute/_JobRuntime → _run → _grading_boundary (до/после) → _build_tree_state + _hardened_tool_state + _build_process_records + 5 canary _run_unchecked; native build/intact также вызывает boundary:2133,2173.",
+      "volume": "Каждая boundary: SHA256 пяти JDK core files = 173750940 bytes по уже существующему source lock; rglob+lstat всего BUILD_JDK, /proc status/stat, 5 subprocess runuser/Landlock/test. Не физические disk reads и не wall time.",
+      "frequency": "2 на каждый _run, содержащий hardened bin/java при official; ещё 1+6 boundary полного успешного native grade. Только 4 version JVM в двух preflight дают 8 boundary, 1390007520 hash bytes и 40 canary subprocess.",
+      "purpose": "Поймать изменение защищённых инструментов/ролей и доступ sbuser к complete build JDK.",
+      "cut": "Перенести полное содержимое JDK и проверку неизменной установки в installation/image admission; оставить проверки реально меняющейся границы при переходе build→grading. Повтор полного core hash и пяти canary вокруг каждого version/compile/Transform — самостоятельный кандидат на удаление.",
+      "requirement": "Точное сохранение source/image pins и настоящий JDK25 требуются общими инструкциями; буквального требования читать 174MB и запускать пять canary вокруг КАЖДОЙ JVM не найдено. Эти guards — реализация.",
+      "priority": "1 — первым разбирать повтор неизменного"
+    },
+    {
+      "id": "P02",
+      "repo": "Platform",
+      "ref": "865d017 (тот же grade.py у 626b665d)",
+      "scope": "ответ: Java preflight",
+      "entry": [
+        "images/java25-grader/grade.py:548",
+        "images/java25-grader/grade.py:2574",
+        "images/java25-grader/grade.py:2599"
+      ],
+      "chain": "grade→preflight; native finish→verify→preflight повторно; preflight→runner hash + bundle rglob/hash + sharedFiles hash + helper verify + java/javac -version.",
+      "volume": "Весь runtime bundle, shared dependencies и runner; ещё две JVM на каждый preflight, каждая с P01.",
+      "frequency": "1 preflight для обычного grade; 2 для native grade, включая early finish. Внутренний public verification — отдельный grade.",
+      "purpose": "Сверка runtime closure, JDK25 runtime/compiler, helper.",
+      "cut": "Валидировать статический bundle и версии при построении/установке image, переиспользовать результат для заданного immutable image. Повторный finish preflight не добавляет новой предметной информации.",
+      "requirement": "Настоящий JDK25 и отделение tool failure от student error обязательны; именно per-grade JVM version-команды и двойной hash closure не заданы.",
+      "priority": "1 — первым разбирать повтор неизменного"
+    },
+    {
+      "id": "P03",
+      "repo": "Platform",
+      "ref": "865d017 (совпадающие runtime/helper blobs с 626b665d, кроме Assertions.java)",
+      "scope": "ответ: Java подготовка trusted runtime",
+      "entry": [
+        "images/java25-grader/grade.py:925",
+        "images/java25-grader/grade.py:978",
+        "images/java25-grader/grade.py:1063",
+        "runtime/java25-junit-v1/feedback/Transform.java:220",
+        "runtime/java25-junit-v1/feedback/module/org/prairielearn/feedback/internal/State.java:137"
+      ],
+      "chain": "grade→новый _JobRuntime (copy JARs, пустые dirs); ensure_adapter→observerCompilation + transformerCompilation + runnerCompilation; prepare_observer→copy observer + 3 Java Transform; State.bind→hash JUnit/adapter/trusted classes.",
+      "volume": "3 compile JVM для immutable helper sources каждый job; свежий compiler.jsa; 3 Transform JVM, проходы .class и hashes, policy; bind повторно читает JUnit и classes. Projection loop заново хеширует tests для каждого admissions.types:1138.",
+      "frequency": "ensure_adapter один раз внутри данного _JobRuntime, но _JobRuntime создаётся заново для grade. prepare_observer один раз на implementation execution; State.bind один раз в JUnit JVM, не на каждый assertion.",
+      "purpose": "Доверенный feedback observer, защита trusted source/class identity и независимость от student code.",
+      "cut": "Собрать immutable adapter/observer/transformer и статические adapter/reader transform на image installation. Оставить работу над действительно текущими trusted test/student outputs. Вынести одинаковую tests hash-проверку из цикла projection admissions.",
+      "requirement": "Предметное наблюдение assertions может быть нужно; запрет переиспользования helpers между jobs в комментарии compiler() — текущая реализация, не найденное прямое пользовательское требование.",
+      "priority": "1 — первым разбирать повтор неизменного"
+    },
+    {
+      "id": "P04",
+      "repo": "Platform",
+      "ref": "865d017 (grade.py = 626b665d)",
+      "scope": "ответ: native source/recipe/artifact",
+      "entry": [
+        "images/java25-grader/grade.py:2103",
+        "images/java25-grader/grade.py:2159",
+        "images/java25-grader/grade.py:2218",
+        "images/java25-grader/grade.py:2255",
+        "images/java25-grader/grade.py:2331"
+      ],
+      "chain": "native build→canary checks + source/descriptor/tests/recipe hashes→копия src/recipe в свежий workspace→копия inventory→intact до/после; verify→intact+artifact_state. 7 full toolchain verify уже установлены R4, здесь повторно не проверялись.",
+      "volume": "Повторные reads/hash выбранных sources, tests/config, recipe; обходы copied work; JAR читается/hash в artifact_state, копируется, снова readback/hash, затем каждый verify hash JAR. Fresh Gradle caches/tmp, --offline --no-daemon --no-build-cache clean jar.",
+      "frequency": "intact 6 раз плюс initial capture на успешном native grade; artifact verify 4 раза через closure. Source JAR build отдельно от предварительного javac student compile.",
+      "purpose": "Связать artifact с inputs и не допустить mutation private inputs/build recipe.",
+      "cut": "Recipe/static installation checks убрать из каждого intact; сократить повторные hash одного private immutable input и JAR до действительных переходов владения. Удалить двойную production compilation после согласования API/JAR semantics; действующий JUnit classpath использует stage/student, а не этот JAR.",
+      "requirement": "Соответствие проверенного артефакта задаче важно. Именно 6 intact, постоянный clean/new caches и повторная компиляция не являются буквальной нормой; R4/native-build-cost-note.md прежний совет про guards не ограничивает новый прямой запрос пользователя.",
+      "priority": "1 — первым разбирать повтор неизменного"
+    },
+    {
+      "id": "P05",
+      "repo": "Platform",
+      "ref": "865d017; у 626b665d функции те же, строки -18 в grading_job.py",
+      "scope": "qualification job; ответ: additional sources",
+      "entry": [
+        "tools/grading_job.py:730",
+        "tools/grading_job.py:894",
+        "tools/grading_job.py:980",
+        "images/java25-grader/grade.py:2398",
+        "images/java25-grader/grade.py:2631"
+      ],
+      "chain": "run_job native→_prepared_build_input_hash до/после→_additional_inventory (тот же ZIP admission); grade→_additional_inventory ещё раз→write temporary extracted source files.",
+      "volume": "Архив читается/hash, ZIP members проверяются/распаковываются в память, Java files hash; затем actual grade повторяет чтение и пишет sources. Плюс primary source hash до/после.",
+      "frequency": "Для native verification с additional archive: 2 operator admission прохода +1 grader admission на каждый run_job, public recursion повторяет.",
+      "purpose": "Независимо связать returned proof с реально материализованными inputs.",
+      "cut": "На одном доверенном qualified execution сократить повторное admission неизменного private archive; использовать один результат существующего admission, не добавлять новый parser/validator. Реальную admission чужого submission оставить.",
+      "requirement": "Безопасное принятие внешнего ZIP и предметный additional-source договор нужны; три одинаковых admission на один verification grade не заданы.",
+      "priority": "2 — по владельцу/частоте"
+    },
+    {
+      "id": "P06",
+      "repo": "Platform",
+      "ref": "865d017 (run_job AST = 626b665d:852; verify_results:1153)",
+      "scope": "qualification курса, не обычный web ответ",
+      "entry": [
+        "tools/check-course.py:16",
+        "tools/check-course.py:33",
+        "tools/check-course.py:35",
+        "tools/grading_job.py:319",
+        "tools/grading_job.py:870",
+        "tools/grading_job.py:988"
+      ],
+      "chain": "check-course→scenario_inventory→по каждому project/scenario prepare_job→run_job→docker run/host grade; public-verification создаёт copy student и рекурсивный run_job со своим grade; verify_results.",
+      "volume": "inventory(manifest) и его normalization hashes на каждый prepare_job, повторное чтение selected sources/tests/fixtures, materialization job; отдельный container и compilation/build на каждый scenario и public suite.",
+      "frequency": "P×S выбранных jobs, плюс public job для каждого подготовленного public-verification при infrastructure complete. Число P/S из конкретного manifest; здесь не исполнялось.",
+      "purpose": "Проверить эталоны, стартеры, отрицательные сценарии, public/full suite и coverage.",
+      "cut": "Нормализовать manifest/selection один раз на check-course; не повторять static dependency/source processing между scenarios. При одинаковом production input разделить reusable compilation/build и действительно отличающиеся suite runs. Не превращать каждую повторную suite в полный cold build.",
+      "requirement": "Содержательная проверка эталонов/негативов и полного принятого объёма может быть нормативной; container/Gradle/closure replay на каждый совпадающий input — выбор реализации.",
+      "priority": "2 — по владельцу/частоте"
+    },
+    {
+      "id": "P07",
+      "repo": "Platform",
+      "ref": "865d017; runtime_evidence AST = 626b665d",
+      "scope": "qualification/receipt, повтор по scenario и question",
+      "entry": [
+        "tools/grading_job.py:152",
+        "tools/grading_job.py:984",
+        "tools/grading_job.py:1042",
+        "tools/grading_job.py:1210",
+        "tools/grading_job.py:1559"
+      ],
+      "chain": "run_job→runtime_evidence для native build observation и executionEvidence; verify_results→runtime_evidence внутри result loop; _validate_automatic_release_receipt→runtime_evidence внутри question loop.",
+      "volume": "Каждый вызов сканирует bundle и заново читает/hash все его files, runner и sharedFiles; отдельный canonical metadata digest.",
+      "frequency": "Native successful run_job ≥2; verify_results 1 на result; release validator 1 на automatic question. Несколько вопросов одного runtime не объединяются; public recursion добавляет run_job.",
+      "purpose": "Сверить фактически исполненный dependency closure с source registry и вопросами.",
+      "cut": "В рамках неизменного qualified runtime один раз получить closure по runtime, передать в уже существующие этапы; убрать O(question_count) полные reads одного bundle при receipt чтении.",
+      "requirement": "Правильная runtime identity нужна; rehash одних immutable bundle bytes на каждую строку результата/вопрос не требуется буквально.",
+      "priority": "1 — первым разбирать повтор неизменного"
+    },
+    {
+      "id": "P08",
+      "repo": "Platform",
+      "ref": "865d017; package verifier тот же в 626b665d, receipt AST тот же",
+      "scope": "export/qualification/receipt",
+      "entry": [
+        "tools/build-course.py:297",
+        "tools/build-course.py:307",
+        "tools/build-course.py:338",
+        "tools/delivery_verification.py:88",
+        "tools/delivery_verification.py:222",
+        "tools/grading_job.py:1588",
+        "tools/grading_job.py:1612"
+      ],
+      "chain": "build_course→tree(native)→package_integrity→provenance hashes→final tree comparison. check-course delivery→package_integrity→delivery_receipt→package_integrity→validate_release_receipt→package_integrity→automatic receipt tail вновь hash delivery.files.",
+      "volume": "Полный native payload читается/hash несколькими слоями; package_integrity также перечитывает JSON/HTML и сканирует question folder. Schema dependencies хешируются на native_schema вызов.",
+      "frequency": "Один успешный полный automatic delivery check имеет как минимум 4 loops чтения/hash delivery.files по указанной цепочке; manual/native-only без automatic tail — 3. Export отдельно читает весь payload и перечитывает перед publication.",
+      "purpose": "Целостность native package, metadata/forms/controls и соответствие receipt.",
+      "cut": "Один package_integrity результат в пределах защищённой операции; валидировать изменившийся/внешний пакет при следующем trust boundary, убрать прямую вложенную повторную проверку receipt, который только что построен из того же пакета.",
+      "requirement": "Связь receipt с поставкой и полнота актуального выпуска существенны; число полных loops и повторное чтение immutable native schema не предписаны.",
+      "priority": "1 — первым разбирать повтор неизменного"
+    },
+    {
+      "id": "P09",
+      "repo": "Platform",
+      "ref": "865d017 (release_assembly.py blob = 626b665d)",
+      "scope": "export/staging installation, весь Platform source",
+      "entry": [
+        "tools/release_assembly.py:35",
+        "tools/release_assembly.py:61",
+        "tools/release_assembly.py:91",
+        "tools/release_assembly.py:132",
+        "tools/build-course.py:281",
+        "tools/build-course.py:321",
+        "tools/build-course.py:337"
+      ],
+      "chain": "Context→GitSource→scan .git + ls-tree + для каждого blob отдельный git cat-file и SHA256→physical walk/read/hash всех source files. recheck() строит новый Context целиком.",
+      "volume": "Всё released Platform code tree, каждый Git blob + физическая копия, Git index/status/modes/metadata и 4 assets; O(files) git subprocess на Context.",
+      "frequency": "build_course assembly: 1 initial Context +2 full recheck, то есть три таких прохода. Staging имеет вложенные recheck на registry/course/checkout/publish, см. P11.",
+      "purpose": "Аутентификация exact released code + двух external overlays, currentness во время export.",
+      "cut": "Не восстанавливать всю source qualification на каждом currentness: install/admit assembly один раз, сохранять уже принятую source identity и проверять только значимые mutable inputs. Хотя бы git cat-file batch убирает subprocess на файл. Убрать последующие глобальные полные recheck неизменного checkout.",
+      "requirement": "Точные source commits/image digests требуются AGENTS. Это не буквальное требование полного bytes/tree verification несколько раз в одной операции или запрета обычных managed worktrees.",
+      "priority": "1 — первым разбирать повтор неизменного"
+    },
+    {
+      "id": "P10",
+      "repo": "Platform",
+      "ref": "865d017 (prepare-private-source.py blob = 626b665d)",
+      "scope": "freeze private course source; export",
+      "entry": [
+        "tools/prepare-private-source.py:38",
+        "tools/prepare-private-source.py:50",
+        "tools/prepare-private-source.py:120",
+        "tools/prepare-private-source.py:129",
+        "tools/prepare-private-source.py:150",
+        "tools/prepare-private-source.py:224",
+        "tools/prepare-private-source.py:241",
+        "tools/build-course.py:268",
+        "tools/build-course.py:318"
+      ],
+      "chain": "prepare→public git blobs по одному→check_checkout reads→Core/execution inventories→physical_state public/execution/core before/after→copy→git hash-object/update-index на каждый file→validate. build_course validate before/after→runtime_inventory.",
+      "volume": "Целые public/execution/Core trees, nested educational .git; ignored runtime files тоже. Буквальный дубль validate:134 inventory(source), затем runtime_inventory:127 снова inventory(source) и фильтр только после полного hash.",
+      "frequency": "Freeze одна operator операция; build_course два validate и ещё отдельный runtime_inventory:319. Точные count full trees зависят distinct/public/execution/allow_runtime, без запуска.",
+      "purpose": "Приватная материализация teacher/public/common, сохранность исходников и seed identity.",
+      "cut": "Убрать двойной inventory внутри validate непосредственно; runtime_inventory обходить только три объявленных runtime root. Убрать полный public/execution/Core replay там, где writer exclusive и bytes уже captured; заменить per-file Git processes штатным bulk Git доступом.",
+      "requirement": "Сохранность пользовательских данных и teacher/public граница существенны. Именно полный repository snapshot/ignored hash и частота его повторов не установлены прямым требованием.",
+      "priority": "1 — первым разбирать повтор неизменного"
+    },
+    {
+      "id": "P11",
+      "repo": "Platform",
+      "ref": "865d017 (stage_courses.py blob = 626b665d)",
+      "scope": "установка native course",
+      "entry": [
+        "tools/stage_courses.py:72",
+        "tools/stage_courses.py:102",
+        "tools/stage_courses.py:119",
+        "tools/stage_courses.py:127",
+        "tools/stage_courses.py:150",
+        "tools/stage_courses.py:183"
+      ],
+      "chain": "stage_registry→Context→stage_course→assembly.recheck→validate_checkout→validate_release_receipt→walk/provenance hashes→validate_pinned_native→assembly.recheck→validate_pinned_native; fresh stage ещё recheck+validate_pinned_native перед rename.",
+      "volume": "Каждый validate_pinned_native делает полный payload walk, git ls-tree, live read каждого file и отдельный git cat-file; повторяет HEAD/status. Между двумя validate_pinned_native нет записи в course, только recheck другого Platform source.",
+      "frequency": "Existing checkout: validate_pinned_native два раза на checkout при assembly; fresh checkout: три раза. Плюс provenance/package/receipt hashes и несколько полных Context P09.",
+      "purpose": "Exact native Git payload/receipt identity перед readonly mount.",
+      "cut": "Убрать буквально соседний повтор validate_pinned_native; один доверенный admission перед атомарным publish и дальнейшая ссылка на immutable checkout. Не делать повторный весь Git/blob read при unchanged повторном stage_registry.",
+      "requirement": "Exact source/data preservation обязательны; две/три полные сверки одного checkout подряд не предписаны.",
+      "priority": "1 — первым разбирать повтор неизменного"
+    },
+    {
+      "id": "P12",
+      "repo": "Platform",
+      "ref": "865d017 (bootstrap/sync/payload blobs = 626b665d)",
+      "scope": "operator bootstrap/sync, DB",
+      "entry": [
+        "tools/native-course-payload.mjs:8",
+        "tools/bootstrap-native-course.mjs:24",
+        "tools/sync-native-course.mjs:27",
+        "tools/sync-native-course.mjs:59",
+        "tools/institution-bootstrap.mjs:37",
+        "tools/institution-bootstrap.mjs:55"
+      ],
+      "chain": "bootstrap→readNativeCoursePayload→hash всех delivery.files+ancestor lstat; затем named locks и DB create. sync-native-course независимо повторяет files hash, selects/authorizes current route, syncDiskToSql.",
+      "volume": "Весь native course payload + lstat каждого пути; настоящая native DB sync из upstream PrairieLearn, объём внутри syncDiskToSql без source upstream здесь UNKNOWN. Institution/course DB locks отдельные.",
+      "frequency": "На явную operator bootstrap/sync команду. Не на каждый ответ, document или Gateway status.",
+      "purpose": "Импорт immutable поставки и безопасное связывание institution/course/route.",
+      "cut": "Переиспользовать verified immutable installation при последовательных bootstrap/sync, убрать идентичную local payload реализацию в двух местах. DB locks согласуют реальные конкурентные записи; данных о дороговизне/дублировании этих locks нет.",
+      "requirement": "Правильный DB target/сохранность данных важны; механизм полного hash перед каждой отдельной operator стадией не предписан. Дампов/restore в прочитанном исполняемом source не найдено.",
+      "priority": "2 — по владельцу/частоте"
+    },
+    {
+      "id": "P13",
+      "repo": "Platform + Gateway",
+      "ref": "Platform865d017/626b665d; Gateway901624527dce2d37a62fedaa9b768cbbbfd1e366",
+      "scope": "server startup + request context",
+      "entry": [
+        "bridge/bindings.mjs:6",
+        "bridge/server.mjs:54",
+        "bridge/server.mjs:99",
+        "src/gateway/config.py:108",
+        "src/gateway/app.py:82",
+        "src/gateway/courses.py:38"
+      ],
+      "chain": "Node startup→loadVerifiedBindings hash всего native delivery для каждого binding; у626 это inline server:55–74. Python create_app→load_delivery также realpath/read/hash всего payload; create_courses_app делает отдельный app на course. Node context на request читает infoCourseInstance.json.",
+      "volume": "Два сервиса независимо читают/hash одну поставку на startup; на request только маленький instance metadata read+DB lookups, не полный source walk.",
+      "frequency": "Полный hash на каждый service/process start и binding/course; маленький read на context request. Actual число workers/restarts на сервере UNKNOWN.",
+      "purpose": "Delivery identity при старте и UUID routing при обращении.",
+      "cut": "Перенести полную проверку immutable mounted delivery на installation; использовать уже принятую pinned поставку между Node/Python. Кешировать проверенный infoCourseInstance на lifetime verified binding, убрать file read с каждого request.",
+      "requirement": "Соответствие маршрута и delivery важно; отдельный full hash каждым сервисом/процессом и постоянный JSON read не являются буквальными нормами.",
+      "priority": "2 — по владельцу/частоте"
+    },
+    {
+      "id": "P14",
+      "repo": "Gateway",
+      "ref": "901624527dce2d37a62fedaa9b768cbbbfd1e366 (public main, установленный server ref UNKNOWN)",
+      "scope": "постоянный background runtime",
+      "entry": [
+        "src/gateway/config.py:78",
+        "src/gateway/app.py:97",
+        "src/gateway/grades.py:150",
+        "src/gateway/grades.py:192"
+      ],
+      "chain": "worker while True→assignments.reconcile_all→grades.poll→все active assignments→bridge.results; все activity_bindings→каждая lab bridge.work_results; drain проходит outbox, проверяет binding/latest observation/native attempt и шлёт AGS.",
+      "volume": "O(active assignments + всех bindings + pending outbox) SQL/HTTP на цикл, запросы идут последовательно. Это не file/hash inventory.",
+      "frequency": "pollSeconds default15, допускается1..3600; реальные настройки/число активных rows UNKNOWN. Для каждого named course свой worker.",
+      "purpose": "Подтянуть grading/ACL и доставить актуальные оценки в Moodle через LTI/AGS.",
+      "cut": "Прекратить polling заведомо неизменных завершённых строк, выбирать только изменившиеся/ожидающие сущности и переиспользовать уже известные актуальные результаты. Существующий outbox уже задаёт retry/backoff; не нужен новый DSL/receipt framework.",
+      "requirement": "Корректная синхронизация оценок/назначений нужна; обход всех rows каждые15s, включая completed, не задан буквальной нормой. Настоящие данные не читались.",
+      "priority": "2 — по владельцу/частоте"
+    },
+    {
+      "id": "P15",
+      "repo": "Gateway",
+      "ref": "901624527dce2d37a62fedaa9b768cbbbfd1e366",
+      "scope": "startup/transactions, не тяжёлый source snapshot",
+      "entry": [
+        "src/gateway/store.py:41",
+        "src/gateway/store.py:62",
+        "src/gateway/store.py:86",
+        "src/gateway/store.py:93"
+      ],
+      "chain": "Store init→startup-lock flock→read-only schema checks→connect/WAL; WAL busy retry≤15s с sleep≤10ms. transaction→BEGIN IMMEDIATE; request/session/idempotency hashes — маленькие record hashes.",
+      "volume": "SQLite schema metadata и SQL locks; полного DB dump/hash/backup в этом source нет.",
+      "frequency": "startup-lock один раз на создание Store; транзакционный lock на mutation; WAL retries только при реальном SQLITE_BUSY/LOCKED.",
+      "purpose": "Конкурентное создание DB и атомарные user operations/idempotency.",
+      "cut": "Не выдавать эти locks за аналог глобального file fixation. Удаление без установленной проблемы не следует из анализа; при user demand убрать лишние checks источник требует отличать реальные atomicity от repeated immutable bytes checks.",
+      "requirement": "Сохранность реальных DB данных обязательна. Конкретный flock/WAL mechanism — implementation, но здесь нет найденного дублирования большого объёма.",
+      "priority": "3 — низкий/предметный, нет установленного лишнего большого повтора"
+    },
+    {
+      "id": "P16",
+      "repo": "Platform",
+      "ref": "865d017 (Workspace entrypoint blob = 626b665d)",
+      "scope": "Workspace launch/restart",
+      "entry": [
+        "images/sp-git-workspace/entrypoint.sh:18",
+        "images/sp-git-workspace/entrypoint.sh:26",
+        "images/sp-git-workspace/entrypoint.sh:44",
+        "images/sp-git-workspace/entrypoint.sh:71"
+      ],
+      "chain": "entrypoint→manifest parse→read/hash seed.zip; если work есть, сравнивает identity и продолжает. Первый launch→unzip+каждый member hash→git fsck/full→symbolic-ref/rev-list/status→сравнить reachable и all objects→rename work.",
+      "volume": "Весь compressed seed при каждом restart; initial≤4096 files, ≤16MiB expanded + full Git object closure.",
+      "frequency": "archive hash каждый entrypoint независимо от уже существующего work; unzip/Git только первая инициализация. Restart намеренно не вызывает Git.",
+      "purpose": "Не сбросить работу, не принять другой seed и не выдать object базы с готовым решением.",
+      "cut": "Проверить immutable seed при export/installation один раз; restart сравнивает сохранённую small identity, не читает весь archive. Сохранность существующего work оставить; fsck/all-objects installation/export seed тоже можно вынести до каждого пользователя.",
+      "requirement": "Сохранение student work и отсутствие готового решения в seed существенны; per-restart SHA256 и fsck при первом старте каждого пользователя не предписаны.",
+      "priority": "2 — по владельцу/частоте"
+    },
+    {
+      "id": "P17",
+      "repo": "Platform",
+      "ref": "865d017 (fish grade/supervisor blobs = 626b665d)",
+      "scope": "ответ: fish",
+      "entry": [
+        "images/fish-git-grader/grade.py:28",
+        "images/fish-git-grader/grade.py:42",
+        "images/fish-git-grader/grade.py:68",
+        "images/fish-git-grader/grade.py:76"
+      ],
+      "chain": "grade→bundle+runner/shared closure hash→compile/exec trusted Python checker→fish syntax subprocess→до16 cases: fresh dir, copy answer, write fixtures, chown recursive, fish subprocess.",
+      "volume": "Весь small fish runtime closure на ответ; источник≤1MiB, fixture text≤64KiB каждый. На case новая copy/fixtures и process; полных JDK hashes нет.",
+      "frequency": "preflight один на fish grade; syntax один; 1..16 case launches до первого failure/time budget.",
+      "purpose": "Проверить versioned runtime и выполнить независимые предметные cases.",
+      "cut": "Static runtime closure проверить на installation. Выбор разных fixture случаев и isolation — полезная предметная работа; не объявлять её лишней просто по grep. Уменьшение копий может использовать уже фиксированный read-only answer, если isolation сохраняется.",
+      "requirement": "Предметные случаи/оболочка нужны по принятому fish договору; именно full closure на каждый ответ не задан.",
+      "priority": "3 — низкий/предметный, нет установленного лишнего большого повтора"
+    },
+    {
+      "id": "P18",
+      "repo": "Java + System-Practice",
+      "ref": "Java dd5b76a0168133f0760ece6cb21f4bdf4f6203bb; SP fcc5a2ac1eff3760d306a337a9c8871780365488",
+      "scope": "provider installation/check, project scripts",
+      "entry": [
+        "tools/materialize-providers.py:16",
+        "tools/materialize-providers.py:39",
+        "tools/materialize-providers.py:100",
+        "tools/materialize-providers.py:128",
+        "tools/sync-providers.py:22"
+      ],
+      "chain": "--check→для каждого package×scope inventory(rglob/read/hash/stat). --write→git archive full _extensions→staged inventory→current target inventory→ещё prewrite inventory→copy/chmod→postwrite inventory. Java legacy sync→git archive ZIP→quarto add→ещё inventory/copy/check.",
+      "volume": "Все installed extension copies, часто один package в root/theory/lectures/practice/tasks/handbook и других scopes; одинаковые package bytes считаются по каждой копии.",
+      "frequency": "На каждый explicit materializer check/write; вызывается project CI и render. Legacy sync не штатный текущий candidate маршрут и не вызывается runtime.",
+      "purpose": "Pin provenance/vendor closure и сохранение локальных правок при установке.",
+      "cut": "Проверять при installation/change vendor copies, не при каждой несвязанной сборке/статусе. Свести writable target к одному владельцу и убрать повторные inventories одного target без mutation. Legacy archive→quarto add→copy путь не нужен текущему pinned materializer.",
+      "requirement": "Точные provider versions и сохранение локальных правок важны; полное hash каждой installed copy на каждый render/check не задано.",
+      "priority": "2 — по владельцу/частоте"
+    },
+    {
+      "id": "P19",
+      "repo": "Java",
+      "ref": "dd5b76a0168133f0760ece6cb21f4bdf4f6203bb",
+      "scope": "CI whole course, explicit candidate qualification",
+      "entry": [
+        ".github/workflows/check.yml:1",
+        "CI/render.sh:7",
+        "CI/render.sh:10",
+        "CI/check-projects.sh:10",
+        "CI/check-projects-candidate.sh:22"
+      ],
+      "chain": "CI render job disposable clone→materializer --check→quarto --version→student/full/student whole render; отдельный providers job снова materializer --check. Candidate script→student render→Platform export→check-course host+container.",
+      "volume": "Три render всего проекта, дублированный vendor hash в разных jobs. Candidate запускает и host, и container grading одного manifest; результаты не равны qualification сами по себе.",
+      "frequency": "push master, PR, workflow_dispatch и weekly schedule; default render triplet. Candidate только явная команда, не обычный CI current entrypoint.",
+      "purpose": "Публичная сборка/profile isolation + source pins; candidate diagnostic/full qualification.",
+      "cut": "Обычный unchanged/irrelevant CI не должен повторять whole student/full/student и vendor hash. Сохранить адресный profile-transition regression там, где менялась такая семантика; выбирать affected course/input вместо fixed triple every run. Не запускать host и container одинаковые cold builds без отдельной цели.",
+      "requirement": "Student/full correctness и финальная точная приёмка могут требоваться; everypush/weekly triple render и duplicate vendor check — implementation.",
+      "priority": "2 — по владельцу/частоте"
+    },
+    {
+      "id": "P20",
+      "repo": "Java + System-Practice",
+      "ref": "Java dd5b76a; SP fcc5a2ac",
+      "scope": "source pins preflight, optional assembly/image metadata",
+      "entry": [
+        "CI/check-production-pins.py:23",
+        "CI/check-production-pins.py:45",
+        "CI/check-production-pins.py:65",
+        "CI/check-production-pins.py:96",
+        "CI/check-production-pins.py:116",
+        "CI/check-local-candidate.py:8"
+      ],
+      "chain": "main→pins JSON checks. Только если PL_PLATFORM_ROOT+PL_RUNTIME_REGISTRY→assembly: selected module bytes versus git show + assets hash→Context→Context.recheck. _published_image_config умеет GHCR token/manifest/config, но main его НЕ вызывает. Local candidate→runtimeFiles hash+materializer check+docker image inspect.",
+      "volume": "Default pins preflight — маленькие metadata JSON без registry network или full source walk. Optional assembly наследует P09 дважды; metadata helper может делать3 HTTP на image только при другом явном caller.",
+      "frequency": "CI check-projects вызывает main по одному разу; assembly только с paired env. Default network frequency0. Candidate inspect на explicit candidate preflight.",
+      "purpose": "Проверка непротиворечивости production pins и optional authenticated installation.",
+      "cut": "Не добавлять полный source/hash/network к простому metadata preflight. Для admitted assembly не повторять Context.recheck полного tree. Удалить/не вызывать неиспользуемую metadata machinery на каждую operation.",
+      "requirement": "Pins нужны; helper presence не доказывает сетевой вызов или runtime cost. Новый proof/validator сюда не нужен.",
+      "priority": "2 — по владельцу/частоте"
+    },
+    {
+      "id": "P21",
+      "repo": "System-Practice",
+      "ref": "fcc5a2ac1eff3760d306a337a9c8871780365488",
+      "scope": "CI material generation + whole render",
+      "entry": [
+        ".github/workflows/ci.yml:22",
+        "tools/build_materials.py:57",
+        "tools/build_git_materials.py:43",
+        "tools/build_maintenance_materials.py:16",
+        "tools/materialize_public_materials.py:11"
+      ],
+      "chain": "CI→provider check→apt fish→5 materials --check→tests→whole student/full/student. --check генераторы реально заново строят expected ZIP bytes; maintenance generate создаёт Git histories, objects/refs, shared bare copy, diff, prune, recursive read и ZIP; потом hashes existing archives.",
+      "volume": "Все объявленные учебные ZIP и публичные copies; Git fixture construction даже в --check. build_git_materials обычный seed generate сейчас только packs text; старые initialize/commit helpers сами из generate не вызываются.",
+      "frequency": "Каждый push main/PR. Три whole renders на run; все materials generators на run независимо от changed files.",
+      "purpose": "Детерминизм материалов и view transition correctness.",
+      "cut": "Материалы строить/сверять при изменении seed/packer/checker; не восстанавливать Git историю на любой QMD/README правке. Разделить static check metadata и реальную генерацию. Повторный full profile triplet оставить адресной profile regression, не blanket gate.",
+      "requirement": "Учебные материалы должны соответствовать условиям; точный Git reconstruction/ZIP rehash каждый CI и fixed triple render не заданы.",
+      "priority": "2 — по владельцу/частоте"
+    },
+    {
+      "id": "P22",
+      "repo": "System-Practice",
+      "ref": "fcc5a2ac1eff3760d306a337a9c8871780365488",
+      "scope": "explicit local archive checker / tests, не автоматический PL runtime всех задач",
+      "entry": [
+        "tools/system_support.py:34",
+        "tools/system_support.py:70",
+        "tools/check_version_control.py:31",
+        "tools/check_version_control.py:194",
+        "tools/check_version_control.py:235"
+      ],
+      "chain": "check_archive→bounded ZIP/tar read→копия двух .git в safe bare view→tree/index/work reads→fsck --full на каждый repo→_history: все commits→каждый tree и parents→cat-file blob на каждый file→ancestors rev-list cache.",
+      "volume": "Archive default≤1000 entries/8MiB; history≤256 commits. O(commits×files) Git subprocess; возможно повторное чтение одного blob между trees/index/project/verification. Bare helper copy объектов/refs также есть при явном вызове.",
+      "frequency": "На explicit invocation checker/соответствующий test. Не следует переносить это на каждый студентский ответ: SP tasks grading остаётся manual, source автоматического вызова этого checker в Platform fish grade не установлен.",
+      "purpose": "Разобрать предметную структуру сдачи и Git историю без запуска supplied hooks/config; внешний SSH/процесс восстановления всё равно manual.",
+      "cut": "Один bulk read объектов и cached blob/tree results вместо subprocess для каждого одинакового blob; не запускать полный этот checker для несвязанных проектов. Сохранить предметную историю и bounded foreign archive admission.",
+      "requirement": "Проверка предметной истории нужна этому заданию; fsck twice и per-blob processes не буквальная норма. Нельзя считать их global fixation без связи с caller.",
+      "priority": "2 — по владельцу/частоте"
+    },
+    {
+      "id": "P23",
+      "repo": "Platform + Gateway",
+      "ref": "Platform865d017; Gateway901624527dce2d37a62fedaa9b768cbbbfd1e366",
+      "scope": "CI/release-only",
+      "entry": [
+        ".github/workflows/check.yml:66",
+        "tools/prepare_native_toolchain.py:225",
+        "tools/prepare_native_toolchain.py:265",
+        "tools/prepare_native_toolchain.py:296",
+        "tools/prepare_native_jdk.py:192",
+        "tools/publish-receipt.py:48",
+        ".github/workflows/publish-runtime.yml:100",
+        ".github/workflows/release.yml:55"
+      ],
+      "chain": "Platform check push/PR: prepare --fetch→--verify-context→--write-build-context (ещё verify before/after)→Docker no-cache network-none build→--verify-context→image smoke. prepare validates public closure/cache repeatedly; JDK normalize snapshot before/after, copy, normalized twice. Publisher вновь verify_context twice, builds4 images, pushes then pulls each digest; Gateway release pip/tests/wheel/build-push/pull + wheel hash.",
+      "volume": "Pinned Gradle ZIP, JDK package/components/installations и public source selection + TAR; несколько full reads больших fixed inputs. Docker pull/build/container/test setup отдельно от learner response.",
+      "frequency": "Platform check.yml на push/PR/dispatch без paths filter; publish-runtime explicit workflow dispatch/release. Gateway release explicit existing tag, не per answer.",
+      "purpose": "Создать и опубликовать реальные qualified immutable runtimes.",
+      "cut": "Построить один reusable admitted runtime на relevant source/toolchain change и переиспользовать exact image. Убрать постоянные одинаковые --verify-context из nested calls; не запускать no-cache native toolchain build на любую несвязанную source правку и повторно ради того же release.",
+      "requirement": "Реальный image и pin нужны. Статические Source фиксации и 4+ повторных verify на неизменных bytes/всеpush без path discrimination — mechanism choices, не прямые нормы.",
+      "priority": "2 — по владельцу/частоте"
+    },
+    {
+      "id": "P24",
+      "repo": "Platform",
+      "ref": "865d017 (Ansible source blob = 626b665d)",
+      "scope": "deployment installation-only",
+      "entry": [
+        "ansible/roles/platform/tasks/main.yml:88",
+        "ansible/roles/platform/tasks/main.yml:104",
+        "ansible/roles/platform/tasks/main.yml:114"
+      ],
+      "chain": "Ansible→recurse owner private gateway directory→docker image inspect для каждого fixed image→copy/load archive только если missing→compose operations.",
+      "volume": "Metadata inspect per image, recursive chown/copies; archive transfer/load installation cost. Никаких действий этого playbook в аудите не выполнялось.",
+      "frequency": "На explicit deploy playbook. Image archive copy/load conditional on absent image.",
+      "purpose": "Доставить installation artifacts и владельцев.",
+      "cut": "Это правильная граница для дорогостоящей image/source validation; не переносить сюда per-answer checks обратно. Уже условный missing-image путь не считать постоянным runtime scan.",
+      "requirement": "Deployment consistency и данные важны; конкретный metadata inspect small и не объясняет grade latency.",
+      "priority": "3 — низкий/предметный, нет установленного лишнего большого повтора"
+    }
+  ]
+}

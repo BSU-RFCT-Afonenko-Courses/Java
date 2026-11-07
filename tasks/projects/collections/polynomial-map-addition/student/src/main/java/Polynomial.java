@@ -1,1 +1,0 @@
-import java.util.*; public class Polynomial { public static HashMap<Integer,Double> add(HashMap<Integer,Double>a,HashMap<Integer,Double>b){throw new UnsupportedOperationException("Допишите сложение");}}

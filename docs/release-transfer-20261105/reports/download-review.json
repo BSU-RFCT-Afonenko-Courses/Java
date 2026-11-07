@@ -1,0 +1,79 @@
+{
+  "reviewer_chat_id": "01a1a8a7-bf27-7263-bbb7-ae016283e909",
+  "agent_path": "/root/download_review",
+  "original_turn_id": "01a1a8a7-bfa8-7942-9e90-269df79562bc",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "admission": "/tmp/java-release-discussion-20261105/coordination/download-review-admission.json",
+  "admission_full_original_interval_pass": true,
+  "checkout": "/tmp/java-release-work-20261105/download",
+  "base": "09e797a1f56bdeb31a66c3e2afa7b8aba7f90321",
+  "head": "106b958bbf443cd7e220d250117466b434e279de",
+  "core": "433fa5ab9869d9e4ce3ca6befa393ad1c39329ab",
+  "qrc": "541a44836cf5ec934a101059cbee77c9ff47d134",
+  "decision": "approveSource",
+  "conclusion": "В проверенном изменении Source Download блокирующих дефектов не найдено. Одобрен именно пакет Download на frozen Core, а не готовая межрепозиторная композиция или выпуск курса.",
+  "findings": [],
+  "reviewed_graph": [
+    "Core ArtifactFilesSchema → packageArtifact → ZIP32 writer: строгая новая форма без compatibility; ранняя копия обычных bytes, отдельная копия SAB; фактические размеры/CRC, target guards, аудитория и пересечения файлов/каталогов.",
+    "NativePublication catalog → directories batch → ProjectContractContext.input как каталог → plan/materializeCondition/materializeProject → Download-owned draft → publish. Поля и относительные ключи сверены с frozen Core; syntheticQMD отсутствует.",
+    "Обычный ресурс → resourcePaths → publication.resourceFiles → NativeResourceFiles.bytes → ZIP. Core владеет отбором видимых ресурсов и privacy; ordinary no-Core path сохранён.",
+    "Удаление SHA-256 заявок и ownedSignature замкнуто producer/DTO/reader/tests. SHA-1 имени заявки остаётся адресацией по source. Функциональные request checks, destination/symlink/foreign-collision guards, одноразовый writer и manifest очистки сохранены.",
+    "Фактический текущий reader PL native-materialize использует ArtifactFiles и Download.packageArtifact(final). Он ещё меняется владельцем PL, поэтому чтение этого reader не является приёмкой его незамороженной композиции."
+  ],
+  "fresh_checks": [
+    {
+      "name": "quarto run tests/package-bytes.ts",
+      "result": "PASS 5/5; exact binary bytes, CRC, README/src/resources, student/full privacy, invalid targets/collisions, caller memory и SAB",
+      "exit_code": 0,
+      "seconds": null
+    },
+    {
+      "name": "quarto run tests/project-contract-consumer.ts",
+      "result": "PASS genuine native producer → directories → installed Download; 2 ZIP с точным Main.txt",
+      "exit_code": 0,
+      "seconds": null
+    },
+    {
+      "name": "quarto run tests/public-inventory.ts",
+      "result": "PASS genuine Core → QRC → installed Download; README/ссылки/generated resources/privacy/точные ZIP bytes; упаковка не изменила счётчики Core",
+      "exit_code": 0,
+      "seconds": 19.22,
+      "consumer_ms": 22
+    },
+    {
+      "name": "quarto run tests/ownership.ts",
+      "result": "PASS native hooks/capture, строгие request/path guards и границы очистки",
+      "exit_code": 0,
+      "seconds": 43.03
+    },
+    {
+      "name": "quarto run tests/diagnostics.ts",
+      "result": "PASS контекст ошибок, ZIP32 guards, permissions и оба потока/exit внешнего процесса",
+      "exit_code": 0,
+      "seconds": 1.7
+    },
+    {
+      "name": "quarto run /tmp/download-review-author-runtime.ts",
+      "result": "PASS genuine author/full с reference, conditions только README, ordinary NativeResourceFiles с точными bytes; syntheticQMD не создан; 3 ZIP",
+      "exit_code": 0,
+      "seconds": 22.81,
+      "fixture_note": "Первый запуск новой проверочной фикстуры отказал PROJECT_PATH_MISSING из-за отсутствующего объявленного reference каталога projects/b. Исправлена только собственная фикстура, product files не менялись; повтор PASS. Первый запуск14.10с."
+    },
+    {
+      "name": "git diff --check base..head; git status --porcelain=v1; exact HEAD Core/QRC/Download",
+      "result": "PASS; все три проверенные checkout чистые, refs совпадают",
+      "exit_code": 0
+    }
+  ],
+  "not_repeated": [
+    "Дорогой public-runtime167.44с не повторялся ради статуса; его выполненный writer результат и source assertions изучены. Собственные свежие проверки перечислены отдельно.",
+    "Общий typegraph на изменяющемся PL не повторялся. Известный отчёт writer о34старыхPLошибках не трактуется как готовая композиция."
+  ],
+  "integration_gate": [
+    "После freezePL интегратор должен выполнить общий реальный типограф contract-types/runtime-types с точными frozen Core/PL/QRC refs, без casts/stubs/compatibility DTO, и contract-consistency.",
+    "Финальная интеграционная проверка actual installed consumer/публичности/ссылок курса принадлежит родителю; Source approval не заменяет полный release delivery graph, Docker/UI, hosted CI или production."
+  ],
+  "product_files_changed": false,
+  "checked_at": "2026-11-04T22:27:18.863763+00:00"
+}

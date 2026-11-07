@@ -1,0 +1,1 @@
+import java.lang.String;final class MoneyCases {static final String[]AFTER_TAX={"1.125","2.375","12.345","1.125"},MIDPOINT={"1.125","2.375"},OLD_MIDPOINT={"1.005","1.015","1000000","1.005"};static final String RATE="0.20",MID_RATE="0",OLD_RATE="0";}

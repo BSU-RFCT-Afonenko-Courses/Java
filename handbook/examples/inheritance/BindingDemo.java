@@ -13,11 +13,12 @@ public class BindingDemo {
     }
 
     public static void main(String[] args) {
-        Base ref = new Child();
+        Child child = new Child();
+        Base ref = child;
         System.out.println(ref.label);
         System.out.println(((Child) ref).label);
         System.out.println(ref.label());
-        System.out.println(((Base) ref).label());
+        System.out.println(((Base) child).label());
         System.out.println(Base.category());
         System.out.println(Child.category());
         System.out.println(((Child) ref).baseLabel());

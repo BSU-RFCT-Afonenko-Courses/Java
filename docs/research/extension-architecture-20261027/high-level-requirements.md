@@ -1,0 +1,99 @@
+# Высокоуровневые требования и инварианты T02
+
+Автор должен менять учебный материал в понятном каноническом месте, быстро видеть нужный результат и получать предсказуемую полную выдачу. Сохраняются разные педагогические формы, обязательства студента, native Quarto semantics, модульность расширений, автономные минимальные комплекты и граница public/teacher. Это требования к результату. Конкретное число SHA, snapshots, guards, manifests, процессов и повторных проверок из них не следует.
+
+Основание: прямой исследовательский запрос и `plan/design.md:8–25`; принятые правила `docs/authoring-methodology.md:563–685`; текущие canonical QMD/политика работ; восстановленные пользовательские решения завершённой сессии. Последние хранятся отдельно от публичного курса; здесь представлены выводимые требования, без закрытых текстов и чувствительных путей. Выбранные inputs фиксирует [source-selection.md](source-selection.md); статические факты — [authoring-model.md](authoring-model.md) и проверочная сводка (сохранена локально).
+
+## Требования к результату
+
+| ID | Требование | Реальный consumer / свидетельство | Проверяемый критерий |
+|---|---|---|---|
+| RQ01 | Разные учебные формы сохраняют свою функцию | Root, theory, lectures/notes, practice, handbook, tasks | Связное самостоятельное чтение, устный рассказ, справка, подготовка и задача не сливаются только из-за общей темы |
+| RQ02 | Одна независимая редакция условия и общего компонента | Банк, native Body/conditions, public/teacher projects, ZIP | Правка канона меняет все производные выдачи; intentional версии названы; 48 current condition copies не становятся вторыми канонами |
+| RQ03 | Условие, API, открытый пример и тесты задают одинаковые допустимые решения | Student, reference/bindings, precheck и тесты | Свободный API не ограничивается ради harness; fixed API проверяется после отдельной компиляции и до dependent tests |
+| RQ04 | Автор редактирует решения, а техническое раскрытие получается автоматически | Profiles, common mappings, unit wrappers, Native descriptors | Нет ручного повторения одного списка файлов/зависимостей без отдельного авторского смысла |
+| RQ05 | Public и teacher материалы имеют явных владельцев и разные области | Student ZIP/site/Native против reference/tests/rubric/contract | Closed inputs не попадают в student; недостающие closed inputs видны и не объявляются успешной qualification |
+| RQ06 | Комплект самодостаточен в заявленной границе | Starter, conditions, API, README, examples/data | Нет ссылки на отсутствующий локальный файл; для сайта/сети явно названа зависимость; source QMD не является обязательным скрытым runtime |
+| RQ07 | Local author cycle отделён от release и grading | Preview/page, IDE, public checks, full composition | Для изменения Markdown не требуется заново проверять эталон в Docker; необходимые invalidation/dependency updates всё же выполняются |
+| RQ08 | Teacher inputs сохраняются и переносятся без раскрытия | Private source, closed archive, manifest/provenance | Exact root/input set обнаружим владельцу, контрольная копия восстановима; public отчёт содержит агрегаты, не source/секреты |
+| RQ09 | IDE работает с полными нужными compilation contexts | Student, reference, fixtures, common, build/API | Нет искусственной единой компиляции несовместимых alternatives; правка common возвращается одному владельцу; stage не выдаётся за roundtrip |
+| RQ10 | Source selection/currentness проверяются относительно поддерживаемых правок | Capture/NativeRun, resource closure, manifests, assembly | Принятый результат связан с фактическими sources/config/profile/resources; stale input обнаруживается в первой достаточной точке |
+| RQ11 | Native semantics Quarto сохраняются | Metadata/profiles/includes/resources, writer/filter ordering, crossrefs/search | Вариант даёт сопоставимые нужные outputs; native reference не исключает функции, за которые отвечает расширение |
+| RQ12 | Export, qualification и student execution имеют разные статусы | Exporter → Platform checks → admission → server | Inventory/readiness/prepare/export не равны runtime PASS; complete qualification требует полного объявленного сценарного множества |
+| RQ13 | Инфраструктура и ошибка студента различаются | Runtime result, UI, receipt | Trusted compilation/dependency/containment failure не становится автоматическим нулём за допустимое решение |
+| RQ14 | Баллы следуют принятой учебной политике | QMD work, Native assessment, bridge, gradebook | Обязательная лабораторная 100, равные slots; mixed 70/30; manual 100% teacher; добровольные отдельно и с нулевым обязательным весом |
+| RQ15 | Пара выбора учитывается один раз | Work slots, Native bestQuestions, bridge completion | Оба кандидата видны, один weighted slot, нет двойного обязательства/веса, повтор exercise не создаёт новую учебную единицу |
+| RQ16 | Попытки и результат следуют принятой политике | Открытая работа, native question instance, automatic result | Неограниченные попытки до закрытия, лучший auto result; текущее source `attempts:3` — выявленный конфликт, не новое согласованное ограничение |
+| RQ17 | Полная оценка и completion учитывают ручную часть | Native points/status, required-slot completion, Moodle consumer | Auto score1 не означает manual complete; pending/manual grading не закрывает required slot; серверный факт подтверждается отдельно |
+| RQ18 | Установка/выпуск повторимы и сохраняют чужие изменения | Providers/vendor, runtime/host-tools/raw-assets/assembly | Exact pins/source/assets и compatibility tuple явны; локальная дельта не уничтожается, непроверенный hybrid не собирается |
+| RQ19 | Сбой допускает понятное безопасное восстановление | Source overlay, capture lifecycle, checkpoints, release state | Сохраняются оригиналы и причины; повторяют только утратившую основание фазу; deferred status не становится verified и не продлевается сам |
+| RQ20 | Упрощение и ускорение доказаны по нужному результату | Автор, разработчики/owners, исследовательские consumers | Отдельные latency/work/qualification/assembly величины, реальное coverage, секунды и limits; нет придуманного SLA/PASS |
+
+RQ14–RQ17 повторяют уже принятые решения, а не предлагают новую педагогическую политику. Реальный server/UI/Moodle путь частично не проверен; отсутствие наблюдения не отменяет требование и не доказывает дефект начисления.
+
+## Инварианты: предмет, изменения, доверие и последствия
+
+`Первая достаточная точка` — самое раннее место, где уже есть нужные факты. Она не предписывает полное повторное хеширование на каждом callsite. Точный hook/frequency подлежит T06–T13.
+
+| ID / тип | Subject и поддерживаемое изменение | Доверенные компоненты | Первая достаточная точка обнаружения | Предпосылки платформы | Последствие отказа |
+|---|---|---|---|---|---|
+| IN01 content | Canonical condition + dependent API/examples; обычная правка текста/API | Авторский канон, независимая содержательная рецензия, producer resolved bodies | Сопоставление применимого условия перед выдачей; новая семантика до технической приёмки | Native parser/writer сохраняет структуру/код | Неполная/противоречивая выдача не принимается; не скрывать за существующим ID |
+| IN02 ownership | Shared component и mappings; edit/common membership/new task | Единственный source, явный dependency recipe, resolver target collision | При раскрытии dependency/target до записи stage | Обычные регулярные файлы, понятный owner | Конфликт источников/targets блокирует запись; исходники сохраняются |
+| IN03 privacy | Public projection versus closed inputs; profile switch, export/ZIP | Audience policy, producer, public artifact selector | До записи публичного output/Native и дополнительно на итоговой границе | Teacher находится вне public tree; symlinks не обходят границу | Запрет выдачи затронутого artifact, закрытые bytes не попадают в public diagnostic |
+| IN04 delivery correctness | README/API/resources; новый local href и исключение source format | Canonical dependency declaration, native resolved resource model | После известного отбора files, до ZIP/export publication | Заявленный online/offline scope, рабочий root/site URL | Не публиковать broken required resource; назвать missing dependency |
+| IN05 currentness | NativeRun/model/config/resources/common; save, profile change, include edit | Native producer и bound source identities; phase-scoped immutable result | На входе операции и после возможной мутации до использования/commit результата | Пути/процессы имеют выбранный owner/lifetime, supported filesystem semantics | Stale result отвергается с указанием изменившегося subject; новая дорогостоящая работа только когда нужна |
+| IN06 integrity | Пакет/manifest/runtime/dependencies; перенос bytes между машинами | Exact source pins, authentic runtime registry, hash algorithm, release owner | При получении/сборке входа и изменении trust boundary | Digest/размер/подпись имеют документированную область | Corrupt/mismatched input не исполняется и не переименовывается в current |
+| IN07 safe recovery | Disposable overlay/stage/checkpoint; interruption, retry, cleanup | Явное владение созданными paths/inodes/bytes, journal | До перезаписи/удаления и при восстановлении после сбоя | Безопасные filesystem operations на выбранной ОС | Чужая дельта сохраняется; cleanup refusal виден; snapshot не считается исходником |
+| IN08 qualification | Declared scenario inventory; смена reference/starter/test/runtime | Checks producer, expectations, runtime registry, qualification runner | Schema/input/readiness до build; exact coverage после исполнения | Поддерживаемый JDK/Gradle, declared image и dependency closure | Partial/unavailable/failure не образуют complete receipt; диагностика различает defect/infrastructure |
+| IN09 execution isolation | Недоверенное student solution; Java child/Gradle build/additional ZIP | Platform runtime, containment, tested extraction/selection | До запуска и на границе trusted result | CPU/memory/PID/network/filesystem policy; official containment native Gradle | Недоступная изоляция — infrastructure failure, не student zero; остановка принадлежащего job |
+| IN10 scoring correctness | Runtime score/auto/manual/native points; изменение tests или числа cases | Явный scoring policy, native assessment, bound bridge rows | При выборе policy/weights и чтении native result | Finite bounds, exact attempt/question inventory, manual status | Нельзя пересчитать учебный вес по числу tests; inconsistent record блокирует gradebook result |
+| IN11 choice identity | Одна choice pair/slot; оба кандидата доступны, повторное использование | QMD slot model, Native groups, bridge mapping | При export native layout и при преобразовании per-question results | Equal candidate ceiling, один scoped attempt | Двойное начисление/неполный scope не принимаются |
+| IN12 completion | Required slots, full score и manual state; новая попытка/ручная оценка | Completion policy и native rows одного attempt | После получения завершённого результата на exact slot set | Native transaction/read даёт согласованное множество | Pending/incomplete не завершает slot; итоговые points и completion не подменяют друг друга |
+| IN13 admission | Source/Native/receipt/route binding; новая версия или deferred режим | Release authority, acceptance documents, strict gate | До server stage/import | Отличаются VERIFIED, NOT_VERIFIED, failed и manual acceptance | Нельзя создать fake verification; старое разрешение не распространяется на новый input |
+| IN14 compatibility | Core/Exporter/Platform/QRC/Download public boundary; обновление одного owner | Владелец контракта, explicit capability/versions/schema | DTO/schema/API gate до native render/build | Source/runtime/host-tools/raw assets/assembled tree раздельны | Несовместимость диагностируется рано; latest/main/старый PASS не заменяют fix presence |
+| IN15 portability | Public+teacher input set; перенос рабочей машины | Закрытый manifest/копия и её владелец | До исполнения на новой машине | Присутствуют нужные файлы, toolchain и доступные image/dependencies | Missing private ограничивает только зависимые выводы; не означает потерю всего курса |
+
+Content/correctness относится к выполнению учебного договора. Currentness связывает результат с текущим состоянием. Integrity подтверждает bytes/происхождение. Safe recovery сохраняет работу после отказа. Противодействие внешней подмене — отдельный threat model: обычная правка автором не должна автоматически трактоваться как атака. Один checksum не доказывает все эти свойства одновременно.
+
+## Где текущая реализация не является требованием
+
+| Текущий механизм | Сохраняемая гарантия | Не доказано как обязательное |
+|---|---|---|
+| SHA-prefix каталоги common | Единственный source и точные bytes результата | Непрозрачное имя вместо семантического, если materializer не проверяет имя-хеш |
+| 1015 индивидуальных mappings | Audience/placement/collision ownership | Ручная редакция развёрнутого списка вместо раскрытия именованного набора |
+| Множество snapshots/guards/inspect | Currentness/integrity относительно заявленных изменений | Полное повторное чтение неизменного closure на каждом документе/сценарии |
+| Native pointer/capture lifecycle | Разрешённые native model/body и scope/lifetime | Привязка внешнего consumer к случайному временному `course.json`, если принятая модель уже получена |
+| 87 unit wrappers | Доступность индивидуальных тренировочных/резервных задач и корректные результаты | Отдельная вручную поддерживаемая педагогическая work-редакция каждой технической выдачи |
+| Docker qualification | Изолированное выполнение и release qualification | Контейнер на каждую правку прозы, IDE stage либо повтор неизменного доказанного runtime closure |
+| Exact `--check` materialization | Проверяемый воспроизводимый artifact | Объявление read-only stage полноценной редактируемой IDE-средой с обратным sync |
+| Полный authoritative receipt | Проверенная закрытая поставка и coverage | Приравнивание historical deferred admission, prepare PASS либо HTTP200 к VERIFIED |
+| `attempts:3` и положительный integer API | Нужна корректная пользовательская политика попыток | Новое ограничение трёх сдач вопреки принятому unlimited-while-open |
+
+## Новые вопросы и варианты, не требующие пересмотра принятых решений
+
+1. **Канон условий и автономный комплект.** Вариант A — отдельный canonical task fragment с native include и явным dependency context. Вариант B — существующая native selected body/conditions projection с упаковкой нужного API/resources. Выбор зависит от сохранения native ссылок/ресурсов и цены author edit; повторно обсуждать необходимость полного условия не требуется.
+2. **Краткие зависимости.** Вариант A — максимум существующих defaults и локальных исключений. Вариант B — узкий именованный набор common dependencies с generated exact mappings. Сравнивать на текущих audience/collision invariants, без универсального DSL.
+3. **IDE.** Вариант A — workspace канонических public/common/teacher modules. Вариант B — disposable full stage + явный compare/patch по source provenance. Автоматический двусторонний sync не выбран; сохранение teacher и единственного common source уже обязательно.
+4. **Граница повторной проверки.** Вариант A — переиспользование принятого immutable контекста в одной операции. Вариант B — отдельный bound artifact между командами с ранней проверкой input closure. Постоянный cache/DAG должен доказать пользу и invalidation отдельно.
+
+Новые продуктовые изменения этим документом не выполняются. Технически подтвердить варианты можно на разрешённой малой disposable fixture; реальная server/student qualification и закрытие historical deferred долга имеют отдельный scope в [release-and-recovery.md](release-and-recovery.md).
+
+## Уточнение пользовательского UX и имени архива
+
+- **RQ21 — минимальные действия студента.** Короткая задача с одним уже фиксированным исходником должна допускать простой редактор в PrairieLearn; необходимость локального ZIP/README и upload обосновывается конкретным API/данными/проектом. Действующая обязательная kit-модель — историческая реализация, не вечный договор UX. Для свободных имён/пакетов сохраняются допустимые решения; нельзя превратить удобство редактора в новое ограничение API.
+- **RQ22 — последнее уточнение имени архива уже согласовано.** При наличии содержательной лабораторной/группы — `<lab-or-group-id>--<exercise-id>.zip`, например `sec-lab-numbers--exr-numbers-image-size.zip`; без неё — `<exercise-id>.zip`. Технический unit/ordinal не заменяет учебную группу. Ссылка, фактическое имя/Content-Disposition и manifest согласуются; один question в разных works может получать contextual download name при общем logical artifact. Payload conflict/privacy/integrity guards сохраняются. Нумерация `starter-1` не принимается как авторский идентификатор.
+- **RQ23 — понятная группировка.** Студент видит десять лабораторных с их списками, добровольные reserve menus и тематическую тренировку. Наличие 97 технических Native assessments не обосновывает плоский список из 87 разрозненных единиц. Группировка сохраняет 35 slots/41 кандидата обязательных работ, 6 choice pairs, добровольность дополнительных задач и отсутствие двойного веса.
+
+Основание — прямое уточнение пользователя в текущем исследовании. проверочная сводка (сохранена локально) подтверждает 128 upload/0 editor, 128 starter/README links и 97 Homework в одном set. Реальная видимость/navigation/submission на сервере ещё не проверялась. Продуктовая правка этим уточнением не выполняется.
+
+- **RQ24 — понятное представление баллов.** Автор и студент не должны читать машинные хвосты вроде `23.333333333333332`. Сохраняются уже принятые равные slots, 70 auto/30 manual и 100 за лабораторную; UI/авторский рецепт отделяются от native числового хранения. Округление трёх долей до 23.33 не должно незаметно превратить auto pool70 в69.99 либо сделать slots неравными. Если выбранный native API не даёт точного нужного представления, изменение шкалы оформляется отдельным вариантом, а не молчаливым пересмотром политики.
+
+- **RQ25 — понятная System Practice и проверяемый результат.** Семь существующих задач сохраняют смысл и ID, но условие ясно называет цель, вход и результат. Локальная система и native PrairieLearn Workspace могут вести к одному результатному контракту. Файлы/Git/pipeline проверяются автоматически там, где наблюдение достаточно; обязательный приём, Windows и внешняя GitHub/SSH identity не объявляются доказанными одним конечным снимком. Старые checker scripts используются после разделения монолитных контрактов. Это требование к будущей реализации, без server setup в исследовании.
+
+## Дополнительные требования к условиям и оценке
+
+- **RQ26 — допустимый API не сужается стартером.** Прямо заданные имена/сигнатуры отделяются от примера. При разрешённых других конструкторах, методах, пакетах и результатах нужен поддержанный путь проверки или ручного разбора; отказ подготовки клиента не доказывает неверное решение.
+- **RQ27 — явные границы оценки у каждой задачи.** Обязательное/свободное, публичные примеры, автоматические свойства, предъявление преподавателю, вес и статус видны без поиска по введению банка и скачиваемым инструкциям. Закрыты данные тестов, а не критерии.
+- **RQ28 — самопроверка не имитирует полноту.** Успешный Main, две публичные проверки, ручное предъявление и полный grading различаются. Нужны действительные положительные/отрицательные контроли, включая неизменённый стартер и вариант только под публичную пару; неизвестное нельзя объявлять проверенным.
+
+Основание, полный статический охват и пределы девяти адресных запусков — [assessment-contract-audit.md](assessment-contract-audit.md). Исходные 88 статусов A/H/B сохраняются; новые требования не объявлены закрытыми этими статусами.

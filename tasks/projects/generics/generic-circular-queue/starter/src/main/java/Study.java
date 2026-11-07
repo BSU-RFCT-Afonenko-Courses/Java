@@ -1,0 +1,1 @@
+public class Study<T> {  public Study(T[] storage) {throw new UnsupportedOperationException("Реализуйте создание");} public void put(T value) {throw new UnsupportedOperationException("Реализуйте помещение");} public T get() {throw new UnsupportedOperationException("Реализуйте извлечение");} }

@@ -1,0 +1,136 @@
+diff --git a/_extensions/reference-catalog/infrastructure/publish.ts b/_extensions/reference-catalog/infrastructure/publish.ts
+index 1a884a5..8b4d350 100644
+--- a/_extensions/reference-catalog/infrastructure/publish.ts
++++ b/_extensions/reference-catalog/infrastructure/publish.ts
+@@ -5,7 +5,7 @@ import type { Catalog, Exports } from "../domain/model.ts";
+ import { join, relative, dirname, fromFileUrl, resolve, isAbsolute } from "./files.ts";
+ import { readPage } from "./pages.ts";
+ import { linkPages, type LinkScope } from "./linker.ts";
+-import { updateSearch, searchIndexBase, type SearchIndex } from "./search.ts";
++import { updateSearch, searchIndexBase, type SearchIndex, type SearchRow } from "./search.ts";
+ import { exportedTargets } from "../domain/exports.ts";
+ import { catalogConfig } from "./config.ts";
+ import { importTargets } from "./imports.ts";
+@@ -80,12 +80,11 @@ export async function publish(context: CatalogPublication): Promise<void> {
+   // Сначала вычисляется полный результат: ошибка ссылки не оставляет половину страниц обновлёнными.
+   for (const [path, html] of linked.pages) await Deno.writeTextFile(join(stage, path), html);
+   const currentIndexes = indexes.map(index => ({ ...index, path: resolve(root, index.path) }));
+-  await updateSearch(stage, currentIndexes, linked.parsedPages);
++  const updatedSearch = await updateSearch(stage, currentIndexes, linked.parsedPages);
+   if (context.scope !== "local" && indexes.length) {
+-    const rows = new Map<string, Record<string, unknown>>();
+-    for (const index of currentIndexes) {
++    const rows = new Map<string, SearchRow>();
++    for (const { index, rows: sourceRows } of updatedSearch) {
+       const path = index.path;
+-      const sourceRows = JSON.parse(await Deno.readTextFile(path));
+       for (const row of sourceRows) {
+         const base = searchIndexBase(stage, index);
+         const url = new URL(row.href, `https://qrc.invalid/${base}`);
+diff --git a/_extensions/reference-catalog/infrastructure/search.ts b/_extensions/reference-catalog/infrastructure/search.ts
+index a40ab31..3063281 100644
+--- a/_extensions/reference-catalog/infrastructure/search.ts
++++ b/_extensions/reference-catalog/infrastructure/search.ts
+@@ -3,7 +3,13 @@ const __metrics=__createMetrics("reference-catalog");
+ import { attr, elements, hasClass, type Element, type Node } from "./html.ts";
+ import type { Page } from "./pages.ts";
+ import { relative, isAbsolute } from "./files.ts";
++import { isRecord } from "./import-config.ts";
+ export interface SearchIndex { path: string; mount?: string }
++export interface SearchRow extends Record<string, unknown> { href: string; text: string }
++export interface UpdatedSearchIndex { index: SearchIndex; rows: SearchRow[] }
++function isSearchRow(row: unknown): row is SearchRow {
++  return isRecord(row) && typeof row.href === "string" && typeof row.text === "string";
++}
+ export function searchIndexBase(root: string, index: SearchIndex): string {
+   if (index.mount === undefined) return relative(root, index.path).replaceAll("\\", "/");
+   const mount = index.mount.replaceAll("\\", "/");
+@@ -16,16 +22,23 @@ export function readable(node: Node): string {
+   return "childNodes" in node ? node.childNodes.map(readable).join(" ") : "";
+ }
+ /** Штатные индексы созданы до post-render; обновляем их текст из окончательного HTML. */
+-export async function updateSearch(root: string, indexFiles: (string | SearchIndex)[], pages: Map<string, Page>): Promise<void> {
++export async function updateSearch(root: string, indexFiles: (string | SearchIndex)[], pages: Map<string, Page>): Promise<UpdatedSearchIndex[]> {
+   // Linking updates the current tree; no second HTML parse is needed.
+   const parsed = new Map<string, { main?: Element; ids: Map<string, Element> }>();
++  const updated: UpdatedSearchIndex[] = [];
++  const rowsByPath = new Map<string, SearchRow[]>();
+   for (const value of indexFiles) {
+     const index = typeof value === "string" ? { path: value } : value;
+     const file = index.path;
+-    const rows = JSON.parse(await Deno.readTextFile(file));
++    const rows: unknown = JSON.parse(await Deno.readTextFile(file));
+     if (!Array.isArray(rows)) throw new Error(`QRC неподдерживаемый поисковый индекс ${file}`);
+-    for (const row of rows) {
+-      if (typeof row.href !== "string" || typeof row.text !== "string") throw new Error(`QRC неподдерживаемая запись поискового индекса ${file}`);
++    const sourceRows: readonly unknown[] = rows;
++    const finalRows = rowsByPath.get(file) ?? [];
++    finalRows.length = 0;
++    rowsByPath.set(file, finalRows);
++    for (const row of sourceRows) {
++      if (!isSearchRow(row)) throw new Error(`QRC неподдерживаемая запись поискового индекса ${file}`);
++      finalRows.push(row);
+       const url = new URL(row.href, "https://qrc.invalid/" + searchIndexBase(root, index));
+       const path = decodeURIComponent(url.pathname).slice(1);
+       const page = pages.get(path);
+@@ -45,8 +58,10 @@ export async function updateSearch(root: string, indexFiles: (string | SearchInd
+       const selected = fragment ? selection.ids.get(fragment) : selection.main;
+       if (selected) row.text = readable(selected).replace(/\s+/g, " ").trim();
+     }
+-    await Deno.writeTextFile(file, JSON.stringify(rows, null, 2) + "\n");
++    await Deno.writeTextFile(file, JSON.stringify(finalRows, null, 2) + "\n");
++    updated.push({ index, rows: finalRows });
+   }
++  return updated;
+ }
+ 
+ // @ts-expect-error JS допускает замену function binding; сигнатура публичного API сохраняется.
+diff --git a/tests/search-publication.ts b/tests/search-publication.ts
+index 5a3541e..c7dd5a6 100644
+--- a/tests/search-publication.ts
++++ b/tests/search-publication.ts
+@@ -1,6 +1,7 @@
+ import { join } from "stdlib/path";
+ import { Parser } from "../_extensions/reference-catalog/vendor/parse5/dist/index.js";
+ import { publish } from "../_extensions/reference-catalog/infrastructure/publish.ts";
++import { isRecord } from "../_extensions/reference-catalog/infrastructure/import-config.ts";
+ 
+ function assert(value: unknown, message: string): asserts value {
+   if (!value) throw new Error(message);
+@@ -18,15 +19,30 @@ try {
+   const html = `<html><body><main><h1 id="sec-target">Heading</h1><a data-qrc-ref="book:sec-target" data-qrc-style="default">pre-link placeholder</a><a data-qrc-ref="book:sec-target" data-qrc-style="title" data-qrc-custom="true"><em>Custom &amp; exact</em></a></main><div class="qrc-probes" data-qrc-namespace="book"><div class="qrc-probe" data-qrc-id="sec-target" data-qrc-style="default"><a class="qrc-anchor" href="#sec-target">Native caption</a></div><div class="qrc-probe" data-qrc-id="sec-target" data-qrc-style="number"><a class="qrc-anchor" href="#sec-target">1</a></div></div></body></html>`;
+   await Deno.writeTextFile(join(stage, "book/chapter.html"), html);
+   await Deno.writeTextFile(join(stage, "index.html"), '<html><body><main>Landing</main></body></html>');
+-  await Deno.writeTextFile(join(stage, "book/search.json"), JSON.stringify([{ href: "chapter.html", text: "old chapter" }, { href: "chapter.html#sec-target", text: "old section" }]));
++  await Deno.writeTextFile(join(stage, "book/search.json"), JSON.stringify([{ href: "chapter.html", text: "old chapter", title: "Chapter", metadata: { tags: ["kept"], rank: 2 } }, { href: "chapter.html#sec-target", text: "old section" }]));
+   await Deno.writeTextFile(join(stage, "search.json"), JSON.stringify([{ href: "index.html", text: "landing" }, { href: "stale.html", text: "private retained content" }]));
+   await publish({ root, stage, quarto: "fixture", config: {}, members: [{ namespace: "book", format: "html" }], outputs: ["stage/index.html", "stage/book/chapter.html"], searchIndexes: [{ path: "stage/search.json", mount: "" }, { path: "stage/book/search.json", mount: "book" }] });
+   assert(parses === 2, `Combined linking/search reparsed current HTML: ${parses}`);
+-  const rows = JSON.parse(await Deno.readTextFile(join(stage, "search.json")));
+-  assert(rows.find((row: any) => row.href === "book/chapter.html")?.text === "Heading Native caption Custom & exact", "Mounted search lost its final link captions or URL prefix");
+-  assert(rows.find((row: any) => row.href === "book/chapter.html#sec-target")?.text === "Heading", "Mounted fragment search lost its target");
+-  assert(rows.find((row: any) => row.href === "index.html")?.text === "Landing", "Mounted search merge removed the landing entry");
+-  assert(!rows.some((row: any) => row.href === "stale.html"), "Full search retained a noncurrent page entry");
++  const parsedRows: unknown = JSON.parse(await Deno.readTextFile(join(stage, "search.json")));
++  assert(Array.isArray(parsedRows), "Итоговый search должен быть массивом");
++  const rows: readonly unknown[] = parsedRows;
++  assert(rows.every(isRecord), "Итоговые поисковые записи должны быть объектами");
++  assert(rows.find(row => row.href === "book/chapter.html")?.text === "Heading Native caption Custom & exact", "Mounted search lost its final link captions or URL prefix");
++  const chapter = rows.find(row => row.href === "book/chapter.html");
++  assert(chapter?.title === "Chapter" && JSON.stringify(chapter.metadata) === '{"tags":["kept"],"rank":2}', "Дополнительные metadata поисковой записи не сохранились при обновлении и merge");
++  assert(rows.find(row => row.href === "book/chapter.html#sec-target")?.text === "Heading", "Mounted fragment search lost its target");
++  assert(rows.find(row => row.href === "index.html")?.text === "Landing", "Mounted search merge removed the landing entry");
++  assert(!rows.some(row => row.href === "stale.html"), "Full search retained a noncurrent page entry");
++  await Deno.mkdir(join(stage, "second"));
++  await Deno.writeTextFile(join(stage, "book/chapter.html"), '<html><body><main>First mount text</main></body></html>');
++  await Deno.writeTextFile(join(stage, "second/chapter.html"), '<html><body><main>Last mount text</main></body></html>');
++  await Deno.writeTextFile(join(stage, "book/search.json"), JSON.stringify([{ href: "chapter.html", text: "old", metadata: { duplicate: true } }]));
++  await publish({ root, stage, quarto: "fixture", config: {}, members: [], outputs: ["stage/book/chapter.html", "stage/second/chapter.html"], searchIndexes: [{ path: "stage/book/search.json", mount: "book" }, { path: "stage/book/search.json", mount: "second" }] });
++  const duplicateRows: unknown = JSON.parse(await Deno.readTextFile(join(stage, "search.json")));
++  assert(JSON.stringify(duplicateRows) === JSON.stringify([
++    { href: "book/chapter.html", text: "Last mount text", metadata: { duplicate: true } },
++    { href: "second/chapter.html", text: "Last mount text", metadata: { duplicate: true } },
++  ]), "Повторный path должен использовать последние записанные строки для обоих mounts, сохраняя порядок и metadata");
+   console.log("PASS combined search: one parse, final/native/custom captions, mounted entries and landing preservation");
+ } finally {
+   Parser.parse = parse;

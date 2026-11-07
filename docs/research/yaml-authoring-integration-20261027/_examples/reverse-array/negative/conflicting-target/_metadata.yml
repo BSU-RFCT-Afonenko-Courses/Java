@@ -1,0 +1,24 @@
+# Иллюстративный точечный target override: реальный historical reference Main конфликтует с Main стартера. Это ожидаемый отказ, не разрешение перезаписи.
+course-project:
+  testsets:
+    demo:
+      sources: tests/demo
+      requires:
+      - java-process
+      - numeric-output
+    full:
+      includes:
+      - demo
+      sources: tests/full
+  solutions:
+    reference: solutions/reference/src/main/java
+  delivery:
+    author-full:
+      build-profile: java-junit-author
+      testsets:
+      - full
+      solutions:
+      - reference
+  extra-files:
+  - source: solutions/reference/src/main/java/Main.java
+    target: src/main/java/Main.java

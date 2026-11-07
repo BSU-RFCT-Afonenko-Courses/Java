@@ -1,0 +1,3113 @@
+diff --git a/src/analysis/historical.ts b/src/analysis/historical.ts
+index d03a02f..9a4f890 100644
+--- a/src/analysis/historical.ts
++++ b/src/analysis/historical.ts
+@@ -100,14 +100,53 @@ function legacyRecord(
+   run: NormalizedRun,
+ ): RunRecord {
+   if (value.schema_version === 2) {
+-    return {
+-      ...validateRunRecord(value),
++    if (value.completion !== undefined) {
++      const record = validateRunRecord(value);
++      if (record.completion.kind !== "complete") {
++        throw new Error(`Неполный запуск не сравнивается: ${source}`);
++      }
++      return {
++        ...record,
++        collectionDirectory: source,
++        artifacts: {},
++        dataValid: run.dataValid,
++        quality: run.quality,
++      };
++    }
++    const old = value.outcome;
++    if (!old || typeof old !== "object" || Array.isArray(old)) {
++      throw new Error("Нет исторического outcome");
++    }
++    const { stdioMode, ...outcome } = old as Record<string, unknown>;
++    if (outcome.completion !== undefined) throw new Error("Неполный запуск не сравнивается");
++    const {
++      outcome: _oldOutcome,
++      outputDirectory: _outputDirectory,
++      buildExitCode: _buildExitCode,
++      wallSeconds: _wallSeconds,
++      signal: _signal,
++      ...base
++    } = value;
++    return validateRunRecord({
++      ...base,
++      completion: {
++        kind: "complete",
++        native: {
++          ...outcome,
++          wallScope: "historical",
++          source: "historical-record",
++          resourceScope: "historical",
++        },
++      },
++      command: null,
++      streams: { stdout: "eof", stderr: "eof" },
++      stdioMode: stdioMode ?? null,
++      observedWallSeconds: outcome.wallSeconds,
+       collectionDirectory: source,
+-      outputDirectory: output,
+       artifacts: {},
+       dataValid: run.dataValid,
+       quality: run.quality,
+-    };
++    });
+   }
+   // argv is the original producer's executable + full command; other commands
+   // cannot be represented as a NativeRenderRequest without guessing semantics.
+@@ -131,14 +170,24 @@ function legacyRecord(
+     schema_version: 2,
+     runId: value.runId,
+     request: { cwd: value.cwd, quarto: argv[0], nativeArgv: argv.slice(2), mode: value.mode },
+-    outcome: {
+-      code: value.buildExitCode,
+-      signal: value.signal,
+-      wallSeconds: value.wallSeconds,
+-      cpuUserSeconds: resources?.cpu_user_seconds ?? null,
+-      cpuSystemSeconds: resources?.cpu_system_seconds ?? null,
+-      peakRssKiB: resources?.peak_rss_kib ?? null,
++    completion: {
++      kind: "complete",
++      native: {
++        wallScope: "historical",
++        source: "historical-record",
++        resourceScope: "historical",
++        code: value.buildExitCode,
++        signal: value.signal,
++        wallSeconds: value.wallSeconds,
++        cpuUserSeconds: resources?.cpu_user_seconds ?? null,
++        cpuSystemSeconds: resources?.cpu_system_seconds ?? null,
++        peakRssKiB: resources?.peak_rss_kib ?? null,
++      },
+     },
++    command: null,
++    streams: { stdout: "eof", stderr: "eof" },
++    stdioMode: value.stdioMode ?? null,
++    observedWallSeconds: value.wallSeconds,
+     preparation: value.preparation,
+     dataValid: run.dataValid,
+     quality: run.quality,
+@@ -150,13 +199,10 @@ function legacyRecord(
+     },
+     git: null,
+     collectionDirectory: source,
+-    outputDirectory: output,
+     artifacts: {},
+-    scenario: value.scenario ?? null,
+-    variant: value.variant ?? null,
++    ...(value.scenario === undefined ? {} : { scenario: value.scenario }),
++    ...(value.variant === undefined ? {} : { variant: value.variant }),
+     mode: value.mode,
+-    buildExitCode: value.buildExitCode,
+-    wallSeconds: value.wallSeconds,
+     experimentId: manifest.experimentId,
+   });
+ }
+@@ -202,6 +248,9 @@ export async function prepareHistoricalImport(
+     const files = await materialFiles(dir);
+     const original = await metadata(join(dir, "run.json"));
+     const value = original.value;
++    if (value.completion?.kind === "incomplete" || value.outcome?.completion === "incomplete") {
++      throw new Error(`Неполный запуск не поддерживает historical comparison: ${dir}`);
++    }
+     const runManifestPath = join(dir, "manifest.json");
+     const runManifest = files.includes(runManifestPath)
+       ? await metadata(runManifestPath)
+@@ -266,7 +315,9 @@ export async function prepareHistoricalImport(
+       run: original.receipt,
+       ...(runManifest ? { runManifest: runManifest.receipt } : {}),
+       sourceStatus: {
+-        buildExitCode: value.schema_version === 2 ? value.outcome.code : value.buildExitCode,
++        buildExitCode: record.completion.native?.code ?? (() => {
++          throw new Error("Historical native outcome неизвестен");
++        })(),
+         dataValid: typeof value.dataValid === "boolean" ? value.dataValid : null,
+         signalAvailability: value.signalAvailability ?? "unknown",
+       },
+@@ -350,7 +401,8 @@ export async function prepareHistoricalImport(
+     provenance,
+     runs: plans.map((p) => p.run),
+     nativeFailed: plans.some((p) =>
+-      p.record.outcome.code !== 0 || p.record.outcome.signal !== null
++      p.record.completion.kind !== "complete" || p.record.completion.native.code !== 0 ||
++      p.record.completion.native.signal !== null
+     ),
+   };
+ }
+diff --git a/src/analysis/report.ts b/src/analysis/report.ts
+index c1406ab..9ca2ca2 100644
+--- a/src/analysis/report.ts
++++ b/src/analysis/report.ts
+@@ -3,22 +3,23 @@ import type { ReportSourceManifest } from "../config/types.ts";
+ import type { NormalizedRun } from "./normalize.ts";
+ 
+ import { jsonFiles, operationTotals, writeRunArtifacts } from "../report/run.ts";
+-import type { RunRecord } from "../report/types.ts";
++import { type RunRecord, validateRunRecord } from "../report/types.ts";
+ import { prepareHistoricalImport } from "./historical.ts";
+ export { operationTotals } from "../report/run.ts";
+ 
+-function summarizeRun(run: NormalizedRun) {
++function summarizeRun(record: RunRecord, run?: NormalizedRun) {
+   return {
+-    run_id: run.runId,
+-    data_valid: run.dataValid,
+-    events: run.events.length,
+-    quality: run.quality,
+-    operations: operationTotals(run).map((o) => ({
++    run_id: record.runId,
++    completion: record.completion.kind,
++    data_valid: record.completion.kind === "complete" && record.dataValid,
++    events: run?.events.length ?? null,
++    quality: record.quality,
++    operations: (run ? operationTotals(run) : []).map((o) => ({
+       ...o,
+-      quality: run.dataValid ? "observed-exact" : "partial",
++      quality: record.dataValid ? "observed-exact" : "partial",
+       completion_scope: "recorded-end-events",
+     })),
+-    counters: Object.values(run.executors).map((e) => ({
++    counters: Object.values(run?.executors ?? {}).map((e) => ({
+       process_id: e.process_id,
+       executor_id: e.executor_id,
+       clock_domain: e.clock_domain,
+@@ -95,7 +96,7 @@ async function writeExperimentArtifacts(
+   output: string,
+   importProvenance?: unknown,
+ ) {
+-  const builds: Record<string, unknown>[] = [], coverage: Record<string, unknown>[] = [];
++  const builds: RunRecord[] = [], coverage: Record<string, unknown>[] = [], missing: string[] = [];
+   try {
+     for await (const item of Deno.readDir(join(output, "runs"))) {
+       if (!item.isDirectory) continue;
+@@ -107,10 +108,10 @@ async function writeExperimentArtifacts(
+             "Исторические metadata доступны read-only; in-place report/verify не поддерживается",
+           );
+         }
+-        builds.push(metadata);
++        builds.push(validateRunRecord(metadata));
+       } catch (e) {
+         if (!(e instanceof Deno.errors.NotFound)) throw e;
+-        builds.push({ runId: item.name, status: "INCOMPLETE" });
++        missing.push(item.name);
+       }
+       try {
+         coverage.push({
+@@ -128,22 +129,22 @@ async function writeExperimentArtifacts(
+   const benchmarks = await jsonFiles(join(output, "benchmarks"), ".json", true);
+   const summary: ReturnType<typeof summarizeRun>[] = [];
+   for await (const run of runs) {
+-    summary.push(summarizeRun(run));
+     const path = join(output, "runs", run.runId);
+-    await Deno.mkdir(path, { recursive: true });
+     const build = builds.find((b) => b.runId === run.runId);
+-    if (!build || build.schema_version !== 2) {
+-      throw new Error(`Отсутствуют текущие metadata запуска: ${run.runId}`);
++    if (!build) throw new Error(`Отсутствуют текущие metadata запуска: ${run.runId}`);
++    if (build.completion.kind === "incomplete") {
++      // The stored snapshot wins; never normalize/upgrade an interrupted capture.
++      summary.push(summarizeRun(build));
++    } else {
++      const record: RunRecord = {
++        ...build,
++        dataValid: run.dataValid,
++        quality: { ...run.quality, errors: [...run.quality.errors] },
++      };
++      const publication = await writeRunArtifacts(path, record, run);
++      builds[builds.indexOf(build)] = publication.record;
++      summary.push(summarizeRun(publication.record, run));
+     }
+-    const record = {
+-      ...build,
+-      dataValid: run.dataValid,
+-      quality: run.quality,
+-    } as unknown as RunRecord;
+-    await writeRunArtifacts(path, record, run);
+-    // Lazy normalization обновляет quality/coverage во время итерации runs.
+-    // Агрегаты получают тот же итоговый record, что сохранён per-run writer.
+-    builds[builds.indexOf(build)] = JSON.parse(await Deno.readTextFile(join(path, "run.json")));
+     try {
+       const current = {
+         run_id: run.runId,
+@@ -156,6 +157,9 @@ async function writeExperimentArtifacts(
+       if (!(error instanceof Deno.errors.NotFound)) throw error;
+     }
+   }
++  for (const build of builds) {
++    if (!summary.some((run) => run.run_id === build.runId)) summary.push(summarizeRun(build));
++  }
+   const data = {
+     manifest,
+     summary: {
+@@ -165,14 +169,12 @@ async function writeExperimentArtifacts(
+       ...(importProvenance ? { importProvenance } : {}),
+     },
+     quality: summary.map((r) => ({ run_id: r.run_id, ...r.quality })),
+-    coverage: importProvenance
+-      ? coverage.map((receipt) => ({
+-        ...receipt,
+-        sourceComplete: receipt.complete ?? null,
+-        complete:
+-          summary.find((run) => run.run_id === receipt.run_id)?.quality.coverageComplete === true,
+-      }))
+-      : coverage,
++    coverage: coverage.map((receipt) => ({
++      ...receipt,
++      sourceComplete: receipt.complete ?? null,
++      complete:
++        summary.find((run) => run.run_id === receipt.run_id)?.quality.coverageComplete === true,
++    })),
+     builds,
+     benchmarks,
+   };
+@@ -201,9 +203,9 @@ async function writeExperimentArtifacts(
+     "| --- | --- | --- | ---: | ---: | --- |",
+     ...builds.map((b) =>
+       `| ${b.scenario ?? "?"} | ${b.variant ?? "?"} | ${b.mode ?? "?"} | ${
+-        b.buildExitCode ?? "INCOMPLETE"
+-      } | ${typeof b.wallSeconds === "number" ? b.wallSeconds.toFixed(3) : "—"} | [${
+-        b.dataValid ? "VALID" : "INVALID"
++        b.completion.kind === "complete" ? b.completion.native.code : "INCOMPLETE/UNKNOWN"
++      } | ${b.completion.native ? b.completion.native.wallSeconds.toFixed(3) : "UNKNOWN"} | [${
++        b.completion.kind === "complete" && b.dataValid ? "VALID" : "INVALID"
+       }](runs/${b.runId}/run.json) |`
+     ),
+     "",
+@@ -273,5 +275,8 @@ async function writeExperimentArtifacts(
+     "Lua sampling backend: unavailable. Lua CPU начинается локально в каждом executor; на wall шкалу не переносится. CPU samples Deno не являются точными счётчиками вызовов. TS symbol mapping указывает исходные диапазоны; универсальное восстановление transpiled строк CPU profile не гарантируется. Lua функции на одинаковых строках различаются runtime identity и ordinal первого наблюдения; ordinal между runs не обещает стабильность.",
+   ];
+   await Deno.writeTextFile(join(output, "report.md"), lines.join("\n") + "\n");
+-  return { dataValid: summary.every((r) => r.data_valid), diagnostics: summary.length };
++  return {
++    dataValid: missing.length === 0 && summary.every((r) => r.data_valid),
++    diagnostics: summary.length,
++  };
+ }
+diff --git a/src/cli/experiment.ts b/src/cli/experiment.ts
+index 30d0971..65a50e9 100644
+--- a/src/cli/experiment.ts
++++ b/src/cli/experiment.ts
+@@ -4,7 +4,8 @@ import { resolveSources } from "../sources/resolve.ts";
+ import { freezeVariants } from "../sources/freeze.ts";
+ import { prepareVariant } from "../sources/prepare.ts";
+ import { executablePath, probeQuarto } from "../adapters/quarto/capabilities.ts";
+-import { executeScenario } from "../runner/execute.ts";
++import { executeScenario, withScenarioSignals } from "../runner/execute.ts";
++import { completedNative, validateRunRecord } from "../report/types.ts";
+ import { benchmarkPair } from "../runner/benchmark.ts";
+ import { hashFile } from "../sources/snapshot.ts";
+ import { compareBenchmarks } from "../analysis/compare.ts";
+@@ -56,6 +57,14 @@ function parseFlags(args: readonly string[]): Record<string, string> {
+   return flags;
+ }
+ export async function experimentCommand(argv: readonly string[]): Promise<number> {
++  return argv[0] === "run" || argv[0] === "benchmark"
++    ? await withScenarioSignals((signal) => experimentCommandImpl(argv, signal))
++    : await experimentCommandImpl(argv);
++}
++async function experimentCommandImpl(
++  argv: readonly string[],
++  abortSignal?: AbortSignal,
++): Promise<number> {
+   const [command, ...args] = argv;
+   const flags = parseFlags(args);
+   if (
+@@ -184,6 +193,7 @@ export async function experimentCommand(argv: readonly string[]): Promise<number
+             cleanPaths: config.cleanPaths,
+             useHyperfine: true,
+             runtimeRegistry,
++            abortSignal,
+           },
+           onProgress: async (progress) => {
+             await Deno.writeTextFile(
+@@ -233,10 +243,12 @@ export async function experimentCommand(argv: readonly string[]): Promise<number
+       diagnosticEnv: diagnostic?.env,
+       coverage: diagnostic?.coverage,
+       runtimeRegistry,
++      abortSignal,
+     });
++    const native = completedNative(result);
+     if (diagnostic) {
+       const coverage = JSON.parse(
+-        await Deno.readTextFile(join(result.outputDirectory, "coverage.json")),
++        await Deno.readTextFile(join(result.directory, "coverage.json")),
+       );
+       const observations = Object.fromEntries(
+         diagnostic.coverage.requestedExtensions.map((ext) => [
+@@ -250,16 +262,16 @@ export async function experimentCommand(argv: readonly string[]): Promise<number
+         ]),
+       );
+       await Deno.writeTextFile(
+-        join(result.outputDirectory, "coverage.json"),
++        join(result.directory, "coverage.json"),
+         JSON.stringify({ ...coverage, observations }, null, 2) + "\n",
+       );
+     }
+     await Deno.writeTextFile(
+-      join(result.outputDirectory, "manifest.json"),
++      join(result.directory, "manifest.json"),
+       JSON.stringify(prepared.manifest, null, 2) + "\n",
+     );
+     console.log(JSON.stringify(result));
+-    return result.buildExitCode ? 3 : result.dataValid ? 0 : 4;
++    return native.code ? 3 : result.record.dataValid ? 0 : 4;
+   }
+   if (command === "report" || command === "verify") {
+     if (flags["--import-historical"]) {
+@@ -282,12 +294,12 @@ export async function experimentCommand(argv: readonly string[]): Promise<number
+           const dir = join(runRoot, item.name);
+           let meta;
+           try {
+-            meta = JSON.parse(await Deno.readTextFile(join(dir, "run.json")));
++            meta = validateRunRecord(JSON.parse(await Deno.readTextFile(join(dir, "run.json"))));
+           } catch (e) {
+             if (e instanceof Deno.errors.NotFound) continue;
+             throw e;
+           }
+-          if (meta.request.mode !== "off") {
++          if (meta.completion.kind === "complete" && meta.request.mode !== "off") {
+             yield await normalizeRun(dir);
+           } else {
+             yield {
+@@ -311,12 +323,15 @@ export async function experimentCommand(argv: readonly string[]): Promise<number
+       if (!item.isDirectory) continue;
+       let meta;
+       try {
+-        meta = JSON.parse(await Deno.readTextFile(join(runRoot, item.name, "run.json")));
++        meta = validateRunRecord(
++          JSON.parse(await Deno.readTextFile(join(runRoot, item.name, "run.json"))),
++        );
+       } catch (e) {
+         if (e instanceof Deno.errors.NotFound) return 4;
+         throw e;
+       }
+-      if (meta.outcome.code !== 0) return 3;
++      if (meta.completion.kind !== "complete") return 4;
++      if (meta.completion.native.code !== 0) return 3;
+     }
+     return report.dataValid ? 0 : 4;
+   }
+diff --git a/src/config/types.ts b/src/config/types.ts
+index 7be0cfe..20edeed 100644
+--- a/src/config/types.ts
++++ b/src/config/types.ts
+@@ -95,16 +95,6 @@ export interface PreparationReceipt {
+   preparedHash: string;
+   sourceMapPath?: string;
+ }
+-export interface RunResult {
+-  runId: string;
+-  buildExitCode: number;
+-  dataValid: boolean;
+-  outputDirectory: string;
+-  preparation: PreparationReceipt[];
+-  wallSeconds: number;
+-  signal: string | null;
+-}
+-
+ export interface RunPaths {
+   runId: string;
+   stagingDirectory: string;
+diff --git a/src/report/run.ts b/src/report/run.ts
+index c6640fd..35b29b4 100644
+--- a/src/report/run.ts
++++ b/src/report/run.ts
+@@ -1,5 +1,11 @@
+ import { isAbsolute, join } from "node:path";
+-import type { CounterAggregate, RunRecord, RunSummary } from "./types.ts";
++import {
++  type CounterAggregate,
++  PublicationError,
++  type PublishedRun,
++  type RunRecord,
++  type RunSummary,
++} from "./types.ts";
+ import {
+   type NormalizedRun,
+   operationAttribution,
+@@ -58,7 +64,9 @@ export async function jsonFiles(directory: string, suffix: string, retainFileNam
+ }
+ 
+ export function summarizeRunRecord(record: RunRecord, normalized?: NormalizedRun): RunSummary {
+-  const exact = record.dataValid ? "observed-exact" as const : "partial" as const;
++  const exact = record.completion.kind === "complete" && record.dataValid
++    ? "observed-exact" as const
++    : "partial" as const;
+   const deltas = new Map<string, CounterAggregate>();
+   for (const event of normalized ? validatedEvents(normalized) : []) {
+     if (event.event !== "counter" || !event.counter) continue;
+@@ -80,8 +88,10 @@ export function summarizeRunRecord(record: RunRecord, normalized?: NormalizedRun
+   return {
+     schema_version: 2,
+     runId: record.runId,
++    completion: record.completion.kind,
++    normalization: normalized ? "available" : "not-processed",
+     ...(record.importProvenance ? { importProvenance: record.importProvenance } : {}),
+-    dataValid: record.dataValid,
++    dataValid: record.completion.kind === "complete" && record.dataValid,
+     quality: record.quality,
+     operations: normalized
+       ? operationTotals(normalized).map((o) => ({
+@@ -199,209 +209,245 @@ export async function writeRunArtifacts(
+   directory: string,
+   record: RunRecord,
+   normalized?: NormalizedRun,
+-): Promise<void> {
+-  await Deno.mkdir(directory, { recursive: true });
+-  if (normalized?.coverage) {
+-    await Deno.writeTextFile(
+-      join(directory, "coverage.json"),
+-      JSON.stringify(normalized.coverage, null, 2) + "\n",
+-    );
++  previous?: PublishedRun,
++): Promise<PublishedRun> {
++  const publication = { record, directory };
++  try {
++    await Deno.mkdir(directory, { recursive: true });
++    const temporary = join(directory, `run.${crypto.randomUUID()}.tmp`);
++    await Deno.writeTextFile(temporary, JSON.stringify(record, null, 2) + "\n");
++    await Deno.rename(temporary, join(directory, "run.json"));
++  } catch (cause) {
++    throw new PublicationError(record.runId, directory, "record", cause, previous, record);
+   }
+-  const artifacts: Record<string, string> = {
+-    run: "run.json",
+-    summary: "summary.json",
+-    report: "report.md",
+-  };
+-  // Только относительные ссылки, существующие в этом запуске. Collection — provenance.
+-  for (const [name, path] of Object.entries(record.artifacts)) {
+-    if (isAbsolute(path) || path.split(/[\\/]/).includes("..")) {
+-      throw new Error(`Недопустимый artifact path: ${path}`);
+-    }
+-    if (!["run.json", "summary.json", "report.md"].includes(path)) {
+-      await Deno.lstat(join(directory, path));
++  try {
++    if (record.completion.kind === "complete" && normalized?.coverage) {
++      await Deno.writeTextFile(
++        join(directory, "coverage.json"),
++        JSON.stringify(normalized.coverage, null, 2) + "\n",
++      );
+     }
+-    artifacts[name] = path;
+-  }
+-  for (
+-    const [name, path] of Object.entries({
+-      stdout: "stdout.log",
+-      stderr: "stderr.log",
+-      events: "events",
+-      profiles: "profiles",
+-      processes: "processes",
+-      coverage: "coverage.json",
+-      manifest: "manifest.json",
+-    })
+-  ) {
+-    try {
+-      await Deno.lstat(join(directory, path));
++    const artifacts: Record<string, string> = {
++      run: "run.json",
++      summary: "summary.json",
++      report: "report.md",
++    };
++    // Только относительные ссылки, существующие в этом запуске. Collection — provenance.
++    for (const [name, path] of Object.entries(record.artifacts)) {
++      if (isAbsolute(path) || path.split(/[\\/]/).includes("..")) {
++        throw new Error(`Недопустимый artifact path: ${path}`);
++      }
++      if (!["run.json", "summary.json", "report.md"].includes(path)) {
++        await Deno.lstat(join(directory, path));
++      }
+       artifacts[name] = path;
+-    } catch (e) {
+-      if (!(e instanceof Deno.errors.NotFound)) throw e;
+     }
+-  }
+-  const views: { path: string; clock: string; process_id?: string; executor_id?: string }[] = [];
+-  const profiles: { path: string; process_id: string }[] = [];
+-  let commandLines: string[] = [];
+-  if (normalized && record.request.mode !== "off") {
+-    const processes = await jsonFiles(join(directory, "processes"), ".json");
+-    commandLines = nativeCommandMarkdown(processes);
+-    const trace = traces(normalized, processes);
+-    await Deno.writeTextFile(join(directory, "wall.trace.json"), JSON.stringify(trace.wall));
+-    await Deno.writeTextFile(join(directory, "lua-cpu.trace.json"), JSON.stringify(trace.luaCpu));
+-    views.push({ path: "wall.trace.json", clock: "calibrated-wall" }, {
+-      path: "lua-cpu.trace.json",
+-      clock: "local-lua-cpu",
+-    });
+-    for (const local of trace.localWall) {
+-      await Deno.writeTextFile(join(directory, local.fileName), JSON.stringify(local.trace));
+-      const source = local.trace.traceEvents.find((e) => e.ph === "X")!;
+-      views.push({
+-        path: local.fileName,
+-        clock: "local-wall",
+-        process_id: String(source.args.process_id),
+-        executor_id: String(source.args.executor_id),
++    if (record.completion.kind === "complete") {
++      for (
++        const [name, path] of Object.entries({
++          stdout: "stdout.log",
++          stderr: "stderr.log",
++          events: "events",
++          profiles: "profiles",
++          processes: "processes",
++          coverage: "coverage.json",
++          manifest: "manifest.json",
++        })
++      ) {
++        try {
++          await Deno.lstat(join(directory, path));
++          artifacts[name] = path;
++        } catch (e) {
++          if (!(e instanceof Deno.errors.NotFound)) throw e;
++        }
++      }
++    }
++    const views: { path: string; clock: string; process_id?: string; executor_id?: string }[] = [];
++    const profiles: { path: string; process_id: string }[] = [];
++    let commandLines: string[] = [];
++    if (record.completion.kind === "complete" && normalized && record.request.mode !== "off") {
++      const processes = await jsonFiles(join(directory, "processes"), ".json");
++      commandLines = nativeCommandMarkdown(processes);
++      const trace = traces(normalized, processes);
++      await Deno.writeTextFile(join(directory, "wall.trace.json"), JSON.stringify(trace.wall));
++      await Deno.writeTextFile(join(directory, "lua-cpu.trace.json"), JSON.stringify(trace.luaCpu));
++      views.push({ path: "wall.trace.json", clock: "calibrated-wall" }, {
++        path: "lua-cpu.trace.json",
++        clock: "local-lua-cpu",
++      });
++      for (const local of trace.localWall) {
++        await Deno.writeTextFile(join(directory, local.fileName), JSON.stringify(local.trace));
++        const source = local.trace.traceEvents.find((e) => e.ph === "X")!;
++        views.push({
++          path: local.fileName,
++          clock: "local-wall",
++          process_id: String(source.args.process_id),
++          executor_id: String(source.args.executor_id),
++        });
++        artifacts[`localWall${trace.localWall.indexOf(local) + 1}`] = local.fileName;
++      }
++      await Deno.writeTextFile(
++        join(directory, "export.json"),
++        JSON.stringify(
++          {
++            schema_version: 1,
++            format: "chrome-trace-event-json",
++            run_id: record.runId,
++            data_valid: record.dataValid,
++            coverage_complete: record.quality.coverageComplete,
++            quality: record.quality,
++            files: views,
++            executors: Object.entries(normalized.executors).sort(([a], [b]) =>
++              a < b ? -1 : a > b ? 1 : 0
++            ).map(([key, e]) => ({
++              process_id: e.process_id ?? key.split("/")[0],
++              executor_id: e.executor_id ?? key.split("/").slice(1).join("/"),
++              clock_domain: e.clock_domain ?? null,
++            })),
++          },
++          null,
++          2,
++        ) + "\n",
++      );
++      artifacts.export = "export.json";
++      await Deno.writeTextFile(
++        join(directory, "causal.json"),
++        JSON.stringify(
++          {
++            run_id: record.runId,
++            data_valid: record.dataValid,
++            processes,
++            spans: validatedEvents(normalized).filter((e) => e.event === "begin").map((e) => ({
++              span_id: e.span_id,
++              parent_span_id: e.parent_span_id ?? null,
++              process_id: e.process_id,
++              executor_id: e.executor_id,
++              operation_id: e.operation_id,
++              clock_domain: e.clock_domain,
++            })),
++          },
++          null,
++          2,
++        ) + "\n",
++      );
++      Object.assign(artifacts, {
++        wall: "wall.trace.json",
++        luaCpu: "lua-cpu.trace.json",
++        causal: "causal.json",
+       });
+-      artifacts[`localWall${trace.localWall.indexOf(local) + 1}`] = local.fileName;
+     }
+-    await Deno.writeTextFile(
+-      join(directory, "export.json"),
+-      JSON.stringify(
+-        {
+-          schema_version: 1,
+-          format: "chrome-trace-event-json",
+-          run_id: record.runId,
+-          data_valid: record.dataValid,
+-          coverage_complete: record.quality.coverageComplete,
+-          quality: record.quality,
+-          files: views,
+-          executors: Object.entries(normalized.executors).sort(([a], [b]) =>
+-            a < b ? -1 : a > b ? 1 : 0
+-          ).map(([key, e]) => ({
+-            process_id: e.process_id ?? key.split("/")[0],
+-            executor_id: e.executor_id ?? key.split("/").slice(1).join("/"),
+-            clock_domain: e.clock_domain ?? null,
+-          })),
+-        },
+-        null,
+-        2,
+-      ) + "\n",
+-    );
+-    artifacts.export = "export.json";
+-    await Deno.writeTextFile(
+-      join(directory, "causal.json"),
+-      JSON.stringify(
+-        {
+-          run_id: record.runId,
+-          data_valid: record.dataValid,
+-          processes,
+-          spans: validatedEvents(normalized).filter((e) => e.event === "begin").map((e) => ({
+-            span_id: e.span_id,
+-            parent_span_id: e.parent_span_id ?? null,
+-            process_id: e.process_id,
+-            executor_id: e.executor_id,
+-            operation_id: e.operation_id,
+-            clock_domain: e.clock_domain,
+-          })),
+-        },
+-        null,
+-        2,
+-      ) + "\n",
+-    );
+-    Object.assign(artifacts, {
+-      wall: "wall.trace.json",
+-      luaCpu: "lua-cpu.trace.json",
+-      causal: "causal.json",
+-    });
+-  }
+-  if (record.request.mode !== "off") {
+-    try {
+-      for await (const entry of Deno.readDir(join(directory, "profiles"))) {
+-        if (!entry.isDirectory) continue;
+-        const path = `profiles/${entry.name}/cpu.cpuprofile`;
+-        try {
+-          if ((await Deno.lstat(join(directory, path))).isFile) {
+-            profiles.push({ path, process_id: entry.name });
++    if (record.completion.kind === "complete" && record.request.mode !== "off") {
++      try {
++        for await (const entry of Deno.readDir(join(directory, "profiles"))) {
++          if (!entry.isDirectory) continue;
++          const path = `profiles/${entry.name}/cpu.cpuprofile`;
++          try {
++            if ((await Deno.lstat(join(directory, path))).isFile) {
++              profiles.push({ path, process_id: entry.name });
++            }
++          } catch (error) {
++            if (!(error instanceof Deno.errors.NotFound)) throw error;
+           }
+-        } catch (error) {
+-          if (!(error instanceof Deno.errors.NotFound)) throw error;
+         }
++      } catch (error) {
++        if (!(error instanceof Deno.errors.NotFound)) throw error;
+       }
+-    } catch (error) {
+-      if (!(error instanceof Deno.errors.NotFound)) throw error;
+     }
+-  }
+-  profiles.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
+-  const metadata = { ...record, artifacts };
+-  const summary = summarizeRunRecord(metadata, normalized);
+-  for (const [name, value] of Object.entries({ run: metadata, summary })) {
+-    await Deno.writeTextFile(
+-      join(directory, name + ".json"),
+-      JSON.stringify(value, null, 2) + "\n",
++    profiles.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
++    const summary = summarizeRunRecord(
++      record,
++      record.completion.kind === "complete" ? normalized : undefined,
+     );
++    for (const [name, value] of Object.entries({ summary })) {
++      await Deno.writeTextFile(
++        join(directory, name + ".json"),
++        JSON.stringify(value, null, 2) + "\n",
++      );
++    }
++    const outcome = record.completion.native;
++    const lines = [
++      "# Отчёт Performance",
++      "",
++      `Запуск: \`${record.runId}\`. Режим: \`${record.request.mode}\`. Код Native: ${
++        outcome?.code ?? "UNKNOWN"
++      }. Сигнал: ${outcome ? outcome.signal ?? "—" : "UNKNOWN"}.`,
++      "",
++      `Completion: ${record.completion.kind.toUpperCase()}. Наблюдённый wall driver: ${
++        record.observedWallSeconds.toFixed(3)
++      } с.`,
++      `Capture mode: ${
++        record.stdioMode ?? "UNKNOWN"
++      }; log channels: stdout=${record.streams.stdout}, stderr=${record.streams.stderr}.`,
++      ...(record.completion.kind === "incomplete"
++        ? [
++          `Причина: ${record.completion.reason}; requested signal: ${
++            record.completion.requestedSignal ?? "—"
++          }.`,
++        ]
++        : []),
++      `Wall Native: ${outcome ? outcome.wallSeconds.toFixed(3) : "UNKNOWN"} с. CPU user: ${
++        outcome?.cpuUserSeconds ?? "недоступно"
++      }; CPU system: ${outcome?.cpuSystemSeconds ?? "недоступно"}; peak RSS, KiB: ${
++        outcome?.peakRssKiB ?? "недоступно"
++      }.`,
++      "",
++      record.request.mode === "off"
++        ? "Диагностические наблюдения в режиме off не собираются."
++        : "TypeScript измеряет wall, Lua — CPU процесса. Шкалы раздельны; inclusive интервалы могут перекрываться.",
++      "",
++      `Качество данных: ${
++        record.completion.kind === "complete" && record.dataValid ? "VALID" : "INVALID"
++      }. Resource scope: ${outcome?.resourceScope ?? "unavailable"}; wall scope: ${
++        outcome?.wallScope ?? "UNKNOWN"
++      }.`,
++      "",
++      ...commandLines,
++      ...(record.stdioMode === "pty-combined"
++        ? [
++          "stdout.log содержит общий терминальный поток Native stdout/stderr; stderr.log — отдельный supervisor channel. Их EOF описывают эти log channels, а не два независимых Native streams.",
++          "",
++        ]
++        : []),
++      ...Object.entries(artifacts).filter(([name]) => name !== "report").map(([name, path]) =>
++        `- [${name}](${encodeURI(path).replaceAll("(", "%28").replaceAll(")", "%29")})`
++      ),
++      "",
++      ...(views.length
++        ? [
++          "## Просмотр измерений",
++          "",
++          "Perfetto: откройте локальный trace-файл через Open trace file. Общая wall-шкала содержит только калиброванные часы; локальная wall-шкала каждого некалиброванного исполнителя и Lua CPU читаются отдельно.",
++          "",
++          "Логические дорожки не являются потоками ОС. Стрелки показывают записанное родительство по началам spans; задержка передачи управления не измеряется. Inclusive интервалы могут перекрываться. Счётчики остаются в summary.json. Пиковая память: run.json: completion.native.peakRssKiB.",
++          "",
++          ...views.map((v) =>
++            `- [${
++              v.clock === "calibrated-wall"
++                ? "общая wall-шкала"
++                : v.clock === "local-wall"
++                ? "локальная wall-шкала"
++                : "Lua CPU"
++            }](${v.path})`
++          ),
++          "",
++        ]
++        : []),
++      ...(profiles.length
++        ? [
++          "Speedscope: откройте существующий файл .cpuprofile. Профиль содержит CPU samples, а не точные счётчики вызовов. Качество данных указано выше; профиль не подтверждает полное покрытие.",
++          "",
++          ...profiles.map((p) =>
++            `- [CPU-профиль процесса ${
++              p.process_id.replaceAll("[", "\\[").replaceAll("]", "\\]")
++            }](${encodeURI(p.path).replaceAll("(", "%28").replaceAll(")", "%29")})`
++          ),
++          "",
++        ]
++        : []),
++    ];
++    await Deno.writeTextFile(join(directory, "report.md"), lines.join("\n"));
++    return publication;
++  } catch (cause) {
++    throw new PublicationError(record.runId, directory, "derived", cause, publication, record);
+   }
+-  const lines = [
+-    "# Отчёт Performance",
+-    "",
+-    `Запуск: \`${record.runId}\`. Режим: \`${record.request.mode}\`. Код Quarto: ${record.outcome.code}. Сигнал: ${
+-      record.outcome.signal ?? "—"
+-    }.`,
+-    "",
+-    `Wall: ${record.outcome.wallSeconds.toFixed(3)} с. CPU user: ${
+-      record.outcome.cpuUserSeconds ?? "недоступно"
+-    }; CPU system: ${record.outcome.cpuSystemSeconds ?? "недоступно"}; peak RSS, KiB: ${
+-      record.outcome.peakRssKiB ?? "недоступно"
+-    }.`,
+-    "",
+-    record.request.mode === "off"
+-      ? "Диагностические наблюдения в режиме off не собираются."
+-      : "TypeScript измеряет wall, Lua — CPU процесса. Шкалы раздельны; inclusive интервалы могут перекрываться.",
+-    "",
+-    `Качество данных: ${record.dataValid ? "VALID" : "INVALID"}.`,
+-    "",
+-    ...commandLines,
+-    ...(record.outcome.stdioMode === "pty-combined"
+-      ? [
+-        "stdout.log содержит общий терминальный поток stdout/stderr; пустой stderr.log не означает отсутствия ошибок.",
+-        "",
+-      ]
+-      : []),
+-    ...Object.entries(artifacts).filter(([name]) => name !== "report").map(([name, path]) =>
+-      `- [${name}](${encodeURI(path).replaceAll("(", "%28").replaceAll(")", "%29")})`
+-    ),
+-    "",
+-    ...(views.length
+-      ? [
+-        "## Просмотр измерений",
+-        "",
+-        "Perfetto: откройте локальный trace-файл через Open trace file. Общая wall-шкала содержит только калиброванные часы; локальная wall-шкала каждого некалиброванного исполнителя и Lua CPU читаются отдельно.",
+-        "",
+-        "Логические дорожки не являются потоками ОС. Стрелки показывают записанное родительство по началам spans; задержка передачи управления не измеряется. Inclusive интервалы могут перекрываться. Счётчики остаются в summary.json. Пиковая память: run.json: outcome.peakRssKiB.",
+-        "",
+-        ...views.map((v) =>
+-          `- [${
+-            v.clock === "calibrated-wall"
+-              ? "общая wall-шкала"
+-              : v.clock === "local-wall"
+-              ? "локальная wall-шкала"
+-              : "Lua CPU"
+-          }](${v.path})`
+-        ),
+-        "",
+-      ]
+-      : []),
+-    ...(profiles.length
+-      ? [
+-        "Speedscope: откройте существующий файл .cpuprofile. Профиль содержит CPU samples, а не точные счётчики вызовов. Качество данных указано выше; профиль не подтверждает полное покрытие.",
+-        "",
+-        ...profiles.map((p) =>
+-          `- [CPU-профиль процесса ${p.process_id.replaceAll("[", "\\[").replaceAll("]", "\\]")}](${
+-            encodeURI(p.path).replaceAll("(", "%28").replaceAll(")", "%29")
+-          })`
+-        ),
+-        "",
+-      ]
+-      : []),
+-  ];
+-  await Deno.writeTextFile(join(directory, "report.md"), lines.join("\n"));
+ }
+diff --git a/src/report/types.ts b/src/report/types.ts
+index b60a600..bc4b538 100644
+--- a/src/report/types.ts
++++ b/src/report/types.ts
+@@ -13,13 +13,63 @@ export type RunRequest = Omit<NativeRenderRequest, "mode"> & { mode: Mode };
+ 
+ export interface BuildOutcome {
+   escalated?: boolean;
+-  stdioMode?: "separate" | "pty-combined";
+   code: number;
+   signal: Deno.Signal | null;
+   wallSeconds: number;
+   cpuUserSeconds: number | null;
+   cpuSystemSeconds: number | null;
+   peakRssKiB: number | null;
++  wallScope:
++    | "direct-spawn-to-status"
++    | "resource-helper-envelope"
++    | "hyperfine-command"
++    | "historical";
++  source: "direct-status" | "native-receipt" | "hyperfine" | "historical-record";
++  resourceScope:
++    | "tool-and-resource-helper"
++    | "native-hyperfine-command"
++    | "unavailable"
++    | "historical";
++}
++export interface CommandResult {
++  code: number;
++  signal: Deno.Signal | null;
++  wallSeconds: number;
++}
++export type StreamState = "not-started" | "open" | "eof" | "failed";
++export interface ProcessObservation {
++  native: BuildOutcome | null;
++  command: CommandResult | null;
++  /** Owned log channels; combined PTY stdout is not independent native stdout. */
++  streams: { stdout: StreamState; stderr: StreamState };
++  stdioMode: "separate" | "pty-combined" | null;
++  errors: string[];
++  observedWallSeconds: number;
++}
++export type RunCompletion =
++  | { kind: "complete"; native: BuildOutcome }
++  | {
++    kind: "incomplete";
++    reason: "not-finalized" | "interrupted" | "observation-error";
++    requestedSignal: "SIGTERM" | "SIGINT" | null;
++    native: BuildOutcome | null;
++  };
++export interface PublishedRun {
++  record: RunRecord;
++  directory: string;
++}
++export class PublicationError extends Error {
++  constructor(
++    readonly runId: string,
++    readonly directory: string,
++    readonly phase: "record" | "derived" | "storage",
++    cause: unknown,
++    readonly published?: PublishedRun,
++    readonly attempted?: RunRecord,
++  ) {
++    super(`Не удалось сохранить ${phase} запуска ${runId}: ${directory}`, { cause });
++    this.name = "PublicationError";
++  }
+ }
+ export interface GitProvenance {
+   root: string;
+@@ -40,15 +90,25 @@ export interface RunRecord {
+   schema_version: 2;
+   runId: string;
+   request: RunRequest;
+-  outcome: BuildOutcome;
++  completion: RunCompletion;
++  command: CommandResult | null;
++  streams: ProcessObservation["streams"];
++  stdioMode: ProcessObservation["stdioMode"];
++  observedWallSeconds: number;
+   preparation: PreparationReceipt[];
+   dataValid: boolean;
+   quality: QualitySummary;
+   versions: { tool: string; quarto: string; deno: string | null; pandoc: string | null };
+   git: GitProvenance | null;
+   collectionDirectory: string;
+-  outputDirectory: string;
+   artifacts: Record<string, string>;
++  scenario?: string;
++  variant?: string;
++  mode?: Mode;
++  argv?: string[];
++  cwd?: string;
++  cachePolicy?: string;
++  experimentId?: string;
+ }
+ export interface CounterAggregate {
+   processId: string;
+@@ -106,6 +166,8 @@ export interface RunSummary {
+   importProvenance?: ImportProvenance;
+   schema_version: 2;
+   runId: string;
++  completion: RunCompletion["kind"];
++  normalization: "available" | "not-processed";
+   dataValid: boolean;
+   quality: QualitySummary;
+   operations: OperationAggregate[];
+@@ -187,6 +249,25 @@ const signals: readonly Deno.Signal[] = [
+   "SIGXFSZ",
+ ];
+ 
++/** Consumed fields of the existing resource-child status file, not a new receipt. */
++export function readNativeStatus(value: unknown): {
++  code: number;
++  signal: Deno.Signal | null;
++  toolWallSeconds: number;
++} {
++  const v = object(value, "native status");
++  if (typeof v.code !== "number" || !Number.isSafeInteger(v.code) || v.code < 0) {
++    invalid("native status.code");
++  }
++  if (
++    typeof v.toolWallSeconds !== "number" || !Number.isFinite(v.toolWallSeconds) ||
++    v.toolWallSeconds < 0
++  ) invalid("native status.wall");
++  const signal = signals.find((signal) => signal === v.signal);
++  if (v.signal !== null && signal === undefined) invalid("native status.signal");
++  return { code: v.code, signal: signal ?? null, toolWallSeconds: v.toolWallSeconds };
++}
++
+ export function validateRunRecord(value: unknown): RunRecord {
+   const r = metadata(value), request = object(r.request, "request");
+   string(request.cwd, "request.cwd");
+@@ -194,20 +275,73 @@ export function validateRunRecord(value: unknown): RunRecord {
+   strings(request.nativeArgv, "request.nativeArgv");
+   if (!["off", "summary", "cpu", "trace"].includes(request.mode as string)) invalid("request.mode");
+   if (request.outputParent !== undefined) string(request.outputParent, "request.outputParent");
+-  const outcome = object(r.outcome, "outcome");
+-  number(outcome.code, "outcome.code", false, true);
+-  if (outcome.escalated !== undefined) boolean(outcome.escalated, "outcome.escalated");
+-  if (
+-    outcome.stdioMode !== undefined &&
+-    !["separate", "pty-combined"].includes(outcome.stdioMode as string)
+-  ) invalid("outcome.stdioMode");
+-  if (outcome.signal !== null && !signals.includes(outcome.signal as Deno.Signal)) {
+-    invalid("outcome.signal");
++  const completion = object(r.completion, "completion");
++  if (completion.kind !== "complete" && completion.kind !== "incomplete") {
++    invalid("completion.kind");
+   }
+-  number(outcome.wallSeconds, "outcome.wallSeconds");
+-  number(outcome.cpuUserSeconds, "outcome.cpuUserSeconds", true);
+-  number(outcome.cpuSystemSeconds, "outcome.cpuSystemSeconds", true);
+-  number(outcome.peakRssKiB, "outcome.peakRssKiB", true);
++  if (completion.kind === "incomplete") {
++    if (
++      typeof completion.reason !== "string" ||
++      !["not-finalized", "interrupted", "observation-error"].includes(completion.reason)
++    ) invalid("completion.reason");
++    if (
++      completion.requestedSignal !== null && completion.requestedSignal !== "SIGINT" &&
++      completion.requestedSignal !== "SIGTERM"
++    ) invalid("completion.requestedSignal");
++    if (r.dataValid !== false || object(r.quality, "quality").coverageComplete !== false) {
++      invalid("incomplete.quality");
++    }
++  }
++  if (completion.native !== null) {
++    const outcome = object(completion.native, "completion.native");
++    number(outcome.code, "native.code", false, true);
++    if (outcome.signal !== null && !signals.includes(outcome.signal as Deno.Signal)) {
++      invalid("native.signal");
++    }
++    number(outcome.wallSeconds, "native.wallSeconds");
++    if (outcome.escalated !== undefined) boolean(outcome.escalated, "native.escalated");
++    for (const field of ["cpuUserSeconds", "cpuSystemSeconds", "peakRssKiB"]) {
++      number(outcome[field], `native.${field}`, true);
++    }
++    if (
++      typeof outcome.wallScope !== "string" ||
++      !["direct-spawn-to-status", "resource-helper-envelope", "hyperfine-command", "historical"]
++        .includes(outcome.wallScope)
++    ) invalid("native.wallScope");
++    if (
++      typeof outcome.source !== "string" ||
++      !["direct-status", "native-receipt", "hyperfine", "historical-record"].includes(
++        outcome.source,
++      )
++    ) invalid("native.source");
++    if (
++      typeof outcome.resourceScope !== "string" ||
++      !["tool-and-resource-helper", "native-hyperfine-command", "unavailable", "historical"]
++        .includes(outcome.resourceScope)
++    ) invalid("native.resourceScope");
++  } else if (completion.kind === "complete") invalid("complete.native");
++  if (r.command !== null) {
++    const command = object(r.command, "command");
++    number(command.code, "command.code", false, true);
++    number(command.wallSeconds, "command.wallSeconds");
++    if (command.signal !== null && !signals.includes(command.signal as Deno.Signal)) {
++      invalid("command.signal");
++    }
++  }
++  const streams = object(r.streams, "streams");
++  if (r.stdioMode !== null && r.stdioMode !== "separate" && r.stdioMode !== "pty-combined") {
++    invalid("stdioMode");
++  }
++  for (const name of ["stdout", "stderr"]) {
++    if (
++      typeof streams[name] !== "string" ||
++      !["not-started", "open", "eof", "failed"].includes(streams[name])
++    ) invalid(`streams.${name}`);
++    if (completion.kind === "complete" && streams[name] !== "eof") {
++      invalid(`complete.streams.${name}`);
++    }
++  }
++  number(r.observedWallSeconds, "observedWallSeconds");
+   if (!Array.isArray(r.preparation)) invalid("preparation");
+   for (const receipt of r.preparation) {
+     const p = object(receipt, "preparation");
+@@ -233,7 +367,14 @@ export function validateRunRecord(value: unknown): RunRecord {
+     boolean(git.dirty, "git.dirty");
+   }
+   string(r.collectionDirectory, "collectionDirectory");
+-  string(r.outputDirectory, "outputDirectory");
++  for (const field of ["scenario", "variant", "cwd", "cachePolicy", "experimentId"]) {
++    if (r[field] !== undefined) string(r[field], field);
++  }
++  if (r.argv !== undefined) strings(r.argv, "argv");
++  if (
++    r.mode !== undefined && r.mode !== "off" && r.mode !== "summary" && r.mode !== "cpu" &&
++    r.mode !== "trace"
++  ) invalid("mode");
+   const artifacts = object(r.artifacts, "artifacts");
+   for (const [name, path] of Object.entries(artifacts)) string(path, `artifacts.${name}`);
+   return r as unknown as RunRecord;
+@@ -241,6 +382,14 @@ export function validateRunRecord(value: unknown): RunRecord {
+ 
+ export function validateRunSummary(value: unknown): RunSummary {
+   const s = metadata(value);
++  if (s.completion !== "complete" && s.completion !== "incomplete") invalid("summary.completion");
++  if (s.normalization !== "available" && s.normalization !== "not-processed") {
++    invalid("summary.normalization");
++  }
++  if (
++    s.completion === "incomplete" &&
++    (s.dataValid !== false || object(s.quality, "quality").coverageComplete !== false)
++  ) invalid("incomplete.summary");
+   if (!Array.isArray(s.counters)) invalid("counters");
+   for (const counter of s.counters) {
+     const c = object(counter, "counters");
+@@ -303,3 +452,11 @@ export function validateDiagnosticExpectations(value: unknown): DiagnosticExpect
+   }
+   return e as unknown as DiagnosticExpectations;
+ }
++
++/** Incomplete captures never enter benchmarks, acceptance or comparison. */
++export function completedNative(publication: PublishedRun): BuildOutcome {
++  if (publication.record.completion.kind !== "complete") {
++    throw new Error(`Неполный запуск: ${publication.directory}`);
++  }
++  return publication.record.completion.native;
++}
+diff --git a/src/runner/benchmark.ts b/src/runner/benchmark.ts
+index bce251e..3101a60 100644
+--- a/src/runner/benchmark.ts
++++ b/src/runner/benchmark.ts
+@@ -1,3 +1,4 @@
++import { completedNative } from "../report/types.ts";
+ import type { PreparedVariant, Scenario } from "../config/types.ts";
+ import { type ExecuteOptions, executeScenario } from "./execute.ts";
+ export async function benchmarkPair(
+@@ -18,26 +19,27 @@ export async function benchmarkPair(
+   const warmups = [];
+   for (const prepared of [left, right]) {
+     const warm = await executeScenario(scenario, prepared, "off", options.executeOptions);
+-    if (warm.buildExitCode) throw new Error(`Прогрев завершился с кодом ${warm.buildExitCode}`);
+-    warmups.push(warm.runId);
++    const native = completedNative(warm);
++    if (native.code) throw new Error(`Прогрев завершился с кодом ${native.code}`);
++    warmups.push(warm.record.runId);
+   }
+   const pairs = [];
+   for (let i = 0; i < count; i++) {
+     const order = i % 2 ? "BA" as const : "AB" as const, results = [];
+     for (const prepared of order === "AB" ? [left, right] : [right, left]) {
+       const result = await executeScenario(scenario, prepared, "off", options.executeOptions);
+-      if (result.buildExitCode) {
+-        throw new Error(`Benchmark build failed: ${result.outputDirectory}`);
++      if (completedNative(result).code) {
++        throw new Error(`Benchmark build failed: ${result.directory}`);
+       }
+       results.push(result);
+     }
+     const [a, b] = order === "AB" ? results : results.toReversed();
+     pairs.push({
+       order,
+-      controlWall: a.wallSeconds,
+-      candidateWall: b.wallSeconds,
+-      controlRunId: a.runId,
+-      candidateRunId: b.runId,
++      controlWall: completedNative(a).wallSeconds,
++      candidateWall: completedNative(b).wallSeconds,
++      controlRunId: a.record.runId,
++      candidateRunId: b.record.runId,
+     });
+     await options.onProgress?.({ pairs, warmups, seed: options.seed, complete: false });
+   }
+diff --git a/src/runner/execute.ts b/src/runner/execute.ts
+index fc06875..39a7e6b 100644
+--- a/src/runner/execute.ts
++++ b/src/runner/execute.ts
+@@ -1,17 +1,43 @@
+ import { appDenoArgs, assetPath } from "../assets.ts";
+ import { join, relative, resolve } from "node:path";
+-import type {
+-  Mode,
+-  PreparationReceipt,
+-  PreparedVariant,
+-  RunResult,
+-  Scenario,
+-} from "../config/types.ts";
++import type { Mode, PreparationReceipt, PreparedVariant, Scenario } from "../config/types.ts";
+ import { contained } from "../sources/snapshot.ts";
+ import { writeRunArtifacts } from "../report/run.ts";
++import {
++  type BuildOutcome,
++  type CommandResult,
++  PublicationError,
++  type PublishedRun,
++  readNativeStatus,
++  type RunCompletion,
++  type RunRecord,
++  type StreamState,
++} from "../report/types.ts";
+ import type { NormalizedRun } from "../analysis/normalize.ts";
+ import { cleanEnvironment } from "./environment.ts";
+ export { cleanEnvironment } from "./environment.ts";
++/** Entrypoints own one cancellation lifetime for a run or the whole series. */
++export async function withScenarioSignals<T>(use: (signal: AbortSignal) => Promise<T>): Promise<T> {
++  const controller = new AbortController();
++  let received: "SIGTERM" | "SIGINT" | undefined;
++  const remember = (signal: "SIGTERM" | "SIGINT") => {
++    received ??= signal;
++    if (!controller.signal.aborted) controller.abort(received);
++  };
++  const term = () => remember("SIGTERM"), interrupt = () => remember("SIGINT");
++  Deno.addSignalListener("SIGTERM", term);
++  Deno.addSignalListener("SIGINT", interrupt);
++  try {
++    return await use(controller.signal);
++  } finally {
++    Deno.removeSignalListener("SIGTERM", term);
++    Deno.removeSignalListener("SIGINT", interrupt);
++    if (received) {
++      Deno.kill(Deno.pid, received);
++      await new Promise<never>(() => {});
++    }
++  }
++}
+ export interface ExecuteOptions {
+   outputRoot?: string;
+   env?: Record<string, string>;
+@@ -21,17 +47,65 @@ export interface ExecuteOptions {
+   coverage?: { complete: boolean };
+   useHyperfine?: boolean;
+   runtimeRegistry?: string;
++  abortSignal?: AbortSignal;
++}
++function hyperfineOutcome(value: unknown): BuildOutcome {
++  const object = (value: unknown): Record<string, unknown> => {
++    if (!value || typeof value !== "object" || Array.isArray(value)) {
++      throw new Error("Невалидное измерение Hyperfine");
++    }
++    return value as Record<string, unknown>;
++  };
++  const raw = object(value);
++  if (raw.schema_version !== 2 || !Array.isArray(raw.results) || raw.results.length !== 1) {
++    throw new Error("Неподдержанный формат Hyperfine");
++  }
++  const result = object(raw.results[0]);
++  if (!Array.isArray(result.measurements) || result.measurements.length !== 1) {
++    throw new Error("Неподдержанный формат Hyperfine");
++  }
++  const m = object(result.measurements[0]), wall = object(m.time_wall_clock);
++  if (
++    wall.unit !== "second" || typeof wall.value !== "number" || !Number.isFinite(wall.value) ||
++    wall.value < 0 || typeof m.exit_code !== "number" || !Number.isSafeInteger(m.exit_code) ||
++    m.exit_code < 0
++  ) throw new Error("Невалидное измерение Hyperfine");
++  const optional = (value: unknown): number | null => {
++    if (value == null) return null;
++    const metric = object(value);
++    if (metric.value == null) return null;
++    if (typeof metric.value !== "number" || !Number.isFinite(metric.value) || metric.value < 0) {
++      throw new Error("Невалидное измерение Hyperfine");
++    }
++    return metric.value;
++  };
++  const memory = m.memory_peak_resident == null ? undefined : object(m.memory_peak_resident);
++  const bytes = memory?.unit === "byte" ? optional(memory) : null;
++  return {
++    code: m.exit_code,
++    signal: null,
++    wallSeconds: wall.value,
++    cpuUserSeconds: optional(m.time_user),
++    cpuSystemSeconds: optional(m.time_system),
++    peakRssKiB: bytes === null ? null : bytes / 1024,
++    wallScope: "hyperfine-command",
++    source: "hyperfine",
++    resourceScope: "native-hyperfine-command",
++  };
+ }
+ async function streamLog(
+   input: ReadableStream<Uint8Array>,
+   path: string,
+   failed: (error: unknown) => void,
++  state: (state: StreamState) => void,
++  cancel: (stop: () => void) => void,
+ ) {
+   let log: Deno.FsFile | undefined;
+   const close = () => {
+     try {
+       log?.close();
+     } catch (error) {
++      state("failed");
+       failed(error);
+     }
+     log = undefined;
+@@ -39,10 +113,22 @@ async function streamLog(
+   try {
+     log = await Deno.open(path, { write: true, create: true, truncate: true });
+   } catch (error) {
++    state("failed");
+     failed(error);
+   }
++  const reader = input.getReader();
++  let stopped = false;
++  cancel(() => {
++    stopped = true;
++    void reader.cancel().catch(failed);
++  });
+   try {
+-    for await (const chunk of input) {
++    while (!stopped) {
++      const { done, value: chunk } = await reader.read();
++      if (done) {
++        if (!stopped) state("eof");
++        break;
++      }
+       if (!log) continue;
+       try {
+         let offset = 0;
+@@ -52,13 +138,16 @@ async function streamLog(
+           offset += written;
+         }
+       } catch (error) {
++        state("failed");
+         failed(error);
+         close();
+       }
+     }
+   } catch (error) {
++    state("failed");
+     failed(error);
+   } finally {
++    reader.releaseLock();
+     close();
+   }
+ }
+@@ -67,7 +156,7 @@ export async function executeScenario(
+   prepared: PreparedVariant,
+   mode: Mode,
+   options: ExecuteOptions = {},
+-): Promise<RunResult> {
++): Promise<PublishedRun> {
+   const root = await Deno.realPath(prepared.root), cwd = resolve(root, scenario.cwd);
+   await contained(root, cwd);
+   if (scenario.cachePolicy === "clean-output") {
+@@ -168,112 +257,44 @@ export async function executeScenario(
+       ...argv,
+     ]
+     : argv;
+-  const start = performance.now();
+-  const child = new Deno.Command(executable, {
+-    args,
+-    cwd,
+-    env,
+-    clearEnv: true,
+-    stdin: "inherit",
+-    stdout: "piped",
+-    stderr: "piped",
+-  }).spawn();
+-  const errors: unknown[] = [];
+-  const failed = (error: unknown) => {
+-    if (!errors.length) errors.push(error);
+-  };
+-  const [status] = await Promise.allSettled([
+-    child.status.catch((error) => {
+-      failed(error);
+-      throw error;
+-    }),
+-    streamLog(child.stdout, join(outputDirectory, "stdout.log"), failed),
+-    streamLog(child.stderr, join(outputDirectory, "stderr.log"), failed),
+-  ]);
+-  if (errors.length) throw errors[0];
+-  if (status.status === "rejected") throw status.reason;
+-  const out = status.value;
+-  let wallSeconds = (performance.now() - start) / 1000,
+-    buildExitCode = out.code,
+-    signal = out.signal;
+-  let resources: {
+-    cpu_user_seconds: number | null;
+-    cpu_system_seconds: number | null;
+-    peak_rss_kib: number | null;
+-  } = { cpu_user_seconds: null, cpu_system_seconds: null, peak_rss_kib: null };
+-  if (options.useHyperfine) {
+-    const raw = JSON.parse(await Deno.readTextFile(join(outputDirectory, "hyperfine.json")));
+-    if (
+-      raw.schema_version !== 2 || raw.results.length !== 1 ||
+-      raw.results[0].measurements.length !== 1
+-    ) throw new Error("Неподдержанный формат Hyperfine");
+-    const measurement = raw.results[0].measurements[0];
+-    if (
+-      measurement.time_wall_clock?.unit !== "second" ||
+-      !Number.isFinite(measurement.time_wall_clock.value) ||
+-      !Number.isInteger(measurement.exit_code)
+-    ) throw new Error("Невалидное измерение Hyperfine");
+-    wallSeconds = measurement.time_wall_clock.value;
+-    buildExitCode = measurement.exit_code;
+-    resources = {
+-      cpu_user_seconds: measurement.time_user?.value ?? null,
+-      cpu_system_seconds: measurement.time_system?.value ?? null,
+-      peak_rss_kib: measurement.memory_peak_resident?.unit === "byte"
+-        ? measurement.memory_peak_resident.value / 1024
+-        : null,
+-    };
+-  } else if (useTime) {
+-    const status = JSON.parse(await Deno.readTextFile(statusPath));
+-    if (
+-      !Number.isInteger(status.code) || !Number.isFinite(status.toolWallSeconds) ||
+-      (status.signal !== null && typeof status.signal !== "string")
+-    ) {
+-      throw new Error("Невалидный native child status");
+-    }
+-    buildExitCode = status.code;
+-    signal = status.signal;
+-    wallSeconds = status.toolWallSeconds;
+-    const line = (await Deno.readTextFile(resourcesPath)).trim().split("\n").at(-1)!;
+-    const [user, system, rss] = line.split(" ").map(Number);
+-    if ([user, system, rss].every(Number.isFinite)) {
+-      resources = { cpu_user_seconds: user, cpu_system_seconds: system, peak_rss_kib: rss };
+-    }
+-  }
+-  let dataValid = mode === "off";
+-  let normalized: NormalizedRun | undefined;
+-  if (mode !== "off") {
+-    const { normalizeRun } = await import("../analysis/normalize.ts");
+-    normalized = await normalizeRun(outputDirectory);
+-    dataValid = normalized.dataValid;
+-  }
+-  const result: RunResult = {
+-    runId,
+-    buildExitCode,
+-    dataValid,
+-    outputDirectory,
+-    preparation: mode === "off" ? [] : options.preparation ?? [],
+-    wallSeconds,
+-    signal,
++  const started = performance.now();
++  let child: Deno.ChildProcess | undefined;
++  let native: BuildOutcome | null = null, command: CommandResult | null = null;
++  const streams: { stdout: StreamState; stderr: StreamState } = {
++    stdout: "not-started",
++    stderr: "not-started",
+   };
+-  await writeRunArtifacts(outputDirectory, {
++  const errors: string[] = [], stops: (() => void)[] = [];
++  let selected: RunRecord | undefined, normalized: NormalizedRun | undefined;
++  let notify: (record: RunRecord) => void = () => {};
++  const terminal = new Promise<RunRecord>((resolve) => {
++    notify = resolve;
++  });
++  const snapshot = (completion: RunCompletion): RunRecord => ({
+     schema_version: 2,
+-    ...result,
++    runId,
+     request: {
+       cwd,
+       quarto: scenario.executable,
+-      nativeArgv: argv[0] === "render" ? argv.slice(1) : argv,
++      nativeArgv: argv[0] === "render" ? argv.slice(1) : [...argv],
+       mode,
+     },
+-    outcome: {
+-      code: buildExitCode,
+-      signal,
+-      wallSeconds,
+-      cpuUserSeconds: resources.cpu_user_seconds,
+-      cpuSystemSeconds: resources.cpu_system_seconds,
+-      peakRssKiB: resources.peak_rss_kib,
++    completion,
++    command,
++    streams: { ...streams },
++    stdioMode: streams.stdout === "not-started" && streams.stderr === "not-started"
++      ? null
++      : "separate",
++    observedWallSeconds: (performance.now() - started) / 1000,
++    preparation: mode === "off" ? [] : [...options.preparation ?? []],
++    dataValid: completion.kind === "complete" && (normalized?.dataValid ?? mode === "off"),
++    quality: {
++      droppedEvents: normalized?.quality.droppedEvents ?? 0,
++      incompleteSpans: normalized?.quality.incompleteSpans ?? 0,
++      coverageComplete: completion.kind === "complete" &&
++        (normalized?.quality.coverageComplete ?? false),
++      errors: [...normalized?.quality.errors ?? [], ...errors],
+     },
+-    quality: normalized?.quality ??
+-      { droppedEvents: 0, incompleteSpans: 0, coverageComplete: false, errors: [] },
+     versions: {
+       tool: "2.0.0",
+       quarto: prepared.manifest.runtime.quarto?.version ?? "неизвестно",
+@@ -282,24 +303,172 @@ export async function executeScenario(
+     },
+     git: null,
+     collectionDirectory: resolve(outputDirectory),
+-    outputDirectory: resolve(outputDirectory),
+-    artifacts: {},
+-    ...{
+-      scenario: scenario.id,
+-      variant: prepared.variant,
+-      mode,
+-      argv: [scenario.executable, ...argv],
+-      cwd,
+-      cachePolicy: scenario.cachePolicy,
+-      experimentId: prepared.manifest.experimentId,
+-      resources,
+-      signalAvailability: options.useHyperfine ? "unavailable" : "observed",
+-      resourceScope: options.useHyperfine
+-        ? "native-hyperfine-command"
+-        : useTime
+-        ? "tool-and-resource-supervisor"
+-        : "unavailable",
+-    },
+-  }, normalized);
+-  return result;
++    artifacts: { manifest: "manifest.json" },
++    scenario: scenario.id,
++    variant: prepared.variant,
++    mode,
++    argv: [scenario.executable, ...argv],
++    cwd,
++    cachePolicy: scenario.cachePolicy,
++    experimentId: prepared.manifest.experimentId,
++  });
++  // The only terminal choice. No async work or competing writers here.
++  const choose = (completion: RunCompletion) => {
++    if (selected) return;
++    selected = snapshot(completion);
++    notify(selected);
++  };
++  let forwarded = false;
++  const failed = (cause: unknown) => {
++    if (selected) return;
++    errors.push(cause instanceof Error ? cause.message : String(cause));
++    if (child && !forwarded) {
++      forwarded = true;
++      try {
++        child.kill("SIGTERM");
++      } catch { /* Teardown does not invent a status. */ }
++    }
++    choose({ kind: "incomplete", reason: "observation-error", requestedSignal: null, native });
++  };
++  const abort = () => {
++    if (selected) return;
++    const signal = options.abortSignal?.reason === "SIGINT" ? "SIGINT" : "SIGTERM";
++    if (child && !forwarded) {
++      forwarded = true;
++      try {
++        child.kill(signal);
++      } catch { /* Actual status remains independent. */ }
++    }
++    choose({ kind: "incomplete", reason: "interrupted", requestedSignal: signal, native });
++  };
++  options.abortSignal?.addEventListener("abort", abort);
++  if (options.abortSignal?.aborted) abort();
++  let previous: PublishedRun | undefined;
++  try {
++    // Initial and terminal writes are serialized, including cancellation during rename.
++    try {
++      previous = await writeRunArtifacts(
++        outputDirectory,
++        snapshot({
++          kind: "incomplete",
++          reason: "not-finalized",
++          requestedSignal: null,
++          native: null,
++        }),
++      );
++    } catch (cause) {
++      if (cause instanceof PublicationError) previous = cause.published;
++      if (!selected) throw cause; // Never spawn after checkpoint failure.
++    }
++    if (!selected) {
++      const commandStarted = performance.now();
++      try {
++        // No await between cancellation check and spawn.
++        child = new Deno.Command(executable, {
++          args,
++          cwd,
++          env,
++          clearEnv: true,
++          stdin: "inherit",
++          stdout: "piped",
++          stderr: "piped",
++        }).spawn();
++        streams.stdout = streams.stderr = "open";
++        const register = (stop: () => void) => {
++          stops.push(stop);
++          if (selected) stop();
++        };
++        const stdout = streamLog(
++          child.stdout,
++          join(outputDirectory, "stdout.log"),
++          failed,
++          (state) => {
++            streams.stdout = state;
++          },
++          register,
++        );
++        const stderr = streamLog(
++          child.stderr,
++          join(outputDirectory, "stderr.log"),
++          failed,
++          (state) => {
++            streams.stderr = state;
++          },
++          register,
++        );
++        const status = child.status.then((out) => {
++          // Status wall excludes later EOF, resource reads, normalize and report.
++          command = {
++            code: out.code,
++            signal: out.signal,
++            wallSeconds: (performance.now() - commandStarted) / 1000,
++          };
++          if (!options.useHyperfine && !useTime) {
++            native = {
++              ...command,
++              cpuUserSeconds: null,
++              cpuSystemSeconds: null,
++              peakRssKiB: null,
++              wallScope: "direct-spawn-to-status",
++              source: "direct-status",
++              resourceScope: "unavailable",
++            };
++          }
++        }, failed);
++        void (async () => {
++          await Promise.all([status, stdout, stderr]);
++          if (selected) return;
++          if (!command || streams.stdout !== "eof" || streams.stderr !== "eof") {
++            throw new Error("Неполное наблюдение команды");
++          }
++          if (options.useHyperfine) {
++            native = hyperfineOutcome(
++              JSON.parse(await Deno.readTextFile(join(outputDirectory, "hyperfine.json"))),
++            );
++          } else if (useTime) {
++            const result = readNativeStatus(JSON.parse(await Deno.readTextFile(statusPath)));
++            native = {
++              code: result.code,
++              signal: result.signal,
++              wallSeconds: result.toolWallSeconds,
++              cpuUserSeconds: null,
++              cpuSystemSeconds: null,
++              peakRssKiB: null,
++              wallScope: "resource-helper-envelope",
++              source: "native-receipt",
++              resourceScope: "tool-and-resource-helper",
++            };
++            const [user, system, rss] = (await Deno.readTextFile(resourcesPath)).trim().split("\n")
++              .at(-1)!.split(" ").map(Number);
++            if (![user, system, rss].every(Number.isFinite)) {
++              throw new Error("Невалидные resource measurements");
++            }
++            native = { ...native, cpuUserSeconds: user, cpuSystemSeconds: system, peakRssKiB: rss };
++          }
++          if (selected) return;
++          if (!native) throw new Error("Native outcome неизвестен");
++          if (mode !== "off") {
++            const { normalizeRun } = await import("../analysis/normalize.ts");
++            if (selected) return;
++            normalized = await normalizeRun(outputDirectory);
++            if (!normalized.dataValid) throw new Error("Невалидное наблюдение диагностики");
++          }
++          if (!selected) choose({ kind: "complete", native });
++        })().catch(failed);
++      } catch (cause) {
++        failed(cause);
++      }
++    }
++    const record = await terminal;
++    // Publication never waits for pipe holders or child teardown on partial paths.
++    if (record.completion.kind === "incomplete") { for (const stop of stops) stop(); }
++    return await writeRunArtifacts(
++      outputDirectory,
++      record,
++      record.completion.kind === "complete" ? normalized : undefined,
++      previous,
++    );
++  } finally {
++    options.abortSignal?.removeEventListener("abort", abort);
++  }
+ }
+diff --git a/src/runner/process.ts b/src/runner/process.ts
+index 1fcf8ed..ac9d11d 100644
+--- a/src/runner/process.ts
++++ b/src/runner/process.ts
+@@ -1,11 +1,17 @@
+ import { appDenoArgs, assetPath } from "../assets.ts";
+ import { dirname, join, resolve } from "node:path";
+-import type { BuildOutcome } from "../report/types.ts";
++import {
++  type BuildOutcome,
++  type CommandResult,
++  type ProcessObservation,
++  readNativeStatus,
++  type StreamState,
++} from "../report/types.ts";
+ import { recordCancellation } from "./resource-child.ts";
+ 
+ /** Ошибка измерения после остановки дерева; outcome — только для реально запущенного native. */
+ export class OwnedProcessError extends Error {
+-  constructor(error: unknown, readonly outcome?: BuildOutcome) {
++  constructor(error: unknown, readonly observation: ProcessObservation) {
+     super(error instanceof Error ? error.message : String(error), { cause: error });
+     this.name = "OwnedProcessError";
+   }
+@@ -21,6 +27,7 @@ export interface OwnedProcessOptions {
+   stdout?: WritableStream<Uint8Array>;
+   stderr?: WritableStream<Uint8Array>;
+   abortSignal?: AbortSignal;
++  onObservation?: (observation: ProcessObservation) => void;
+   graceMilliseconds?: number;
+   timeExecutable?: string | null;
+ }
+@@ -138,18 +145,26 @@ async function tee(
+   path: string,
+   output: WritableStream<Uint8Array>,
+   failed: (error: unknown) => void,
++  state: (state: StreamState) => void,
+ ) {
+   let log: Deno.FsFile | undefined;
+   let sink: WritableStreamDefaultWriter<Uint8Array> | undefined;
++  let eof = false;
++  const fail = (error: unknown) => {
++    state("failed");
++    failed(error);
++  };
++  // This pump owns its actual input channel now; opening the log can still fail.
++  state("open");
+   try {
+     log = await Deno.open(path, { write: true, create: true, truncate: true });
+   } catch (error) {
+-    failed(error);
++    fail(error);
+   }
+   try {
+     sink = output.getWriter();
+   } catch (error) {
+-    failed(error);
++    fail(error);
+   }
+   try {
+     for await (const chunk of input) {
+@@ -158,8 +173,12 @@ async function tee(
+           let offset = 0;
+           while (offset < chunk.length) offset += await log.write(chunk.subarray(offset));
+         } catch (error) {
+-          failed(error);
+-          log.close();
++          fail(error);
++          try {
++            log.close();
++          } catch (closeError) {
++            fail(closeError);
++          }
+           log = undefined;
+         }
+       }
+@@ -167,22 +186,37 @@ async function tee(
+         try {
+           await sink.write(chunk);
+         } catch (error) {
+-          failed(error);
+-          sink.releaseLock();
++          fail(error);
++          try {
++            sink.releaseLock();
++          } catch (closeError) {
++            fail(closeError);
++          }
+           sink = undefined;
+         }
+       }
+     }
++    eof = true;
+   } catch (error) {
+-    failed(error);
++    fail(error);
+   } finally {
+-    sink?.releaseLock();
+-    log?.close();
++    try {
++      sink?.releaseLock();
++    } catch (error) {
++      fail(error);
++    }
++    try {
++      log?.close();
++    } catch (error) {
++      fail(error);
++    }
++    // A failed log stays failed even when its input was subsequently drained.
++    if (eof) state("eof");
+   }
+ }
+ 
+ /** Одна собственная Linux group; сигналы не пересылаются повторно внутри дерева. */
+-export async function runOwnedProcess(options: OwnedProcessOptions): Promise<BuildOutcome> {
++export async function runOwnedProcess(options: OwnedProcessOptions): Promise<ProcessObservation> {
+   if (Deno.build.os !== "linux") throw new Error("Нативный supervisor требует Linux setsid");
+   const directory = dirname(resolve(options.stdoutPath));
+   await Deno.mkdir(directory, { recursive: true });
+@@ -259,8 +293,32 @@ export async function runOwnedProcess(options: OwnedProcessOptions): Promise<Bui
+     escalated = false,
+     failure: unknown;
+   const sent = new Set<number>();
++  let nativeOutcome: BuildOutcome | null = null, commandResult: CommandResult | null = null;
++  let streamsFinished = false;
++  const streamFacts: ProcessObservation["streams"] = {
++    stdout: "not-started",
++    stderr: "not-started",
++  };
++  const observed = (): ProcessObservation => ({
++    native: nativeOutcome,
++    command: commandResult,
++    streams: { ...streamFacts },
++    stdioMode: streamFacts.stdout === "not-started" && streamFacts.stderr === "not-started"
++      ? null
++      : terminal && !mixed
++      ? "pty-combined"
++      : "separate",
++    errors: failure ? [failure instanceof Error ? failure.message : String(failure)] : [],
++    observedWallSeconds: (performance.now() - start) / 1000,
++  });
+   const failed = (error: unknown) => {
+     failure ??= error instanceof Error ? error : new Error("Ошибка supervisor", { cause: error });
++    options.onObservation?.(observed());
++  };
++  const streamState = (channel: "stdout" | "stderr" | null) => (state: StreamState) => {
++    if (channel === null || streamFacts[channel] === "failed") return;
++    streamFacts[channel] = state;
++    options.onObservation?.(observed());
+   };
+   const signalGroup = (target: number, signal: Deno.Signal) => {
+     try {
+@@ -296,14 +354,10 @@ export async function runOwnedProcess(options: OwnedProcessOptions): Promise<Bui
+       sent.add(group);
+     }
+   };
+-  const term = () => send("SIGTERM"), interrupt = () => send("SIGINT");
++  const start = performance.now();
+   const abort = () => send(options.abortSignal?.reason === "SIGINT" ? "SIGINT" : "SIGTERM");
+-  Deno.addSignalListener("SIGTERM", term);
+-  Deno.addSignalListener("SIGINT", interrupt);
+   options.abortSignal?.addEventListener("abort", abort);
+   if (options.abortSignal?.aborted) abort();
+-  const start = performance.now();
+-  let outcome: BuildOutcome | undefined, knownNativeOutcome: BuildOutcome | undefined;
+   let processStarted = false, drained = false;
+   try {
+     const child = new Deno.Command("setsid", {
+@@ -329,41 +383,69 @@ export async function runOwnedProcess(options: OwnedProcessOptions): Promise<Bui
+           stdoutTerminal ? options.stdoutPath : options.stderrPath,
+           stdoutTerminal ? Deno.stdout.writable : Deno.stderr.writable,
+           failed,
++          streamState(stdoutTerminal ? "stdout" : "stderr"),
+         ),
+         tee(
+           child.stderr,
+           mixed ? receipt + ".supervisor-stderr" : options.stderrPath,
+           mixed ? new WritableStream({ write() {} }) : Deno.stderr.writable,
+           failed,
++          // With two TTYs this is supervisor stderr, not independent native stderr.
++          // With mixed redirection it has no public log channel at all.
++          streamState(mixed ? null : "stderr"),
+         ),
+         ...(redirected
+           ? [(async () => {
+-            const file = await redirected;
+-            await tee(
+-              file!.readable,
+-              stdoutTerminal ? options.stderrPath : options.stdoutPath,
+-              stdoutTerminal
+-                ? (options.stderr ?? Deno.stderr.writable)
+-                : (options.stdout ?? Deno.stdout.writable),
+-              failed,
+-            );
++            const channel = stdoutTerminal ? "stderr" : "stdout";
++            try {
++              const file = await redirected;
++              await tee(
++                file!.readable,
++                stdoutTerminal ? options.stderrPath : options.stdoutPath,
++                stdoutTerminal
++                  ? (options.stderr ?? Deno.stderr.writable)
++                  : (options.stdout ?? Deno.stdout.writable),
++                failed,
++                streamState(channel),
++              );
++            } catch (error) {
++              streamState(channel)("failed");
++              failed(error);
++            }
+           })()]
+           : []),
+       ]
+       : [
+-        tee(child.stdout, options.stdoutPath, options.stdout ?? Deno.stdout.writable, failed),
+-        tee(child.stderr, options.stderrPath, options.stderr ?? Deno.stderr.writable, failed),
++        tee(
++          child.stdout,
++          options.stdoutPath,
++          options.stdout ?? Deno.stdout.writable,
++          failed,
++          streamState("stdout"),
++        ),
++        tee(
++          child.stderr,
++          options.stderrPath,
++          options.stderr ?? Deno.stderr.writable,
++          failed,
++          streamState("stderr"),
++        ),
+       ];
+-    const observed = streams.map((stream) => stream.catch(failed));
+-    let streamsFinished = false;
+-    const drainedStreams = Promise.all(observed).then(() => {
++    const observedStreams = streams.map((stream) => stream.catch(failed));
++    const drainedStreams = Promise.all(observedStreams).then(() => {
+       streamsFinished = true;
+     });
+     const sessions = new Set([child.pid]);
+     let status: Deno.CommandStatus | undefined;
+     const completed = child.status.then((s) => {
+       status = s;
+-    });
++      commandResult = {
++        code: s.code,
++        signal: s.signal,
++        wallSeconds: (performance.now() - start) / 1000,
++      };
++      options.onObservation?.(observed());
++    }, failed);
+     while (true) {
+       if (!group && !failure) {
+         try {
+@@ -456,19 +538,18 @@ export async function runOwnedProcess(options: OwnedProcessOptions): Promise<Bui
+     await completed;
+     await drainedStreams;
+     drained = true;
+-    let nativeStatus = status!;
++    let nativeStatus:
++      | { code: number; signal: Deno.Signal | null; toolWallSeconds?: number }
++      | undefined;
+     let nativeReceipt = false;
+     for (const path of [receipt, ...(time ? [receipt + ".native"] : [])]) {
+       try {
+-        nativeStatus = JSON.parse(await Deno.readTextFile(path));
++        nativeStatus = readNativeStatus(JSON.parse(await Deno.readTextFile(path)));
+         if (path.endsWith(".native") || !time) nativeReceipt = true;
+       } catch (e) {
+         if (!(e instanceof Deno.errors.NotFound)) failed(e);
+       }
+     }
+-    if (escalated && !nativeReceipt) {
+-      nativeStatus = { code: 137, signal: "SIGKILL", success: false };
+-    }
+     let cpuUserSeconds: number | null = null,
+       cpuSystemSeconds: number | null = null,
+       peakRssKiB: number | null = null;
+@@ -483,22 +564,36 @@ export async function runOwnedProcess(options: OwnedProcessOptions): Promise<Bui
+         if (!(e instanceof Deno.errors.NotFound)) failed(e);
+       }
+     }
+-    outcome = {
+-      code: nativeStatus.code,
+-      signal: nativeStatus.signal,
+-      wallSeconds: (performance.now() - start) / 1000,
+-      cpuUserSeconds,
+-      cpuSystemSeconds,
+-      peakRssKiB,
+-      escalated,
+-      stdioMode: terminal && !mixed ? "pty-combined" : "separate",
+-    };
+     try {
+       const started = await Deno.stat(receipt + (time ? ".native.started" : ".started"));
+-      if (started.isFile && (nativeReceipt || escalated)) knownNativeOutcome = outcome;
++      if (started.isFile && nativeReceipt && nativeStatus) {
++        if (
++          !Number.isInteger(nativeStatus.code) || !Number.isFinite(nativeStatus.toolWallSeconds)
++        ) {
++          throw new Error("Неполный actual native receipt");
++        }
++        nativeOutcome = {
++          code: nativeStatus.code,
++          signal: nativeStatus.signal,
++          wallSeconds: nativeStatus.toolWallSeconds!,
++          cpuUserSeconds,
++          cpuSystemSeconds,
++          peakRssKiB,
++          escalated,
++          wallScope: "resource-helper-envelope",
++          source: "native-receipt",
++          resourceScope: time ? "tool-and-resource-helper" : "unavailable",
++        };
++      }
+     } catch (e) {
+       if (!(e instanceof Deno.errors.NotFound)) failed(e);
+     }
++    if (!nativeOutcome) {
++      failed(
++        new Error("Actual native outcome отсутствует; wrapper/escalation не заменяют receipt"),
++      );
++    }
++    options.onObservation?.(observed());
+   } finally {
+     try {
+       fifoKeeper?.close();
+@@ -514,10 +609,8 @@ export async function runOwnedProcess(options: OwnedProcessOptions): Promise<Bui
+         if (!(error instanceof Deno.errors.NotFound)) failed(error);
+       }
+     }
+-    Deno.removeSignalListener("SIGTERM", term);
+-    Deno.removeSignalListener("SIGINT", interrupt);
+     options.abortSignal?.removeEventListener("abort", abort);
+   }
+-  if (failure) throw new OwnedProcessError(failure, knownNativeOutcome);
+-  return outcome!;
++  if (failure) throw new OwnedProcessError(failure, observed());
++  return observed();
+ }
+diff --git a/src/runner/render.ts b/src/runner/render.ts
+index 65b7c24..870ce71 100644
+--- a/src/runner/render.ts
++++ b/src/runner/render.ts
+@@ -1,8 +1,10 @@
+ import { join, relative, resolve } from "node:path";
+ import type {
+-  BuildOutcome,
+   GitProvenance,
+   NativeRenderRequest,
++  ProcessObservation,
++  PublishedRun,
++  RunCompletion,
+   RunRecord,
+ } from "../report/types.ts";
+ import { OwnedProcessError, runOwnedProcess } from "./process.ts";
+@@ -10,16 +12,21 @@ import { resolveRenderProject } from "../adapters/quarto/inspect.ts";
+ import { finalizeRun, prepareRunStorage } from "./storage.ts";
+ import { prepareRenderDiagnostic } from "./diagnostic.ts";
+ import { type NormalizedRun, normalizeRun } from "../analysis/normalize.ts";
+-import { jsonFiles } from "../report/run.ts";
+-import type { PreparationReceipt } from "../config/types.ts";
++import { writeRunArtifacts } from "../report/run.ts";
++import { PublicationError } from "../report/types.ts";
+ import { validateTelemetryEnvironment } from "./environment.ts";
+ 
+ export async function runNativeRender(
+   request: NativeRenderRequest,
+   stagingDirectory: string,
+   diagnosticEnv: Record<string, string> = {},
+-): Promise<BuildOutcome> {
++  lifecycle: {
++    abortSignal?: AbortSignal;
++    onObservation?: (observation: ProcessObservation) => void;
++  } = {},
++): Promise<ProcessObservation> {
+   return await runOwnedProcess({
++    ...lifecycle,
+     executable: request.quarto,
+     args: ["render", ...request.nativeArgv],
+     cwd: request.cwd,
+@@ -48,7 +55,7 @@ async function gitProvenance(cwd: string, outputParent?: string): Promise<GitPro
+             const previous = JSON.parse(await Deno.readTextFile(join(directory, "run.json")));
+             if (
+               previous.schema_version === 2 && previous.runId === entry.name &&
+-              previous.outputDirectory === directory
++              previous.completion?.kind === "complete"
+             ) exclusions.push(`:(exclude,top,literal)${rel}`);
+           } catch (e) {
+             if (!(e instanceof Deno.errors.NotFound) && !(e instanceof SyntaxError)) throw e;
+@@ -127,132 +134,161 @@ export async function renderCommand(request: NativeRenderRequest): Promise<numbe
+       JSON.stringify({ mode: request.mode, runId: paths.runId, experimentId: paths.runId }),
+     );
+   }
+-  let externalSignal: Deno.Signal | null = null;
+-  const rememberInt = () => {
+-    externalSignal ??= "SIGINT";
++  const started = performance.now(), cancellation = new AbortController();
++  let externalSignal: "SIGINT" | "SIGTERM" | null = null;
++  let observation: ProcessObservation = {
++    native: null,
++    command: null,
++    streams: { stdout: "not-started", stderr: "not-started" },
++    stdioMode: null,
++    errors: [],
++    observedWallSeconds: 0,
+   };
+-  const rememberTerm = () => {
+-    externalSignal ??= "SIGTERM";
++  let normalized: NormalizedRun | undefined, selected: RunRecord | undefined;
++  let notify: (record: RunRecord) => void = () => {};
++  const terminal = new Promise<RunRecord>((resolve) => {
++    notify = resolve;
++  });
++  const snapshot = (completion: RunCompletion): RunRecord => ({
++    schema_version: 2,
++    runId: paths.runId,
++    request,
++    completion,
++    command: observation.command,
++    streams: { ...observation.streams },
++    stdioMode: observation.stdioMode,
++    observedWallSeconds: (performance.now() - started) / 1000,
++    preparation: [...prepared?.preparation ?? []],
++    dataValid: completion.kind === "complete" && (normalized?.dataValid ?? !prepared),
++    quality: {
++      droppedEvents: normalized?.quality.droppedEvents ?? 0,
++      incompleteSpans: normalized?.quality.incompleteSpans ?? 0,
++      coverageComplete: completion.kind === "complete" &&
++        (normalized?.quality.coverageComplete ?? false),
++      errors: [...normalized?.quality.errors ?? [], ...observation.errors],
++    },
++    versions: {
++      tool: "2.0.0",
++      quarto: new TextDecoder().decode(version.stdout).trim(),
++      deno: prepared?.coverage.runtime.runtime.deno?.version ?? null,
++      pandoc: prepared?.coverage.runtime.runtime.pandoc?.version ?? null,
++    },
++    git,
++    collectionDirectory: paths.stagingDirectory,
++    artifacts: {},
++  });
++  const choose = (completion: RunCompletion) => {
++    if (selected) return;
++    selected = snapshot(completion);
++    notify(selected);
+   };
+-  Deno.addSignalListener("SIGINT", rememberInt);
+-  Deno.addSignalListener("SIGTERM", rememberTerm);
+-  let outcome: BuildOutcome | undefined, failure: unknown;
+-  let diagnosticValid = true;
+-  let savedDirectory = paths.stagingDirectory;
++  const remember = (signal: "SIGINT" | "SIGTERM") => {
++    externalSignal ??= signal;
++    if (!selected) {
++      choose({
++        kind: "incomplete",
++        reason: "interrupted",
++        requestedSignal: externalSignal,
++        native: observation.native,
++      });
++    }
++    // Existing process owner alone forwards to its owned group.
++    if (!cancellation.signal.aborted) cancellation.abort(externalSignal);
++  };
++  const interrupt = () => remember("SIGINT"), term = () => remember("SIGTERM");
++  Deno.addSignalListener("SIGINT", interrupt);
++  Deno.addSignalListener("SIGTERM", term);
++  let previous: PublishedRun | undefined;
+   try {
+     try {
+-      outcome = await runNativeRender(request, paths.stagingDirectory, diagnosticEnv);
+-    } catch (error) {
+-      failure = error;
+-      if (error instanceof OwnedProcessError) outcome = error.outcome;
++      previous = await writeRunArtifacts(
++        paths.stagingDirectory,
++        snapshot({
++          kind: "incomplete",
++          reason: "not-finalized",
++          requestedSignal: null,
++          native: null,
++        }),
++      );
++    } catch (cause) {
++      if (cause instanceof PublicationError) previous = cause.published;
++      if (!selected) throw cause;
+     }
+-    if (outcome) {
+-      const errors = failure ? [failure instanceof Error ? failure.message : String(failure)] : [];
+-      let normalized: NormalizedRun | undefined;
+-      const preparation = [...prepared?.preparation ?? []];
+-      if (prepared) {
+-        try {
+-          normalized = await normalizeRun(paths.stagingDirectory);
+-          preparation.push(
+-            ...await jsonFiles(
+-              join(paths.stagingDirectory, "preparation"),
+-              ".json",
+-            ) as unknown as PreparationReceipt[],
+-          );
+-        } catch (error) {
+-          failure ??= error;
+-          errors.push(error instanceof Error ? error.message : String(error));
+-        }
+-      }
+-      diagnosticValid = !failure && (normalized?.dataValid ?? !prepared);
+-      const record: RunRecord = {
+-        schema_version: 2,
+-        runId: paths.runId,
+-        request,
+-        outcome,
+-        preparation,
+-        dataValid: diagnosticValid,
+-        quality: normalized
+-          ? {
+-            ...normalized.quality,
+-            coverageComplete: false,
+-            errors: [...normalized.quality.errors, ...errors],
+-          }
+-          : { droppedEvents: 0, incompleteSpans: 0, coverageComplete: false, errors },
+-        versions: {
+-          tool: "2.0.0",
+-          quarto: new TextDecoder().decode(version.stdout).trim(),
+-          deno: prepared?.coverage.runtime.runtime.deno?.version ?? null,
+-          pandoc: prepared?.coverage.runtime.runtime.pandoc?.version ?? null,
+-        },
+-        git,
+-        collectionDirectory: paths.stagingDirectory,
+-        outputDirectory: paths.finalDirectory,
+-        artifacts: {},
+-      };
+-      try {
+-        savedDirectory = await finalizeRun(paths, record, normalized);
+-        const unavailable = (value: number | null) => value === null ? "недоступно" : String(value);
+-        const printError = diagnostic(
+-          `Performance: wall=${outcome.wallSeconds.toFixed(3)}s; CPU user=${
+-            unavailable(outcome.cpuUserSeconds)
+-          }; CPU system=${unavailable(outcome.cpuSystemSeconds)}; peak RSS=${
+-            unavailable(outcome.peakRssKiB)
+-          } KiB; status=${outcome.signal ?? outcome.code}; data=${
+-            diagnosticValid ? "VALID" : "INVALID"
+-          }\nОтчёт Performance: ${savedDirectory}`,
+-        );
+-        failure ??= printError;
+-      } catch (error) {
+-        failure ??= error;
+-        diagnostic(error instanceof Error ? error.message : String(error));
+-      }
+-      if (failure) {
+-        diagnostic(failure instanceof Error ? failure.message : String(failure));
+-        // Даже отказ stderr не должен заменить известный child exit/signal.
++    if (!selected) {
++      void (async () => {
+         try {
+-          const directory = await Deno.lstat(savedDirectory);
+-          if (!directory.isDirectory || directory.isSymlink) {
+-            throw new Error("Недопустимый каталог диагностики");
+-          }
+-          const receipt = await Deno.open(join(savedDirectory, "performance-error.json"), {
+-            write: true,
+-            createNew: true,
++          observation = await runNativeRender(request, paths.stagingDirectory, diagnosticEnv, {
++            abortSignal: cancellation.signal,
++            onObservation(current) {
++              observation = current;
++              if (current.errors.length) {
++                choose({
++                  kind: "incomplete",
++                  reason: "observation-error",
++                  requestedSignal: null,
++                  native: current.native,
++                });
++              }
++            },
+           });
+-          try {
+-            const data = new TextEncoder().encode(
+-              JSON.stringify(
+-                {
+-                  schema_version: 2,
+-                  error: failure instanceof Error ? failure.message : String(failure),
+-                },
+-                null,
+-                2,
+-              ) + "\n",
+-            );
+-            let offset = 0;
+-            while (offset < data.length) offset += await receipt.write(data.subarray(offset));
+-          } finally {
+-            receipt.close();
++          if (selected) return;
++          if (
++            !observation.native || observation.streams.stdout !== "eof" ||
++            observation.streams.stderr !== "eof"
++          ) throw new Error("Неполное наблюдение Native");
++          if (prepared) {
++            normalized = await normalizeRun(paths.stagingDirectory);
++            if (!normalized.dataValid) throw new Error("Невалидное наблюдение диагностики");
+           }
+-        } catch { /* Доступные raw/report уже сохранены; исходный результат приоритетен. */ }
+-      }
+-    } else {
+-      diagnostic(`Материалы запуска сохранены: ${paths.stagingDirectory}`);
++          if (!selected) choose({ kind: "complete", native: observation.native });
++        } catch (cause) {
++          if (cause instanceof OwnedProcessError) observation = cause.observation;
++          if (!selected) {
++            observation = {
++              ...observation,
++              errors: [
++                ...observation.errors,
++                cause instanceof Error ? cause.message : String(cause),
++              ],
++            };
++            choose({
++              kind: "incomplete",
++              reason: "observation-error",
++              requestedSignal: null,
++              native: observation.native,
++            });
++          }
++        }
++      })();
+     }
++    const record = await terminal;
++    const publication = record.completion.kind === "complete"
++      ? await finalizeRun(paths, record, normalized, previous)
++      : await writeRunArtifacts(paths.stagingDirectory, record, undefined, previous);
++    diagnostic(
++      `Отчёт Performance: ${publication.directory}; completion=${record.completion.kind}; data=${
++        record.dataValid ? "VALID" : "INVALID"
++      }`,
++    );
++    return record.completion.kind === "complete"
++      ? record.completion.native.code || (record.dataValid ? 0 : 4)
++      : 4;
++  } catch (cause) {
++    if (cause instanceof PublicationError) {
++      diagnostic(
++        `Ошибка публикации: ${cause.directory}; last confirmed: ${
++          cause.published?.directory ?? "нет"
++        }`,
++      );
++    }
++    throw cause;
+   } finally {
+-    Deno.removeSignalListener("SIGINT", rememberInt);
+-    Deno.removeSignalListener("SIGTERM", rememberTerm);
+-  }
+-  const signal = externalSignal ?? outcome?.signal;
+-  if (signal) {
+-    Deno.kill(Deno.pid, signal);
+-    await new Promise(() => {});
+-  }
+-  if (outcome?.code) return outcome.code;
+-  if (failure || !diagnosticValid) {
+-    if (!outcome) throw failure;
+-    return 4;
++    Deno.removeSignalListener("SIGINT", interrupt);
++    Deno.removeSignalListener("SIGTERM", term);
++    // Also leave the interrupted lifecycle if publication failed.
++    if (externalSignal) {
++      Deno.kill(Deno.pid, externalSignal);
++      await new Promise<never>(() => {});
++    }
+   }
+-  return 0;
+ }
+diff --git a/src/runner/storage.ts b/src/runner/storage.ts
+index 684cf42..5d48895 100644
+--- a/src/runner/storage.ts
++++ b/src/runner/storage.ts
+@@ -1,5 +1,10 @@
+ import { dirname, join, matchesGlob, parse, relative, resolve } from "node:path";
+-import type { NativeRenderRequest, RunRecord } from "../report/types.ts";
++import {
++  type NativeRenderRequest,
++  PublicationError,
++  type PublishedRun,
++  type RunRecord,
++} from "../report/types.ts";
+ import { explicitOutputDirectory, type ProjectTarget } from "../adapters/quarto/inspect.ts";
+ import { writeRunArtifacts } from "../report/run.ts";
+ import type { NormalizedRun } from "../analysis/normalize.ts";
+@@ -146,24 +151,26 @@ export async function finalizeRun(
+   paths: RunPaths,
+   record: RunRecord,
+   normalized?: NormalizedRun,
+-): Promise<string> {
++  previous?: PublishedRun,
++): Promise<PublishedRun> {
++  let published: PublishedRun | undefined = previous;
+   try {
+     await validateReportTargets(paths.stagingDirectory);
+-    await writeRunArtifacts(paths.stagingDirectory, {
+-      ...record,
+-      outputDirectory: paths.finalDirectory,
+-    }, normalized);
++    published = await writeRunArtifacts(paths.stagingDirectory, record, normalized, published);
+     await validateMaterials(paths.stagingDirectory);
+     await safeDirectory(dirname(paths.finalDirectory));
+     // mkdir без recursive не позволяет затереть чужой запуск, файл или ссылку.
+     await Deno.mkdir(paths.finalDirectory);
+     await copyDirectory(paths.stagingDirectory, paths.finalDirectory);
+   } catch (error) {
+-    throw new Error(
+-      `Не удалось сохранить итоговый отчёт; staging сохранён: ${paths.stagingDirectory}: ${
+-        error instanceof Error ? error.message : String(error)
+-      }`,
+-      { cause: error },
++    if (error instanceof PublicationError) throw error;
++    throw new PublicationError(
++      record.runId,
++      paths.finalDirectory,
++      "storage",
++      error,
++      published,
++      record,
+     );
+   }
+   // Полный final уже сохранён. Частичная ошибка cleanup не отменяет этот результат.
+@@ -178,5 +185,5 @@ export async function finalizeRun(
+       );
+     } catch { /* Недоступный stderr не отменяет уже сохранённый полный final. */ }
+   }
+-  return paths.finalDirectory;
++  return { record, directory: paths.finalDirectory };
+ }
+diff --git a/tools/check-installed.ts b/tools/check-installed.ts
+index a7f13b1..240ce94 100644
+--- a/tools/check-installed.ts
++++ b/tools/check-installed.ts
+@@ -63,22 +63,26 @@ export async function checkInstalled(root: string): Promise<void> {
+       probe,
+       `
+ import {prepareDiagnostic} from ${module("src/runner/diagnostic.ts")};
+-import {executeScenario} from ${module("src/runner/execute.ts")};
++import {executeScenario,withScenarioSignals} from ${module("src/runner/execute.ts")};
++import {completedNative} from ${module("src/report/types.ts")};
++import type {PreparedVariant,Scenario} from ${module("src/config/types.ts")};
+ import {normalizeRun} from ${module("src/analysis/normalize.ts")};
+ import {strict as assert} from "node:assert";
++await withScenarioSignals(async(abortSignal)=>{
+ const root = ${JSON.stringify(course)};
+ await Deno.writeTextFile(root+'/entry.ts', 'export function installedTrace(value: number) { return value + 1; }\\nconsole.log(installedTrace(41));');
+-const prepared={variant:'candidate',root,manifest:{schema_version:2,experimentId:'installed',projectSource:'fixture/course',replacements:[],sources:[],packages:[],runtime:{}}};
+-const scenario={id:'installed-trace',cwd:'.',executable:Deno.execPath(),args:['run','--no-config','--no-lock','--cached-only','-A',root+'/entry.ts'],cachePolicy:'repeat-render',mode:'trace',scope:{modules:['entry.ts'],extensions:[],strict:true},resources:{wall:true,cpu:true,peakRss:true}};
++const prepared:PreparedVariant={variant:'candidate',root,manifest:{schema_version:2,experimentId:'installed',projectSource:'fixture/course',replacements:[],sources:[],packages:[],runtime:{}}};
++const scenario:Scenario={id:'installed-trace',cwd:'.',executable:Deno.execPath(),args:['run','--no-config','--no-lock','--cached-only','-A',root+'/entry.ts'],cachePolicy:'repeat-render',mode:'trace',scope:{modules:['entry.ts'],extensions:[],strict:true},resources:{wall:true,cpu:true,peakRss:true}};
+ const diagnostic=await prepareDiagnostic(scenario,prepared,root+'/diagnostic',Deno.env.get('QUARTO')??'quarto');
+ scenario.executable=diagnostic.env.QUARTO_DENO;
+-const result=await executeScenario(scenario,prepared,'trace',{outputRoot:root+'/trace-output',diagnosticEnv:diagnostic.env,preparation:diagnostic.preparation});
+-assert.equal(result.buildExitCode,0);assert(result.dataValid,JSON.stringify(result));
+-assert(result.preparation.some(p=>p.kind==='ts-transform'));
++const result=await executeScenario(scenario,prepared,'trace',{abortSignal,outputRoot:root+'/trace-output',diagnosticEnv:diagnostic.env,preparation:diagnostic.preparation});
++assert.equal(completedNative(result).code,0);assert(result.record.dataValid,JSON.stringify(result));
++assert(result.record.preparation.some(p=>p.kind==='ts-transform'));
+ const transformed=await Deno.readTextFile(root+'/entry.ts'); assert.match(transformed,/installedTrace/);
+ const symbols=JSON.parse(await Deno.readTextFile(root+'/entry.ts.symbols.json'));assert.equal(symbols.length,1);
+-const normalized=await normalizeRun(result.outputDirectory);assert(normalized.events.some(e=>e.event==='begin' && e.operation_id===symbols[0].id));
+-console.log('installed TS trace PASS',result.outputDirectory);
++const normalized=await normalizeRun(result.directory);assert(normalized.events.some(e=>e.event==='begin' && e.operation_id===symbols[0].id));
++console.log('installed TS trace PASS',result.directory);
++});
+ `,
+     );
+     await run(probe, []);
+diff --git a/tools/check-java-general-use.ts b/tools/check-java-general-use.ts
+index 09c52db..4914d73 100644
+--- a/tools/check-java-general-use.ts
++++ b/tools/check-java-general-use.ts
+@@ -1,9 +1,10 @@
++import { completedNative, validateRunRecord } from "../src/report/types.ts";
+ import { strict as assert } from "node:assert";
+ import { basename, dirname, isAbsolute, join, relative, resolve } from "node:path";
+ import { fileURLToPath } from "node:url";
+ import { copyTree, files, hashBytes, hashFile, treeHash } from "../src/sources/snapshot.ts";
+ import { prepareDiagnostic } from "../src/runner/diagnostic.ts";
+-import { executeScenario } from "../src/runner/execute.ts";
++import { executeScenario, withScenarioSignals } from "../src/runner/execute.ts";
+ import { normalizeRun, operationAttribution } from "../src/analysis/normalize.ts";
+ import { installPackages } from "../src/sources/packages.ts";
+ import type { SourceManifest, SourceReceipt } from "../src/config/types.ts";
+@@ -138,6 +139,16 @@ export async function preflightJava(
+ }
+ 
+ export async function checkJava(project: string, output: string, replacementOwner: string) {
++  return await withScenarioSignals((abortSignal) =>
++    checkJavaImpl(project, output, replacementOwner, abortSignal)
++  );
++}
++async function checkJavaImpl(
++  project: string,
++  output: string,
++  replacementOwner: string,
++  abortSignal: AbortSignal,
++) {
+   ({ project, output, replacementOwner } = await preflightJava(project, output, replacementOwner));
+   await Deno.mkdir(output, { recursive: false });
+   const commands: unknown[] = [], gates: unknown[] = [];
+@@ -370,8 +381,10 @@ export async function checkJava(project: string, output: string, replacementOwne
+     const entries = await Array.fromAsync(Deno.readDir(reports));
+     assert.equal(entries.length, 1);
+     const directory = join(reports, entries[0].name);
+-    const record = JSON.parse(await Deno.readTextFile(join(directory, "run.json")));
+-    assert.equal(record.outcome.code, 0);
++    const record = validateRunRecord(
++      JSON.parse(await Deno.readTextFile(join(directory, "run.json"))),
++    );
++    assert.equal(completedNative({ record, directory }).code, 0);
+     assert.equal(record.dataValid, true);
+     if (mode !== "off") {
+       await auditBackend(label, directory);
+@@ -382,12 +395,17 @@ export async function checkJava(project: string, output: string, replacementOwne
+         label,
+         status: "PASS",
+         runId: record.runId,
+-        outcome: record.outcome,
++        outcome: record.completion.native,
+         quality: normalized.quality,
+         executors: Object.keys(normalized.executors).length,
+         events: normalized.events.length,
+       });
+-    } else gates.push({ label, status: "PASS", runId: record.runId, outcome: record.outcome });
++    } else {gates.push({
++        label,
++        status: "PASS",
++        runId: record.runId,
++        outcome: record.completion.native,
++      });}
+     return { directory, record };
+   };
+   let studentNative = "";
+@@ -570,18 +588,20 @@ export async function checkJava(project: string, output: string, replacementOwne
+       );
+       const startUTC = new Date().toISOString();
+       const result = await executeScenario(scenario, prepared, "trace", {
++        abortSignal,
+         outputRoot: join(output, label, "runs"),
+         diagnosticEnv: diagnostic.env,
+         preparation: diagnostic.preparation,
+         coverage: diagnostic.coverage,
+       });
++      const native = completedNative(result);
+       await auditBackend(label, join(output, label, "diagnostic"));
+-      const normalized = await normalizeRun(result.outputDirectory);
++      const normalized = await normalizeRun(result.directory);
+       const raw = Object.fromEntries(
+         await Promise.all(
+-          (await files(result.outputDirectory)).map(async (
++          (await files(result.directory)).map(async (
+             p,
+-          ) => [relative(result.outputDirectory, p), await hashFile(p)]),
++          ) => [relative(result.directory, p), await hashFile(p)]),
+         ),
+       );
+       const recorded = [
+@@ -613,7 +633,7 @@ export async function checkJava(project: string, output: string, replacementOwne
+         coverage: diagnostic.coverage,
+       };
+       await json(join(output, label + ".proof.json"), proof);
+-      assert.equal(result.buildExitCode, 0);
++      assert.equal(native.code, 0);
+       assert(normalized.dataValid);
+       assert(normalized.events.length > 0);
+       assert(executedSymbols.length > 0, "Выбранные TS функции не исполнялись");
+@@ -621,7 +641,7 @@ export async function checkJava(project: string, output: string, replacementOwne
+       gates.push({
+         label,
+         status: "PASS",
+-        runId: result.runId,
++        runId: result.record.runId,
+         events: normalized.events.length,
+         executors: Object.keys(normalized.executors).length,
+         recorded,
+diff --git a/tools/recheck-repeat.ts b/tools/recheck-repeat.ts
+index abce12a..1e2e2c4 100644
+--- a/tools/recheck-repeat.ts
++++ b/tools/recheck-repeat.ts
+@@ -1,5 +1,6 @@
+ // Повторное сравнение уже выполненных рендеров; исходный результат и outputs сохраняются.
+ import { join, resolve } from "node:path";
++import { validateRunRecord } from "../src/report/types.ts";
+ import { compareOutputs } from "../src/analysis/outputs.ts";
+ const workspace = resolve(Deno.args[0]);
+ const originalPath = join(workspace, "repeat-validation.json");
+@@ -7,9 +8,13 @@ const original = JSON.parse(await Deno.readTextFile(originalPath));
+ const snapshotRoot = original.snapshotRoot ?? Deno.args[1];
+ if (!snapshotRoot) throw new Error("Нужен snapshotRoot исходного сравнения");
+ for (const id of [original.firstRunId, original.secondRunId]) {
+-  const run = JSON.parse(await Deno.readTextFile(join(workspace, "runs", id, "run.json")));
++  const run = validateRunRecord(
++    JSON.parse(await Deno.readTextFile(join(workspace, "runs", id, "run.json"))),
++  );
+   if (
+-    run.buildExitCode !== 0 || run.mode !== "off" || run.cwd !== original.preparedRoot ||
++    run.completion.kind !== "complete" || run.completion.native.code !== 0 ||
++    run.completion.native.signal !== null || !run.dataValid ||
++    run.request.mode !== "off" || run.request.cwd !== original.preparedRoot ||
+     run.scenario !== "java-repeat-student"
+   ) {
+     throw new Error("Повторная проверка требует двух успешных off renders одной prepared copy");
+diff --git a/tools/repeat-java.ts b/tools/repeat-java.ts
+index 0de813b..f33af90 100644
+--- a/tools/repeat-java.ts
++++ b/tools/repeat-java.ts
+@@ -1,68 +1,86 @@
++import { completedNative } from "../src/report/types.ts";
+ // Два рендера одной disposable copy без очистки outputs; функциональная проверка повторного запуска.
+ import { join, resolve } from "node:path";
+ import { liveSourceManifest } from "../src/config/types.ts";
+ import { validateConfig } from "../src/config/validate.ts";
+ import { prepareVariant } from "../src/sources/prepare.ts";
+-import { executeScenario } from "../src/runner/execute.ts";
++import { executeScenario, withScenarioSignals } from "../src/runner/execute.ts";
+ import { compareOutputs } from "../src/analysis/outputs.ts";
+ import { copyTree } from "../src/sources/snapshot.ts";
+-const workspace = resolve(Deno.args[0]);
+-const config = validateConfig(
+-  JSON.parse(await Deno.readTextFile(new URL("../scenarios/java.json", import.meta.url))),
+-);
+-const scenario = config.scenarios.find((s) => s.id === "java-repeat-student")!;
+-const manifest = liveSourceManifest(JSON.parse(
+-  await Deno.readTextFile(join(workspace, "candidate.manifest.json")),
+-));
+-const prepared = await prepareVariant(
+-  manifest,
+-  "candidate",
+-  await Deno.makeTempDir({ dir: workspace, prefix: "repeat-" }),
+-);
+-const quarto = config.runtime?.quarto ?? "quarto";
+-const options = {
+-  outputRoot: join(workspace, "runs"),
+-  env: { XDG_CACHE_HOME: join(workspace, "cache"), QUARTO_RUN_NO_NETWORK: "true", QUARTO: quarto },
+-};
+-const first = await executeScenario({ ...scenario, executable: quarto }, prepared, "off", options);
+-if (first.buildExitCode) throw new Error("Первый render неуспешен");
+-const snapshot = await Deno.makeTempDir({ dir: workspace, prefix: "repeat-outputs-" });
+-const paths: string[] = [];
+-for (const path of (config.cleanPaths ?? []).filter((p) => p.endsWith("student"))) {
+-  try {
+-    await copyTree(join(prepared.root, path), join(snapshot, path));
+-    paths.push(path);
+-  } catch (e) {
+-    if (!(e instanceof Deno.errors.NotFound)) throw e;
++await withScenarioSignals(async (abortSignal) => {
++  const workspace = resolve(Deno.args[0]);
++  const config = validateConfig(
++    JSON.parse(await Deno.readTextFile(new URL("../scenarios/java.json", import.meta.url))),
++  );
++  const scenario = config.scenarios.find((s) => s.id === "java-repeat-student")!;
++  const manifest = liveSourceManifest(JSON.parse(
++    await Deno.readTextFile(join(workspace, "candidate.manifest.json")),
++  ));
++  const prepared = await prepareVariant(
++    manifest,
++    "candidate",
++    await Deno.makeTempDir({ dir: workspace, prefix: "repeat-" }),
++  );
++  const quarto = config.runtime?.quarto ?? "quarto";
++  const options = {
++    abortSignal,
++    outputRoot: join(workspace, "runs"),
++    env: {
++      XDG_CACHE_HOME: join(workspace, "cache"),
++      QUARTO_RUN_NO_NETWORK: "true",
++      QUARTO: quarto,
++    },
++  };
++  const first = await executeScenario(
++    { ...scenario, executable: quarto },
++    prepared,
++    "off",
++    options,
++  );
++  if (completedNative(first).code) throw new Error("Первый render неуспешен");
++  const snapshot = await Deno.makeTempDir({ dir: workspace, prefix: "repeat-outputs-" });
++  const paths: string[] = [];
++  for (const path of (config.cleanPaths ?? []).filter((p) => p.endsWith("student"))) {
++    try {
++      await copyTree(join(prepared.root, path), join(snapshot, path));
++      paths.push(path);
++    } catch (e) {
++      if (!(e instanceof Deno.errors.NotFound)) throw e;
++    }
+   }
+-}
+-if (!paths.length) throw new Error("Нет outputs первого render");
+-const second = await executeScenario({ ...scenario, executable: quarto }, prepared, "off", options);
+-if (second.buildExitCode) throw new Error("Повторный render неуспешен");
+-const comparisons = [];
+-for (const path of paths) {
+-  comparisons.push({
+-    path,
+-    ...await compareOutputs(join(snapshot, path), join(prepared.root, path), {
+-      outputPolicy: config.outputPolicy,
+-    }),
+-  });
+-}
+-const result = {
+-  experimentId: manifest.experimentId,
+-  cachePolicy: scenario.cachePolicy,
+-  preparedRoot: prepared.root,
+-  snapshotRoot: snapshot,
+-  firstRunId: first.runId,
+-  secondRunId: second.runId,
+-  comparisons,
+-  checkedContentEqual: comparisons.every((c) => c.checkedContentEqual),
+-  htmlBytesCompared: config.outputPolicy === "strict",
+-  performanceAcceptance: "not-a-paired-benchmark",
+-};
+-await Deno.writeTextFile(
+-  join(workspace, "repeat-validation.json"),
+-  JSON.stringify(result, null, 2) + "\n",
+-);
+-console.log(JSON.stringify(result));
+-if (!result.checkedContentEqual) Deno.exit(4);
++  if (!paths.length) throw new Error("Нет outputs первого render");
++  const second = await executeScenario(
++    { ...scenario, executable: quarto },
++    prepared,
++    "off",
++    options,
++  );
++  if (completedNative(second).code) throw new Error("Повторный render неуспешен");
++  const comparisons = [];
++  for (const path of paths) {
++    comparisons.push({
++      path,
++      ...await compareOutputs(join(snapshot, path), join(prepared.root, path), {
++        outputPolicy: config.outputPolicy,
++      }),
++    });
++  }
++  const result = {
++    experimentId: manifest.experimentId,
++    cachePolicy: scenario.cachePolicy,
++    preparedRoot: prepared.root,
++    snapshotRoot: snapshot,
++    firstRunId: first.record.runId,
++    secondRunId: second.record.runId,
++    comparisons,
++    checkedContentEqual: comparisons.every((c) => c.checkedContentEqual),
++    htmlBytesCompared: config.outputPolicy === "strict",
++    performanceAcceptance: "not-a-paired-benchmark",
++  };
++  await Deno.writeTextFile(
++    join(workspace, "repeat-validation.json"),
++    JSON.stringify(result, null, 2) + "\n",
++  );
++  console.log(JSON.stringify(result));
++  if (!result.checkedContentEqual) Deno.exit(4);
++});
+diff --git a/tools/scaling.ts b/tools/scaling.ts
+index 7e55e54..7b2935a 100644
+--- a/tools/scaling.ts
++++ b/tools/scaling.ts
+@@ -1,121 +1,125 @@
++import { completedNative } from "../src/report/types.ts";
+ // Native synthetic workload владельца Core; длительности не используются как off acceptance.
+ import { join, resolve } from "node:path";
+ import { copyTree, hashFile } from "../src/sources/snapshot.ts";
+ import { git } from "../src/sources/resolve.ts";
+ import { verifySources } from "../src/sources/prepare.ts";
+ import { prepareDiagnostic } from "../src/runner/diagnostic.ts";
+-import { executeScenario } from "../src/runner/execute.ts";
++import { executeScenario, withScenarioSignals } from "../src/runner/execute.ts";
+ import { normalizeRun } from "../src/analysis/normalize.ts";
+ import { compareOutputs } from "../src/analysis/outputs.ts";
+ import type { PreparedVariant, Scenario, SourceManifest } from "../src/config/types.ts";
+-const [ownerArg, outputArg] = Deno.args;
+-if (!ownerArg || !outputArg) throw new Error("Использование: scaling.ts CORE_CHECKOUT OUTPUT");
+-const owner = await Deno.realPath(ownerArg), output = resolve(outputArg);
+-await Deno.mkdir(output, { recursive: true });
+-const manifest: SourceManifest = {
+-  schema_version: 2,
+-  projectSource: "Afonenko-Course-Tools/quarto-course",
+-  replacements: [],
+-  experimentId: crypto.randomUUID(),
+-  packages: [],
+-  runtime: {},
+-  sources: [{
+-    repository: "Afonenko-Course-Tools/quarto-course",
+-    sourceKind: "local-candidate",
+-    remoteRef: await git(["-C", owner, "rev-parse", "--abbrev-ref", "HEAD"]),
+-    sha: await git(["-C", owner, "rev-parse", "HEAD"]),
+-    checkoutPath: owner,
+-    fetchedAt: new Date().toISOString(),
+-  }],
+-};
+-await verifySources(manifest);
+-const rows = [];
+-for (const factor of [1, 2, 4]) {
+-  const root = join(output, "input-" + factor);
+-  await Deno.mkdir(root, { recursive: false });
+-  for (const extension of ["course-core", "course-presentation", "course-navigation"]) {
+-    await copyTree(join(owner, "_extensions", extension), join(root, "_extensions", extension));
+-  }
+-  const config =
+-    "project:\n  type: book\n  output-dir: _book\n  pre-render: _extensions/course-core/entrypoints/pre.ts\n  post-render: _extensions/course-core/entrypoints/post.ts\nbook:\n  title: Synthetic Core\n  chapters: [index.qmd]\nformat: html\ncourse: {id: synthetic-core, view: full}\nexercise-bank: true\nexercise-statement-visibility: open\nfilters: [course-core]\n";
+-  await Deno.writeTextFile(join(root, "_quarto.yml"), config);
+-  await Deno.writeTextFile(
+-    join(root, "index.qmd"),
+-    "# Synthetic Core\n\n" +
+-      Array.from(
+-        { length: factor },
+-        (_, i) =>
+-          `:::: {#exr-scale-${
+-            i + 1
+-          } course-role=independent-study difficulty=introductory time=10}\nУсловие ${
+-            i + 1
+-          }.\n\n::: {#sol-scale-${i + 1}}\nРешение ${i + 1}.\n:::\n::::\n\n`,
+-      ).join(""),
+-  );
+-  const scenario: Scenario = {
+-    id: `synthetic-core-${factor}`,
+-    cwd: ".",
+-    executable: "quarto",
+-    args: ["render"],
+-    cachePolicy: "clean-output",
+-    mode: "summary",
+-    scope: {
+-      modules: [],
+-      extensions: ["course-core", "course-navigation", "course-presentation"],
+-      strict: true,
+-    },
+-    resources: { wall: true, cpu: true, peakRss: true },
+-  };
+-  const prepared: PreparedVariant = { root, variant: "candidate", manifest };
+-  const options = {
+-    outputRoot: join(output, "runs"),
+-    cleanPaths: ["_book"],
+-    env: { XDG_CACHE_HOME: join(output, "cache"), QUARTO_RUN_NO_NETWORK: "true" },
++await withScenarioSignals(async (abortSignal) => {
++  const [ownerArg, outputArg] = Deno.args;
++  if (!ownerArg || !outputArg) throw new Error("Использование: scaling.ts CORE_CHECKOUT OUTPUT");
++  const owner = await Deno.realPath(ownerArg), output = resolve(outputArg);
++  await Deno.mkdir(output, { recursive: true });
++  const manifest: SourceManifest = {
++    schema_version: 2,
++    projectSource: "Afonenko-Course-Tools/quarto-course",
++    replacements: [],
++    experimentId: crypto.randomUUID(),
++    packages: [],
++    runtime: {},
++    sources: [{
++      repository: "Afonenko-Course-Tools/quarto-course",
++      sourceKind: "local-candidate",
++      remoteRef: await git(["-C", owner, "rev-parse", "--abbrev-ref", "HEAD"]),
++      sha: await git(["-C", owner, "rev-parse", "HEAD"]),
++      checkoutPath: owner,
++      fetchedAt: new Date().toISOString(),
++    }],
+   };
+-  const off = await executeScenario(scenario, prepared, "off", options);
+-  if (off.buildExitCode) throw new Error("Synthetic off failed: " + off.outputDirectory);
+-  const ordinary = join(output, "ordinary-" + factor);
+-  await copyTree(join(root, "_book"), ordinary);
+-  const diagnostic = await prepareDiagnostic(
+-    scenario,
+-    prepared,
+-    join(output, "diagnostic-" + factor),
+-  );
+-  const summary = await executeScenario(scenario, prepared, "summary", {
+-    ...options,
+-    diagnosticEnv: diagnostic.env,
+-    preparation: diagnostic.preparation,
+-    coverage: diagnostic.coverage,
+-  });
+-  if (summary.buildExitCode || !summary.dataValid) {
+-    throw new Error("Synthetic summary failed: " + summary.outputDirectory);
+-  }
+-  const normalized = await normalizeRun(summary.outputDirectory),
+-    counters: Record<string, number> = {};
+-  for (const executor of Object.values(normalized.executors)) {
+-    for (const [name, value] of Object.entries(executor.counters as Record<string, number>)) {
+-      counters[name] = (counters[name] ?? 0) + value;
++  await verifySources(manifest);
++  const rows = [];
++  for (const factor of [1, 2, 4]) {
++    const root = join(output, "input-" + factor);
++    await Deno.mkdir(root, { recursive: false });
++    for (const extension of ["course-core", "course-presentation", "course-navigation"]) {
++      await copyTree(join(owner, "_extensions", extension), join(root, "_extensions", extension));
++    }
++    const config =
++      "project:\n  type: book\n  output-dir: _book\n  pre-render: _extensions/course-core/entrypoints/pre.ts\n  post-render: _extensions/course-core/entrypoints/post.ts\nbook:\n  title: Synthetic Core\n  chapters: [index.qmd]\nformat: html\ncourse: {id: synthetic-core, view: full}\nexercise-bank: true\nexercise-statement-visibility: open\nfilters: [course-core]\n";
++    await Deno.writeTextFile(join(root, "_quarto.yml"), config);
++    await Deno.writeTextFile(
++      join(root, "index.qmd"),
++      "# Synthetic Core\n\n" +
++        Array.from(
++          { length: factor },
++          (_, i) =>
++            `:::: {#exr-scale-${
++              i + 1
++            } course-role=independent-study difficulty=introductory time=10}\nУсловие ${
++              i + 1
++            }.\n\n::: {#sol-scale-${i + 1}}\nРешение ${i + 1}.\n:::\n::::\n\n`,
++        ).join(""),
++    );
++    const scenario: Scenario = {
++      id: `synthetic-core-${factor}`,
++      cwd: ".",
++      executable: "quarto",
++      args: ["render"],
++      cachePolicy: "clean-output",
++      mode: "summary",
++      scope: {
++        modules: [],
++        extensions: ["course-core", "course-navigation", "course-presentation"],
++        strict: true,
++      },
++      resources: { wall: true, cpu: true, peakRss: true },
++    };
++    const prepared: PreparedVariant = { root, variant: "candidate", manifest };
++    const options = {
++      abortSignal,
++      outputRoot: join(output, "runs"),
++      cleanPaths: ["_book"],
++      env: { XDG_CACHE_HOME: join(output, "cache"), QUARTO_RUN_NO_NETWORK: "true" },
++    };
++    const off = await executeScenario(scenario, prepared, "off", options);
++    if (completedNative(off).code) throw new Error("Synthetic off failed: " + off.directory);
++    const ordinary = join(output, "ordinary-" + factor);
++    await copyTree(join(root, "_book"), ordinary);
++    const diagnostic = await prepareDiagnostic(
++      scenario,
++      prepared,
++      join(output, "diagnostic-" + factor),
++    );
++    const summary = await executeScenario(scenario, prepared, "summary", {
++      ...options,
++      diagnosticEnv: diagnostic.env,
++      preparation: diagnostic.preparation,
++      coverage: diagnostic.coverage,
++    });
++    if (completedNative(summary).code || !summary.record.dataValid) {
++      throw new Error("Synthetic summary failed: " + summary.directory);
++    }
++    const normalized = await normalizeRun(summary.directory),
++      counters: Record<string, number> = {};
++    for (const executor of Object.values(normalized.executors)) {
++      for (const [name, value] of Object.entries(executor.counters as Record<string, number>)) {
++        counters[name] = (counters[name] ?? 0) + value;
++      }
+     }
++    const equivalence = await compareOutputs(ordinary, join(root, "_book"));
++    rows.push({
++      factor,
++      inputHash: await hashFile(join(root, "index.qmd")),
++      offRunId: off.record.runId,
++      summaryRunId: summary.record.runId,
++      counters,
++      equivalence,
++    });
++    await Deno.writeTextFile(
++      join(output, "scaling.json"),
++      JSON.stringify({ manifest, rows }, null, 2) + "\n",
++    );
++    if (!equivalence.equivalent) throw new Error("Synthetic outputs differ");
+   }
+-  const equivalence = await compareOutputs(ordinary, join(root, "_book"));
+-  rows.push({
+-    factor,
+-    inputHash: await hashFile(join(root, "index.qmd")),
+-    offRunId: off.runId,
+-    summaryRunId: summary.runId,
+-    counters,
+-    equivalence,
+-  });
+-  await Deno.writeTextFile(
+-    join(output, "scaling.json"),
+-    JSON.stringify({ manifest, rows }, null, 2) + "\n",
+-  );
+-  if (!equivalence.equivalent) throw new Error("Synthetic outputs differ");
+-}
+-console.log(JSON.stringify(rows.map((r) => ({
+-  factor: r.factor,
+-  full: r.counters["walk_api_calls.full-document"],
+-  fragment: r.counters["walk_api_calls.fragment"],
+-  collect: r.counters["calls.course-core.pedagogy.collect.collect"],
+-  equivalent: r.equivalence.equivalent,
+-}))));
++  console.log(JSON.stringify(rows.map((r) => ({
++    factor: r.factor,
++    full: r.counters["walk_api_calls.full-document"],
++    fragment: r.counters["walk_api_calls.fragment"],
++    collect: r.counters["calls.course-core.pedagogy.collect.collect"],
++    equivalent: r.equivalence.equivalent,
++  }))));
++});
+diff --git a/tools/validate-java.ts b/tools/validate-java.ts
+index 823140b..c56698c 100644
+--- a/tools/validate-java.ts
++++ b/tools/validate-java.ts
+@@ -2,50 +2,47 @@
+ import { dirname, join, resolve } from "node:path";
+ import { validateConfig } from "../src/config/validate.ts";
+ import { compareOutputs } from "../src/analysis/outputs.ts";
+-import { importSourceManifest } from "../src/config/types.ts";
++import { importSourceManifest, type ReportSourceManifest } from "../src/config/types.ts";
++import { type PublishedRun, validateRunRecord } from "../src/report/types.ts";
+ import { files } from "../src/sources/snapshot.ts";
+ const workspace = resolve(Deno.args[0]), upstreamWorkspace = resolve(Deno.args[1]);
+ const config = validateConfig(
+   JSON.parse(await Deno.readTextFile(new URL("../scenarios/java.json", import.meta.url))),
+ );
+-type Build = {
+-  runId: string;
+-  scenario: string;
+-  mode: string;
+-  variant: string;
+-  cwd: string;
+-  outputDirectory: string;
+-  buildExitCode: number;
+-  dataValid: boolean;
+-  manifest: { sources: { repository: string; sha: string }[] };
+-};
+ async function findRun(
+   root: string,
+   scenario: string,
+   variant: string,
+   mode: string,
+-): Promise<Build> {
+-  const matches: { meta: Build; modified: number }[] = [];
++): Promise<PublishedRun & { manifest: ReportSourceManifest }> {
++  const matches: {
++    publication: PublishedRun & { manifest: ReportSourceManifest };
++    modified: number;
++  }[] = [];
+   for await (const entry of Deno.readDir(join(root, "runs"))) {
+     if (!entry.isDirectory) continue;
+     const path = join(root, "runs", entry.name, "run.json");
+     try {
+-      const meta: Build = JSON.parse(await Deno.readTextFile(path));
++      const meta = validateRunRecord(JSON.parse(await Deno.readTextFile(path)));
+       if (
+-        meta.scenario === scenario && meta.variant === variant && meta.mode === mode &&
+-        !meta.buildExitCode && meta.dataValid
++        meta.scenario === scenario && meta.variant === variant && meta.request.mode === mode &&
++        meta.completion.kind === "complete" && meta.completion.native.code === 0 &&
++        meta.completion.native.signal === null && meta.dataValid
+       ) {
+-        meta.manifest = importSourceManifest(
++        const manifest = importSourceManifest(
+           JSON.parse(await Deno.readTextFile(join(dirname(path), "manifest.json"))),
+           true,
+         );
+-        matches.push({ meta, modified: (await Deno.stat(path)).mtime!.getTime() });
++        matches.push({
++          publication: { record: meta, directory: dirname(path), manifest },
++          modified: (await Deno.stat(path)).mtime!.getTime(),
++        });
+       }
+     } catch (e) {
+       if (!(e instanceof Deno.errors.NotFound)) throw e;
+     }
+   }
+-  const run = matches.sort((a, b) => b.modified - a.modified)[0]?.meta;
++  const run = matches.sort((a, b) => b.modified - a.modified)[0]?.publication;
+   if (!run) throw new Error(`Нет успешного run: ${scenario}/${variant}/${mode}`);
+   return run;
+ }
+@@ -59,21 +56,22 @@ async function exists(path: string) {
+     throw e;
+   }
+ }
+-async function compareBuilds(a: Build, b: Build, label: string) {
+-  const scenario = config.scenarios.find((s) => s.id === b.scenario)!;
+-  const root = (build: Build) => scenario.cwd === "." ? build.cwd : dirname(build.cwd);
++async function compareBuilds(a: PublishedRun, b: PublishedRun, label: string) {
++  const scenario = config.scenarios.find((s) => s.id === b.record.scenario)!;
++  const root = (build: PublishedRun) =>
++    scenario.cwd === "." ? build.record.request.cwd : dirname(build.record.request.cwd);
+   const checks = [];
+-  const paths = b.scenario === "java-pl-export"
++  const paths = b.record.scenario === "java-pl-export"
+     ? ["pl-native"]
+     : (config.cleanPaths ?? []).filter((p) =>
+-      p.endsWith(b.scenario === "java-full-full" ? "full" : "student")
++      p.endsWith(b.record.scenario === "java-full-full" ? "full" : "student")
+     );
+   for (const path of paths) {
+-    const left = b.scenario === "java-pl-export"
+-      ? join(a.outputDirectory, path)
++    const left = b.record.scenario === "java-pl-export"
++      ? join(a.directory, path)
+       : join(root(a), path);
+-    const right = b.scenario === "java-pl-export"
+-      ? join(b.outputDirectory, path)
++    const right = b.record.scenario === "java-pl-export"
++      ? join(b.directory, path)
+       : join(root(b), path);
+     const hasA = await exists(left), hasB = await exists(right);
+     if (!hasA && !hasB) continue;
+@@ -111,7 +109,7 @@ async function compareBuilds(a: Build, b: Build, label: string) {
+     }
+   }
+   if (!checks.length) throw new Error("Сравнение без outputs");
+-  comparisons.push({ label, leftRunId: a.runId, rightRunId: b.runId, checks });
++  comparisons.push({ label, leftRunId: a.record.runId, rightRunId: b.record.runId, checks });
+ }
+ for (const profile of ["student", "full"]) {
+   const id = "java-full-" + profile;

@@ -1,0 +1,31 @@
+import java.lang.Throwable;
+import java.lang.Object;
+import java.util.Set;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import java.util.*;
+import java.math.*;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+
+class HistoricalContractTest {
+
+    @Test
+    @org.junit.jupiter.api.DisplayName("Пустой граф и несколько независимых рёбер")
+    void noVerticesAndSeveralEdges() throws Throwable {
+        Object empty = TaskBinding.graph(0);
+        assertNotNull(empty);
+        Object g = TaskBinding.graph(4);
+        TaskBinding.add(g, 0, 1);
+        TaskBinding.add(g, 1, 2);
+        TaskBinding.add(g, 0, 2);
+        assertEquals(Set.of(1, 2), TaskBinding.neighbors(g, 0));
+        assertEquals(Set.of(0, 2), TaskBinding.neighbors(g, 1));
+        TaskBinding.remove(g, 0, 1);
+        assertEquals(Set.of(2), TaskBinding.neighbors(g, 0));
+        assertEquals(Set.of(2), TaskBinding.neighbors(g, 1));
+        assertTrue(TaskBinding.edge(g, 0, 2));
+        assertTrue(TaskBinding.edge(g, 2, 1));
+        assertEquals(Set.of(), TaskBinding.neighbors(g, 3));
+    }
+}

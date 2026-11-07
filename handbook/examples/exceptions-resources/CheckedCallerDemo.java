@@ -1,5 +1,8 @@
 public class CheckedCallerDemo {
-    static class EmptyException extends Exception {}
+    static class EmptyException extends Exception {
+        @java.io.Serial
+        private static final long serialVersionUID = 1L;
+    }
 
     static int take(boolean empty) throws EmptyException {
         if (empty) throw new EmptyException();

@@ -1,0 +1,83 @@
+{
+  "decision": "approveSource",
+  "scope": "Независимая техническая рецензия Java authored composition и course-project metadata; код helper и реализация Core/PL не принимаются этим отчётом.",
+  "reviewerChatID": "01a1a8ba-b4b5-79b2-a308-f987f24fd323",
+  "originalTurnID": "01a1a8ba-b4ff-7ba1-89a5-c1f7930d6edf",
+  "admission": "java-tech-review-admission.json",
+  "independent": true,
+  "commit": "5118158e",
+  "base": "c2e35e7ed3ec4ca2412dd66c9d71d9ce94e6290c",
+  "critical": [],
+  "important": [],
+  "passed": [
+    "Рекурсивно раскрыты10labs:128уникальных questionID, повторы любых sourceID отсутствуют;188includeedges, отсутствующих targets0.",
+    "Обязательные task-items побайтно совпадают с checkpoint;41candidate/35слотов, pass/max/default points и прежние slot-overrides сохранены.",
+    "Все87добровольных заданий присутствуют единожды в optionaltask-items и имеют auto-points=0/manual-points=0; распределение согласуется с картой.",
+    "Все128projectpaths и прочие canonical attributes, кроме согласованного target/submission, совпадают с прежними условиями; question keys и все UUID карты подтверждены алгоритмом UUIDv5 от прежнего courseID/questionID.",
+    "Ровно10works экспортируются; bank/reserve/units исключены из project.render/book.chapters; удалены87units.",
+    "Декларации приватности source исключают projects/test-support; student/full projection настройки сохранены. Фактический ZIP/privacy пока не принимается.",
+    "Новая общая и тематическая YAML композиция даёт для всех128проектов тот же непутевой контракт: requires/testsets/build keys/delivery/verification/solutions.141YAMLразобран в памяти; отличий0. Повтор nativeпроверки физических targets не запускался; переиспользуется ранее полученный PASS actualreadProjectContexts128.",
+    "ДельтаJ1сверена со всеми128строками принятой авторской таблицы: layout/fixedPaths/types/requiredFilenames/starters совпадают. Все128канонических тел неизменны; configвнеsubmissiondefaults/additional-sourcepolicies неизменен.",
+    "Исходникистартеров всех118automatic сверены по exactGitpaths; primary-required:true не навязывает имена из свободногоstarter.",
+    "Настоящий PLdecodeNativeBusinessнаPLf184426c083017a60d43334c58f6850a56e51713прочитал128authorдеклараций сdefaults; результатmode/layout точно совпал сreviewcoverage. exr-numbers-short-circuit-and корректно наследуетupload/files-or-zip."
+  ],
+  "evidence": [
+    "java-technical-probes.py",
+    "java-technical-probes.json",
+    "java-metadata-nonpath-review.json",
+    "project-contracts-before.json",
+    "check-project-contracts.ts",
+    "course-content-review.json",
+    "java-j1-delta-probes.py",
+    "java-j1-delta-probes.json",
+    "java-j1-native-parser.ts",
+    "course-author-submissions.json",
+    "course-submission-content-review.json"
+  ],
+  "limits": [
+    "Названия и предметная раскладка уже независимо приняты Astra; их педагогическое чтение полностью не повторялось.",
+    "Полный render/R0–R6/массовые nativeпроверки/полное хеширование не запускались.",
+    "Publicone-labexport, реальныеZIP/README/privacy, Docker/UI/production не подтверждены этим source review. Известная внешняя блокировка Core bibliography принадлежит A.",
+    "Helpercommit175a3ab6 уже проверен независимым C; здесь повторно не принимается.",
+    "Принят source8e58695c;PLimplementation отдельно проверяет другой технический рецензент. Выполненный parserprobe не подтверждает runtimeZIP/UI/полныйrender."
+  ],
+  "timestampUTC": "2026-11-04T23:06:34.954884+00:00",
+  "resolved": [
+    {
+      "id": "J2",
+      "priority": "P1",
+      "file": "tasks/index.qmd",
+      "line": 11,
+      "title": "Удалить отдельный вход банка с главной страницы заданий",
+      "problem": "Exact commit5118158e сохраняет ссылку sec-bank «Банк заданий» и утверждение о трёх добровольных подборках. В то же время bank/index.qmd и reserve pages исключены из render/book. Это нарушает согласованный единственный вход через десять labs и оставляет ссылку на исключённую страницу.",
+      "required": "Обновить входную страницу под десять labs с добровольными разделами; проверить точный follow-up commit. В checkout уже замечена чужая незакоммиченная правка этого файла; рецензент её не менял.",
+      "resolved": true,
+      "resolutionCommit": "17ab4e3791332ddc3103b5b8e83c77a9c771a215",
+      "resolutionReview": "Узкая дельта проверена: ссылка sec-bank и три добровольные подборки удалены; главная страница описывает все128задач внутри10labs. Других изменений нет."
+    },
+    {
+      "id": "J1",
+      "priority": "P1",
+      "file": "tasks/bank/_conditions/exr-polymorphism-circle-subclass.qmd",
+      "line": 1,
+      "title": "Сохранить допустимые дополнительные исходники при переходе на редакторы",
+      "problem": "Задача сменена с upload на editor. Карта fixedFiles содержит лишь Circle.java и TwoDShape.java; профиль java-polymorphism-circle-subclass в tasks/_quarto.yml не объявляет additional-java-sources. PL exporter для такого профиля выводит только два редактора. Между тем условие, строки24–25 и29, и README.local.md прямо разрешают собственные классы и пакеты. Существующая законная alternatives/namespace содержит также LawfulNames.java и unrelated/Study.java. Целиком предъявить такой вариант через новую форму невозможно. Аналогичный риск у editor1 Book.java: условие допускает отдельный запуск демонстрации и вспомогательную реализацию.",
+      "required": "Сохранить удобные редакторы для обязательных фиксированных файлов вместе с приёмом допустимых дополнительных исходников или выбрать режим свободного состава там, где физические имена/размещение не фиксирует условие. Проверить затронутые editor задачи по разрешённым ответам; обновить карту и инструкции. Не сужать каноническое условие ради выбранного стартера.",
+      "evidence": [
+        "tasks/projects/polymorphism/circle-subclass/README.local.md",
+        "tasks/projects/polymorphism/circle-subclass/alternatives/namespace/SOLUTION.md",
+        "tasks/projects/polymorphism/circle-subclass/alternatives/namespace/src/main/java/LawfulNames.java",
+        "tasks/projects/polymorphism/circle-subclass/alternatives/namespace/src/main/java/unrelated/Study.java",
+        "course-pl/_extensions/course-prairielearn/application/export.ts:944–1000"
+      ],
+      "resolved": true,
+      "resolutionCommit": "8e58695c867c8759607b40909ebf437b2e2980d5",
+      "resolutionReview": "Все128sourceрежимов согласованы с независимо принятой таблицей:126files-or-zip+2zip. Все118automatic имеют allow-additional:true. primary-required:true встречается только при действительном совпадении всехstarterpaths с явно обязательнымиfixedpaths; вспомогательные исходники не запрещаются. Circle получает upload/primary-required:false и сохраняет произвольные помощники, Book получает uploadсadditionaltrue. ActualdecodeNativeBusiness подтверждает все128режимов иlayouts, включая наследование upload/files-or-zip единственным условием безmodeattr."
+    }
+  ],
+  "reviewedFollowupCommits": [
+    "17ab4e3791332ddc3103b5b8e83c77a9c771a215",
+    "8e58695c867c8759607b40909ebf437b2e2980d5"
+  ],
+  "finalReviewedCommit": "8e58695c867c8759607b40909ebf437b2e2980d5"
+}

@@ -1,0 +1,1310 @@
+diff --git a/README.md b/README.md
+index 0528145..35d8986 100644
+--- a/README.md
++++ b/README.md
+@@ -6,7 +6,7 @@
+ **unreleased**. Минимум — Quarto 1.11.5. Учебная интеграция использует публичный TS-контракт Core 9; внешнего валидатора схем не требуется.
+ 
+ Контракт этого ref — кандидат 3.5.0. Публичный native путь использует Core
+-`withCurrentNativeOperation`, owner release proof и готовые artifact/resource inventories.
++`withNativePublication` и готовые artifact/resource inventories.
+ Private NativeRun fallback удалён; обычные resources сохраняют независимость от Core.
+ Для разработки установите целиком текущий checkout: `quarto add /path/to/quarto-project-download --no-prompt`.
+ 
+@@ -239,13 +239,14 @@ caches, build outputs и class/jar исключаются. Автор обесп
+ команды и ссылки README. Весь разрешённый full project упаковывается после
+ Core authorization, а public guards обычных resources сохраняются.
+ 
+-`finishDownloads(root, options)` из `public.ts` принимает явные projection/profiles,
+-expectedDocuments и конечный каталог выдачи. Текущую операцию открывает публичный Core API. Модельные заявки имеют отдельный typed transport
+-`artifacts: [{exerciseId, kind}]`; они не преобразуются в ID старого resources map.
+-При обычном post-hook контекст загружается из установленного соседнего Core.
+-Private `_generated/project-download/artifacts-receipt.json` фиксирует SHA256
+-архивов, kind/source, operation/identity и release proof; он исключается из сайта вместе
+-с остальными generated inputs. Он не подтверждает выполнение Java-проектов.
++`prepareNativeDownloads(publication, options)` из `public.ts` собирает готовый
++одноразовый draft внутри `Core.withNativePublication`. Orchestrator выполняет
++активный PL inspection и вызывает `draft.publish()` только после успешного Core
++closing. Native root/profiles/projection берутся из publication; options задают
++конечный каталог и адреса. `resetDownloadRequests` очищает только временные
++заявки. ZIP manifest/CRC сохраняются; artifacts receipt и per-ZIP SHA удалены.
++`finishDownloads(root, options)` обслуживает отдельные обычные resources без Core.
++Подробнее — [публичный runtime](docs/public-runtime.md).
+ 
+ Обычные resources работают без Core/CUE. Если Core обработал AST, generic resource
+ policy действует и при `course-model: false`. `course.json` и retained HTML предыдущей
+@@ -352,7 +353,7 @@ Download 3.1.0 сохранил контракт Download3 и добавил д
+ 
+ ## Сохранённая поправка 3.3.1: ordinary owner validation
+ 
+-[Адресная поправка](docs/release-3.3.1.md) использует частичный C publication vet с действительным Core proof и common-source guards. Full C delivery не запускается из ZIP finalizer. Она сохраняется в этом кандидате; результаты нового выпуска проверяются отдельно.
++Историческая [поправка 3.3.1](docs/release-3.3.1.md) описывает прежний proof contract. Текущий ordinary маршрут использует Native publication и partial PL inspection; full PL delivery запускается отдельно. Результаты нового выпуска проверяются отдельно.
+ 
+ 
+ ## Кандидат 3.4.0: ранние literal-запросы
+diff --git a/_extensions/project-download/application/publish.ts b/_extensions/project-download/application/publish.ts
+index 7d9ca0d..8c8a8c3 100644
+--- a/_extensions/project-download/application/publish.ts
++++ b/_extensions/project-download/application/publish.ts
+@@ -14,11 +14,10 @@ import {
+ export type ArtifactKind = typeof ARTIFACT_KINDS[number];
+ type NativeRequest = ReturnType<typeof resolveDownloadRequests>["request"];
+ export type ArtifactRequest = NonNullable<NativeRequest["artifacts"]>[number];
+-// Старый public port допускает отсутствие native/configuration; типы полей
+-// выводятся из исполняемого owner batch, отдельного ручного DTO нет.
+-export type Request =
+-  & Pick<NativeRequest, "source" | "resources">
+-  & Partial<Omit<NativeRequest, "source" | "resources">>;
++/** Проверенные поля заявки; raw configuration разбирает её действующий owner. */
++export type Request = Pick<NativeRequest, "source" | "resources" | "artifacts"> & {
++  configuration?: unknown;
++};
+ export interface PublishPorts {
+   requests(): Promise<Request[]>;
+   courseResource(id: string, source: string): Promise<Resource>;
+diff --git a/_extensions/project-download/entrypoints/post.ts b/_extensions/project-download/entrypoints/post.ts
+index 9e43735..f5b5005 100644
+--- a/_extensions/project-download/entrypoints/post.ts
++++ b/_extensions/project-download/entrypoints/post.ts
+@@ -1,10 +1,42 @@
+-import { finish } from "../infrastructure/runtime.ts";
++import { resolve } from "stdlib/path";
++import { diagnostic } from "../diagnostics.ts";
++import { finish, prepareNativeDownloads } from "../infrastructure/runtime.ts";
++import type { PreparedDownloads } from "../infrastructure/runtime.ts";
++import { sibling } from "../infrastructure/siblings.ts";
+ try {
+   if (Deno.env.get("COURSE_SITE_DEFER_DOWNLOADS") === "1") Deno.exit(0);
+-  const count = await finish(await Deno.realPath(Deno.cwd()), {
+-    native: Deno.args.includes("--native"),
+-    projection: Deno.args.includes("--author") ? "author" : "student",
+-  });
++  const root = await Deno.realPath(Deno.cwd());
++  let count: number;
++  if (Deno.args.includes("--native")) {
++    const output = Deno.env.get("QUARTO_PROJECT_OUTPUT_DIR");
++    if (!output) {
++      throw diagnostic("DOWNLOAD.REQUEST_INVALID", "Native hook не передал текущий output", {
++        source: root, field: "outputDirectory",
++      });
++    }
++    const Core = await sibling("course-core");
++    const pending: { draft?: PreparedDownloads } = {};
++    try {
++      const prepared = await Core.withNativePublication({
++        root,
++        profiles: (Deno.env.get("QUARTO_PROFILE") || "").split(",").filter(Boolean),
++        projection: Deno.args.includes("--author") ? "author" : "student",
++        outputDirectory: resolve(root, output),
++      }, undefined, async (publication) => {
++        if (publication.course.adapters.includes("prairielearn")) {
++          await (await sibling("course-prairielearn")).inspectPublication(publication);
++        }
++        pending.draft = await prepareNativeDownloads(publication, {});
++        return pending.draft;
++      });
++      count = await prepared.publish();
++    } catch (cause) {
++      try { await pending.draft?.discard(); } catch { /* Сохраняем primary cause. */ }
++      throw cause;
++    }
++  } else {
++    count = await finish(root);
++  }
+   console.log(`Подготовлено архивов материалов: ${count}`);
+ } catch (error) {
+   if (
+diff --git a/_extensions/project-download/entrypoints/pre.ts b/_extensions/project-download/entrypoints/pre.ts
+index 7f46496..fd3a723 100644
+--- a/_extensions/project-download/entrypoints/pre.ts
++++ b/_extensions/project-download/entrypoints/pre.ts
+@@ -1,6 +1,6 @@
+-import { prepare } from "../infrastructure/runtime.ts";
++import { resetDownloadRequests } from "../infrastructure/runtime.ts";
+ try {
+-  await prepare(await Deno.realPath(Deno.cwd()));
++  await resetDownloadRequests(await Deno.realPath(Deno.cwd()));
+ } catch (error) {
+   if (error instanceof Error && ["ExtensionDiagnostic", "ExternalToolFailure"].includes(error.name)) {
+     console.error(error.message);
+diff --git a/_extensions/project-download/infrastructure/runtime.ts b/_extensions/project-download/infrastructure/runtime.ts
+index 41d864d..b9eed27 100644
+--- a/_extensions/project-download/infrastructure/runtime.ts
++++ b/_extensions/project-download/infrastructure/runtime.ts
+@@ -7,7 +7,7 @@ import {
+   progress,
+   reportProgress,
+ } from "../diagnostics.ts";
+-import { dirname, fromFileUrl, join, relative, resolve } from "stdlib/path";
++import { dirname, join, relative, resolve } from "stdlib/path";
+ import { configuration, RESOURCE_ID } from "../domain/config.ts";
+ import { publish, type Request } from "../application/publish.ts";
+ import {
+@@ -19,19 +19,18 @@ import {
+ } from "./files.ts";
+ import { sibling } from "./siblings.ts";
+ import type {
+-  NativeOperation,
++  NativePublication,
+   ProjectContractContext,
+   ProjectPlan,
+   SiblingModules,
+ } from "./siblings.ts";
+ const manifestName = ".project-download-manifest.json";
+-async function sha256(bytes: Uint8Array): Promise<string> {
+-  return Array.from(
+-    new Uint8Array(
+-      await crypto.subtle.digest("SHA-256", new Uint8Array(bytes)),
+-    ),
+-    (v) => v.toString(16).padStart(2, "0"),
+-  ).join("");
++function record(value: unknown): value is Record<string, unknown> {
++  return !!value && typeof value === "object" && !Array.isArray(value);
++}
++function outputDirectory(config: Record<string, unknown>): string {
++  const output = record(config.project) ? config.project["output-dir"] : undefined;
++  return typeof output === "string" ? output : ".";
+ }
+ async function inspect(root: string) {
+   const executable = Deno.env.get("QUARTO") ||
+@@ -55,7 +54,15 @@ async function inspect(root: string) {
+   }
+   if (!result.success) throw externalFailure(executable, result);
+   if (result.stderr.length) await Deno.stderr.write(result.stderr);
+-  return JSON.parse(new TextDecoder().decode(result.stdout));
++  const value: unknown = JSON.parse(new TextDecoder().decode(result.stdout));
++  if (!record(value) || !record(value.config) || !record(value.files) ||
++      !Array.isArray(value.files.input) ||
++      !value.files.input.every((path): path is string => typeof path === "string")) {
++    throw diagnostic("DOWNLOAD.CONFIG_INVALID", "Неполный результат Quarto inspect", {
++      source: root, field: "config/files.input",
++    });
++  }
++  return { config: value.config, files: { input: value.files.input } };
+ }
+ function archiveName(name: string): boolean {
+   return name.endsWith(".zip") && RESOURCE_ID.test(name.slice(0, -4));
+@@ -78,10 +85,10 @@ export const clearOwned = __metrics.wrapAsync({
+   const manifest = join(directory, manifestName);
+   if (!await exists(manifest)) return;
+   await noSymlinks(outputRoot, manifest);
+-  const files = JSON.parse(await Deno.readTextFile(manifest));
++  const files: unknown = JSON.parse(await Deno.readTextFile(manifest));
+   if (
+     !Array.isArray(files) ||
+-    files.some((name) => typeof name !== "string" || !archiveName(name))
++    !files.every((name): name is string => typeof name === "string" && archiveName(name))
+   ) {
+     throw diagnostic(
+       "DOWNLOAD.REQUEST_INVALID",
+@@ -98,60 +105,33 @@ export const clearOwned = __metrics.wrapAsync({
+   }
+   await Deno.remove(manifest);
+ });
+-export const prepare = __metrics.wrapAsync({
+-  id: "project-download.infrastructure.runtime.prepare",
++/** Удаляет только временные заявки перед новым render. */
++export const resetDownloadRequests = __metrics.wrapAsync({
++  id: "project-download.infrastructure.runtime.resetDownloadRequests",
+   kind: "io",
+-}, async function prepare(root: string): Promise<void> {
+-  return await progress(`Подготовка материалов: ${root}`, () => prepareInternal(root));
+-});
+-async function prepareInternal(root: string): Promise<void> {
+-  const inspected = Deno.env.get("QUARTO_PROJECT_OUTPUT_DIR")
+-    ? undefined
+-    : await inspect(root);
+-  if (inspected) configuration(inspected.config["project-download"]);
+-  const output = Deno.env.get("QUARTO_PROJECT_OUTPUT_DIR") ||
+-    inspected?.config.project?.["output-dir"] || ".";
+-  await clearOwned(root, output);
+-  const receipt = child(
+-    root,
+-    "_generated/project-download/artifacts-receipt.json",
+-  );
+-  if (await exists(receipt)) {
+-    await noSymlinks(root, receipt);
+-    const value = JSON.parse(await Deno.readTextFile(receipt));
+-    if (
+-      !["project-download-artifacts-v1", "project-download-artifacts-v2"]
+-        .includes(value?.schema)
+-    ) {
+-      throw diagnostic(
+-        "DOWNLOAD.OUTPUT_CONFLICT",
+-        "Чужой файл на пути receipt",
+-        { source: receipt, field: "receipt" },
+-      );
+-    }
+-    await Deno.remove(receipt);
+-  }
++}, async function resetDownloadRequests(root: string): Promise<void> {
+   const requests = child(root, "_generated/project-download/requests");
+   if (await exists(requests)) {
+     await noSymlinks(root, requests);
+     await Deno.remove(requests, { recursive: true });
+   }
+-}
+-export interface FinishOptions {
+-  native?: boolean;
+-  observeOperation?(catalog: unknown, release: unknown): void | Promise<void>;
+-  projection?: "student" | "author";
+-  profiles?: string[];
+-  expectedDocuments?: { source: string; format: "html" | "revealjs" }[];
+-  outputDirectory?: string;
++});
++/** Адреса и содержимое выдачи; Native context принадлежит Core. */
++export interface NativeDownloadOptions {
+   destinationDirectory?: string;
+   baseUrl?: string;
+   catalogBaseUrl?: string;
+   referenceCatalog?: unknown;
+-  submission?: {
+-    files: { name: string; starterPath?: string }[];
+-    instructions: string;
+-  };
++  submission?: Parameters<SiblingModules["course-core"]["materializeProject"]>[2]["submission"];
++}
++export interface OrdinaryDownloadOptions {
++  destinationDirectory?: string;
++  profiles?: string[];
++  outputDirectory?: string;
++}
++export interface PreparedDownloads {
++  publish(): Promise<number>;
++  discard(): Promise<void>;
+ }
+ async function inputFiles(root: string) {
+   const file = Deno.env.get("QUARTO_USE_FILE_FOR_PROJECT_INPUT_FILES");
+@@ -161,44 +141,12 @@ async function inputFiles(root: string) {
+       Boolean,
+     ).map((path) => relative(root, resolve(root, path)).replaceAll("\\", "/"));
+ }
+-/** Публичная текущая операция Core; публикация выполняется после её final fence. */
+-async function validateRelease(
+-  operation: NativeOperation,
+-  Core: SiblingModules["course-core"],
+-) {
+-  let PL: SiblingModules["course-prairielearn"] | undefined;
+-  const extension = dirname(dirname(fromFileUrl(import.meta.url)));
+-  const path = join(dirname(extension), "course-prairielearn", "public.ts");
+-  try {
+-    await Deno.stat(path);
+-    PL = await sibling("course-prairielearn");
+-  } catch (cause) {
+-    if (!(cause instanceof Deno.errors.NotFound)) throw cause;
+-  }
+-  const request = {
+-    expectedSources: operation.catalog.documents.map((d) => d.source),
+-  };
+-  const before = operation.metrics;
+-  let proof;
+-  if (PL) {
+-    const publication = await PL.inspectPublication(Core, operation, request);
+-    proof = Core.NativeReleaseProofSchema.parse(publication.proof);
+-  } else {
+-    proof = await operation.validateRelease(request, []);
+-  }
+-  return {
+-    proof,
+-    validationPasses: 1,
+-    metricsBefore: before,
+-    metricsAfter: operation.metrics,
+-  };
+-}
+ export const finish = __metrics.wrapAsync({
+   id: "project-download.infrastructure.runtime.finish",
+   kind: "io",
+ }, async function finish(
+   root: string,
+-  options: FinishOptions = {},
++  options: OrdinaryDownloadOptions = {},
+ ): Promise<number> {
+   return await progress(`Финализация материалов: ${root}`, async () => {
+     const count = await finishInternal(root, options);
+@@ -206,48 +154,49 @@ export const finish = __metrics.wrapAsync({
+     return count;
+   });
+ });
+-async function finishInternal(root: string, options: FinishOptions): Promise<number> {
+-  const directory = join(root, "_generated/project-download/requests");
+-  let native = options.native === true;
+-  if (await exists(directory)) {
+-    await noSymlinks(root, directory);
+-    for await (const file of Deno.readDir(directory)) {
+-      const path = join(directory, file.name);
+-      await noSymlinks(root, path);
+-      const request = JSON.parse(await Deno.readTextFile(path));
+-      native ||= request.native === true || request.courseProcessed === true;
+-    }
++/** Все Core-bound helpers завершаются до возврата Download-owned draft. */
++export async function prepareNativeDownloads(
++  publication: NativePublication,
++  options: NativeDownloadOptions = {},
++): Promise<PreparedDownloads> {
++  const Core = await sibling("course-core");
++  return await prepareDownloadsInternal(publication.root, options,
++    [...publication.identity.profiles], publication.outputDirectory, { publication, Core });
++}
++async function finishInternal(root: string, options: OrdinaryDownloadOptions): Promise<number> {
++  const draft = await prepareDownloadsInternal(root, options,
++    options.profiles ?? (Deno.env.get("QUARTO_PROFILE") || "").split(",").filter(Boolean),
++    options.outputDirectory || Deno.env.get("QUARTO_PROJECT_OUTPUT_DIR"));
++  try {
++    return await draft.publish();
++  } catch (cause) {
++    try { await draft.discard(); } catch { /* Исходная ошибка публикации важнее cleanup. */ }
++    throw cause;
+   }
++}
++async function prepareDownloadsInternal(
++  root: string,
++  options: NativeDownloadOptions,
++  profiles: string[],
++  sourceOutput?: string,
++  current?: { publication: NativePublication; Core: SiblingModules["course-core"] },
++): Promise<PreparedDownloads> {
+   let archives: { name: string; bytes: Uint8Array }[] = [],
+-    receiptText = "",
+     ownedSignature = "";
+   let ownedSources: string[] = [];
+-  const output = options.outputDirectory ||
+-    Deno.env.get("QUARTO_PROJECT_OUTPUT_DIR");
+-  const profiles = options.profiles ??
+-    (Deno.env.get("QUARTO_PROFILE") || "").split(",").filter(
+-      Boolean,
+-    );
+-  let resolvedOutput = output;
+-  const collect = async (current?: {
+-    operation: NativeOperation;
+-    Core: SiblingModules["course-core"];
+-  }): Promise<number> => {
+-    const operation = current?.operation;
+-    const release = current
+-      ? await validateRelease(current.operation, current.Core)
+-      : undefined;
+-    if (operation) await options.observeOperation?.(operation.catalog, release);
++  let resolvedOutput = sourceOutput;
++  const collect = async (): Promise<number> => {
++    const operation = current?.publication;
+     let sources = operation?.catalog.documents.map((d) => d.source) ??
+       await inputFiles(root);
+     let inspected: Awaited<ReturnType<typeof inspect>> | undefined;
+     // Standalone без native hook env сохраняет обычный independent сценарий.
+-    if (!operation || !sources.length || !resolvedOutput) {
++    if (!operation) {
+       inspected = await inspect(root);
+       sources = inspected.files.input.map((path: string) =>
+         relative(root, path).replaceAll("\\", "/")
+       );
+-      resolvedOutput ||= inspected.config.project?.["output-dir"] || ".";
++      resolvedOutput ||= outputDirectory(inspected.config);
+     }
+     const authoredInputs = new Set<string>(
+       sources.map((source: string) => resolve(root, source)),
+@@ -255,8 +204,8 @@ async function finishInternal(root: string, options: FinishOptions): Promise<num
+     if (inspected) {
+       for (
+         const value of [
+-          inspected.config.project?.["pre-render"],
+-          inspected.config.project?.["post-render"],
++          record(inspected.config.project) ? inspected.config.project["pre-render"] : undefined,
++          record(inspected.config.project) ? inspected.config.project["post-render"] : undefined,
+           inspected.config.filters,
+         ]
+       ) {
+@@ -269,7 +218,7 @@ async function finishInternal(root: string, options: FinishOptions): Promise<num
+         ) {
+           const command = typeof declaration === "string"
+             ? declaration
+-            : declaration?.path;
++            : record(declaration) ? declaration.path : undefined;
+           if (typeof command !== "string") continue;
+           const paths = typeof declaration === "string"
+             ? [
+@@ -290,10 +239,12 @@ async function finishInternal(root: string, options: FinishOptions): Promise<num
+     const owned = await inspectOwnedRequests(root, sources);
+     ownedSignature = JSON.stringify(owned);
+     ownedSources = owned.files.map((file) => file.source);
+-    const requests: Request[] = [];
+-    for (const file of owned.files) {
+-      requests.push(JSON.parse(await Deno.readTextFile(file.path)));
+-    }
++    const requests: Request[] = owned.files.map((file) => ({
++      source: file.source,
++      resources: file.resources,
++      ...(file.artifacts ? { artifacts: file.artifacts } : {}),
++      configuration: file.configuration,
++    }));
+     const configs = requests.map((request) =>
+       configuration(
+         request.configuration ?? inspected?.config["project-download"],
+@@ -358,7 +309,7 @@ async function finishInternal(root: string, options: FinishOptions): Promise<num
+               { source, field: "course-model" },
+             );
+           }
+-          const { operation, Core } = current;
++          const { publication: operation, Core } = current;
+           if (
+             !configs[requests.findIndex((r) => r.source === source)]
+               ?.["course-model"]
+@@ -557,46 +508,6 @@ async function finishInternal(root: string, options: FinishOptions): Promise<num
+             ...archive,
+             bytes: new Uint8Array(archive.bytes),
+           }));
+-          const entries = [];
+-          for (const archive of archives) {
+-            const request = artifacts.find((a) =>
+-              a.exerciseId + "-" + a.kind + ".zip" === archive.name
+-            );
+-            entries.push({
+-              name: archive.name,
+-              sha256: await sha256(archive.bytes),
+-              audience: operation
+-                ? (operation.identity.projection === "author"
+-                  ? "full"
+-                  : "student")
+-                : null,
+-              ...request,
+-            });
+-          }
+-          receiptText = JSON.stringify(
+-            {
+-              schema: "project-download-artifacts-v2",
+-              audience: operation
+-                ? (operation.identity.projection === "author"
+-                  ? "full"
+-                  : "student")
+-                : null,
+-              audiences: operation
+-                ? [
+-                  operation.identity.projection === "author"
+-                    ? "full"
+-                    : "student",
+-                ]
+-                : [],
+-              profiles,
+-              operation: operation?.identity.operation ?? null,
+-              identity: operation?.identity ?? null,
+-              release,
+-              archives: entries,
+-            },
+-            null,
+-            2,
+-          ) + "\n";
+         },
+       });
+     if (!operation) return await pack();
+@@ -646,75 +557,53 @@ async function finishInternal(root: string, options: FinishOptions): Promise<num
+     }
+     return await pack();
+   };
+-  let count: number;
+-  if (native) {
+-    if (!resolvedOutput) {
+-      throw diagnostic(
+-        "DOWNLOAD.REQUEST_INVALID",
+-        "Native hook не передал текущий output",
+-        { source: root, field: "outputDirectory" },
+-      );
+-    }
+-    const Core = await sibling("course-core");
+-    count = await Core.withCurrentNativeOperation({
+-      root,
+-      profiles,
+-      projection: options.projection ?? "student",
+-      ...(options.expectedDocuments
+-        ? { expectedDocuments: options.expectedDocuments }
+-        : {}),
+-      outputDirectory: resolve(root, resolvedOutput),
+-    }, async (operation) => await collect({ operation, Core }));
+-  } else count = await collect();
+-  if (
+-    JSON.stringify(await inspectOwnedRequests(root, ownedSources)) !== ownedSignature
+-  ) {
+-    throw diagnostic(
+-      "DOWNLOAD.REQUEST_INVALID",
+-      "Заявки изменены перед публикацией",
+-      { source: root, field: "requests" },
+-    );
+-  }
+-  await publishArchives(
+-    root,
+-    options.destinationDirectory || resolvedOutput!,
+-    archives,
+-    receiptText,
+-  );
+-  return count;
++  const count = await collect();
++  return preparedDownloads(root, options.destinationDirectory || resolvedOutput!,
++    archives, ownedSources, ownedSignature, count);
++}
++/** Замыкание draft содержит только Download-owned данные, без borrowed Core/PL. */
++function preparedDownloads(
++  root: string,
++  output: string,
++  archives: { name: string; bytes: Uint8Array }[],
++  ownedSources: string[],
++  ownedSignature: string,
++  count: number,
++): PreparedDownloads {
++  let state: "prepared" | "publishing" | "published" | "failed" | "discarded" = "prepared";
++  const invalid = () => diagnostic("DOWNLOAD.REQUEST_INVALID",
++    `Черновик загрузок уже использован: ${state}`, { source: root, field: "draft" });
++  return {
++    async publish() {
++      if (state !== "prepared") throw invalid();
++      state = "publishing";
++      try {
++        if (JSON.stringify(await inspectOwnedRequests(root, ownedSources)) !== ownedSignature) {
++          throw diagnostic("DOWNLOAD.REQUEST_INVALID", "Заявки изменены перед публикацией", {
++            source: root, field: "requests",
++          });
++        }
++        await publishArchives(root, output, archives);
++        state = "published";
++        archives = [];
++        return count;
++      } catch (cause) {
++        state = "failed";
++        throw cause;
++      }
++    },
++    async discard() {
++      if (state === "publishing") throw invalid();
++      if (state === "prepared") state = "discarded";
++      archives = [];
++    },
++  };
+ }
+ async function publishArchives(
+   root: string,
+   output: string,
+   archives: { name: string; bytes: Uint8Array }[],
+-  receiptText: string,
+ ) {
+-  const receiptPath = child(
+-    root,
+-    "_generated/project-download/artifacts-receipt.json",
+-  );
+-  // Даже отсутствующий receipt не разрешает запись через linked parent.
+-  let receiptParent = dirname(receiptPath);
+-  while (!await exists(receiptParent)) {
+-    receiptParent = dirname(receiptParent);
+-  }
+-  if (resolve(receiptParent) !== resolve(root)) {
+-    await noSymlinks(root, receiptParent);
+-  }
+-  if (await exists(receiptPath)) {
+-    await noSymlinks(root, receiptPath);
+-    const previous = JSON.parse(await Deno.readTextFile(receiptPath));
+-    if (
+-      !["project-download-artifacts-v1", "project-download-artifacts-v2"]
+-        .includes(previous?.schema)
+-    ) {
+-      throw diagnostic(
+-        "DOWNLOAD.OUTPUT_CONFLICT",
+-        "Чужой файл на пути receipt",
+-        { source: receiptPath, field: "receipt" },
+-      );
+-    }
+-  }
+   let existingParent = resolve(root, output);
+   while (!await exists(existingParent)) {
+     existingParent = dirname(existingParent);
+@@ -768,23 +657,4 @@ async function publishArchives(
+       createNew: true,
+     });
+   }
+-  await Deno.mkdir(dirname(receiptPath), { recursive: true });
+-  if (await exists(receiptPath)) {
+-    await noSymlinks(root, receiptPath);
+-    const previous = JSON.parse(await Deno.readTextFile(receiptPath));
+-    if (
+-      !["project-download-artifacts-v1", "project-download-artifacts-v2"]
+-        .includes(previous?.schema)
+-    ) {
+-      throw diagnostic(
+-        "DOWNLOAD.OUTPUT_CONFLICT",
+-        "Чужой файл на пути receipt",
+-        { source: receiptPath, field: "receipt" },
+-      );
+-    }
+-    await Deno.remove(receiptPath);
+-  }
+-  await Deno.writeTextFile(receiptPath, receiptText, {
+-    createNew: true,
+-  });
+ }
+diff --git a/_extensions/project-download/infrastructure/siblings.ts b/_extensions/project-download/infrastructure/siblings.ts
+index 335f32a..6de888e 100644
+--- a/_extensions/project-download/infrastructure/siblings.ts
++++ b/_extensions/project-download/infrastructure/siblings.ts
+@@ -7,7 +7,7 @@ export type SiblingModules = {
+   "reference-catalog": typeof import("../../reference-catalog/public.ts");
+ };
+ export type {
+-  NativeOperation,
++  NativePublication,
+   ProjectContractContext,
+   ProjectPlan,
+ } from "../../course-core/public.ts";
+diff --git a/_extensions/project-download/ownership.ts b/_extensions/project-download/ownership.ts
+index 4bd103a..adf947a 100644
+--- a/_extensions/project-download/ownership.ts
++++ b/_extensions/project-download/ownership.ts
+@@ -14,6 +14,7 @@ export interface OwnedRequestState {
+     source: string;
+     resources: string[];
+     artifacts?: ArtifactRequest[];
++    configuration?: unknown;
+     sha256: string;
+   }[];
+ }
+@@ -195,6 +196,9 @@ export async function inspectOwnedRequests(
+       source: fields.source,
+       resources: fields.resources,
+       ...(fields.artifacts ? { artifacts: fields.artifacts } : {}),
++      ...(Object.hasOwn(fields, "configuration")
++        ? { configuration: fields.configuration }
++        : {}),
+       sha256: await hash("SHA-256", bytes),
+     });
+   }
+diff --git a/_extensions/project-download/public.ts b/_extensions/project-download/public.ts
+index 4943a81..faa5dd8 100644
+--- a/_extensions/project-download/public.ts
++++ b/_extensions/project-download/public.ts
+@@ -4,6 +4,11 @@ export { zip } from "./domain/zip.ts";
+ export type { ArchiveEntry } from "./domain/zip.ts";
+ export {
+   finish as finishDownloads,
+-  prepare as prepareDownloads,
++  prepareNativeDownloads,
++  resetDownloadRequests,
++} from "./infrastructure/runtime.ts";
++export type {
++  NativeDownloadOptions,
++  OrdinaryDownloadOptions,
++  PreparedDownloads,
+ } from "./infrastructure/runtime.ts";
+-export type { FinishOptions } from "./infrastructure/runtime.ts";
+diff --git a/docs/public-runtime.md b/docs/public-runtime.md
+index 8317bd0..e8fbd3d 100644
+--- a/docs/public-runtime.md
++++ b/docs/public-runtime.md
+@@ -1,77 +1,60 @@
+-# Публичный native runtime Download
+-
+-Runtime получает текущую операцию только через Core `public.ts`. До зависимых
+-resources, README или ZIP он вызывает owner `validateRelease` по всему captured
+-catalog, включая effective course/assessment каждого документа. Наличие course
+-в корневом config не определяет необходимость проверки. Вызов связан с теми же
+-root, ordered profiles, projection, source/format coverage и final fences.
+-
+-Если рядом установлен PrairieLearn public module, Download вызывает существующий
+-`inspectPublication` C (кандидат9.0.1): один genuine Core validation pass проверяет
+-metadata/assessment shape, пороги, принадлежность members и project/common sources.
+-Полученный от C реальный публичный Core proof проходит Core runtime schema;
+-отсутствующий proof не заменяется fallback или пустым результатом. Полная
+-grading composition/prepared correlation относится к delivery и не запускается
+-из ordinary ZIP finalizer. Если PL не выбран Core, действует общий proof,
+-без PL business data. Для отсутствующего PL используется прежний generic Core
+-validation. Final fences остаются у Core. Ordinary vet не даёт assignment прав.
+-
+-Проекты открываются через `operation.withProjectContexts` той же generation/S,
+-пакетно по настоящему формату. Публичный Core договор использует технический
+-input `<projectRoot>/native-input.qmd`; создаёт недостающий input только сам Core
+-в disposable копии. Планы переиспользуются по format/project/audience. Metadata,
+-origin и bytes не восстанавливаются B из каталогов или receipts.
+-
+-`materializationClosure` выдаёт document/Gradle/local fragments с их bases,
+-resources и уникальными reference tokens. QRC `bindConditionLinks` связывает
+-обычные ссылки, а public `createBodyLinks` — reference href/label; результат
+-передаётся как linksBySource/referencesBySource. Один Core writer включает
+-полное замыкание resources с suffix/anchors. `materializeCondition` создаёт
+-полный README/resources без code/build; subset по reason не применяется.
+-README после Core и ZIP после упаковки не исправляются.
+-
+-Native filter переносит собственную effective Download config в typed request.
+-Дополнительного root metadata inspect у consumer нет. Ordinary resource selection
+-не читает bytes: их авторизует public resourceInventory. Самостоятельный noCore
+-маршрут сохраняет собственные inspect/config/resource guards и не загружает Core.
+-
+-Порядок: Download pre, Core native-pre, при PL его public prepare после Core pre,
+-Core передаёт валидатору C свои четыре плоскости native metadata; отдельного
+-Lua-захвата C нет. Затем выполняются render/late/Core native-post и
+-Download post `--native`. Для native author вызывают post `--native --author`.
+-Expectation не содержит прежнего scalar format: exact formats приходят из
+-native catalog либо expectedDocuments. Student/full — native projections
+-student/author; full artifact в student по-прежнему требует открытой demonstration
+-с настоящим поздним public solution. Default kind использует owner-emitted
+-course-artifact-context. Ordinary revealjs model materialization честно получает
+-CONDITION_UNQUALIFIED у Core; HTML fallback не создаётся.
+-
+-`finishDownloads` принимает projection/profiles/expectedDocuments, publication и
+-catalog bases, final destinationDirectory. `observeOperation(catalog, release)`
+-в том же callback даёт Publisher public proof/metrics для coverage. Native output
+-и final mount разделены; publication идёт после final Core/request fences.
+-ZIP bytes фиксируются внутри callbacks. Manifest пишется первым, receipt —
+-последним. Receipt v2 содержит operation/identity/release и SHA256 архивов;
+-это журнал результата, не новое source authority. Старый v1 нужен только cleanup.
+-
+-Точный состав текущей пары задан CI того же Git ref. Адресные fixtures проверяют
+-HTML student/full, condition-only/default, fragment origins/resources, generated
+-resource inventory, Reveal owner/resources и отдельный noCore. Прохождение этих
+-проверок не означает приёмку установленного полного курса или assignment/P.
+-
+-Explicit kind=starter в author operation получает DOWNLOAD.STARTER_UNQUALIFIED
+-до A1/materialization: author condition нельзя выдать за student inventory.
+-Обычные Java banks сохраняют такие shortcodes и в full profile; поэтому arbitrary
+-full-course render пока не квалифицирован. Нужен genuine typed assignment student
+-condition после actual P либо отдельно принятый маршрут. Дополнительный render,
+-межоперационный ZIP shortcut или repair не добавляется. Проверенный author/full
+-fixture использует kind=full и не заменяет этот обязательный integration gate.
+-
+-## Планы проектов в 3.5.0
+-
+-Единственный batch-вызов Download использует `operation.withProjectContracts`
+-Core 9.3.0. Namespace/origins, планы, closure, материализация и упаковка ZIP
+-сохраняют прежние публичные контракты. Узкий контекст не требует полного
+-`effectiveMetadata`; общий resource selection и privacy/final fences не меняются.
+-Собственный progress 3.4.1 сохраняется. Новый source ref ещё не подтверждает
+-установленную композицию или ускорение полного курса.
++# Публичная Native публикация Download
++
++Core открывает `withNativePublication(expectation, selection, use)` и внутри
++callback предоставляет `NativePublication`: текущие catalog/identity/course,
++condition/document/resources и project-contract batch. Core проверяет семантику
++публикуемых документов и владеет currentness, audience, path и lifetime guards.
++Обычная публикация не требует полной grading/seed qualification PL.
++
++Orchestrator вызывает `PL.inspectPublication(publication)` только при активном
++`course.adapters: [prairielearn]`. Установленный, но неактивный PL не запускает
++inspection. Отсутствующий активный PL — ошибка; ошибка инициализации установленного
++модуля сохраняет исходную причину. Download сам PL не загружает.
++
++`prepareNativeDownloads(publication, options)` собирает готовые ZIP bytes внутри
++живого callback. Native root/profiles/projection/source output берутся из Core;
++options задают конечный destination, baseUrl/catalogBaseUrl/referenceCatalog и
++submission. `PreparedDownloads` владеет только своими bytes/options и снимком
++проверенных Download requests. Borrowed Core methods/project contexts и PL
++capabilities не сохраняются в draft.
++
++После успешного closing вызывается `draft.publish()`. Состояния одноразовые:
++`prepared → publishing → published|failed` либо `prepared → discarded`.
++Повторный/reentrant publish отклоняется до записи. `discard()` до публикации
++освобождает draft; после success/failure освобождает только buffers. Во время
++publishing discard отказывает. Discard не удаляет старые, чужие или частично
++записанные outputs. При closing rejection сохранённый внутри callback handle
++позволяет discard; новые archive writes этого draft ещё не начались.
++
++`resetDownloadRequests(root)` удаляет только прежнюю owned requests directory
++с прежними path guards. Он не inspect-ит output и не удаляет ZIP.
++`clearOwned` вызывается только final writer. Именной
++`.project-download-manifest.json` записывается перед архивами: следующая обычная
++очистка знает собственные имена даже после частичной writer failure. Это не
++rollback всех результатов render/Site. JSON artifacts receipts, per-ZIP SHA и
++release proof больше не создаются, не читаются и не чистятся; исторические
++сохранённые файлы не мигрируются. CRC и deterministic ZIP packaging сохраняются.
++
++Project plans переиспользуются по format/project/audience внутри
++`publication.withProjectContracts`; Core сам создаёт технический
++`<projectRoot>/native-input.qmd` в disposable копии. `materializationClosure`
++сохраняет bases/resources/reference tokens; QRC связывает ссылки до единственного
++README writer. `materializeCondition` включает условие/resources без code/build.
++Download не исправляет README или ZIP после Core writer.
++
++Student/full соответствуют Core projections student/author. Explicit starter
++в author получает `DOWNLOAD.STARTER_UNQUALIFIED`: author condition не является
++student inventory. Full в student требует открытой demonstration с фактическим
++публичным решением. Reveal model остаётся `CONDITION_UNQUALIFIED`, HTML fallback
++не создаётся. Role filtering не квалифицирует произвольный неразмеченный текст
++или свежесть native execution cache.
++
++`finishDownloads(root, options)` обслуживает отдельный ordinary resource режим
++без Core и PL. Его inspect/config/resource privacy guards сохраняются; native
++flag, observe callback и самостоятельное acquisition внутри finish удалены.
++Native CLI post orchestrates Core session, optional PL inspection, preparation,
++closing и publish. Author выбирается `--native --author`, student — `--native`.
++
++Адресные существующие fixtures проверяют ZIP entries/README/resources, конечные
++URL, privacy и отсутствие новых archive writes при failed closing. Source ref
++не подтверждает приёмку полного курса, assignment/P, CI или установленный выпуск.
+diff --git a/spec/contract.md b/spec/contract.md
+index 06650df..7c7752f 100644
+--- a/spec/contract.md
++++ b/spec/contract.md
+@@ -31,13 +31,13 @@ Typed transport хранит отдельные `artifacts: [{exerciseId, kind}]
+ «Скачать заготовку», «Скачать полный проект», «Скачать условие».
+ 
+ Текущий native маршрут использует только Core `public.ts` и
+-`withCurrentNativeOperation`: actual condition, plan/materialize и inventory.
++`withNativePublication`: actual condition, plan/materialize и inventory.
+ Download не читает project/student как fallback и не применяет generic excludes
+ к готовым owner bytes. Exact source/currentness и public/private policy остаются
+ Core. README проходит только owner writer. Подробнее —
+ [публичный runtime](../docs/public-runtime.md).
+ 
+-Текущий public owner проверяет effective release каждого документа до выдачи.
++Текущий public owner проверяет семантику публикации каждого документа до выдачи.
+ HTML student/full, condition-only closure и native default kind используют один
+ Core writer; ordinary reveal model остаётся CONDITION_UNQUALIFIED. Root-generated resources проверяются теми же текущими membership, visibility
+ и inventory guards; предгенерация не заменяет разрешённую текущую операцию.
+@@ -46,11 +46,13 @@ Core writer; ordinary reveal model остаётся CONDITION_UNQUALIFIED. Root-
+ 
+ ZIP: STORE, UTF-8, фиксированная дата, sorted names; independent fresh runs дают
+ одинаковые bytes. Symlink/path escapes/специальные файлы/чужие output collisions
+-запрещены. Pre-hook очищает только owned output текущего audience и requests.
+-Другие outputs и чужие ZIP сохраняются. Новые receipts `project-download-artifacts-v2` содержат name/sha256,
+-model kind/exerciseId/source, profiles, operation, публичную identity и release proof/metrics.
+-Receipt подтверждает архивы, а не source authority. Старый v1 узнаётся только
+-как собственный cleanup объект и не предоставляет authority текущей операции.
++запрещены. Pre-hook `resetDownloadRequests` очищает только requests, не ZIP.
++`prepareNativeDownloads` собирает draft без final output writes/cleanup; publish
++выполняется после Core closing. Одноразовые состояния и failure/discard semantics
++задают [публичный runtime](../docs/public-runtime.md). Final writer очищает только
++owned ZIP по именному manifest; partial failure не обещает rollback.
++Artifacts receipts, их schema guards и per-ZIP SHA удалены; старые generated
++receipts не мигрируются и не участвуют в текущей операции.
+ 
+ Ownership API inspectOwnedRequests/clearOwnedRequests сохраняет protocol1;
+ files имеют optional artifacts вместе с source/resources/sha256. Native writer,
+@@ -58,34 +60,31 @@ inspect и cleanup выполняются последовательно, зак
+ проверяются до удаления. Текущая public operation должна совпадать с root/profiles/output и
+ содержать каждый source заявки. Retained страницы и course.json не авторизуют bytes.
+ 
+-Все requests/receipts/generated inputs исключаются из публикации. Course Core
++Все requests/generated inputs исключаются из публикации. Course Core
+ authoring не использует audience wrappers; full-only страницы и model permissions
+ определяют преподавательское содержание. Полная acceptance проверяет реальные
+ student/full/student DOM, каждый ZIP, privacy, QRC/search/hrefs и установленный пакет.
+ 
+-Receipt audience происходит из trusted native projection: student либо full
+-для author. Full demonstration artifact в student не меняет projection.
+-
+ ZIP basename collision generic/model остаётся ошибкой независимо от порядка.
+ 
+-## Пакетная public proof-фаза
++## Подготовка и публикация архивов
+ 
+-Runtime загружает actual public operation один раз. Все model inventories и
++Orchestrator открывает actual Native publication один раз. Все model inventories и
+ ordinary resource inventories получаются внутри её callback, без private
+ NativeRun/resolver imports. Один batch project contexts обслуживает все artifacts;
+ сравнение повторных заявок не создаёт ZIP. Упаковка каждого готового artifact
+-вызывается один раз. ZIP bytes и v2 receipt facts фиксируются в памяти. Public helper
++вызывается один раз. ZIP bytes фиксируются в Download-owned draft. Public helper
+ `packageArtifact` делает один ранний snapshot переданных bytes/targets и упаковывает их;
+ проверка существующей схемы/аудитории/paths/collisions сохраняется, повторное
+ подтверждение заявленных size/SHA256 не выполняется. ZIP writer использует фактические
+ bytes для размеров и CRC32. Для SAB-backed Uint8Array сохраняется отдельная
+ поздняя ownership copy после schema parse; обычные bytes повторно не копируются. Подробнее — [публичная упаковка](../docs/public-inventory.md).
+ 
+-После успешных owner/request fences публикация проверяет destination parents,
+-symlink и foreign collisions; manifest пишется первым, ZIP затем, receipt
+-последним. Ошибка записи не создаёт success receipt. Standalone pre cleanup
+-сохраняет своё назначение. Обычные resources без активного Core остаются
+-самостоятельными; старый private Core fallback в этом ref отсутствует.
++После успешного Core closing одноразовый publish проверяет request snapshot,
++destination parents, symlink и foreign collisions; manifest пишется первым, ZIP
++затем. Ошибка записи сохраняет manifest для следующей owned cleanup и не обещает
++rollback. Pre reset удаляет только requests. Обычные resources без активного Core
++остаются самостоятельными; private Core fallback отсутствует.
+ 
+ Explicit starter требует native student condition. В author он адресно закрыт
+ DOWNLOAD.STARTER_UNQUALIFIED до genuine student authority; full artifact не
+@@ -111,7 +110,7 @@ Git selection, ZIP bytes и публичный ownership API сохраняют
+ 
+ Пакетный мост Core 8.2.3 и Download 3.2.2 требует собственной native/installed
+ проверки точных refs. Проверка ABI с тестовым агентом и прежний Core fallback
+-не подтверждают новую proof-фазу. Body v2 и delivery v3 этим дополнением
++не подтверждают текущую publication-фазу. Body v2 и delivery v3 этим дополнением
+ не изменяются.
+ 
+ ## Типы исполняемого договора
+diff --git a/spec/index.md b/spec/index.md
+index f143fd8..8636b26 100644
+--- a/spec/index.md
++++ b/spec/index.md
+@@ -34,8 +34,8 @@ native TS-договор Core 9 без внешнего валидатора с
+ ## Публичный native runtime B3
+ 
+ Текущая source партия использует [публичный runtime](../docs/public-runtime.md)
+-через actual `withCurrentNativeOperation`, готовый artifact inventory и публичный
+-resource inventory и текущий owner release proof. Private NativeRun fallback удалён.
++через actual `withNativePublication`, готовый artifact inventory и публичный
++resource inventory; preparation и final writer разделены. Private NativeRun fallback удалён.
+ Адресные проверки и открытые integration gates перечислены в документе;
+ source ref не заявляется установленным или выпущенным автоматически.
+ 
+diff --git a/tests/model-installed.ts b/tests/model-installed.ts
+index af21809..cd9b580 100644
+--- a/tests/model-installed.ts
++++ b/tests/model-installed.ts
+@@ -84,8 +84,7 @@ project-download:
+         await native([...base.map(v=>v===model?bad:v),'--check'],false,'NATIVE.RUN_NOT_CURRENT');
+       }finally{await Deno.remove(external,{recursive:true})}
+     }
+-    const receipt=JSON.parse(await Deno.readTextFile(join(root,"_generated/project-download/artifacts-receipt.json")));
+-    assert(receipt.audience===view && receipt.archives.every((a:any)=>a.audience===view),"receipt uses trusted audience, including student demonstration full ZIP");
++
+     const output=join(root,`_site-${view}`);
+     const kind=view==="student"?"starter":"full";
+     const ordinary=await unzip(join(output,"_downloads",`exr-ordinary-${kind}.zip`));
+diff --git a/tests/model-receipts.ts b/tests/model-receipts.ts
+index a084b63..8825f72 100644
+--- a/tests/model-receipts.ts
++++ b/tests/model-receipts.ts
+@@ -15,9 +15,9 @@ try {
+  try { await finish(root,{run,evaluateResources:async()=>({files:[]}),resolveArtifact} as never); }
+  catch(error) { refused=String(error).includes('DOWNLOAD.CONFIG_INVALID') && String(error).includes('публичную операцию Core'); }
+  if(!refused || privateResolverCalled) throw Error('Private NativeRun/resolver не являются текущей public operation');
+- for(const path of [root+'/_generated/project-download/artifacts-receipt.json',root+'/_site/_downloads/exr-probe-full.zip']) {
++ for(const path of [root+'/_site/_downloads/exr-probe-full.zip']) {
+   let exists=true;try{await Deno.lstat(path)}catch(error){if(error instanceof Deno.errors.NotFound)exists=false;else throw error}
+-  if(exists)throw Error('Отказ старого private carrier создал ZIP/success receipt');
++  if(exists)throw Error('Отказ старого private carrier создал ZIP');
+  }
+- console.log('PASS private NativeRun injection refused before private resolver, ZIP and receipt; genuine trusted audience проверяется public-runtime.ts');
++ console.log('PASS private NativeRun injection refused before private resolver, ZIP; genuine trusted audience проверяется public-runtime.ts');
+ }finally{await Deno.remove(root,{recursive:true});}
+diff --git a/tests/project-contract-consumer.ts b/tests/project-contract-consumer.ts
+index ca5e859..7c67ad8 100644
+--- a/tests/project-contract-consumer.ts
++++ b/tests/project-contract-consumer.ts
+@@ -55,14 +55,26 @@ try {
+     },
+   ).output();
+   assert(rendered.success, "producer failed");
+-  const Down = await import(
++  const Down: typeof import("../_extensions/project-download/public.ts") = await import(
+     toFileUrl(join(root, ext, "project-download/public.ts")).href
+   );
+-  await Down.finishDownloads(root, {
+-    native: true,
+-    outputDirectory: join(root, "_site"),
+-    profiles: [],
+-  });
++  const Core: typeof import("course-core/public.ts") = await import(
++    toFileUrl(join(root, ext, "course-core/public.ts")).href
++  );
++  let draft: import("../_extensions/project-download/public.ts").PreparedDownloads | undefined;
++  try {
++    const prepared = await Core.withNativePublication({
++      root, outputDirectory: join(root, "_site"), profiles: [], projection: "student",
++    }, undefined, async (publication) => {
++      draft = await Down.prepareNativeDownloads(publication, {});
++      return draft;
++    });
++    await prepared.publish();
++  } catch (cause) {
++    try { await draft?.discard(); } catch { /* Сохраняем причину отказа. */ }
++    throw cause;
++  }
++
+   for (const n of ["a", "b"]) {
+     const result = await new Deno.Command("unzip", {
+       args: [
+diff --git a/tests/public-runtime.ts b/tests/public-runtime.ts
+index 0487997..a768943 100644
+--- a/tests/public-runtime.ts
++++ b/tests/public-runtime.ts
+@@ -119,169 +119,106 @@ try {
+       .includes("PUBLIC_RESOURCE_2"),
+     "Повторный render вернул stale resource",
+   );
+-  const { finishDownloads } = await import(
++  const Download: typeof import("../_extensions/project-download/public.ts") = await import(
+     toFileUrl(join(root, ext, "project-download/public.ts")).href
+   );
+-  const receiptVersion = JSON.parse(
+-    await Deno.readTextFile(
+-      join(root, "_generated/project-download/artifacts-receipt.json"),
+-    ),
+-  );
+-  assert(
+-    receiptVersion.schema === "project-download-artifacts-v2" &&
+-      receiptVersion.operation === receiptVersion.identity.operation &&
+-      receiptVersion.identity.projection === "student",
+-    "Receipt подменил NativeRun sourceRunHash вместо явной operation identity",
++  const Core: typeof import("course-core/public.ts") = await import(
++    toFileUrl(join(root, ext, "course-core/public.ts")).href
+   );
+-  const before = await Deno.readFile(starter),
+-    beforeReceipt = await Deno.readTextFile(
+-      join(root, "_generated/project-download/artifacts-receipt.json"),
+-    );
++  const expectation = {
++    root, profiles: [], projection: "student" as const,
++    outputDirectory: join(root, "_site"),
++  };
+   const refused = async (use: () => Promise<unknown>, code: string) => {
+     let error = "";
++    try { await use(); } catch (cause) { error = String(cause); }
++    assert(error.includes(code), "Нет адресного отказа " + code + ": " + error);
++  };
++  const capturedDraft: { value?: import("../_extensions/project-download/public.ts").PreparedDownloads } = {};
++  async function finishNative(
++    override: Partial<Parameters<typeof Core.withNativePublication>[0]> = {},
++    afterPrepare?: () => void | Promise<void>,
++    destinationDirectory?: string,
++  ) {
++    let draft: import("../_extensions/project-download/public.ts").PreparedDownloads | undefined;
+     try {
+-      await use();
++      const prepared = await Core.withNativePublication({ ...expectation, ...override }, undefined,
++        async (publication) => {
++          draft = await Download.prepareNativeDownloads(publication, { destinationDirectory });
++          capturedDraft.value = draft;
++          await afterPrepare?.();
++          return draft;
++        });
++      await prepared.publish();
++      return prepared;
+     } catch (cause) {
+-      error = String(cause);
++      try { await draft?.discard(); } catch { /* Сохраняем closing/writer cause. */ }
++      throw cause;
+     }
+-    assert(error.includes(code), "Нет адресного отказа " + code + ": " + error);
+-  };
+-  const options = { native: true, outputDirectory: join(root, "_site") };
+-  await refused(
+-    () => finishDownloads(root, { ...options, profiles: ["foreign"] }),
+-    "OPERATION_BINDING",
+-  );
+-  await refused(
+-    () => finishDownloads(root, { ...options, projection: "author" }),
+-    "OPERATION_BINDING",
+-  );
+-  await refused(
+-    () =>
+-      finishDownloads(root, {
+-        ...options,
+-        expectedDocuments: [{ source: "index.qmd", format: "revealjs" }, {
+-          source: "other.qmd",
+-          format: "html",
+-        }],
+-      }),
+-    "OPERATION_BINDING",
+-  );
+-  await refused(
+-    () =>
+-      finishDownloads(root, {
+-        ...options,
+-        outputDirectory: join(root, "_foreign-output"),
+-      }),
+-    "OPERATION_BINDING",
+-  );
+-  await refused(
+-    () =>
+-      finishDownloads(root, {
+-        ...options,
+-        observeOperation: () =>
+-          Deno.writeTextFileSync(
+-            join(root, "index.qmd"),
+-            statement + "\nИзменённый source\n",
+-          ),
+-      }),
+-    "OPERATION_CHANGED",
+-  );
+-  assert(
+-    (await Deno.readFile(starter)).every((v, i) => v === before[i]) &&
+-      await Deno.readTextFile(
+-          join(root, "_generated/project-download/artifacts-receipt.json"),
+-        ) === beforeReceipt,
+-    "Source drift до fence изменил owned output",
+-  );
++  }
++  const before = await Deno.readFile(starter);
++  await refused(() => finishNative({ profiles: ["foreign"] }), "OPERATION_BINDING");
++  await refused(() => finishNative({ projection: "author" }), "OPERATION_BINDING");
++  await refused(() => finishNative({ expectedDocuments: [
++    { source: "index.qmd", format: "revealjs" },
++    { source: "other.qmd", format: "html" },
++  ] }), "OPERATION_BINDING");
++  await refused(() => finishNative({ outputDirectory: join(root, "_foreign-output") }), "OPERATION_BINDING");
++  const closingDestination = join(root, "_closing-rejected");
++  await refused(() => finishNative({}, () => {
++    Deno.writeTextFileSync(join(root, "index.qmd"), statement + "\nИзменённый source\n");
++  }, closingDestination), "OPERATION_CHANGED");
++  if (!capturedDraft.value) throw Error("Closing rejection потерял подготовленный handle");
++  const rejectedDraft = capturedDraft.value;
++  await refused(() => rejectedDraft.publish(), "discarded");
++  let newArchive = false;
++  try {
++    await Deno.stat(join(closingDestination, "_downloads/exr-demo-starter.zip"));
++    newArchive = true;
++  } catch (cause) { if (!(cause instanceof Deno.errors.NotFound)) throw cause; }
++  assert(!newArchive, "Failed closing создал новый draft ZIP");
++  assert((await Deno.readFile(starter)).every((v, i) => v === before[i]),
++    "Source drift до closing изменил owned ZIP");
+   await put("index.qmd", statement);
+   await render();
+-  const priorGeneration = JSON.parse(
+-    await Deno.readTextFile(
+-      join(root, "_generated/project-download/artifacts-receipt.json"),
+-    ),
+-  ).operation;
+-  const currentArchive = await Deno.readFile(starter),
+-    currentReceipt = await Deno.readTextFile(
+-      join(root, "_generated/project-download/artifacts-receipt.json"),
+-    );
+-  await refused(
+-    () =>
+-      finishDownloads(root, {
+-        ...options,
+-        observeOperation: async () => {
+-          const begin = await new Deno.Command("quarto", {
+-            args: ["run", `${ext}/course-core/entrypoints/native-pre.ts`],
+-            cwd: root,
+-            env: {
+-              QUARTO_PROJECT_DIR: root,
+-              QUARTO_PROJECT_OUTPUT_DIR: "_site",
+-              QUARTO_PROJECT_INPUT_FILES: "index.qmd\nother.qmd",
+-              QUARTO_USE_FILE_FOR_PROJECT_INPUT_FILES: "",
+-              QUARTO_RUN_NO_NETWORK: "true",
+-              DENO_NO_PACKAGE_JSON: "1",
+-            },
+-            stdout: "piped",
+-            stderr: "piped",
+-          }).output();
+-          assert(
+-            begin.success,
+-            "Новая native generation не началась: " +
+-              new TextDecoder().decode(begin.stderr),
+-          );
+-        },
+-      }),
+-    "OPERATION_CHANGED",
+-  );
+-  assert(
+-    (await Deno.readFile(starter)).every((b, i) => b === currentArchive[i]) &&
+-      await Deno.readTextFile(
+-          join(root, "_generated/project-download/artifacts-receipt.json"),
+-        ) === currentReceipt,
+-    "Generation switch опубликовал старую подготовку",
+-  );
++  const currentArchive = await Deno.readFile(starter);
++  await refused(() => finishNative({}, async () => {
++    const begin = await new Deno.Command("quarto", {
++      args: ["run", `${ext}/course-core/entrypoints/native-pre.ts`],
++      cwd: root,
++      env: {
++        QUARTO_PROJECT_DIR: root,
++        QUARTO_PROJECT_OUTPUT_DIR: "_site",
++        QUARTO_PROJECT_INPUT_FILES: "index.qmd\nother.qmd",
++        QUARTO_USE_FILE_FOR_PROJECT_INPUT_FILES: "",
++        QUARTO_RUN_NO_NETWORK: "true",
++        DENO_NO_PACKAGE_JSON: "1",
++      },
++      stdout: "piped", stderr: "piped",
++    }).output();
++    assert(begin.success, "Новая native generation не началась: " + new TextDecoder().decode(begin.stderr));
++  }), "OPERATION_CHANGED");
++  assert((await Deno.readFile(starter)).every((v, i) => v === currentArchive[i]),
++    "Generation switch опубликовал старую подготовку");
+   await render();
+-  assert(
+-    JSON.parse(
+-      await Deno.readTextFile(
+-        join(root, "_generated/project-download/artifacts-receipt.json"),
+-      ),
+-    ).operation !== priorGeneration,
+-    "Fresh render не сменил generation",
+-  );
+-  await finishDownloads(root, options);
+-  console.log(
+-    JSON.stringify({
+-      artifacts: 2,
+-      resourceArchives: 1,
+-    }),
+-  );
++  const completed = await finishNative();
++  await refused(() => completed.publish(), "DOWNLOAD.REQUEST_INVALID");
++  await completed.discard();
+   const foreign = await Deno.makeTempDir({ prefix: "b2-foreign-" });
+   await Deno.writeTextFile(join(foreign, "keep"), "FOREIGN");
+   try {
+-    await refused(() =>
+-      finishDownloads(root, {
+-        ...options,
+-        observeOperation: () => {
+-          Deno.renameSync(
+-            join(root, "_site/_downloads"),
+-            join(root, "_site/_downloads-saved"),
+-          );
+-          Deno.symlinkSync(foreign, join(root, "_site/_downloads"));
+-        },
+-      }), "DOWNLOAD.PATH_INVALID");
+-    assert(
+-      await Deno.readTextFile(join(foreign, "keep")) === "FOREIGN" &&
+-        (await Array.fromAsync(Deno.readDir(foreign))).length === 1,
+-      "Повреждён чужой symlink destination",
+-    );
++    await refused(() => finishNative({}, () => {
++      Deno.renameSync(join(root, "_site/_downloads"), join(root, "_site/_downloads-saved"));
++      Deno.symlinkSync(foreign, join(root, "_site/_downloads"));
++    }), "DOWNLOAD.PATH_INVALID");
++    assert(await Deno.readTextFile(join(foreign, "keep")) === "FOREIGN" &&
++      (await Array.fromAsync(Deno.readDir(foreign))).length === 1,
++      "Повреждён чужой symlink destination");
+   } finally {
+     if ((await Deno.lstat(join(root, "_site/_downloads"))).isSymlink) {
+       await Deno.remove(join(root, "_site/_downloads"));
+     }
+-    await Deno.rename(
+-      join(root, "_site/_downloads-saved"),
+-      join(root, "_site/_downloads"),
+-    );
++    await Deno.rename(join(root, "_site/_downloads-saved"), join(root, "_site/_downloads"));
+     await Deno.remove(foreign, { recursive: true });
+   }
+   const authoredConfig = await Deno.readTextFile(join(root, "_quarto.yml"));
+@@ -297,16 +234,6 @@ try {
+     statement + "\n{{< project-download exr-demo-starter >}}\n",
+   );
+   await render(false, "DOWNLOAD.OUTPUT_CONFLICT");
+-  let successReceipt = false;
+-  try {
+-    await Deno.stat(
+-      join(root, "_generated/project-download/artifacts-receipt.json"),
+-    );
+-    successReceipt = true;
+-  } catch (cause) {
+-    if (!(cause instanceof Deno.errors.NotFound)) throw cause;
+-  }
+-  assert(!successReceipt, "Collision создал success receipt");
+   await put("_quarto.yml", authoredConfig);
+   await put("index.qmd", statement.replace("course-role=demonstration ", ""));
+   await render(false, "DOWNLOAD.FULL_UNQUALIFIED");
+diff --git a/tests/runtime-types.ts b/tests/runtime-types.ts
+index f6a2783..05224a7 100644
+--- a/tests/runtime-types.ts
++++ b/tests/runtime-types.ts
+@@ -1,6 +1,6 @@
+ import { sibling } from "../_extensions/project-download/infrastructure/siblings.ts";
+ import type {
+-  NativeOperation,
++  NativePublication,
+   ProjectContractContext,
+   SiblingModules,
+ } from "../_extensions/project-download/infrastructure/siblings.ts";
+@@ -11,7 +11,7 @@ type NotAny<T> = 0 extends (1 & T) ? never : true;
+ type Core = SiblingModules["course-core"];
+ type Inventory = Awaited<ReturnType<Core["materializeProject"]>>;
+ type ResourceInventory = Awaited<
+-  ReturnType<NativeOperation["resourceInventory"]>
++  ReturnType<NativePublication["resourceInventory"]>
+ >;
+ const checked: [
+   NotAny<Awaited<ReturnType<typeof sibling<"course-core">>>>,
+@@ -25,7 +25,7 @@ void checked;
+ function dtoMisuse(
+   Core: Core,
+   context: ProjectContractContext,
+-  condition: ReturnType<NativeOperation["condition"]>,
++  condition: ReturnType<NativePublication["condition"]>,
+   resources: ResourceInventory,
+ ) {
+   // @ts-expect-error Resource inventory не является учебным artifact inventory.

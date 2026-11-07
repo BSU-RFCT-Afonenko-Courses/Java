@@ -1,0 +1,29 @@
+# Редакция B заменяет единственный local _metadata.yml того же code project; не активна одновременно с A. Локальные sources остаются от канонического проекта, не от alternatives/B.
+# tests/demo — переходная механическая адаптация прежних observe/check normal/boundary, не новый runner.
+course-project:
+  components:
+    reverse-demo:
+      sources: tests/demo
+      requires:
+      - java-process
+      - numeric-output
+    reverse-full:
+      sources: tests/full
+  testsets:
+    demo:
+      components:
+      - reverse-demo
+    full:
+      includes:
+      - demo
+      components:
+      - reverse-full
+  solutions:
+    reference: solutions/reference/src/main/java
+  delivery:
+    author-full:
+      build-profile: java-junit-author
+      testsets:
+      - full
+      solutions:
+      - reference

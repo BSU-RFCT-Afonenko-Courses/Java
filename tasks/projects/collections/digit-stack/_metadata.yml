@@ -1,0 +1,42 @@
+course-project:
+  instructions:
+    gradle:
+      path: ../../common/java/gradle.md
+      base: config
+  solutions:
+    alternate:
+      path: alternatives/alternate
+    checked-boundary:
+      path: alternatives/checked-boundary
+    extra-study:
+      path: alternatives/extra-study
+  components:
+    apiSupport:
+      path: ../../common/java/api-support
+      base: config
+    observations:
+      path: observations
+  testsets:
+    api:
+      path: api
+      requires:
+        apiSupport: true
+    demo:
+      path: demo
+      requires:
+        api: true
+        observations: true
+    contract:
+      path: checks
+      requires:
+        api: true
+        observations: true
+  delivery:
+    student:
+      testsets:
+        api: true
+        demo: true
+  verification:
+    testsets:
+      api: true
+      contract: true

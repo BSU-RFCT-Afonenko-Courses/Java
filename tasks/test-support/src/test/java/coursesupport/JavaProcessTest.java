@@ -165,6 +165,45 @@ class JavaProcessTest {
         assertEquals("args:value\n", JavaProcess.runCheckingUncaught(OverloadedMain.class, "", "value").stdout());
     }
 
+    // Раздельные каталоги проверяющего адаптера и решения не требуют загрузки
+    // student class в host; ошибки trusted bootstrap не являются отказом решения.
+    private JavaProcess.Result checkedPath(Path classes, String entry, String... args) throws Exception {
+        var method = assertDoesNotThrow(() -> JavaProcess.class.getMethod("runCheckingUncaught",
+            Path.class, String.class, String.class, String[].class));
+        try {
+            return (JavaProcess.Result) method.invoke(null, classes, entry, "", args);
+        } catch (java.lang.reflect.InvocationTargetException failure) {
+            if (failure.getCause() instanceof Exception exception) throw exception;
+            if (failure.getCause() instanceof Error error) throw error;
+            throw failure;
+        }
+    }
+
+    @Test void checkedPathLaunchPreservesArgumentsAndExplicitNonzeroExit() throws Exception {
+        Path classes = Path.of(Program.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+        var result = checkedPath(classes, Program.class.getName(), "checked-protocol", "a b", "Я🙂");
+        assertEquals("a b|Я🙂|TIMEOUT\n", result.stdout());
+        assertEquals("diagnostic\n", result.stderr());
+        assertEquals(7, result.exitCode());
+    }
+
+    @Test void checkedPathRejectsMissingTrustedEntryAsInfrastructure() throws Exception {
+        Path empty = java.nio.file.Files.createDirectory(directory.resolve("empty"));
+        assertThrows(java.io.IOException.class, () -> checkedPath(empty, "MissingTrustedPort"));
+    }
+
+    @Test void checkedPathRejectsTrustedInitializationFailureAsInfrastructure() throws Exception {
+        Path classes = Path.of(InitializationFailure.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+        assertThrows(java.io.IOException.class,
+            () -> checkedPath(classes, InitializationFailure.class.getName()));
+    }
+
+    @Test void checkedPathPreservesUncaughtStudentFailureType() throws Exception {
+        Path classes = Path.of(Program.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+        assertThrows(JavaProcess.UncaughtStudentException.class,
+            () -> checkedPath(classes, Program.class.getName(), "print-then-throw"));
+    }
+
     public static class ConstructorFailure {
         ConstructorFailure() {
             System.out.println("false");

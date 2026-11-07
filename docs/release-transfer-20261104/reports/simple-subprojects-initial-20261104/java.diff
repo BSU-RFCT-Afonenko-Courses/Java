@@ -1,0 +1,399 @@
+diff --git a/docs/extensions-work-report-20261104.md b/docs/extensions-work-report-20261104.md
+index 361e2747..98a05ec7 100644
+--- a/docs/extensions-work-report-20261104.md
++++ b/docs/extensions-work-report-20261104.md
+@@ -6,6 +6,53 @@
+ 
+ **Статус на момент выдачи:** самостоятельные реализации были остановлены для обсуждения. Затем пользователь явно поручил продолжать другие направления без ограничения в15:00; действующая очередь ведётся в [файле состояния](release-cycle-20261110.md). Этот отчёт сохраняет исходный срез и не объявляет последующую работу принятой. Production, база результатов и файлы студентов не переключались и не мигрировались.
+ 
++## Предложение следующего этапа после ваших уточнений
++
++**Сначала преобразуем курс. Перенос результатов не должен задерживать выпуск.** Временное отсутствие прежних баллов допустимо; старые данные сохраняются. Ниже — обновлённое предложение для обсуждения. Более ранние таблицы этого отчёта описывают историю и прежние развилки, а не отменяют ваши новые решения. Реализация следующего этапа пока не начата.
++
++Главный результат выпуска — понятные десять лабораторных с согласованным составом заданий, отдельная тренировка, нормальные заголовки и условия, рабочие выдача и запуск. Публикация 97 самостоятельных работ вместо лабораторных этому не соответствует. Удаление `j25` из IDs/ссылок, единообразные интерфейсы и реальные типы входят в преобразование. Архитектурная чистка должна помогать получить этот результат; сам факт удаления кода или зелёной сборки его не заменяет.
++
++| Вопрос | Предлагаемое решение |
++| --- | --- |
++| Типизированные библиотеки | Сначала убрать лишние собственные слои. Для оставшегося YAML с документами/комментариями выбрать явный `yaml@2` с его типами; простой внешний value-config разбирать один раз на входе. parse5 уже имеет типы: исправить их поставку и использовать их вместо нашей второй HTML-модели. Замена библиотеки оправдана конкретным выигрышем, не числом `any` |
++| YAML и подпроекты | Один собственный формат без старых aliases. `subprojects` — список `theory`, `tasks`, `lectures`, `practice`, `handbook`; каждый дочерний проект выбирает формат обычной конфигурацией Quarto. Не восстанавливать поверх Quarto его merge/rebase и не копировать всю его schema DSL в свой framework |
++| Тесты | Оставить публичное поведение расширений: что получает автор/студент, ссылки и архивы, отсутствие закрытых решений в student выдаче, реальный запуск и feedback. Удалить tests внутренних carriers/counters, SHA/generated-state equality и отказов на ручную правку. Публичный API теста не означает раскрытие или удаление скрытых учебных grading cases |
++| SHA, Docker и Gradle | Удалить собственные file inventories, course SHA, receipts, toolchain/JAR identity и их обязательных readers. Docker владеет image; Gradle — сборкой. Обычные `run` и `test`, одна compilation production-кода. Стандартные lockfiles/Wrapper допустимы; собственной системы установки/неизменности не будет |
++| Cache/freeze и ячейки | Сохранить обычное поведение Quarto, включая его ограничения при изменении внешних данных. Не вводить свои freshness stamps, cache registry или повторную квалификацию. Раздельные output-каталоги задаются конфигурацией |
++| Performance | Довести уже подготовленное упрощение до пригодного инструмента и использовать на выбранных медленных маршрутах. В отчёте нужны длительность целого запуска, медленные стадии, повторы и честный незавершённый результат. Сам сбор статистики тоже измерять; полную сборку ради нового статуса не повторять |
++| Gateway | Убрать дублирование курса и его SHA-реестра. Оставить только необходимое соединение Moodle с PrairieLearn: пользователь, переход к нужной работе, возврат балла. Перед реализацией отдельно выбрать эту границу; наличие LTI в upstream документации ещё не доказывает его доступность в нашем Community deployment |
++
++Пояснение про Gradle: XML писать вручную не требуется. Gradle сам создаёт JUnit XML как **отчёт** тестов. Для перехода нашего серверного grader с собственных JSON events на этот штатный отчёт нужно заменить reader; такой переход ещё не выполнен. [Документация Gradle](https://docs.gradle.org/current/userguide/java_testing.html#sec:test_reporting).
++
++Предлагаю два непересекающихся рабочих чата. **Здесь** — курс и авторские расширения: состав лабораторных, условия, YAML/подпроекты, Core → PrairieLearn → Download → Site, типы и их публичные tests. **Во втором** — исполнение заданий и измерения: Platform/Gradle/JUnit, ограниченный Gateway и Performance. Экспортёр PrairieLearn принадлежит первому чату; Platform/Gateway/Performance — второму. Общая граница — обычные Native файлы курса с устойчивыми UUID, без собственного SHA-протокола. По одному writer на файлы, отдельные checkouts, один владелец итоговой интеграции. Новый чат пока не создан.
++
++Дополнительные задачи стоит объединить с уже меняющимися участками:
++
++- Вместе с экспортом работ — состав десяти лабораторных, отдельную тренировку и явные авторские слоты/веса. Новую схему оценивания из технического рефакторинга не выводить.
++- Вместе с обработкой заголовков — читаемые названия, ссылки в сайте/Native/README и оставшиеся последствия переименования IDs. Уже очищенные `j25` IDs заново не переделывать.
++- Вместе с PL/Download — штатный редактор простых однофайловых ответов и понятный локальный проект для IDE.
++- Вместе с JUnit/Platform — файловый договор transpose и полезную обратную связь: ошибку студента не превращать в инфраструктурный отказ, сохранять её происхождение. Изменение учебного условия и критериев обсуждать отдельно.
++- Вместе с удалением SHA — установку зависимостей и CI курсов, чтобы старая система инвентарей не продолжала запрещать ручные правки после упрощения расширений.
++- Вместе с каждым API — типы его производителя, потребителей, инструментов и примеров; отдельная бесконечная очередь «убрать any» не нужна.
++
++Доступ к GitHub проверен 4 ноября: все десять рабочих репозиториев возвращают права администратора и записи, API/Actions читаются. SSH-аутентификация и dry-run отправки в обе организации прошли. Найдены две практические причины сбоев: HTTPS токен без `workflow` и отказ обычного SSH на системном config. Рабочий путь отправки — явный SSH URL с существующей пользовательской конфигурацией; globals и системные права не менялись. Реальные ветки/PR/CI ради проверки не создавались; публикация контейнеров отдельно не проверялась. Подробности сохранены в основном файле состояния.
++
++Сначала согласуем короткое описание ожидаемой лабораторной и границу Gateway. Затем реализации идут параллельно, с одним небольшим наблюдаемым результатом на пакет. Перед выпуском смотрим именно полученный курс и статистику, а не только отчёты сборки. Полная приёмка Java/SP всё ещё открыта; готовность к 10 ноября 09:00 не подтверждена.
++
++Перенос выделяется в последующий независимый пакет: пользователи и исходные признанные баллы — в новую систему, попытки и файлы — в старую сохранённую VM. Нужен исходный срез на 27 октября, но файл мог быть сохранён позже. Текущие баллы, ранее приблизительно распределённые по 97 работам, источником не служат. Найдены два исторических сохранения с записями от 26 и 30 октября; точный требуемый срез пока не установлен. [Что именно найдено](../../reports/original-score-baseline-20261027-location.md). Восстановление/импорт не выполнялись и не являются условием преобразования курса.
++
++Основания для выбора библиотек и Native поведения: [типизированный YAML](https://eemeli.org/yaml/), [parse5 API](https://parse5.js.org/functions/parse5.parse.html), [обычные cache/freeze Quarto](https://quarto.org/docs/projects/code-execution.html). Подробные адресные записки: [библиотеки и YAML](../../reports/discussion-20261104-typed-libraries-yaml.md), [тесты и CI](../../reports/discussion-20261104-tests-ci.md), [Docker/Gradle и SHA](../../reports/discussion-20261104-native-build-no-custom-hashes.md).
++
++## Актуальное дополнение перед обсуждением
++
++После исходного отчёта выполнены ещё два Source-пакета: единый маршрут публикации Core/PL/Download/Site и жизненный цикл Performance. Сохранены пять локальных commits, независимые рецензии и проверки типов. Новые commits не опубликованы и не установлены; упомянутые ниже полные CI относятся к предыдущим remote версиям.
++
++В небольшом Native примере публикации сначала был пропущен уже известный writable cache, затем после исправления окружения воспроизвёлся конкретный Core дефект: identity spread переносил служебное поле runtime в строгий adapter origin. Исправление ровно двух Core-файлов подготовлено и заморожено; новая ревизия **ещё не прошла compiler/runtime**, независимый Source review ожидается после обсуждения. Повторные проверки внутренних данных заменяются точными типами производителя на существующей входной границе. Общие Native затраты этих попыток18,62 секунды из лимита60; успешная выдача ZIP новым маршрутом пока не доказана.
++
++Готовы два предложения продолжения: [Native paths вместо CST origin транспорта](../../reports/core-native-path-contract-proposal-20261104.md) — independent APPROVE_DESIGN; [изменяемая полная PL поставка](../../reports/native-course-mutable-delivery-next-task-20261104.md) — Source trace показал общие assignment/outbox зависимости, поэтому малый безопасный diff ещё не выделен. В БД ничего не менялось.
++
++Пользователь вернулся к совместному обсуждению. Новые запуски остановлены, оба расписания поставлены на паузу. Ниже — подробный исходный отчёт; дополнения в конце сохраняют историю продолжения.
++
+ ## Главное за несколько минут
+ 
+ 1. **Найден и частично устранён повторяющийся источник сложности: собственные гарантии поверх штатных инструментов.** Мы требовали неизменности слишком большого набора файлов, повторяли проверки установок, ограничивали допустимые формы данных и фиксировали в тестах устройство прежней обвязки. Некоторые из этих требований мешали обычному исполнению Quarto и изменению реализации без изменения результата.
+@@ -258,3 +305,17 @@ Circle приведён к ранее согласованным шести са
+ **YAML и пути проектов.** Вместо дальнейшего угадывания версии старого bundle исследована необходимость самого механизма происхождения значений. Прямым потребителям нужны главным образом физические пути и роли. Однако нынешняя обвязка определяет базу некоторых наследуемых путей. Удаление собственного CST/provenance транспорта возможно только вместе с явным правилом путей и согласованным обновлением деклараций, сохраняющим выбор нужных starter/testset/solution файлов. Такой следующий пакет ещё не реализуется. Отдельно остаётся вопрос, как получать synthetic/excluded inputs без копирования всего владельца.
+ 
+ Технические проекты, их независимые замечания и текущие владельцы связаны из [единственного файла состояния](release-cycle-20261110.md). Новых общих матриц, повторного исследования R0–R6 и переключения production для этого продолжения не было.
++
++### Что уже получилось в продолжении
++
++Сквозная переделка обычной публикации реализована и сохранена четырьмя локальными commits. Core, PL, Download и Site используют согласованный контракт. Два независимых рассмотрения исходников завершены; общий граф типов прошёл проверку. В двух затронутых тестах PL удалены прежние `any`; проверки некорректных авторских входов сохранены без искусственных casts.
++
++Удалён ещё один реальный повтор: Download запускал Native-примеры PL, которые уже принадлежат тестам PL. Это создавало обратную зависимость типов от PL к Download. Теперь PL проверяет свои декларации, Download сохраняет проверки ZIP/README и приватности, а совместный путь находится в Site. Экономия времени этого удаления пока не измерена.
++
++Поведенческая приёмка ещё открыта. Один временный пример Site остановился через5,73 секунды в штатном Sass-кеше Quarto: не открылась KV-база. До новых publication/ZIP assertions выполнение не дошло. Кеш по умолчанию находится вне доступных для записи каталогов текущего sandbox; это вероятная причина среды, которую сообщение Native само по себе не доказывает. Логи и временный проект сохранены, повторов и очистки кеша не было. Новые commits поэтому обозначены как прошедшие Source/type review, а не как готовая runtime-композиция.
++
++Performance также дошёл до завершающего согласования потребителей. Рецензия приняла исправления производственного кода и нашла одну конкретную проблему в старом сигнальном тесте: после раннего частичного отчёта он мог оставить собственный бесконечный процесс. Исправляется только освобождение этого тестового процесса. Нового supervisor в инструмент не добавляем; сигнальные опыты не возобновляем.
++
++Точные commits и evidence доступны из [файла состояния](release-cycle-20261110.md); ни публикация production, ни данные студентов этим продолжением не менялись.
++
++Performance Source-пакет также сохранён локально: единый результат запуска, согласованные readers и существующие fixtures прошли независимую рецензию и общую проверку типов. Итоговый граф из36 входов прошёл за1,62 секунды; все compiler-вызовы пакета вместе заняли4,51 секунды из лимита15. Один промежуточный отказ выявил неявный `any` в циклическом выводе тестового PID; он устранён явным типом `number`. Runtime/TERM-восстановление этим не доказано. Никаких новых сигнальных запусков не было.
+diff --git a/docs/release-cycle-20261110.md b/docs/release-cycle-20261110.md
+index 79b3111f..308370a5 100644
+--- a/docs/release-cycle-20261110.md
++++ b/docs/release-cycle-20261110.md
+@@ -1,175 +1,146 @@
+-# Выпуск Java/SP — единственное состояние продолжения
+-
+-> **ПОСЛЕДНЕЕ ПРЯМОЕ ПОРУЧЕНИЕ, 4 ноября.** Продолжать остальные направления без ограничения15:00. Пользователь дополнительно разрешил **глубокую переделку контрактов без обратной совместимости**; приоритет — **новая чистая архитектура и согласованность интерфейсов**. Старые требования сохранить наши API/protocol/обвязку не ограничивают новый design. Сохранность UUID/native DB IDs/results/student files, учебных целей и итоговый просмотр перед production остаются обязательны. Отчёт — исторический срез. Отчёт85dc и продолжение5fa/ed018 **успешно pushed SSH54268**, remote44bb→ed018. Следующий docs commiteb2dada1 пока local: SSH76745 закончился publickey отказом; повторов сейчас нет. Оба прежних расписания **ACTIVE** с конкретно ограниченными поручениями: java-sp-10 теперь завершает только isolated local Performance lifecycle Source package (15namedfiles, no runtime/network/push), java-sp-3 остаётся Source-only Native publication design. Broad permanent breaking scope было отклонено auto-review; обе безопасные узкие альтернативы подтверждены app tool. Два малых Download typing slices приняты и сохранены local90b567c/d41705f. ДВА architecture designs прошли independent DESIGN APPROVE; сейчас выполняется Source Performance lifecycle и ordinary publication (Core+PL owner, Download+Site owner). Qualification новой Source ещё нет. Failed Performance recovery и Platform SHA candidate не считать принятыми: их evidence/бюджеты сохранять, не применять автоматически.
+-
+-Срок: **10 ноября 2026, 09:00 Europe/Minsk**. Обновление 4 ноября после утреннего пакета.
+-Корень: `/home/tolya/JavaCodex/java-release-20261110`. При возобновлении прочитать этот файл и фактических владельцев/незавершённые операции; не дублировать работу.
+-История и полное evidence остаются в reports и Git; прежние START, сроки и назначения не возобновлять.
+-
+-## Права, усилия, окна
+-
+-- Один релиз Java/SP; разрешены обратимые исправления, ветки, commits/push/PR по принятому scope.
+-- **Новое указание4ноября:** можно несовместимо менять собственные contracts/API. Не поддерживать legacy adapters и дубли гарантий ради старых тестов/spec. Целевая архитектура должна иметь ясных владельцев данных и согласованные реальные типы producer/consumer. Внешние Quarto/PrairieLearn API и данные студентов этим разрешением не отменяются.
+-- Перед production публикацией/переключением обязателен **итоговый просмотр пользователя**.
+-- Root + три независимых исполнителя; один Source writer на контракт, независимый reviewer.
+-- Sol6.1 / Standard: простое low, координация medium, сложные API/границы/review high; Ultra — сложная архитектура.
+-- [Матрицу](agent-execution-proposal-20261029.md), [model-admission](model-admission.md), globals не менять.
+-- Допуск — весь собственный первичный интервал от исходного turn; историю усилий не переименовывать в новый effort.
+-- Первичные contexts/допуски остаются в именных reports/session evidence, не копируются в state.
+-- Automation model/effort setter не угадывать; [контроль усилий](../../reports/adaptive-effort-controls.md).
+-- Гарантированное окно **07:00–22:00**; 22:00–00:00 — при доступности одна короткая сетевая попытка/10 мин.
+-- Ночью без циклов ожидания/build/inspect/hash; **00:00–07:00 сеть не планировать**.
+-- Сводки 12:00/20:00: готово/далее/риск/нужен ли ответ; вне окон — существенное изменение/решение.
+-- `java-sp-10`, `java-sp-3` были **PAUSED после отчёта4ноября**; новое прямое решение о продолжении получено. Оба ACTIVE по app tool с прежними окнами/уведомлениями, без дубликатов. После auto-review отказа broad breaking scope конкретно ограничены: main java-sp-10 — Performance lifecycle в отдельном worktree по brief, один compiler15s/retry0, no runtime/network/push, exact localcommit только после independent SourceAPPROVE; evening java-sp-3 — только Native publication Source design/review без product edits/runs/network. Не расширять scope расписаний через чтение этого state. Дубликаты не создавать, чужие расписания не менять.
+-- Однократный `java-sp-4-09-45` PAUSED, [сводка выдана](../../reports/progress-20261104-0945.md).
+-- При завершении/итоговом отчёте к сроку обе основные automation поставить на паузу.
+-- 5–8 ноября — интеграция; 9 ноября 15:00 — stop новых функций, вечером итоговый review/согласованное переключение.
+-
+-## Ограничения
+-
+-- В scope Pages/PrairieLearn/IDE, Moodle/Gateway, student/full/IDE, оба SP-транспорта и согласованные feedback/стартеры.
+-- Print/Cloud исключены; методика и лекция9 отдельно. Нового общего педпилота нет.
+-- Сохранять UID/UUID **и родительские numeric Native DB records**, признанные результаты, файлы, выдачу и связи.
+-- Не мигрировать/пересоздавать DB/history/assignments/outbox под видом смены SHA/path; fake64 не допускается.
+-- Изменения целей/баллов, риск потери данных, расширение объёма или существенный риск сроку — к пользователю сразу.
+-- Сохранять checkout/PR/research, исторические captures и failed attempts; не заменять их PASS.
+-- Java untracked HTML labs/bank/delivery сохранять: **не cleanup, не stage, не git add all**.
+-- Native Quarto/Pandoc + TS-канон без CUE; hardcoded Pandoc/ambient override и собственный engine не вводить.
+-- Не повторять unchanged suites/render/inspect/hash/матрицы ради статуса; run только после изменения/конкретного отказа.
+-- Fixture не benchmark курса; интервалы parent/child inclusive, не CPU и не суммируемый critical path.
+-- Максимальная own TS типизация активна: настоящие public APIs/DTO, external unknown до existing guards, metadata extras сохранять.
+-- Any/fake casts/ts-ignore/механическое unknown не покрытие; без новых schema/framework/дублирующих validators ради типов.
+-- Vendor internals не наш долг; YAML provenance без matching declarations остаётся открытым, не handwritten AST fiction.
+-- [Актуальная очередь типов](../../reports/typescript-any-audit.md); проценты покрытия не вычислять.
+-
+-## Ожидающее решение и принятые уточнения
+-
+-| Решение | До ответа |
+-| --- | --- |
+-| Production structural export: config/mount/workID | Auto-review отклонил sensitive export **до исполнения**; JSON не создан. Не повторять/не обходить SSH/config query. [Граница](../../reports/live-image-sources-20261104.md). |
+-| Site alternate-audience coexistence — **ответ получен** | Пользователь: «Убрать; разделять output-каталоги конфигурацией». Site850 применён clean FF; Java/SP уже имеют12 раздельных student/full profile pairs, config diff0. [Приёмка layout](../../reports/site-audience-output-config-20261104.md). Production до итогового просмотра. |
+-| GitHub workflow push — **ответ получен** | Пользователь: «сделай через ssh как обычно». PL20f/Downloade0 успешно pushed по явным SSH URLs без смены globals. OAuth ограничение больше не блокирует работу; результаты новых CI ниже. |
++# Выпуск Java/System Practice — состояние продолжения
+ 
+-## Source IDs и приёмка
++Обновлено 4 ноября 2026: идёт совместное обсуждение. Последний приоритет пользователя — преобразование курса; перенос пользователей/баллов второстепенен и не блокирует выпуск, временное отсутствие результатов допустимо. Новые реализации/запуски остановлены; оба расписания PAUSED по app tool. Последний Core correction frozen в двух файлах, независимая рецензия новой ревизии ожидается после обсуждения; активных исполнителей нет. Адресный поиск уже сохранённых баллов завершён без восстановления/импорта.
++Срок выпуска: **10 ноября 2026, 09:00 Europe/Minsk**.
++Корень: `/home/tolya/JavaCodex/java-release-20261110`.
+ 
+-| Checkout | Последний известный Source / статус |
+-| --- | --- |
+-| Java | Product `f774559ef290cf78d621ab63333cb5677439510d`, 31MD cleanup root APPROVE. Отчёт85dc/state5fa/ed018 pushed SSH54268 (44bb→ed018); дальнейший state отдельно. Installed Core d7/PL da. |
+-| SP | Local `9a2f8120a37d1b42384e2f008b3e0a3a34247008` поверх remote3bb: Site6 config APPROVE, **не pushed**. Не render со старым installed Site5.3. Старый PR9 сохранён. |
+-| Core | Local core-native-bridge — новый ordinary publication Source candidate в работе, **не принят**. Последний accepted remote `5f4590aa4eb524830715f8020c8ff3c504197f73`, [PR70](https://github.com/Afonenko-Course-Tools/quarto-course/pull/70). Condition a06, late cleanup556 и Navigation wrappers5f Source APPROVE; CI41803137079 **SUCCESS** ([evidence](../../reports/core-ci-5f4590a-20261104.md)). Дополнительная remote backup branch codex/core-native-bridge-20261110 сохранена; фактический PR head codex/java-release-20261110. Original46b+rejected A dirty6paths сохранены. |
+-| PL | Новый ordinary publication inspector/typechain/CLI Source candidate в работе, **не принят**. Последний accepted remote `4d39a6648d2816bab9a372877deded3320ff35e1` через SSH, [PR36](https://github.com/Afonenko-Course-Tools/quarto-course-prairielearn/pull/36), **CI41806801145 SUCCESS**. Core5f pin, obsolete publication/native-scope DRIFT хвосты удалены. Прежние failures20f/0ebb и причины сохранены; не rerun. |
+-| Download | Новый publication Source candidate в работе, не принят. Local accepted `d41705f` поверх wrapper90b567c: оба Source APPROVE/compilerPASS, **не pushed**, новыхCIнет. Remote `671093945a8a6f76c25e60840aee71964d995496` через SSH, [PR19](https://github.com/Afonenko-Course-Tools/quarto-project-download/pull/19), **CI41806903708 SUCCESS**. Ownership643 APPROVE, count-only wrappers c3 удалены, exact PL4d/Core5f pins. SSH42513 завершён; прежние failed runs сохранены. |
+-| Performance | Remote c2dcf00 SUCCESS, targeted selector APPROVE; ранее e726 streaming/356 table/108/e88/94f/536 APPROVE. **6 dirty files TERM recovery NOT QUALIFIED**, frozen в release checkout; не stage/push и не использовать этот runner в новых измерениях. [Patch/evidence](../../reports/performance-term-recovery-20261104.md) сохранены; архивировать c2 для принятого инструмента. Overall speedup не доказан. |
+-| Platform | Remote `9b82e29bffd77cc462ffdef23cd3b96ca041db92`, [PR35](https://github.com/Afonenko-Course-Tools/prairielearn-platform/pull/35), CI41772299873 SUCCESS. Raw payload/hash retained, partial typing APPROVE. Local `6491517`: JDK official preflight independent high APPROVE; пока не pushed, следующую Docker/JDK CI коалесцировать. Новый image/OCI UNKNOWN. |
+-| Site | Local site-native-audience — ordinary publication orchestration Source candidate в работе, **не принят**. Последний accepted remote `85080c730ad54c8fd81fa4a3c7c806a8771c4f68`, clean после разрешённого FF d16→850 и успешного SSH push. Alternate inspect removal принят пользователем; config/output rename не нужен. Open PR exact head lookup пуст; новый PR/pins/install не делались. Isolated850 и старый site-sp сохранены. |
+-| QRC | Remote541a448 SUCCESS: direct Native Lua Attr maps, semantic cleanup APPROVE; ранее77abe92 post DTO/f0d6 SearchRow/873 extras+HTML cleanup приняты. Installed798 прежний; Lua cleanup не TS coverage. |
+-
+-Installed/published composition не приравнивать к local Source; новые image digests/history не переписывать.
+-[Core CI evidence](../../reports/core-ci-4a2903e-20261104.md), [Download envelope review](../../reports/download-ast-envelope-types-review-20261104.md), [QRC Attr review](../../reports/qrc-lua-attr-native-review-20261104.md).
+-
+-## Активные владельцы и ближайшее действие
+-
+-| Владелец | Текущая граница |
+-| --- | --- |
+-| Root | Отчёт/state успешно backed up SSH доed018 после разрешения временного500. Оба расписания ACTIVE. Ведёт новую архитектурную директиву и приёмку Download slices. |
+-| High `/root/perf_event_types` | Native publication design critique NEEDS_CHANGES3issues, author исправляет. Performance lifecycle final DESIGN APPROVE: теперь single Source writer нового performance-lifecycle worktree отc2, Source brief/15files/90min, не original6dirty. Интерфейс+execute/writer уже changed, закрывает process/render/storage/callers; compiler/runtime0 пока. |
+-| High `/root/pl_typed_materialization` | Native publication final DESIGN APPROVE, теперь single Source writer Core+PL по producer brief90min. Сначала actual canonical Core/API + typedPLhandoff для consumer, затем decoder/CLI/doc/fixtureclosure. Никаких compile/runtime/network; Root onecombinedcompiler послеобоихSourcefreezes. JDK4dirtyunacceptedсохранять. |
+-| Medium `/root/core_yaml_types` | Ownership compilerPASS4.5393s/10s/retry0 и independentAPPROVE, commitd417. Download→Site consumed DTO/API table готова (17строк/3prod-файла), передана architecture owner. YAML e393/versionUNKNOWN зафиксирован, дальнейшая археология не назначена. |
+-| High `/root/performance_lifecycle_review` | Оба final designs APPROVE DESIGN ONLY; готов к будущей Source review. Originnecessity report завершён; code/runtime этойрольюнеисполнялись. |
+-| High `/root/native_publication_consumers` | Single Source writer Download+Site по consumer brief90min послеAPIhandoff. Подтвержденыd417/850cleanbeforeedits;actualtypesотproducer, nofakeDTO/any. Своегоcompiler/runtime/networkнет. |
+-| Medium `/root/download_wrapped_functions` | Завершён: 3file/8wrappers, compilerPASS4.5574s/15s/retry0, independentAPPROVE, commit90b567c. Нового поручения нет. |
+-
+-**Первый следующий шаг:** три Source owners завершают конкретные coherent packages; обаdesigns уже independentAPPROVE. Native producer сначала actualAPIhandoffconsumer; оба малых Download typing среза уже закрыты, успешные проверки не повторять; параллельно подготовить и независимо разобрать чистый обычный publication contract; новые гарантии и data/privacy риск описывать явно, не наследовать legacy ради совместимости. Два frozen candidates не принимать автоматически; вопросы production/data остаются для итогового просмотра [отчёта](extensions-work-report-20261104.md). Три новые hosted CI Core/PL/Download SUCCESS ([финальный срез](../../reports/paired-ci-final-success-20261104.json)); не повторять. Первый [publication drift](../../reports/paired-ci-publication-test-align-review-20261104.md) и [второй failure](../../reports/paired-ci-second-failure-20261104.json) объяснены/исправлены; [Source review](../../reports/paired-ci-test-cleanup-review-20261104.md). Удалены count-only Proxy/subclass/any wrappers, replacement checks/count3 нет. Новых Native runs не назначать.
+-Не запускать новую Java/SP matrix или увеличивать cap. PL computed fixture пока не registered, hosted R/knitr **UNKNOWN**.
+-Site backup выполнен SSH d16→850 после exact open-head PR lookup `[]`; [план/evidence](../../reports/site-backup-pr-next-20261104.md). PR trigger запускает широкую suite; новый PR открывать с согласованным integration composition, не ради статуса.
+-[Paired Source plan](../../reports/pl-core-paired-ci-next-20261104.md), [Download pin](../../reports/download-core-paired-ci-pin-20261104.md).
+-JDK649 принят: official-only второй javac-version process удалён; первая JVM/toolchainreturn и host refusal сохранены.
+-[JDK evidence](../../reports/jdk-official-preflight-20261104.md)/[independent review](../../reports/jdk-official-preflight-review-20261104.md): первый filesystem fixture ERROR сохранён; changed isolated control PASS0.1933s, total0.435s.
+-Production runner SHA согласован одним чтением; image digests/history не менялись. [Per-job read map](../../reports/jdk-per-job-read-boundary-20261104.md): lib/modules без byte SHA на каждой оценке; runner/bundle/shared/hash helper остаются per-job, lock минимум дважды parsed. [Следующий кандидат](../../reports/jdk-official-image-hashes-next-20261104.md) снимает только fixed-image byte guarantee после genuine official admission и registryNone; host/direct/custom registry полные, helper и job-local checks вне diff. Не новый proof/cache/attestation; actual deployed overrides/qualification UNKNOWN, до production review.
+-Platform service typing **STOP**: checker/declaration graph не собран; public PG92584 Source получен root, не installed declaration composition.
+-[Service gap](../../reports/platform-service-types-20261104.md), [PG Source](../../reports/platform-postgres-source-92584/README.md).
+-Live binding дальше — только после structural-export consent; Gateway901/Platform845 labels известны, runtime config/activity binding UNKNOWN.
+-[Actual Gateway901 plan](../../reports/platform-native-binding-actual-next-20261104.md); saved f9 нельзя выдавать за deployed Gateway.
+-
+-## Принятые измерения и пределы — не повторять ради статуса
+-
+-| Evidence | Узкий результат / предел |
++Это **единственный основной файл состояния**. [Прежняя подробная запись](../../reports/release-state-history-20261104-source-closure.md) сохранена как история, а не дополнительное поручение. [Читаемый отчёт](extensions-work-report-20261104.md) готов и дополнен результатами продолжения. R0–R6 и карты уже выполнены: не начинать исследование заново.
++
++## Действующие указания пользователя
++
++Пользователь разрешил продолжать после готового отчёта без остановки в 15:00 и глубоко менять собственные контракты без обратной совместимости. Приоритет — **чистая архитектура, согласованные интерфейсы и максимальное реальное покрытие собственного TypeScript**.
++
++- Production переключается только после итогового просмотра пользователя.
++- Сохранить все worktrees, PR, незакоммиченные изменения и существующие данные студентов. Пользователь выбрал одноразовый перенос в новую систему: пользователи и признанные баллы; история попыток и файлы остаются в сохранённой старой VM. Поэтому сохранение прежних numeric Native parents именно в новой системе больше не является требованием совместимости; старую VM/данные не разрушать. Новые учебные IDs не должны регенерировать сохранённые UUID.
++- Учебные цели/баллы, риск потери данных, расширение объёма и угрозу сроку обсуждать с пользователем до соответствующего действия. Print/Cloud, новая методика и лекция 9 исключены.
++- Не повторять успешные неизменные проверки, R0–R6, полные матрицы, render/inspect/hash/build ради статуса. Нужны проверки полезного поведения после существенного изменения, а не прежней обвязки.
++- Внешние данные — `unknown` до существующей границы разбора. Внутренние типы не заменять повторными runtime validators. `any`, fake casts, ts-ignore, самодельные vendor DTO и механическое unknown не считаются покрытием.
++- Удалять собственные content hashes/inventories/proofs/locks, включая SHA курса; не переносить их в отдельный ручной аудит как обязательную новую систему. Использовать штатные Docker/Quarto/Gradle/package-manager механизмы. Стандартные UUID и криптография аутентификации имеют другую функцию.
++- Собственные YAML/config/API разрешено менять без обратной совместимости. `subprojects` — простой упорядоченный список каталогов; формат задаёт обычная конфигурация дочернего Quarto проекта. Cache/freeze и выполняемые ячейки — поведение обычного Quarto, без собственной гарантии свежести входов.
++- Пересмотреть тесты в пользу публичного API/наблюдаемой выдачи. Удалять закрепление старого внутреннего устройства, счётчиков, SHA и generated state/запрета ручных правок. Это не разрешение менять учебные критерии или удалять скрытые student grading cases. Performance обновлять и применять к реальным узким местам, учитывая стоимость самого инструмента.
++- Sol6.1 / Standard, усилие соразмерно задаче: простое low/medium, сложный код и независимая рецензия high. Постоянное Ultra отменено; globals не менять, runtime без подтверждения не переименовывать.
++- До четырёх одновременных ролей включая root, один Source writer на файл. Параллельная работа явно разрешена; не создавать задачи ради заполнения слотов.
++- Окно 07:00–22:00 Minsk; 22:00–00:00 продолжать при связи, после 00:00 до 07:00 новые сетевые действия не планировать. После восстановления сначала установить исход прежних операций. Сводки около 12:00/20:00; иначе только существенный результат/блокировка/решение.
++
++## Что выполняется сейчас
++
++**Все исполнители остановлены для обсуждения; незавершённых exec/SSH операций нет.** Последний Source writer закончил и заморозил correction; независимый reviewer был назначен, но финальный delta-read ещё не выполнен. Не возобновлять автоматически.
++
++- `/root/native_publication_consumers`, high: завершил Source исправление конкретного reproduced Core origin mismatch ровно в `core-native-bridge/_extensions/course-core/release/publication.ts` и `runtime/operation.ts`, base localf90713ff. [Отчёт correction](../../reports/native-publication-origin-correction-20261104.md) готовится. Native identity spread приносил лишний `runtime`, strict adapter schema его отвергала. Root выбрал точную producer typing closure через существующий completeJSON decode/seal, **без новых повторных builder guards**. Generic pure PublicationDocuments остаются broad, NativePublicationDocuments узкие. Fake fixture witness/casts запрещены. Общий full admission route не переписывать.
++- `/root/pl_typed_materialization`, high: ожидает отдельного возобновления на independent correction [review](../../reports/native-publication-origin-correction-review-20261104.md). Preliminary guards вариант исторический/не принят. Три direct Core pure fixture roots надо добавить к следующему compiler graph, не исполнять.
++
++Budget **ordinary Native spent18.623064679s / общийcap60s**, remaining41.376935321s включая grace; **compiler spent9.800762860s / cap20s**, remaining10.199237140s. Первый Native отказ был из-за пропущенного XDG_CACHE_HOME; Root нашёл уже accepted SP env `/home/tolya/JavaCodex/.cache` и отдельно запустил corrected-context в остатке исходного бюджета. Он прошёл renders и воспроизвёл origin mismatch. [R2 exact evidence](../../reports/native-publication-bounded-acceptance-20261104-r2.json); temp `/tmp/site-b3-owner-8159104057db647` сохранён. Старые failures не затирать; новую Source надо review/check до любого нового bounded Native решения. Performance budget совершенно отдельный, signals exhausted.
++
++**Два следующих Source design завершены, продуктовая реализация не начата:**
++
++- [Mutable delivery proposal](../../reports/native-course-mutable-delivery-next-task-20261104.md) + [DESIGN_ONLY review](../../reports/native-course-mutable-delivery-next-task-review-20261104.md). Medium закрыл13строчный producer→mandatory-reader trace. Catalog request без assignment row существует, но production startup всегда запускает shared assignment/outbox worker и wire требует hash. Изолированного малого ordinary startup пакета нет. **Не имитировать безопасный executable diff; сначала совместная граница lifecycle/history.** Actual Gateway901 поддерживаетschema3/4. DB/live данные не читались и решения о transitions не принимались.
++- [Core Native paths proposal](../../reports/core-native-path-contract-proposal-20261104.md) + [APPROVE_DESIGN](../../reports/core-native-path-contract-review-20261104.md). Native effective→physicalPaths, parent→leaf migration4классов с прежними physical files. Native rebasing зависит от exists(base/value); shared/decoy и definition-missing/localdecoy явно учтены. Synthetic/excluded acquisition/copy remains UNKNOWN. Это design only, не implementation/Native квалификация.
++
++## Закрытые локальные Source-пакеты
++
++| Пакет | Локальный commit / результат | Предел приёмки |
++| --- | --- | --- |
++| Core ordinary publication | `f90713ff3480d5c77deccef4979e98e09279b099` в `core-native-bridge` | Independent Source APPROVE; общий compiler PASS |
++| PL typed publication inspector/CLI | `0079b64decb30aea70cf55a1526dd17d8d66a339` в `prairielearn` | Independent Source APPROVE; общий compiler PASS |
++| Download owned draft | `09e797a1f56bdeb31a66c3e2afa7b8aba7f90321` в `download` | Independent Source APPROVE; общий compiler PASS |
++| Site единый ordinary route | `1ce0801b0244d0157481a3d00691a92b965d90da` в `site-native-audience` | Independent Source APPROVE; общий compiler PASS |
++| Performance lifecycle | `9ba1fd87eb8f5da15fdad29c6c74bc0030b96e92` в `performance-lifecycle` | Independent Source APPROVE; affected compiler PASS; runtime/TERM NOT QUALIFIED |
++
++Эти пять checkouts были clean после exact local commits; сейчас только Core имеет разрешённый correction WIP в двух файлах. **Ничего из этой таблицы не pushed/installed/deployed**, новых CI/pins нет. Native producer/consumer [commit evidence](../../reports/native-publication-local-commits-20261104.json); Performance [commit evidence](../../reports/performance-lifecycle-source-20261104-evidence/local-commit.json).
++
++### Обычная публикация Core → PL → Download → Site
++
++Один `Core.withNativePublication` с actual `NativePublication`, один `PL.inspectPublication(publication)`. Full grading/seed qualification не требуется обычному сайту. Download готовит собственный bytes-only one-shot draft внутри живого callback и публикует после Core closing. Site обе ветви соединяет одним route. Release proof/report callback, ZIP SHA/receipts удалены; именной manifest собственных архивов и реальные path/privacy/CRC обязанности сохранены. Early render/clean/mount effects не получают обещания rollback. CLI `inspect-publication` заменил старый misleading `inspect-grading` без alias.
++
++Удалён повтор PL Native fixture из Download CI и обратная PL→Download test/type dependency. PL владеет декларациями, Download — ZIP/README/privacy, Site — совместным путём. Измеренная экономия не заявлена.
++
++- [Producer Source](../../reports/native-publication-producer-source-20261104.md), [consumer Source](../../reports/native-publication-consumer-source-20261104.md), [producer review](../../reports/native-publication-producer-source-review-20261104.md), [consumer review](../../reports/native-publication-consumer-source-review-20261104.md).
++- Общий affected compiler: 34 roots, initial RED21 только в двух PL fixtures, затем **PASS 4.875085435s**, все вызовы вместе **9.800762860s / cap20s**. [R2 evidence](../../reports/native-publication-combined-compiler-20261104-r2.json). Any в этих fixtures удалены настоящими типами; 17 malformed inputs сохранены.
++- Единственный bounded Native `site-owner-release.ts root-pl`: **exit1, 5.729529888s, не timeout**, остановился в штатном Quarto Sass `Deno.openKv` до publication/ZIP assertions. **Runtime NOT QUALIFIED**, retry0, повтор не назначен. Persistent default cache вне sandbox writable roots — обоснованная гипотеза среды, не доказанная причина или дефект нового API.
++- [Runtime evidence/границы](../../reports/native-publication-bounded-acceptance-20261104.md); temp fixture `/tmp/site-b3-owner-f08801cdb7dd7130` сохранён. Не чистить caches/не менять права/не повторять опыт автоматически.
++- Полный PL `delivery.json`/immutable byte inventory/Platform/Gateway, общий Core snapshot/currentness и Native cache/execution policy этим пакетом не решены.
++
++### Performance lifecycle
++
++Один authoritative RunRecord и PublishedRun acknowledgement вместо mirrored RunResult. Complete/incomplete, фактический Native outcome и wrapper result разделены. Cancellation/observation failure выбирает partial до EOF/status barrier; late complete не заменяет его. Writer сохраняет последнее подтверждение при ошибке. Report/aggregate/refresh/history/benchmark/tools и существующие fixtures используют один contract. Stream facts независимы и sticky, capture mode nullable; unknown Native не превращается в 137/SIGKILL.
++
++- [Source](../../reports/performance-lifecycle-source-20261104.md), [fixtures](../../reports/performance-lifecycle-fixtures-source-20261104.md), [final independent review](../../reports/performance-lifecycle-source-review-20261104.md).
++- Final affected compiler **PASS36 roots, 1.617579024s**; все compiler вызовы вместе **4.514768394s / cap15s**. Initial PASS и последующий RED TS7022 сохранены; исправлена одна реальная number annotation. [Final evidence](../../reports/performance-lifecycle-source-20261104-evidence/compiler-r3.json).
++- **Новых runtime/tests/signals/Native — 0. Старый signal budget exhausted и не сбрасывается.** Recovery/timeliness/teardown не доказаны исполнением. Новую Source нельзя использовать как квалифицированный runner для измерений.
++- Original `performance` с шестью dirty failed TERM files frozen **NOT QUALIFIED**, не stage/push/переносить в новый worktree. Новый isolated checkout стартовал exact `c2dcf002a7396aa3b507e49b99e0ecf00ed9f438`.
++- Удалены только obsolete receipt/cross-failure assertions и unlink subbranch, не полезные storage/privacy controls. Stubborn signal fixture теперь освобождает свою фактически подтверждённую group, исключая group теста; нового product supervisor нет.
++
++## Последние принятые remote / installed отличия
++
++Ниже прежние remote bases, а не новые local architecture commits.
++
++| Компонент | Последний известный remote / факт |
+ | --- | --- |
+-| [SP PL9c delta](../../reports/performance-sp-pl9c-delta.md) | PASS_NATIVE+VALID, Native39.798s/outer40.931s, 7questions/5works/7payloads, UUID stable; coveragefalse, не speedup/CPU/full release. |
+-| [Site6 small fixture](../../reports/sp-shared-site6-integration-20261104.md) | Scoped PASS после cache-path correction; обе attempts17.151281s<60. Не full SP, originals/installed не менялись. |
+-| [SP paired stage](../../reports/sp-shared-site6-stage-integration-20261104.md) | LIMIT_STOP116.129s/exit124/cap120/retry0. Root index/mount/downloadlinks не достигнуты; нет PASS/VALID, автоматический retry не назначен. |
+-| [Core computed](../../reports/core-native-computed-integration-20261104.md) | PASS Table/Image/inline42→README/PNG/ZIP, privacy; outer8.536s, Native8.131s, coveragefalse. Не whole course/assignment/CLI. |
+-| [PL computed](../../reports/pl-computed-consumer-integration-20261104.md) | Ordinary standaloneA1 PASS, actual PNG/README/ZIP; не hosted/assignment/JVM grading/cache freshness. |
+-| [Native knitr cache](../../reports/core-native-cache-integration-20261104.md) | Два captures одного disposable QMD/cache/profile, R ledger1; outer15.504s. Не cross-profile privacy/data freshness/Jupyter/speedup. |
+-| [Java128 original](../../reports/java-native-d7-acceptance.md) | TIMEOUT900.001733s/exit124; start93/persisted92, no seal/complete/public/private. Причина900s UNKNOWN; 128composition/цели не сокращать. |
+-| [Java current diagnostic](../../reports/java-current-performance-20261104.md) | Total114.004s/exit124/cap120, selected owner inspect26.197s/earlyTS1.075s, первый Pandoc pending. Trace INVALID/dropped93088; не full export/breakdown. |
+-| [Java targeted summary](../../reports/java-current-guard-summary-20261104.md) / [review](../../reports/java-current-guard-summary-review-20261104.md) | Scoped APPROVE: два Pandoc7.489/7.712s, guard46.8/47.6ms, valid available summaries/dropped0; outer114.003s/exit124. Overall VALID/full export UNKNOWN. |
+-| [Java verbose prefix](../../reports/java-native-filter-summary-20261104.md) | Последняя утренняя попытка114.002727s/exit124/retry0. Два Pandoc7.333/7.560s; emitted main.lua5370/5391ms, citeproc250/220ms. CPU interpretation условна по official Source, actual Pandoc version UNKNOWN. Третий Pandoc143/SIGTERM, main/earlyTS completion UNKNOWN;13 available summaries valid,5 receipts pending. Не объясняет900s. |
+-| [State decode](../../reports/java-state-decode-20261104.md) | Process443.053ms; parse median8.257ms/decode11.445ms, один saved input. Не причина900s; повтор не назначен. |
+-| [Process timing](../../reports/performance-process-timing-review.md) | Completed command wall narrow ACCEPT; pending/старое missing UNKNOWN. Standalone SIGTERM UNKNOWN/FAIL evidence сохранено, SIGKILL не достигнут. |
+-
+-Canonical33pairs/20spans — observed inclusive envelopes, не clean startup/CPU; [reading](../../reports/performance-pandoc-layer-reading.md).
+-[Canonical cost](../../reports/pl-canonical-performance-reading.md): serialization NOIO, нет доказанного F×S дубля/cache основания.
+-Performance streaming сохраняет prefix, не гарантирует TERM final-report; [review](../../reports/performance-streaming-logs-review-20261104.md).
+-[TERM Source причина/план](../../reports/performance-term-recovery-next-20261104.md): executeScenario не удерживает caller при TERM, missing tool-status/resources затем блокируют финализацию. Pending parent не закрывать status дочернего Pandoc или outer124; новый candidate обязан хранить UNKNOWN/INVALID, не fake outcome.
+-Frozen candidate **не принят**: [отчёт](../../reports/performance-term-recovery-20261104.md). 4prod+2existingtests, known350ms fixture race, hardtimeout и EXDEV сохранены; final direct caller не завершил finalization, test-watchdog SIGKILL137. Compiler PASS не доказывает recovery. Новых signals/runs этого пакета не назначать, бюджет не сбрасывать новым агентом; опубликованный c2 и prefix streaming остаются принятыми отдельно.
+-Новых signal/SP paired stage runs и четвёртой утренней Java попытки нет. Штатный verbose дал coarse native filter records без --trace/global Lua hook, но дополнительные35189B INFO имеют неизвестную observer cost. Не вычитать CPU из wall и не называть остаток HTML/startup; два документа не экстраполировать на128. [Независимый saved-only review](../../reports/java-native-filter-summary-review-20261104.md) APPROVE в границе diagnostic prefix; причины900s и полный export остаются открыты. Логи/failed evidence сохранять.
+-[Dispatch main.lua](../../reports/java-main-filter-dispatch-next-20261104.md) выделил повторный whole-document cleanup Core late-filter.lua для native body и return. High владеет1-file candidate в core-native-bridge, без нового Native; это Source-дубль, не доказанная причина5s/900s.
+-
+-## Необходимость механизмов, честный остаток и навигация
+-
+-Native JSON/engine/cache — исходная authority; immutable whole-owner/course SHA и canonical schema являются нашей обвязкой.
+-Убирать ненужную гарантию, не заменять её новым proof/receipt/cachekey/qualification framework; измерения не обосновывают вечность механизма.
+-Persisted SHA в PG/Gateway/history отделять от stable Native IDs совместимо, без скрытого DB cutover/per-slot scoring change.
+-[Source pass summary](../../reports/pattern-pass-summary-20261104.md): карта завершена в указанном Source scope, реализации продолжаются адресно.
+-[Export](../../reports/pattern-pass-export-20261104.md), [Core/QRC](../../reports/pattern-pass-core-20261104.md), [Platform](../../reports/pattern-pass-platform-20261104.md), [Performance/CI](../../reports/pattern-pass-performance-ci-20261104.md).
+-R0–R6/74-группы — существующая очередь/evidence, не новый аудит; история остаётся в reports/Git.
+-[Hash producer](../../reports/hash-mechanism-producer-review.md), [consumer/identity](../../reports/hash-mechanism-consumer-review.md).
+-[Cache](../../reports/quarto-cache-boundary-20261104.md), [cells](../../reports/quarto-execution-boundary-20261104.md): shared `_freeze` не изолирован output dirs; live leak не установлен.
+-Реальные caches не чистить; отдельная cache/execution policy профилей ещё не реализована. Output profiles уже разделены, это не cache isolation. Никаких новых kernels/install/render ради статуса.
+-[YAML remainder](../../reports/core-yaml-node-types-20261104.md): productdiff0/compiler0; нужен exact vendor pin + matching portable declarations.
+-[Navigation](../../reports/core-navigation-wrappers-review-20261104.md): wrappers приняты, но полный FFI candidate FAIL из-за transitive parse5 JS→d.ts resolution; local AST/doublecast остаются долгом, failed evidence сохранено.
+-[Download ownership](../../reports/download-ownership-snapshot-20261104.md)/[review](../../reports/download-ownership-snapshot-review-20261104.md): APPROVE/committed643; typed scalar snapshot удаляет внутренний JSON round-trip. Повторная signature/currentness гарантия этим не оправдана и не удалена. [Paired companion](../../reports/download-core5f-pl0ebb-paired-ci-pin-20261104.md) committed893, ждёт последовательной remote PL→Download отправки.
+-Открыты: live identity/DB/результаты, automatic grader/OCI, оба SP transports E2E, feedback overloads/trusted-reader origin/refusal, full Java export.
+-Канон/10labs/training/editor overrides и [SP catalogs](../../reports/sp-qrc-reference-readiness.md) сохраняют предметные требования; local export не production.
+-Print/Cloud, лекция9 и новые образовательные цели не втягивать в техническую оптимизацию. Весь релиз пока **не завершён**, процентов нет.
+-
+-Bundled Quarto Deno2.7.14/TS5.9.2 check: **не `--cached-only`**; `--deny-import --no-config --no-lock` + existing actual cached map.
+-Bundled cache: `/home/tolya/.cache/quarto/deno_std/cache`; runtime cached-only и check CLI различаются.
+-Performance checker known context: system Deno2.9.7 cached-only с config autodiscovery; manual/frozen override prep failures не повторять.
+-[Исторический checkpoint](../../reports/release-evidence-checkpoint-20261103-2000.md) — evidence, не state; [README](README.md)/[решения](refactoring-plan.md)/[регламент](release-execution-regulation-20261103.md) сохранены.
+-
+-## Продолжение после готового отчёта4ноября
+-
+-- [YAML provenance](../../reports/core-yaml-provenance-followup-20261104.md): настоящий vendor commit e393 найден, shallow history перестал быть ложным first-commit evidence. Matching YAML version не установлен; больше generic archaeology не назначено.
+-- [Platform service readiness](../../reports/platform-service-type-readiness-followup-20261104.md): callback-result generic подтверждён actual upstream Source, но missing loader/Native/transitive package declarations не дают честного full checker. Без stubs/compiler retries.
+-- [Site Native selection](../../reports/site-native-selection-cache-followup-20261104.md): exact850 уже имеет один project render/owner inspect на компонент. Прежний SP per-document остаток относился к старому provider, не к текущему Source. Новую cache/privacy policy не внедрять.
+-- [Download wrappers](../../reports/download-wrapped-functions-20261104.md): восемь существующих metrics wrappers объявлены через typed const вместо reassignment suppressions; compiler PASS4.5574s. Runtime suites не повторялись; independent review APPROVE, commit90b567c. Ownership commitd417/compilerPASS4.5393s/independentAPPROVE — отдельный changed slice, не повод повторять unchanged wrapper control.
+-
+-### Новая архитектурная директива
+-
+-Прямые слова пользователя: «Ты можешь глубоко переделывать контракты не взирая на совместимость. Главное новая чистая архитектура»; «И согласованность интерфейсов». Это текущая authority поверх требований старых Source plans о compatibility. Следующий architecture package обязан назвать удаляемую гарантию, target DTO/API и единственного владельца каждой операции, producer/consumer coupling, semantic acceptance и стоимость; не выдавать большой rename/новую compatibility обвязку за архитектуру. Подтверждённые прежние результаты и непринятые кандидаты сохраняются как evidence.
+-
+-Фоновое broad breaking scope было отклонено automatic approval review как недостаточно ограниченное и потенциально необратимое. После явного сужения до Source-only проекта named native-publication-clean-contract без product edits/network/runs оба обновления расписаний успешно применены. Это ограничение расписания, не откат прямого разрешения пользователя на чистые contracts в текущей работе.
+-
+-### Конкретизация следующих контрактов
+-
+-- [Consumer map](../../reports/native-publication-consumer-contracts-20261104.md) показывает: ordinary Site/Download и Native PLcourse export — разные маршруты. Первый выбран как самостоятельный clean slice; broad course-byte-freeze/Platform/Gateway остаётся честным долгом.
+-- [Performance lifecycle design](../../reports/performance-lifecycle-clean-contract-20261104.md) — только предложение. Один RunRecord вместо mirroredRunResult, immediate incomplete snapshot до EOF/statusbarrier, completeness едина у run/aggregate/refresh/benchmark. Новых запусков, Source edits и сброса exhausted budget нет. Independent review ещё не завершён; implementation не назначена.
+-
+-Последняя независимая [Performance design review](../../reports/performance-lifecycle-clean-contract-review-20261104.md) нашла5P1: aggregate/source completeness, terminal race, error-before-EOF, exact published record/writefailure, renderprocess outcome provenance. Author внёс требования, но delta APPROVE ещё нет;15file scope не является разрешением Source исполнения или нового runtime budget.
+-
+-### Performance lifecycle — начата только Source реализация
+-
+-- Final [design review](../../reports/performance-lifecycle-clean-contract-review-20261104.md) **APPROVE DESIGN ONLY**; нет claims recovery/runtime.
+-- [Точный Source brief](../../briefs/performance-lifecycle-source-20261104.md). Новый worktree `/home/tolya/JavaCodex/java-release-20261110/performance-lifecycle`, branch `codex/performance-lifecycle-20261110`, basec2dcf002a7396aa3b507e49b99e0ecf00ed9f438. Original `performance`6dirty сохранять. Appnative tool не поддерживает target отдельного Performance repo; gitfallback после existingworktree/artifactinventory, no baseline/install/checks.
+-- Owner high perf_event_types, один affected compiler нового final coherentSource cap15s/retry0; сигнал/runner/Native/runtime budget не сбрасывать и не запускать. No stage/commit/push доindependentSource review. Report `performance-lifecycle-source-20261104.md` ещёготовится.
+-- Новая sourceShape PublishedRun{record,directory} содержит один authoritativeRunRecord, без прежних mirrored exit/wall fields. Это progress Source, неaccepted результат.
+-- [Origin-necessity analysis](../../reports/core-origin-contract-necessity-20261104.md): убратьCST provenance можно после explicitpathsemantics/sourceconfigmigration; wholeownercopy forsynthetic/excludedrequests UNKNOWN, selectedphysicalpath/rolechecks обязательны. ПланреализацииOrigin ещёнепринят.
+-
+-### Ordinary publication — начата Source реализация
+-
+-- [Design](../../reports/native-publication-clean-contract-20261104.md) и final [independent delta review](../../reports/native-publication-clean-contract-review-20261104.md) **APPROVE DESIGN ONLY**, неSource/runtime. ЗакрытыPLanyproducer, earlycleanupfailuresemantics, реальный2ownerfixture и CLIrename.
+-- High producer: [Core/PL brief](../../briefs/native-publication-producer-source-20261104.md), existingisolatedcore-native-bridge5f/PL4d (rootподтвердилcleanдоedits). Handoff `reports/native-publication-api-handoff-20261104.md` создаётсяactualexportowner, consumerнедублируеттипы.
+-- High consumer: [Download/Site brief](../../briefs/native-publication-consumer-source-20261104.md), existingDownloadd417/Site850cleanдоedits. Root одинcombinedaffectedcompiler20s/retry0 послеобоихSourcefreezes. Runtimefixture60s покаНЕназначен, новойматрицынет.
+-- ВсеSourceowners: no stage/commit/push доindependentSource qualification; никакогоproduction/DB/studentfiles/coursemetadataexperiment. Старыеworktrees/PR/dirty/failures сохранены. FullPLdelivery immutableJSON/Platform/Gateway остаётся отдельным явноне закрытымпроектом.
++| Java | Product `f774559ef290cf78d621ab63333cb5677439510d`; docs85dc/5fa/ed018 pushed SSH54268. Поздние docs eb2/6b и текущие изменения local; SSH76745 завершился publickey отказом, повторов нет. Branch `codex/java-release-20261110` |
++| SP | Local `9a2f8120a37d1b42384e2f008b3e0a3a34247008` поверх remote3bb, Site6 config не pushed. Installed Site5.3; с ним не render новую composition |
++| Core | Remote `5f4590aa4eb524830715f8020c8ff3c504197f73`, PR70, CI41803137079 SUCCESS. Installed в Java d7 прежний |
++| PL | Remote `4d39a6648d2816bab9a372877deded3320ff35e1`, PR36, CI41806801145 SUCCESS. Installed в Java da прежний |
++| Download | Remote `671093945a8a6f76c25e60840aee71964d995496`, PR19, CI41806903708 SUCCESS. Local accepted typing90b567c/d41705f включены в новый local09e797a |
++| Site | Remote `85080c730ad54c8fd81fa4a3c7c806a8771c4f68`, accepted Source не installed; open PR exact-head lookup был пуст. Старые site-sp и isolated850 сохранены |
++| QRC | Remote `541a44836cf5ec934a101059cbee77c9ff47d134`, accepted Source; installed798 прежний |
++| Performance | Remote c2dcf002, accepted selector CI SUCCESS; новый local9ba отдельно, старый dirty runner не использовать |
++| Platform | Remote `9b82e29bffd77cc462ffdef23cd3b96ca041db92`, PR35, CI41772299873 SUCCESS. Local `6491517b896b17119fd2ab44db1a2de2ff9c93b1` accepted JDK preflight не pushed. Четыре dirty JDK SHA candidate files frozen, не приняты |
++| Gateway | Saved OCI label `901624527dce2d37a62fedaa9b768cbbbfd1e366` — claimed Source, не attestation установленной композиции |
++
++Существующие PR32/70/36/19/35 прикреплены; не закрывать/merge автоматически. SSH вместо OAuth workflow явно разрешён пользователем; globals/remote config не менять. Последняя известная SSH операция завершена, активного push нет. Не запускать повторные сетевые попытки ради статуса.
++
++## Уже принятые решения / ограничения данных
++
++- Пользователь разрешил убрать шесть inspect неактивной Site аудитории, student/full разделять output configuration. Java/SP имеют 12 раздельных profile pairs, дополнительный config diff не нужен. Это не cache isolation.
++- Sensitive production structural export config/mount/workID automatic approval review **отклонил до исполнения**, JSON не создан; явного ответа на отдельный запрос нет. Не повторять/не обходить через SSH/config queries.
++- Native numeric parents/FK важны сверх одинаковых UUID. Не сбрасывать workspace/.git/assignment/outbox/history и не делать fake64 hash.
++- Java untracked HTML labs/bank/delivery сохранять; не cleanup/stash/reset/stage-all.
++- Учебные j25 IDs/xrefs/metadata/CSS/reference и 31 Markdown очищены, UUID/физические проекты сохранены; для пяти assessment сохранена прежняя identity. Промежуточный старый HTML не переписывали.
++- Circle отдельные6 случаев проверены: reference6/6, wrong2/6, starter runtime failure с полным знаменателем; прежние результаты не пересчитывали. Это изменение наблюдаемого оценивания для итогового просмотра.
++
++## Очередь после текущего Source design
++
++1. По отдельному конкретному решению закрыть доступную среду ограниченной ordinary Native acceptance; не превращать ошибку Sass KV в новый cache framework/повторную матрицу.
++2. Полный PL mutable-delivery contract: сначала ограниченный Source шаг и явная граница persisted mapping/DB решения, без изменения признанных результатов.
++3. [Core origin/path necessity](../../reports/core-origin-contract-necessity-20261104.md): прямым consumers нужны physical paths/roles; старый CST marker transport можно убрать вместе с явной path semantics и migration, выбирающей те же starter/testset/solution files. Synthetic/excluded Native acquisition и возможность снять whole-owner copy UNKNOWN.
++4. [Type audit](../../reports/typescript-any-audit.md): YAML matching declarations отсутствуют; vendor commit e39380fc найден, generic archaeology остановлена. Parse5 transitive resolution и настоящие Platform service/SQL row types не закрыты. Не вводить stubs/поддельный AST или проценты ради отчёта.
++5. Native freeze/cache профилей, trusted-reader transpose contract/feedback, оба SP transport E2E и full Java export остаются открыты. Новые цели/лекция9/методика сюда не входят.
++
++## Измерения, которые нельзя повторять или расширять выводами
++
++- Java128:900.001733s timeout,93 started/92 persisted, final seal нет; причина UNKNOWN.
++- Адресный Java prefix114.002727s: два Pandoc7.333/7.560s, main.lua emitted5370/5391ms, третий SIGTERM,5 pending receipts. CPU интерпретация и whole-course speedup не доказаны; четвертого утреннего Native не было.
++- SP small7questions/5works: Native39.798s/outer40.931s, не полный выпуск.
++- Computed Core8.131s/outer8.536s → README/PNG/ZIP. Native knitr same-profile2captures15.504s/ledger1, не cross-profile privacy/freshness.
++- SP full stage116.129s timeout,4 children/root pending, не PASS; неизменный не повторять. Parent/child spans inclusive, не суммировать как CPU/critical path.
++
++## Расписания и завершение
++
++- `java-sp-10` **PAUSED на совместное обсуждение**, app tool перевёл с завершённого Performance Source на конечный **Source-only mutable-delivery proposal/review**. Только локальные Source reads, два design/review документа и этот state. Product edits, DB/live exports, compiler/tests/runtime/Native/network/commits/push запрещены. Завершённые пакеты не повторять. После конечного предложения/review — пауза этого поручения и отчёт для совместного решения, не автоматическая реализация persisted changes.
++- `java-sp-3` **PAUSED на совместное обсуждение**, прежний вечерний Source-only Native publication design/review; никаких product edits/runs/network. Не расширять scope через этот файл; чужие paused schedules не возобновлять. Отдельное ночное окно не дублировать.
++- Однократный `java-sp-4-09-45` PAUSED. Новые дубликаты не создавать. Broad permanent breaking scope ранее был отклонён auto-review; безопасные конечные Source scopes приняты. Это ограничение расписаний, а не отмена прямой пользовательской authority текущего чата.
++- К 10 ноября09:00 либо после итогового выпуска оба основных расписания поставить на паузу. 5–8 ноября интеграция, 9 ноября15:00 остановка новых функций и подготовка итогового просмотра. Весь выпуск **ещё не завершён**.
++
++## Совместное обсуждение — последнее прямое указание
++
++Пользователь вернулся и хочет прочитать отчёты, затем обсудить ускорение через отдельный непересекающийся чат. **Новый чат ещё не создан и не авторизован к запуску конкретного пакета: сейчас обсуждается разделение.** Не создавать его автоматически. App tool подтвердил PAUSED для java-sp-10 и java-sp-3 с сохранением prompts/rrules; не возобновлять до совместного решения.
++
++Уточнение 4 ноября: **преобразование курса — критический путь, перенос второстепенен**. Пользователь допускает временное отсутствие результатов у студентов; этот допуск не разрешает удаление старых данных. Для баллов нужен исходный смысловой срез на **27 октября 2026**, сам снимок мог быть сделан позже (по памяти пользователя — в воскресенье). Не брать текущие размазанные баллы и не распределять общий процент по новым работам. В прежнем исполнительном чате прямо признано приблизительное распределение старого балла по97работам; это следствие старого переноса, не исходное достижение студентов.
++
++Адресный read-only поиск нашёл два сохранённых кандидата: actual26Oct scores/backup и physical30Oct capture, повторно проверенный2Nov. Ни один пока не установлен как точный требуемый срез27Oct; дата проверки2Nov не является датой capture. [Краткая provenance записка](../../reports/original-score-baseline-20261027-location.md). Восстановление, новый export, чтение live DB, импорт и пересчёт не выполнялись. Поиск на этом остановлен и не задерживает следующую работу над курсом.
++
++Для обсуждения подготовлены три адресные записки: [библиотеки/YAML](../../reports/discussion-20261104-typed-libraries-yaml.md), [тесты/CI](../../reports/discussion-20261104-tests-ci.md), [Docker/Gradle/собственные SHA](../../reports/discussion-20261104-native-build-no-custom-hashes.md). Их более ранние предложения сохранять live legacy hashes/numeric parents или вынести наши content inventories в ручные tools **не являются текущим целевым контрактом** после последних прямых указаний. Читаемое предложение следующего этапа находится в начале основного отчёта. Пока это обсуждение, не запуск нового breaking пакета.
++
++### Совмещение приоритетов и доступ к GitHub — 4 ноября
++
++Пользователь запросил дополнительные совместимые приоритеты и проверку фактического доступа к GitHub. Конечное чтение имеющихся карт завершено; новых исследований R0–R6, продуктовых изменений и запусков курса не было. Включать в текущих владельцев: состав10лабораторных/отдельную тренировку в PL export; исправление заголовков вместе с Core AST/QRC/ссылками; штатный editor однофайловых ответов вместе с PL/Download; файловый договор и происхождение feedback вместе с JUnit/Platform; удаление generated/provider locks вместе с установкой зависимостей и course CI; настоящие типы производителя, consumers, CLI/tools и затронутых fixtures вместе с каждым изменяемым API. Состав/веса и критерии оценивания не менять молча. Уже выполненное удаление j25 и исправление Circle заново не начинать. Миграция не в критическом пути.
++
++Фактический GitHub доступ:
++
++- Connector и `gh api GET user` аутентифицированы как `AfonenkoA`. На всех10активных репозиториях API вернул `admin/maintain/pull/push/triage=true`: Java, System-Practice, Core, PL, Download, Site, QRC, Platform, Gateway, Performance. Дополнительный collaborator endpoint Java вернул admin. Actions runs Java читаются. Это текущие разрешения API, не утверждение о выполненной мутации или обходе branch rules.
++- HTTPS/gh token имеет `repo`, `gist`, `read:org`, `read:packages`; `workflow` и `write:packages` в нём нет. Не пытаться посылать workflow diff этим HTTPS токеном. Существующая Docker/GHCR credential и фактическая публикация image этим чтением не проверены; scopes gh нельзя автоматически выдавать за scopes отдельной Docker credential.
++- Обычный SSH читает системный `/etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf` и падает с `Bad owner or permissions` до аутентификации. Системный файл/права не менялись. `ssh -F /home/tolya/.ssh/config` использует существующие `ssh.github.com:443` и known_hosts; с BatchMode/StrictHostKeyChecking успешно ответил `Hi AfonenkoA! You've successfully authenticated`. Код1 у `ssh -T` здесь штатный, не отказ.
++- Два `git push --dry-run --no-verify` через этот SSH прошли с exit0: Java и PL, по одному репозиторию каждой организации. Ветки/PR/commits/CI не создавались. Первые sandbox Git вызовы упали на DNS; однократная сетевая эскалация тех же dry-run вызовов принята auto-review и прошла. Это отдельный сбой среды вызова, не потеря прав GitHub.
++- Для будущего настоящего push использовать явный `git@github.com:owner/repo.git` и per-command `core.sshCommand='ssh -F /home/tolya/.ssh/config …'`. Имеющиеся origins HTTPS и global config не менялись. Обычный git/ssh без этой настройки всё ещё воспроизведёт системный config отказ; полное устранение системной причины не заявлено. Реальное создание PR/merge/release/workflow edit/GHCR push ради проверки не выполнялось.
++
++Последний Core origin correction Source FROZEN, два файла, нет compiler/Native после изменения. Source review уже был назначен, но последнее inventory подтвердило отсутствие активного reviewer: final delta-read pending, не заявлять APPROVE новой ревизии. Root не запускает следующий compiler/runtime, не stage/commit/push эту ревизию во время обсуждения. Пять прежних local commits сохранены, actual Core имеет незакоммиченный correction; remote/installed/production прежние.

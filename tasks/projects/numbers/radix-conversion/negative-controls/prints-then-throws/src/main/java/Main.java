@@ -1,0 +1,1 @@
+public class Main {public static void main(String[] args){try {System.out.println(Study.convert(args[0],Integer.parseInt(args[1])));} finally {throw new IllegalStateException("Контроль ошибки после вывода");}}}

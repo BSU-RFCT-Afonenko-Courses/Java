@@ -1,0 +1,1 @@
+class Main {void main(){var in=new java.util.Scanner(System.in);int count=in.nextInt();var out=new StringBuilder();for(int k=0;k<count;k++){int x=in.nextInt();long a=Math.abs((long)x);if(a>=100&&a<=999){long h=a/100,t=a/10%10,u=a%10;if(h!=t&&h!=u&&t!=u){if(!out.isEmpty())out.append('\t');out.append(x);}}}System.out.print(out.isEmpty()?"Подходящих чисел нет":out);}}

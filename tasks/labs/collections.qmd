@@ -6,25 +6,59 @@ categories:
 assessment:
   kind: lab
   prairielearn:
+    uuid: eb9f17fb-4f17-5631-b3b5-4cbebb4c4bb3
     pass:
-      at-least: 4
+      at-least: 8
     max-points: 100
     slot-overrides:
       exr-collections-object-hash:
-        auto-points: 0.0
-        manual-points: 25.0
+        auto-points: 0
+        manual-points: 12.5
       exr-collections-views-snapshots:
-        auto-points: 0.0
-        manual-points: 25.0
+        auto-points: 0
+        manual-points: 12.5
       exr-collections-set-union-intersection:
-        auto-points: 17.5
-        manual-points: 7.5
+        auto-points: 10.0
+        manual-points: 2.5
       alt-collections-balanced-brackets-polynomial-map-addition:
-        auto-points: 17.5
-        manual-points: 7.5
+        auto-points: 10.0
+        manual-points: 2.5
+      exr-collections-digit-stack:
+        auto-points: 10.0
+        manual-points: 2.5
+      exr-collections-poem-line-order:
+        auto-points: 0
+        manual-points: 0
+      exr-collections-distinct-word-set:
+        auto-points: 10.0
+        manual-points: 2.5
+      exr-collections-word-frequency:
+        auto-points: 10.0
+        manual-points: 2.5
+      exr-collections-partition-list:
+        auto-points: 10.0
+        manual-points: 2.5
+      exr-collections-elimination-circle:
+        auto-points: 0
+        manual-points: 0
+      exr-collections-graph-model:
+        auto-points: 0
+        manual-points: 0
+      exr-collections-nearest-value:
+        auto-points: 0
+        manual-points: 0
+      exr-collections-polynomial-list-multiplication:
+        auto-points: 0
+        manual-points: 0
+      exr-projects-huffman-word-coding-project:
+        auto-points: 0
+        manual-points: 0
+  id: sec-lab-collections
+exercise-bank: true
+default-exercise-statement-visibility: open
 ---
 
-# Коллекции {#sec-j25-lab-collections}
+# Коллекции {#sec-lab-collections}
 
 Для входа `s17, s18, s17` журнал хранит три обращения, множество — два кода,
 карта — частоты 2 и 1. Постройте такой учёт с собственным типом ключа.
@@ -32,26 +66,25 @@ assessment:
 книги. Затем получите результаты операций над множествами и выберите
 один алгоритм со стеком или картой.
 
-Равенство и устойчивость ключа: @theory:sec-j25-theory-equality-domain,
-@theory:sec-j25-theory-equality-hash. Общие элементы и разные составы:
-@theory:sec-j25-theory-collections-snapshots. Введение:
-@practice:sec-j25-practice-collections.
+Равенство и устойчивость ключа: @theory:sec-theory-equality-domain,
+@theory:sec-theory-equality-hash. Общие элементы и разные составы:
+@theory:sec-theory-collections-snapshots. Введение:
+@practice:sec-practice-collections.
 
-Адресная справка: @handbook:sec-j25-api-sets-maps-set,
-@handbook:sec-j25-api-sets-maps-bulk, @handbook:sec-j25-api-sets-maps-map,
-@handbook:sec-j25-api-lists-factories. Для выбранного скобочного алгоритма:
-@handbook:sec-j25-api-sets-maps-queue.
+Адресная справка: @handbook:sec-api-sets-maps-set,
+@handbook:sec-api-sets-maps-bulk, @handbook:sec-api-sets-maps-map,
+@handbook:sec-api-lists-factories. Для выбранного скобочного алгоритма:
+@handbook:sec-api-sets-maps-queue.
 
-## Состав работы
-
-Выполните три обязательных задания и одно из двух последних:
-правильность скобок **либо** сложение многочленов.
-
-::: {.task-items stage="homework"}
+::: {.task-items stage="homework" requirement="required"}
 1. @exr-collections-object-hash
 1. @exr-collections-views-snapshots
 1. @exr-collections-set-union-intersection
 1. [@exr-collections-balanced-brackets; @exr-collections-polynomial-map-addition]{.task-alternatives #alt-collections-balanced-brackets-polynomial-map-addition selection="choice" requirement="required"}
+1. @exr-collections-digit-stack
+1. @exr-collections-distinct-word-set
+1. @exr-collections-word-frequency
+1. @exr-collections-partition-list
 :::
 
 ## Представление решения
@@ -65,7 +98,26 @@ assessment:
 
 Пересечение и объединение сохраняют оба входных множества. Для скобок
 обязателен стек; для сложения многочленов — `HashMap`, с числовым договором
-из карточки. Имена свободных методов, классы демонстрации и формат показа
-результатов выбирайте самостоятельно. Техника проверяется по исходнику,
+из карточки. Имена свободных методов, классы демонстрации в разрешённых файлах
+и формат показа результатов выбирайте самостоятельно. Техника проверяется по исходнику,
 объяснение — в беседе с преподавателем. Используется JDK 25; отдельный
 большой отчёт не требуется.
+
+## Условия задач
+
+Полные условия и общие правила находятся в темах банка: {{< xref tasks sec-bank-collections style="title" >}}, {{< xref tasks sec-bank-projects style="title" >}}.
+
+::: {.task-items stage="homework" requirement="optional"}
+1. @exr-collections-poem-line-order
+:::
+
+::: {.task-items stage="homework" requirement="optional"}
+1. @exr-collections-elimination-circle
+1. @exr-collections-graph-model
+1. @exr-collections-nearest-value
+1. @exr-collections-polynomial-list-multiplication
+:::
+
+::: {.task-items stage="homework" requirement="optional"}
+1. @exr-projects-huffman-word-coding-project
+:::

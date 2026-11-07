@@ -14,14 +14,7 @@ format:
     show-notes: false
 ---
 
-## Система коллекций {#sec-j25-lecture-equality-collections}
-
-- Интерфейсы, реализации и порядок обхода коллекций.
-- Общий алгоритм, состояние итератора и сравнение протоколов обхода.
-- Идентичность, равенство, хеширование и порядок.
-- Линейный поиск, хеш-таблица и дерево.
-- Хранение, стоимость операций и изменение состава.
-- Представления, копии и выбор структур для каталога.
+## Система коллекций {#sec-lecture-equality-collections}
 
 ### Отношения между элементами {#sec-lecture-collections-roles}
 
@@ -127,7 +120,7 @@ String first = codes.get(0); // s1
 Попросить назвать две роли одного LinkedList.
 :::
 
-### Единый договор библиотек {#sec-j25-lecture-equality-collections-step-20}
+### Единый договор библиотек {#sec-lecture-equality-collections-step-20}
 
 Загрузчик возвращает `List<String>`, а отчёт принимает `List<String>`.
 Обе библиотеки согласуют тип элементов, позиции и операции списка.
@@ -176,11 +169,6 @@ System.out.println(codes.getLast());  // s1
 :::
 
 ## Последовательный обход {#sec-lecture-collections-traversal}
-
-- Источник элементов `Iterable` и состояние `Iterator`.
-- Один алгоритм для разных хранилищ.
-- Независимые обходы и цикл `for-each`.
-- Продвижение, чтение и конец диапазона в Java, C++ и C#.
 
 ### Источник и состояние обхода {#sec-lecture-collections-iterator}
 
@@ -398,12 +386,7 @@ Java и C# выражают общий протокол интерфейсами
 MoveNext, после него и после завершения обхода.
 :::
 
-## Равенство при поиске {#sec-j25-lecture-equality-collections-group-1}
-
-- Идентичность, равенство значения и хеш.
-- Естественный и внешний порядок.
-- Линейный поиск и отбор кандидатов в хеш-таблице.
-- Повтор равного ключа, коллизия и изменение ключа.
+## Равенство при поиске {#sec-lecture-equality-collections-group-1}
 
 ### Операции сравнения {#sec-lecture-equality-operations}
 
@@ -448,7 +431,7 @@ b ────────> B: строка "Ada"
 Попросить для каждого ответа указать, сравниваются ссылки или символы.
 :::
 
-### Сравнение строк {#sec-j25-lecture-equality-collections-step-01}
+### Сравнение строк {#sec-lecture-equality-collections-step-01}
 
 ```java
 System.out.println(a == b);      // false
@@ -462,7 +445,7 @@ System.out.println(alias == a);  // true
 класс значения переопределяет этот метод.
 
 В Python этим вопросам соответствуют `is` и `==`.
-@theory:sec-j25-theory-equality-identity.
+@theory:sec-theory-equality-identity.
 
 ::: {.notes}
 Сопоставить каждый результат с прогнозом. Попросить объяснить, почему
@@ -515,7 +498,7 @@ System.out.println(containsCode(codes, "s9")); // false
 для запроса s1 и объяснить, почему второе вхождение s1 не понадобится.
 :::
 
-### Устойчивый идентификатор {#sec-j25-lecture-equality-collections-context}
+### Устойчивый идентификатор {#sec-lecture-equality-collections-context}
 
 `StudentId` хранит строку кода, отличную от `null`, без нормализации.
 Его `equals` сравнивает строки с учётом регистра, `hashCode` возвращает
@@ -531,15 +514,15 @@ System.out.println(first.hashCode() == second.hashCode()); // true
 
 Равенство должно быть симметричным, транзитивным и устойчивым при
 неизменных данных. `equals(null)` возвращает `false`.
-[Объявление класса](#sec-j25-lecture-equality-collections-step-05);
-полный договор: @theory:sec-j25-theory-equality-contract.
+[Объявление класса](#sec-lecture-equality-collections-step-05);
+полный договор: @theory:sec-theory-equality-contract.
 
 ::: {.notes}
 Предложить определить, какие сведения нужны ключу для поиска участника:
 код или также текущая оценка. Вернуться к выбору после сравнения версий Student.
 :::
 
-### Поиск отдельным равным ключом {#sec-j25-lecture-equality-collections-step-06}
+### Поиск отдельным равным ключом {#sec-lecture-equality-collections-step-06}
 
 ```java
 Set<StudentId> ids = new HashSet<>();
@@ -559,7 +542,7 @@ System.out.println(ids.size());           // 1
 Разделить результат add множества и результат put карты.
 :::
 
-### Коллизия {#sec-j25-lecture-equality-collections-collision}
+### Коллизия {#sec-lecture-equality-collections-collision}
 
 У строк `Aa` и `BB` одинаковый хеш 2112. Карта сохраняет оба ключа:
 
@@ -631,7 +614,7 @@ System.out.println(collisions.get(bb));          // 20
 Попросить назвать проверку, от которой зависит создание нового узла.
 :::
 
-### Изменение сведений участника {#sec-j25-lecture-equality-collections-value-version}
+### Изменение сведений участника {#sec-lecture-equality-collections-value-version}
 
 Запись `grade.Student` хранит код `id`, имя `name` и целый `score` от 0 до 100.
 Методы `id()`, `name()` и `score()` читают эти компоненты.
@@ -645,14 +628,14 @@ System.out.println(before.id().equals(after.id())); // true
 
 Новая оценка представлена новым объектом. Стандартное равенство записи
 учитывает все компоненты, а код каталога сохранился.
-@theory:sec-j25-theory-data-classes-student.
+@theory:sec-theory-data-classes-student.
 
 ::: {.notes}
 Попросить указать, какие компоненты изменились. Затем предложить сравнить
 множество версий сведений и множество кодов участников.
 :::
 
-### Изменяемый ключ {#sec-j25-lecture-equality-collections-mutable-definition}
+### Изменяемый ключ {#sec-lecture-equality-collections-mutable-definition}
 
 В диагностическом типе доступна запись в данные равенства:
 
@@ -675,7 +658,7 @@ final class MutableKey {
 Отличить согласованность пары методов сейчас от устойчивости при хранении.
 :::
 
-### Размещение ключа {#sec-j25-lecture-equality-collections-step-08}
+### Размещение ключа {#sec-lecture-equality-collections-step-08}
 
 ```java
 final var key = new MutableKey(1);
@@ -699,7 +682,7 @@ flowchart LR
 Попросить указать, какая часть схемы изменится после key.code = 2.
 :::
 
-### Повреждённый поиск {#sec-j25-lecture-equality-collections-mutable-observation .continuation}
+### Повреждённый поиск {#sec-lecture-equality-collections-mutable-observation .continuation}
 
 ```java
 key.code = 2;
@@ -724,7 +707,7 @@ flowchart LR
 из него поиск заново вычисляет хеш. Затем спросить, обнаружит ли узел обход.
 :::
 
-### Обход сохранённых пар {#sec-j25-lecture-equality-collections-entry-before-mutation}
+### Обход сохранённых пар {#sec-lecture-equality-collections-entry-before-mutation}
 
 ```java
 var entry = broken.entrySet().iterator().next();
@@ -743,7 +726,7 @@ System.out.println(entry.getValue());     // stored
 наблюдений: get вернул null, size равен 1, итератор выдал stored.
 :::
 
-### Устойчивые данные ключа {#sec-j25-lecture-equality-collections-step-09}
+### Устойчивые данные ключа {#sec-lecture-equality-collections-step-09}
 
 `final` у переменной `key` сохраняет ссылку; её объект оставался изменяемым.
 У `StudentId` сохраняются и ссылка, и неизменяемая строка кода:
@@ -813,15 +796,9 @@ ASCII-символов. Правила сопоставления регистр
 который определяет обе операции именно у созданного множества.
 :::
 
-## Порядок и уникальность {#sec-j25-lecture-equality-collections-group-2}
+## Порядок и уникальность {#sec-lecture-equality-collections-group-2}
 
-- Естественный порядок и внешний компаратор.
-- Сортировка списка и устойчивость.
-- Направление поиска по знаку сравнения.
-- Ноль сравнения и уникальность в `TreeSet`.
-- Ключ каталога и порядок отчёта.
-
-### Естественный порядок {#sec-j25-lecture-equality-collections-step-10}
+### Естественный порядок {#sec-lecture-equality-collections-step-10}
 
 `Comparable<T>` задаёт метод `int compareTo(T other)`:
 
@@ -841,7 +818,7 @@ System.out.println("s10".compareTo("s2") < 0);  // true
 Сопоставить порядок строковых кодов и порядок числовых значений.
 :::
 
-### Внешнее правило порядка {#sec-j25-lecture-equality-collections-step-11}
+### Внешнее правило порядка {#sec-lecture-equality-collections-step-11}
 
 Ведомость требует сначала больший балл, при ничьей — меньший код.
 Этот порядок применяется к полным сведениям участников и позволяет
@@ -871,7 +848,7 @@ final class ReportOrder implements Comparator<Student> {
 Попросить назвать ветвь, определившую каждый результат.
 :::
 
-### Сортировка списка {#sec-j25-lecture-equality-collections-step-12 .continuation}
+### Сортировка списка {#sec-lecture-equality-collections-step-12 .continuation}
 
 ```java
 var rows = new ArrayList<>(List.of(
@@ -918,7 +895,7 @@ flowchart TD
 если разные записи получают ноль у выбранного компаратора.
 :::
 
-### Ноль сравнения в TreeSet {#sec-j25-lecture-equality-collections-step-14}
+### Ноль сравнения в TreeSet {#sec-lecture-equality-collections-step-14}
 
 ```java
 Comparator<Student> byScore = new Comparator<>() {
@@ -962,7 +939,7 @@ System.out.println(set.size());  // 1
 Перед следующим экраном дать одинаковые id и score, но разные name.
 :::
 
-### Ключ каталога и порядок отчёта {#sec-j25-lecture-equality-collections-step-15}
+### Ключ каталога и порядок отчёта {#sec-lecture-equality-collections-step-15}
 
 Для `Student("s1", "Ada", 90)` и `Student("s1", "Grace", 90)`
 компаратор по баллу и коду тоже даёт ноль, хотя `equals` ложно.
@@ -974,21 +951,16 @@ System.out.println(set.size());  // 1
 ```
 
 Раздельное хранение ключа и сведений позволяет менять оценку участника
-и порядок ведомости независимо. @theory:sec-j25-theory-equality-tree.
+и порядок ведомости независимо. @theory:sec-theory-equality-tree.
 
 ::: {.notes}
 Попросить выбрать структуру для двух требований: одна текущая версия
 на код и все версии сведений. Уточнить, какие данные определяют уникальность.
 :::
 
-## Список и стоимость операций {#sec-j25-lecture-equality-collections-group-3}
+## Список и стоимость операций {#sec-lecture-equality-collections-group-3}
 
-- Массив ссылок и связанные узлы.
-- Поиск позиции, сдвиг и рост хранилища.
-- Амортизированная стоимость добавления.
-- Изменение при обходе в Java, C++ и C#.
-
-### Массив ссылок {#sec-j25-lecture-equality-collections-step-16}
+### Массив ссылок {#sec-lecture-equality-collections-step-16}
 
 ::: {.collection-state-context}
 У списка `array` вместимость 3, заняты две позиции:
@@ -1069,7 +1041,7 @@ System.out.println(tight); // [s1, s2, s3]
 Попросить назвать объект, который клиент продолжает видеть через tight.
 :::
 
-### Стоимость ArrayList {#sec-j25-lecture-equality-collections-step-22}
+### Стоимость ArrayList {#sec-lecture-equality-collections-step-22}
 
 В списке $n$ элементов, позиция вставки имеет индекс $i$.
 
@@ -1089,7 +1061,7 @@ System.out.println(tight); // [s1, s2, s3]
 вместимости от появления элементов: после new ArrayList<>(100) размер 0.
 :::
 
-### Связанные узлы {#sec-j25-lecture-equality-collections-step-23}
+### Связанные узлы {#sec-lecture-equality-collections-step-23}
 
 ::: {.collection-state-context}
 В `LinkedList` та же последовательность `[s1, s3]` хранится в двух узлах:
@@ -1146,7 +1118,7 @@ $O(n^2)$ переходов. Один итератор проходит узлы
 Для шести элементов сравнить число переходов индексного обхода и одного итератора.
 :::
 
-### Необязательные операции {#sec-j25-lecture-equality-collections-step-21}
+### Необязательные операции {#sec-lecture-equality-collections-step-21}
 
 ```java
 List<String> names = List.of("Ada");
@@ -1166,7 +1138,7 @@ names.add("Lin"); // UnsupportedOperationException
 это с доступом через const std::vector в C++.
 :::
 
-### Удаление при обходе {#sec-j25-lecture-equality-collections-step-24}
+### Удаление при обходе {#sec-lecture-equality-collections-step-24}
 
 ```java
 var names = new ArrayList<>(List.of("Ada", "", "Lin", ""));
@@ -1206,7 +1178,7 @@ System.out.println(names); // [Ada, Lin]
 проверка конца. Проследить, почему Lin не пропущен после первого удаления.
 :::
 
-### Условия обхода {#sec-j25-lecture-equality-collections-step-25}
+### Условия обхода {#sec-lecture-equality-collections-step-25}
 
 | Действие итератора | Условие |
 |---|---|
@@ -1293,13 +1265,9 @@ it.MoveNext(); // InvalidOperationException
 Разобрать push_back сначала с достаточным резервом, затем с ростом.
 :::
 
-## Представления и доступ к данным {#sec-j25-lecture-equality-collections-group-4}
+## Представления и доступ к данным {#sec-lecture-equality-collections-group-4}
 
-- Связь ключей и значений с исходной картой.
-- Изменения через представление.
-- Обратный порядок и операции на концах.
-
-### Представления карты {#sec-j25-lecture-equality-collections-step-34}
+### Представления карты {#sec-lecture-equality-collections-step-34}
 
 Новая карта и сохранённое представление её ключей:
 
@@ -1370,13 +1338,9 @@ reversed:   последний основы становится первым п
 из обоих обходов? Сопоставить действие с удалением первого элемента основы.
 :::
 
-## Состав списка и общие элементы {#sec-j25-lecture-equality-collections-group-5}
+## Состав списка и общие элементы {#sec-lecture-equality-collections-group-5}
 
-- Представление, копия и снимок списка.
-- Общие элементы и независимость входного состава.
-- Сохранение сведений на выбранный момент.
-
-### Представление и копии списка {#sec-j25-lecture-equality-collections-step-37}
+### Представление и копии списка {#sec-lecture-equality-collections-step-37}
 
 `Book("Java")` создаёт доступную книгу. `borrow()` отмечает выдачу;
 `borrowed()` читает этот признак.
@@ -1426,7 +1390,7 @@ snapshot ───────>    [Java]
 изменение попало в view и почему оно не попало в snapshot.
 :::
 
-### Общая книга {#sec-j25-lecture-equality-collections-step-38 .continuation}
+### Общая книга {#sec-lecture-equality-collections-step-38 .continuation}
 
 ```java
 book.borrow();
@@ -1450,14 +1414,14 @@ flowchart LR
 Все первые позиции содержат ссылку на одну книгу. Её выдача меняет
 состояние общего объекта; состав снимка сохраняется. `List.copyOf`
 может использовать подходящий список повторно и не копирует сами книги.
-@theory:sec-j25-theory-collections-snapshots.
+@theory:sec-theory-collections-snapshots.
 
 ::: {.notes}
 Сопоставить со вторым прогнозом. Проследить на схеме все пути к книге
 и указать объект, в котором записано borrowed = true.
 :::
 
-### Независимость входного состава {#sec-j25-lecture-equality-collections-snapshot-owner}
+### Независимость входного состава {#sec-lecture-equality-collections-snapshot-owner}
 
 ```java
 var clientList = new ArrayList<>(List.of(book));
@@ -1479,12 +1443,7 @@ System.out.println(owned.size());      // 1
 
 ## Каталог и сохранённая ведомость {#sec-lecture-collections-catalog}
 
-- Редкий поиск в списке и частые запросы по коду.
-- Порядок регистрации и отказ при повторе входного кода.
-- Отдельная сортировка ведомости.
-- Текущие сведения и сохранённая версия отчёта.
-
-### Развитие каталога {#sec-j25-lecture-equality-collections-step-44}
+### Развитие каталога {#sec-lecture-equality-collections-step-44}
 
 Для редкого поиска небольшой список можно просмотреть последовательно:
 
@@ -1534,7 +1493,7 @@ System.out.println(current.get(new StudentId("s1")).score()); // 90
 которое останавливает загрузку, и объяснить, почему первый s1 не заменён.
 :::
 
-### Повтор кода каталога {#sec-j25-lecture-equality-collections-step-32}
+### Повтор кода каталога {#sec-lecture-equality-collections-step-32}
 
 ```text
 s1;Ada;90
@@ -1547,14 +1506,14 @@ s1;Ada;95
 
 Вход каталога с требованием уникальных кодов должен отклонить вторую строку.
 При обновлении каталога та же строка может задавать новую версию.
-@theory:sec-j25-theory-equality-domain.
+@theory:sec-theory-equality-domain.
 
 ::: {.notes}
 Попросить назвать, какое отношение использует каждая структура.
 Отличить проверку уникальности входа от уже выполненной замены put.
 :::
 
-### Порядок входа и отчёта {#sec-j25-lecture-equality-collections-step-40}
+### Порядок входа и отчёта {#sec-lecture-equality-collections-step-40}
 
 ```text
 порядок регистрации:       s3:90, s2:70, s1:90
@@ -1619,7 +1578,7 @@ flowchart LR
 Попросить назвать основание устойчивости сведений, помимо самого слова record.
 :::
 
-### Сохранение состояния отчёта {#sec-j25-lecture-equality-collections-exit}
+### Сохранение состояния отчёта {#sec-lecture-equality-collections-exit}
 
 Текущий каталог содержит четыре записи, сохранённая ведомость — три.
 Баллы `s1` равны 95 в каталоге и 90 в ведомости.
@@ -1635,7 +1594,7 @@ flowchart LR
 карты, заменённое ссылкой на новый Student.
 :::
 
-## Дополнительные опыты {#sec-j25-lecture-equality-collections-additional}
+## Дополнительные опыты {#sec-lecture-equality-collections-additional}
 
 ### Возможности итераторов C++ {#sec-lecture-collections-cpp-categories}
 
@@ -1714,7 +1673,7 @@ rest.forEachRemaining(System.out::println);
 :::
 
 
-### Копирование ссылки {#sec-j25-lecture-equality-collections-step-02}
+### Копирование ссылки {#sec-lecture-equality-collections-step-02}
 
 ```java
 String a = new String("Ada");
@@ -1739,7 +1698,7 @@ b, alias ──> B: строка "Ada"
 связанный объект, здесь переменная получает другую ссылку.
 :::
 
-### Унаследованное равенство {#sec-j25-lecture-equality-collections-step-03}
+### Унаследованное равенство {#sec-lecture-equality-collections-step-03}
 
 ```java
 class Token { int code = 17; }
@@ -1759,7 +1718,7 @@ System.out.println(first.equals(second)); // false
 состояния; идентификатор представляет значение кода.
 :::
 
-### Соглашение equals {#sec-j25-lecture-equality-collections-step-04}
+### Соглашение equals {#sec-lecture-equality-collections-step-04}
 
 Для ссылок `x`, `y`, `z`, отличных от `null`:
 
@@ -1778,7 +1737,7 @@ System.out.println(first.equals(second)); // false
 Выбрать сначала 80, затем 81 представителем и сопоставить результаты сравнения с баллом 82.
 :::
 
-### Состояние ключа {#sec-j25-lecture-equality-collections-step-05}
+### Состояние ключа {#sec-lecture-equality-collections-step-05}
 
 Начало объявления `StudentId`:
 
@@ -1800,7 +1759,7 @@ final class StudentId {
 одного final у поля изменяемого объекта было бы недостаточно.
 :::
 
-### Равенство кодов {#sec-j25-lecture-equality-collections-step-05-part-1 .continuation}
+### Равенство кодов {#sec-lecture-equality-collections-step-05-part-1 .continuation}
 
 Продолжение того же объявления:
 
@@ -1822,7 +1781,7 @@ final class StudentId {
 StudentId("s17"). Попросить назвать последнюю выполненную проверку каждого пути.
 :::
 
-### Хеш ключа {#sec-j25-lecture-equality-collections-key-hash .continuation}
+### Хеш ключа {#sec-lecture-equality-collections-key-hash .continuation}
 
 Завершение `StudentId`:
 
@@ -1846,7 +1805,7 @@ StudentId("s17"). Попросить назвать последнюю выпо�
 поля могло бы развести равные ключи по разным областям поиска.
 :::
 
-### Запись и поиск по ключу {#sec-j25-lecture-equality-collections-map-before-mutation}
+### Запись и поиск по ключу {#sec-lecture-equality-collections-map-before-mutation}
 
 Карта `broken` типа `HashMap<MutableKey, String>` хранит пары
 «ключ → строковое значение».
@@ -1865,7 +1824,7 @@ StudentId("s17"). Попросить назвать последнюю выпо�
 Попросить показать ключ и значение в сохранённой паре. Сопоставить два вопроса: нашёл ли get значение по данному ключу и сколько пар считает size.
 :::
 
-### Переполнение при сравнении {#sec-j25-lecture-equality-collections-step-13}
+### Переполнение при сравнении {#sec-lecture-equality-collections-step-13}
 
 ```java
 int a = Integer.MIN_VALUE;
@@ -2035,7 +1994,7 @@ sealed class AsciiCodeComparer : IEqualityComparer<string> {
 Сравнить одинаковую нормализацию в Equals и GetHashCode.
 :::
 
-### Запись как тип значения {#sec-j25-lecture-equality-collections-step-07}
+### Запись как тип значения {#sec-lecture-equality-collections-step-07}
 
 ```java
 record CodeId(String value) {}
@@ -2076,7 +2035,7 @@ System.out.println(map.get(new MutableKey(2))); // stored
 первое действие, для которого теряется корректная предпосылка.
 :::
 
-### Фабрика компаратора {#sec-j25-lecture-equality-collections-comparator-factory}
+### Фабрика компаратора {#sec-lecture-equality-collections-comparator-factory}
 
 ```java
 Comparator<Student> order =
@@ -2087,7 +2046,7 @@ Comparator<Student> order =
 `Student::score` передаёт чтение балла. `comparingInt` строит возрастающий
 порядок, `reversed` обращает его, `thenComparing` сравнивает коды при ничьей.
 Перенос `reversed` в конец цепочки обратил бы и порядок кодов.
-Ссылки на методы: @theory:sec-j25-theory-functions-method-reference.
+Ссылки на методы: @theory:sec-theory-functions-method-reference.
 
 ::: {.notes}
 Сопоставить части фабрики с ветвями ReportOrder. Для двух баллов 90
@@ -2156,7 +2115,7 @@ System.out.println(reverse); // [Max, Ada]
 в исходный список.
 :::
 
-### Приоритетная очередь {#sec-j25-lecture-equality-collections-step-43}
+### Приоритетная очередь {#sec-lecture-equality-collections-step-43}
 
 ```java
 var queue = new PriorityQueue<Integer>();
@@ -2211,7 +2170,7 @@ System.out.println(a.equals(b)); // true
 Установить, какие сведения потеряны в каждом случае.
 :::
 
-### Тип элементов и интерфейс {#sec-j25-lecture-equality-collections-step-17}
+### Тип элементов и интерфейс {#sec-lecture-equality-collections-step-17}
 
 ```java
 List<String> names = new ArrayList<>();
@@ -2230,7 +2189,7 @@ String first = names.get(0);
 которая понадобилась бы клиенту при результате Object.
 :::
 
-### Позиции и повторения {#sec-j25-lecture-equality-collections-step-18}
+### Позиции и повторения {#sec-lecture-equality-collections-step-18}
 
 Список хранит позиции и повторения. Для последовательности имён
 `[Ada, Lin, Ada]` индекс 2 обозначает третье вхождение;
@@ -2254,7 +2213,7 @@ System.out.println(names.get(2)); // Ada
 Получить прогноз последовательности и размера после каждой.
 :::
 
-### Замена и вставка {#sec-j25-lecture-equality-collections-step-19 .continuation}
+### Замена и вставка {#sec-lecture-equality-collections-step-19 .continuation}
 
 Для прежнего `names`:
 
@@ -2272,7 +2231,7 @@ names.add(1, "Lin"); // [Ada, Lin, Max, Ada]
 которые пришлось сдвинуть при вставке в позицию 1.
 :::
 
-### Добавление в множество {#sec-j25-lecture-equality-collections-step-26}
+### Добавление в множество {#sec-lecture-equality-collections-step-26}
 
 ```java
 var names = new LinkedHashSet<String>();
@@ -2291,7 +2250,7 @@ System.out.println(names);            // [Ada, Lin]
 Перед продолжением назвать альтернативу: отсортировать имена для печати.
 :::
 
-### Порядок обхода {#sec-j25-lecture-equality-collections-step-27}
+### Порядок обхода {#sec-lecture-equality-collections-step-27}
 
 | Реализация | Правило совпадения | Обход |
 |---|---|---|
@@ -2308,7 +2267,7 @@ System.out.println(names);            // [Ada, Lin]
 Для TreeSet вернуть условие согласованности нуля сравнения с equals.
 :::
 
-### Стоимость поиска {#sec-j25-lecture-equality-collections-step-28}
+### Стоимость поиска {#sec-lecture-equality-collections-step-28}
 
 Линейный поиск списка проверяет элементы до совпадения или конца: $O(n)$.
 Хеш-таблица отбирает кандидатов по хешу; при хорошем распределении
@@ -2323,7 +2282,7 @@ System.out.println(names);            // [Ada, Lin]
 Предложить постоянный hashCode и объяснить, какую часть ускорения он устраняет.
 :::
 
-### Сохранение повторов {#sec-j25-lecture-equality-collections-data-model}
+### Сохранение повторов {#sec-lecture-equality-collections-data-model}
 
 Для журнала `[Ada, Lin, Ada]` множество `{Ada, Lin}` теряет число обращений.
 Из него нельзя получить частоту `Ada → 2`.
@@ -2341,7 +2300,7 @@ System.out.println(names);            // [Ada, Lin]
 журнал с теми же частотами.
 :::
 
-### Значение по ключу {#sec-j25-lecture-equality-collections-step-29}
+### Значение по ключу {#sec-lecture-equality-collections-step-29}
 
 ```java
 Map<String, Integer> scores = new LinkedHashMap<>();
@@ -2360,7 +2319,7 @@ System.out.println(scores.get("s1")); // 90
 put("s1", 95): какое значение вернётся и сколько ключей останется?
 :::
 
-### Замена значения {#sec-j25-lecture-equality-collections-step-30 .continuation}
+### Замена значения {#sec-lecture-equality-collections-step-30 .continuation}
 
 ```java
 System.out.println(scores.put("s1", 95)); // 90
@@ -2377,7 +2336,7 @@ System.out.println(scores.size());        // 2
 требование обновления и требование отказа при повторе кода во входе.
 :::
 
-### Отсутствие ключа {#sec-j25-lecture-equality-collections-step-31 .continuation}
+### Отсутствие ключа {#sec-lecture-equality-collections-step-31 .continuation}
 
 Та же карта допускает `null`-значения:
 
@@ -2401,7 +2360,7 @@ System.out.println(scores.getOrDefault("missing", 0));  // 0
 с единицей также требуется запас в диапазоне int.
 :::
 
-### Запись соответствия в разных языках {#sec-j25-lecture-equality-collections-step-33}
+### Запись соответствия в разных языках {#sec-lecture-equality-collections-step-33}
 
 ```text
 Java:    byId.put(id, student)
@@ -2413,7 +2372,7 @@ C++:     byId[id] = student
 В Java `put` возвращает прежнее значение; C++ `try_emplace` позволяет
 отдельно проверить, был ли ключ уже представлен.
 Правило отказа при повторе входа задаётся вызывающей программой.
-@theory:sec-j25-theory-collections-catalog.
+@theory:sec-theory-collections-catalog.
 
 ::: {.notes}
 Попросить объяснить, какие дополнительные сведения нужны загрузчику,
@@ -2444,7 +2403,7 @@ for (var entry : scores.entrySet()) {
 или обе части пары. Объяснить, почему тип Collection у values допускает повторяющиеся значения.
 :::
 
-### Накопление частоты {#sec-j25-lecture-equality-collections-step-35}
+### Накопление частоты {#sec-lecture-equality-collections-step-35}
 
 ```java
 Map<StudentId, Integer> counts = new HashMap<>();
@@ -2468,7 +2427,7 @@ for (String code : List.of("s1", "s2", "s1")) {
 Предложить поиск новым StudentId("s1") после цикла и объяснить результат 2.
 :::
 
-### Запрет изменения состава {#sec-j25-lecture-equality-collections-step-36}
+### Запрет изменения состава {#sec-lecture-equality-collections-step-36}
 
 ```java
 var names = List.of("Ada", "Ada");
@@ -2486,7 +2445,7 @@ names.set(0, "Lin"); // UnsupportedOperationException
 Сопоставить запрет изменения списка с возможностью изменения его элемента.
 :::
 
-### Состояние индекса каталога {#sec-j25-lecture-equality-collections-step-39}
+### Состояние индекса каталога {#sec-lecture-equality-collections-step-39}
 
 ```text
 входной список: [s1:Ada:90, s2:Lin:70]
@@ -2505,7 +2464,7 @@ names.set(0, "Lin"); // UnsupportedOperationException
 между старым снимком отчёта и случайно устаревшим индексом текущих данных.
 :::
 
-### Очередь FIFO {#sec-j25-lecture-equality-collections-step-41}
+### Очередь FIFO {#sec-lecture-equality-collections-step-41}
 
 ```java
 Deque<String> queue = new ArrayDeque<>();
@@ -2524,7 +2483,7 @@ System.out.println(queue.pollFirst()); // Ada
 получить прогноз двух вызовов pollFirst и одного removeFirst.
 :::
 
-### Пустая очередь {#sec-j25-lecture-equality-collections-step-42 .continuation}
+### Пустая очередь {#sec-lecture-equality-collections-step-42 .continuation}
 
 ```java
 System.out.println(queue.pollFirst()); // Lin

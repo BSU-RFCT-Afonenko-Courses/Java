@@ -1,0 +1,73 @@
+{
+  "chat_id": "01a1a895-b4d3-7352-b84d-8eef55d9f0e0",
+  "model": "gpt-6.1-sol/high",
+  "admission": "/tmp/java-release-discussion-20261105/coordination/download-admission.json",
+  "original_turn_id": "01a1a895-b52a-7a91-91e7-b36c4ac8754f",
+  "full_original_interval_pass": true,
+  "checkout": "/tmp/java-release-work-20261105/download",
+  "branch": "codex/download-files-20261105",
+  "base": "106b958bbf443cd7e220d250117466b434e279de",
+  "head": "de1f3aa859a3d949223b7230a6377a4fc0c3572d",
+  "core": "d21ddfdc9e4fde58145275751dccfc1c997777df",
+  "pl": "fcd3320eb6dcbe0fde897ecafafcb9c0b31fb9fc",
+  "address": "_generated/project-download/requests/<owner-relative-source>/request.json",
+  "scope": "Только Download producer, ownership reader/cleanup и затронутые fixtures/docs. Java installed copies не менялись.",
+  "behavior": [
+    "SHA-1 producer и reader regex/hash comparison удалены.",
+    "Reader обходит только ожидаемые ветви source paths; JSON source равен source пути, без freshness/proof.",
+    "Сохраняются закрытые поля, resource/artifact guards, foreign/source/path/symlink/special checks и нерекурсивная очистка.",
+    "Устаревший tests/native.ts с private API удалён; действующие замены сохранены в legacy-harness-mapping."
+  ],
+  "checks": [
+    {
+      "name": "request-paths RED",
+      "result": "Ожидаемый DOWNLOAD.REQUEST_INVALID прежнего reader на новом адресе",
+      "wall_seconds": 1.09,
+      "log": "/tmp/java-release-discussion-20261105/download-request-paths-red.log"
+    },
+    {
+      "name": "request-paths GREEN",
+      "result": "PASS nested/long Unicode, functional changed JSON, foreign/old flat filename/duplicate source/path/symlink/special/cleanup",
+      "wall_seconds": 1.42,
+      "log": "/tmp/java-release-discussion-20261105/download-request-final.log"
+    },
+    {
+      "name": "Actual Quarto producer→reader",
+      "result": "PASS две заявки, длинный вложенный Unicode source; без ZIP/Core",
+      "wall_seconds": 5.16,
+      "log": "/tmp/java-release-discussion-20261105/download-request-native.log"
+    },
+    {
+      "name": "Contract/runtime/request-paths compiler",
+      "result": "PASS exact Core d21 + PL fcd3320",
+      "wall_seconds": 9.85,
+      "log": "/tmp/java-release-discussion-20261105/download-request-types.log"
+    },
+    {
+      "name": "Expanded compiler first attempt",
+      "result": "FAIL 6 прежних errors в historical private API tests/native.ts; obsolete fixture удалён без casts/compatibility",
+      "wall_seconds": 14.05,
+      "log": "/tmp/java-release-discussion-20261105/download-request-affected-types.log"
+    },
+    {
+      "name": "Affected fixtures/runtime compiler final",
+      "result": "PASS request-paths/native-carriers/resource-membership-native/public-runtime/ownership/model-receipts/runtime-types",
+      "wall_seconds": 2.98,
+      "log": "/tmp/java-release-discussion-20261105/download-request-affected-types-final.log"
+    },
+    {
+      "name": "Private NativeRun refusal",
+      "result": "PASS новый fixture path, отказ до private resolver/ZIP",
+      "wall_seconds": 5.13,
+      "log": "/tmp/java-release-discussion-20261105/download-request-private.log"
+    }
+  ],
+  "report": "/tmp/java-release-work-20261105/download/docs/releases/2026-11-05-functional-files.md",
+  "ready_for_review": true,
+  "remaining": [
+    "Независимая техническая рецензия exact commit другим исполнителем",
+    "Интегратор обновляет Java installed copies и Source PR"
+  ],
+  "not_run": "Не повторялись длинные неизменившиеся ZIP suites; UI/production/publication не выполнялись.",
+  "updated": "2026-11-04T23:36:44.883466+00:00"
+}

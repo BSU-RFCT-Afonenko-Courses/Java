@@ -1,0 +1,137 @@
+diff --git a/_extensions/course-prairielearn/application/export.ts b/_extensions/course-prairielearn/application/export.ts
+--- a/_extensions/course-prairielearn/application/export.ts
++++ b/_extensions/course-prairielearn/application/export.ts
+@@ -1,3 +1,4 @@
++import type { BodyResource, PublicBodyPackage } from "course-core/body-export/model.ts";
+ import type { NativeAuxiliary } from "./native-auxiliary.ts";
+ import { renderNativeAnswer } from "./native-answer.ts";
+ import { workspaceSeed } from "./workspace-seed.ts";
+@@ -210,7 +211,7 @@
+   return collected.sort((a, b) => a.name.localeCompare(b.name));
+ }
+ export async function renderPublicBody(
+-  p: any,
++  p: Pick<PublicBodyPackage, "owner" | "apiVersion" | "resources">,
+   nodes: any[],
+   key: string,
+   questionContext: DiagnosticContext,
+@@ -230,8 +231,8 @@
+     markerIndex++;
+   }
+   const resourceMarker = "PL_CLIENT_FILE_URL_TOKEN_" + markerIndex;
+-  const resources = new Map<string, any>();
+-  const declaredResources = new Map<string, any>();
++  const resources = new Map<string, BodyResource>();
++  const declaredResources = new Map<string, BodyResource>();
+   for (const resource of p.resources) {
+     const previous = declaredResources.get(resource.target);
+     if (previous && canonical(previous) !== canonical(resource)) {
+diff --git a/tests/body-projection.test.ts b/tests/body-projection.test.ts
+--- a/tests/body-projection.test.ts
++++ b/tests/body-projection.test.ts
+@@ -64,10 +64,7 @@
+   const { renderPublicBody } = await import(
+     "../_extensions/course-prairielearn/application/export.ts"
+   );
+-  const { hash } = await import(
+-    "../_extensions/course-prairielearn/application/source-selection.ts"
+-  );
+-  const p = {
++  const p: Parameters<typeof renderPublicBody>[0] = {
+     owner: "fixture",
+     apiVersion: [1, 23, 1],
+     resources: [{
+@@ -77,7 +74,6 @@
+       target: "diagram.svg",
+       visibility: "public",
+       data: btoa("<svg/>"),
+-      sha256: await hash("<svg/>"),
+     }],
+   };
+   const ast = [{
+diff --git a/tests/native-a1-builder-integration.ts b/tests/native-a1-builder-integration.ts
+--- a/tests/native-a1-builder-integration.ts
++++ b/tests/native-a1-builder-integration.ts
+@@ -325,12 +325,11 @@
+         const observed = await operation.resourceInventory({
+           files: [{ source: imageSource, target: imageSource }],
+         });
+-        const publicResources = observed.files.map((file) => ({
++        const publicResources: Parameters<typeof renderPublicBody>[0]["resources"] = observed.files.map((file) => ({
+           owner: "native",
+           source: "bank.qmd",
+           effectiveBase: root,
+           target: file.target,
+-          sha256: file.sha256,
+           data: btoa(
+             Array.from(file.bytes, (byte) => String.fromCharCode(byte)).join(
+               "",
+diff --git a/tests/native-origin-scope.test.ts b/tests/native-origin-scope.test.ts
+--- a/tests/native-origin-scope.test.ts
++++ b/tests/native-origin-scope.test.ts
+@@ -161,7 +161,7 @@
+       }]],
+     }]],
+   }];
+-  const body = { apiVersion: [1, 23, 1], resources: [] },
++  const body = { owner: "native", apiVersion: [1, 23, 1], resources: [] },
+     context = { source: "bank.qmd", id: "exr-p", field: "condition" };
+   const actual = await renderPublicBody(
+     body,
+diff --git a/tests/native-auxiliary.test.ts b/tests/native-auxiliary.test.ts
+--- a/tests/native-auxiliary.test.ts
++++ b/tests/native-auxiliary.test.ts
+@@ -6,7 +6,7 @@
+   await reject(
+     () =>
+       renderPublicBody(
+-        { apiVersion: [1, 23, 1], resources: [] },
++        { owner: "fixture", apiVersion: [1, 23, 1], resources: [] },
+         [{ t: "Para", c: [{ t: "Str", c: "Тест" }] }],
+         "fixture",
+         {},
+@@ -50,7 +50,7 @@
+ import { captureNativeAuxiliary } from "../_extensions/course-prairielearn/application/native-auxiliary.ts";
+ const body = (auxiliary?: any) =>
+   renderPublicBody(
+-    { apiVersion: [1, 23, 1], resources: [] },
++    { owner: "fixture", apiVersion: [1, 23, 1], resources: [] },
+     [{ t: "Para", c: [{ t: "Str", c: "PUBLIC_C5" }] }],
+     "fixture",
+     {},
+diff --git a/tests/performance-permissions.ts b/tests/performance-permissions.ts
+--- a/tests/performance-permissions.ts
++++ b/tests/performance-permissions.ts
+@@ -54,7 +54,7 @@
+         boundary === "render-public-body"
+           ? `import {renderPublicBody} from ${
+             JSON.stringify(pathToFileURL(entrypoint).href)
+-          }; await renderPublicBody({resources:[],apiVersion:[1,23,1]},[{t:'Para',c:[{t:'Str',c:'PUBLIC'}]}],'demo/exr-test',{},'resources','client');`
++          }; await renderPublicBody({owner:"demo",resources:[],apiVersion:[1,23,1]},[{t:'Para',c:[{t:'Str',c:'PUBLIC'}]}],'demo/exr-test',{},'resources','client');`
+           : `await import(${JSON.stringify(pathToFileURL(entrypoint).href)});`,
+       );
+       const args = [root];
+diff --git a/tests/performance-context.ts b/tests/performance-context.ts
+--- a/tests/performance-context.ts
++++ b/tests/performance-context.ts
+@@ -86,7 +86,7 @@
+ const agent=installTsAgent({experimentId:'pl',runId:'test',processId:'actual-entrypoint',outputDirectory:${
+       JSON.stringify(root)
+     },mode:'summary'});
+-const run=async()=>{const mod=await import(Deno.env.get('PL_ENTRYPOINT')!);if(Deno.env.get('PL_BOUNDARY')==='render-public-body')await mod.renderPublicBody({resources:[],apiVersion:[1,23,1]},[{t:'Para',c:[{t:'Str',c:'PUBLIC'}]}],'demo/exr-test',{},'resources','client')};
++const run=async()=>{const mod=await import(Deno.env.get('PL_ENTRYPOINT')!);if(Deno.env.get('PL_BOUNDARY')==='render-public-body')await mod.renderPublicBody({owner:"demo",resources:[],apiVersion:[1,23,1]},[{t:'Para',c:[{t:'Str',c:'PUBLIC'}]}],'demo/exr-test',{},'resources','client')};
+ try{if(Deno.env.get('PL_LINKED')==='yes')await agent.metrics.wrapAsync({id:'test.actual-caller',kind:'phase'},run)();else await run()}
+ finally{agent.flush()}
+ `,
+diff --git a/tests/performance-native-auxiliary.ts b/tests/performance-native-auxiliary.ts
+--- a/tests/performance-native-auxiliary.ts
++++ b/tests/performance-native-auxiliary.ts
+@@ -18,7 +18,7 @@
+   let guards=0, stale=false;
+   const auxiliary=captureNativeAuxiliary(async()=>{guards++;if(stale)throw Error('LIVE_SOURCE_CHANGED')});
+   const {renderPublicBody}=await import('../_extensions/course-prairielearn/application/export.ts');
+-  const body=()=>renderPublicBody({apiVersion:[1,23,1],resources:[]},[{t:'Para',c:[{t:'Str',c:'PUBLIC'}]}],'fixture',{},'resources','client',{auxiliary});
++  const body=()=>renderPublicBody({owner:"fixture",apiVersion:[1,23,1],resources:[]},[{t:'Para',c:[{t:'Str',c:'PUBLIC'}]}],'fixture',{},'resources','client',{auxiliary});
+   const result=await body();
+   assert.match(result.html,/PUBLIC/);assert.equal(guards,2);assert.equal(overlays,0);
+   assert.equal(await Deno.readTextFile(join(root,'child-mode')),'summary');

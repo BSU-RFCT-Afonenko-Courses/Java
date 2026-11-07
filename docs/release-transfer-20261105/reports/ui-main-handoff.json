@@ -1,0 +1,117 @@
+{
+  "owner_thread": "01a1a860-2a4f-7213-b71c-b97b45610893",
+  "next_role": "independent local UI verification on gpt-6.1-sol/high",
+  "diagnostic_only": false,
+  "browser": "iab",
+  "browser_id": "2",
+  "tab_id": "1",
+  "url": "http://127.0.0.1:3305/pl/course/1/question/3/preview/?variant_id=4",
+  "observed": "Local preview Circle loaded, Circle.java and TwoDShape.java editors and Save only/Save & Grade visible",
+  "pending": "Остаток переноса сгенерированных пояснений в ближайшей C сборке; Circle отдельно после source review/image GO; actual B/D Native course отдельно; полный курс не принят.",
+  "not_claimed": "Не заявлены общий UI всего курса, Circle, полный student route или production.",
+  "admission": "/tmp/java-release-discussion-20261105/coordination/ui-main-admission.json",
+  "role_model": "gpt-6.1-sol/high",
+  "form_only_checks": {
+    "ordinary_viewport": "1280x720 observed",
+    "narrow_viewport": "640x900 tested; reset after test",
+    "editor_names": [
+      "Circle.java",
+      "TwoDShape.java"
+    ],
+    "starter_content_visible": true,
+    "narrow_submit_controls_visible_after_scroll": true,
+    "result": "PASS for prepared native preview form layout only"
+  },
+  "screenshots": [
+    "/tmp/java-release-discussion-20261105/coordination/ui-main/circle-editors-normal.jpg",
+    "/tmp/java-release-discussion-20261105/coordination/ui-main/circle-editors-narrow.jpg",
+    "/tmp/java-release-discussion-20261105/coordination/ui-main/circle-editors-narrow-controls.jpg"
+  ],
+  "native_submission_attempt": {
+    "case": "compile",
+    "variant_id": 3,
+    "submission_id": 1,
+    "status": "invalid, not gradable",
+    "observed_error": "No such image: feedback-ui-fixtures:20261105",
+    "feedback_acceptance": "BLOCKED — проверка обратной связи не выполнена",
+    "evidence": "/tmp/java-release-discussion-20261105/coordination/ui-main/compile-image-mismatch.jpg"
+  },
+  "native_sync": {
+    "job_sequence": 2,
+    "result": "Success",
+    "scope": "изолированный локальный курс /course"
+  },
+  "ui_cases": {
+    "compile": {
+      "variant": 3,
+      "submission": 2,
+      "observed": "0%; Main.java:1, публичный сценарий не запускался",
+      "findings": [
+        "Native missing points/max_points warning",
+        "Длинное пояснение в pre требует горизонтальной прокрутки"
+      ],
+      "acceptance": "частично, требуется исправление C"
+    },
+    "runtime": {
+      "variant": 4,
+      "submission": 3,
+      "observed": "0/1; ошибка выполнения, публичные вход/действие/ожидаемый ответ сохранены; закрытый canary в feedback отсутствует",
+      "acceptance": "функционально подтверждено на ca8092; читаемость общего пояснения требует исправления C"
+    },
+    "string": {
+      "variant": 5,
+      "submission": 4,
+      "observed": "0/1; expected/actual с LF, различие194/строка2/столбец181 и локальные фрагменты",
+      "findings": [
+        "Противоречивая строка Получено: не получено при присутствующем actual",
+        "Длинное общее пояснение в pre"
+      ],
+      "acceptance": "частично, требуется исправление C"
+    },
+    "toolerror": {
+      "variant": 6,
+      "submission": 5,
+      "observed": "invalid, not gradable; оценки нет; закрытый canary в feedback отсутствует",
+      "findings": [
+        "Native UI теряет русский контекст и показывает только Grading failed / Unknown error; please contact course staff"
+      ],
+      "acceptance": "частично, требуется исправление C"
+    }
+  },
+  "image_observed": "sha256:ca8092ea9178a3d0bc8e3c9f7ee46bd205e59a5ad1603cd4f5d7b1b106e8b987",
+  "new_ui_candidate": {
+    "source": "b79291184a1c52bd1b2e59247b01d19171b16d0c",
+    "tag": "codex/java-feedback-ui:20261105",
+    "image": "sha256:8e9cd1119bd189e7d6723e03fd017b795e6e6e979f6012a181e0ebec57331fc5",
+    "native_sync": 3,
+    "sync_result": "Success",
+    "image_inspect": "фактический локальный image ID совпал с handoff"
+  },
+  "ui_recheck": {
+    "compile": {
+      "variant": 3,
+      "submission": 7,
+      "result": "0%; русский compile diagnostic Main.java:1; public not-run сохранён; missing-points warning отсутствует; фиктивных scored leaves нет; reopen PASS"
+    },
+    "runtime": {
+      "variant": 4,
+      "submission": 9,
+      "result": "0/1; публичные вход/действие/ожидаемый результат и честная ошибка выполнения сохранены; приватный canary в feedback отсутствует; reopen PASS"
+    },
+    "string": {
+      "variant": 5,
+      "submission": 8,
+      "result": "0/1; ложное Получено: не получено отсутствует; три строки expected/actual сохранены; diff194/строка2/столбец181 и локальные фрагменты видимы; reopen PASS"
+    },
+    "toolerror": {
+      "variant": 6,
+      "submission": 6,
+      "result": "Invalid, not gradable; оценки нет; русский infrastructure/public unknown контекст реально виден; приватный canary в feedback отсутствует; reopen PASS"
+    }
+  },
+  "readability": {
+    "ordinary": "публичный контекст и сравнение читаемы, реальные LF сохранены; длинные исходные значения используют штатную прокрутку Native pre",
+    "narrow": "640×900 проверено; главные пояснения разбиты на строки; некоторые сгенерированные русские строки всё ещё требуют небольшой горизонтальной прокрутки; остаток передан C",
+    "viewport": "после проверки сброшен"
+  }
+}
