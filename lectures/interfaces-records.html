@@ -6,16 +6,16 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-35fc0813589bbfbfa0b8ec974497eeb2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
 <link href="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.11.6">
+  <meta name="generator" content="quarto-1.11.5">
 
   <title>Лекции Java – Наследование, интерфейсы и записи</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
   <style>
@@ -123,7 +123,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-836333b27002cb1bbca9e7698ee01091.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-3ce18430e1250f8c2f6f98be2c9c7b18.css">
   <link rel="stylesheet" href="assets/lesson.css">
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -231,16 +231,16 @@
 </div>
 
 </section>
-<section id="sec-j25-lecture-interfaces-records" class="title-slide slide level1 center">
+<section id="sec-lecture-interfaces-records" class="title-slide slide level1 center">
 <h1>Наследование, интерфейсы и записи</h1>
 
 </section>
 
 <section>
-<section id="sec-j25-lecture-interfaces-records-subtype" class="title-slide slide level1 center">
+<section id="sec-lecture-interfaces-records-subtype" class="title-slide slide level1 center">
 <h1>Наследование и отношение подтипов</h1>
 <p><strong>Наследование классов</strong> позволяет подклассу получить доступные наследуемые члены суперкласса, добавить состояние и переопределить методы экземпляра. <code>class TextDocument extends Document</code> задаёт эту связь.</p>
-<p>Одновременно <code>TextDocument</code> становится <strong>подтипом</strong> <code>Document</code>: ссылку на текстовый документ можно передать параметру типа <code>Document</code>. У обычного класса один непосредственный суперкласс; при отсутствии <code>extends</code> им служит <code>Object</code>. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-inheritance" data-qrc-style="default" class="qrc-link" href="../theory/chapters/inheritance.html#sec-j25-theory-inheritance"><span>Глава 12</span></a>. <span class="citation" data-cites="bib-objects-schildt-inheritance"><a href="#/источники" role="doc-biblioref" onclick="">[8]</a></span></p>
+<p>Одновременно <code>TextDocument</code> становится <strong>подтипом</strong> <code>Document</code>: ссылку на текстовый документ можно передать параметру типа <code>Document</code>. У обычного класса один непосредственный суперкласс; при отсутствии <code>extends</code> им служит <code>Object</code>. <a data-qrc-ref="theory:sec-theory-inheritance" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/inheritance.html#sec-theory-inheritance"><span>Глава 12</span></a>. <span class="citation" data-cites="bib-objects-schildt-inheritance"><a href="#/источники" role="doc-biblioref" onclick="">[8]</a></span></p>
 <aside class="notes">
 <p>Различите два последствия extends: получение реализации и допустимость ссылки в базовом типе. Попросите назвать, какие обязательства перед клиентом сохранятся у текстового документа, если общая операция возвращает описание.</p>
 <style type="text/css">
@@ -255,7 +255,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-context" class="slide level2">
+<section id="sec-lecture-interfaces-records-context" class="slide level2">
 <h2>Контракт описания документа</h2>
 <p><code>Document</code> хранит заголовок и предоставляет <code>summary()</code> — строку описания. <code>TextDocument</code> добавляет число символов. Клиенту нужна длина описания, поэтому результат, отличный от <code>null</code>, требуется от любого подкласса.</p>
 <aside class="notes">
@@ -273,7 +273,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-base" class="slide level2">
+<section id="sec-lecture-interfaces-records-base" class="slide level2">
 <h2>Базовое состояние и действие</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a aria-label="1"></a><span class="kw">class</span> <span class="bu">Document</span> <span class="op">{</span></span>
 <span id="cb1-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">String</span> title<span class="op">;</span></span>
@@ -297,7 +297,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-child" class="slide level2 continuation">
+<section id="sec-lecture-interfaces-records-child" class="slide level2 continuation">
 <h2>Дополнительное состояние подкласса</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb2-1"><a aria-label="1"></a><span class="kw">class</span> TextDocument <span class="kw">extends</span> <span class="bu">Document</span> <span class="op">{</span></span>
 <span id="cb2-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="dt">int</span> characters<span class="op">;</span></span>
@@ -323,7 +323,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-override" class="slide level2 continuation">
+<section id="sec-lecture-interfaces-records-override" class="slide level2 continuation">
 <h2>Переопределение операции</h2>
 <p>В тело <code>TextDocument</code> входит собственная реализация базовой операции:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb3-1"><a aria-label="1"></a><span class="at">@Override</span></span>
@@ -345,7 +345,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-constructors" class="slide level2">
+<section id="sec-lecture-interfaces-records-constructors" class="slide level2">
 <h2>Конструкторы базового и производного классов</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb4-1"><a aria-label="1"></a><span class="bu">Document</span> plain <span class="op">=</span> <span class="kw">new</span> <span class="bu">Document</span><span class="op">(</span><span class="st">"Guide"</span><span class="op">);</span></span>
 <span id="cb4-2"><a aria-label="2"></a>TextDocument text <span class="op">=</span> <span class="kw">new</span> <span class="fu">TextDocument</span><span class="op">(</span><span class="st">"Notes"</span><span class="op">,</span> <span class="dv">120</span><span class="op">);</span></span>
@@ -367,7 +367,7 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-interfaces-records-dispatch" class="title-slide slide level1 center">
+<section id="sec-lecture-interfaces-records-dispatch" class="title-slide slide level1 center">
 <h1>Статический тип и динамический вызов</h1>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb5-1"><a aria-label="1"></a><span class="bu">Document</span> value <span class="op">=</span> <span class="kw">new</span> <span class="fu">TextDocument</span><span class="op">(</span><span class="st">"Notes"</span><span class="op">,</span> <span class="dv">120</span><span class="op">);</span></span>
 <span id="cb5-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>value<span class="op">.</span><span class="fu">summary</span><span class="op">());</span> <span class="co">// Notes: 120 chars</span></span>
@@ -388,7 +388,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-general-method" class="slide level2 continuation">
+<section id="sec-lecture-interfaces-records-general-method" class="slide level2 continuation">
 <h2>Общий алгоритм обработки документа</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb7-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">void</span> <span class="fu">print</span><span class="op">(</span><span class="bu">Document</span> document<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb7-2"><a aria-label="2"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>document<span class="op">.</span><span class="fu">summary</span><span class="op">());</span></span>
@@ -410,7 +410,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-overload" class="slide level2">
+<section id="sec-lecture-interfaces-records-overload" class="slide level2">
 <h2>Перегрузка и динамический вызов</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb8-1"><a aria-label="1"></a><span class="dt">static</span> <span class="bu">String</span> <span class="fu">kind</span><span class="op">(</span><span class="bu">Document</span> d<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="st">"Document"</span><span class="op">;</span> <span class="op">}</span></span>
 <span id="cb8-2"><a aria-label="2"></a><span class="dt">static</span> <span class="bu">String</span> <span class="fu">kind</span><span class="op">(</span>TextDocument d<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="st">"Text"</span><span class="op">;</span> <span class="op">}</span></span>
@@ -434,7 +434,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-behavior" class="slide level2">
+<section id="sec-lecture-interfaces-records-behavior" class="slide level2">
 <h2>Поведенческий контракт подтипа</h2>
 <p><strong>Контракт операции</strong> определяет допустимый вход, результат, изменение состояния и условия отказа. Для <code>Document.summary()</code> каждый созданный документ возвращает строку, отличную от <code>null</code>; клиент может сразу запросить её длину.</p>
 <p><strong>Поведенческая подстановка</strong> сохраняет эти условия при передаче подкласса. Допустимый базовому клиенту вызов должен оставаться допустимым, а результат и состояние — удовлетворять требованиям базовой операции.</p>
@@ -452,7 +452,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-broken-contract" class="slide level2">
+<section id="sec-lecture-interfaces-records-broken-contract" class="slide level2">
 <h2>Нарушение контракта документа</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb9-1"><a aria-label="1"></a><span class="kw">class</span> SilentDocument <span class="kw">extends</span> <span class="bu">Document</span> <span class="op">{</span></span>
 <span id="cb9-2"><a aria-label="2"></a>    <span class="fu">SilentDocument</span><span class="op">(</span><span class="bu">String</span> title<span class="op">)</span> <span class="op">{</span> <span class="kw">super</span><span class="op">(</span>title<span class="op">);</span> <span class="op">}</span></span>
@@ -460,7 +460,7 @@
 <span id="cb9-4"><a aria-label="4"></a><span class="op">}</span></span>
 <span id="cb9-5"><a aria-label="5"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">summaryLength</span><span class="op">(</span><span class="bu">Document</span> d<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> d<span class="op">.</span><span class="fu">summary</span><span class="op">().</span><span class="fu">length</span><span class="op">();</span> <span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>summaryLength(new TextDocument("Notes", 120))</code> возвращает <code>16</code>. Для <code>new SilentDocument("Notes")</code> вызов <code>length()</code> завершается <code>NullPointerException</code>: переопределение вернуло запрещённое контрактом значение.</p>
-<p>Компилятор принимает обе реализации, поскольку тип <code>String</code> допускает <code>null</code>. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-inheritance-substitution" data-qrc-style="default" class="qrc-link" href="../theory/chapters/inheritance.html#sec-j25-theory-inheritance-substitution">Поведенческая подстановка</a>.</p>
+<p>Компилятор принимает обе реализации, поскольку тип <code>String</code> допускает <code>null</code>. <a data-qrc-ref="theory:sec-theory-inheritance-substitution" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/inheritance.html#sec-theory-inheritance-substitution">Поведенческая подстановка</a>.</p>
 <aside class="notes">
 <p>Укажите точное место отказа: summary завершился нормально, следующее обращение к length выполнено через null. Предложите вернуть “” и сравните наблюдаемую длину с отсутствием результата.</p>
 <style type="text/css">
@@ -476,7 +476,7 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-interfaces-records-changing-requirements" class="title-slide slide level1 center">
+<section id="sec-lecture-interfaces-records-changing-requirements" class="title-slide slide level1 center">
 <h1>Разделение построения и отправки сообщения</h1>
 <p>Полученное описание документа можно включить в напоминание о возврате. <code>ConsoleReminder</code> формирует текст и печатает его:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb10-1"><a aria-label="1"></a><span class="kw">class</span> ConsoleReminder <span class="op">{</span></span>
@@ -502,13 +502,13 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-interface" class="slide level2">
+<section id="sec-lecture-interfaces-records-interface" class="slide level2">
 <h2>Интерфейс отправителя</h2>
 <p><strong>Интерфейс</strong> объявляет ссылочный тип и операции общей роли:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb11-1"><a aria-label="1"></a><span class="kw">public</span> <span class="kw">interface</span> Sender <span class="op">{</span></span>
 <span id="cb11-2"><a aria-label="2"></a>    <span class="dt">void</span> <span class="fu">send</span><span class="op">(</span><span class="bu">String</span> message<span class="op">);</span></span>
 <span id="cb11-3"><a aria-label="3"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>send</code> неявно <code>public abstract</code>. Он обрабатывает одно сообщение, отличное от <code>null</code>, способом, определённым реализацией. Передача <code>null</code> вызывает <code>NullPointerException</code> до обработки. Последовательные вызовы сохраняют порядок обращений. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-interfaces" data-qrc-style="default" class="qrc-link" href="../theory/chapters/interfaces.html#sec-j25-theory-interfaces"><span>Глава 13</span></a>.</p>
+<p><code>send</code> неявно <code>public abstract</code>. Он обрабатывает одно сообщение, отличное от <code>null</code>, способом, определённым реализацией. Передача <code>null</code> вызывает <code>NullPointerException</code> до обработки. Последовательные вызовы сохраняют порядок обращений. <a data-qrc-ref="theory:sec-theory-interfaces" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/interfaces.html#sec-theory-interfaces"><span>Глава 13</span></a>.</p>
 <p><code>abstract</code> обозначает метод без тела, реализацию которого предоставляет конкретный класс. Сам интерфейс нельзя создать вызовом <code>new Sender()</code>.</p>
 <aside class="notes">
 <p>Попросите сопоставить тип String и дополнительное требование к аргументу. void означает отсутствие результата вызова. Попросите назвать наблюдаемый эффект отправки в консоль и в буфер.</p>
@@ -524,7 +524,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-implementation" class="slide level2">
+<section id="sec-lecture-interfaces-records-implementation" class="slide level2">
 <h2>Реализация интерфейсной операции</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb12-1"><a aria-label="1"></a><span class="kw">public</span> <span class="dt">final</span> <span class="kw">class</span> ConsoleSender <span class="kw">implements</span> Sender <span class="op">{</span></span>
 <span id="cb12-2"><a aria-label="2"></a>    <span class="at">@Override</span></span>
@@ -548,7 +548,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-composition" class="slide level2">
+<section id="sec-lecture-interfaces-records-composition" class="slide level2">
 <h2>Композиция и делегирование</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb13-1"><a aria-label="1"></a><span class="kw">public</span> <span class="dt">final</span> <span class="kw">class</span> Reminder <span class="op">{</span></span>
 <span id="cb13-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">final</span> Sender sink<span class="op">;</span></span>
@@ -574,7 +574,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-reminder-output" class="slide level2">
+<section id="sec-lecture-interfaces-records-reminder-output" class="slide level2">
 <h2>Вызов через интерфейсное поле</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb14-1"><a aria-label="1"></a>Sender sender <span class="op">=</span> <span class="kw">new</span> <span class="fu">ConsoleSender</span><span class="op">();</span></span>
 <span id="cb14-2"><a aria-label="2"></a>Reminder reminder <span class="op">=</span> <span class="kw">new</span> <span class="fu">Reminder</span><span class="op">(</span>sender<span class="op">);</span></span>
@@ -595,7 +595,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-recording" class="slide level2">
+<section id="sec-lecture-interfaces-records-recording" class="slide level2">
 <h2>Изменяемое состояние отправителя</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb16-1"><a aria-label="1"></a><span class="kw">public</span> <span class="dt">final</span> <span class="kw">class</span> RecordingSender <span class="kw">implements</span> Sender <span class="op">{</span></span>
 <span id="cb16-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">StringBuilder</span> text <span class="op">=</span> <span class="kw">new</span> <span class="bu">StringBuilder</span><span class="op">();</span></span>
@@ -620,7 +620,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-recording-result" class="slide level2">
+<section id="sec-lecture-interfaces-records-recording-result" class="slide level2">
 <h2>Замена участника композиции</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb17-1"><a aria-label="1"></a>RecordingSender log <span class="op">=</span> <span class="kw">new</span> <span class="fu">RecordingSender</span><span class="op">();</span></span>
 <span id="cb17-2"><a aria-label="2"></a>Reminder reminder <span class="op">=</span> <span class="kw">new</span> <span class="fu">Reminder</span><span class="op">(</span>log<span class="op">);</span></span>
@@ -644,7 +644,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-stronger-precondition" class="slide level2">
+<section id="sec-lecture-interfaces-records-stronger-precondition" class="slide level2">
 <h2>Дополнительное ограничение на входе</h2>
 <p>Контракт <code>Sender</code> допускает любую строку, отличную от <code>null</code>, включая <code>""</code>. Следующая реализация добавляет требование непустого сообщения:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb18-1"><a aria-label="1"></a><span class="dt">final</span> <span class="kw">class</span> NonEmptySender <span class="kw">implements</span> Sender <span class="op">{</span></span>
@@ -670,7 +670,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-precondition-client" class="slide level2 continuation">
+<section id="sec-lecture-interfaces-records-precondition-client" class="slide level2 continuation">
 <h2>Усиление предусловия и допустимые вызовы</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb19-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">void</span> <span class="fu">sendEmpty</span><span class="op">(</span>Sender sender<span class="op">)</span> <span class="op">{</span> sender<span class="op">.</span><span class="fu">send</span><span class="op">(</span><span class="st">""</span><span class="op">);</span> <span class="op">}</span></span>
 <span id="cb19-2"><a aria-label="2"></a></span>
@@ -698,7 +698,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-decorator" class="slide level2">
+<section id="sec-lecture-interfaces-records-decorator" class="slide level2">
 <h2>Обёртка как реализация интерфейса</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb20-1"><a aria-label="1"></a><span class="kw">public</span> <span class="dt">final</span> <span class="kw">class</span> PrefixSender <span class="kw">implements</span> Sender <span class="op">{</span></span>
 <span id="cb20-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">final</span> Sender target<span class="op">;</span></span>
@@ -726,7 +726,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-decorator-output" class="slide level2">
+<section id="sec-lecture-interfaces-records-decorator-output" class="slide level2">
 <h2>Последовательность делегирования</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb21-1"><a aria-label="1"></a>RecordingSender log <span class="op">=</span> <span class="kw">new</span> <span class="fu">RecordingSender</span><span class="op">();</span></span>
 <span id="cb21-2"><a aria-label="2"></a>Sender sender <span class="op">=</span> <span class="kw">new</span> <span class="fu">PrefixSender</span><span class="op">(</span>log<span class="op">,</span> <span class="st">"[library] "</span><span class="op">);</span></span>
@@ -750,7 +750,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-changing-output" class="slide level2">
+<section id="sec-lecture-interfaces-records-changing-output" class="slide level2">
 <h2>Порядок композиции</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb23-1"><a aria-label="1"></a>RecordingSender log <span class="op">=</span> <span class="kw">new</span> <span class="fu">RecordingSender</span><span class="op">();</span></span>
 <span id="cb23-2"><a aria-label="2"></a>Sender sender <span class="op">=</span> <span class="kw">new</span> <span class="fu">PrefixSender</span><span class="op">(</span><span class="kw">new</span> <span class="fu">PrefixSender</span><span class="op">(</span>log<span class="op">,</span> <span class="st">"B:"</span><span class="op">),</span> <span class="st">"A:"</span><span class="op">);</span></span>
@@ -773,7 +773,7 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-interfaces-records-multiple-roles" class="title-slide slide level1 center">
+<section id="sec-lecture-interfaces-records-multiple-roles" class="title-slide slide level1 center">
 <h1>Несколько интерфейсных ролей</h1>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb24-1"><a aria-label="1"></a><span class="kw">interface</span> Counted <span class="op">{</span> <span class="dt">int</span> <span class="fu">count</span><span class="op">();</span> <span class="op">}</span></span>
 <span id="cb24-2"><a aria-label="2"></a><span class="dt">final</span> <span class="kw">class</span> CountingSender <span class="kw">implements</span> Sender<span class="op">,</span> Counted <span class="op">{</span></span>
@@ -803,7 +803,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-multiple-role-client" class="slide level2 continuation">
+<section id="sec-lecture-interfaces-records-multiple-role-client" class="slide level2 continuation">
 <h2>Две ссылки на один объект</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb25-1"><a aria-label="1"></a>CountingSender object <span class="op">=</span> <span class="kw">new</span> <span class="fu">CountingSender</span><span class="op">(</span><span class="kw">new</span> <span class="fu">RecordingSender</span><span class="op">());</span></span>
 <span id="cb25-2"><a aria-label="2"></a>Sender sender <span class="op">=</span> object<span class="op">;</span></span>
@@ -827,7 +827,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-default" class="slide level2">
+<section id="sec-lecture-interfaces-records-default" class="slide level2">
 <h2>Метод интерфейса с общей реализацией</h2>
 <p>В расширенное объявление <code>Sender</code> добавлен метод с телом:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb26-1"><a aria-label="1"></a><span class="kw">default</span> <span class="dt">void</span> <span class="fu">sendAll</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> messages<span class="op">)</span> <span class="op">{</span></span>
@@ -850,7 +850,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-default-failure" class="slide level2">
+<section id="sec-lecture-interfaces-records-default-failure" class="slide level2">
 <h2>Частичный эффект до отказа</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb27-1"><a aria-label="1"></a>RecordingSender log <span class="op">=</span> <span class="kw">new</span> <span class="fu">RecordingSender</span><span class="op">();</span></span>
 <span id="cb27-2"><a aria-label="2"></a><span class="cf">try</span> <span class="op">{</span> log<span class="op">.</span><span class="fu">sendAll</span><span class="op">(</span><span class="kw">new</span> <span class="bu">String</span><span class="op">[]{</span><span class="st">"A"</span><span class="op">,</span> <span class="kw">null</span><span class="op">,</span> <span class="st">"B"</span><span class="op">});</span> <span class="op">}</span></span>
@@ -889,7 +889,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-interface-members" class="slide level2">
+<section id="sec-lecture-interfaces-records-interface-members" class="slide level2">
 <h2>Статические и закрытые методы интерфейса</h2>
 <p>Статическая фабрика в <code>Sender</code> создаёт консольного отправителя:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb28-1"><a aria-label="1"></a><span class="dt">static</span> Sender <span class="fu">console</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> <span class="kw">new</span> <span class="fu">ConsoleSender</span><span class="op">();</span> <span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
@@ -909,7 +909,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-choice" class="slide level2">
+<section id="sec-lecture-interfaces-records-choice" class="slide level2">
 <h2>Зависимости общего клиента</h2>
 <p><code>Document</code> объединяет заголовок и операцию описания. Подкласс <code>TextDocument</code> принимает это состояние и уточняет описание.</p>
 <p><code>Sender</code> задаёт операцию для независимых реализаций. <code>Reminder</code> хранит участника этой роли; замена участника меняет способ отправки без изменения формирования напоминания.</p>
@@ -929,11 +929,11 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-interfaces-records-data-values" class="title-slide slide level1 center">
+<section id="sec-lecture-interfaces-records-data-values" class="title-slide slide level1 center">
 <h1>Объект как значение данных</h1>
 <p>Счётчик отправителя меняется после каждой успешной обработки. Отчёту может понадобиться число на определённый момент — отдельный снимок:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb29-1"><a aria-label="1"></a><span class="kw">record</span> <span class="fu">DispatchStats</span><span class="op">(</span><span class="dt">int</span> count<span class="op">)</span> <span class="kw">implements</span> Counted <span class="op">{}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>record</code> объявляет <strong>запись</strong>: класс с компонентами, заданными в заголовке. Компонент <code>count</code> создаёт закрытое поле <code>final int count</code> и открытый метод <code>count()</code>. Этот метод уже реализует операцию <code>Counted</code>. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-data-classes" data-qrc-style="default" class="qrc-link" href="../theory/chapters/data-classes.html#sec-j25-theory-data-classes"><span>Глава 14</span></a>.</p>
+<p><code>record</code> объявляет <strong>запись</strong>: класс с компонентами, заданными в заголовке. Компонент <code>count</code> создаёт закрытое поле <code>final int count</code> и открытый метод <code>count()</code>. Этот метод уже реализует операцию <code>Counted</code>. <a data-qrc-ref="theory:sec-theory-data-classes" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/data-classes.html#sec-theory-data-classes"><span>Глава 14</span></a>.</p>
 <aside class="notes">
 <p>Предложите сравнить хранение CountingSender в отчёте и копирование полученного от него числа. Первый вариант сохраняет доступ к меняющемуся участнику, второй фиксирует числовое значение.</p>
 <style type="text/css">
@@ -948,7 +948,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-record-snapshot" class="slide level2 continuation">
+<section id="sec-lecture-interfaces-records-record-snapshot" class="slide level2 continuation">
 <h2>Снимок изменяемого счётчика</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb30-1"><a aria-label="1"></a>CountingSender sender <span class="op">=</span> <span class="kw">new</span> <span class="fu">CountingSender</span><span class="op">(</span><span class="kw">new</span> <span class="fu">RecordingSender</span><span class="op">());</span></span>
 <span id="cb30-2"><a aria-label="2"></a>sender<span class="op">.</span><span class="fu">send</span><span class="op">(</span><span class="st">"A"</span><span class="op">);</span></span>
@@ -972,7 +972,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-record" class="slide level2">
+<section id="sec-lecture-interfaces-records-record" class="slide level2">
 <h2>Стандартные члены записи</h2>
 <p>Координата объединяет два числовых компонента в одно значение:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb31-1"><a aria-label="1"></a><span class="kw">record</span> <span class="bu">Point</span><span class="op">(</span><span class="dt">int</span> x<span class="op">,</span> <span class="dt">int</span> y<span class="op">)</span> <span class="op">{}</span></span>
@@ -996,7 +996,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-record-output" class="slide level2 continuation">
+<section id="sec-lecture-interfaces-records-record-output" class="slide level2 continuation">
 <h2>Представление для наблюдения</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb32-1"><a aria-label="1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="kw">new</span> <span class="bu">Point</span><span class="op">(</span><span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">));</span> <span class="co">// Point[x=2, y=3]</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>toString</code> отражает компоненты. Равенство требует того же типа записи и равных соответствующих значений. Другая запись <code>ScreenPoint(int x, int y)</code> с теми же числами не равна <code>Point</code>. Равные записи имеют одинаковый <code>hashCode</code>; совпадение хешей допускается и у разных значений.</p>
@@ -1014,7 +1014,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-record-constraints" class="slide level2">
+<section id="sec-lecture-interfaces-records-record-constraints" class="slide level2">
 <h2>Ограничения объявления записи</h2>
 <p>Запись неявно <code>final</code> и непосредственно расширяет <code>java.lang.Record</code>. Объявить её подкласс или указать другой суперкласс нельзя. Интерфейсы разрешены: <code>DispatchStats</code> реализует <code>Counted</code>.</p>
 <p>Дополнительные поля экземпляра запрещены: всё его состояние представлено компонентами. Можно объявлять методы, статические поля и вложенные типы.</p>
@@ -1033,7 +1033,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-record-model" class="slide level2 continuation">
+<section id="sec-lecture-interfaces-records-record-model" class="slide level2 continuation">
 <h2>Представление записи и её API</h2>
 <p><code>record Point(int x, int y)</code> делает два компонента частью API: конструктор принимает их значения, методы чтения их возвращают, равенство и хеш учитывают их содержимое.</p>
 <p>Добавление <code>int z</code> изменит форму конструктора и равенство. Обычный класс может изменить внутреннее хранение, сохранив публичные методы; у записи заголовок связывает представление и публичные операции. <span class="citation" data-cites="bib-ctx-objects-record-model"><a href="#/источники" role="doc-biblioref" onclick="">[1]</a></span></p>
@@ -1052,7 +1052,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-compact-constructor" class="slide level2">
+<section id="sec-lecture-interfaces-records-compact-constructor" class="slide level2">
 <h2>Проверка компонентов</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb33-1"><a aria-label="1"></a><span class="kw">record</span> <span class="fu">Interval</span><span class="op">(</span><span class="dt">int</span> start<span class="op">,</span> <span class="dt">int</span> end<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb33-2"><a aria-label="2"></a>    Interval <span class="op">{</span></span>
@@ -1075,7 +1075,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-normalization" class="slide level2">
+<section id="sec-lecture-interfaces-records-normalization" class="slide level2">
 <h2>Нормализация параметра</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb34-1"><a aria-label="1"></a><span class="kw">record</span> <span class="fu">BookCode</span><span class="op">(</span><span class="bu">String</span> value<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb34-2"><a aria-label="2"></a>    BookCode <span class="op">{</span></span>
@@ -1099,7 +1099,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-student-definition" class="slide level2">
+<section id="sec-lecture-interfaces-records-student-definition" class="slide level2">
 <h2>Нормализация сведений о студенте</h2>
 <p>В учебном журнале код и имя разделяются символом <code>;</code>, одна строка описывает одного участника. Запись <code>grade.Student</code> хранит код, имя и балл. Нормализация и проверка строк в её компактном конструкторе:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb35-1"><a aria-label="1"></a><span class="kw">public</span> <span class="kw">record</span> <span class="fu">Student</span><span class="op">(</span><span class="bu">String</span> id<span class="op">,</span> <span class="bu">String</span> name<span class="op">,</span> <span class="dt">int</span> score<span class="op">)</span> <span class="op">{</span></span>
@@ -1126,7 +1126,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-student-definition-part-1" class="slide level2">
+<section id="sec-lecture-interfaces-records-student-definition-part-1" class="slide level2">
 <h2>Диапазон балла и разделители записи</h2>
 <p>Продолжение конструктора и закрытый метод проверки:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb36-1"><a aria-label="1"></a>        <span class="cf">if</span> <span class="op">(</span>score <span class="op">&lt;</span> <span class="dv">0</span> <span class="op">||</span> score <span class="op">&gt;</span> <span class="dv">100</span><span class="op">)</span> <span class="op">{</span></span>
@@ -1154,7 +1154,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-student-client" class="slide level2">
+<section id="sec-lecture-interfaces-records-student-client" class="slide level2">
 <h2>Нормализация и равенство записей</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb37-1"><a aria-label="1"></a>Student a <span class="op">=</span> <span class="kw">new</span> <span class="fu">Student</span><span class="op">(</span><span class="st">" s1 "</span><span class="op">,</span> <span class="st">" Ada "</span><span class="op">,</span> <span class="dv">90</span><span class="op">);</span></span>
 <span id="cb37-2"><a aria-label="2"></a>Student b <span class="op">=</span> <span class="kw">new</span> <span class="fu">Student</span><span class="op">(</span><span class="st">"s1"</span><span class="op">,</span> <span class="st">"Ada"</span><span class="op">,</span> <span class="dv">80</span><span class="op">);</span></span>
@@ -1176,7 +1176,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-shallow" class="slide level2">
+<section id="sec-lecture-interfaces-records-shallow" class="slide level2">
 <h2>final-компонент и общий массив</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb38-1"><a aria-label="1"></a><span class="kw">record</span> <span class="fu">Draft</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> scores<span class="op">)</span> <span class="op">{}</span></span>
 <span id="cb38-2"><a aria-label="2"></a><span class="dt">int</span><span class="op">[]</span> scores <span class="op">=</span> <span class="op">{</span><span class="dv">80</span><span class="op">};</span></span>
@@ -1198,7 +1198,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-snapshot" class="slide level2">
+<section id="sec-lecture-interfaces-records-snapshot" class="slide level2">
 <h2>Защитное копирование массива</h2>
 <p>У последовательности баллов внешнее изменение нужно исключить. В записи <code>Scores</code> конструктор и метод чтения создают копии:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb39-1"><a aria-label="1"></a>Scores <span class="op">{</span></span>
@@ -1220,7 +1220,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-snapshot-client" class="slide level2 continuation">
+<section id="sec-lecture-interfaces-records-snapshot-client" class="slide level2 continuation">
 <h2>Наблюдение после изменения копий</h2>
 <p>Последовательность создана из массива с единственным баллом <code>80</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb40-1"><a aria-label="1"></a><span class="dt">int</span><span class="op">[]</span> input <span class="op">=</span> <span class="op">{</span><span class="dv">80</span><span class="op">};</span></span>
@@ -1243,7 +1243,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-array-record" class="slide level2">
+<section id="sec-lecture-interfaces-records-array-record" class="slide level2">
 <h2>Массивный компонент и равенство записи</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb41-1"><a aria-label="1"></a><span class="kw">record</span> <span class="bu">Vector</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> values<span class="op">)</span> <span class="op">{}</span></span>
 <span id="cb41-2"><a aria-label="2"></a><span class="bu">Vector</span> a <span class="op">=</span> <span class="kw">new</span> <span class="bu">Vector</span><span class="op">(</span><span class="kw">new</span> <span class="dt">int</span><span class="op">[]{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">});</span></span>
@@ -1265,7 +1265,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-array-type-pattern" class="slide level2 continuation">
+<section id="sec-lecture-interfaces-records-array-type-pattern" class="slide level2 continuation">
 <h2>Проверка типа перед сравнением компонентов</h2>
 <p>Метод <code>equals</code> получает аргумент типа <code>Object</code>. Образец типа <code>other instanceof Scores that</code> проверяет, ссылается ли он на <code>Scores</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb42-1"><a aria-label="1"></a><span class="at">@Override</span> <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">equals</span><span class="op">(</span><span class="bu">Object</span> other<span class="op">)</span> <span class="op">{</span></span>
@@ -1288,7 +1288,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-array-equality" class="slide level2 continuation">
+<section id="sec-lecture-interfaces-records-array-equality" class="slide level2 continuation">
 <h2>Согласованное равенство последовательности</h2>
 <p>Для <code>Scores scores = new Scores(new int[]{80})</code>:</p>
 <table class="caption-top">
@@ -1341,7 +1341,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-array-string" class="slide level2 continuation">
+<section id="sec-lecture-interfaces-records-array-string" class="slide level2 continuation">
 <h2>Строковое представление последовательности</h2>
 <p>У исходного и восстановленного <code>Scores</code> разные внутренние массивы. Стандартные строковые представления этих массивов могут различаться. Метод записи строит представление по числам:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb44-1"><a aria-label="1"></a><span class="at">@Override</span> <span class="kw">public</span> <span class="bu">String</span> <span class="fu">toString</span><span class="op">()</span> <span class="op">{</span></span>
@@ -1352,7 +1352,7 @@
 <span id="cb45-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>scores<span class="op">);</span> <span class="co">// Scores[values=[80]]</span></span>
 <span id="cb45-3"><a aria-label="3"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>copy<span class="op">);</span>   <span class="co">// Scores[values=[80]]</span></span>
 <span id="cb45-4"><a aria-label="4"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>scores<span class="op">.</span><span class="fu">toString</span><span class="op">().</span><span class="fu">equals</span><span class="op">(</span>copy<span class="op">.</span><span class="fu">toString</span><span class="op">()));</span> <span class="co">// true</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Равные значения дают равные строки. Это человекочитаемое представление; устойчивый формат файла или обмена задаётся отдельно. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-data-classes-array-value" data-qrc-style="default" class="qrc-link" href="../theory/chapters/data-classes.html#sec-j25-theory-data-classes-array-value">Защитные копии и равенство массива</a>.</p>
+<p>Равные значения дают равные строки. Это человекочитаемое представление; устойчивый формат файла или обмена задаётся отдельно. <a data-qrc-ref="theory:sec-theory-data-classes-array-value" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/data-classes.html#sec-theory-data-classes-array-value">Защитные копии и равенство массива</a>.</p>
 <aside class="notes">
 <p>Проследите формирование строки из элементов двух разных массивов. Сравнение, хеширование и вывод должны описывать одно выбранное значение. Изменение оформления toString не должно заставлять переписывать чтение внешнего формата, у которого есть отдельный договор.</p>
 <style type="text/css">
@@ -1367,7 +1367,7 @@
           display:block!important;
       }</style></aside>
 </section></section>
-<section id="sec-j25-lecture-interfaces-records-enum" class="title-slide slide level1 center">
+<section id="sec-lecture-interfaces-records-enum" class="title-slide slide level1 center">
 <h1>Фиксированные именованные варианты</h1>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb46-1"><a aria-label="1"></a><span class="kw">enum</span> LoanStatus <span class="op">{</span> AVAILABLE<span class="op">,</span> BORROWED<span class="op">,</span> LOST <span class="op">}</span></span>
 <span id="cb46-2"><a aria-label="2"></a>LoanStatus state <span class="op">=</span> LoanStatus<span class="op">.</span><span class="fu">BORROWED</span><span class="op">;</span></span>
@@ -1389,7 +1389,7 @@
 </section>
 
 <section>
-<section id="sec-j25-lecture-interfaces-records-sealed" class="title-slide slide level1 center">
+<section id="sec-lecture-interfaces-records-sealed" class="title-slide slide level1 center">
 <h1>Запечатанная семья результатов</h1>
 <p>Поиск книги по уникальному коду возвращает найденное название или причину отсутствия. У этих случаев разный состав данных:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb47-1"><a aria-label="1"></a><span class="kw">sealed</span> <span class="kw">interface</span> <span class="bu">SearchResult</span> <span class="kw">permits</span> Found<span class="op">,</span> Missing <span class="op">{}</span></span>
@@ -1410,7 +1410,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-exhaustive" class="slide level2 continuation">
+<section id="sec-lecture-interfaces-records-exhaustive" class="slide level2 continuation">
 <h2>Покрытие вариантов в switch</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb48-1"><a aria-label="1"></a><span class="dt">static</span> <span class="bu">String</span> <span class="fu">describe</span><span class="op">(</span><span class="bu">SearchResult</span> value<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb48-2"><a aria-label="2"></a>    <span class="cf">return</span> <span class="cf">switch</span> <span class="op">(</span>value<span class="op">)</span> <span class="op">{</span></span>
@@ -1434,7 +1434,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-design-route" class="slide level2">
+<section id="sec-lecture-interfaces-records-design-route" class="slide level2">
 <h2>Роль и вариант данных</h2>
 <p>Открытый <code>Sender</code> допускает новый способ отправки при прежнем вызове клиента. Новая обязательная операция, напротив, затронет реализующие классы.</p>
 <p>Для закрытого <code>SearchResult</code> новый отчёт можно написать отдельным полным <code>switch</code>, сохранив варианты. Добавление варианта потребует пересмотреть такие разборы. Проверяемая полнота требует согласования изменений семьи и её клиентов.</p>
@@ -1452,7 +1452,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-exit" class="slide level2">
+<section id="sec-lecture-interfaces-records-exit" class="slide level2">
 <h2>Расширение системы и обработка вариантов</h2>
 <p>Новая реализация <code>Sender</code> сохраняет вызов <code>sink.send(message)</code> в <code>Reminder</code>, если соблюдает условия операции. Место обработки текста определяется переданным объектом.</p>
 <p>Новый вариант <code>SearchResult</code> меняет набор исходов, которые должен различать клиент. При повторной компиляции <code>switch</code> без <code>default</code> потребует его обработки.</p>
@@ -1472,7 +1472,7 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-interfaces-records-additional" class="title-slide slide level1 center">
+<section id="sec-lecture-interfaces-records-additional" class="title-slide slide level1 center">
 <h1>Дополнительные разборы</h1>
 <aside class="notes">
 <p>Предложите выбрать предмет исследования: поведение вызова, порядок изменения полей или состав компонентов. Для каждого нужен собственный наблюдаемый результат.</p>
@@ -1488,7 +1488,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-field-hiding" class="slide level2">
+<section id="sec-lecture-interfaces-records-field-hiding" class="slide level2">
 <h2>Сокрытие поля</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb49-1"><a aria-label="1"></a><span class="kw">class</span> Base <span class="op">{</span> <span class="bu">String</span> label <span class="op">=</span> <span class="st">"base"</span><span class="op">;</span> <span class="op">}</span></span>
 <span id="cb49-2"><a aria-label="2"></a><span class="kw">class</span> Child <span class="kw">extends</span> Base <span class="op">{</span> <span class="bu">String</span> label <span class="op">=</span> <span class="st">"child"</span><span class="op">;</span> <span class="op">}</span></span>
@@ -1509,7 +1509,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-static-hiding" class="slide level2">
+<section id="sec-lecture-interfaces-records-static-hiding" class="slide level2">
 <h2>Сокрытие статического метода</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb50-1"><a aria-label="1"></a><span class="kw">class</span> Base <span class="op">{</span> <span class="dt">static</span> <span class="bu">String</span> <span class="fu">kind</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> <span class="st">"base"</span><span class="op">;</span> <span class="op">}</span> <span class="op">}</span></span>
 <span id="cb50-2"><a aria-label="2"></a><span class="kw">class</span> Child <span class="kw">extends</span> Base <span class="op">{</span> <span class="dt">static</span> <span class="bu">String</span> <span class="fu">kind</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> <span class="st">"child"</span><span class="op">;</span> <span class="op">}</span> <span class="op">}</span></span>
@@ -1531,7 +1531,7 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-interfaces-records-override-rules" class="title-slide slide level1 center">
+<section id="sec-lecture-interfaces-records-override-rules" class="title-slide slide level1 center">
 <h1>Сигнатура переопределяемого метода</h1>
 <p>У операции загрузки документа объявлен результат типа <code>Document</code> и разрешено проверяемое исключение ввода-вывода <code>IOException</code>. Источник в памяти возвращает уже сохранённый <code>TextDocument</code>. Базовый класс <code>abstract</code> оставляет метод <code>load</code> без тела; конкретный подкласс обязан его реализовать:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb51-1"><a aria-label="1"></a><span class="kw">abstract</span> <span class="kw">class</span> DocumentSource <span class="op">{</span></span>
@@ -1559,7 +1559,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-override-result" class="slide level2">
+<section id="sec-lecture-interfaces-records-override-result" class="slide level2">
 <h2>Статический тип результата</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb52-1"><a aria-label="1"></a>MemorySource memory <span class="op">=</span> <span class="kw">new</span> <span class="fu">MemorySource</span><span class="op">(</span><span class="kw">new</span> <span class="fu">TextDocument</span><span class="op">(</span><span class="st">"Notes"</span><span class="op">,</span> <span class="dv">120</span><span class="op">));</span></span>
 <span id="cb52-2"><a aria-label="2"></a>TextDocument text <span class="op">=</span> memory<span class="op">.</span><span class="fu">load</span><span class="op">();</span></span>
@@ -1584,7 +1584,7 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-interfaces-records-abstract" class="title-slide slide level1 center">
+<section id="sec-lecture-interfaces-records-abstract" class="title-slide slide level1 center">
 <h1>Абстрактная операция площади</h1>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb53-1"><a aria-label="1"></a><span class="kw">abstract</span> <span class="kw">class</span> <span class="bu">Shape</span> <span class="op">{</span></span>
 <span id="cb53-2"><a aria-label="2"></a>    <span class="kw">abstract</span> <span class="dt">double</span> <span class="fu">area</span><span class="op">();</span></span>
@@ -1605,7 +1605,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-square" class="slide level2 continuation">
+<section id="sec-lecture-interfaces-records-square" class="slide level2 continuation">
 <h2>Реализация площади в конкретной фигуре</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb54-1"><a aria-label="1"></a><span class="dt">final</span> <span class="kw">class</span> Square <span class="kw">extends</span> <span class="bu">Shape</span> <span class="op">{</span></span>
 <span id="cb54-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="dt">double</span> side<span class="op">;</span></span>
@@ -1633,7 +1633,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-reflection" class="slide level2">
+<section id="sec-lecture-interfaces-records-reflection" class="slide level2">
 <h2>Описание типа объектом Class</h2>
 <p><strong>Рефлексия</strong> — исследование структуры программы во время выполнения. <code>Student.class</code> получает описание типа <code>grade.Student</code>, у которого объявлены <code>String id</code>, <code>String name</code>, <code>int score</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb55"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb55-1"><a aria-label="1"></a><span class="bu">Class</span><span class="op">&lt;?&gt;</span> type <span class="op">=</span> Student<span class="op">.</span><span class="fu">class</span><span class="op">;</span></span>
@@ -1641,7 +1641,7 @@
 <span id="cb55-3"><a aria-label="3"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>type<span class="op">.</span><span class="fu">isRecord</span><span class="op">());</span>   <span class="co">// true</span></span>
 <span id="cb55-4"><a aria-label="4"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="dt">int</span><span class="op">.</span><span class="fu">class</span><span class="op">.</span><span class="fu">isPrimitive</span><span class="op">());</span> <span class="co">// true</span></span>
 <span id="cb55-5"><a aria-label="5"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="bu">Integer</span><span class="op">.</span><span class="fu">class</span><span class="op">.</span><span class="fu">isPrimitive</span><span class="op">());</span> <span class="co">// false</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>Class</code> описывает тип; <code>&lt;?&gt;</code> обозначает неизвестный аргумент типа. Переменная получает описание <code>Student</code> через <code>Student.class</code>, включая имя пакета <code>grade</code>. Запись — ссылочный тип, <code>int</code> — примитивный; объект <code>Class</code> можно получить для обоих. Параметры типов: <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-parameters" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-parameters.html#sec-t-type-parameters"><span>Глава 15</span></a>.</p>
+<p><code>Class</code> описывает тип; <code>&lt;?&gt;</code> обозначает неизвестный аргумент типа. Переменная получает описание <code>Student</code> через <code>Student.class</code>, включая имя пакета <code>grade</code>. Запись — ссылочный тип, <code>int</code> — примитивный; объект <code>Class</code> можно получить для обоих. Параметры типов: <a data-qrc-ref="theory:sec-t-type-parameters" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/type-parameters.html#sec-t-type-parameters"><span>Глава 15</span></a>.</p>
 <aside class="notes">
 <p>Сопоставьте объект Student и объект, описывающий тип Student. Литерал int.class позволяет исследовать примитивный тип, не превращая число в Object.</p>
 <style type="text/css">
@@ -1656,13 +1656,13 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-reflection-components" class="slide level2">
+<section id="sec-lecture-interfaces-records-reflection-components" class="slide level2">
 <h2>Метаданные объявленных компонентов</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb56-1"><a aria-label="1"></a><span class="cf">for</span> <span class="op">(</span><span class="dt">var</span> component <span class="op">:</span> Student<span class="op">.</span><span class="fu">class</span><span class="op">.</span><span class="fu">getRecordComponents</span><span class="op">())</span> <span class="op">{</span></span>
 <span id="cb56-2"><a aria-label="2"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>component<span class="op">.</span><span class="fu">getName</span><span class="op">()</span> <span class="op">+</span> <span class="st">":"</span> <span class="op">+</span></span>
 <span id="cb56-3"><a aria-label="3"></a>                       component<span class="op">.</span><span class="fu">getType</span><span class="op">().</span><span class="fu">getSimpleName</span><span class="op">());</span></span>
 <span id="cb56-4"><a aria-label="4"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Вывод: <code>id:String</code>, <code>name:String</code>, <code>score:int</code> на отдельных строках. При <code>var</code> компилятор выводит тип переменной из типа элемента массива. У обычного класса getRecordComponents() вернул бы null; здесь известно, что Student — запись. Изменение балла отдельного участника не меняет этот список: он определяется объявлением типа. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-data-classes-reflection" data-qrc-style="default" class="qrc-link" href="../theory/chapters/data-classes.html#sec-j25-theory-data-classes-reflection">Описание типа во время выполнения</a></p>
+<p>Вывод: <code>id:String</code>, <code>name:String</code>, <code>score:int</code> на отдельных строках. При <code>var</code> компилятор выводит тип переменной из типа элемента массива. У обычного класса getRecordComponents() вернул бы null; здесь известно, что Student — запись. Изменение балла отдельного участника не меняет этот список: он определяется объявлением типа. <a data-qrc-ref="theory:sec-theory-data-classes-reflection" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/data-classes.html#sec-theory-data-classes-reflection">Описание типа во время выполнения</a></p>
 <aside class="notes">
 <p>Попросите получить порядок компонентов из объявления записи. Рефлексия сообщает порядок из объявления; допустимость балла проверяет конструктор.</p>
 <style type="text/css">
@@ -1677,7 +1677,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-cpp" class="slide level2">
+<section id="sec-lecture-interfaces-records-cpp" class="slide level2">
 <h2>Подстановка через базовый тип в C++ и Java</h2>
 <p>Java-присваивание <code>Document value = new TextDocument(...)</code> копирует ссылку. Оно не создаёт отдельный базовый объект и не срезает дополнительные поля.</p>
 <p>В C++ сходный полиморфный сценарий использует указатель или ссылку на базовый тип и виртуальный метод. Обычный переопределяемый метод Java не требует отдельного слова <code>virtual</code>.</p>
@@ -1695,7 +1695,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-rectangle" class="slide level2">
+<section id="sec-lecture-interfaces-records-rectangle" class="slide level2">
 <h2>Изменяемый квадрат и прямоугольник</h2>
 <p>У <code>Rectangle</code> операция <code>setWidth(w)</code> меняет ширину и сохраняет высоту. <code>MutableSquare</code> переопределяет её, меняя обе стороны ради их равенства. Начальные стороны равны <code>4</code>, заданная ширина — <code>7</code>:</p>
 <table class="caption-top">
@@ -1719,7 +1719,7 @@
 </tr>
 </tbody>
 </table>
-<p>Квадрат нарушил требование операции сохранять высоту. Общий тип с одной операцией <code>area()</code> позволяет обеим фигурам предоставлять площадь без несовместимого изменения сторон. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-inheritance-mutable-shapes" data-qrc-style="default" class="qrc-link" href="../theory/chapters/inheritance.html#sec-j25-theory-inheritance-mutable-shapes">Изменяемый прямоугольник и квадрат</a>.</p>
+<p>Квадрат нарушил требование операции сохранять высоту. Общий тип с одной операцией <code>area()</code> позволяет обеим фигурам предоставлять площадь без несовместимого изменения сторон. <a data-qrc-ref="theory:sec-theory-inheritance-mutable-shapes" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/inheritance.html#sec-theory-inheritance-mutable-shapes">Изменяемый прямоугольник и квадрат</a>.</p>
 <aside class="notes">
 <p>Попросите указать точное нарушенное условие после первого присваивания. Математическое отношение фигур согласуется с чтением площади; набор изменяющих операций создаёт дополнительные требования к подстановке.</p>
 <style type="text/css">
@@ -1735,7 +1735,7 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-interfaces-records-construction-risk" class="title-slide slide level1 center">
+<section id="sec-lecture-interfaces-records-construction-risk" class="title-slide slide level1 center">
 <h1>Динамический вызов при конструировании</h1>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb57"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb57-1"><a aria-label="1"></a><span class="kw">class</span> Parent <span class="op">{</span></span>
 <span id="cb57-2"><a aria-label="2"></a>    <span class="fu">Parent</span><span class="op">()</span> <span class="op">{</span> <span class="fu">show</span><span class="op">();</span> <span class="op">}</span></span>
@@ -1760,13 +1760,13 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-construction-order" class="slide level2 continuation">
+<section id="sec-lecture-interfaces-records-construction-order" class="slide level2 continuation">
 <h2>Порядок инициализации и ранний вызов</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb58-1"><a aria-label="1"></a>поле value получает 0</span>
 <span id="cb58-2"><a aria-label="2"></a>→ Parent() вызывает ChildState.show(): вывод 0</span>
 <span id="cb58-3"><a aria-label="3"></a>→ инициализатор ChildState присваивает 7</span>
 <span id="cb58-4"><a aria-label="4"></a>→ new завершается; следующий child.show() выводит 7</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
-<p>В Java 25 допустим ограниченный пролог перед <code>super(...)</code>. Простое присваивание собственному полю без инициализатора может установить его раньше. Базовый класс не управляет порядком всех будущих подклассов; вызов их переопределяемых методов связывает конструктор с их готовностью. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-inheritance-constructor-call" data-qrc-style="default" class="qrc-link" href="../theory/chapters/inheritance.html#sec-j25-theory-inheritance-constructor-call">Переопределяемые методы в конструкторе</a>.</p>
+<p>В Java 25 допустим ограниченный пролог перед <code>super(...)</code>. Простое присваивание собственному полю без инициализатора может установить его раньше. Базовый класс не управляет порядком всех будущих подклассов; вызов их переопределяемых методов связывает конструктор с их готовностью. <a data-qrc-ref="theory:sec-theory-inheritance-constructor-call" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/inheritance.html#sec-theory-inheritance-constructor-call">Переопределяемые методы в конструкторе</a>.</p>
 <aside class="notes">
 <p>Сравните с C++: из базового конструктора виртуальный вызов для создаваемого объекта выбирает окончательное переопределение класса этого конструктора. В Java фактический класс уже ChildState. Предложите убрать ранний вызов и выполнить show после успешного new.</p>
 <style type="text/css">
@@ -1781,7 +1781,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-ownership" class="slide level2">
+<section id="sec-lecture-interfaces-records-ownership" class="slide level2">
 <h2>Общий участник и владение ресурсом</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb59"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb59-1"><a aria-label="1"></a>RecordingSender shared <span class="op">=</span> <span class="kw">new</span> <span class="fu">RecordingSender</span><span class="op">();</span></span>
 <span id="cb59-2"><a aria-label="2"></a>Reminder first <span class="op">=</span> <span class="kw">new</span> <span class="fu">Reminder</span><span class="op">(</span>shared<span class="op">);</span></span>
@@ -1804,7 +1804,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-default-conflict" class="slide level2">
+<section id="sec-lecture-interfaces-records-default-conflict" class="slide level2">
 <h2>Конфликт методов по умолчанию</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb60-1"><a aria-label="1"></a><span class="kw">interface</span> A <span class="op">{</span> <span class="kw">default</span> <span class="bu">String</span> <span class="fu">label</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> <span class="st">"A"</span><span class="op">;</span> <span class="op">}</span> <span class="op">}</span></span>
 <span id="cb60-2"><a aria-label="2"></a><span class="kw">interface</span> B <span class="op">{</span> <span class="kw">default</span> <span class="bu">String</span> <span class="fu">label</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> <span class="st">"B"</span><span class="op">;</span> <span class="op">}</span> <span class="op">}</span></span>
@@ -1826,7 +1826,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-enum-code" class="slide level2">
+<section id="sec-lecture-interfaces-records-enum-code" class="slide level2">
 <h2>Устойчивый внешний код перечисления</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb61"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb61-1"><a aria-label="1"></a><span class="kw">enum</span> Priority <span class="op">{</span></span>
 <span id="cb61-2"><a aria-label="2"></a>    <span class="fu">LOW</span><span class="op">(</span><span class="dv">1</span><span class="op">),</span> <span class="fu">NORMAL</span><span class="op">(</span><span class="dv">5</span><span class="op">),</span> <span class="fu">HIGH</span><span class="op">(</span><span class="dv">10</span><span class="op">);</span></span>
@@ -1849,7 +1849,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-search-evolution" class="slide level2">
+<section id="sec-lecture-interfaces-records-search-evolution" class="slide level2">
 <h2>Поиск с несколькими совпадениями</h2>
 <p>Поиск по названию может найти несколько книг. Клиенту нужно различить отсутствие совпадений и необходимость уточнить выбор. Новая версия семьи заменяет прежнее объявление:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb62-1"><a aria-label="1"></a><span class="kw">sealed</span> <span class="kw">interface</span> <span class="bu">SearchResult</span> <span class="kw">permits</span> Found<span class="op">,</span> Missing<span class="op">,</span> Ambiguous <span class="op">{}</span></span>
@@ -1879,7 +1879,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-interfaces-records-search-coverage" class="slide level2 continuation">
+<section id="sec-lecture-interfaces-records-search-coverage" class="slide level2 continuation">
 <h2>Проверка switch при расширении семьи</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb63"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb63-1"><a aria-label="1"></a><span class="cf">return</span> <span class="cf">switch</span> <span class="op">(</span>result<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb63-2"><a aria-label="2"></a>    <span class="cf">case</span> Found found <span class="op">-&gt;</span> <span class="st">"Found: "</span> <span class="op">+</span> found<span class="op">.</span><span class="fu">title</span><span class="op">();</span></span>
@@ -1901,7 +1901,7 @@
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-<p>Полные исходники и команды: <a data-qrc-custom="false" data-qrc-ref="handbook:sec-j25-api-records-examples" data-qrc-style="default" class="qrc-link" href="../handbook/entries/interfaces.html#sec-j25-api-records-examples">Примеры записей и вариантов данных</a>. В инструкции к примерам записей приведены также программы по наследованию и интерфейсам.</p>
+<p>Полные исходники и команды: <a data-qrc-ref="handbook:sec-api-records-examples" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../handbook/interfaces.html#sec-api-records-examples">Примеры записей и вариантов данных</a>. В инструкции к примерам записей приведены также программы по наследованию и интерфейсам.</p>
 </section>
 <section id="источники" class="slide level2 unnumbered scrollable smaller">
 <h2>Источники</h2>
@@ -2332,26 +2332,34 @@
     
 
 
-<script data-qrc-navigation>// Опубликованные цели сохраняют штатные ID Quarto. Обработчик раскрывает
+<script data-qrc-navigation>// @ts-check
+/// <reference path="../../../typecheck/browser.d.ts" />
+// Опубликованные цели сохраняют штатные ID Quarto. Обработчик раскрывает
 // существующее представление документа, не вводя учебных ролей и новых ID.
 (() => {
   if (new URL(location.href).searchParams.has("print-pdf")) return;
   let navigation = 0;
 
+  /** @param {URL} url */
   function hashId(url) {
     try { return decodeURIComponent(url.hash.replace(/^#\/?/, "")); }
     catch { return ""; } // Некорректный фрагмент внешней ссылки не должен нарушать работу страницы.
   }
 
+  /** @param {Element} target */
   function ancestors(target) {
+    /** @type {Element[]} */
     const nodes = [];
-    for (let node = target; node; node = node.parentElement) nodes.push(node);
+    /** @type {Element | null} */
+    let node = target;
+    for (; node; node = node.parentElement) nodes.push(node);
     return nodes.reverse();
   }
 
+  /** @param {Element[]} nodes @param {() => void} scroll */
   function openDisclosures(nodes, scroll) {
     for (const node of nodes) {
-      if (node.matches("details")) node.open = true;
+      if (node instanceof HTMLDetailsElement) node.open = true;
       if (!node.matches(".collapse:not(.show)")) continue;
 
       // Bootstrap управляет анимацией и состоянием переключателя.
@@ -2364,7 +2372,7 @@
         node.classList.add("show");
         if (!node.id) continue;
         for (const trigger of document.querySelectorAll("[aria-controls]")) {
-          if (!trigger.getAttribute("aria-controls").split(/\s+/).includes(node.id)) continue;
+          if (!(trigger.getAttribute("aria-controls") ?? "").split(/\s+/).includes(node.id)) continue;
           trigger.setAttribute("aria-expanded", "true");
           trigger.classList.remove("collapsed");
         }
@@ -2372,6 +2380,7 @@
     }
   }
 
+  /** @param {string} id */
   function revealTarget(id) {
     const target = id && document.getElementById(id);
     if (!target) return;
@@ -2414,8 +2423,8 @@
   window.addEventListener("hashchange", () => revealTarget(hashId(new URL(location.href))));
   document.addEventListener("click", event => {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.defaultPrevented) return;
-    const link = event.target.closest?.("a[href]");
-    if (!link || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
+    const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
+    if (!(link instanceof HTMLAnchorElement) || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
     const url = new URL(link.href, location.href);
     if (url.origin !== location.origin || url.pathname !== location.pathname || url.search !== location.search) return;
     // Повторный переход по тому же фрагменту URL не вызывает hashchange.
@@ -2424,12 +2433,14 @@
   }, true);
 })();
 </script>
-<script id="course-site-navigation">(function(){
+<script id="course-site-navigation">// @ts-check
+(function(){
 const base={"courseUrl":"https://bsu-rfct-afonenko-courses.github.io/Java/","rootHref":"../"};
 if(base){
  const course=new URL(base.courseUrl); course.pathname=course.pathname.replace(/\/$/,'')+'/';
  const root=new URL(base.rootHref,document.baseURI);
  for(const link of document.querySelectorAll('#quarto-header a[href],#quarto-sidebar a[href],.quarto-navbar a[href],.quarto-sidebar a[href]')){
+  if (!(link instanceof HTMLAnchorElement)) continue;
   const url=new URL(link.href,document.baseURI);
   if(url.origin===course.origin&&url.pathname.startsWith(course.pathname)){
    let path=url.pathname.slice(course.pathname.length); if(!path||path.endsWith('/')) path+='index.html';
@@ -2439,6 +2450,7 @@ if(base){
 }
 const targets=[].map(path=>new URL(path,document.baseURI));
 for(const link of document.querySelectorAll('a[href]')){
+ if (!(link instanceof HTMLAnchorElement)) continue;
  const url=new URL(link.href,document.baseURI);
  if(targets.some(target=>target.origin===url.origin&&(
   target.pathname===url.pathname || target.pathname.endsWith('/index.html')&&target.pathname.slice(0,-'index.html'.length)===url.pathname
@@ -2446,5 +2458,5 @@ for(const link of document.querySelectorAll('a[href]')){
   link.target='_blank'; link.rel=[...new Set([...link.rel.split(/\s+/).filter(Boolean),'noopener','noreferrer'])].join(' ');
  }
 }
-})();</script>
-</body></html>
+})();
+</script></body></html>

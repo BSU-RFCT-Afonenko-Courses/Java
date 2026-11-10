@@ -6,16 +6,16 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-35fc0813589bbfbfa0b8ec974497eeb2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
 <link href="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.11.6">
+  <meta name="generator" content="quarto-1.11.5">
 
   <title>Лекции Java – Объекты, состояние и инварианты</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
   <style>
@@ -123,7 +123,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-836333b27002cb1bbca9e7698ee01091.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-3ce18430e1250f8c2f6f98be2c9c7b18.css">
   <link rel="stylesheet" href="assets/lesson.css">
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -232,18 +232,18 @@
 
 </section>
 <section>
-<section id="sec-j25-lecture-objects-invariants" class="title-slide slide level1 center">
+<section id="sec-lecture-objects-invariants" class="title-slide slide level1 center">
 <h1>Класс и экземпляр</h1>
 
 </section>
-<section id="sec-j25-lecture-objects-invariants-objects" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-objects" class="slide level2 continuation">
 <h2>Поля экземпляра</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a aria-label="1"></a><span class="kw">class</span> <span class="bu">Book</span> <span class="op">{</span></span>
 <span id="cb1-2"><a aria-label="2"></a>    <span class="bu">String</span> title<span class="op">;</span></span>
 <span id="cb1-3"><a aria-label="3"></a>    <span class="dt">boolean</span> borrowed<span class="op">;</span></span>
 <span id="cb1-4"><a aria-label="4"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Поле <code>title</code> хранит ссылку на строку названия, <code>borrowed</code> — признак выдачи: <code>false</code> означает доступную книгу, <code>true</code> — выданную. Объявление класса определило эти поля; экземпляров <code>Book</code> пока не создано.</p>
-<p>Объекты и ссылки: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-objects" data-qrc-style="default" class="qrc-link" href="../theory/chapters/objects.html#sec-j25-theory-objects"><span>Глава 10</span></a>. <span class="citation" data-cites="bib-objects-schildt-classes"><a href="#/источники" role="doc-biblioref" onclick="">[5]</a></span></p>
+<p>Объекты и ссылки: <a data-qrc-style="default" data-qrc-custom="false" data-qrc-ref="theory:sec-theory-objects" class="qrc-link" href="../theory/objects.html#sec-theory-objects"><span>Глава 10</span></a>. <span class="citation" data-cites="bib-objects-schildt-classes"><a href="#/источники" role="doc-biblioref" onclick="">[5]</a></span></p>
 <aside class="notes">
 <p>Попросите указать тип каждого поля. Отделите число объявлений полей от числа книг, которые программа сможет создать с такими полями.</p>
 <style type="text/css">
@@ -258,7 +258,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-new" class="slide level2">
+<section id="sec-lecture-objects-invariants-new" class="slide level2">
 <h2>Создание объекта</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb2-1"><a aria-label="1"></a><span class="bu">Book</span> first <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">();</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>new Book()</code> создаёт экземпляр и даёт ссылку на него. Эта ссылка записывается в локальную переменную <code>first</code>. Начальное состояние:</p>
@@ -280,7 +280,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-declaration" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-declaration" class="slide level2 continuation">
 <h2>Присваивание локальной переменной</h2>
 <p>В отдельном опыте локальное объявление предшествует присваиванию:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb4-1"><a aria-label="1"></a><span class="bu">Book</span> pending<span class="op">;</span></span>
@@ -302,7 +302,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-two-objects" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-two-objects" class="slide level2 continuation">
 <h2>Состояние двух экземпляров</h2>
 <p>У созданной книги <code>first</code> зададим название и создадим вторую книгу:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb5-1"><a aria-label="1"></a>first<span class="op">.</span><span class="fu">title</span> <span class="op">=</span> <span class="st">"Java"</span><span class="op">;</span></span>
@@ -327,7 +327,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-references" class="slide level2">
+<section id="sec-lecture-objects-invariants-references" class="slide level2">
 <h2>Ссылочная переменная в Java и C++</h2>
 <p>В C++ локальная запись <code>Book object;</code> создаёт объект с автоматическим временем хранения, если класс допускает такую инициализацию. <code>Book* pointer = &amp;object;</code> создаёт отдельную переменную указателя; копирование указателя сохраняет доступ к общему объекту.</p>
 <p>В Java <code>Book first;</code> объявляет ссылочную переменную. Её значение можно заменить другой ссылкой. C++ <code>Book&amp; alias = object;</code> связывает ссылку с объектом; присваивание через <code>alias</code> действует на этот объект.</p>
@@ -346,7 +346,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-aliases" class="slide level2">
+<section id="sec-lecture-objects-invariants-aliases" class="slide level2">
 <h2>Общий объект</h2>
 <p>Книга <code>first</code> имеет название <code>Java</code> и пока доступна:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb7-1"><a aria-label="1"></a><span class="bu">Book</span> same <span class="op">=</span> first<span class="op">;</span></span>
@@ -370,7 +370,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-identity" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-identity" class="slide level2 continuation">
 <h2>Тождество и содержимое объекта</h2>
 <p>У новой книги установлены те же значения обоих полей:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb9-1"><a aria-label="1"></a><span class="bu">Book</span> other <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">();</span></span>
@@ -393,11 +393,11 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-domain-identity" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-domain-identity" class="slide level2 continuation">
 <h2>Тождество экземпляра и номер книги</h2>
 <p>Номер экземпляра в каталоге определяет, какую физическую книгу выдали. Два чтения записи с одним номером могут создать два Java-объекта: каждый хранит своё представление состояния этой книги.</p>
 <p><code>==</code> проверяет тождество объектов в программе. Сопоставление номера позволяет связать загруженные данные с одной предметной сущностью. При обновлении каталога правило поиска определяет, чьё состояние изменится. Одинакового названия для выбора экземпляра недостаточно.</p>
-<p>Предметное равенство: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-objects-identity" data-qrc-style="default" class="qrc-link" href="../theory/chapters/objects.html#sec-j25-theory-objects-identity">Тождество экземпляра и обозначение книги</a>.</p>
+<p>Предметное равенство: <a data-qrc-style="default" data-qrc-custom="false" data-qrc-ref="theory:sec-theory-objects-identity" class="qrc-link" href="../theory/objects.html#sec-theory-objects-identity">Тождество экземпляра и обозначение книги</a>.</p>
 <aside class="notes">
 <p>Предложите две ситуации: два физических экземпляра одного издания и два чтения одной записи. В каждой попросите посчитать номера каталога и объекты программы.</p>
 <style type="text/css">
@@ -412,7 +412,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-reassignment" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-reassignment" class="slide level2 continuation">
 <h2>Переназначение переменной</h2>
 <p>До присваивания <code>first</code> и <code>same</code> ссылаются на выданную книгу <code>A</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb10-1"><a aria-label="1"></a>same <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">();</span></span>
@@ -436,7 +436,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-null" class="slide level2">
+<section id="sec-lecture-objects-invariants-null" class="slide level2">
 <h2>Отсутствие объекта</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb12-1"><a aria-label="1"></a><span class="bu">Book</span> missing <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
 <span id="cb12-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>missing <span class="op">==</span> <span class="kw">null</span><span class="op">);</span> <span class="co">// true</span></span>
@@ -456,7 +456,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-null-contract" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-null-contract" class="slide level2 continuation">
 <h2>Требования к объекту и его полю</h2>
 <p>Поиск может завершиться без книги. Операция чтения названия требует найденную книгу с заданным названием:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb13-1"><a aria-label="1"></a><span class="dt">static</span> <span class="bu">String</span> <span class="fu">titleOf</span><span class="op">(</span><span class="bu">Book</span> book<span class="op">)</span> <span class="op">{</span></span>
@@ -479,7 +479,7 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-objects-invariants-arguments" class="title-slide slide level1 center">
+<section id="sec-lecture-objects-invariants-arguments" class="title-slide slide level1 center">
 <h1>Передача значений аргументов</h1>
 <p>Метод получает существующую книгу и устанавливает признак выдачи:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb14-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">void</span> <span class="fu">borrow</span><span class="op">(</span><span class="bu">Book</span> book<span class="op">)</span> <span class="op">{</span></span>
@@ -490,7 +490,7 @@
 <span id="cb15-2"><a aria-label="2"></a>first<span class="op">.</span><span class="fu">title</span> <span class="op">=</span> <span class="st">"Java"</span><span class="op">;</span></span>
 <span id="cb15-3"><a aria-label="3"></a><span class="fu">borrow</span><span class="op">(</span>first<span class="op">);</span></span>
 <span id="cb15-4"><a aria-label="4"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first<span class="op">.</span><span class="fu">borrowed</span><span class="op">);</span> <span class="co">// true</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Параметр <code>book</code> получает копию ссылки из <code>first</code>. Обе переменные обращаются к одной книге; запись в её поле меняет <code>false</code> на <code>true</code>. Передача по значению: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-objects-arguments" data-qrc-style="default" class="qrc-link" href="../theory/chapters/objects.html#sec-j25-theory-objects-arguments">Передача значений аргументов</a>.</p>
+<p>Параметр <code>book</code> получает копию ссылки из <code>first</code>. Обе переменные обращаются к одной книге; запись в её поле меняет <code>false</code> на <code>true</code>. Передача по значению: <a data-qrc-style="default" data-qrc-custom="false" data-qrc-ref="theory:sec-theory-objects-arguments" class="qrc-link" href="../theory/objects.html#sec-theory-objects-arguments">Передача значений аргументов</a>.</p>
 <aside class="notes">
 <p>Добавьте к переменной first отдельную переменную параметра book, проведите обе стрелки к новой книге. Попросите найти получателя записи в теле borrow и назвать состояние книги после возврата.</p>
 <style type="text/css">
@@ -505,7 +505,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-replace" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-replace" class="slide level2 continuation">
 <h2>Параметр как локальная переменная</h2>
 <p>После <code>borrow(first)</code> книга <code>first</code> выдана и называется <code>Java</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb16-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">void</span> <span class="fu">replace</span><span class="op">(</span><span class="bu">Book</span> book<span class="op">)</span> <span class="op">{</span></span>
@@ -531,7 +531,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-return" class="slide level2">
+<section id="sec-lecture-objects-invariants-return" class="slide level2">
 <h2>Возвращаемая ссылка</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb18-1"><a aria-label="1"></a><span class="dt">static</span> <span class="bu">Book</span> <span class="fu">create</span><span class="op">(</span><span class="bu">String</span> title<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb18-2"><a aria-label="2"></a>    <span class="bu">Book</span> result <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">();</span></span>
@@ -555,7 +555,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-copy" class="slide level2">
+<section id="sec-lecture-objects-invariants-copy" class="slide level2">
 <h2>Копирование полей объекта</h2>
 <p>Исходная книга <code>first</code> называется <code>Java</code> и выдана:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb19-1"><a aria-label="1"></a><span class="bu">Book</span> copy <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">();</span></span>
@@ -580,7 +580,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-lifetime" class="slide level2">
+<section id="sec-lecture-objects-invariants-lifetime" class="slide level2">
 <h2>Достижимость объекта</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb20-1"><a aria-label="1"></a><span class="bu">Book</span> kept <span class="op">=</span> <span class="fu">create</span><span class="op">(</span><span class="st">"Java"</span><span class="op">);</span></span>
 <span id="cb20-2"><a aria-label="2"></a><span class="bu">Book</span> alias <span class="op">=</span> kept<span class="op">;</span></span>
@@ -602,10 +602,10 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-resources" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-resources" class="slide level2 continuation">
 <h2>Закрытие внешнего ресурса</h2>
 <p>Сборщик мусора освобождает память недостижимых объектов. Присваивание <code>null</code> удаляет одну ссылку; остальные пути могут сохраниться. Недостижимость не задаёт момент освобождения памяти.</p>
-<p>Открытый файл требует вызова <code>close</code>. Конструкция <code>try</code> с ресурсами вызывает <code>close</code> для успешно инициализированного ресурса, отличного от <code>null</code>, при выходе из блока, в том числе через <code>return</code> или исключение. Закрытие: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-resources" data-qrc-style="default" class="qrc-link" href="../theory/chapters/resources.html#sec-j25-theory-resources"><span>Глава 22</span></a>.</p>
+<p>Открытый файл требует вызова <code>close</code>. Конструкция <code>try</code> с ресурсами вызывает <code>close</code> для успешно инициализированного ресурса, отличного от <code>null</code>, при выходе из блока, в том числе через <code>return</code> или исключение. Закрытие: <a data-qrc-style="default" data-qrc-custom="false" data-qrc-ref="theory:sec-theory-resources" class="qrc-link" href="../theory/resources.html#sec-theory-resources"><span>Глава 22</span></a>.</p>
 <p>Выход автоматического объекта C++ из области вызывает его деструктор. Окончание области локальной переменной Java такого действия с объектом не выполняет.</p>
 <aside class="notes">
 <p>Предложите закрыть файл, сохранив ссылку на представляющий его объект. Попросите назвать выполненное действие и объяснить, почему достижимость объекта совместима с закрытым файлом. Затем сопоставьте это с одной записью null без вызова close.</p>
@@ -622,14 +622,14 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-objects-invariants-invariant" class="title-slide slide level1 center">
+<section id="sec-lecture-objects-invariants-invariant" class="title-slide slide level1 center">
 <h1>Инвариант состояния</h1>
 <p>Объект бронирования хранит вместимость <code>capacity</code> и число занятых мест <code>occupied</code>. <strong>Инвариант</strong> задаёт допустимое состояние между обращениями клиента:</p>
 <ul>
 <li><code>capacity &gt; 0</code>;</li>
 <li><code>0 &lt;= occupied &lt;= capacity</code>.</li>
 </ul>
-<p>Конструктор устанавливает эти условия, доступные операции сохраняют их. Для комнаты на 30 мест допустимы и пустое состояние, и занятость 30. Запрос занять ещё 8 мест допустим, только если свободно хотя бы 8. Условие запроса зависит от текущего состояния объекта. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-classes-invariant" data-qrc-style="default" class="qrc-link" href="../theory/chapters/classes.html#sec-j25-theory-classes-invariant">Сохранение инварианта</a>. <span class="citation" data-cites="bib-objects-epam-classes"><a href="#/источники" role="doc-biblioref" onclick="">[2]</a></span></p>
+<p>Конструктор устанавливает эти условия, доступные операции сохраняют их. Для комнаты на 30 мест допустимы и пустое состояние, и занятость 30. Запрос занять ещё 8 мест допустим, только если свободно хотя бы 8. Условие запроса зависит от текущего состояния объекта. <a data-qrc-style="default" data-qrc-custom="false" data-qrc-ref="theory:sec-theory-classes-invariant" class="qrc-link" href="../theory/classes.html#sec-theory-classes-invariant">Сохранение инварианта</a>. <span class="citation" data-cites="bib-objects-epam-classes"><a href="#/источники" role="doc-biblioref" onclick="">[2]</a></span></p>
 <aside class="notes">
 <p>Назовите occupied = 25 при capacity = 30. Попросите сначала проверить само состояние, затем запрос на 8 мест. Найдите условие запроса, которое нарушено при сохранённом инварианте.</p>
 <style type="text/css">
@@ -644,7 +644,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-bad-fields" class="slide level2">
+<section id="sec-lecture-objects-invariants-bad-fields" class="slide level2">
 <h2>Нарушение инварианта прямой записью</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb22-1"><a aria-label="1"></a><span class="kw">class</span> OpenReservation <span class="op">{</span></span>
 <span id="cb22-2"><a aria-label="2"></a>    <span class="dt">int</span> capacity<span class="op">;</span></span>
@@ -668,7 +668,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-private-fields" class="slide level2">
+<section id="sec-lecture-objects-invariants-private-fields" class="slide level2">
 <h2>Закрытое представление</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb23-1"><a aria-label="1"></a><span class="dt">final</span> <span class="kw">class</span> Reservation <span class="op">{</span></span>
 <span id="cb23-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="dt">int</span> capacity<span class="op">;</span></span>
@@ -691,7 +691,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-construct" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-construct" class="slide level2 continuation">
 <h2>Допустимое начальное состояние</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb24-1"><a aria-label="1"></a><span class="fu">Reservation</span><span class="op">(</span><span class="dt">int</span> capacity<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb24-2"><a aria-label="2"></a>    <span class="cf">if</span> <span class="op">(</span>capacity <span class="op">&lt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
@@ -715,7 +715,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-available" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-available" class="slide level2 continuation">
 <h2>Вычисляемое состояние</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb25-1"><a aria-label="1"></a><span class="dt">int</span> <span class="fu">available</span><span class="op">()</span> <span class="op">{</span></span>
 <span id="cb25-2"><a aria-label="2"></a>    <span class="cf">return</span> capacity <span class="op">-</span> occupied<span class="op">;</span></span>
@@ -736,7 +736,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-reserve" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-reserve" class="slide level2 continuation">
 <h2>Проверка запроса до изменения</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb26-1"><a aria-label="1"></a><span class="dt">void</span> <span class="fu">reserve</span><span class="op">(</span><span class="dt">int</span> count<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb26-2"><a aria-label="2"></a>    <span class="cf">if</span> <span class="op">(</span>count <span class="op">&lt;=</span> <span class="dv">0</span> <span class="op">||</span> count <span class="op">&gt;</span> <span class="fu">available</span><span class="op">())</span> <span class="op">{</span></span>
@@ -760,7 +760,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-reservation-result" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-reservation-result" class="slide level2 continuation">
 <h2>Наблюдение состояния после отказа</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb27-1"><a aria-label="1"></a>Reservation room <span class="op">=</span> <span class="kw">new</span> <span class="fu">Reservation</span><span class="op">(</span><span class="dv">30</span><span class="op">);</span></span>
 <span id="cb27-2"><a aria-label="2"></a>room<span class="op">.</span><span class="fu">reserve</span><span class="op">(</span><span class="dv">8</span><span class="op">);</span></span>
@@ -786,7 +786,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-setter" class="slide level2">
+<section id="sec-lecture-objects-invariants-setter" class="slide level2">
 <h2>Операция изменения состояния</h2>
 <p>При занятости 8 действие <code>reserve(8)</code> занимает ещё восемь мест: занятость становится <code>16</code>. Присваивающий метод <code>setOccupied(8)</code> оставил бы занятость равной <code>8</code>.</p>
 <p>Для бронирования клиент сообщает размер новой группы. Метод сам читает текущую занятость, проверяет остаток и выполняет переход. Setter требует от клиента заранее получить итоговое число; отдельная операция исправления учёта может иметь собственные условия доступа.</p>
@@ -823,7 +823,7 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-objects-invariants-constructors" class="title-slide slide level1 center">
+<section id="sec-lecture-objects-invariants-constructors" class="title-slide slide level1 center">
 <h1>Конструирование экземпляра</h1>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb28-1"><a aria-label="1"></a><span class="kw">class</span> <span class="bu">Box</span> <span class="op">{</span></span>
 <span id="cb28-2"><a aria-label="2"></a>    <span class="bu">Box</span><span class="op">(</span><span class="dt">int</span> width<span class="op">,</span> <span class="dt">int</span> height<span class="op">)</span> <span class="op">{</span> <span class="co">/* инициализация */</span> <span class="op">}</span></span>
@@ -845,7 +845,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-this" class="slide level2">
+<section id="sec-lecture-objects-invariants-this" class="slide level2">
 <h2>Инициализация полей через <code>this</code></h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb29-1"><a aria-label="1"></a><span class="kw">class</span> <span class="bu">Box</span> <span class="op">{</span></span>
 <span id="cb29-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="dt">int</span> width<span class="op">;</span></span>
@@ -872,7 +872,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-delegation" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-delegation" class="slide level2 continuation">
 <h2>Делегирование между конструкторами</h2>
 <p>Дополнительный конструктор того же <code>Box</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb30-1"><a aria-label="1"></a><span class="bu">Box</span><span class="op">(</span><span class="dt">int</span> side<span class="op">)</span> <span class="op">{</span></span>
@@ -894,7 +894,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-validation" class="slide level2">
+<section id="sec-lecture-objects-invariants-validation" class="slide level2">
 <h2>Диапазон результата метода</h2>
 <p>Метод площади использует положительные размеры <code>Box</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb31-1"><a aria-label="1"></a><span class="dt">int</span> <span class="fu">area</span><span class="op">()</span> <span class="op">{</span></span>
@@ -916,7 +916,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-initialization" class="slide level2">
+<section id="sec-lecture-objects-invariants-initialization" class="slide level2">
 <h2>Порядок инициализации экземпляра</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb32-1"><a aria-label="1"></a><span class="kw">class</span> Trace <span class="op">{</span></span>
 <span id="cb32-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">int</span> value <span class="op">=</span> <span class="fu">init</span><span class="op">();</span></span>
@@ -943,7 +943,7 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-objects-invariants-methods" class="title-slide slide level1 center">
+<section id="sec-lecture-objects-invariants-methods" class="title-slide slide level1 center">
 <h1>Объявление метода</h1>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb33-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">max</span><span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb33-2"><a aria-label="2"></a>    <span class="cf">return</span> a <span class="op">&gt;=</span> b <span class="op">?</span> a <span class="op">:</span> b<span class="op">;</span></span>
@@ -966,14 +966,14 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-overload" class="slide level2">
+<section id="sec-lecture-objects-invariants-overload" class="slide level2">
 <h2>Выбор перегруженного объявления</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb34-1"><a aria-label="1"></a><span class="dt">static</span> <span class="bu">String</span> <span class="fu">describe</span><span class="op">(</span><span class="dt">int</span> value<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="st">"int"</span><span class="op">;</span> <span class="op">}</span></span>
 <span id="cb34-2"><a aria-label="2"></a><span class="dt">static</span> <span class="bu">String</span> <span class="fu">describe</span><span class="op">(</span><span class="bu">String</span> value<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="st">"String"</span><span class="op">;</span> <span class="op">}</span></span>
 <span id="cb34-3"><a aria-label="3"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="fu">describe</span><span class="op">(</span><span class="dv">3</span><span class="op">));</span>   <span class="co">// int</span></span>
 <span id="cb34-4"><a aria-label="4"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="fu">describe</span><span class="op">(</span><span class="st">"3"</span><span class="op">));</span> <span class="co">// String</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Перегруженные методы имеют одно имя и различающиеся списки типов параметров. По типу выражения аргумента компилятор выбирает применимое объявление. <code>3</code> имеет тип <code>int</code>, <code>"3"</code> — <code>String</code>.</p>
-<p>Объявления с одинаковыми параметрами и разными возвращаемыми типами конфликтуют: возвращаемый тип не различает перегрузки. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-classes-overload" data-qrc-style="default" class="qrc-link" href="../theory/chapters/classes.html#sec-j25-theory-classes-overload">Перегрузка и выбор объявления</a>.</p>
+<p>Объявления с одинаковыми параметрами и разными возвращаемыми типами конфликтуют: возвращаемый тип не различает перегрузки. <a data-qrc-style="default" data-qrc-custom="false" data-qrc-ref="theory:sec-theory-classes-overload" class="qrc-link" href="../theory/classes.html#sec-theory-classes-overload">Перегрузка и выбор объявления</a>.</p>
 <aside class="notes">
 <p>В первом объявлении предложите заменить тип параметра int на long и предсказать вызов с аргументом 3. Объясните допустимое расширение int до long. Затем предложите добавить int describe(String value) и установить, почему такое объявление конфликтует с уже существующим.</p>
 <style type="text/css">
@@ -989,7 +989,7 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-objects-invariants-static" class="title-slide slide level1 center">
+<section id="sec-lecture-objects-invariants-static" class="title-slide slide level1 center">
 <h1>Статические члены</h1>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb35-1"><a aria-label="1"></a><span class="dt">final</span> <span class="kw">class</span> Ticket <span class="op">{</span></span>
 <span id="cb35-2"><a aria-label="2"></a>    <span class="kw">private</span> <span class="dt">static</span> <span class="dt">long</span> nextId <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
@@ -1012,7 +1012,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-static-result" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-static-result" class="slide level2 continuation">
 <h2>Общий счётчик и номера экземпляров</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb36-1"><a aria-label="1"></a>Ticket first <span class="op">=</span> <span class="kw">new</span> <span class="fu">Ticket</span><span class="op">();</span></span>
 <span id="cb36-2"><a aria-label="2"></a>Ticket second <span class="op">=</span> <span class="kw">new</span> <span class="fu">Ticket</span><span class="op">();</span></span>
@@ -1035,7 +1035,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-static-this" class="slide level2">
+<section id="sec-lecture-objects-invariants-static-this" class="slide level2">
 <h2>Статический метод без получателя</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb38-1"><a aria-label="1"></a><span class="kw">class</span> Numbers <span class="op">{</span></span>
 <span id="cb38-2"><a aria-label="2"></a>    <span class="dt">static</span> <span class="dt">int</span> <span class="fu">add</span><span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> a <span class="op">+</span> b<span class="op">;</span> <span class="op">}</span></span>
@@ -1056,7 +1056,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-final" class="slide level2">
+<section id="sec-lecture-objects-invariants-final" class="slide level2">
 <h2>Однократное присваивание ссылки</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb39-1"><a aria-label="1"></a><span class="dt">final</span> <span class="dt">int</span><span class="op">[]</span> values <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">};</span></span>
 <span id="cb39-2"><a aria-label="2"></a>values<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> <span class="dv">9</span><span class="op">;</span></span>
@@ -1077,10 +1077,10 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-immutable" class="slide level2">
+<section id="sec-lecture-objects-invariants-immutable" class="slide level2">
 <h2>Неизменяемое наблюдаемое значение</h2>
 <p>У неизменяемого объекта наблюдаемое значение сохраняется после создания. Например, общий <code>String</code> сохраняет последовательность символов при доступе через все ссылки.</p>
-<p>Если объект хранит изменяемый массив, клиент может сохранить входную ссылку и позднее изменить его компоненты. При выдаче той же ссылки наружу появляется ещё один путь изменения. Защита собственного состояния требует решения на обеих границах: какие данные копируются при входе и какие доступны в результате метода. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-classes-sharing" data-qrc-style="default" class="qrc-link" href="../theory/chapters/classes.html#sec-j25-theory-classes-sharing">Закрытые поля и разделяемое изменяемое состояние</a>.</p>
+<p>Если объект хранит изменяемый массив, клиент может сохранить входную ссылку и позднее изменить его компоненты. При выдаче той же ссылки наружу появляется ещё один путь изменения. Защита собственного состояния требует решения на обеих границах: какие данные копируются при входе и какие доступны в результате метода. <a data-qrc-style="default" data-qrc-custom="false" data-qrc-ref="theory:sec-theory-classes-sharing" class="qrc-link" href="../theory/classes.html#sec-theory-classes-sharing">Закрытые поля и разделяемое изменяемое состояние</a>.</p>
 <aside class="notes">
 <p>Предложите объект с private final String[] names и клиентскую ссылку на переданный массив. Попросите назвать допустимую запись клиента, которая изменит наблюдаемое имя. Затем добавьте копию только на входе и проверьте, что остаётся при возврате внутреннего массива.</p>
 <style type="text/css">
@@ -1096,7 +1096,7 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-objects-invariants-book-contract" class="title-slide slide level1 center">
+<section id="sec-lecture-objects-invariants-book-contract" class="title-slide slide level1 center">
 <h1>Защищённое состояние книги</h1>
 <p>Теперь <code>Book</code> устанавливает допустимое название при создании и закрывает поля от прямых записей клиента:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb40-1"><a aria-label="1"></a><span class="kw">public</span> <span class="dt">final</span> <span class="kw">class</span> <span class="bu">Book</span> <span class="op">{</span></span>
@@ -1122,7 +1122,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-book-contract-part-1" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-book-contract-part-1" class="slide level2 continuation">
 <h2>Операция выдачи</h2>
 <p>Методы того же класса <code>Book</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb41-1"><a aria-label="1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">title</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> title<span class="op">;</span> <span class="op">}</span></span>
@@ -1147,7 +1147,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-book-client" class="slide level2">
+<section id="sec-lecture-objects-invariants-book-client" class="slide level2">
 <h2>Общее состояние через защищённый интерфейс</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb42-1"><a aria-label="1"></a><span class="bu">Book</span> first <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">(</span><span class="st">"Java"</span><span class="op">);</span></span>
 <span id="cb42-2"><a aria-label="2"></a><span class="bu">Book</span> same <span class="op">=</span> first<span class="op">;</span></span>
@@ -1174,7 +1174,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-route" class="slide level2">
+<section id="sec-lecture-objects-invariants-route" class="slide level2">
 <h2>Условия доступного перехода</h2>
 <p>Каждый вызов ниже начинается с указанного состояния:</p>
 <table class="caption-top">
@@ -1223,7 +1223,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-design-check" class="slide level2">
+<section id="sec-lecture-objects-invariants-design-check" class="slide level2">
 <h2>Отказ при создании и изменении объекта</h2>
 <p><code>new Reservation(30)</code> устанавливает пустую комнату на 30 мест. <code>reserve(8)</code> меняет занятость, <code>available()</code> возвращает <code>22</code>.</p>
 <p>Отрицательная вместимость прерывает создание до получения результата. Превышение свободного остатка прерывает действие над существующим объектом и сохраняет его поля.</p>
@@ -1241,11 +1241,11 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-exit" class="slide level2">
+<section id="sec-lecture-objects-invariants-exit" class="slide level2">
 <h2>Сохранение данных при отказе</h2>
 <p>Стек добавляет элемент на вершину и извлекает последний добавленный. При ёмкости 2 помещения <code>A</code> и <code>B</code> заполняют стек. Отклонённое помещение <code>C</code> должно сохранить оба символа: следующие извлечения дают <code>B</code>, затем <code>A</code>.</p>
 <p>Если проверка заполнения выполняется после изменения вершины, сообщение об отказе может сопровождать потерю прежних данных. Последующие чтения обнаруживают это нарушение: у стека — извлечение, у комнаты — <code>available()</code>, у книги — <code>borrowed()</code>.</p>
-<p>Защита состояния: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-classes-invariant" data-qrc-style="default" class="qrc-link" href="../theory/chapters/classes.html#sec-j25-theory-classes-invariant">Сохранение инварианта</a>.</p>
+<p>Защита состояния: <a data-qrc-style="default" data-qrc-custom="false" data-qrc-ref="theory:sec-theory-classes-invariant" class="qrc-link" href="../theory/classes.html#sec-theory-classes-invariant">Сохранение инварианта</a>.</p>
 <aside class="notes">
 <p>Попросите описать ошибочную реализацию, которая сперва перезаписывает верхний элемент, затем сообщает отказ. Предложите предсказать два последующих извлечения и сопоставить их с требуемыми B и A.</p>
 <style type="text/css">
@@ -1261,14 +1261,14 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-objects-invariants-additional" class="title-slide slide level1 center">
+<section id="sec-lecture-objects-invariants-additional" class="title-slide slide level1 center">
 <h1>Дополнительные разборы</h1>
 
 </section>
-<section id="sec-j25-lecture-objects-invariants-deep-copy" class="slide level2">
+<section id="sec-lecture-objects-invariants-deep-copy" class="slide level2">
 <h2>Граница копируемого графа</h2>
 <p>Новый внешний объект может хранить ссылки на прежние вложенные объекты. Для независимых меток книги нужен собственный изменяемый контейнер. Для двух книг одного автора общая запись об авторе позволяет наблюдать исправление его данных через обе книги.</p>
-<p>Копирование всех узлов потребовало бы сохранять отношения между копиями и учитывать циклы. Поэтому границу независимости задаёт модель: какие изменения должны оставаться местными, какие — общими. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-objects-copy-depth" data-qrc-style="default" class="qrc-link" href="../theory/chapters/objects.html#sec-j25-theory-objects-copy-depth">Граница независимого состояния</a>.</p>
+<p>Копирование всех узлов потребовало бы сохранять отношения между копиями и учитывать циклы. Поэтому границу независимости задаёт модель: какие изменения должны оставаться местными, какие — общими. <a data-qrc-style="default" data-qrc-custom="false" data-qrc-ref="theory:sec-theory-objects-copy-depth" class="qrc-link" href="../theory/objects.html#sec-theory-objects-copy-depth">Граница независимого состояния</a>.</p>
 <aside class="notes">
 <p>Предложите книге хранить изменяемые метки и общую запись об авторе. Попросите назвать данные, которые должны сохранять независимость при копировании книги, и данные, общность которых нужна каталогу.</p>
 <p>Предложите исправить имя общего автора после создания второй книги. Попросите сравнить наблюдение при общей записи и при независимых копиях, затем выбрать вариант для единого каталога авторов.</p>
@@ -1284,7 +1284,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-shared-copy" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-shared-copy" class="slide level2 continuation">
 <h2>Общая коллекция в копии объекта</h2>
 <p><code>List</code> хранит упорядоченную последовательность, <code>ArrayList</code> позволяет менять её состав. <code>add</code> дописывает элемент в конец:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb43-1"><a aria-label="1"></a><span class="kw">class</span> TaggedBook <span class="op">{</span></span>
@@ -1311,7 +1311,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-input-alias" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-input-alias" class="slide level2 continuation">
 <h2>Копирование входного контейнера</h2>
 <p>Внешний код передаёт изменяемый список имён и сохраняет свою ссылку. Прямое сохранение этой ссылки в поле оставляет общий контейнер: последующий <code>clear()</code> клиента удалит все имена и для владельца поля.</p>
 <p>Конструктор <code>new ArrayList&lt;&gt;(initial)</code> создаёт собственную структуру списка и копирует ссылки на элементы. Очистка исходного списка сохраняет состав копии. Здесь элементы — неизменяемые строки, поэтому общность самих имён допускается.</p>
@@ -1329,7 +1329,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-snapshot" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-snapshot" class="slide level2 continuation">
 <h2>Снимок и представление списка</h2>
 <p>Список и все имена в этом опыте отличны от <code>null</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb45-1"><a aria-label="1"></a><span class="dt">final</span> <span class="kw">class</span> GuestList <span class="op">{</span></span>
@@ -1360,7 +1360,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-guest-client" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-guest-client" class="slide level2 continuation">
 <h2>Наблюдение изменений через представление</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb46-1"><a aria-label="1"></a><span class="dt">var</span> guests <span class="op">=</span> <span class="kw">new</span> <span class="fu">GuestList</span><span class="op">(</span>java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="st">"Ann"</span><span class="op">));</span></span>
 <span id="cb46-2"><a aria-label="2"></a><span class="dt">var</span> snapshot <span class="op">=</span> guests<span class="op">.</span><span class="fu">snapshot</span><span class="op">();</span></span>
@@ -1369,7 +1369,7 @@
 <span id="cb46-5"><a aria-label="5"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>snapshot<span class="op">);</span> <span class="co">// [Ann]</span></span>
 <span id="cb46-6"><a aria-label="6"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>view<span class="op">);</span>     <span class="co">// [Ann, Bob]</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Снимок сохранил состав на момент вызова <code>snapshot()</code>. Через представление виден изменённый состав списка владельца. Запрет <code>view.add(...)</code> ограничивает операции через представление; сам владелец продолжает менять свой список через <code>guests.add(...)</code>.</p>
-<p>Контракты списков: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-collections-snapshots" data-qrc-style="default" class="qrc-link" href="../theory/chapters/collections.html#sec-j25-theory-collections-snapshots">Общая ссылка, представление, копия и снимок</a>.</p>
+<p>Контракты списков: <a data-qrc-style="default" data-qrc-custom="false" data-qrc-ref="theory:sec-theory-collections-snapshots" class="qrc-link" href="../theory/collections.html#sec-theory-collections-snapshots">Общая ссылка, представление, копия и снимок</a>.</p>
 <aside class="notes">
 <p>Сопоставьте оба результата с прогнозом. Затем предложите изменить список через snapshot.add и view.add; объясните отказ обоих действий при разном наблюдении изменений владельца.</p>
 <style type="text/css">
@@ -1384,7 +1384,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-cpp-argument" class="slide level2">
+<section id="sec-lecture-objects-invariants-cpp-argument" class="slide level2">
 <h2>Передача указателя в C++</h2>
 <p>Сравнение использует начальный <code>Book</code> с открытым полем <code>borrowed</code>.</p>
 <table class="caption-top">
@@ -1433,7 +1433,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-python" class="slide level2">
+<section id="sec-lecture-objects-invariants-python" class="slide level2">
 <h2>Имена и статическая проверка</h2>
 <p>В Python присваивание <code>second = first</code> может связать два имени с одним изменяемым объектом. Изменение его поля через <code>second</code> тогда наблюдается через <code>first</code>, как в опыте с общей книгой Java.</p>
 <p>В Java объявленный тип переменной определяет доступные члены и допустимые значения. Вызов метода, отсутствующего в этом типе, отвергается при компиляции. Python проверяет доступность атрибута у объекта во время выполнения соответствующего обращения.</p>
@@ -1451,7 +1451,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-nullable-comparison" class="slide level2">
+<section id="sec-lecture-objects-invariants-nullable-comparison" class="slide level2">
 <h2>Обязательное и допускающее отсутствие значение</h2>
 <p>В Kotlin различаются <code>String</code> и <code>String?</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode numberSource kotlin number-lines code-with-copy"><code class="sourceCode kotlin"><span id="cb47-1"><a aria-label="1"></a><span class="kw">fun</span> <span class="fu">titleLength</span><span class="op">(</span><span class="va">title</span><span class="op">:</span> <span class="dt">String</span><span class="op">):</span> <span class="dt">Int</span> <span class="op">=</span> title<span class="op">.</span>length</span>
@@ -1472,7 +1472,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-null-overload" class="slide level2">
+<section id="sec-lecture-objects-invariants-null-overload" class="slide level2">
 <h2>Неоднозначность перегрузки</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb48-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">void</span> <span class="fu">show</span><span class="op">(</span><span class="bu">String</span> value<span class="op">)</span> <span class="op">{</span> <span class="op">}</span></span>
 <span id="cb48-2"><a aria-label="2"></a><span class="dt">static</span> <span class="dt">void</span> <span class="fu">show</span><span class="op">(</span><span class="bu">Integer</span> value<span class="op">)</span> <span class="op">{</span> <span class="op">}</span></span>
@@ -1494,7 +1494,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-java25" class="slide level2">
+<section id="sec-lecture-objects-invariants-java25" class="slide level2">
 <h2>Проверка параметра до конструктора суперкласса</h2>
 <p>В Java 25 допускаются действия до явного <code>super(...)</code> или <code>this(...)</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb49-1"><a aria-label="1"></a><span class="kw">class</span> Parent <span class="op">{</span></span>
@@ -1522,11 +1522,11 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-early-construction" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-early-construction" class="slide level2 continuation">
 <h2>Раннее конструирование</h2>
 <p>Участок перед явным вызовом другого конструктора называется прологом. Он может проверять параметры, вычислять локальные значения и вызывать статические методы. Обращение к создаваемому экземпляру ограничено.</p>
 <p>В прологе разрешено простым присваиванием записать собственное поле, объявленное в этом классе без инициализатора. Такая запись запрещена во вложенной лямбде или внутреннем классе. Чтение полей текущего объекта, вызов его методов и передача его <code>this</code> внешнему коду запрещены; присваивание унаследованного поля тоже запрещено.</p>
-<p>Без явного <code>this(...)</code> или <code>super(...)</code> конструктор обычного класса, отличного от <code>Object</code>, неявно начинает с <code>super()</code>. Написанные операторы образуют эпилог. <span class="citation" data-cites="bib-jls-25"><a href="#/источники" role="doc-biblioref" onclick="">[1, Разд. 8.8.7]</a> и 6.5.6.1</span> Правила инициализации: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-classes-constructor" data-qrc-style="default" class="qrc-link" href="../theory/chapters/classes.html#sec-j25-theory-classes-constructor">Конструкторы и проверка исходного состояния</a>.</p>
+<p>Без явного <code>this(...)</code> или <code>super(...)</code> конструктор обычного класса, отличного от <code>Object</code>, неявно начинает с <code>super()</code>. Написанные операторы образуют эпилог. <span class="citation" data-cites="bib-jls-25"><a href="#/источники" role="doc-biblioref" onclick="">[1, Разд. 8.8.7]</a> и 6.5.6.1</span> Правила инициализации: <a data-qrc-style="default" data-qrc-custom="false" data-qrc-ref="theory:sec-theory-classes-constructor" class="qrc-link" href="../theory/classes.html#sec-theory-classes-constructor">Конструкторы и проверка исходного состояния</a>.</p>
 <aside class="notes">
 <p>Для Child с предыдущего экрана предложите добавить своё поле int checked без инициализатора. Сравните допустимое checked = value с checked++, чтением this.value и передачей this в другой метод до super. Для каждого найдите разрешённую запись или запрещённое чтение.</p>
 <style type="text/css">
@@ -1541,10 +1541,10 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-escape" class="slide level2">
+<section id="sec-lecture-objects-invariants-escape" class="slide level2">
 <h2>Доступ к незавершённому объекту</h2>
 <p>В эпилоге конструктор может передать <code>this</code> внешнему объекту. Если тот сразу вызовет метод создаваемого экземпляра, он прочитает поля в состоянии на этот момент. Поэтому передача ссылки до завершения проверок и записей открывает доступ к состоянию, в котором инвариант ещё может быть нарушен.</p>
-<p>Вызов переопределяемого метода из конструктора суперкласса выбирает реализацию подкласса. Его инициализаторы ещё могут быть не выполнены, и метод увидит начальные значения полей. В C++ виртуальный вызов при конструировании ограничен строящейся частью иерархии. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-inheritance-constructor-call" data-qrc-style="default" class="qrc-link" href="../theory/chapters/inheritance.html#sec-j25-theory-inheritance-constructor-call">Переопределяемые методы в конструкторе</a>.</p>
+<p>Вызов переопределяемого метода из конструктора суперкласса выбирает реализацию подкласса. Его инициализаторы ещё могут быть не выполнены, и метод увидит начальные значения полей. В C++ виртуальный вызов при конструировании ограничен строящейся частью иерархии. <a data-qrc-style="default" data-qrc-custom="false" data-qrc-ref="theory:sec-theory-inheritance-constructor-call" class="qrc-link" href="../theory/inheritance.html#sec-theory-inheritance-constructor-call">Переопределяемые методы в конструкторе</a>.</p>
 <aside class="notes">
 <p>Предложите полю подкласса инициализатор со значением 7, а базовому конструктору — вызов метода, печатающего это поле. Попросите предсказать чтение до и после инициализатора подкласса. Условие: поле не записывается в прологе конструктора подкласса.</p>
 <style type="text/css">
@@ -1559,7 +1559,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-access" class="slide level2">
+<section id="sec-lecture-objects-invariants-access" class="slide level2">
 <h2>Модификаторы доступа</h2>
 <table class="caption-top">
 <colgroup>
@@ -1606,7 +1606,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-protected" class="slide level2 continuation">
+<section id="sec-lecture-objects-invariants-protected" class="slide level2 continuation">
 <h2>Получатель защищённого члена</h2>
 <p>В отдельной иерархии <code>Parent</code> объявляет <code>protected int value</code>, а <code>Child</code> расширяет его в другом пакете. В теле <code>Child</code> доступ к этому полю через ссылку требует, чтобы её статический тип был <code>Child</code> или его подтипом. Ссылки общего типа <code>Parent</code> для такого доступа недостаточно.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb50-1"><a aria-label="1"></a><span class="co">// В классе Child:</span></span>
@@ -1629,7 +1629,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-objects-invariants-prediction" class="slide level2">
+<section id="sec-lecture-objects-invariants-prediction" class="slide level2">
 <h2>Общая книга после переназначения</h2>
 <p>У <code>Book</code> с открытыми полями <code>create</code> создаёт доступную книгу, а <code>borrow</code> записывает <code>true</code> в поле полученной книги:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb51-1"><a aria-label="1"></a><span class="bu">Book</span> a <span class="op">=</span> <span class="fu">create</span><span class="op">(</span><span class="st">"Java"</span><span class="op">);</span></span>
@@ -2077,26 +2077,34 @@
     
 
 
-<script data-qrc-navigation>// Опубликованные цели сохраняют штатные ID Quarto. Обработчик раскрывает
+<script data-qrc-navigation>// @ts-check
+/// <reference path="../../../typecheck/browser.d.ts" />
+// Опубликованные цели сохраняют штатные ID Quarto. Обработчик раскрывает
 // существующее представление документа, не вводя учебных ролей и новых ID.
 (() => {
   if (new URL(location.href).searchParams.has("print-pdf")) return;
   let navigation = 0;
 
+  /** @param {URL} url */
   function hashId(url) {
     try { return decodeURIComponent(url.hash.replace(/^#\/?/, "")); }
     catch { return ""; } // Некорректный фрагмент внешней ссылки не должен нарушать работу страницы.
   }
 
+  /** @param {Element} target */
   function ancestors(target) {
+    /** @type {Element[]} */
     const nodes = [];
-    for (let node = target; node; node = node.parentElement) nodes.push(node);
+    /** @type {Element | null} */
+    let node = target;
+    for (; node; node = node.parentElement) nodes.push(node);
     return nodes.reverse();
   }
 
+  /** @param {Element[]} nodes @param {() => void} scroll */
   function openDisclosures(nodes, scroll) {
     for (const node of nodes) {
-      if (node.matches("details")) node.open = true;
+      if (node instanceof HTMLDetailsElement) node.open = true;
       if (!node.matches(".collapse:not(.show)")) continue;
 
       // Bootstrap управляет анимацией и состоянием переключателя.
@@ -2109,7 +2117,7 @@
         node.classList.add("show");
         if (!node.id) continue;
         for (const trigger of document.querySelectorAll("[aria-controls]")) {
-          if (!trigger.getAttribute("aria-controls").split(/\s+/).includes(node.id)) continue;
+          if (!(trigger.getAttribute("aria-controls") ?? "").split(/\s+/).includes(node.id)) continue;
           trigger.setAttribute("aria-expanded", "true");
           trigger.classList.remove("collapsed");
         }
@@ -2117,6 +2125,7 @@
     }
   }
 
+  /** @param {string} id */
   function revealTarget(id) {
     const target = id && document.getElementById(id);
     if (!target) return;
@@ -2159,8 +2168,8 @@
   window.addEventListener("hashchange", () => revealTarget(hashId(new URL(location.href))));
   document.addEventListener("click", event => {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.defaultPrevented) return;
-    const link = event.target.closest?.("a[href]");
-    if (!link || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
+    const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
+    if (!(link instanceof HTMLAnchorElement) || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
     const url = new URL(link.href, location.href);
     if (url.origin !== location.origin || url.pathname !== location.pathname || url.search !== location.search) return;
     // Повторный переход по тому же фрагменту URL не вызывает hashchange.
@@ -2169,12 +2178,14 @@
   }, true);
 })();
 </script>
-<script id="course-site-navigation">(function(){
+<script id="course-site-navigation">// @ts-check
+(function(){
 const base={"courseUrl":"https://bsu-rfct-afonenko-courses.github.io/Java/","rootHref":"../"};
 if(base){
  const course=new URL(base.courseUrl); course.pathname=course.pathname.replace(/\/$/,'')+'/';
  const root=new URL(base.rootHref,document.baseURI);
  for(const link of document.querySelectorAll('#quarto-header a[href],#quarto-sidebar a[href],.quarto-navbar a[href],.quarto-sidebar a[href]')){
+  if (!(link instanceof HTMLAnchorElement)) continue;
   const url=new URL(link.href,document.baseURI);
   if(url.origin===course.origin&&url.pathname.startsWith(course.pathname)){
    let path=url.pathname.slice(course.pathname.length); if(!path||path.endsWith('/')) path+='index.html';
@@ -2184,6 +2195,7 @@ if(base){
 }
 const targets=[].map(path=>new URL(path,document.baseURI));
 for(const link of document.querySelectorAll('a[href]')){
+ if (!(link instanceof HTMLAnchorElement)) continue;
  const url=new URL(link.href,document.baseURI);
  if(targets.some(target=>target.origin===url.origin&&(
   target.pathname===url.pathname || target.pathname.endsWith('/index.html')&&target.pathname.slice(0,-'index.html'.length)===url.pathname
@@ -2191,5 +2203,5 @@ for(const link of document.querySelectorAll('a[href]')){
   link.target='_blank'; link.rel=[...new Set([...link.rel.split(/\s+/).filter(Boolean),'noopener','noreferrer'])].join(' ');
  }
 }
-})();</script>
-</body></html>
+})();
+</script></body></html>

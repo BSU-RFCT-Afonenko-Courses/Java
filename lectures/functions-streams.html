@@ -6,16 +6,16 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-35fc0813589bbfbfa0b8ec974497eeb2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
 <link href="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.11.6">
+  <meta name="generator" content="quarto-1.11.5">
 
   <title>Лекции Java – Функции и последовательности</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
   <style>
@@ -123,7 +123,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-836333b27002cb1bbca9e7698ee01091.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-3ce18430e1250f8c2f6f98be2c9c7b18.css">
   <link rel="stylesheet" href="assets/lesson.css">
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -231,11 +231,11 @@
 
 </section>
 <section>
-<section id="sec-j25-lecture-functions-streams" class="title-slide slide level1 center">
+<section id="sec-lecture-functions-streams" class="title-slide slide level1 center">
 <h1>Функции и последовательности</h1>
 
 </section>
-<section id="sec-j25-lecture-functions-streams-source" class="slide level2">
+<section id="sec-lecture-functions-streams-source" class="slide level2">
 <h2>Исходный каталог</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a aria-label="1"></a><span class="dt">var</span> students <span class="op">=</span> <span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span></span>
 <span id="cb1-2"><a aria-label="2"></a>    <span class="kw">new</span> <span class="fu">Student</span><span class="op">(</span><span class="st">"s1"</span><span class="op">,</span> <span class="st">"Ada"</span><span class="op">,</span> <span class="dv">90</span><span class="op">),</span></span>
@@ -258,7 +258,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-context" class="slide level2">
+<section id="sec-lecture-functions-streams-context" class="slide level2">
 <h2>Одинаковый обход, разные решения</h2>
 <p>Для исходных записей оба правила сохраняют <code>s1</code> и <code>s3</code>. Если у <code>Ann</code> станет <code>50</code> баллов, отбор по имени сохранит её, а пороговый отбор исключит.</p>
 <table class="caption-top">
@@ -299,7 +299,7 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-functions-streams-group-1" class="title-slide slide level1 center">
+<section id="sec-lecture-functions-streams-group-1" class="title-slide slide level1 center">
 <h1>Передача условия отбора</h1>
 <aside class="notes">
 <p>Сформулировать переменную часть алгоритма: ответ для одного <code>Student</code>. Перейти от предметного требования к операции <code>test</code>, затем показать точку её вызова в цикле.</p>
@@ -315,7 +315,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-01" class="slide level2">
+<section id="sec-lecture-functions-streams-step-01" class="slide level2">
 <h2>Условие как параметр</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1"><a aria-label="1"></a>select(исходный список, правило)</span>
 <span id="cb2-2"><a aria-label="2"></a>              ↓</span>
@@ -337,7 +337,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-02" class="slide level2">
+<section id="sec-lecture-functions-streams-step-02" class="slide level2">
 <h2>Функциональный интерфейс</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb3-1"><a aria-label="1"></a><span class="at">@FunctionalInterface</span></span>
 <span id="cb3-2"><a aria-label="2"></a><span class="kw">interface</span> StudentTest <span class="op">{</span></span>
@@ -358,7 +358,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-03" class="slide level2">
+<section id="sec-lecture-functions-streams-step-03" class="slide level2">
 <h2>Вызов переданного правила</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb4-1"><a aria-label="1"></a><span class="dt">static</span> <span class="bu">List</span><span class="op">&lt;</span>Student<span class="op">&gt;</span> <span class="fu">select</span><span class="op">(</span><span class="bu">List</span><span class="op">&lt;</span>Student<span class="op">&gt;</span> source<span class="op">,</span> StudentTest rule<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb4-2"><a aria-label="2"></a>    <span class="dt">var</span> result <span class="op">=</span> <span class="kw">new</span> <span class="bu">ArrayList</span><span class="op">&lt;</span>Student<span class="op">&gt;();</span></span>
@@ -382,7 +382,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-object-callback" class="slide level2">
+<section id="sec-lecture-functions-streams-object-callback" class="slide level2">
 <h2>Анонимная реализация интерфейса</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb5-1"><a aria-label="1"></a>StudentTest condition <span class="op">=</span> <span class="kw">new</span> <span class="fu">StudentTest</span><span class="op">()</span> <span class="op">{</span></span>
 <span id="cb5-2"><a aria-label="2"></a>    <span class="at">@Override</span> <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">test</span><span class="op">(</span>Student student<span class="op">)</span> <span class="op">{</span></span>
@@ -405,7 +405,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-selection-trace" class="slide level2">
+<section id="sec-lecture-functions-streams-selection-trace" class="slide level2">
 <h2>Один проход отбора</h2>
 <table class="caption-top">
 <thead>
@@ -448,7 +448,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-04" class="slide level2">
+<section id="sec-lecture-functions-streams-step-04" class="slide level2">
 <h2>Лямбда условия отбора</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb6-1"><a aria-label="1"></a><span class="dt">var</span> selected <span class="op">=</span> <span class="fu">select</span><span class="op">(</span>students<span class="op">,</span> s <span class="op">-&gt;</span> s<span class="op">.</span><span class="fu">score</span><span class="op">()</span> <span class="op">&gt;=</span> <span class="dv">80</span><span class="op">);</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Для баллов 90, 70, 80 результат содержит первую и третью записи.</strong> <code>-&gt;</code> отделяет параметры от тела. Отбор сохраняет порядок подходящих участников; исходный список остаётся прежним.</p>
@@ -466,7 +466,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-05" class="slide level2 continuation">
+<section id="sec-lecture-functions-streams-step-05" class="slide level2 continuation">
 <h2>Замена условия</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb7-1"><a aria-label="1"></a><span class="dt">var</span> selected <span class="op">=</span> <span class="fu">select</span><span class="op">(</span>students<span class="op">,</span> s <span class="op">-&gt;</span> s<span class="op">.</span><span class="fu">name</span><span class="op">().</span><span class="fu">startsWith</span><span class="op">(</span><span class="st">"A"</span><span class="op">));</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Для имён Ada, Lin, Ann снова отобраны первая и третья записи, но теперь основание другое.</strong> Код обхода не изменился. Если балл Ann снизить до 50, отбор по имени всё ещё её сохранит.</p>
@@ -484,7 +484,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-06" class="slide level2">
+<section id="sec-lecture-functions-streams-step-06" class="slide level2">
 <h2>Создание действия и вызов</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb8-1"><a aria-label="1"></a>StudentTest passed <span class="op">=</span> s <span class="op">-&gt;</span> s<span class="op">.</span><span class="fu">score</span><span class="op">()</span> <span class="op">&gt;=</span> <span class="dv">80</span><span class="op">;</span></span>
 <span id="cb8-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>passed<span class="op">.</span><span class="fu">test</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Student</span><span class="op">(</span><span class="st">"s1"</span><span class="op">,</span> <span class="st">"Ada"</span><span class="op">,</span> <span class="dv">90</span><span class="op">)));</span> <span class="co">// true</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
@@ -503,7 +503,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-07" class="slide level2">
+<section id="sec-lecture-functions-streams-step-07" class="slide level2">
 <h2>Целевой тип лямбды</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb9-1"><a aria-label="1"></a>StudentTest a <span class="op">=</span> <span class="op">(</span>Student s<span class="op">)</span> <span class="op">-&gt;</span> s<span class="op">.</span><span class="fu">score</span><span class="op">()</span> <span class="op">&gt;=</span> <span class="dv">80</span><span class="op">;</span></span>
 <span id="cb9-2"><a aria-label="2"></a>StudentTest b <span class="op">=</span> s <span class="op">-&gt;</span> s<span class="op">.</span><span class="fu">score</span><span class="op">()</span> <span class="op">&gt;=</span> <span class="dv">80</span><span class="op">;</span></span>
@@ -523,7 +523,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-08" class="slide level2">
+<section id="sec-lecture-functions-streams-step-08" class="slide level2">
 <h2>Тело выражения и тело блока</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb10-1"><a aria-label="1"></a>StudentTest valid <span class="op">=</span> s <span class="op">-&gt;</span> <span class="op">{</span></span>
 <span id="cb10-2"><a aria-label="2"></a>    <span class="dt">int</span> score <span class="op">=</span> s<span class="op">.</span><span class="fu">score</span><span class="op">();</span></span>
@@ -544,7 +544,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-09" class="slide level2">
+<section id="sec-lecture-functions-streams-step-09" class="slide level2">
 <h2>Абстрактные операции интерфейса</h2>
 <p><strong><code>default</code>- и статические методы не увеличивают число абстрактных действий.</strong> Публичные методы <code>Object</code> не создают второе действие для определения функциональности.</p>
 <p>Поэтому <code>Comparator</code> функционален, хотя объявляет <code>compare</code> и <code>equals</code>. При наличии <code>@FunctionalInterface</code> компилятор проверяет это свойство; отсутствие аннотации не запрещает лямбды.</p>
@@ -563,7 +563,7 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-functions-streams-group-2" class="title-slide slide level1 center">
+<section id="sec-lecture-functions-streams-group-2" class="title-slide slide level1 center">
 <h1>Форма действия и его эффект</h1>
 <aside class="notes">
 <p>Для получения имени, печати и создания списка попросить назвать параметры и результат. Затем для каждого действия указать наблюдаемый эффект, если он есть.</p>
@@ -579,7 +579,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-11" class="slide level2">
+<section id="sec-lecture-functions-streams-step-11" class="slide level2">
 <h2>Методы стандартных интерфейсов</h2>
 <table class="caption-top">
 <colgroup>
@@ -650,7 +650,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-12" class="slide level2">
+<section id="sec-lecture-functions-streams-step-12" class="slide level2">
 <h2>Получение предметного значения</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb11-1"><a aria-label="1"></a>Function<span class="op">&lt;</span>Student<span class="op">,</span> <span class="bu">String</span><span class="op">&gt;</span> name <span class="op">=</span> s <span class="op">-&gt;</span> s<span class="op">.</span><span class="fu">name</span><span class="op">();</span></span>
 <span id="cb11-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>name<span class="op">.</span><span class="fu">apply</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Student</span><span class="op">(</span><span class="st">"s1"</span><span class="op">,</span> <span class="st">"Ada"</span><span class="op">,</span> <span class="dv">90</span><span class="op">)));</span> <span class="co">// Ada</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
@@ -669,7 +669,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-13" class="slide level2">
+<section id="sec-lecture-functions-streams-step-13" class="slide level2">
 <h2>Вычисление и внешний эффект</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb12-1"><a aria-label="1"></a>Consumer<span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> print <span class="op">=</span> text <span class="op">-&gt;</span> <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>text<span class="op">);</span></span>
 <span id="cb12-2"><a aria-label="2"></a>print<span class="op">.</span><span class="fu">accept</span><span class="op">(</span><span class="st">"готово"</span><span class="op">);</span> <span class="co">// готово</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
@@ -688,7 +688,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-14" class="slide level2">
+<section id="sec-lecture-functions-streams-step-14" class="slide level2">
 <h2>Отложенное получение значения</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb13-1"><a aria-label="1"></a>Supplier<span class="op">&lt;</span><span class="bu">List</span><span class="op">&lt;</span>Student<span class="op">&gt;&gt;</span> empty <span class="op">=</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">();</span></span>
 <span id="cb13-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>empty<span class="op">.</span><span class="fu">get</span><span class="op">().</span><span class="fu">size</span><span class="op">());</span> <span class="co">// 0</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
@@ -707,7 +707,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-effects" class="slide level2">
+<section id="sec-lecture-functions-streams-effects" class="slide level2">
 <h2>Вычисление отдельно от эффекта</h2>
 <p>У знакомого <code>Book</code> есть название и состояние выдачи:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb14-1"><a aria-label="1"></a><span class="dt">static</span> <span class="bu">String</span> <span class="fu">label</span><span class="op">(</span><span class="bu">Book</span> book<span class="op">)</span> <span class="op">{</span></span>
@@ -732,7 +732,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-effects-client" class="slide level2">
+<section id="sec-lecture-functions-streams-effects-client" class="slide level2">
 <h2>Состояние после вызова</h2>
 <p>Новая книга ещё не выдана. Предскажите три строки вывода:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb15-1"><a aria-label="1"></a><span class="bu">Book</span> book <span class="op">=</span> <span class="kw">new</span> <span class="bu">Book</span><span class="op">(</span><span class="st">"Java"</span><span class="op">);</span></span>
@@ -755,7 +755,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-effects-result" class="slide level2">
+<section id="sec-lecture-functions-streams-effects-result" class="slide level2">
 <h2>Вычисление и наблюдаемый эффект</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb16-1"><a aria-label="1"></a>false</span>
 <span id="cb16-2"><a aria-label="2"></a>Book: Java</span>
@@ -777,7 +777,7 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-functions-streams-group-3" class="title-slide slide level1 center">
+<section id="sec-lecture-functions-streams-group-3" class="title-slide slide level1 center">
 <h1>Ссылки, захват и композиция</h1>
 <aside class="notes">
 <p>Сопоставить три источника данных действия: аргумент вызова, захваченное значение и текущие поля объекта. Для правила порога указать, какие из них нужны.</p>
@@ -793,7 +793,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-17" class="slide level2">
+<section id="sec-lecture-functions-streams-step-17" class="slide level2">
 <h2>Ссылка на метод</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb17-1"><a aria-label="1"></a>Function<span class="op">&lt;</span>Student<span class="op">,</span> <span class="bu">String</span><span class="op">&gt;</span> name <span class="op">=</span> Student<span class="op">::</span>name<span class="op">;</span></span>
 <span id="cb17-2"><a aria-label="2"></a>Function<span class="op">&lt;</span><span class="bu">String</span><span class="op">,</span> <span class="bu">Integer</span><span class="op">&gt;</span> parse <span class="op">=</span> <span class="bu">Integer</span><span class="op">::</span>parseInt<span class="op">;</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
@@ -812,7 +812,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-18" class="slide level2">
+<section id="sec-lecture-functions-streams-step-18" class="slide level2">
 <h2>Связанный метод и конструктор</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb18-1"><a aria-label="1"></a>Consumer<span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> print <span class="op">=</span> <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">::</span>println<span class="op">;</span></span>
 <span id="cb18-2"><a aria-label="2"></a>Supplier<span class="op">&lt;</span><span class="bu">ArrayList</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;&gt;</span> create <span class="op">=</span> <span class="bu">ArrayList</span><span class="op">::</span><span class="kw">new</span><span class="op">;</span></span>
@@ -833,7 +833,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-19" class="slide level2">
+<section id="sec-lecture-functions-streams-step-19" class="slide level2">
 <h2>Захват локального значения</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb19-1"><a aria-label="1"></a><span class="dt">int</span> threshold <span class="op">=</span> <span class="dv">80</span><span class="op">;</span></span>
 <span id="cb19-2"><a aria-label="2"></a><span class="bu">Predicate</span><span class="op">&lt;</span>Student<span class="op">&gt;</span> passed <span class="op">=</span> s <span class="op">-&gt;</span> s<span class="op">.</span><span class="fu">score</span><span class="op">()</span> <span class="op">&gt;=</span> threshold<span class="op">;</span></span>
@@ -853,7 +853,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-20" class="slide level2">
+<section id="sec-lecture-functions-streams-step-20" class="slide level2">
 <h2>Захват ссылки на изменяемый объект</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb20-1"><a aria-label="1"></a>Student student <span class="op">=</span> students<span class="op">.</span><span class="fu">get</span><span class="op">(</span><span class="dv">0</span><span class="op">);</span> <span class="co">// s1/Ada/90</span></span>
 <span id="cb20-2"><a aria-label="2"></a><span class="dt">var</span> log <span class="op">=</span> <span class="kw">new</span> <span class="bu">ArrayList</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;();</span></span>
@@ -875,7 +875,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-returned-rule" class="slide level2">
+<section id="sec-lecture-functions-streams-returned-rule" class="slide level2">
 <h2>Возвращаемое правило</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb21-1"><a aria-label="1"></a><span class="dt">static</span> <span class="bu">Predicate</span><span class="op">&lt;</span>Student<span class="op">&gt;</span> <span class="fu">atLeast</span><span class="op">(</span><span class="dt">int</span> threshold<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb21-2"><a aria-label="2"></a>    <span class="cf">return</span> s <span class="op">-&gt;</span> s<span class="op">.</span><span class="fu">score</span><span class="op">()</span> <span class="op">&gt;=</span> threshold<span class="op">;</span></span>
@@ -898,7 +898,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-returned-times" class="slide level2">
+<section id="sec-lecture-functions-streams-returned-times" class="slide level2">
 <h2>Два момента вызова</h2>
 <table class="caption-top">
 <thead>
@@ -936,7 +936,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-live-setting" class="slide level2">
+<section id="sec-lecture-functions-streams-live-setting" class="slide level2">
 <h2>Изменяемая настройка замыкания</h2>
 <p>Предскажите два булевых ответа одного правила:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb23-1"><a aria-label="1"></a><span class="kw">class</span> Settings <span class="op">{</span> <span class="dt">int</span> threshold <span class="op">=</span> <span class="dv">80</span><span class="op">;</span> <span class="op">}</span></span>
@@ -961,7 +961,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-live-setting-result" class="slide level2">
+<section id="sec-lecture-functions-streams-live-setting-result" class="slide level2">
 <h2>Сохранённая ссылка и текущее поле</h2>
 <p>Вывод — <code>true</code>, затем <code>false</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb24-1"><a aria-label="1"></a>rule → сохранённая ссылка config → объект Settings</span>
@@ -981,7 +981,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-21" class="slide level2">
+<section id="sec-lecture-functions-streams-step-21" class="slide level2">
 <h2>Композиция предикатов</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb25-1"><a aria-label="1"></a><span class="bu">Predicate</span><span class="op">&lt;</span>Student<span class="op">&gt;</span> passed <span class="op">=</span> s <span class="op">-&gt;</span> s<span class="op">.</span><span class="fu">score</span><span class="op">()</span> <span class="op">&gt;=</span> <span class="dv">80</span><span class="op">;</span></span>
 <span id="cb25-2"><a aria-label="2"></a><span class="bu">Predicate</span><span class="op">&lt;</span>Student<span class="op">&gt;</span> named <span class="op">=</span> s <span class="op">-&gt;</span> s<span class="op">.</span><span class="fu">name</span><span class="op">().</span><span class="fu">startsWith</span><span class="op">(</span><span class="st">"A"</span><span class="op">);</span></span>
@@ -1001,7 +1001,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-22" class="slide level2">
+<section id="sec-lecture-functions-streams-step-22" class="slide level2">
 <h2>Композиция преобразований</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb26-1"><a aria-label="1"></a>Function<span class="op">&lt;</span><span class="bu">String</span><span class="op">,</span> <span class="bu">Integer</span><span class="op">&gt;</span> length <span class="op">=</span> <span class="bu">String</span><span class="op">::</span>length<span class="op">;</span></span>
 <span id="cb26-2"><a aria-label="2"></a>Function<span class="op">&lt;</span><span class="bu">Integer</span><span class="op">,</span> <span class="bu">Integer</span><span class="op">&gt;</span> twice <span class="op">=</span> n <span class="op">-&gt;</span> n <span class="op">*</span> <span class="dv">2</span><span class="op">;</span></span>
@@ -1021,7 +1021,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-curried" class="slide level2">
+<section id="sec-lecture-functions-streams-curried" class="slide level2">
 <h2>Аргументы в двух вызовах</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb27-1"><a aria-label="1"></a>Function<span class="op">&lt;</span><span class="bu">Integer</span><span class="op">,</span> <span class="bu">Predicate</span><span class="op">&lt;</span>Student<span class="op">&gt;&gt;</span> rules <span class="op">=</span></span>
 <span id="cb27-2"><a aria-label="2"></a>    threshold <span class="op">-&gt;</span> <span class="fu">atLeast</span><span class="op">(</span>threshold<span class="op">);</span></span>
@@ -1043,7 +1043,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-curried-result" class="slide level2">
+<section id="sec-lecture-functions-streams-curried-result" class="slide level2">
 <h2>Повторное применение возвращённого правила</h2>
 <p><code>rules.apply(80)</code> один раз возвращает <code>Predicate&lt;Student&gt;</code>; ссылка на это действие сохраняется в <code>check80</code>.</p>
 <table class="caption-top">
@@ -1082,7 +1082,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-conditional-supplier" class="slide level2">
+<section id="sec-lecture-functions-streams-conditional-supplier" class="slide level2">
 <h2>Выбор поставщика</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb28-1"><a aria-label="1"></a><span class="dt">static</span> <span class="bu">String</span> <span class="fu">choose</span><span class="op">(</span><span class="dt">boolean</span> first<span class="op">,</span> Supplier<span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> left<span class="op">,</span></span>
 <span id="cb28-2"><a aria-label="2"></a>                     Supplier<span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> right<span class="op">)</span> <span class="op">{</span></span>
@@ -1103,7 +1103,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-conditional-client" class="slide level2">
+<section id="sec-lecture-functions-streams-conditional-client" class="slide level2">
 <h2>Создание поставщиков и выбор</h2>
 <p>Предскажите вывод. Будет ли выполнено тело <code>right</code>?</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb29-1"><a aria-label="1"></a>Supplier<span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> left <span class="op">=</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="op">{</span></span>
@@ -1130,7 +1130,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-conditional-result" class="slide level2">
+<section id="sec-lecture-functions-streams-conditional-result" class="slide level2">
 <h2>Вызов выбранного поставщика</h2>
 <table class="caption-top">
 <thead>
@@ -1166,7 +1166,7 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-functions-streams-group-4" class="title-slide slide level1 center">
+<section id="sec-lecture-functions-streams-group-4" class="title-slide slide level1 center">
 <h1>Композиция конвейера</h1>
 <aside class="notes">
 <p>Перенести переданные функции в операции библиотеки. На каждом шаге спрашивать, какие сведения содержат элементы и кто начинает обработку.</p>
@@ -1182,7 +1182,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-24" class="slide level2">
+<section id="sec-lecture-functions-streams-step-24" class="slide level2">
 <h2>Порядок отбора циклом</h2>
 <p>Метод <code>select</code> добавляет подходящие записи в новый список. Для порога <code>80</code> на исходном каталоге получаются <code>s1</code>, <code>s3</code>. В <code>students</code> остаются <code>s1</code>, <code>s2</code>, <code>s3</code>.</p>
 <p>Для отчёта с лучшими результатами нужна сортировка: по <code>score</code> по убыванию, при равенстве — по <code>id</code> в естественном порядке строк. Сортировать можно отдельный изменяемый список выбранных записей.</p>
@@ -1218,7 +1218,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-25" class="slide level2">
+<section id="sec-lecture-functions-streams-step-25" class="slide level2">
 <h2>Конвейер отбора имён</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb30-1"><a aria-label="1"></a><span class="bu">List</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> names <span class="op">=</span> students<span class="op">.</span><span class="fu">stream</span><span class="op">()</span></span>
 <span id="cb30-2"><a aria-label="2"></a>    <span class="op">.</span><span class="fu">filter</span><span class="op">(</span>s <span class="op">-&gt;</span> s<span class="op">.</span><span class="fu">score</span><span class="op">()</span> <span class="op">&gt;=</span> <span class="dv">80</span><span class="op">)</span></span>
@@ -1241,7 +1241,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-26" class="slide level2">
+<section id="sec-lecture-functions-streams-step-26" class="slide level2">
 <h2>Элементы после каждой стадии</h2>
 <table class="caption-top">
 <thead>
@@ -1294,7 +1294,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-report-type" class="slide level2">
+<section id="sec-lecture-functions-streams-report-type" class="slide level2">
 <h2>Сведения до форматирования</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb31-1"><a aria-label="1"></a><span class="dt">var</span> report <span class="op">=</span> students<span class="op">.</span><span class="fu">stream</span><span class="op">()</span></span>
 <span id="cb31-2"><a aria-label="2"></a>    <span class="op">.</span><span class="fu">filter</span><span class="op">(</span>s <span class="op">-&gt;</span> s<span class="op">.</span><span class="fu">score</span><span class="op">()</span> <span class="op">&gt;=</span> <span class="dv">80</span><span class="op">)</span></span>
@@ -1317,7 +1317,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-27" class="slide level2">
+<section id="sec-lecture-functions-streams-step-27" class="slide level2">
 <h2>Коллекция и Stream</h2>
 <p><strong>Коллекция хранит данные для повторного обращения.</strong> Stream описывает один проход через действия; у него нет <code>get(index)</code> и возврата в начало.</p>
 <p>После завершения прохода создают новый <code>students.stream()</code> либо хранят полученный результат. Генератор Python тоже исчерпывается; Java Stream предоставляет типизированные операции обработки элементов.</p>
@@ -1335,7 +1335,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-28" class="slide level2">
+<section id="sec-lecture-functions-streams-step-28" class="slide level2">
 <h2>Построение и запуск конвейера</h2>
 <p>Предскажите вывод и отметьте терминальную операцию:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb32-1"><a aria-label="1"></a>Stream<span class="op">&lt;</span><span class="bu">Integer</span><span class="op">&gt;</span> values <span class="op">=</span> Stream<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">).</span><span class="fu">map</span><span class="op">(</span>x <span class="op">-&gt;</span> x <span class="op">*</span> <span class="dv">2</span><span class="op">);</span></span>
@@ -1357,7 +1357,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-lazy-result" class="slide level2">
+<section id="sec-lecture-functions-streams-lazy-result" class="slide level2">
 <h2>Терминальное выполнение</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb33-1"><a aria-label="1"></a>built</span>
 <span id="cb33-2"><a aria-label="2"></a>take 2</span>
@@ -1379,7 +1379,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-29" class="slide level2">
+<section id="sec-lecture-functions-streams-step-29" class="slide level2">
 <h2>Состояние сортировки</h2>
 <p><strong><code>filter</code> и <code>map</code> могут провести один элемент через обе стадии прежде, чем взять следующий.</strong> Для общего <code>sorted</code> нужно накопить данные, чтобы определить порядок.</p>
 <p>Ленивость не означает отсутствие памяти: разные промежуточные операции имеют разное устройство. Бесконечный источник нельзя целиком отсортировать.</p>
@@ -1397,7 +1397,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-30" class="slide level2">
+<section id="sec-lecture-functions-streams-step-30" class="slide level2">
 <h2>Одноразовость Stream</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb34-1"><a aria-label="1"></a><span class="dt">var</span> stream <span class="op">=</span> students<span class="op">.</span><span class="fu">stream</span><span class="op">();</span></span>
 <span id="cb34-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>stream<span class="op">.</span><span class="fu">count</span><span class="op">());</span> <span class="co">// 3</span></span>
@@ -1417,7 +1417,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-31" class="slide level2">
+<section id="sec-lecture-functions-streams-step-31" class="slide level2">
 <h2>Раннее получение ответа</h2>
 <p>Для входа <code>1, 2, 3</code> определите булев результат и момент, после которого ответ уже известен:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb35-1"><a aria-label="1"></a><span class="dt">boolean</span> found <span class="op">=</span> Stream<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">).</span><span class="fu">anyMatch</span><span class="op">(</span>x <span class="op">-&gt;</span> <span class="op">{</span></span>
@@ -1440,7 +1440,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-short-result" class="slide level2">
+<section id="sec-lecture-functions-streams-short-result" class="slide level2">
 <h2>Ответ и отладочная трасса</h2>
 <p>Ответ — <code>true</code>: двойка присутствует. Одна допустимая трасса — <code>test 1</code>, <code>test 2</code>, затем <code>true</code>.</p>
 <p><code>anyMatch</code> допускает короткое замыкание: завершение при уже известном ответе. Конкретное число и порядок вызовов предиката API не закрепляет. Для обязательного эффекта на каждом результате подходит терминальный потребитель.</p>
@@ -1459,7 +1459,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-32" class="slide level2">
+<section id="sec-lecture-functions-streams-step-32" class="slide level2">
 <h2>Логические проверки пустого потока</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb36-1"><a aria-label="1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>Stream<span class="op">.&lt;</span>Student<span class="op">&gt;</span><span class="fu">empty</span><span class="op">().</span><span class="fu">anyMatch</span><span class="op">(</span>s <span class="op">-&gt;</span> <span class="kw">true</span><span class="op">));</span> <span class="co">// false</span></span>
 <span id="cb36-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>Stream<span class="op">.&lt;</span>Student<span class="op">&gt;</span><span class="fu">empty</span><span class="op">().</span><span class="fu">allMatch</span><span class="op">(</span>s <span class="op">-&gt;</span> <span class="kw">false</span><span class="op">));</span><span class="co">// true</span></span>
@@ -1479,7 +1479,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-33" class="slide level2">
+<section id="sec-lecture-functions-streams-step-33" class="slide level2">
 <h2>Ограничение бесконечного источника</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb37-1"><a aria-label="1"></a><span class="dt">var</span> first <span class="op">=</span> Stream<span class="op">.</span><span class="fu">iterate</span><span class="op">(</span><span class="dv">0</span><span class="op">,</span> n <span class="op">-&gt;</span> n <span class="op">+</span> <span class="dv">1</span><span class="op">).</span><span class="fu">limit</span><span class="op">(</span><span class="dv">3</span><span class="op">).</span><span class="fu">toList</span><span class="op">();</span></span>
 <span id="cb37-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>first<span class="op">);</span> <span class="co">// [0, 1, 2]</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1498,7 +1498,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-stage-order" class="slide level2">
+<section id="sec-lecture-functions-streams-stage-order" class="slide level2">
 <h2>Порядок отбора и ограничения</h2>
 <p>Предскажите два списка:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb38-1"><a aria-label="1"></a><span class="dt">var</span> a <span class="op">=</span> Stream<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">)</span></span>
@@ -1522,7 +1522,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-stage-order-result" class="slide level2">
+<section id="sec-lecture-functions-streams-stage-order-result" class="slide level2">
 <h2>Два разных отбора</h2>
 <p>Первый результат — <code>[2]</code>: сохранить первое подходящее число. Второй — <code>[]</code>: проверить единственное сохранённое число <code>1</code>.</p>
 <p><code>skip</code> тоже зависит от своего места:</p>
@@ -1559,7 +1559,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-34" class="slide level2">
+<section id="sec-lecture-functions-streams-step-34" class="slide level2">
 <h2>Разворачивание вложенных групп</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb39-1"><a aria-label="1"></a><span class="dt">var</span> topics <span class="op">=</span> <span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="st">"java"</span><span class="op">,</span> <span class="st">"git"</span><span class="op">),</span> <span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="st">"java"</span><span class="op">,</span> <span class="st">"io"</span><span class="op">));</span></span>
 <span id="cb39-2"><a aria-label="2"></a><span class="dt">var</span> unique <span class="op">=</span> topics<span class="op">.</span><span class="fu">stream</span><span class="op">().</span><span class="fu">flatMap</span><span class="op">(</span><span class="bu">List</span><span class="op">::</span>stream<span class="op">)</span></span>
@@ -1580,7 +1580,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-35" class="slide level2">
+<section id="sec-lecture-functions-streams-step-35" class="slide level2">
 <h2>Примитивная числовая агрегация</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb40-1"><a aria-label="1"></a><span class="dt">long</span> total <span class="op">=</span> students<span class="op">.</span><span class="fu">stream</span><span class="op">().</span><span class="fu">mapToLong</span><span class="op">(</span>Student<span class="op">::</span>score<span class="op">).</span><span class="fu">sum</span><span class="op">();</span></span>
 <span id="cb40-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>total<span class="op">);</span> <span class="co">// 240</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1599,7 +1599,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-36" class="slide level2">
+<section id="sec-lecture-functions-streams-step-36" class="slide level2">
 <h2>Отсутствие среднего на пустом наборе</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb41-1"><a aria-label="1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>IntStream<span class="op">.</span><span class="fu">empty</span><span class="op">().</span><span class="fu">sum</span><span class="op">());</span> <span class="co">// 0</span></span>
 <span id="cb41-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>IntStream<span class="op">.</span><span class="fu">empty</span><span class="op">().</span><span class="fu">average</span><span class="op">().</span><span class="fu">isEmpty</span><span class="op">());</span> <span class="co">// true</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1618,7 +1618,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-37" class="slide level2">
+<section id="sec-lecture-functions-streams-step-37" class="slide level2">
 <h2>Сумма как редукция</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb42-1"><a aria-label="1"></a><span class="dt">int</span> total <span class="op">=</span> Stream<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">90</span><span class="op">,</span> <span class="dv">70</span><span class="op">,</span> <span class="dv">80</span><span class="op">).</span><span class="fu">reduce</span><span class="op">(</span><span class="dv">0</span><span class="op">,</span> <span class="bu">Integer</span><span class="op">::</span>sum<span class="op">);</span></span>
 <span id="cb42-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>total<span class="op">);</span> <span class="co">// 240</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1638,7 +1638,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-reduce-identity" class="slide level2">
+<section id="sec-lecture-functions-streams-reduce-identity" class="slide level2">
 <h2>Нарушение нейтральности</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb43-1"><a aria-label="1"></a>Один проход:  10 + 90 + 70 + 80 = 250</span>
 <span id="cb43-2"><a aria-label="2"></a>Две части:  (10 + 90) + (10 + 70 + 80) = 260</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1658,7 +1658,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-reduce-associativity" class="slide level2">
+<section id="sec-lecture-functions-streams-reduce-associativity" class="slide level2">
 <h2>Порядок объединения</h2>
 <p>Вычитание не ассоциативно:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb44-1"><a aria-label="1"></a>(10 − 3) − 2 = 5</span>
@@ -1678,7 +1678,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-38" class="slide level2">
+<section id="sec-lecture-functions-streams-step-38" class="slide level2">
 <h2>Изменяемость результата</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb45-1"><a aria-label="1"></a><span class="dt">var</span> fixed <span class="op">=</span> students<span class="op">.</span><span class="fu">stream</span><span class="op">().</span><span class="fu">toList</span><span class="op">();</span></span>
 <span id="cb45-2"><a aria-label="2"></a><span class="dt">var</span> mutable <span class="op">=</span> students<span class="op">.</span><span class="fu">stream</span><span class="op">()</span></span>
@@ -1698,7 +1698,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-39" class="slide level2">
+<section id="sec-lecture-functions-streams-step-39" class="slide level2">
 <h2>Группировка участников</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb46-1"><a aria-label="1"></a><span class="dt">var</span> groups <span class="op">=</span> students<span class="op">.</span><span class="fu">stream</span><span class="op">()</span></span>
 <span id="cb46-2"><a aria-label="2"></a>    <span class="op">.</span><span class="fu">collect</span><span class="op">(</span>Collectors<span class="op">.</span><span class="fu">groupingBy</span><span class="op">(</span>Student<span class="op">::</span>score<span class="op">));</span></span>
@@ -1718,7 +1718,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-40" class="slide level2">
+<section id="sec-lecture-functions-streams-step-40" class="slide level2">
 <h2>Политика повторных ключей</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb47-1"><a aria-label="1"></a><span class="dt">var</span> scores <span class="op">=</span> students<span class="op">.</span><span class="fu">stream</span><span class="op">().</span><span class="fu">collect</span><span class="op">(</span></span>
 <span id="cb47-2"><a aria-label="2"></a>    Collectors<span class="op">.</span><span class="fu">toMap</span><span class="op">(</span>Student<span class="op">::</span>id<span class="op">,</span> Student<span class="op">::</span>score<span class="op">));</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1737,7 +1737,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-group-count" class="slide level2">
+<section id="sec-lecture-functions-streams-group-count" class="slide level2">
 <h2>Подсчёт внутри группы</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb48-1"><a aria-label="1"></a><span class="dt">var</span> frequencies <span class="op">=</span> <span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="st">"Ada"</span><span class="op">,</span> <span class="st">"Lin"</span><span class="op">,</span> <span class="st">"Jo"</span><span class="op">).</span><span class="fu">stream</span><span class="op">()</span></span>
 <span id="cb48-2"><a aria-label="2"></a>    <span class="op">.</span><span class="fu">collect</span><span class="op">(</span>Collectors<span class="op">.</span><span class="fu">groupingBy</span><span class="op">(</span></span>
@@ -1759,7 +1759,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-41" class="slide level2">
+<section id="sec-lecture-functions-streams-step-41" class="slide level2">
 <h2>Наличие результата поиска</h2>
 <p>Каталог может оказаться пустым. Поиск максимального балла тогда не находит участника; ноль баллов был бы свойством существующей записи.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb49-1"><a aria-label="1"></a>Optional<span class="op">&lt;</span>Student<span class="op">&gt;</span> best <span class="op">=</span> students<span class="op">.</span><span class="fu">stream</span><span class="op">()</span></span>
@@ -1780,13 +1780,13 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-absence-error" class="slide level2">
+<section id="sec-lecture-functions-streams-absence-error" class="slide level2">
 <h2>Отсутствие результата и ошибка данных</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb50-1"><a aria-label="1"></a>никто не прошёл порог     → пустой List, успешный отбор</span>
 <span id="cb50-2"><a aria-label="2"></a>нет максимума            → Optional.empty(), пустой каталог</span>
 <span id="cb50-3"><a aria-label="3"></a>неверный балл            → отказ проверки формата</span>
 <span id="cb50-4"><a aria-label="4"></a>не удалось прочитать     → отказ внешней операции</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Optional не хранит причину ошибки и не заменяет типизированный отказ.</strong> Политика исходов: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-streams-outcomes" data-qrc-style="default" class="qrc-link" href="../theory/chapters/streams.html#sec-j25-theory-streams-outcomes">Отсутствие и ошибка в результате обработки</a>.</p>
+<p><strong>Optional не хранит причину ошибки и не заменяет типизированный отказ.</strong> Политика исходов: <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-streams-outcomes" data-qrc-style="default" class="qrc-link" href="../theory/streams.html#sec-theory-streams-outcomes">Отсутствие и ошибка в результате обработки</a>.</p>
 <aside class="notes">
 <p>Разнести четыре исхода по успешному результату и отказам с причиной. <code>Optional</code> моделирует ожидаемое отсутствие выбранного элемента.</p>
 <style type="text/css">
@@ -1801,7 +1801,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-42" class="slide level2">
+<section id="sec-lecture-functions-streams-step-42" class="slide level2">
 <h2>Запасное вычисление</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb51-1"><a aria-label="1"></a>Supplier<span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> fallback <span class="op">=</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="op">{</span></span>
 <span id="cb51-2"><a aria-label="2"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"fallback"</span><span class="op">);</span></span>
@@ -1824,7 +1824,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-fallback-present" class="slide level2">
+<section id="sec-lecture-functions-streams-fallback-present" class="slide level2">
 <h2>Запасной результат при наличии</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb52-1"><a aria-label="1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>present<span class="op">.</span><span class="fu">orElse</span><span class="op">(</span>fallback<span class="op">.</span><span class="fu">get</span><span class="op">()));</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Вывод: <code>fallback</code>, затем <code>Ada</code>. Аргумент вычисляется до вызова <code>orElse</code>, поэтому побочный эффект уже произошёл.</p>
@@ -1844,7 +1844,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-fallback-empty" class="slide level2">
+<section id="sec-lecture-functions-streams-fallback-empty" class="slide level2">
 <h2>Запасной результат при отсутствии</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb54-1"><a aria-label="1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>empty<span class="op">.</span><span class="fu">orElse</span><span class="op">(</span>fallback<span class="op">.</span><span class="fu">get</span><span class="op">()));</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb55"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb55-1"><a aria-label="1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>empty<span class="op">.</span><span class="fu">orElseGet</span><span class="op">(</span>fallback<span class="op">));</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1863,7 +1863,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-44" class="slide level2">
+<section id="sec-lecture-functions-streams-step-44" class="slide level2">
 <h2>Наблюдение через <code>peek</code></h2>
 <p>Предскажите, какие строки обязательны:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb56-1"><a aria-label="1"></a><span class="dt">long</span> count <span class="op">=</span> Stream<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">)</span></span>
@@ -1884,7 +1884,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-peek-result" class="slide level2">
+<section id="sec-lecture-functions-streams-peek-result" class="slide level2">
 <h2>Размер без обхода</h2>
 <p>Обязательна строка <code>count 3</code>. Размер источника известен; <code>peek</code> его не меняет. API разрешает получить ответ без вызовов <code>peek</code>. Допустим также проход с печатью элементов.</p>
 <p>Обязательную печать каждого результата задают <code>forEach</code> или <code>forEachOrdered</code>; второй сохраняет порядок встречи при его наличии. <code>peek</code> пригоден для наблюдения фактического прохода, число его вызовов не задаёт протокол приложения.</p>
@@ -1902,7 +1902,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-files" class="slide level2">
+<section id="sec-lecture-functions-streams-files" class="slide level2">
 <h2>Файловый источник</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb57"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb57-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">long</span> <span class="fu">countNonblank</span><span class="op">(</span>Path path<span class="op">)</span> <span class="kw">throws</span> <span class="bu">IOException</span> <span class="op">{</span></span>
 <span id="cb57-2"><a aria-label="2"></a>    <span class="cf">try</span> <span class="op">(</span><span class="dt">var</span> lines <span class="op">=</span> Files<span class="op">.</span><span class="fu">lines</span><span class="op">(</span>path<span class="op">,</span> StandardCharsets<span class="op">.</span><span class="fu">UTF_8</span><span class="op">))</span> <span class="op">{</span></span>
@@ -1925,7 +1925,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-files-failure" class="slide level2">
+<section id="sec-lecture-functions-streams-files-failure" class="slide level2">
 <h2>Ресурс и момент ошибки</h2>
 <p>Для трёх строк результат — <code>2</code>; завершающий перевод строки не требуется. Поток закрывается при выходе из <code>try</code>, включая выход через исключение.</p>
 <table class="caption-top">
@@ -1965,11 +1965,11 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-publication-effect" class="slide level2">
+<section id="sec-lecture-functions-streams-publication-effect" class="slide level2">
 <h2>Вычисление и публикация отчёта</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb58-1"><a aria-label="1"></a>готовые участники → List&lt;String&gt; отчёта → печать</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Ошибка вычисления случается до печати, если эффект вынесен за конвейер. Ошибка поздней печати не отменяет уже выведенные строки.</p>
-<p><strong>Композиция операций не создаёт откат внешних эффектов.</strong> Чистая обработка и ответственность внешнего слоя: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-streams-report" data-qrc-style="default" class="qrc-link" href="../theory/chapters/streams.html#sec-j25-theory-streams-report">Композиция отчёта и границы эффектов</a>.</p>
+<p><strong>Композиция операций не создаёт откат внешних эффектов.</strong> Чистая обработка и ответственность внешнего слоя: <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-streams-report" data-qrc-style="default" class="qrc-link" href="../theory/streams.html#sec-theory-streams-report">Композиция отчёта и границы эффектов</a>.</p>
 <aside class="notes">
 <p>Сначала рассмотреть отказ вычисления до публикации. Затем отказ печати второй строки: первая уже вышла во внешний мир и не откатывается.</p>
 <style type="text/css">
@@ -1984,7 +1984,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-exit" class="slide level2">
+<section id="sec-lecture-functions-streams-exit" class="slide level2">
 <h2>Повторное применение правила</h2>
 <p>Предскажите <code>first</code> и <code>second</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb59"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb59-1"><a aria-label="1"></a><span class="bu">Predicate</span><span class="op">&lt;</span>Student<span class="op">&gt;</span> check <span class="op">=</span> <span class="fu">atLeast</span><span class="op">(</span><span class="dv">80</span><span class="op">);</span></span>
@@ -2006,11 +2006,11 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-exit-result" class="slide level2">
+<section id="sec-lecture-functions-streams-exit-result" class="slide level2">
 <h2>Правило и два прохода</h2>
 <p><code>first == true</code>: у <code>Ada</code> и <code>Ann</code> балл не меньше 80. <code>second == false</code>: после фильтра остаются имена <code>Ada</code>, <code>Ann</code>.</p>
 <p><code>check</code> применим многократно. Для каждого расчёта создан отдельный Stream; терминальный <code>anyMatch</code> инициирует обработку своего конвейера. Фиксированный порог правила одинаков в обоих проходах.</p>
-<p>Развёрнутое объяснение: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-functions" data-qrc-style="default" class="qrc-link" href="../theory/chapters/functions.html#sec-j25-theory-functions"><span>Глава 19</span></a>, <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-streams" data-qrc-style="default" class="qrc-link" href="../theory/chapters/streams.html#sec-j25-theory-streams"><span>Глава 20</span></a>.</p>
+<p>Развёрнутое объяснение: <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-functions" data-qrc-style="default" class="qrc-link" href="../theory/functions.html#sec-theory-functions"><span>Глава 19</span></a>, <a data-qrc-custom="false" data-qrc-ref="theory:sec-theory-streams" data-qrc-style="default" class="qrc-link" href="../theory/streams.html#sec-theory-streams"><span>Глава 20</span></a>.</p>
 <aside class="notes">
 <p>Сверить ответы и попросить объяснить ложь второго результата через отсутствие Lin после фильтра. Предложить изменить только порог на 70 и снова проследить второй конвейер.</p>
 <style type="text/css">
@@ -2026,7 +2026,7 @@
       }</style></aside>
 </section></section>
 <section>
-<section id="sec-j25-lecture-functions-streams-additional" class="title-slide slide level1 center">
+<section id="sec-lecture-functions-streams-additional" class="title-slide slide level1 center">
 <h1>Дополнения</h1>
 <aside class="notes">
 <p>Выбрать дополнение по возникшему вопросу. Для каждого опыта сначала восстановить форму вызова, затем разобрать отличие от уже выполненного отбора.</p>
@@ -2042,7 +2042,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-15" class="slide level2">
+<section id="sec-lecture-functions-streams-step-15" class="slide level2">
 <h2>Развитие представления поведения</h2>
 <p>В Java обработчики и компараторы передавались объектами интерфейсов ещё до лямбд. Проект Project Lambda сократил запись передаваемого поведения, сохранив применение существующих интерфейсов <span class="citation" data-cites="bib-context-lambda-design"><a href="#/источники" role="doc-biblioref" onclick="">[1]</a></span>.</p>
 <p><strong>Лямбда реализует операцию известного интерфейса.</strong> Совместимость с существующим API объясняет выбор целевого типа; у лямбды сохраняются собственные правила области видимости и захвата.</p>
@@ -2060,7 +2060,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-16" class="slide level2">
+<section id="sec-lecture-functions-streams-step-16" class="slide level2">
 <h2>Договор вызываемого объекта Python</h2>
 <p><code>Protocol</code> описывает форму вызова: один позиционный <code>Student</code> → <code>bool</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a aria-label="1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
@@ -2088,7 +2088,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-16-part-1" class="slide level2">
+<section id="sec-lecture-functions-streams-step-16-part-1" class="slide level2">
 <h2>Реализация вызываемого объекта</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb61"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a aria-label="1"></a><span class="kw">def</span> select(source: <span class="bu">list</span>[Student], rule: StudentRule) <span class="op">-&gt;</span> <span class="bu">list</span>[Student]:</span>
 <span id="cb61-2"><a aria-label="2"></a>    <span class="cf">return</span> [student <span class="cf">for</span> student <span class="kw">in</span> source <span class="cf">if</span> rule(student)]</span>
@@ -2113,7 +2113,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-python-client" class="slide level2">
+<section id="sec-lecture-functions-streams-python-client" class="slide level2">
 <h2>Вызов Python-правила</h2>
 <p>Предскажите список имён:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a aria-label="1"></a>students <span class="op">=</span> [Student(<span class="st">"s1"</span>, <span class="st">"Ada"</span>, <span class="dv">90</span>), Student(<span class="st">"s2"</span>, <span class="st">"Lin"</span>, <span class="dv">70</span>),</span>
@@ -2136,7 +2136,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-python-result" class="slide level2">
+<section id="sec-lecture-functions-streams-python-result" class="slide level2">
 <h2>Вызов по протоколу</h2>
 <p>Вывод — <code>['Ada', 'Ann']</code>.</p>
 <p><code>AtLeast</code> хранит порог у объекта. <code>select</code> вызывает <code>rule(student)</code>; Python находит <code>__call__</code> и получает булев ответ. Статическая проверка сопоставляет эту форму с <code>StudentRule</code>.</p>
@@ -2155,7 +2155,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-python-negative" class="slide level2">
+<section id="sec-lecture-functions-streams-python-negative" class="slide level2">
 <h2>Истинность значения и договор <code>bool</code></h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb63"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a aria-label="1"></a><span class="kw">def</span> wrong(student: Student, <span class="op">/</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
 <span id="cb63-2"><a aria-label="2"></a>    <span class="cf">return</span> student.name</span>
@@ -2177,7 +2177,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-10" class="slide level2">
+<section id="sec-lecture-functions-streams-step-10" class="slide level2">
 <h2>Область <code>this</code></h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb64"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb64-1"><a aria-label="1"></a><span class="kw">class</span> <span class="bu">Context</span> <span class="op">{</span></span>
 <span id="cb64-2"><a aria-label="2"></a>    <span class="bu">String</span> title <span class="op">=</span> <span class="st">"outer"</span><span class="op">;</span></span>
@@ -2204,7 +2204,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-this-result" class="slide level2">
+<section id="sec-lecture-functions-streams-this-result" class="slide level2">
 <h2>Получатель внутри действия</h2>
 <p>Лямбда возвращает <code>outer</code>: <code>this</code> взят из окружающего <code>Context</code>. Анонимный объект возвращает <code>inner</code>: <code>this</code> обозначает его самого.</p>
 <p>Обе формы реализуют <code>Supplier&lt;String&gt;</code>, но правила области видимости различаются. JLS также не требует нового экземпляра лямбды при каждом вычислении выражения. Значение действия проверяют вызовом его операции <span class="citation" data-cites="bib-data-jls-lambdas bib-functions-bloch-2019"><a href="#/источники" role="doc-biblioref" onclick="">[5]</a>, <a href="#/источники" role="doc-biblioref" onclick="">[8]</a></span>.</p>
@@ -2222,7 +2222,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-compose-types" class="slide level2">
+<section id="sec-lecture-functions-streams-compose-types" class="slide level2">
 <h2>Типы композиции функций</h2>
 <p>Для <code>Function&lt;T, R&gt;</code> у <code>andThen</code> следующий шаг имеет тип <code>Function&lt;? super R, ? extends V&gt;</code>, а результат — <code>Function&lt;T, V&gt;</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb65"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb65-1"><a aria-label="1"></a>T → текущая функция → R → следующий шаг → V</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2241,7 +2241,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-23" class="slide level2">
+<section id="sec-lecture-functions-streams-step-23" class="slide level2">
 <h2>Проверяемое исключение действия</h2>
 <p>У <code>Function&lt;Path, String&gt;</code> метод <code>apply(Path)</code> не объявляет <code>throws</code>. У <code>Files.readString(Path)</code> возможен проверяемый <code>IOException</code>. Прямая ссылка <code>Function&lt;Path, String&gt; read = Files::readString</code> несовместима.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb66"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb66-1"><a aria-label="1"></a><span class="at">@FunctionalInterface</span></span>
@@ -2264,7 +2264,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-non-interference" class="slide level2">
+<section id="sec-lecture-functions-streams-non-interference" class="slide level2">
 <h2>Источник и состояние действий</h2>
 <p>Во время выполнения конвейера обычный источник, например <code>ArrayList</code>, сохраняют без изменений. Переданные функции его не изменяют; это условие относится к последовательному и параллельному проходу.</p>
 <p>Исключение — источники, рассчитанные на конкурентные изменения (<code>Spliterator.CONCURRENT</code>). Допустимые изменения определяются их договором.</p>
@@ -2283,7 +2283,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-step-43" class="slide level2">
+<section id="sec-lecture-functions-streams-step-43" class="slide level2">
 <h2>Владение накопителем</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb67"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb67-1"><a aria-label="1"></a><span class="dt">var</span> shared <span class="op">=</span> <span class="kw">new</span> <span class="bu">ArrayList</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;();</span></span>
 <span id="cb67-2"><a aria-label="2"></a>students<span class="op">.</span><span class="fu">parallelStream</span><span class="op">().</span><span class="fu">forEach</span><span class="op">(</span>s <span class="op">-&gt;</span> shared<span class="op">.</span><span class="fu">add</span><span class="op">(</span>s<span class="op">.</span><span class="fu">name</span><span class="op">()));</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2305,7 +2305,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-parallel-effects" class="slide level2">
+<section id="sec-lecture-functions-streams-parallel-effects" class="slide level2">
 <h2>Порядок эффектов и скорость</h2>
 <p>У параллельного потока <code>forEach</code> не гарантирует порядок встречи элементов. <code>forEachOrdered</code> выполняет действия в порядке встречи, если он определён у результирующего потока. Порядок терминальных действий не задаёт порядок вызовов промежуточных функций.</p>
 <p>Невмешательство в источник и корректное владение накопителем требуются при выборе любой из этих операций.</p>
@@ -2324,7 +2324,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-functions-streams-reduce-three" class="slide level2">
+<section id="sec-lecture-functions-streams-reduce-three" class="slide level2">
 <h2>Тип накопителя и тип элемента</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb69"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb69-1"><a aria-label="1"></a><span class="dt">int</span> total <span class="op">=</span> students<span class="op">.</span><span class="fu">stream</span><span class="op">().</span><span class="fu">reduce</span><span class="op">(</span></span>
 <span id="cb69-2"><a aria-label="2"></a>    <span class="dv">0</span><span class="op">,</span></span>
@@ -2769,26 +2769,34 @@
     
 
 
-<script data-qrc-navigation>// Опубликованные цели сохраняют штатные ID Quarto. Обработчик раскрывает
+<script data-qrc-navigation>// @ts-check
+/// <reference path="../../../typecheck/browser.d.ts" />
+// Опубликованные цели сохраняют штатные ID Quarto. Обработчик раскрывает
 // существующее представление документа, не вводя учебных ролей и новых ID.
 (() => {
   if (new URL(location.href).searchParams.has("print-pdf")) return;
   let navigation = 0;
 
+  /** @param {URL} url */
   function hashId(url) {
     try { return decodeURIComponent(url.hash.replace(/^#\/?/, "")); }
     catch { return ""; } // Некорректный фрагмент внешней ссылки не должен нарушать работу страницы.
   }
 
+  /** @param {Element} target */
   function ancestors(target) {
+    /** @type {Element[]} */
     const nodes = [];
-    for (let node = target; node; node = node.parentElement) nodes.push(node);
+    /** @type {Element | null} */
+    let node = target;
+    for (; node; node = node.parentElement) nodes.push(node);
     return nodes.reverse();
   }
 
+  /** @param {Element[]} nodes @param {() => void} scroll */
   function openDisclosures(nodes, scroll) {
     for (const node of nodes) {
-      if (node.matches("details")) node.open = true;
+      if (node instanceof HTMLDetailsElement) node.open = true;
       if (!node.matches(".collapse:not(.show)")) continue;
 
       // Bootstrap управляет анимацией и состоянием переключателя.
@@ -2801,7 +2809,7 @@
         node.classList.add("show");
         if (!node.id) continue;
         for (const trigger of document.querySelectorAll("[aria-controls]")) {
-          if (!trigger.getAttribute("aria-controls").split(/\s+/).includes(node.id)) continue;
+          if (!(trigger.getAttribute("aria-controls") ?? "").split(/\s+/).includes(node.id)) continue;
           trigger.setAttribute("aria-expanded", "true");
           trigger.classList.remove("collapsed");
         }
@@ -2809,6 +2817,7 @@
     }
   }
 
+  /** @param {string} id */
   function revealTarget(id) {
     const target = id && document.getElementById(id);
     if (!target) return;
@@ -2851,8 +2860,8 @@
   window.addEventListener("hashchange", () => revealTarget(hashId(new URL(location.href))));
   document.addEventListener("click", event => {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.defaultPrevented) return;
-    const link = event.target.closest?.("a[href]");
-    if (!link || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
+    const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
+    if (!(link instanceof HTMLAnchorElement) || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
     const url = new URL(link.href, location.href);
     if (url.origin !== location.origin || url.pathname !== location.pathname || url.search !== location.search) return;
     // Повторный переход по тому же фрагменту URL не вызывает hashchange.
@@ -2861,12 +2870,14 @@
   }, true);
 })();
 </script>
-<script id="course-site-navigation">(function(){
+<script id="course-site-navigation">// @ts-check
+(function(){
 const base={"courseUrl":"https://bsu-rfct-afonenko-courses.github.io/Java/","rootHref":"../"};
 if(base){
  const course=new URL(base.courseUrl); course.pathname=course.pathname.replace(/\/$/,'')+'/';
  const root=new URL(base.rootHref,document.baseURI);
  for(const link of document.querySelectorAll('#quarto-header a[href],#quarto-sidebar a[href],.quarto-navbar a[href],.quarto-sidebar a[href]')){
+  if (!(link instanceof HTMLAnchorElement)) continue;
   const url=new URL(link.href,document.baseURI);
   if(url.origin===course.origin&&url.pathname.startsWith(course.pathname)){
    let path=url.pathname.slice(course.pathname.length); if(!path||path.endsWith('/')) path+='index.html';
@@ -2876,6 +2887,7 @@ if(base){
 }
 const targets=[].map(path=>new URL(path,document.baseURI));
 for(const link of document.querySelectorAll('a[href]')){
+ if (!(link instanceof HTMLAnchorElement)) continue;
  const url=new URL(link.href,document.baseURI);
  if(targets.some(target=>target.origin===url.origin&&(
   target.pathname===url.pathname || target.pathname.endsWith('/index.html')&&target.pathname.slice(0,-'index.html'.length)===url.pathname
@@ -2883,5 +2895,5 @@ for(const link of document.querySelectorAll('a[href]')){
   link.target='_blank'; link.rel=[...new Set([...link.rel.split(/\s+/).filter(Boolean),'noopener','noreferrer'])].join(' ');
  }
 }
-})();</script>
-</body></html>
+})();
+</script></body></html>

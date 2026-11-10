@@ -6,16 +6,16 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-35fc0813589bbfbfa0b8ec974497eeb2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
 <link href="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.11.6">
+  <meta name="generator" content="quarto-1.11.5">
 
   <title>Введения к лабораторным Java – Обобщённые алгоритмы и контейнеры: введение к работе</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
   <style>
@@ -123,7 +123,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-836333b27002cb1bbca9e7698ee01091.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-3ce18430e1250f8c2f6f98be2c9c7b18.css">
   <link rel="stylesheet" href="assets/lesson.css">
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -232,7 +232,7 @@
 </section>
 <section id="sec-p-generics" class="title-slide slide level1 center">
 <h1>Обобщённые алгоритмы и контейнеры</h1>
-<p>Лабораторная работа: <a data-qrc-custom="true" data-qrc-ref="tasks:sec-lab-generics" data-qrc-style="default" class="qrc-link" href="../tasks/labs/generics.html#sec-lab-generics">обобщённые алгоритмы и контейнеры</a>. Теория: <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-parameters" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-parameters.html#sec-t-type-parameters"><span>Глава 15</span></a>. Программы и команды: <a data-qrc-custom="false" data-qrc-ref="handbook:sec-h-generic-methods-examples" data-qrc-style="default" class="qrc-link" href="../handbook/entries/generic-methods.html#sec-h-generic-methods-examples">Полные примеры и запуск</a>.</p>
+<p>Лабораторная работа: <a data-qrc-ref="tasks:sec-lab-generics" data-qrc-custom="true" data-qrc-style="default" class="qrc-link" href="../tasks/labs/generics.html#sec-lab-generics">обобщённые алгоритмы и контейнеры</a>. Теория: <a data-qrc-ref="theory:sec-t-type-parameters" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/type-parameters.html#sec-t-type-parameters"><span>Глава 15</span></a>. Программы и команды: <a data-qrc-ref="handbook:sec-h-generic-methods-examples" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../handbook/generic-methods.html#sec-h-generic-methods-examples">Полные примеры и запуск</a>.</p>
 <aside class="notes">
 <p>Предложить вспомнить один вызов из теории, в котором значение возвращается с тем же типом, с которым его передали. Вопрос о нужной операции возвращать к конкретной строке каждого разбираемого примера.</p>
 <style type="text/css">
@@ -263,7 +263,7 @@
 <p>Почему клиент восстанавливает <code>String</code> приведением? В объявлении <code>get</code> указан только <code>Object</code>. При замене содержимого на <code>25</code> приведение всё ещё скомпилируется, но при чтении возникнет <code>ClassCastException</code>.</p>
 <p>Клиенту заранее известно, что здесь нужна строка. <strong>Как связать это требование с созданием коробки и типом результата <code>get()</code>?</strong></p>
 <aside class="notes">
-<p>Повторить опыт из <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-parameters-object" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-parameters.html#sec-t-type-parameters-object">Контейнер с типом Object</a>. Попросить указать объявление, по которому компилятор определяет тип title.get(). Обсудить, почему успешная запись строки сама не меняет это объявление.</p>
+<p>Повторить опыт из <a data-qrc-ref="theory:sec-t-type-parameters-object" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/type-parameters.html#sec-t-type-parameters-object">Контейнер с типом Object</a>. Попросить указать объявление, по которому компилятор определяет тип title.get(). Обсудить, почему успешная запись строки сама не меняет это объявление.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -287,7 +287,7 @@
 <span id="cb2-7"><a aria-label="7"></a><span class="bu">Box</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> title <span class="op">=</span> <span class="kw">new</span> <span class="bu">Box</span><span class="op">&lt;&gt;(</span><span class="st">"Java"</span><span class="op">);</span></span>
 <span id="cb2-8"><a aria-label="8"></a><span class="bu">String</span> text <span class="op">=</span> title<span class="op">.</span><span class="fu">get</span><span class="op">();</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Одно имя <code>T</code> связывает принимаемое значение, поле и результат чтения. При <code>Box&lt;String&gt;</code> все три места согласованы со <code>String</code>, поэтому <code>Box&lt;String&gt; title = new Box&lt;&gt;(25)</code> отвергается уже при компиляции.</p>
-<p>Для чисел выбираем <code>Box&lt;Integer&gt;</code> и сохраняем то же тело класса. <code>get()</code> использует <code>T</code>, объявленный у <code>Box</code>; собственного параметра у этого метода нет. Разбор: <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-parameters-type-parameter" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-parameters.html#sec-t-type-parameters-type-parameter">Параметр типа</a>.</p>
+<p>Для чисел выбираем <code>Box&lt;Integer&gt;</code> и сохраняем то же тело класса. <code>get()</code> использует <code>T</code>, объявленный у <code>Box</code>; собственного параметра у этого метода нет. Разбор: <a data-qrc-ref="theory:sec-t-type-parameters-type-parameter" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/type-parameters.html#sec-t-type-parameters-type-parameter">Параметр типа</a>.</p>
 <aside class="notes">
 <p>Попросить проследить путь строки от аргумента конструктора к результату. Если заменить T на Object только в результате get, клиент снова потеряет строковый тип.</p>
 <style type="text/css">
@@ -308,7 +308,7 @@
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb3-1"><a aria-label="1"></a><span class="dt">int</span> <span class="fu">length</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> value<span class="op">.</span><span class="fu">length</span><span class="op">();</span> <span class="op">}</span> <span class="co">// ошибка компиляции</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Почему создание <code>Box&lt;String&gt;</code> не делает этот метод допустимым? Тело класса должно работать для каждого разрешённого аргумента типа. У <code>T</code> здесь есть только граница <code>Object</code>, которая не предоставляет <code>length()</code>.</p>
 <p>Разберите две проверки: какие операции разрешены автору <code>Box&lt;T&gt;</code> и какое значение разрешено клиенту <code>Box&lt;String&gt;</code>?</p>
-<p>Объявление связывает типы. При помещении в коробку объект не копируется. Если коробка хранит изменяемую книгу, обе ссылки по-прежнему ведут к этой книге: <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-parameters-sharing" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-parameters.html#sec-t-type-parameters-sharing">Общий объект в контейнере</a>.</p>
+<p>Объявление связывает типы. При помещении в коробку объект не копируется. Если коробка хранит изменяемую книгу, обе ссылки по-прежнему ведут к этой книге: <a data-qrc-ref="theory:sec-t-type-parameters-sharing" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/type-parameters.html#sec-t-type-parameters-sharing">Общий объект в контейнере</a>.</p>
 <aside class="notes">
 <p>Разместить ошибочный метод в отдельной копии коробки. До компиляции сравнить два разрешённых применения, Box<string> и Box<integer>. Доступ к конкретной строковой операции вернуть клиенту после get().</integer></string></p>
 <style type="text/css">
@@ -333,7 +333,7 @@
 <span id="cb4-4"><a aria-label="4"></a>    values<span class="op">[</span>j<span class="op">]</span> <span class="op">=</span> saved<span class="op">;</span></span>
 <span id="cb4-5"><a aria-label="5"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Сохраняем одну ссылку и переставляем две ссылки. Сравнивать или складывать значения не требуется, поэтому у <code>T</code> нет дополнительной границы. Тело подходит и <code>String[]</code>, и <code>Integer[]</code>.</p>
-<p>Параметр объявлен самим методом: он связывает массив с временным значением при каждом вызове. Массив существует, индексы допустимы. Разбор: <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-parameters-swap" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-parameters.html#sec-t-type-parameters-swap">Перестановка элементов</a>.</p>
+<p>Параметр объявлен самим методом: он связывает массив с временным значением при каждом вызове. Массив существует, индексы допустимы. Разбор: <a data-qrc-ref="theory:sec-t-type-parameters-swap" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/type-parameters.html#sec-t-type-parameters-swap">Перестановка элементов</a>.</p>
 <aside class="notes">
 <p>Проследить обмен на names = {“Ada”, “Lin”}, затем на {4, 9}. Попросить объяснить, зачем saved сохраняется до первой записи в массив. Ни один шаг не создаёт копию объекта элемента.</p>
 <style type="text/css">
@@ -358,7 +358,7 @@
 <span id="cb5-5"><a aria-label="5"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"Ada"</span><span class="op">.</span><span class="fu">compareTo</span><span class="op">(</span><span class="st">"Lin"</span><span class="op">));</span> <span class="co">// -11</span></span>
 <span id="cb5-6"><a aria-label="6"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="fu">larger</span><span class="op">(</span><span class="st">"Ada"</span><span class="op">,</span> <span class="st">"Lin"</span><span class="op">));</span> <span class="co">// Lin</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Граница предоставляет метод <code>compareTo</code>. Его результат — <code>int</code>: знак сообщает порядок, поэтому его можно сравнить с нулём. Здесь <code>-11 &lt; 0</code>, выбирается правый аргумент; при равенстве сохраняется левый.</p>
-<p>Аргументы отличны от <code>null</code>, сравнение задаёт согласованный порядок. Разбор: <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-parameters-comparison-sign" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-parameters.html#sec-t-type-parameters-comparison-sign">Сравнение значений</a>.</p>
+<p>Аргументы отличны от <code>null</code>, сравнение задаёт согласованный порядок. Разбор: <a data-qrc-ref="theory:sec-t-type-parameters-comparison-sign" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/type-parameters.html#sec-t-type-parameters-comparison-sign">Сравнение значений</a>.</p>
 <aside class="notes">
 <p>Спросить, почему проверка == -1 не подходит для результата сравнения. Вернуть обсуждение к выбору одного из исходных объектов.</p>
 <style type="text/css">
@@ -408,7 +408,7 @@
 <span id="cb8-8"><a aria-label="8"></a>    <span class="cf">return</span> best<span class="op">;</span></span>
 <span id="cb8-9"><a aria-label="9"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>get(i)</code> читает элемент, <code>size()</code> ограничивает обход. Когда просмотрен весь список, свойство <code>best</code> даёт искомый максимум. Строгое <code>&gt; 0</code> сохраняет первый из равных максимумов.</p>
-<p>Список и элементы отличны от <code>null</code>, порядок согласован. Разбор: <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-parameters-maximum" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-parameters.html#sec-t-type-parameters-maximum">Поиск максимума</a>.</p>
+<p>Список и элементы отличны от <code>null</code>, порядок согласован. Разбор: <a data-qrc-ref="theory:sec-t-type-parameters-maximum" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/type-parameters.html#sec-t-type-parameters-maximum">Поиск максимума</a>.</p>
 <p>Для <code>n</code> элементов выполняется <code>n - 1</code> сравнений. Оценка общего времени зависит также от стоимости <code>get(i)</code> и самого <code>compareTo</code>.</p>
 <aside class="notes">
 <p>До чтения цикла предложить назвать первый ещё не просмотренный индекс. Проверить рассуждение на одном элементе: цикл не нужен, кандидат уже является ответом. Отказ пустого списка относится к этому методу.</p>
@@ -428,10 +428,10 @@
 <h2>Диапазон самостоятельного поиска</h2>
 <p>В массиве <code>{4, 9, 2, 7}</code> диапазон <code>[1, 3)</code> содержит <code>9</code> и <code>2</code>: индекс <code>1</code> включён, индекс <code>3</code> исключён. Диапазон <code>[2, 3)</code> содержит ровно один элемент <code>2</code>.</p>
 <p>Какие позиции следует просмотреть для <code>[2, 4)</code>? В нём максимум <code>7</code>, хотя максимум всего массива — <code>9</code>.</p>
-<p>В <a data-qrc-custom="true" data-qrc-ref="tasks:exr-generics-range-maximum" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-generics-range-maximum">самостоятельном задании</a> диапазон заранее допустим и непуст: программная проверка этих предпосылок не требуется. У массива размер доступен через <code>length</code>, у списка — через <code>size()</code>.</p>
+<p>В <a data-qrc-ref="tasks:exr-generics-range-maximum" data-qrc-custom="true" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-generics-range-maximum">самостоятельном задании</a> диапазон заранее допустим и непуст: программная проверка этих предпосылок не требуется. У массива размер доступен через <code>length</code>, у списка — через <code>size()</code>.</p>
 <p>Условие допускает обе изученные границы <code>Comparable&lt;T&gt;</code> и <code>Comparable&lt;? super T&gt;</code>, а при нескольких максимумах — любой из них.</p>
 <aside class="notes">
-<p>Предложить отметить позиции ещё одного полуинтервала и назвать ожидаемый результат до реализации. При вопросе об унаследованном сравнении перейти к <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-relations-comparison-target" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-relations.html#sec-t-type-relations-comparison-target">Граница унаследованного сравнения</a>.</p>
+<p>Предложить отметить позиции ещё одного полуинтервала и назвать ожидаемый результат до реализации. При вопросе об унаследованном сравнении перейти к <a data-qrc-ref="theory:sec-t-type-relations-comparison-target" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/type-relations.html#sec-t-type-relations-comparison-target">Граница унаследованного сравнения</a>.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -455,7 +455,7 @@
 <li>Прибавить произведение к накопленному результату.</li>
 </ul>
 <p>У произвольного <code>T</code> нет операторов <code>+</code> и <code>*</code>. Передадим объект, который умеет выполнять эти действия над выбранным типом. Здесь сумма вычисляется <strong>без комплексного сопряжения</strong>.</p>
-<p>Разбор: <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-parameters-operations" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-parameters.html#sec-t-type-parameters-operations">Контракт арифметических операций</a>.</p>
+<p>Разбор: <a data-qrc-ref="theory:sec-t-type-parameters-operations" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/type-parameters.html#sec-t-type-parameters-operations">Контракт арифметических операций</a>.</p>
 <aside class="notes">
 <p>Попросить назвать три действия по формуле до перехода к интерфейсу. Уточнить, что Number предоставляет преобразования чисел, а нужные здесь сложение и умножение с результатом T требуют собственного контракта.</p>
 <style type="text/css">
@@ -592,7 +592,7 @@
 <p>Обобщённый метод подсчёта получает правило выбора элементов. Например, одно правило выбирает нечётные целые числа, другое — строки длиннее трёх символов.</p>
 <p>Что должен узнать общий алгоритм о каждом элементе? Достаточно ответа, удовлетворяет ли он свойству. Выбор свойства передадим отдельному объекту, как в <code>dot</code> передавали конкретную арифметику.</p>
 <p>Определение нечётности и обращение к длине строки принадлежат разным правилам. Обход и подсчёт должны работать с любым переданным правилом по его общему контракту.</p>
-<p><a data-qrc-custom="true" data-qrc-ref="tasks:exr-generics-property-count" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-generics-property-count">Условие подсчёта</a> задаёт форму операции проверки и необходимые демонстрации. Задание включает интерфейс, классы правил и метод подсчёта.</p>
+<p><a data-qrc-ref="tasks:exr-generics-property-count" data-qrc-custom="true" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-generics-property-count">Условие подсчёта</a> задаёт форму операции проверки и необходимые демонстрации. Задание включает интерфейс, классы правил и метод подсчёта.</p>
 <aside class="notes">
 <p>Предложить назвать ещё одно свойство строки и описать ожидаемый ответ для одного значения.</p>
 <style type="text/css">
@@ -701,7 +701,7 @@
 <span id="cb13-3"><a aria-label="3"></a>safe<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> <span class="fl">2.5</span><span class="op">;</span></span>
 <span id="cb13-4"><a aria-label="4"></a><span class="co">// narrow[0] = 2.5; // ArrayStoreException</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>Number[]</code> принимает <code>Double</code>, а фактический <code>Integer[]</code> отвергает его при записи. Поэтому условие требует совпадения типа компонента массива с аргументом типа контейнера; проверять это программно не требуется.</p>
-<p>Причины: <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-relations-runtime-limits" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-relations.html#sec-t-type-relations-runtime-limits">Ограничения выполняемого представления</a>. Форма хранилища: <a data-qrc-custom="false" data-qrc-ref="handbook:sec-h-generic-classes-array" data-qrc-style="default" class="qrc-link" href="../handbook/entries/generic-classes.html#sec-h-generic-classes-array">Массив как хранилище</a>.</p>
+<p>Причины: <a data-qrc-ref="theory:sec-t-type-relations-runtime-limits" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/type-relations.html#sec-t-type-relations-runtime-limits">Ограничения выполняемого представления</a>. Форма хранилища: <a data-qrc-ref="handbook:sec-h-generic-classes-array" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../handbook/generic-classes.html#sec-h-generic-classes-array">Массив как хранилище</a>.</p>
 <aside class="notes">
 <p>Тип переменной narrow разрешает запись Number; отказ создаёт проверка типа компонента самого массива Integer[]. Условия также оговаривают положительную вместимость и дальнейшее использование массива только контейнером.</p>
 <style type="text/css">
@@ -727,7 +727,7 @@
 <p>Через <code>List&lt;Number&gt;</code> можно было бы записать <code>Double</code> в список целых. <code>? extends Number</code> сохраняет безопасное чтение. Неизвестный аргумент не позволяет выбрать для добавления значение, отличное от <code>null</code>.</p>
 <p>Что изменит <code>source.clear()</code>? Удаление допускается по типам; в данном <code>ArrayList</code> оно очистит тот же объект, видимый через <code>integers</code>.</p>
 <aside class="notes">
-<p>Нужны импорты java.util.List и java.util.ArrayList. Повторить рассуждение об инвариантности из <a data-qrc-custom="false" data-qrc-ref="theory:sec-t-type-relations-subtyping" data-qrc-style="default" class="qrc-link" href="../theory/chapters/type-relations.html#sec-t-type-relations-subtyping">Инвариантность параметризованных типов</a>; показать различие между допустимостью присваивания и проверкой массивной записи. Уточнить: неизвестность аргумента не означает неизменяемость списка.</p>
+<p>Нужны импорты java.util.List и java.util.ArrayList. Повторить рассуждение об инвариантности из <a data-qrc-ref="theory:sec-t-type-relations-subtyping" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/type-relations.html#sec-t-type-relations-subtyping">Инвариантность параметризованных типов</a>; показать различие между допустимостью присваивания и проверкой массивной записи. Уточнить: неизвестность аргумента не означает неизменяемость списка.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -752,7 +752,7 @@
 <span id="cb15-6"><a aria-label="6"></a>    <span class="cf">return</span> <span class="dv">7</span><span class="op">;</span></span>
 <span id="cb15-7"><a aria-label="7"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>throw</code> выполняется в ветви отказа. <code>throws</code> в объявлении сообщает клиенту, что такой выход возможен, и требует обработать или передать проверяемое исключение. Само объявление отказа не создаёт.</p>
-<p>Проверяемый отказ операции: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-exceptions-early-checked" data-qrc-style="default" class="qrc-link" href="../theory/chapters/exceptions.html#sec-j25-theory-exceptions-early-checked">Проверяемый отказ операции</a>.</p>
+<p>Проверяемый отказ операции: <a data-qrc-ref="theory:sec-theory-exceptions-early-checked" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/exceptions.html#sec-theory-exceptions-early-checked">Проверяемый отказ операции</a>.</p>
 <aside class="notes">
 <p>Класс исключения и take — члены EarlyCheckedDemo. Предложить пройти ветви с false и true, назвав для каждой результат действия. Контейнер применит то же средство к своему состоянию.</p>
 <style type="text/css">
@@ -800,12 +800,12 @@
 <h1>Самостоятельная работа</h1>
 <p>Примените разобранные связи типов и правила состояния к новым условиям:</p>
 <ul>
-<li><a data-qrc-custom="true" data-qrc-ref="tasks:exr-generics-range-maximum" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-generics-range-maximum">Максимум диапазона</a>: выделить область поиска и сохранить тип результата.</li>
-<li><a data-qrc-custom="true" data-qrc-ref="tasks:exr-generics-property-count" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-generics-property-count">Подсчёт по свойству</a>: отделить общее действие от правила для конкретного типа элементов.</li>
-<li><a data-qrc-custom="true" data-qrc-ref="tasks:exr-generics-generic-queue" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-generics-generic-queue">Очередь</a> <strong>либо</strong> <a data-qrc-custom="true" data-qrc-ref="tasks:exr-generics-generic-stack" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-generics-generic-stack">стек</a>: связать тип содержимого, порядок извлечения и состояние при успешных действиях и отказах.</li>
+<li><a data-qrc-ref="tasks:exr-generics-range-maximum" data-qrc-custom="true" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-generics-range-maximum">Максимум диапазона</a>: выделить область поиска и сохранить тип результата.</li>
+<li><a data-qrc-ref="tasks:exr-generics-property-count" data-qrc-custom="true" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-generics-property-count">Подсчёт по свойству</a>: отделить общее действие от правила для конкретного типа элементов.</li>
+<li><a data-qrc-ref="tasks:exr-generics-generic-queue" data-qrc-custom="true" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-generics-generic-queue">Очередь</a> <strong>либо</strong> <a data-qrc-ref="tasks:exr-generics-generic-stack" data-qrc-custom="true" data-qrc-style="default" class="qrc-link" href="../tasks/bank/generics.html#exr-generics-generic-stack">стек</a>: связать тип содержимого, порядок извлечения и состояние при успешных действиях и отказах.</li>
 </ul>
-<p>Полный состав и представление результата — в <a data-qrc-custom="true" data-qrc-ref="tasks:sec-lab-generics" data-qrc-style="default" class="qrc-link" href="../tasks/labs/generics.html#sec-lab-generics">лабораторной работе</a>. В пределах условий выберите устройство программы самостоятельно. Перед реализацией сформулируйте ожидаемый результат своих примеров.</p>
-<p>Формы объявлений: <a data-qrc-custom="true" data-qrc-ref="handbook:sec-h-generic-methods" data-qrc-style="default" class="qrc-link" href="../handbook/entries/generic-methods.html#sec-h-generic-methods">методы</a> и <a data-qrc-custom="true" data-qrc-ref="handbook:sec-h-generic-classes" data-qrc-style="default" class="qrc-link" href="../handbook/entries/generic-classes.html#sec-h-generic-classes">классы</a>.</p>
+<p>Полный состав и представление результата — в <a data-qrc-ref="tasks:sec-lab-generics" data-qrc-custom="true" data-qrc-style="default" class="qrc-link" href="../tasks/labs/generics.html#sec-lab-generics">лабораторной работе</a>. В пределах условий выберите устройство программы самостоятельно. Перед реализацией сформулируйте ожидаемый результат своих примеров.</p>
+<p>Формы объявлений: <a data-qrc-ref="handbook:sec-h-generic-methods" data-qrc-custom="true" data-qrc-style="default" class="qrc-link" href="../handbook/generic-methods.html#sec-h-generic-methods">методы</a> и <a data-qrc-ref="handbook:sec-h-generic-classes" data-qrc-custom="true" data-qrc-style="default" class="qrc-link" href="../handbook/generic-classes.html#sec-h-generic-classes">классы</a>.</p>
 <aside class="notes">
 <p>Предпосылки из условий не превращать в дополнительные проверки входа. Уточнить, что оба метода обязательны, а из двух контейнеров выбирается один.</p>
 <style type="text/css">
@@ -1227,26 +1227,34 @@
     
 
 
-<script data-qrc-navigation>// Опубликованные цели сохраняют штатные ID Quarto. Обработчик раскрывает
+<script data-qrc-navigation>// @ts-check
+/// <reference path="../../../typecheck/browser.d.ts" />
+// Опубликованные цели сохраняют штатные ID Quarto. Обработчик раскрывает
 // существующее представление документа, не вводя учебных ролей и новых ID.
 (() => {
   if (new URL(location.href).searchParams.has("print-pdf")) return;
   let navigation = 0;
 
+  /** @param {URL} url */
   function hashId(url) {
     try { return decodeURIComponent(url.hash.replace(/^#\/?/, "")); }
     catch { return ""; } // Некорректный фрагмент внешней ссылки не должен нарушать работу страницы.
   }
 
+  /** @param {Element} target */
   function ancestors(target) {
+    /** @type {Element[]} */
     const nodes = [];
-    for (let node = target; node; node = node.parentElement) nodes.push(node);
+    /** @type {Element | null} */
+    let node = target;
+    for (; node; node = node.parentElement) nodes.push(node);
     return nodes.reverse();
   }
 
+  /** @param {Element[]} nodes @param {() => void} scroll */
   function openDisclosures(nodes, scroll) {
     for (const node of nodes) {
-      if (node.matches("details")) node.open = true;
+      if (node instanceof HTMLDetailsElement) node.open = true;
       if (!node.matches(".collapse:not(.show)")) continue;
 
       // Bootstrap управляет анимацией и состоянием переключателя.
@@ -1259,7 +1267,7 @@
         node.classList.add("show");
         if (!node.id) continue;
         for (const trigger of document.querySelectorAll("[aria-controls]")) {
-          if (!trigger.getAttribute("aria-controls").split(/\s+/).includes(node.id)) continue;
+          if (!(trigger.getAttribute("aria-controls") ?? "").split(/\s+/).includes(node.id)) continue;
           trigger.setAttribute("aria-expanded", "true");
           trigger.classList.remove("collapsed");
         }
@@ -1267,6 +1275,7 @@
     }
   }
 
+  /** @param {string} id */
   function revealTarget(id) {
     const target = id && document.getElementById(id);
     if (!target) return;
@@ -1309,8 +1318,8 @@
   window.addEventListener("hashchange", () => revealTarget(hashId(new URL(location.href))));
   document.addEventListener("click", event => {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.defaultPrevented) return;
-    const link = event.target.closest?.("a[href]");
-    if (!link || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
+    const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
+    if (!(link instanceof HTMLAnchorElement) || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
     const url = new URL(link.href, location.href);
     if (url.origin !== location.origin || url.pathname !== location.pathname || url.search !== location.search) return;
     // Повторный переход по тому же фрагменту URL не вызывает hashchange.
@@ -1319,12 +1328,14 @@
   }, true);
 })();
 </script>
-<script id="course-site-navigation">(function(){
+<script id="course-site-navigation">// @ts-check
+(function(){
 const base={"courseUrl":"https://bsu-rfct-afonenko-courses.github.io/Java/","rootHref":"../"};
 if(base){
  const course=new URL(base.courseUrl); course.pathname=course.pathname.replace(/\/$/,'')+'/';
  const root=new URL(base.rootHref,document.baseURI);
  for(const link of document.querySelectorAll('#quarto-header a[href],#quarto-sidebar a[href],.quarto-navbar a[href],.quarto-sidebar a[href]')){
+  if (!(link instanceof HTMLAnchorElement)) continue;
   const url=new URL(link.href,document.baseURI);
   if(url.origin===course.origin&&url.pathname.startsWith(course.pathname)){
    let path=url.pathname.slice(course.pathname.length); if(!path||path.endsWith('/')) path+='index.html';
@@ -1334,6 +1345,7 @@ if(base){
 }
 const targets=[].map(path=>new URL(path,document.baseURI));
 for(const link of document.querySelectorAll('a[href]')){
+ if (!(link instanceof HTMLAnchorElement)) continue;
  const url=new URL(link.href,document.baseURI);
  if(targets.some(target=>target.origin===url.origin&&(
   target.pathname===url.pathname || target.pathname.endsWith('/index.html')&&target.pathname.slice(0,-'index.html'.length)===url.pathname
@@ -1341,5 +1353,5 @@ for(const link of document.querySelectorAll('a[href]')){
   link.target='_blank'; link.rel=[...new Set([...link.rel.split(/\s+/).filter(Boolean),'noopener','noreferrer'])].join(' ');
  }
 }
-})();</script>
-</body></html>
+})();
+</script></body></html>

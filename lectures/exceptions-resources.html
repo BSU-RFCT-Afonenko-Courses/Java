@@ -6,16 +6,16 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-35fc0813589bbfbfa0b8ec974497eeb2.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-3b9ea68436acb9022c2fbce6dbb58b06.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/disclosure.js" data-course-runtime-asset="disclosure.js" data-course-runtime-provider="course-presentation"></script>
 <script src="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.js" data-course-runtime-asset="presentation.js" data-course-runtime-provider="course-presentation"></script>
 <link href="site_libs/quarto-contrib/course-presentation-0.1.0/presentation.css" rel="stylesheet" data-course-runtime-asset="presentation.css" data-course-runtime-provider="course-presentation"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.11.6">
+  <meta name="generator" content="quarto-1.11.5">
 
   <title>Лекции Java – Исключения и ресурсы</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
   <style>
@@ -123,7 +123,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-836333b27002cb1bbca9e7698ee01091.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-3ce18430e1250f8c2f6f98be2c9c7b18.css">
   <link rel="stylesheet" href="assets/lesson.css">
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -231,17 +231,17 @@
 </div>
 
 </section>
-<section id="sec-j25-lecture-exceptions-resources" class="title-slide slide level1 center">
+<section id="sec-lecture-exceptions-resources" class="title-slide slide level1 center">
 <h1>Исключения и ресурсы</h1>
 
 </section>
 
 <section>
-<section id="sec-j25-lecture-exceptions-resources-group-1" class="title-slide slide level1 center">
+<section id="sec-lecture-exceptions-resources-group-1" class="title-slide slide level1 center">
 <h1>Исключительное завершение</h1>
 
 </section>
-<section id="sec-j25-lecture-exceptions-resources-contract" class="slide level2">
+<section id="sec-lecture-exceptions-resources-contract" class="slide level2">
 <h2>Исход операции</h2>
 <p>Поиск студента может успешно завершиться без совпадения. Для загрузки обязательного каталога нужен доступный файл; отказ чтения препятствует получению каталога. Неверный индекс внутри загрузчика требует исправления алгоритма.</p>
 <table class="caption-top">
@@ -280,7 +280,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-context" class="slide level2">
+<section id="sec-lecture-exceptions-resources-context" class="slide level2">
 <h2>Условия проверки балла</h2>
 <p><code>parseScore</code> получает строку, отличную от <code>null</code>, без пробелов по краям. Успешный результат — целое число от 0 до 100 включительно.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a aria-label="1"></a>"90"      — допустимый балл</span>
@@ -289,7 +289,7 @@
 <span id="cb1-4"><a aria-label="4"></a>"120"     — целое число за пределами диапазона баллов</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Если вернуть <code>0</code> для <code>"ninety"</code>, вызывающий код примет ошибку данных за допустимый результат. Отказ должен сохранять это различие.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-parse-definition" class="slide level2">
+<section id="sec-lecture-exceptions-resources-parse-definition" class="slide level2">
 <h2>Проверка балла</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb2-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">parseScore</span><span class="op">(</span><span class="bu">String</span> text<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb2-2"><a aria-label="2"></a>    java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">Objects</span><span class="op">.</span><span class="fu">requireNonNull</span><span class="op">(</span>text<span class="op">,</span> <span class="st">"text"</span><span class="op">);</span></span>
@@ -313,7 +313,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-01" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-01" class="slide level2">
 <h2>Ошибка числового представления</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb3-1"><a aria-label="1"></a><span class="dt">int</span> score <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span><span class="st">"ninety"</span><span class="op">);</span></span>
 <span id="cb3-2"><a aria-label="2"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"балл: "</span> <span class="op">+</span> score<span class="op">);</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
@@ -321,9 +321,9 @@
 <p><code>parseInt</code> выбрасывает <code>NumberFormatException</code>. Присваивание <code>score</code> и печать не выполняются: исключение прерывает вычисление выражения и обычное продолжение вызова.</p>
 <p>Программа компилируется. Ошибка обнаружена при обработке конкретной строки.</p>
 </div>
-<p>Механизм передачи управления: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-exceptions-unwinding" data-qrc-style="default" class="qrc-link" href="../theory/chapters/exceptions.html#sec-j25-theory-exceptions-unwinding">Путь через стек вызовов</a>.</p>
+<p>Механизм передачи управления: <a data-qrc-ref="theory:sec-theory-exceptions-unwinding" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/exceptions.html#sec-theory-exceptions-unwinding">Путь через стек вызовов</a>.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-02" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-02" class="slide level2">
 <h2>Ошибка предметного диапазона</h2>
 <p>Вызов <code>parseScore("120")</code> сначала вычисляет:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb4-1"><a aria-label="1"></a><span class="dt">int</span> score <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span><span class="st">"120"</span><span class="op">);</span> <span class="co">// 120</span></span>
@@ -332,7 +332,7 @@
 <p>Преобразование в <code>int</code> успешно. Проверка <code>score &gt; 100</code> приводит к <code>throw</code>, поэтому метод не достигает <code>return score</code>.</p>
 <p>Для <code>parseScore("0")</code> проверка диапазона проходит; результат равен <code>0</code>. Подстановка нуля при отказе смешала бы эти исходы.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-03" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-03" class="slide level2">
 <h2>Объект исключения и throw</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb5-1"><a aria-label="1"></a><span class="dt">int</span> score <span class="op">=</span> <span class="dv">120</span><span class="op">;</span></span>
 <span id="cb5-2"><a aria-label="2"></a><span class="dt">var</span> failure <span class="op">=</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"неверный балл: "</span> <span class="op">+</span> score<span class="op">);</span></span>
@@ -340,14 +340,14 @@
 <p><code>new</code> создаёт объект с сообщением <code>неверный балл: 120</code>. <code>throw</code> передаёт ссылку на этот объект механизму обработки исключений. Дальнейшие обычные действия текущей ветви пропускаются.</p>
 <p>В обработчике доступны тип объекта, сообщение и диагностические сведения. Повторное <code>throw failure</code> передаёт тот же объект.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-04" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-04" class="slide level2">
 <h2>Ответственность вызывающего кода</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1"><a aria-label="1"></a>parseScore → проверяет текст и диапазон балла</span>
 <span id="cb6-2"><a aria-label="2"></a>загрузчик  → знает путь и физический номер строки</span>
 <span id="cb6-3"><a aria-label="3"></a>приложение → выбирает повтор ввода, пропуск записи или завершение</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Парсер передаёт причину отказа уровню, который располагает данными для дальнейшего действия. Его можно использовать и в интерактивном вводе, и при чтении обязательного файла <span class="citation" data-cites="bib-context-epam-exceptions"><a href="#/источники" role="doc-biblioref" onclick="">[4]</a></span>.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-05" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-05" class="slide level2">
 <h2>Передача управления в catch</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb7-1"><a aria-label="1"></a><span class="cf">try</span> <span class="op">{</span></span>
 <span id="cb7-2"><a aria-label="2"></a>    <span class="dt">int</span> score <span class="op">=</span> <span class="fu">parseScore</span><span class="op">(</span><span class="st">"120"</span><span class="op">);</span></span>
@@ -372,7 +372,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-06" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-06" class="slide level2">
 <h2>Продолжение после обработчика</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb8-1"><a aria-label="1"></a><span class="cf">try</span> <span class="op">{</span> <span class="fu">parseScore</span><span class="op">(</span><span class="st">"120"</span><span class="op">);</span> <span class="op">}</span></span>
 <span id="cb8-2"><a aria-label="2"></a><span class="cf">catch</span> <span class="op">(</span><span class="bu">IllegalArgumentException</span> ex<span class="op">)</span> <span class="op">{</span> <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"ошибка"</span><span class="op">);</span> <span class="op">}</span></span>
@@ -394,7 +394,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-07" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-07" class="slide level2">
 <h2>Раскрутка стека вызовов</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb9-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">readStudent</span><span class="op">(</span><span class="bu">String</span> text<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb9-2"><a aria-label="2"></a>    <span class="dt">int</span> score <span class="op">=</span> <span class="fu">parseScore</span><span class="op">(</span>text<span class="op">);</span></span>
@@ -407,17 +407,17 @@
 <span id="cb10-3"><a aria-label="3"></a>catch в main ← объект исключения</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>запись проверена</code> не печатается. Исключение прерывает незавершённые вызовы на пути к подходящему обработчику. По пути выполняются предусмотренные <code>finally</code> и закрытия ресурсов; выполненные ранее изменения сохраняются.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-08" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-08" class="slide level2">
 <h2>Неперехваченное исключение</h2>
 <p>Если подходящий <code>catch</code> не найден, завершается текущий поток выполнения. Его обработчик неперехваченных исключений может вывести трассировку.</p>
 <p>В приложении с единственным рабочим потоком это завершает программу. Другие рабочие потоки могут продолжить выполнение: исключение не переносится автоматически в их стеки вызовов.</p>
 </section></section>
 <section>
-<section id="sec-j25-lecture-exceptions-resources-group-2" class="title-slide slide level1 center">
+<section id="sec-lecture-exceptions-resources-group-2" class="title-slide slide level1 center">
 <h1>Типы и объявления исключений</h1>
 
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-09" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-09" class="slide level2">
 <h2>Иерархия Throwable</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb11-1"><a aria-label="1"></a>Throwable</span>
 <span id="cb11-2"><a aria-label="2"></a>├─ Exception</span>
@@ -426,7 +426,7 @@
 <p><code>RuntimeException</code>, <code>Error</code> и их подклассы — непроверяемые исключения. Все остальные классы этой иерархии — проверяемые.</p>
 <p>Для проверяемого отказа компилятор требует обработки или допустимого объявления передачи. Оба вида исключений возникают при выполнении.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-10" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-10" class="slide level2">
 <h2>Объявление проверяемого отказа</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb12-1"><a aria-label="1"></a><span class="kw">class</span> EmptyException <span class="kw">extends</span> <span class="bu">Exception</span> <span class="op">{}</span></span>
 <span id="cb12-2"><a aria-label="2"></a></span>
@@ -450,7 +450,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-checked-caller" class="slide level2">
+<section id="sec-lecture-exceptions-resources-checked-caller" class="slide level2">
 <h2>Обработка и передача проверяемого отказа</h2>
 <p>Передача следующему вызывающему уровню:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb13-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">forward</span><span class="op">()</span> <span class="kw">throws</span> EmptyException <span class="op">{</span></span>
@@ -461,14 +461,14 @@
 <span id="cb14-2"><a aria-label="2"></a><span class="cf">catch</span> <span class="op">(</span>EmptyException ex<span class="op">)</span> <span class="op">{</span> <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"хранилище пусто"</span><span class="op">);</span> <span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Первый метод возвращает <code>7</code>, второй фрагмент печатает <code>хранилище пусто</code>. Аргумент <code>false</code> не отменяет объявленный <code>EmptyException</code> у <code>take</code>; <code>throws</code> у <code>forward</code> требуется и для этого успешного запуска.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-13" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-13" class="slide level2">
 <h2>Порядок обработчиков</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb15-1"><a aria-label="1"></a><span class="cf">try</span> <span class="op">{</span> <span class="fu">parseScore</span><span class="op">(</span><span class="st">"ninety"</span><span class="op">);</span> <span class="op">}</span></span>
 <span id="cb15-2"><a aria-label="2"></a><span class="cf">catch</span> <span class="op">(</span><span class="bu">NumberFormatException</span> ex<span class="op">)</span> <span class="op">{</span> <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"нужно число"</span><span class="op">);</span> <span class="op">}</span></span>
 <span id="cb15-3"><a aria-label="3"></a><span class="cf">catch</span> <span class="op">(</span><span class="bu">IllegalArgumentException</span> ex<span class="op">)</span> <span class="op">{</span> <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"нужен диапазон"</span><span class="op">);</span> <span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Вывод — <code>нужно число</code>. <code>NumberFormatException</code> является подклассом <code>IllegalArgumentException</code>, поэтому обратный порядок сделал бы частную ветвь недостижимой.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-14" class="slide level2 continuation">
+<section id="sec-lecture-exceptions-resources-step-14" class="slide level2 continuation">
 <h2>Выбор обработчика по подтипу</h2>
 <p>Для обработчиков предыдущего экрана:</p>
 <table class="caption-top">
@@ -499,7 +499,7 @@
 </table>
 <p>Поиск выбирает первую подходящую ветвь. После её выполнения второй обработчик той же конструкции не запускается.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-17" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-17" class="slide level2">
 <h2>Предметное исключение</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb16-1"><a aria-label="1"></a><span class="kw">class</span> <span class="bu">DataFormatException</span> <span class="kw">extends</span> <span class="bu">Exception</span> <span class="op">{</span></span>
 <span id="cb16-2"><a aria-label="2"></a>    <span class="bu">DataFormatException</span><span class="op">(</span><span class="bu">String</span> message<span class="op">,</span> <span class="bu">Throwable</span> cause<span class="op">)</span> <span class="op">{</span></span>
@@ -508,7 +508,7 @@
 <span id="cb16-5"><a aria-label="5"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>DataFormatException</code> обозначает неверное содержимое записи. <code>IOException</code> сообщает о неудачной операции ввода-вывода. Тип позволяет вызывающему коду различить эти причины без разбора текста сообщения.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-18" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-18" class="slide level2">
 <h2>Сохранение причины</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb17-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">parseAt</span><span class="op">(</span><span class="bu">String</span> text<span class="op">,</span> <span class="dt">long</span> number<span class="op">)</span></span>
 <span id="cb17-2"><a aria-label="2"></a>        <span class="kw">throws</span> <span class="bu">DataFormatException</span> <span class="op">{</span></span>
@@ -532,7 +532,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-multi-catch" class="slide level2">
+<section id="sec-lecture-exceptions-resources-multi-catch" class="slide level2">
 <h2>Многовариантный обработчик</h2>
 <p><code>DataFormatException</code> — собственный подкласс <code>Exception</code> для ошибки содержимого. Загрузчик объявляет отдельно <code>IOException</code> и этот тип. При одинаковой реакции допустима форма:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb18-1"><a aria-label="1"></a><span class="cf">catch</span> <span class="op">(</span>java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span> <span class="op">|</span> <span class="bu">DataFormatException</span> failure<span class="op">)</span> <span class="op">{</span></span>
@@ -540,7 +540,7 @@
 <span id="cb18-3"><a aria-label="3"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Типы в перечне <code>catch</code> не могут быть подтипами друг друга. <code>NumberFormatException | IllegalArgumentException</code> отвергается компилятором. Параметру многовариантного обработчика нельзя присвоить другую ссылку.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-override" class="slide level2">
+<section id="sec-lecture-exceptions-resources-override" class="slide level2">
 <h2>Исключения переопределённого метода</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb19-1"><a aria-label="1"></a><span class="kw">interface</span> TextSource <span class="op">{</span></span>
 <span id="cb19-2"><a aria-label="2"></a>    <span class="bu">String</span> <span class="fu">read</span><span class="op">()</span> <span class="kw">throws</span> java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span><span class="op">;</span></span>
@@ -569,18 +569,18 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-20" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-20" class="slide level2">
 <h2>Граница перехвата</h2>
 <p><code>catch (Exception ex)</code> охватывает также <code>RuntimeException</code>. Если общий обработчик вернёт пустой каталог, он скроет и отказ чтения, и возможный дефект алгоритма.</p>
 <p><code>catch (Throwable ex)</code> дополнительно охватывает <code>Error</code>, включая <code>OutOfMemoryError</code>. Прежде чем продолжить работу, нужно установить, какие части программы ещё работоспособны.</p>
 <p>Перехват располагают там, где можно выбрать допустимое действие. Промежуточный метод может передать отказ дальше и добавить свой контекст.</p>
 </section></section>
 <section>
-<section id="sec-j25-lecture-exceptions-resources-group-3" class="title-slide slide level1 center">
+<section id="sec-lecture-exceptions-resources-group-3" class="title-slide slide level1 center">
 <h1>Завершение блока и закрытие ресурса</h1>
 
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-22" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-22" class="slide level2">
 <h2>Порядок return и finally</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb20-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">withFinally</span><span class="op">()</span> <span class="op">{</span></span>
 <span id="cb20-2"><a aria-label="2"></a>    <span class="cf">try</span> <span class="op">{</span> <span class="cf">return</span> <span class="dv">10</span><span class="op">;</span> <span class="op">}</span></span>
@@ -591,7 +591,7 @@
 <span id="cb21-2"><a aria-label="2"></a>10</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Сначала вычислено значение <code>10</code>, затем выполнен <code>finally</code>. Его нормальное завершение сохраняет выбранный возврат; клиент печатает число после завершения вызова.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-23" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-23" class="slide level2">
 <h2>Замещение завершения в finally</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb22-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">int</span> <span class="fu">replacedReturn</span><span class="op">()</span> <span class="op">{</span></span>
 <span id="cb22-2"><a aria-label="2"></a>    <span class="cf">try</span> <span class="op">{</span> <span class="cf">return</span> <span class="dv">10</span><span class="op">;</span> <span class="op">}</span></span>
@@ -602,26 +602,26 @@
 <span id="cb23-2"><a aria-label="2"></a><span class="cf">finally</span> <span class="op">{</span> <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">"cleanup"</span><span class="op">);</span> <span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Наружу передаётся <code>cleanup</code>. Исключение <code>body</code> автоматически не сохраняется в <code>cause</code> или <code>suppressed</code>. Резкое завершение <code>finally</code> заменяет прежнюю причину выхода из блока.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-24" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-24" class="slide level2">
 <h2>Нормальное и резкое завершение</h2>
 <p>Блок завершается нормально, когда выполнение доходит до его закрывающей скобки. <code>return</code>, <code>throw</code>, <code>break</code> и <code>continue</code> прерывают обычную последовательность; для охваченных блоков это резкое завершение.</p>
 <p>При выходе из <code>try</code> или его обработчика выполняется <code>finally</code>. Если он завершается нормально, исходная причина перехода сохраняется.</p>
 <p>Бесконечный цикл не выходит из блока. Остановка процесса может прекратить исполнение до очистки <span class="citation" data-cites="bib-exceptions-jls-completion"><a href="#/источники" role="doc-biblioref" onclick="">[12]</a></span>.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-25" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-25" class="slide level2">
 <h2>Память и внешний ресурс</h2>
 <p>Объект файлового потока хранится в памяти JVM. Через него программа использует файловый дескриптор операционной системы.</p>
 <p>GC освобождает память недостижимых объектов. Завершение области локальной переменной не вызывает <code>close</code>; незакрытые файлы могут исчерпать внешние ресурсы задолго до памяти JVM.</p>
-<p>Владелец ресурса определяет момент закрытия. <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-resources-memory" data-qrc-style="default" class="qrc-link" href="../theory/chapters/resources.html#sec-j25-theory-resources-memory">Объект в памяти и внешний ресурс</a></p>
+<p>Владелец ресурса определяет момент закрытия. <a data-qrc-ref="theory:sec-theory-resources-memory" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/resources.html#sec-theory-resources-memory">Объект в памяти и внешний ресурс</a></p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-lifetimes" class="slide level2">
+<section id="sec-lecture-exceptions-resources-lifetimes" class="slide level2">
 <h2>Время жизни ссылки, ресурса и данных</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb24-1"><a aria-label="1"></a>область reader:   [открытие → чтение → close]</span>
 <span id="cb24-2"><a aria-label="2"></a>файловый ресурс:  [открыт-----------→ закрыт]</span>
 <span id="cb24-3"><a aria-label="3"></a>готовый список:               [создан → используется дальше...]</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Ссылка может оставаться видимой после <code>close</code>, но чтение через закрытый файловый поток завершится <code>IOException</code>. Список уже прочитанных строк остаётся доступным независимо от файла.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-26" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-26" class="slide level2">
 <h2>Пропущенное закрытие</h2>
 <p><code>path</code> имеет тип <code>java.nio.file.Path</code> и указывает на UTF-8-файл. Файловые методы принадлежат <code>java.nio.file.Files</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb25-1"><a aria-label="1"></a><span class="dt">var</span> reader <span class="op">=</span> Files<span class="op">.</span><span class="fu">newBufferedReader</span><span class="op">(</span>path<span class="op">,</span> java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">charset</span><span class="op">.</span><span class="fu">StandardCharsets</span><span class="op">.</span><span class="fu">UTF_8</span><span class="op">);</span></span>
@@ -642,14 +642,14 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-27" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-27" class="slide level2">
 <h2>Интерфейс AutoCloseable</h2>
 <p><code>java.lang.AutoCloseable</code> объявляет:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb26-1"><a aria-label="1"></a><span class="dt">void</span> <span class="fu">close</span><span class="op">()</span> <span class="kw">throws</span> <span class="bu">Exception</span><span class="op">;</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Try с ресурсами вызывает <code>close</code> для успешно инициализированных ресурсов, отличных от <code>null</code>, при выходе. Реализация может сузить или убрать проверяемые исключения.</p>
 <p><code>java.io.Closeable</code> расширяет этот интерфейс, объявляет <code>IOException</code> и требует отсутствия эффекта при закрытии уже закрытого потока. <code>AutoCloseable</code> допускает эффект повторного закрытия <span class="citation" data-cites="bib-data-autocloseable-api bib-exceptions-closeable-api"><a href="#/источники" role="doc-biblioref" onclick="">[7]</a>, <a href="#/источники" role="doc-biblioref" onclick="">[8]</a></span>.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-28" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-28" class="slide level2">
 <h2>Граница try с ресурсами</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb27-1"><a aria-label="1"></a><span class="dt">static</span> <span class="bu">String</span> <span class="fu">firstLine</span><span class="op">(</span>java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">file</span><span class="op">.</span><span class="fu">Path</span> path<span class="op">)</span> <span class="kw">throws</span> java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span> <span class="op">{</span></span>
 <span id="cb27-2"><a aria-label="2"></a>    <span class="cf">try</span> <span class="op">(</span><span class="dt">var</span> reader <span class="op">=</span> java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">file</span><span class="op">.</span><span class="fu">Files</span><span class="op">.</span><span class="fu">newBufferedReader</span><span class="op">(</span>path<span class="op">,</span></span>
@@ -660,7 +660,7 @@
 <p>Для UTF-8-файла с первой строкой <code>first</code> метод возвращает <code>"first"</code> после закрытия. Для пустого файла результат <code>readLine</code> — <code>null</code>; закрытие также выполняется.</p>
 <p>Если <code>close</code> выбросит исключение, подготовленная строка не возвращается. <code>catch</code> этой конструкции охватывает открытие, тело и закрытие.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-29" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-29" class="slide level2">
 <h2>Порядок инициализации и закрытия</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb28-1"><a aria-label="1"></a><span class="dt">final</span> <span class="kw">class</span> Trace <span class="kw">implements</span> AutoCloseable <span class="op">{</span></span>
 <span id="cb28-2"><a aria-label="2"></a>    <span class="dt">final</span> <span class="bu">String</span> name<span class="op">;</span></span>
@@ -687,7 +687,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-31" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-31" class="slide level2">
 <h2>Трасса двух ресурсов</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb29-1"><a aria-label="1"></a><span class="cf">try</span> <span class="op">(</span><span class="dt">var</span> a <span class="op">=</span> <span class="kw">new</span> <span class="fu">Trace</span><span class="op">(</span><span class="st">"A"</span><span class="op">);</span> <span class="dt">var</span> b <span class="op">=</span> <span class="kw">new</span> <span class="fu">Trace</span><span class="op">(</span><span class="st">"B"</span><span class="op">))</span> <span class="op">{</span></span>
 <span id="cb29-2"><a aria-label="2"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"body"</span><span class="op">);</span></span>
@@ -714,7 +714,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-30" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-30" class="slide level2">
 <h2>Отказ инициализации</h2>
 <p>Ресурс <code>A</code> успешно инициализирован. При создании следующего ресурса <code>B</code> конструктор выбрасывает <code>IOException("open B")</code> до возврата ссылки.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb31-1"><a aria-label="1"></a>A успешно инициализирован</span>
@@ -724,7 +724,7 @@
 <p>Тело <code>try</code> и <code>B.close</code> не выполняются. Если <code>A.close</code> тоже отказал, его исключение добавляется к <code>open B</code> как подавленное.</p>
 <p>Конструкция закрывает успешно инициализированные ресурсы. Объект, открытый внутри неудавшегося конструктора <code>B</code>, требует очистки самим конструктором или фабрикой.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-file-client" class="slide level2">
+<section id="sec-lecture-exceptions-resources-file-client" class="slide level2">
 <h2>Копирование файла</h2>
 <p>В каталоге опыта <code>input.txt</code> содержит UTF-8-текст <code>first\n\nlast\n</code>, где <code>\n</code> — перевод строки. <code>copy.txt</code> первоначально отсутствует. Переменные путей имеют тип <code>java.nio.file.Path</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb32-1"><a aria-label="1"></a><span class="dt">var</span> source <span class="op">=</span> java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">file</span><span class="op">.</span><span class="fu">Path</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="st">"input.txt"</span><span class="op">);</span></span>
@@ -736,18 +736,18 @@
 <p>При успехе <code>copy.txt</code> содержит те же байты. Закрывается сначала <code>output</code>, затем <code>input</code>. Если открытие <code>output</code> отказало, <code>input</code> получает <code>close</code>. Существующий целевой файл при открытии был бы усечён: ошибка копирования может оставить записанный префикс.</p>
 </section></section>
 <section>
-<section id="sec-j25-lecture-exceptions-resources-group-4" class="title-slide slide level1 center">
+<section id="sec-lecture-exceptions-resources-group-4" class="title-slide slide level1 center">
 <h1>Ошибки очистки и владение</h1>
 
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-32" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-32" class="slide level2">
 <h2>Первичное и подавленное исключения</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb33-1"><a aria-label="1"></a>тело:  IllegalStateException("body")</span>
 <span id="cb33-2"><a aria-label="2"></a>close: IOException("close")</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Try с ресурсами передаёт наружу исключение тела. Ошибка закрытия добавляется к нему как <em>подавленное исключение</em>; она доступна через <code>getSuppressed()</code>.</p>
 <p>Если тело успешно, основной становится первая ошибка закрытия. Остальные ресурсы тоже получают <code>close</code>; их ошибки добавляются к первичной <span class="citation" data-cites="bib-data-jls-resources"><a href="#/источники" role="doc-biblioref" onclick="">[10]</a></span>.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-33" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-33" class="slide level2">
 <h2>Наблюдение ошибки закрытия</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb34-1"><a aria-label="1"></a><span class="kw">class</span> Failing <span class="kw">implements</span> AutoCloseable <span class="op">{</span></span>
 <span id="cb34-2"><a aria-label="2"></a>    <span class="at">@Override</span> <span class="kw">public</span> <span class="dt">void</span> <span class="fu">close</span><span class="op">()</span> <span class="kw">throws</span> java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span> <span class="op">{</span></span>
@@ -763,7 +763,7 @@
 <span id="cb35-6"><a aria-label="6"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Вывод — <code>body</code>, затем <code>close</code>. Обработчик начинает работу после очистки.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-34" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-34" class="slide level2">
 <h2>Причина отказа и ошибка очистки</h2>
 <p><code>Resource.close</code> печатает <code>close</code> и выбрасывает <code>IOException("cleanup")</code>. Тело передаёт другую ошибку с причиной:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb36-1"><a aria-label="1"></a><span class="cf">try</span> <span class="op">(</span><span class="dt">var</span> resource <span class="op">=</span> <span class="kw">new</span> <span class="bu">Resource</span><span class="op">())</span> <span class="op">{</span></span>
@@ -790,7 +790,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-34-part-1" class="slide level2 continuation">
+<section id="sec-lecture-exceptions-resources-step-34-part-1" class="slide level2 continuation">
 <h2>Причина отказа и ошибка очистки</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb37-1"><a aria-label="1"></a>close</span>
 <span id="cb37-2"><a aria-label="2"></a>primary: read</span>
@@ -814,7 +814,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-35" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-35" class="slide level2">
 <h2>Временное пользование ресурсом</h2>
 <p>Метод получает <code>java.io.BufferedReader</code>, который закрывает вызывающая сторона:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb39-1"><a aria-label="1"></a><span class="dt">static</span> <span class="dt">long</span> <span class="fu">countLines</span><span class="op">(</span>java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">BufferedReader</span> reader<span class="op">)</span> <span class="kw">throws</span> java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span> <span class="op">{</span></span>
@@ -825,12 +825,12 @@
 <p>Для строк <code>first</code>, пустой строки и <code>last</code> результат равен <code>3</code>. Ресурс остаётся открытым, а его позиция находится в конце входа. Следующий <code>readLine</code> вернёт <code>null</code>.</p>
 <p>Передача ссылки разрешила чтение; обязанность закрытия осталась у владельца.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-36" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-36" class="slide level2">
 <h2>Закрытие обёртки общего потока</h2>
 <p>Закрытие <code>Scanner</code>, читающего <code>System.in</code>, закрывает его нижележащий вход. Остальное приложение может потерять доступ к общему ресурсу.</p>
 <p>Владелец определяет момент закрытия общего потока. Вспомогательный метод только читает его во время вызова и оставляет открытым для других частей приложения.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-38" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-38" class="slide level2">
 <h2>Готовые данные и ленивый источник</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb40-1"><a aria-label="1"></a><span class="dt">static</span> java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">List</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> <span class="fu">nonblankLines</span><span class="op">(</span>java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">file</span><span class="op">.</span><span class="fu">Path</span> path<span class="op">)</span></span>
 <span id="cb40-2"><a aria-label="2"></a>        <span class="kw">throws</span> java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span> <span class="op">{</span></span>
@@ -843,11 +843,11 @@
 <p>Возврат одного <code>lines.filter(...)</code> передал бы ленивый конвейер с уже закрытым источником. Терминальная операция сама <code>close</code> не вызывает.</p>
 </section></section>
 <section>
-<section id="sec-j25-lecture-exceptions-resources-group-5" class="title-slide slide level1 center">
+<section id="sec-lecture-exceptions-resources-group-5" class="title-slide slide level1 center">
 <h1>Состояние и реакция приложения</h1>
 
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-39" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-39" class="slide level2">
 <h2>Частичное изменение состояния</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb41-1"><a aria-label="1"></a><span class="dt">var</span> scores <span class="op">=</span> <span class="kw">new</span> java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">ArrayList</span><span class="op">&lt;</span><span class="bu">Integer</span><span class="op">&gt;();</span></span>
 <span id="cb41-2"><a aria-label="2"></a><span class="cf">try</span> <span class="op">{</span></span>
@@ -873,7 +873,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-40" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-40" class="slide level2">
 <h2>Подготовка результата до публикации</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb42-1"><a aria-label="1"></a>старый каталог доступен вызывающей стороне</span>
 <span id="cb42-2"><a aria-label="2"></a></span>
@@ -882,7 +882,7 @@
 <span id="cb42-5"><a aria-label="5"></a>                         новый список не опубликован</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Старый каталог сохранится, если чтение и проверка изменяют только новый список и не публикуют его до завершения. Запись в общий объект или файл создаёт внешний эффект; сохранение прежнего состояния требует отдельного решения <span class="citation" data-cites="bib-exceptions-bloch-state"><a href="#/источники" role="doc-biblioref" onclick="">[6]</a></span>.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-constructor" class="slide level2">
+<section id="sec-lecture-exceptions-resources-constructor" class="slide level2">
 <h2>Отказ создания объекта</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb43-1"><a aria-label="1"></a><span class="dt">final</span> <span class="kw">class</span> Limits <span class="op">{</span></span>
 <span id="cb43-2"><a aria-label="2"></a>    <span class="dt">final</span> <span class="dt">int</span> maximum<span class="op">;</span></span>
@@ -895,14 +895,14 @@
 <p>До вызова: пустой <code>events</code>, <code>Limits saved = null</code>. После неудачного <code>saved = new Limits(-1, events)</code> ссылка <code>saved</code> остаётся <code>null</code>; журнал содержит <code>"начало создания"</code>.</p>
 <p><code>new</code> не вернул ссылку. Запись во внешний список уже состоялась. Проверка аргумента до <code>events.add</code> оставляет журнал неизменным при этом отказе.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-41" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-41" class="slide level2">
 <h2>Пустой результат и неудачная загрузка</h2>
 <p>Предположим, метод чтения использует:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb44-1"><a aria-label="1"></a><span class="cf">catch</span> <span class="op">(</span>java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span> ex<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">();</span> <span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Теперь корректный пустой файл и недоступный файл дают один результат. Клиент не сможет отличить «записей нет» от «данные не получены».</p>
 <p>Для загрузки обязательного каталога отказ передают исключением или отдельным вариантом результата. Пустая коллекция остаётся успешным результатом чтения пустого источника.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-42" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-42" class="slide level2">
 <h2>Диагностический путь вызовов</h2>
 <p>Схема кадров трассировки для преобразования строки:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb45-1"><a aria-label="1"></a>NumberFormatException</span>
@@ -913,12 +913,12 @@
 <p>Трассировка указывает места в программе. Сообщение <code>строка 3</code> добавляет позицию во входных данных; <code>cause</code> сохраняет нижележащую ошибку.</p>
 <p><code>printStackTrace()</code> обычно выводит также цепочку причин и подавленные ошибки. Один <code>getMessage()</code> этих связей не содержит.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-retry" class="slide level2">
+<section id="sec-lecture-exceptions-resources-retry" class="slide level2">
 <h2>Условия повторной попытки</h2>
 <p><code>parseScore("ninety")</code> при повторе с тем же текстом снова откажет. Интерактивное приложение может запросить новый ввод. Загрузчик обязательного каталога может завершить запуск с сообщением.</p>
 <p>Пропуск строки допустим, если результатом операции служат принятые записи и перечень отклонённых. Такой результат явно сообщает о неполной загрузке. Временный внешний отказ может допускать ограниченное число повторов.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-43" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-43" class="slide level2">
 <h2>Обработка на границе приложения</h2>
 <table class="caption-top">
 <thead>
@@ -943,9 +943,9 @@
 </tbody>
 </table>
 <p>Приложение выбирает внешний результат команды. Загрузчик сохраняет диагностические сведения и завершает работу с принадлежащим ему ресурсом.</p>
-<p>Приложение поставок продолжает обработку после неверных строк и публикует отчёт после полного чтения и закрытия: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-application" data-qrc-style="default" class="qrc-link" href="../theory/chapters/application.html#sec-j25-theory-application"><span>Глава 24</span></a>.</p>
+<p>Приложение поставок продолжает обработку после неверных строк и публикует отчёт после полного чтения и закрытия: <a data-qrc-ref="theory:sec-theory-application" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/application.html#sec-theory-application"><span>Глава 24</span></a>.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-exit" class="slide level2">
+<section id="sec-lecture-exceptions-resources-exit" class="slide level2">
 <h2>Результат операции с ресурсом</h2>
 <p>Загрузчик прочитал две записи в локальный список. На третьей получил <code>DataFormatException</code> с номером строки; <code>close</code> выбросил <code>IOException</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb46-1"><a aria-label="1"></a>внешний результат: DataFormatException</span>
@@ -953,7 +953,7 @@
 <span id="cb46-3"><a aria-label="3"></a>локальный список: не возвращён</span>
 <span id="cb46-4"><a aria-label="4"></a>прежний каталог: сохранён, если загрузчик его не менял</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Обработчик может сообщить номер неверной строки и сохранить обе ошибки для диагностики. Повтор чтения имеет смысл после изменения входа или условий доступа.</p>
-<p>Полные запускаемые опыты: <a data-qrc-custom="false" data-qrc-ref="handbook:sec-api-exceptions-examples" data-qrc-style="default" class="qrc-link" href="../handbook/entries/exceptions.html#sec-api-exceptions-examples">Программы опытов</a>.</p>
+<p>Полные запускаемые опыты: <a data-qrc-ref="handbook:sec-api-exceptions-examples" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../handbook/exceptions.html#sec-api-exceptions-examples">Программы опытов</a>.</p>
 <aside class="notes">
 <p>Предложить восстановить порядок: третья запись, закрытие, внешний <code>catch</code>. Сравнить этот исход с прежним опытом, где изменения вносились в общий список. Попросить назвать условие сохранности старого каталога.</p>
 <style type="text/css">
@@ -968,22 +968,22 @@
           display:block!important;
       }</style></aside>
 </section></section>
-<section id="sec-j25-lecture-exceptions-resources-additional" class="title-slide slide level1 center">
+<section id="sec-lecture-exceptions-resources-additional" class="title-slide slide level1 center">
 <h1>Дополнительные механизмы отказа</h1>
 
 </section>
 
 <section>
-<section id="sec-j25-lecture-exceptions-resources-results" class="title-slide slide level1 center">
+<section id="sec-lecture-exceptions-resources-results" class="title-slide slide level1 center">
 <h1>Типизированный результат</h1>
 
 </section>
-<section id="sec-j25-lecture-exceptions-resources-results-interface" class="slide level2">
+<section id="sec-lecture-exceptions-resources-results-interface" class="slide level2">
 <h2>Интерфейс проверки балла</h2>
 <p>Для строки, отличной от <code>null</code>, без пробелов по краям проверка различает балл 0–100, неверное представление <code>int</code> и число вне диапазона.</p>
 <p>Исключение прерывает обычную последовательность исполнения. Другой интерфейс возвращает значение, которое кодирует успех или причину отказа. Вызывающий код выбирает дальнейшее действие по этому значению.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-results-types" class="slide level2">
+<section id="sec-lecture-exceptions-resources-results-types" class="slide level2">
 <h2>Варианты типизированного результата</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb47-1"><a aria-label="1"></a><span class="kw">sealed</span> <span class="kw">interface</span> ScoreResult <span class="kw">permits</span> Score<span class="op">,</span> ScoreFailure <span class="op">{}</span></span>
 <span id="cb47-2"><a aria-label="2"></a><span class="kw">record</span> <span class="fu">Score</span><span class="op">(</span><span class="dt">int</span> value<span class="op">)</span> <span class="kw">implements</span> ScoreResult <span class="op">{}</span></span>
@@ -1004,7 +1004,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-results-adapter" class="slide level2">
+<section id="sec-lecture-exceptions-resources-results-adapter" class="slide level2">
 <h2>Возврат предметного исхода</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb48-1"><a aria-label="1"></a><span class="dt">static</span> ScoreResult <span class="fu">parseScoreResult</span><span class="op">(</span><span class="bu">String</span> text<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb48-2"><a aria-label="2"></a>    java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">Objects</span><span class="op">.</span><span class="fu">requireNonNull</span><span class="op">(</span>text<span class="op">);</span></span>
@@ -1019,14 +1019,14 @@
 <span id="cb48-11"><a aria-label="11"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>NumberFormatException</code> преобразуется в <code>ScoreFailure</code>. <code>null</code> нарушает предусловие и по-прежнему приводит к исключению. <code>NOT_INTEGER</code> включает число, которое не представимо в <code>int</code>.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-results-inputs" class="slide level2 continuation">
+<section id="sec-lecture-exceptions-resources-results-inputs" class="slide level2 continuation">
 <h2>Результаты трёх вызовов</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb49-1"><a aria-label="1"></a>"90"     → Score(90)</span>
 <span id="cb49-2"><a aria-label="2"></a>"120"    → ScoreFailure(OUT_OF_RANGE)</span>
 <span id="cb49-3"><a aria-label="3"></a>"ninety" → ScoreFailure(NOT_INTEGER)</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>После возврата значения с описанием ошибки выполнение продолжается со следующей инструкции. Вызывающий код может отбросить результат; чтобы отреагировать на отказ, ему нужно разобрать полученный вариант. Передача <code>null</code>, нарушающая предусловие, и дефекты реализации не превращены в обычную ошибку данных.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-results-switch" class="slide level2">
+<section id="sec-lecture-exceptions-resources-results-switch" class="slide level2">
 <h2>Полнота разбора вариантов</h2>
 <p>Шаблон типа связывает весь объект. Здесь <strong>шаблон записи</strong> проверяет вариант результата и связывает его компонент: <code>Score(var value)</code> вводит <code>value</code> типа <code>int</code>, а <code>ScoreFailure(var problem)</code> — <code>problem</code> типа <code>ScoreProblem</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb50-1"><a aria-label="1"></a><span class="bu">String</span> message <span class="op">=</span> <span class="cf">switch</span> <span class="op">(</span><span class="fu">parseScoreResult</span><span class="op">(</span><span class="st">"120"</span><span class="op">))</span> <span class="op">{</span></span>
@@ -1049,12 +1049,12 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-results-state" class="slide level2">
+<section id="sec-lecture-exceptions-resources-results-state" class="slide level2">
 <h2>Состояние после возвращённой ошибки</h2>
 <p>Если до возврата <code>ScoreFailure</code> уже добавлены две записи в общий список, они остаются там после <code>return</code>, как остаются после <code>throw</code>.</p>
 <p><strong>Способ сообщения об отказе не создаёт откат.</strong> «Объект корректен» и «объект совсем не изменился» — разные требования к состоянию после отказа.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-return-close" class="slide level2">
+<section id="sec-lecture-exceptions-resources-return-close" class="slide level2">
 <h2>Возврат результата и ошибка закрытия</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb51-1"><a aria-label="1"></a>вычислен Score или ScoreFailure → close → возврат</span>
 <span id="cb51-2"><a aria-label="2"></a>                                      ↘ IOException вместо результата</span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1073,7 +1073,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-return-close-errors" class="slide level2 continuation">
+<section id="sec-lecture-exceptions-resources-return-close-errors" class="slide level2 continuation">
 <h2>Ошибка как значение и исключение тела</h2>
 <p>Для ресурса, чей <code>close</code> выбрасывает <code>IOException("close")</code>:</p>
 <table class="caption-top">
@@ -1102,9 +1102,9 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Чтобы сохранить ошибку данных, переданную значением, вместе с ошибкой закрытия, метод должен явно объединить сведения о них.</strong> В первом опыте <code>getCause() == null</code>, <code>getSuppressed().length == 0</code>. Полные примеры: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-resources-results" data-qrc-style="default" class="qrc-link" href="../theory/chapters/resources.html#sec-j25-theory-resources-results">Дополнительно: возврат ошибки и завершение работы с ресурсом</a>.</p>
+<p><strong>Чтобы сохранить ошибку данных, переданную значением, вместе с ошибкой закрытия, метод должен явно объединить сведения о них.</strong> В первом опыте <code>getCause() == null</code>, <code>getSuppressed().length == 0</code>. Полные примеры: <a data-qrc-ref="theory:sec-theory-resources-results" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/resources.html#sec-theory-resources-results">Дополнительно: возврат ошибки и завершение работы с ресурсом</a>.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-results-recovery" class="slide level2">
+<section id="sec-lecture-exceptions-resources-results-recovery" class="slide level2">
 <h2>Передача отказа и восстановление</h2>
 <table class="caption-top">
 <thead>
@@ -1130,7 +1130,7 @@
 </table>
 <p><strong>Повтор, отказ от загрузки и накопление ошибок — решения приложения.</strong> В Rust <code>panic!</code> запускает отдельный механизм аварийного завершения <span class="citation" data-cites="bib-context-rust-panic"><a href="#/источники" role="doc-biblioref" onclick="">[17]</a></span>.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-rust-result" class="slide level2">
+<section id="sec-lecture-exceptions-resources-rust-result" class="slide level2">
 <h2>Тип Result в Rust</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode numberSource rust number-lines code-with-copy"><code class="sourceCode rust"><span id="cb52-1"><a aria-label="1"></a><span class="kw">fn</span> parse_score(text<span class="op">:</span> <span class="op">&amp;</span><span class="dt">str</span>) <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span><span class="dt">i32</span><span class="op">,</span> ScoreProblem<span class="op">&gt;</span> <span class="op">{</span></span>
 <span id="cb52-2"><a aria-label="2"></a>    <span class="kw">let</span> score <span class="op">=</span> text<span class="op">.</span><span class="pp">parse::</span><span class="op">&lt;</span><span class="dt">i32</span><span class="op">&gt;</span>()</span>
@@ -1142,7 +1142,7 @@
 <span id="cb52-8"><a aria-label="8"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>?</code> извлекает успех либо возвращает ошибку из текущей функции. <code>ScoreProblem</code> — перечисление двух причин <span class="citation" data-cites="bib-context-rust-result"><a href="#/источники" role="doc-biblioref" onclick="">[16]</a></span>.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-go-result" class="slide level2">
+<section id="sec-lecture-exceptions-resources-go-result" class="slide level2">
 <h2>Значение error в Go</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="sourceCode numberSource go number-lines code-with-copy"><code class="sourceCode go"><span id="cb53-1"><a aria-label="1"></a>score<span class="op">,</span> err <span class="op">:=</span> parseScore<span class="op">(</span><span class="st">"120"</span><span class="op">)</span></span>
 <span id="cb53-2"><a aria-label="2"></a><span class="cf">if</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span></span>
@@ -1150,15 +1150,15 @@
 <span id="cb53-4"><a aria-label="4"></a>    <span class="cf">return</span></span>
 <span id="cb53-5"><a aria-label="5"></a><span class="op">}</span></span>
 <span id="cb53-6"><a aria-label="6"></a>fmt<span class="op">.</span>Println<span class="op">(</span>score<span class="op">)</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Функция возвращает <code>(int, error)</code>. По её соглашению балл пригоден только при <code>err == nil</code>; это проверяет вызывающий код. Тип пары сам не запрещает одновременно значение и ошибку <span class="citation" data-cites="bib-context-go-errors"><a href="#/источники" role="doc-biblioref" onclick="">[13]</a></span>. Полная функция: <a data-qrc-custom="false" data-qrc-ref="theory:sec-j25-theory-exceptions-language-results" data-qrc-style="default" class="qrc-link" href="../theory/chapters/exceptions.html#sec-j25-theory-exceptions-language-results">Дополнительно: проверка балла в Rust и Go</a>.</p>
+<p>Функция возвращает <code>(int, error)</code>. По её соглашению балл пригоден только при <code>err == nil</code>; это проверяет вызывающий код. Тип пары сам не запрещает одновременно значение и ошибку <span class="citation" data-cites="bib-context-go-errors"><a href="#/источники" role="doc-biblioref" onclick="">[13]</a></span>. Полная функция: <a data-qrc-ref="theory:sec-theory-exceptions-language-results" data-qrc-custom="false" data-qrc-style="default" class="qrc-link" href="../theory/exceptions.html#sec-theory-exceptions-language-results">Дополнительно: проверка балла в Rust и Go</a>.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-step-12" class="slide level2">
+<section id="sec-lecture-exceptions-resources-step-12" class="slide level2">
 <h2>Объявление исключений в разных языках</h2>
 <p>Java проверяет обработку объявленных проверяемых исключений при компиляции. Переопределение метода должно сохранить допустимость прежних вызовов.</p>
 <p>В современном C++ <code>noexcept</code> задаёт ограничение распространения исключений: выход исключения из такой функции вызывает <code>std::terminate</code>. Проверять обработку каждого вызова, как для проверяемых исключений Java, <code>noexcept</code> не требует <span class="citation" data-cites="bib-exceptions-cpp-noexcept"><a href="#/источники" role="doc-biblioref" onclick="">[18]</a></span>.</p>
 <p>В Python обычное объявление функции также не содержит проверяемого компилятором списка <code>throws</code>.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-cleanup-models" class="slide level2">
+<section id="sec-lecture-exceptions-resources-cleanup-models" class="slide level2">
 <h2>Границы освобождения в разных языках</h2>
 <table class="caption-top">
 <thead>
@@ -1188,7 +1188,7 @@
 </table>
 <p>В Go краткий <code>defer file.Close()</code> отбрасывает возвращённую ошибку закрытия. Java try с ресурсами сохраняет дополнительный отказ закрытия через <code>suppressed</code> <span class="citation" data-cites="bib-context-cpp-raii bib-context-go-defer bib-context-python-with"><a href="#/источники" role="doc-biblioref" onclick="">[3]</a>, <a href="#/источники" role="doc-biblioref" onclick="">[14]</a>, <a href="#/источники" role="doc-biblioref" onclick="">[15]</a></span>.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-constructor-throws" class="slide level2">
+<section id="sec-lecture-exceptions-resources-constructor-throws" class="slide level2">
 <h2>Исключение конструктора суперкласса</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb54-1"><a aria-label="1"></a><span class="kw">class</span> TextSnapshot <span class="op">{</span></span>
 <span id="cb54-2"><a aria-label="2"></a>    <span class="fu">TextSnapshot</span><span class="op">(</span>java<span class="op">.</span><span class="fu">nio</span><span class="op">.</span><span class="fu">file</span><span class="op">.</span><span class="fu">Path</span> path<span class="op">)</span> <span class="kw">throws</span> java<span class="op">.</span><span class="fu">io</span><span class="op">.</span><span class="fu">IOException</span> <span class="op">{</span></span>
@@ -1202,7 +1202,7 @@
 <span id="cb54-10"><a aria-label="10"></a><span class="op">}</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Отказ <code>super(path)</code> прерывает создание <code>NamedSnapshot</code>. Конструктор подкласса объявляет <code>IOException</code> или его допустимый супертип. Конструкторы не переопределяются; ограничение сужения из правил методов к ним не относится <span class="citation" data-cites="bib-exceptions-jls-declarations"><a href="#/источники" role="doc-biblioref" onclick="">[11]</a></span>.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-checked-close" class="slide level2">
+<section id="sec-lecture-exceptions-resources-checked-close" class="slide level2">
 <h2>Статический тип ресурса</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb55"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb55-1"><a aria-label="1"></a><span class="dt">final</span> <span class="kw">class</span> Quiet <span class="kw">implements</span> AutoCloseable <span class="op">{</span></span>
 <span id="cb55-2"><a aria-label="2"></a>    <span class="at">@Override</span> <span class="kw">public</span> <span class="dt">void</span> <span class="fu">close</span><span class="op">()</span> <span class="op">{}</span></span>
@@ -1213,12 +1213,12 @@
 <span id="cb57-2"><a aria-label="2"></a><span class="cf">try</span> <span class="op">(</span>resource<span class="op">)</span> <span class="op">{}</span> <span class="co">// у AutoCloseable.close объявлен Exception</span></span></code></pre></div><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Оба запуска вызывают пустой <code>Quiet.close</code>. Компилятор учитывает объявление <code>close</code> по статическому типу; второй вариант требует обработки или <code>throws</code>.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-checked-history" class="slide level2">
+<section id="sec-lecture-exceptions-resources-checked-history" class="slide level2">
 <h2>Проверяемые исключения в ранней Java</h2>
 <p>В первой JLS 1996 года <code>throws</code> с проверяемыми исключениями уже описан как часть соглашения автора метода и его пользователя. Цель компиляционной проверки — уменьшить число необработанных отказов.</p>
 <p><strong>Проверка требует обработать отказ или объявить его передачу.</strong> Разделение на проверяемые и непроверяемые исключения было частью раннего описания <span class="citation" data-cites="bib-context-jls1-exceptions"><a href="#/источники" role="doc-biblioref" onclick="">[2]</a></span>.</p>
 </section>
-<section id="sec-j25-lecture-exceptions-resources-finalization" class="slide level2">
+<section id="sec-lecture-exceptions-resources-finalization" class="slide level2">
 <h2>Финализация и задержка очистки</h2>
 <p>В JDK 18, согласно JEP 421, финализацию объявили устаревшей с намерением удалить её в будущем. Задержка очистки не ограничена; её выполнение не гарантируется.</p>
 <p><code>Cleaner</code> тоже не обеспечивает своевременное закрытие. Для файла нужен владелец и определённая граница <code>close</code> <span class="citation" data-cites="bib-context-jep421"><a href="#/источники" role="doc-biblioref" onclick="">[1]</a></span>.</p>
@@ -1676,26 +1676,34 @@
     
 
 
-<script data-qrc-navigation>// Опубликованные цели сохраняют штатные ID Quarto. Обработчик раскрывает
+<script data-qrc-navigation>// @ts-check
+/// <reference path="../../../typecheck/browser.d.ts" />
+// Опубликованные цели сохраняют штатные ID Quarto. Обработчик раскрывает
 // существующее представление документа, не вводя учебных ролей и новых ID.
 (() => {
   if (new URL(location.href).searchParams.has("print-pdf")) return;
   let navigation = 0;
 
+  /** @param {URL} url */
   function hashId(url) {
     try { return decodeURIComponent(url.hash.replace(/^#\/?/, "")); }
     catch { return ""; } // Некорректный фрагмент внешней ссылки не должен нарушать работу страницы.
   }
 
+  /** @param {Element} target */
   function ancestors(target) {
+    /** @type {Element[]} */
     const nodes = [];
-    for (let node = target; node; node = node.parentElement) nodes.push(node);
+    /** @type {Element | null} */
+    let node = target;
+    for (; node; node = node.parentElement) nodes.push(node);
     return nodes.reverse();
   }
 
+  /** @param {Element[]} nodes @param {() => void} scroll */
   function openDisclosures(nodes, scroll) {
     for (const node of nodes) {
-      if (node.matches("details")) node.open = true;
+      if (node instanceof HTMLDetailsElement) node.open = true;
       if (!node.matches(".collapse:not(.show)")) continue;
 
       // Bootstrap управляет анимацией и состоянием переключателя.
@@ -1708,7 +1716,7 @@
         node.classList.add("show");
         if (!node.id) continue;
         for (const trigger of document.querySelectorAll("[aria-controls]")) {
-          if (!trigger.getAttribute("aria-controls").split(/\s+/).includes(node.id)) continue;
+          if (!(trigger.getAttribute("aria-controls") ?? "").split(/\s+/).includes(node.id)) continue;
           trigger.setAttribute("aria-expanded", "true");
           trigger.classList.remove("collapsed");
         }
@@ -1716,6 +1724,7 @@
     }
   }
 
+  /** @param {string} id */
   function revealTarget(id) {
     const target = id && document.getElementById(id);
     if (!target) return;
@@ -1758,8 +1767,8 @@
   window.addEventListener("hashchange", () => revealTarget(hashId(new URL(location.href))));
   document.addEventListener("click", event => {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.defaultPrevented) return;
-    const link = event.target.closest?.("a[href]");
-    if (!link || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
+    const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
+    if (!(link instanceof HTMLAnchorElement) || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
     const url = new URL(link.href, location.href);
     if (url.origin !== location.origin || url.pathname !== location.pathname || url.search !== location.search) return;
     // Повторный переход по тому же фрагменту URL не вызывает hashchange.
@@ -1768,12 +1777,14 @@
   }, true);
 })();
 </script>
-<script id="course-site-navigation">(function(){
+<script id="course-site-navigation">// @ts-check
+(function(){
 const base={"courseUrl":"https://bsu-rfct-afonenko-courses.github.io/Java/","rootHref":"../"};
 if(base){
  const course=new URL(base.courseUrl); course.pathname=course.pathname.replace(/\/$/,'')+'/';
  const root=new URL(base.rootHref,document.baseURI);
  for(const link of document.querySelectorAll('#quarto-header a[href],#quarto-sidebar a[href],.quarto-navbar a[href],.quarto-sidebar a[href]')){
+  if (!(link instanceof HTMLAnchorElement)) continue;
   const url=new URL(link.href,document.baseURI);
   if(url.origin===course.origin&&url.pathname.startsWith(course.pathname)){
    let path=url.pathname.slice(course.pathname.length); if(!path||path.endsWith('/')) path+='index.html';
@@ -1783,6 +1794,7 @@ if(base){
 }
 const targets=[].map(path=>new URL(path,document.baseURI));
 for(const link of document.querySelectorAll('a[href]')){
+ if (!(link instanceof HTMLAnchorElement)) continue;
  const url=new URL(link.href,document.baseURI);
  if(targets.some(target=>target.origin===url.origin&&(
   target.pathname===url.pathname || target.pathname.endsWith('/index.html')&&target.pathname.slice(0,-'index.html'.length)===url.pathname
@@ -1790,5 +1802,5 @@ for(const link of document.querySelectorAll('a[href]')){
   link.target='_blank'; link.rel=[...new Set([...link.rel.split(/\s+/).filter(Boolean),'noopener','noreferrer'])].join(' ');
  }
 }
-})();</script>
-</body></html>
+})();
+</script></body></html>
