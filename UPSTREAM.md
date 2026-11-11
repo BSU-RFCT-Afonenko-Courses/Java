@@ -1,19 +1,26 @@
 # Происхождение технической поставки
 
-Выбранные исходники расширений и области установки перечислены в
-[providers.json](providers.json). Порядок установки и обновления описан в
-[инструкции](docs/provider-installation.md). Локальные patches обозначены
-явно; они сохраняют статус неопубликованной адаптации.
+Общие расширения устанавливаются штатными `quarto add/update` из
+опубликованных версий. Порядок и каталоги описаны в
+[инструкции](docs/provider-installation.md). Установленные `_extensions`
+хранятся в Git, версии пакетов указаны в `_extension.yml`.
 
-Обычный CI выполняет student render. Полный author export, проверку учебных
-эталонов, отрицательных решений и контейнерного оценивания запускают
-отдельными штатными командами соответствующего владельца. Успешная сборка
-сайта сама по себе не подтверждает эти результаты.
+Исходные зависимости инструментов закреплены Git submodules в
+[.gitmodules](.gitmodules). `git submodule update --init` получает выбранные
+курсом commits. Platform отвечает за Native export и проверки;
+Performance предоставляет CI bootstrap GNU mv.
 
-[CI/toolchain.json](CI/toolchain.json) сохраняет версии инструментов,
-Platform source/release refs, native OCI identities и адреса функциональных
-assets. Отключённая проверка `CI/check-production-pins.py` и собственные
-runner/asset proof-поля удалены. Собственный vendor inventory курса удалён.
+Обычный CI выполняет `go-task build`: проверку служебных исходников,
+student render и полный Native export. Готовые artifacts проверяются
+отдельными declared/delivery jobs без повторной сборки. Verify получает
+фактический Platform HEAD build job и проверяет его совпадение.
+Результаты контейнерного оценивания устанавливаются этими отдельными
+проверками; один успешный render их не подтверждает.
 
-История прежних поставок доступна в [точном снимке Git](https://github.com/BSU-RFCT-Afonenko-Courses/Java/tree/4254ee1f961b0d0ff6c13e1ebf46d5399bd493f2/docs/provider-history).
-Её hashes, receipts и команды `--check` относятся к прежним этапам.
+Runtime registry берётся из выбранной Platform. Версии системных инструментов
+задаёт среда и штатные setup actions CI; требования Quarto находятся в
+package descriptors. Собственный dependency manager курса не используется.
+
+История прежних поставок доступна в
+[точном снимке Git](https://github.com/BSU-RFCT-Afonenko-Courses/Java/tree/f5d97be630c92f187f78ac9903b3c48ec03f9c99/docs).
+Её hashes, receipts и команды относятся к прежним этапам.

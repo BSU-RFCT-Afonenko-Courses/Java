@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  PLATFORM_ROOT: '{{.ROOT_DIR | dir}}/prairielearn-platform'
+  PLATFORM_ROOT: '{{.ROOT_DIR}}/.platform'
   BUILD_DIR: '{{.ROOT_DIR | dir}}/course-builds/java'
   INSTANCE: 2026-2027-s1
   BACKEND: container
@@ -10,11 +10,14 @@ env:
   PYTHONDONTWRITEBYTECODE: '1'
 
 tasks:
+  bootstrap:
+    desc: Получить закреплённые Git submodules инструментов
+    cmds:
+      - git submodule update --init
   check:
     desc: Проверить служебные исходники курса
     cmds:
       - pyright --project pyrightconfig.json
-      - python3 tools/test-materialize-providers.py
       - bash -n CI/render.sh CI/check-projects.sh
       - shellcheck --shell=bash --severity=style CI/render.sh CI/check-projects.sh
   render:

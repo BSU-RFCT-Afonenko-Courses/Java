@@ -26,24 +26,9 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          repository: Afonenko-Course-Tools/prairielearn-platform
-          ref: 67ae53b239b7c460f2c3e81b9e840cfa96879bcc
-          path: .platform
-          persist-credentials: false
+          submodules: true
       - id: platform-ref
         run: echo "commit=$(git -C .platform rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          repository: Afonenko-Course-Tools/quarto-course-performance
-          ref: bfbe23f819dfe4c7d5e5487f669c14d8e6c9846e
-          path: .ci/performance
-          sparse-checkout: |
-            tools/setup-mv-ci.sh
-            tools/check-mv-capability.sh
-          sparse-checkout-cone-mode: false
-          persist-credentials: false
       - uses: quarto-dev/quarto-actions/setup@8a96df13519ee81fd526f2dfca5962811136661b
       - name: Подготовить системные инструменты
         run: |
@@ -60,7 +45,6 @@ jobs:
           echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
       - name: Подготовить GNU mv с требуемой no-replace capability
         run: |
-          test "$(git -C .ci/performance rev-parse HEAD)" = 'bfbe23f819dfe4c7d5e5487f669c14d8e6c9846e'
           bash .ci/performance/tools/setup-mv-ci.sh "$RUNNER_TEMP/course-gnu-mv" >> "$GITHUB_PATH"
       - name: Собрать теми же course targets
         env:
@@ -113,12 +97,11 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          repository: Afonenko-Course-Tools/prairielearn-platform
-          ref: ${{ needs.build.outputs.platform-commit }}
-          path: .platform
-          persist-credentials: false
+          submodules: true
+      - name: Проверить Platform сборки
+        env:
+          BUILD_PLATFORM_COMMIT: ${{ needs.build.outputs.platform-commit }}
+        run: test "$(git -C .platform rev-parse HEAD)" = "$BUILD_PLATFORM_COMMIT"
       - name: Подготовить controller
         run: |
           test -f /etc/apt/apt-mirrors.txt
