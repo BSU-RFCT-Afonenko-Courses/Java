@@ -14,58 +14,115 @@ concurrency:
 env:
   PYTHONDONTWRITEBYTECODE: '1'
 jobs:
-  source-checks:
-    name: Строгая проверка служебного кода
+  build:
+    name: Один student и native выпуск
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 150
+    outputs:
+      delivery-artifact-id: ${{ steps.delivery.outputs.artifact-id }}
+      controller-artifact-id: ${{ steps.controller.outputs.artifact-id }}
+      platform-commit: ${{ steps.platform-ref.outputs.commit }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - name: Подготовить закреплённый Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          node-version-file: .node-version
-          cache: npm
-      - name: Установить закреплённый анализатор
-        run: npm ci --ignore-scripts --no-audit --no-fund
-      - name: Проверить типы собственного Python
-        run: npm run typecheck
-      - name: Проверить Bash
+          repository: Afonenko-Course-Tools/prairielearn-platform
+          ref: ${{ vars.PLATFORM_REF || 'main' }}
+          path: .platform
+          persist-credentials: false
+      - id: platform-ref
+        run: echo "commit=$(git -C .platform rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - uses: quarto-dev/quarto-actions/setup@8a96df13519ee81fd526f2dfca5962811136661b
+      - name: Подготовить системные инструменты
         run: |
-          for script in CI/check-projects.sh CI/render.sh; do
-            bash -n "$script"
-          done
-          shellcheck --version
-          shellcheck --shell=bash --severity=style CI/check-projects.sh CI/render.sh
-  render:
-    name: Публичная student-сборка
-    runs-on: ubuntu-latest
+          sudo apt-get update
+          sudo apt-get install -y shellcheck python3-yaml python3-jsonschema
+          npm install --global pyright typescript
+          go install github.com/go-task/task/v3/cmd/task@latest
+          mkdir -p "$RUNNER_TEMP/bin"
+          install "$(go env GOPATH)/bin/task" "$RUNNER_TEMP/bin/go-task"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - name: Собрать теми же course targets
+        env:
+          XDG_CACHE_HOME: ${{ runner.temp }}/course-cache
+          CI_LOG_DIR: ${{ runner.temp }}/course-build/logs
+        run: go-task build BUILD_DIR="$RUNNER_TEMP/course-build" PLATFORM_ROOT="$GITHUB_WORKSPACE/.platform"
+      - name: Упаковать готовые outputs с hidden files и modes
+        run: |
+          tar -C "$RUNNER_TEMP/course-build" -cf "$RUNNER_TEMP/delivery.tar" site native
+          tar -C "$RUNNER_TEMP/course-build/site" -cf "$RUNNER_TEMP/site.tar" .
+          tar -C "$RUNNER_TEMP/course-build/native" -cf "$RUNNER_TEMP/native.tar" .
+          tar -C "$RUNNER_TEMP/course-build" -cf "$RUNNER_TEMP/controller.tar" native-checks.json runtime-profiles.json
+      - id: delivery
+        name: Сохранить готовую поставку
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: java-delivery-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/delivery.tar
+            ${{ runner.temp }}/site.tar
+            ${{ runner.temp }}/native.tar
+          if-no-files-found: error
+          retention-days: 14
+      - id: controller
+        name: Сохранить private checks только для controller
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: java-controller-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/controller.tar
+          if-no-files-found: error
+          retention-days: 14
+      - name: Сохранить журналы сборки
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: java-build-logs-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/course-build/logs
+          if-no-files-found: ignore
+          retention-days: 14
+  verify:
+    name: Полные declared и delivery проверки тех же bytes
+    needs: build
+    runs-on: ubuntu-24.04
     timeout-minutes: 150
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - uses: quarto-dev/quarto-actions/setup@8a96df13519ee81fd526f2dfca5962811136661b
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          version: '1.11.5'
-      - name: Собрать student в disposable checkout
+          repository: Afonenko-Course-Tools/prairielearn-platform
+          ref: ${{ needs.build.outputs.platform-commit }}
+          path: .platform
+          persist-credentials: false
+      - name: Подготовить controller
         run: |
-          set -euo pipefail
-          umask 022
-          TASK_HEAD=$(git rev-parse HEAD)
-          git clone --no-hardlinks --no-checkout "$GITHUB_WORKSPACE" "$RUNNER_TEMP/course-render"
-          git -C "$RUNNER_TEMP/course-render" checkout --detach "$TASK_HEAD"
-          test "$(git -C "$RUNNER_TEMP/course-render" rev-parse HEAD)" = "$TASK_HEAD"
-          cd "$RUNNER_TEMP/course-render"
-          export CI_LOG_DIR="$RUNNER_TEMP/course-render-logs"
-          mkdir -m 700 "$CI_LOG_DIR"
-          bash CI/render.sh
-      - name: Сохранить student-сайт
+          sudo apt-get update
+          sudo apt-get install -y python3-yaml python3-jsonschema
+          go install github.com/go-task/task/v3/cmd/task@latest
+          mkdir -p "$RUNNER_TEMP/bin"
+          install "$(go env GOPATH)/bin/task" "$RUNNER_TEMP/bin/go-task"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - name: Получить actual producer artifacts
+        uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.build.outputs.delivery-artifact-id }},${{ needs.build.outputs.controller-artifact-id }}
+          path: ${{ runner.temp }}/artifacts
+          merge-multiple: true
+      - name: Распаковать проверяемый выпуск
+        run: |
+          mkdir -p "$RUNNER_TEMP/course-build"
+          tar -C "$RUNNER_TEMP/course-build" -xf "$RUNNER_TEMP/artifacts/delivery.tar"
+          tar -C "$RUNNER_TEMP/course-build" -xf "$RUNNER_TEMP/artifacts/controller.tar"
+      - name: Проверить без повторной сборки
+        run: go-task verify BUILD_DIR="$RUNNER_TEMP/course-build" PLATFORM_ROOT="$GITHUB_WORKSPACE/.platform"
+      - name: Сохранить отчёты и grader logs также при отказе
+        if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
-          name: java-student-site-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/course-render/_site-student
-          include-hidden-files: false
-          if-no-files-found: error
+          name: java-verification-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/course-build/reports
+          if-no-files-found: ignore
           retention-days: 14

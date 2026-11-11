@@ -1,0 +1,56 @@
+version: '3'
+
+vars:
+  PLATFORM_ROOT: '{{.ROOT_DIR | dir}}/prairielearn-platform'
+  BUILD_DIR: '{{.ROOT_DIR | dir}}/course-builds/java'
+  INSTANCE: 2026-2027-s1
+  BACKEND: container
+
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+
+tasks:
+  check:
+    desc: Проверить служебные исходники курса
+    cmds:
+      - pyright --project pyrightconfig.json
+      - python3 tools/test-materialize-providers.py
+      - bash -n CI/render.sh CI/check-projects.sh
+      - shellcheck --shell=bash --severity=style CI/render.sh CI/check-projects.sh
+  render:
+    desc: Один корневой student render и сохранение готового сайта
+    cmds:
+      - bash CI/render.sh student
+      - mkdir -p '{{.BUILD_DIR}}'
+      - test ! -e '{{.BUILD_DIR}}/site'
+      - cp -a _site-student '{{.BUILD_DIR}}/site'
+  export:
+    desc: Один полный author capture штатным экспортёром Platform
+    cmds:
+      - mkdir -p '{{.BUILD_DIR}}'
+      - cp '{{.PLATFORM_ROOT}}/runtime-profiles.json' '{{.BUILD_DIR}}/runtime-profiles.json'
+      - |
+        if [ "${COURSE_PREVIEW_PROFILE:-0}" = 1 ]; then export QUARTO_PROFILE=preview; fi
+        python3 '{{.PLATFORM_ROOT}}/tools/build-course.py' --source '{{.ROOT_DIR}}' --book tasks --instance '{{.INSTANCE}}' --output '{{.BUILD_DIR}}/native' --runtime-registry '{{.BUILD_DIR}}/runtime-profiles.json'
+  verify:
+    desc: Полная declared и delivery проверка одного готового выпуска
+    cmds:
+      - |
+        declared_status=0
+        go-task verify:declared PLATFORM_ROOT='{{.PLATFORM_ROOT}}' BUILD_DIR='{{.BUILD_DIR}}' BACKEND='{{.BACKEND}}' || declared_status=$?
+        delivery_status=0
+        go-task verify:delivery PLATFORM_ROOT='{{.PLATFORM_ROOT}}' BUILD_DIR='{{.BUILD_DIR}}' BACKEND='{{.BACKEND}}' || delivery_status=$?
+        if [ "$declared_status" -ne 0 ]; then exit "$declared_status"; fi
+        exit "$delivery_status"
+  verify:declared:
+    cmds:
+      - python3 '{{.PLATFORM_ROOT}}/tools/check-course.py' verify --manifest '{{.BUILD_DIR}}/native-checks.json' --scope declared --backend '{{.BACKEND}}' --runtime-registry '{{.BUILD_DIR}}/runtime-profiles.json' --output '{{.BUILD_DIR}}/reports/declared.json'
+  verify:delivery:
+    cmds:
+      - python3 '{{.PLATFORM_ROOT}}/tools/check-course.py' verify --manifest '{{.BUILD_DIR}}/native-checks.json' --scope delivery --delivery '{{.BUILD_DIR}}/native/delivery.json' --backend '{{.BACKEND}}' --runtime-registry '{{.BUILD_DIR}}/runtime-profiles.json' --output '{{.BUILD_DIR}}/reports/delivery.json'
+  build:
+    desc: Проверить исходники, собрать student и экспортировать native
+    cmds:
+      - task: check
+      - task: render
+      - task: export
