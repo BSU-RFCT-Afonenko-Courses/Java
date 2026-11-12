@@ -39,7 +39,7 @@ env XDG_CACHE_HOME=/home/tolya/Java/.cache/codex-tools quarto check info
 - Java/javac по умолчанию 27.0.1.0.3; JDK25 есть в `/usr/lib/jvm/java-25-openjdk` (также есть 8/11/17/21/27).
 - Для Java-пакета используй `JAVA_HOME` JDK25 и нужный `PATH`; глобальный `archlinux-java switch` не требуется.
 - Gradle 9.8.2 установлен: проверка версии прошла с writable `GRADLE_USER_HOME=/tmp/java-handoff-gradle-version`; прежний sandbox-отказ `libnative-platform` сам по себе не означает поломку Gradle. Рабочий cache на target выбирается отдельно.
-- В `CI/toolchain.json` пока Quarto 1.11.5 / javaRelease25. Наличие 1.11.6 не PASS совместимости; исполнитель готовит и проверяет нужный toolchain в рамках полномочий. Сборки и портал здесь не проверялись.
+- В наблюдавшейся 29 октября поставке были Quarto 1.11.5 / javaRelease25. Наличие 1.11.6 не PASS совместимости; исполнитель готовит и проверяет нужный toolchain в рамках полномочий. Сборки и портал здесь не проверялись.
 
 ## Выполни согласованный состав
 

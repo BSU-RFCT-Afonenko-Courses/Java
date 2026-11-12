@@ -62,3 +62,8 @@ public/full, полномочий, capability/token/currentness/expiry и физ
 Новые README, документацию и описания PR пишите по-русски по
 [общему языковому правилу](https://github.com/Afonenko-Course-Tools/quarto-course/blob/main/docs/russian-language-policy.md).
 Команды, идентификаторы API, пути, имена пакетов и URL сохраняйте буквально.
+
+Общие Quarto extensions устанавливаются штатными `quarto add/update` по версии;
+установленные `_extensions` хранятся в Git. Исходные зависимости инструментов
+закрепляются Git submodules. Собственный manifest, resolver, lock, installer
+или gate для управления зависимостями курса не вводится.
