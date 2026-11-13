@@ -90,7 +90,11 @@ jobs:
         env:
           XDG_CACHE_HOME: ${{ runner.temp }}/course-cache
           CI_LOG_DIR: ${{ runner.temp }}/course-build/logs
-        run: go-task build BUILD_DIR="$RUNNER_TEMP/course-build" PLATFORM_ROOT="$GITHUB_WORKSPACE/.platform"
+        run: |
+          export PATH="$JAVA_HOME/bin:$PATH"
+          java -version
+          javac -version | grep -E '^javac 25([.]|$)'
+          go-task build BUILD_DIR="$RUNNER_TEMP/course-build" PLATFORM_ROOT="$GITHUB_WORKSPACE/.platform"
       - name: Упаковать готовые outputs с hidden files и modes
         run: |
           tar -C "$RUNNER_TEMP/course-build" -cf "$RUNNER_TEMP/delivery.tar" site native
