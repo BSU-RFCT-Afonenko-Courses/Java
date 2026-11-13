@@ -27,6 +27,9 @@
 
 ## Локальная сборка
 
+Подготовка среды разработки на Arch Linux и установка инструментов описаны в
+[общем руководстве](https://github.com/Afonenko-Course-Tools/quarto-course/blob/main/docs/development-arch.md).
+
 Команда сборки из корня репозитория:
 
 ```sh
