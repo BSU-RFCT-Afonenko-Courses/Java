@@ -115,7 +115,6 @@ public final class JavaProcess {
     private static Result runCheckingUncaught(
             Path classes, String mainClass, boolean trustedEntry, String input, String... arguments)
             throws Exception {
-
         // CREATE_NEW сохраняет чужие файлы; счётчик не требует источника энтропии
         // в песочнице, где createTempFile запускает медленный резервный механизм SecureRandom.
         Path scratch =
@@ -209,7 +208,6 @@ public final class JavaProcess {
             // Служебный файл статуса открыт через RandomAccessFile до запуска программы.
             // Закрытие или замена stderr оставляет его открытым.
             var status = new RandomAccessFile(arguments[0], "rw");
-
             // Trusted адаптер должен быть найден до отметки готовности:
             // его отсутствие или ошибка инициализации не являются отказом решения.
             if (Boolean.parseBoolean(arguments[2])) {
