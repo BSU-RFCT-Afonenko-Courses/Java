@@ -12,7 +12,7 @@ def dot[T](left: Sequence[T], right: Sequence[T], arithmetic: Arithmetic[T]) -> 
     if len(left) != len(right):
         raise ValueError("Different vector lengths")
     result = arithmetic.zero()
-    for a, b in zip(left, right):
+    for a, b in zip(left, right, strict=True):
         result = arithmetic.add(result, arithmetic.multiply(a, b))
     return result
 

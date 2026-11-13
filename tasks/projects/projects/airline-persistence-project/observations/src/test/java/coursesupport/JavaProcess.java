@@ -295,7 +295,6 @@ public final class JavaProcess {
         if (timeout.isNegative() || timeout.isZero() || outputLimit <= 0) {
             throw new IllegalArgumentException("Время и объём вывода должны быть положительными");
         }
-        long remaining = timeout.toNanos();
         var command =
                 new ArrayList<>(
                         List.of(
@@ -337,7 +336,7 @@ public final class JavaProcess {
             });
             while (true) {
                 throwFailure(failure.get());
-                remaining = timeout.toNanos() - (System.nanoTime() - started);
+                long remaining = timeout.toNanos() - (System.nanoTime() - started);
                 if (remaining <= 0) throw timedOut();
                 if (process.waitFor(
                         Math.min(remaining, TimeUnit.MILLISECONDS.toNanos(10)),

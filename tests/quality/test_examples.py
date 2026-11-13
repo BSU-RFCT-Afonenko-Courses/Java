@@ -23,6 +23,10 @@ class ExampleCheckAcceptance(unittest.TestCase):
             config = root / "tools/quality/examples-clang-format.yaml"
             config.parent.mkdir(parents=True)
             shutil.copyfile(ROOT / config.relative_to(root), config)
+            shutil.copyfile(
+                ROOT / "tools/quality/examples-clang-tidy.yaml",
+                config.parent / "examples-clang-tidy.yaml",
+            )
             source = root / "lectures/examples/new.cpp"
             source.parent.mkdir(parents=True)
             original = "int main(){return 0;}\n"
@@ -47,6 +51,74 @@ class ExampleCheckAcceptance(unittest.TestCase):
             subprocess.run(
                 ["clang-format", "--style=file:" + str(config), "-i", str(source)],
                 check=True,
+            )
+            passed = subprocess.run(
+                command, text=True, capture_output=True, check=False
+            )
+            self.assertEqual(passed.returncode, 0, passed.stdout + passed.stderr)
+            source.write_text("int main() { int *value = nullptr; return *value; }\n")
+            subprocess.run(
+                ["clang-format", "--style=file:" + str(config), "-i", str(source)],
+                check=True,
+            )
+            unsafe = subprocess.run(
+                command, text=True, capture_output=True, check=False
+            )
+            self.assertNotEqual(unsafe.returncode, 0)
+            self.assertIn(
+                "clang-analyzer-core.NullDereference", unsafe.stdout + unsafe.stderr
+            )
+
+    def test_new_csharp_file_is_checked_by_sdk_analyzers(self) -> None:
+        with tempfile.TemporaryDirectory(
+            prefix="quality-csharp-analysis-"
+        ) as temporary:
+            root = Path(temporary)
+            subprocess.run(["git", "init", "--quiet", temporary], check=True)
+            folder = root / "examples/csharp"
+            shutil.copytree(ROOT / "handbook/examples/generics/csharp", folder)
+            bug = folder / "Bug.cs"
+            bug.write_text("""using System;
+internal static class Bug
+{
+    internal static void Run()
+    {
+        try { throw new InvalidOperationException(); }
+        catch (InvalidOperationException error) { throw error; }
+    }
+}
+""")
+            subprocess.run(
+                [
+                    "dotnet",
+                    "format",
+                    "whitespace",
+                    "--folder",
+                    str(folder),
+                    "--include",
+                    "Bug.cs",
+                ],
+                check=True,
+            )
+            command = [
+                sys.executable,
+                str(ROOT / "tools/quality/examples.py"),
+                "check",
+                "--root",
+                temporary,
+            ]
+            rejected = subprocess.run(
+                command, text=True, capture_output=True, check=False
+            )
+            self.assertNotEqual(rejected.returncode, 0)
+            self.assertIn("CA2200", rejected.stdout + rejected.stderr)
+            bug.write_text(
+                bug.read_text()
+                .replace(
+                    "catch (InvalidOperationException error)",
+                    "catch (InvalidOperationException)",
+                )
+                .replace("throw error;", "throw;")
             )
             passed = subprocess.run(
                 command, text=True, capture_output=True, check=False

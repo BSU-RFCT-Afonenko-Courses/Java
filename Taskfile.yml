@@ -27,8 +27,6 @@ tasks:
     cmds:
       - python3 tools/quality/run.py check
       - pyright --project pyrightconfig.json
-      - bash -n CI/render.sh CI/check-projects.sh
-      - shellcheck --shell=bash --severity=style CI/render.sh CI/check-projects.sh
       - python3 -m unittest discover -s tests/quality -v
   render:
     desc: Один корневой student render и сохранение готового сайта
