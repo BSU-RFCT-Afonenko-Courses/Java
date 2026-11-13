@@ -6,7 +6,9 @@ public class DocumentDemo {
             this.title = java.util.Objects.requireNonNull(title);
         }
 
-        String summary() { return title; }
+        String summary() {
+            return title;
+        }
     }
 
     static class TextDocument extends Document {
@@ -20,8 +22,13 @@ public class DocumentDemo {
             this.characters = characters;
         }
 
-        TextDocument(String title) { this(title, 0); }
-        int characters() { return characters; }
+        TextDocument(String title) {
+            this(title, 0);
+        }
+
+        int characters() {
+            return characters;
+        }
 
         @Override
         String summary() {
@@ -30,16 +37,28 @@ public class DocumentDemo {
     }
 
     static class SilentDocument extends Document {
-        SilentDocument(String title) { super(title); }
-        @Override String summary() { return null; }
+        SilentDocument(String title) {
+            super(title);
+        }
+
+        @Override
+        String summary() {
+            return null;
+        }
     }
 
     static void print(Document document) {
         System.out.println(document.summary());
     }
 
-    static String kind(Document value) { return "Document overload"; }
-    static String kind(TextDocument value) { return "Text overload"; }
+    static String kind(Document value) {
+        return "Document overload";
+    }
+
+    static String kind(TextDocument value) {
+        return "Text overload";
+    }
+
     static int summaryLength(Document document) {
         return document.summary().length();
     }

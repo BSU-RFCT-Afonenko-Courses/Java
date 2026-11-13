@@ -22,13 +22,19 @@ class TaggedBook {
 
 final class GuestList {
     private final java.util.List<String> names;
+
     GuestList(java.util.List<String> initial) {
         names = new java.util.ArrayList<>(initial);
     }
-    void add(String name) { names.add(name); }
+
+    void add(String name) {
+        names.add(name);
+    }
+
     java.util.List<String> snapshot() {
         return java.util.List.copyOf(names);
     }
+
     java.util.List<String> view() {
         return java.util.Collections.unmodifiableList(names);
     }

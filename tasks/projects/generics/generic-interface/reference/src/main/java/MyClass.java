@@ -1,1 +1,1 @@
-public class MyClass<A,B extends A> implements IGenIF<A,B>{}
+public class MyClass<A, B extends A> implements IGenIF<A, B> {}

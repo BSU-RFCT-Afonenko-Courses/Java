@@ -15,7 +15,8 @@ class ContractTest {
         try {
             for (Locale locale : List.of(Locale.ENGLISH, Locale.forLanguageTag("tr-TR"))) {
                 Locale.setDefault(locale);
-                assertEquals(Set.of("alpha", "a", "b", "i"), TaskBinding.words("ALPHA_alpha AяB2I"));
+                assertEquals(
+                        Set.of("alpha", "a", "b", "i"), TaskBinding.words("ALPHA_alpha AяB2I"));
                 assertEquals(Set.of(), TaskBinding.words(""));
                 assertEquals(Set.of(), TaskBinding.words("ёж𐐀12"));
             }

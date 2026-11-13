@@ -21,18 +21,26 @@ final class PointClass {
         this.y = y;
     }
 
-    int x() { return x; }
-    int y() { return y; }
+    int x() {
+        return x;
+    }
 
-    @Override public boolean equals(Object other) {
+    int y() {
+        return y;
+    }
+
+    @Override
+    public boolean equals(Object other) {
         return other instanceof PointClass p && x == p.x && y == p.y;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return java.util.Objects.hash(x, y);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "PointClass[x=" + x + ", y=" + y + "]";
     }
 }
@@ -62,10 +70,10 @@ record Point(int x, int y) {}
 
 Point a = new Point(2, 3);
 Point b = new Point(2, 3);
-System.out.println(a.x());      // 2
+System.out.println(a.x()); // 2
 System.out.println(a.equals(b)); // true
-System.out.println(a == b);      // false
-System.out.println(a);           // Point[x=2, y=3]
+System.out.println(a == b); // false
+System.out.println(a); // Point[x=2, y=3]
 ```
 
 В заголовке перечислены компоненты. Для каждого создаётся закрытое `final`-поле и открытый метод чтения с тем же именем. Канонический конструктор принимает компоненты в порядке объявления. Если методы `equals`, `hashCode` и `toString` не объявлены явно, язык предоставляет их реализации на основе компонентов. Равенство требует одного и того же типа записи и равных соответствующих значений; классы `Point` и `ScreenPoint` с одинаковыми числами не становятся равными автоматически. [@bib-objects-schildt-records]
@@ -113,7 +121,10 @@ System.out.println(same == first); // true
 Ту же операцию может реализовать запись со снимком числа:
 
 ```java
-interface Counted { int count(); }
+interface Counted {
+    int count();
+}
+
 record DispatchStats(int count) implements Counted {}
 ```
 
@@ -127,7 +138,7 @@ sender.send("B");
 DispatchStats saved = new DispatchStats(sender.count());
 sender.send("C");
 System.out.println(sender.count()); // 3
-System.out.println(saved.count());  // 2
+System.out.println(saved.count()); // 2
 ```
 
 В запись скопировано число `2`. Поле счётчика отправителя и компонент
@@ -222,8 +233,7 @@ public record Student(String id, String name, int score) {
         Objects.requireNonNull(name);
         id = id.strip();
         name = name.strip();
-        if (id.isEmpty() || name.isEmpty()
-                || hasSeparator(id) || hasSeparator(name)) {
+        if (id.isEmpty() || name.isEmpty() || hasSeparator(id) || hasSeparator(name)) {
             throw new IllegalArgumentException("неверный код или имя");
         }
         if (score < 0 || score > 100) {
@@ -232,8 +242,7 @@ public record Student(String id, String name, int score) {
     }
 
     private static boolean hasSeparator(String value) {
-        return value.indexOf(';') >= 0 || value.indexOf('\n') >= 0
-            || value.indexOf('\r') >= 0;
+        return value.indexOf(';') >= 0 || value.indexOf('\n') >= 0 || value.indexOf('\r') >= 0;
     }
 }
 ```
@@ -252,7 +261,7 @@ public record Student(String id, String name, int score) {
 ```java
 Student original = new Student(" s1 ", " Ada ", 90);
 Student corrected = new Student(original.id(), original.name(), 80);
-System.out.println(original.score());          // 90
+System.out.println(original.score()); // 90
 System.out.println(original.equals(corrected)); // false
 ```
 
@@ -279,8 +288,8 @@ vector.values()[1] = 9;
 System.out.println(input[1]); // 9
 System.out.println(vector.values() == input); // true
 
-Vector a = new Vector(new int[]{1, 2});
-Vector b = new Vector(new int[]{1, 2});
+Vector a = new Vector(new int[] {1, 2});
+Vector b = new Vector(new int[] {1, 2});
 System.out.println(a.equals(b)); // false
 ```
 
@@ -309,18 +318,22 @@ record Scores(int[] values) {
         values = java.util.Objects.requireNonNull(values).clone();
     }
 
-    public int[] values() { return values.clone(); }
-
-    @Override public boolean equals(Object other) {
-        return other instanceof Scores that
-            && java.util.Arrays.equals(values, that.values);
+    public int[] values() {
+        return values.clone();
     }
 
-    @Override public int hashCode() {
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof Scores that && java.util.Arrays.equals(values, that.values);
+    }
+
+    @Override
+    public int hashCode() {
         return java.util.Arrays.hashCode(values);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Scores[values=" + java.util.Arrays.toString(values) + "]";
     }
 }
@@ -343,8 +356,8 @@ output[0] = 100;
 System.out.println(saved.values()[0]); // 80
 Scores copy = new Scores(saved.values());
 System.out.println(saved.equals(copy)); // true
-System.out.println(saved);              // Scores[values=[80]]
-System.out.println(copy);               // Scores[values=[80]]
+System.out.println(saved); // Scores[values=[80]]
+System.out.println(copy); // Scores[values=[80]]
 System.out.println(saved.toString().equals(copy.toString())); // true
 ```
 
@@ -373,7 +386,9 @@ System.out.println(saved.toString().equals(copy.toString())); // true
 
 ```java
 enum LoanStatus {
-    AVAILABLE, BORROWED, LOST
+    AVAILABLE,
+    BORROWED,
+    LOST
 }
 
 LoanStatus state = LoanStatus.BORROWED;
@@ -386,11 +401,19 @@ System.out.println(state == LoanStatus.BORROWED); // true
 
 ```java
 enum Priority {
-    LOW(1), NORMAL(5), HIGH(10);
+    LOW(1),
+    NORMAL(5),
+    HIGH(10);
 
     private final int weight;
-    Priority(int weight) { this.weight = weight; }
-    int weight() { return weight; }
+
+    Priority(int weight) {
+        this.weight = weight;
+    }
+
+    int weight() {
+        return weight;
+    }
 }
 System.out.println(Priority.HIGH.weight()); // 10
 ```
@@ -403,7 +426,9 @@ System.out.println(Priority.HIGH.weight()); // 10
 
 ```java
 sealed interface SearchResult permits Found, Missing {}
+
 record Found(String title) implements SearchResult {}
+
 record Missing(String reason) implements SearchResult {}
 ```
 
@@ -440,12 +465,19 @@ static String describe(SearchResult result) {
 
 ```java
 sealed interface SearchResult permits Found, Missing, Ambiguous {}
+
 record Found(String title) implements SearchResult {
-    Found { java.util.Objects.requireNonNull(title, "title"); }
+    Found {
+        java.util.Objects.requireNonNull(title, "title");
+    }
 }
+
 record Missing(String reason) implements SearchResult {
-    Missing { java.util.Objects.requireNonNull(reason, "reason"); }
+    Missing {
+        java.util.Objects.requireNonNull(reason, "reason");
+    }
 }
+
 record Ambiguous(int count) implements SearchResult {
     Ambiguous {
         if (count < 2) throw new IllegalArgumentException("Нужно хотя бы два совпадения");
@@ -543,8 +575,7 @@ Class<?> type = Student.class;
 System.out.println(student.id());
 System.out.println(type.isRecord());
 for (var component : type.getRecordComponents()) {
-    System.out.println(component.getName() + ":"
-            + component.getType().getSimpleName());
+    System.out.println(component.getName() + ":" + component.getType().getSimpleName());
 }
 ```
 

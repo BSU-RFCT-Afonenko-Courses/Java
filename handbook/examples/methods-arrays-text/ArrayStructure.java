@@ -14,7 +14,7 @@ public class ArrayStructure {
         int[][] copy = weeks.clone();
         copy[0][0] = 9;
         System.out.println("После записи в строку: " + Arrays.deepToString(weeks));
-        copy[0] = new int[]{1, 2};
+        copy[0] = new int[] {1, 2};
         System.out.println("После замены ссылки: " + Arrays.deepToString(weeks));
         System.out.println("Внешняя копия: " + Arrays.deepToString(copy));
 

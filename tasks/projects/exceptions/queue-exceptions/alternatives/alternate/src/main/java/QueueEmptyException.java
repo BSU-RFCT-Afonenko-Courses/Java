@@ -1,2 +1,5 @@
-
-public class QueueEmptyException extends Exception {public QueueEmptyException(){super("Очередь пуста");}}
+public class QueueEmptyException extends Exception {
+    public QueueEmptyException() {
+        super("Очередь пуста");
+    }
+}

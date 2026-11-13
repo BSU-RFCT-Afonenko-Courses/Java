@@ -10,7 +10,9 @@ import org.junit.jupiter.api.TestReporter;
 class ContractTest {
     private static String run(TestReporter publicReporter, String[] publicCaseIds, String input)
             throws Exception {
-        return publicOutput(publicReporter, publicCaseIds,
+        return publicOutput(
+                publicReporter,
+                publicCaseIds,
                 JavaProcess.runCheckingUncaught(Main.class, input).stdout());
     }
 
@@ -19,10 +21,13 @@ class ContractTest {
         String[] rows = run(publicReporter, publicCaseIds, "").strip().split("\\R");
         assertEquals(10, rows.length, "Таблица должна содержать десять строк");
         String[] values = rows[multiplier - 1].strip().split("\\p{javaWhitespace}+");
-        assertEquals(10, values.length,
+        assertEquals(
+                10,
+                values.length,
                 "В строке множителя " + multiplier + " должно быть десять значений");
         for (int column = 1; column <= 10; column++) {
-            assertEquals(BigInteger.valueOf((long) multiplier * column),
+            assertEquals(
+                    BigInteger.valueOf((long) multiplier * column),
                     new BigInteger(values[column - 1]),
                     "Произведение в строке " + multiplier + ", столбце " + column);
         }
@@ -92,8 +97,7 @@ class ContractTest {
     private static String publicOutput(TestReporter reporter, String[] ids, String actual) {
         if (reporter != null) {
             String visible = actual.replaceAll("[\\p{Cntrl}&&[^\n\t]]", "�");
-            if (visible.length() > 2000)
-                visible = visible.substring(0, 2000) + "…";
+            if (visible.length() > 2000) visible = visible.substring(0, 2000) + "…";
             for (String id : ids)
                 reporter.publishEntry(Map.of("public-case", id, "actual", "stdout=" + visible));
         }

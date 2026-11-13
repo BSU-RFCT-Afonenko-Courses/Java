@@ -24,7 +24,7 @@ public class TextValues {
         String text = "A\uD83D\uDE00B";
         System.out.println("Длина UTF-16: " + text.length());
         System.out.println("Кодовые точки: " + text.codePointCount(0, text.length()));
-        for (int offset = 0; offset < text.length();) {
+        for (int offset = 0; offset < text.length(); ) {
             int codePoint = text.codePointAt(offset);
             System.out.println(offset + ": " + codePoint);
             offset += Character.charCount(codePoint);
@@ -34,17 +34,21 @@ public class TextValues {
         String first = "\u00E9";
         String second = "e\u0301";
         System.out.println("До NFC: " + first.equals(second));
-        System.out.println("После NFC: " + first.equals(Normalizer.normalize(second, Normalizer.Form.NFC)));
-        System.out.println("Равенство е и ё после NFC: " + Normalizer.normalize("е", Normalizer.Form.NFC)
-            .equals(Normalizer.normalize("ё", Normalizer.Form.NFC)));
+        System.out.println(
+                "После NFC: " + first.equals(Normalizer.normalize(second, Normalizer.Form.NFC)));
+        System.out.println(
+                "Равенство е и ё после NFC: "
+                        + Normalizer.normalize("е", Normalizer.Form.NFC)
+                                .equals(Normalizer.normalize("ё", Normalizer.Form.NFC)));
 
         System.out.println("Буквальная точка: " + "a.b".replace(".", "-"));
         System.out.println("Точка в шаблоне: " + "a.b".replaceAll(".", "-"));
         String literal = ".";
         String replacement = "$1";
         Pattern pattern = Pattern.compile(Pattern.quote(literal));
-        System.out.println("Буквальная замена через шаблон: " + pattern.matcher("a.b")
-            .replaceAll(Matcher.quoteReplacement(replacement)));
+        System.out.println(
+                "Буквальная замена через шаблон: "
+                        + pattern.matcher("a.b").replaceAll(Matcher.quoteReplacement(replacement)));
         System.out.println("Пустые поля: " + Arrays.toString("a,,".split(",", -1)));
         System.out.println("Вставка: " + insertAt("Java", 2, "-"));
         StringBuilder builder = new StringBuilder("Java");

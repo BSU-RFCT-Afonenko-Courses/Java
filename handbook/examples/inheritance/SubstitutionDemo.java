@@ -16,9 +16,17 @@ public class SubstitutionDemo {
             }
         }
 
-        int width() { return width; }
-        int height() { return height; }
-        int area() { return width * height; }
+        int width() {
+            return width;
+        }
+
+        int height() {
+            return height;
+        }
+
+        int area() {
+            return width * height;
+        }
 
         void setWidth(int width) {
             requireSide(width);
@@ -32,7 +40,9 @@ public class SubstitutionDemo {
     }
 
     static class MutableSquare extends Rectangle {
-        MutableSquare(int side) { super(side, side); }
+        MutableSquare(int side) {
+            super(side, side);
+        }
 
         @Override
         void setWidth(int width) {

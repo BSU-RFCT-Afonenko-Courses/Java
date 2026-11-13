@@ -17,8 +17,7 @@ class DemoTest {
 
     private static void table() throws Exception {
         String text = run("").replace("\r\n", "\n");
-        if (text.endsWith("\n"))
-            text = text.substring(0, text.length() - 1);
+        if (text.endsWith("\n")) text = text.substring(0, text.length() - 1);
         String[] lines = text.split("\n", -1);
         assertEquals(5, lines.length, "Заголовок и четыре строки");
         assertEquals(
@@ -28,13 +27,17 @@ class DemoTest {
             String[] values = lines[i].split("\t", -1);
             assertEquals(6, values.length, "Разделитель — табуляция");
             for (String v : values)
-                assertTrue(v.equals("true") || v.equals("false"),
+                assertTrue(
+                        v.equals("true") || v.equals("false"),
                         "Ожидалось true или false, получено «" + v + "»");
             boolean p = Boolean.parseBoolean(values[0]), q = Boolean.parseBoolean(values[1]);
             assertTrue(found.add(p + "/" + q), "Четыре различные пары");
-            assertArrayEquals(new String[] {"" + p, "" + q, "" + (p && q), "" + (p || q),
-                                      "" + (p ^ q), "" + !p},
-                    values, "Операции для P=" + p + ", Q=" + q + "; NOT относится к P");
+            assertArrayEquals(
+                    new String[] {
+                        "" + p, "" + q, "" + (p && q), "" + (p || q), "" + (p ^ q), "" + !p
+                    },
+                    values,
+                    "Операции для P=" + p + ", Q=" + q + "; NOT относится к P");
         }
     }
 

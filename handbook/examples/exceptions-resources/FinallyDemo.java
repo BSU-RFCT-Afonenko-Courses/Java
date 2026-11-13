@@ -1,22 +1,34 @@
 public class FinallyDemo {
     static int value() {
-        try { return 10; }
-        finally { System.out.println("выход из метода"); }
+        try {
+            return 10;
+        } finally {
+            System.out.println("выход из метода");
+        }
     }
 
     static int replacedReturn() {
-        try { return 10; }
-        finally { return 20; }
+        try {
+            return 10;
+        } finally {
+            return 20;
+        }
     }
 
     static int swallowedFailure() {
-        try { throw new IllegalStateException("body"); }
-        finally { return 20; }
+        try {
+            throw new IllegalStateException("body");
+        } finally {
+            return 20;
+        }
     }
 
     static void replacedFailure() {
-        try { throw new IllegalStateException("body"); }
-        finally { throw new IllegalArgumentException("cleanup"); }
+        try {
+            throw new IllegalStateException("body");
+        } finally {
+            throw new IllegalArgumentException("cleanup");
+        }
     }
 
     public static void main(String[] args) {

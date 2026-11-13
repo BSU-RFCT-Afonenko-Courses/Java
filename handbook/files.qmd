@@ -87,8 +87,9 @@ categories: [java, java-core, java-files]
 Разделителями служат LF, CR и CRLF; последняя строка читается и без них.
 
 ```java
-try (var reader = java.nio.file.Files.newBufferedReader(path,
-        java.nio.charset.StandardCharsets.UTF_8)) {
+try (var reader =
+        java.nio.file.Files.newBufferedReader(
+                path, java.nio.charset.StandardCharsets.UTF_8)) {
     String line;
     while ((line = reader.readLine()) != null) {
         System.out.println(line);
@@ -129,8 +130,12 @@ UTF-8 при `Files.readString(path, UTF_8)` приводит к `IOException`;
 запись и усечение. Для дописывания выбирают нужный режим явно:
 
 ```java
-Files.writeString(target, "s3;Ann;80\n", StandardCharsets.UTF_8,
-    StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+Files.writeString(
+        target,
+        "s3;Ann;80\n",
+        StandardCharsets.UTF_8,
+        StandardOpenOption.CREATE,
+        StandardOpenOption.APPEND);
 ```
 
 Фрагмент выполняется в методе с `throws IOException`; переменная `Path target`

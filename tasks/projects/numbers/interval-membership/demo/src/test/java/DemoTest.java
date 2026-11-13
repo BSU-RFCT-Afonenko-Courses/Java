@@ -14,9 +14,17 @@ class DemoTest {
     }
 
     private static void intervals(int n, int m, int k) throws Exception {
-        String expected = (n < k && k <= m) + " " + (n <= k && k < m) + " " + (n < k && k < m) + " "
-                + (n <= k && k <= m);
-        assertArrayEquals(expected.split(" "), tokens(run(n + "\t" + m + "\n" + k)),
+        String expected =
+                (n < k && k <= m)
+                        + " "
+                        + (n <= k && k < m)
+                        + " "
+                        + (n < k && k < m)
+                        + " "
+                        + (n <= k && k <= m);
+        assertArrayEquals(
+                expected.split(" "),
+                tokens(run(n + "\t" + m + "\n" + k)),
                 "Строгость каждой границы");
     }
 

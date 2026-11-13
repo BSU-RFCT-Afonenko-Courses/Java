@@ -79,13 +79,13 @@ epilogue: 7
 
 Стрелки в столбце вывода разделяют последовательные строки.
 
-| Команда | Вывод | Причина |
-|---|---|---|
-| `java BindingDemo.java` | `base field` → `child field` → `child method` → `child method` → `base static` → `child static` → `base method` | Поля выбираются по статическим типам; приведение к `Base` сохраняет динамический вызов; `super.label()` выбирает базовое тело |
-| `java OverrideRulesDemo.java` | `120` → `true` | Ковариантный `load()` возвращает тот же `TextDocument` при вызовах через конкретный и базовый типы |
-| `java SubstitutionDemo.java` | `28` → `49` → `7 4` → `7 7` | `setWidth(7)` у прямоугольника сохраняет высоту 4; подкласс квадрата изменяет её до 7 |
-| `java ShapeDemo.java` | `area=9.0` → `Infinity` | Готовый `report()` вызывает формулу квадрата; сторона `1e200` конечна, её квадрат выходит за диапазон конечного `double` |
-| `java InheritanceApiDemo.java` | `Item: Java` → `4` → `ClassCastException` → `false` → `null` → `3` → `true` | Абстрактная операция, удачная проверка строки, несовместимое приведение, обработка `null`, раннее присваивание поля и экземпляр разрешённого варианта `Ok` |
+| Команда                        | Вывод                                                                                                           | Причина                                                                                                                                                    |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `java BindingDemo.java`        | `base field` → `child field` → `child method` → `child method` → `base static` → `child static` → `base method` | Поля выбираются по статическим типам; приведение к `Base` сохраняет динамический вызов; `super.label()` выбирает базовое тело                              |
+| `java OverrideRulesDemo.java`  | `120` → `true`                                                                                                  | Ковариантный `load()` возвращает тот же `TextDocument` при вызовах через конкретный и базовый типы                                                         |
+| `java SubstitutionDemo.java`   | `28` → `49` → `7 4` → `7 7`                                                                                     | `setWidth(7)` у прямоугольника сохраняет высоту 4; подкласс квадрата изменяет её до 7                                                                      |
+| `java ShapeDemo.java`          | `area=9.0` → `Infinity`                                                                                         | Готовый `report()` вызывает формулу квадрата; сторона `1e200` конечна, её квадрат выходит за диапазон конечного `double`                                   |
+| `java InheritanceApiDemo.java` | `Item: Java` → `4` → `ClassCastException` → `false` → `null` → `3` → `true`                                     | Абстрактная операция, удачная проверка строки, несовместимое приведение, обработка `null`, раннее присваивание поля и экземпляр разрешённого варианта `Ok` |
 
 В `OverrideRulesDemo` метод `main` объявляет `throws IOException`
 из-за вызова через `DocumentSource`. Сам `MemorySource.load()`
@@ -146,10 +146,10 @@ java CompositionDemo.java
 Каждая команда должна завершиться ошибкой компиляции. Текст сообщения
 зависит от языка диагностики JDK; существенна причина отказа.
 
-| Команда | Причина |
-|---|---|
+| Команда                                                                           | Причина                                                                           |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | `javac --release 25 -encoding UTF-8 -d out/rejected rejected/WrongParameter.java` | `@Override` поставлен на перегрузку с параметром `TextDocument` вместо `Document` |
-| `javac --release 25 -encoding UTF-8 -d out/rejected rejected/ReducedAccess.java` | Переопределение уменьшает доступ с `protected` до доступа внутри пакета |
-| `javac --release 25 -encoding UTF-8 -d out/rejected rejected/WiderThrows.java` | Проверяемое `Exception` шире разрешённого `IOException` |
-| `javac --release 25 -encoding UTF-8 -d out/rejected rejected/EarlyRead.java` | Поле текущего экземпляра читается в прологе перед `super(...)` |
-| `javac --release 25 -encoding UTF-8 -d out/rejected rejected/FinalOverride.java` | Переопределяется метод, объявленный как `final` |
+| `javac --release 25 -encoding UTF-8 -d out/rejected rejected/ReducedAccess.java`  | Переопределение уменьшает доступ с `protected` до доступа внутри пакета           |
+| `javac --release 25 -encoding UTF-8 -d out/rejected rejected/WiderThrows.java`    | Проверяемое `Exception` шире разрешённого `IOException`                           |
+| `javac --release 25 -encoding UTF-8 -d out/rejected rejected/EarlyRead.java`      | Поле текущего экземпляра читается в прологе перед `super(...)`                    |
+| `javac --release 25 -encoding UTF-8 -d out/rejected rejected/FinalOverride.java`  | Переопределяется метод, объявленный как `final`                                   |

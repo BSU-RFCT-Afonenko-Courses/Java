@@ -13,11 +13,9 @@ class ContractTest {
         Object same = TaskBinding.value(10, 10);
         Object[] a = TaskBinding.array(same, same, same, same, same, same);
         assertArrayEquals(new double[] {60, 60}, TaskBinding.parts(TaskBinding.sum(a)), 1e-8);
-        for (Object x : a)
-            assertArrayEquals(new double[] {10, 10}, TaskBinding.parts(x), 0);
+        for (Object x : a) assertArrayEquals(new double[] {10, 10}, TaskBinding.parts(x), 0);
         assertArrayEquals(
-            new double[] {0, -8000000}, TaskBinding.parts(TaskBinding.product(a)), 1e-8);
-        for (Object x : a)
-            assertArrayEquals(new double[] {10, 10}, TaskBinding.parts(x), 0);
+                new double[] {0, -8000000}, TaskBinding.parts(TaskBinding.product(a)), 1e-8);
+        for (Object x : a) assertArrayEquals(new double[] {10, 10}, TaskBinding.parts(x), 0);
     }
 }

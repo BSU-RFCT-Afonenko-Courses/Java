@@ -25,6 +25,7 @@ class DemoTest {
         }
         return bytes.toString(StandardCharsets.UTF_8);
     }
+
     interface Throwing {
         void run() throws Throwable;
     }
@@ -34,12 +35,14 @@ class DemoTest {
     void normal() throws Throwable {
         var a = CharAccess.select();
         Object q = a.create(2);
-        assertEquals("", capture(() -> {
-            a.put(q, 'A');
-            a.put(q, 'Б');
-            assertEquals('A', a.get(q));
-            assertEquals('Б', a.get(q));
-        }));
+        assertEquals(
+                "",
+                capture(() -> {
+                    a.put(q, 'A');
+                    a.put(q, 'Б');
+                    assertEquals('A', a.get(q));
+                    assertEquals('Б', a.get(q));
+                }));
     }
 
     @Test

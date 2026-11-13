@@ -10,7 +10,9 @@ import org.junit.jupiter.api.TestReporter;
 class ContractTest {
     private static String run(TestReporter publicReporter, String[] publicCaseIds, String... args)
             throws Exception {
-        return publicOutput(publicReporter, publicCaseIds,
+        return publicOutput(
+                publicReporter,
+                publicCaseIds,
                 JavaProcess.runCheckingUncaught(Main.class, "", args).stdout());
     }
 
@@ -35,8 +37,9 @@ class ContractTest {
         return Math.abs(actual - expected) <= 1e-8 + 1e-12 * Math.abs(expected);
     }
 
-    private static void roots(TestReporter publicReporter, String[] publicCaseIds,
-            double[] expected, String... args) throws Exception {
+    private static void roots(
+            TestReporter publicReporter, String[] publicCaseIds, double[] expected, String... args)
+            throws Exception {
         String output = run(publicReporter, publicCaseIds, args);
         if (expected.length == 0) {
             assertEquals(
@@ -47,10 +50,14 @@ class ContractTest {
         assertEquals(expected.length, actual.length, "Количество различных действительных корней");
         boolean correct = near(actual[0], expected[0]);
         if (expected.length == 2)
-            correct = correct && near(actual[1], expected[1])
-                    || near(actual[0], expected[1]) && near(actual[1], expected[0]);
-        assertTrue(correct,
-                "Ожидались корни " + Arrays.toString(expected) + ", получены "
+            correct =
+                    correct && near(actual[1], expected[1])
+                            || near(actual[0], expected[1]) && near(actual[1], expected[0]);
+        assertTrue(
+                correct,
+                "Ожидались корни "
+                        + Arrays.toString(expected)
+                        + ", получены "
                         + Arrays.toString(actual)
                         + ("; для каждого корня допуск 1e-8 + 1e-12 × |ожидаемый корень|; порядок "
                                 + "свободный"));
@@ -95,17 +102,27 @@ class ContractTest {
     @Test
     @DisplayName("Границы и противоположные знаки корней. Вход: 10000 10000 -10000")
     void all_extreme() throws Exception {
-        roots(null, null, new double[] {(-1 - Math.sqrt(5)) / 2, (-1 + Math.sqrt(5)) / 2}, "10000",
-                "10000", "-10000");
+        roots(
+                null,
+                null,
+                new double[] {(-1 - Math.sqrt(5)) / 2, (-1 + Math.sqrt(5)) / 2},
+                "10000",
+                "10000",
+                "-10000");
     }
 
     @Test
     @DisplayName("Допуск для двух разных масштабов; алгоритм свободен. Вход: 1 10000 1")
     void small_and_large() throws Exception {
-        roots(null, null,
+        roots(
+                null,
+                null,
                 new double[] {
-                        (-10000 - Math.sqrt(99999996.0)) / 2, (-10000 + Math.sqrt(99999996.0)) / 2},
-                "1", "10000", "1");
+                    (-10000 - Math.sqrt(99999996.0)) / 2, (-10000 + Math.sqrt(99999996.0)) / 2
+                },
+                "1",
+                "10000",
+                "1");
     }
 
     @Test
@@ -130,8 +147,7 @@ class ContractTest {
     private static String publicOutput(TestReporter reporter, String[] ids, String actual) {
         if (reporter != null) {
             String visible = actual.replaceAll("[\\p{Cntrl}&&[^\n\t]]", "�");
-            if (visible.length() > 2000)
-                visible = visible.substring(0, 2000) + "…";
+            if (visible.length() > 2000) visible = visible.substring(0, 2000) + "…";
             for (String id : ids)
                 reporter.publishEntry(Map.of("public-case", id, "actual", "stdout=" + visible));
         }

@@ -1,1 +1,14 @@
-public class Truck extends Vehicle {public Truck(int p,int f,int m,int c){super(p,f,m);throw new UnsupportedOperationException("TODO: груз");}int getCargo(){throw new UnsupportedOperationException("TODO");}public void putCargo(int c){throw new UnsupportedOperationException("TODO");}}
+public class Truck extends Vehicle {
+    public Truck(int p, int f, int m, int c) {
+        super(p, f, m);
+        throw new UnsupportedOperationException("TODO: груз");
+    }
+
+    int getCargo() {
+        throw new UnsupportedOperationException("TODO");
+    }
+
+    public void putCargo(int c) {
+        throw new UnsupportedOperationException("TODO");
+    }
+}

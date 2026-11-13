@@ -13,17 +13,39 @@ public class InterfaceApiDemo {
     }
 }
 
-interface Readable { String read(); }
-interface Writable { void write(String value); }
+interface Readable {
+    String read();
+}
+
+interface Writable {
+    void write(String value);
+}
+
 interface Storage extends Readable, Writable {}
+
 final class MemoryStorage implements Storage {
     private String value = "";
-    @Override public String read() { return value; }
-    @Override public void write(String value) {
+
+    @Override
+    public String read() {
+        return value;
+    }
+
+    @Override
+    public void write(String value) {
         this.value = java.util.Objects.requireNonNull(value, "value");
     }
 }
-interface Limits { int MAX_BATCH = 100; }
-interface SharedData { int[] VALUES = {1, 2}; }
+
+interface Limits {
+    int MAX_BATCH = 100;
+}
+
+interface SharedData {
+    int[] VALUES = {1, 2};
+}
+
 @FunctionalInterface
-interface Source<T> { T get(); }
+interface Source<T> {
+    T get();
+}

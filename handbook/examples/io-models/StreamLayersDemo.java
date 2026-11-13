@@ -8,27 +8,26 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 
 public final class StreamLayersDemo {
-    private static final byte[] SAMPLE =
-            "Ада\nБоб\n".getBytes(StandardCharsets.UTF_8);
+    private static final byte[] SAMPLE = "Ада\nБоб\n".getBytes(StandardCharsets.UTF_8);
 
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
-            throw new IllegalArgumentException(
-                    "Запуск: java StreamLayersDemo [файл UTF-8]");
+            throw new IllegalArgumentException("Запуск: java StreamLayersDemo [файл UTF-8]");
         }
 
         try (InputStream input = open(args)) {
             System.out.println("Байтов: " + countBytes(input));
         }
 
-        try (Reader input = new InputStreamReader(
-                open(args), StandardCharsets.UTF_8.newDecoder())) {
+        try (Reader input =
+                new InputStreamReader(open(args), StandardCharsets.UTF_8.newDecoder())) {
             System.out.println("Единиц char: " + countCharacters(input));
         }
 
-        try (BufferedReader input = new BufferedReader(
-                new InputStreamReader(
-                        open(args), StandardCharsets.UTF_8.newDecoder()), 4)) {
+        try (BufferedReader input =
+                new BufferedReader(
+                        new InputStreamReader(open(args), StandardCharsets.UTF_8.newDecoder()),
+                        4)) {
             String line;
             int number = 0;
             while ((line = input.readLine()) != null) {
@@ -38,9 +37,7 @@ public final class StreamLayersDemo {
     }
 
     private static InputStream open(String[] args) throws IOException {
-        return args.length == 0
-                ? new ByteArrayInputStream(SAMPLE)
-                : new FileInputStream(args[0]);
+        return args.length == 0 ? new ByteArrayInputStream(SAMPLE) : new FileInputStream(args[0]);
     }
 
     static long countBytes(InputStream input) throws IOException {

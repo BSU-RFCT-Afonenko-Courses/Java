@@ -14,9 +14,15 @@ class DemoTest {
         for (String first : new String[] {"\n", "\r\n"})
             for (String last : new String[] {"\n", "\r\n"})
                 matches |= actual.equals(text + first + count + last);
-        assertTrue(matches,
-                "Ожидались текст «" + text + "», дополнительный LF или CRLF, счётчик " + count
-                        + " и LF или CRLF; получен полный вывод «" + actual + "»");
+        assertTrue(
+                matches,
+                "Ожидались текст «"
+                        + text
+                        + "», дополнительный LF или CRLF, счётчик "
+                        + count
+                        + " и LF или CRLF; получен полный вывод «"
+                        + actual
+                        + "»");
     }
 
     @Test

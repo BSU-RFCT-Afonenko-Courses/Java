@@ -1,7 +1,9 @@
 public class Main {
     public static void main(String[] args) throws Exception {
         int[][] matrix = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
-        var input = new java.util.Scanner(System.in, java.nio.charset.StandardCharsets.UTF_8).useLocale(java.util.Locale.ROOT);
+        var input =
+                new java.util.Scanner(System.in, java.nio.charset.StandardCharsets.UTF_8)
+                        .useLocale(java.util.Locale.ROOT);
         if (input.hasNextInt()) {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) matrix[i][j] = input.nextInt();

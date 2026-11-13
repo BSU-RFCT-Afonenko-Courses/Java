@@ -1,6 +1,7 @@
 import java.io.*;
 import java.nio.file.*;
 import java.nio.charset.StandardCharsets;
+
 class BytesMover {
     void main(String[] args) throws Exception {
         if (args.length != 2) throw new IllegalArgumentException("Нужны вход и выход");
@@ -15,7 +16,8 @@ class BytesMover {
                 byte[] buffer = new byte[4096];
                 int count;
                 while ((count = input.read(buffer)) != -1) {
-                    for (int i = 0; i < count; i++) if (Character.isWhitespace((char)buffer[i])) buffer[i] = 0x2D;
+                    for (int i = 0; i < count; i++)
+                        if (Character.isWhitespace((char) buffer[i])) buffer[i] = 0x2D;
                     output.write(buffer, 0, count);
                 }
             } finally {

@@ -2,27 +2,36 @@ public class ObjectsTailDemo {
     static void borrow(Book book) {
         book.borrowed = true;
     }
+
     static void replace(Book book) {
         book = new Book("Replacement");
     }
+
     static Book replacement() {
         Book book = new Book("Replacement");
         return book;
     }
-    static Book same(Book book) { return book; }
+
+    static Book same(Book book) {
+        return book;
+    }
+
     static Book copy(Book source) {
         Book result = new Book(source.title);
         result.borrowed = source.borrowed;
         return result;
     }
+
     static String titleOf(Book book) {
         java.util.Objects.requireNonNull(book, "book");
         return java.util.Objects.requireNonNull(book.title, "title");
     }
+
     static Book create() {
         Book local = new Book("Java");
         return local;
     }
+
     public static void main(String[] args) {
         Book original = new Book("Java");
         borrow(original);
@@ -34,12 +43,14 @@ public class ObjectsTailDemo {
         System.out.println(original.borrowed); // false
         System.out.println(same(original) == original); // true
 
-        try { titleOf(null); }
-        catch (NullPointerException ex) {
+        try {
+            titleOf(null);
+        } catch (NullPointerException ex) {
             System.out.println(ex.getMessage()); // book
         }
-        try { titleOf(new Book(null)); }
-        catch (NullPointerException ex) {
+        try {
+            titleOf(new Book(null));
+        } catch (NullPointerException ex) {
             System.out.println(ex.getMessage()); // title
         }
         System.out.println(titleOf(new Book("Java"))); // Java
@@ -52,7 +63,7 @@ public class ObjectsTailDemo {
         System.out.println(source.borrowed); // true
         System.out.println(copied.borrowed); // false
 
-        TaggedBook first = new TaggedBook(new String[]{"java", "oop"});
+        TaggedBook first = new TaggedBook(new String[] {"java", "oop"});
         TaggedBook copy = new TaggedBook(first.tags);
         copy.tags[0] = "changed";
         System.out.println(first.tags[0]); // changed
@@ -73,5 +84,8 @@ public class ObjectsTailDemo {
 
 class TaggedBook {
     String[] tags;
-    TaggedBook(String[] tags) { this.tags = tags; }
+
+    TaggedBook(String[] tags) {
+        this.tags = tags;
+    }
 }

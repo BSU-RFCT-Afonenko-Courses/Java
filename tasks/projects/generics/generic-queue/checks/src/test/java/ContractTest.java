@@ -23,6 +23,7 @@ class ContractTest {
     interface Throwing {
         void run() throws Throwable;
     }
+
     private static String capture(Throwing body) throws Throwable {
         var out = System.out;
         var err = System.err;
@@ -37,11 +38,13 @@ class ContractTest {
         }
         return bytes.toString(StandardCharsets.UTF_8);
     }
+
     static class Box<T> {
         private final Class<T> elementType;
         final QueueAccess access;
         final Object value;
         final Class<? extends Throwable> full, empty;
+
         Box(Class<T> elementType, T[] storage) throws Throwable {
             this.elementType = elementType;
             access = QueueAccess.select();
@@ -49,16 +52,20 @@ class ContractTest {
             full = access.full;
             empty = access.empty;
         }
+
         void put(T v) throws Throwable {
             access.put(value, v);
         }
+
         T get() throws Throwable {
             return elementType.cast(access.get(value));
         }
     }
+
     private static void empty(Box<?> b) throws Throwable {
         assertThrows(b.empty, () -> b.get());
     }
+
     private static <T> void full(Box<T> b, T rejected) throws Throwable {
         assertThrows(b.full, () -> b.put(rejected));
     }
@@ -72,12 +79,17 @@ class ContractTest {
             try {
                 q.get();
             } catch (Throwable e) {
-                if (!q.empty.isInstance(e))
-                    throw e;
+                if (!q.empty.isInstance(e)) throw e;
                 empty = true;
             }
-            reporter.publishEntry(Map.of("public-case", "boundary-initial", "expected",
-                "QueueEmptyException.", "actual", "Проверяемый Empty=" + empty));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "boundary-initial",
+                            "expected",
+                            "QueueEmptyException.",
+                            "actual",
+                            "Проверяемый Empty=" + empty));
             assertTrue(empty);
         }
         var i = new Box<Integer>(Integer.class, new Integer[] {42});
@@ -102,14 +114,18 @@ class ContractTest {
             try {
                 q.put(8);
             } catch (Throwable e) {
-                if (!q.full.isInstance(e))
-                    throw e;
+                if (!q.full.isInstance(e)) throw e;
                 full = true;
             }
             Integer actual = q.get();
             reporter.publishEntry(
-                Map.of("public-case", "boundary-full", "expected", "QueueFullException; извлечено=7.",
-                    "actual", "Проверяемый Full=" + full + "; извлечено=" + actual));
+                    Map.of(
+                            "public-case",
+                            "boundary-full",
+                            "expected",
+                            "QueueFullException; извлечено=7.",
+                            "actual",
+                            "Проверяемый Full=" + full + "; извлечено=" + actual));
             assertTrue(full);
             assertEquals(7, actual);
         }
@@ -122,8 +138,7 @@ class ContractTest {
             }
             full(q, new Payload(-1));
             full(q, new Payload(-2));
-            for (int j = 0; j < capacity; j++)
-                assertSame(data[j], q.get());
+            for (int j = 0; j < capacity; j++) assertSame(data[j], q.get());
         }
         var i = new Box<Integer>(Integer.class, new Integer[1]);
         i.put(7);
@@ -142,10 +157,21 @@ class ContractTest {
             String x = q.get();
             q.put(c);
             String y = q.get(), z = q.get();
-            reporter.publishEntry(Map.of("public-case", "normal", "expected",
-                "Извлечено=[Лист, Ветка, Плод]; возвращены те же ссылки.", "actual",
-                "Извлечено=" + List.of(x, y, z) + "; прежние ссылки=" + (x == a) + "/" + (y == b) + "/"
-                    + (z == c)));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "normal",
+                            "expected",
+                            "Извлечено=[Лист, Ветка, Плод]; возвращены те же ссылки.",
+                            "actual",
+                            "Извлечено="
+                                    + List.of(x, y, z)
+                                    + "; прежние ссылки="
+                                    + (x == a)
+                                    + "/"
+                                    + (y == b)
+                                    + "/"
+                                    + (z == c)));
             assertSame(a, x);
             assertSame(b, y);
             assertSame(c, z);
@@ -175,8 +201,14 @@ class ContractTest {
             q.get();
             q.put(9);
             Integer actual = q.get();
-            reporter.publishEntry(Map.of("public-case", "boundary-reuse", "expected", "Извлечено=9.",
-                "actual", "Извлечено=" + actual));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "boundary-reuse",
+                            "expected",
+                            "Извлечено=9.",
+                            "actual",
+                            "Извлечено=" + actual));
             assertEquals(9, actual);
         }
         for (int capacity : new int[] {2, 3}) {
@@ -193,18 +225,15 @@ class ContractTest {
                 expected.add(p);
                 q.put(p);
             }
-            while (!expected.isEmpty())
-                assertSame(expected.remove(), q.get());
+            while (!expected.isEmpty()) assertSame(expected.remove(), q.get());
         }
         var four = new Box<Payload>(Payload.class, new Payload[4]);
         Payload[] values = {new Payload(71), new Payload(29), new Payload(83), new Payload(47)};
-        for (Payload p : values)
-            four.put(p);
+        for (Payload p : values) four.put(p);
         full(four, new Payload(-1));
         assertSame(values[0], four.get());
         four.put(values[0]);
-        for (int j : new int[] {1, 2, 3, 0})
-            assertSame(values[j], four.get());
+        for (int j : new int[] {1, 2, 3, 0}) assertSame(values[j], four.get());
         var single = new Box<Integer>(Integer.class, new Integer[1]);
         for (int j = 0; j < 10; j++) {
             Integer p = 1000 + j;
@@ -226,12 +255,17 @@ class ContractTest {
             try {
                 q.get();
             } catch (Throwable e) {
-                if (!q.empty.isInstance(e))
-                    throw e;
+                if (!q.empty.isInstance(e)) throw e;
                 empty = true;
             }
-            reporter.publishEntry(Map.of("public-case", "boundary-empty", "expected", "QueueEmptyException.",
-                "actual", "Проверяемый Empty=" + empty));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "boundary-empty",
+                            "expected",
+                            "QueueEmptyException.",
+                            "actual",
+                            "Проверяемый Empty=" + empty));
             assertTrue(empty);
         }
         var q = new Box<String>(String.class, new String[2]);

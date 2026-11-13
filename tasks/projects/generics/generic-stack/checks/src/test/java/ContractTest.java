@@ -19,6 +19,7 @@ class ContractTest {
     interface Throwing {
         void run() throws Throwable;
     }
+
     private static String capture(Throwing body) throws Throwable {
         var out = System.out;
         var err = System.err;
@@ -33,24 +34,31 @@ class ContractTest {
         }
         return bytes.toString(StandardCharsets.UTF_8);
     }
+
     record Payload(int value) {}
+
     static class Box<T> {
         final Study<T> value;
         final Class<? extends Throwable> full = Study.StackFullException.class,
-                                         empty = Study.StackEmptyException.class;
+                empty = Study.StackEmptyException.class;
+
         Box(T[] storage) throws Throwable {
             value = new Study<T>(storage);
         }
+
         void put(T v) throws Throwable {
             value.push(v);
         }
+
         T get() throws Throwable {
             return value.pop();
         }
     }
+
     private static void empty(Box<?> b) throws Throwable {
         assertThrows(b.empty, () -> b.get());
     }
+
     private static <T> void full(Box<T> b, T rejected) throws Throwable {
         assertThrows(b.full, () -> b.put(rejected));
     }
@@ -64,12 +72,17 @@ class ContractTest {
             try {
                 q.get();
             } catch (Throwable e) {
-                if (!q.empty.isInstance(e))
-                    throw e;
+                if (!q.empty.isInstance(e)) throw e;
                 empty = true;
             }
-            reporter.publishEntry(Map.of("public-case", "boundary-initial", "expected",
-                "StackEmptyException.", "actual", "Проверяемый Empty=" + empty));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "boundary-initial",
+                            "expected",
+                            "StackEmptyException.",
+                            "actual",
+                            "Проверяемый Empty=" + empty));
             assertTrue(empty);
         }
         var i = new Box<Integer>(new Integer[] {42});
@@ -94,14 +107,18 @@ class ContractTest {
             try {
                 q.put(8);
             } catch (Throwable e) {
-                if (!q.full.isInstance(e))
-                    throw e;
+                if (!q.full.isInstance(e)) throw e;
                 full = true;
             }
             Integer actual = q.get();
             reporter.publishEntry(
-                Map.of("public-case", "boundary-full", "expected", "StackFullException; извлечено=7.",
-                    "actual", "Проверяемый Full=" + full + "; извлечено=" + actual));
+                    Map.of(
+                            "public-case",
+                            "boundary-full",
+                            "expected",
+                            "StackFullException; извлечено=7.",
+                            "actual",
+                            "Проверяемый Full=" + full + "; извлечено=" + actual));
             assertTrue(full);
             assertEquals(7, actual);
         }
@@ -114,8 +131,7 @@ class ContractTest {
             }
             full(q, new Payload(-1));
             full(q, new Payload(-2));
-            for (int j = 0; j < capacity; j++)
-                assertSame(data[capacity - 1 - j], q.get());
+            for (int j = 0; j < capacity; j++) assertSame(data[capacity - 1 - j], q.get());
         }
         var i = new Box<Integer>(new Integer[1]);
         i.put(7);
@@ -134,10 +150,21 @@ class ContractTest {
             String x = q.get();
             q.put(c);
             String y = q.get(), z = q.get();
-            reporter.publishEntry(Map.of("public-case", "normal", "expected",
-                "Извлечено=[Ветка, Плод, Лист]; возвращены те же ссылки.", "actual",
-                "Извлечено=" + List.of(x, y, z) + "; прежние ссылки=" + (x == b) + "/" + (y == c) + "/"
-                    + (z == a)));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "normal",
+                            "expected",
+                            "Извлечено=[Ветка, Плод, Лист]; возвращены те же ссылки.",
+                            "actual",
+                            "Извлечено="
+                                    + List.of(x, y, z)
+                                    + "; прежние ссылки="
+                                    + (x == b)
+                                    + "/"
+                                    + (y == c)
+                                    + "/"
+                                    + (z == a)));
             assertSame(b, x);
             assertSame(c, y);
             assertSame(a, z);
@@ -167,8 +194,14 @@ class ContractTest {
             q.get();
             q.put(9);
             Integer actual = q.get();
-            reporter.publishEntry(Map.of("public-case", "boundary-reuse", "expected", "Извлечено=9.",
-                "actual", "Извлечено=" + actual));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "boundary-reuse",
+                            "expected",
+                            "Извлечено=9.",
+                            "actual",
+                            "Извлечено=" + actual));
             assertEquals(9, actual);
         }
         var q = new Box<String>(new String[2]);
@@ -180,10 +213,8 @@ class ContractTest {
         assertEquals("x", q.get());
         var four = new Box<Payload>(new Payload[4]);
         Payload[] a = {new Payload(1), new Payload(2), new Payload(3), new Payload(4)};
-        for (Payload p : a)
-            four.put(p);
-        for (int j = 3; j >= 0; j--)
-            assertSame(a[j], four.get());
+        for (Payload p : a) four.put(p);
+        for (int j = 3; j >= 0; j--) assertSame(a[j], four.get());
         four.put(a[1]);
         assertSame(a[1], four.get());
         var single = new Box<Integer>(new Integer[1]);
@@ -207,12 +238,17 @@ class ContractTest {
             try {
                 q.get();
             } catch (Throwable e) {
-                if (!q.empty.isInstance(e))
-                    throw e;
+                if (!q.empty.isInstance(e)) throw e;
                 empty = true;
             }
-            reporter.publishEntry(Map.of("public-case", "boundary-empty", "expected", "StackEmptyException.",
-                "actual", "Проверяемый Empty=" + empty));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "boundary-empty",
+                            "expected",
+                            "StackEmptyException.",
+                            "actual",
+                            "Проверяемый Empty=" + empty));
             assertTrue(empty);
         }
         var q = new Box<String>(new String[2]);

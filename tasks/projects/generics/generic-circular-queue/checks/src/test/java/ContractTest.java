@@ -21,6 +21,7 @@ class ContractTest {
     interface Throwing {
         void run() throws Throwable;
     }
+
     private static String capture(Throwing body) throws Throwable {
         var out = System.out;
         var err = System.err;
@@ -35,25 +36,35 @@ class ContractTest {
         }
         return bytes.toString(StandardCharsets.UTF_8);
     }
+
     record Payload(int value) {}
+
     static class Box<T> {
         final Study<T> value;
+
         Box(T[] storage) throws Throwable {
             value = new Study<T>(storage);
         }
+
         void put(T v) throws Throwable {
             value.put(v);
         }
+
         T get() throws Throwable {
             return value.get();
         }
     }
+
     private static void empty(Box<?> b) throws Throwable {
         assertFalse(
-            capture(() -> assertNull(b.get())).isBlank(), "Отказ пустого контейнера должен сообщить о себе");
+                capture(() -> assertNull(b.get())).isBlank(),
+                "Отказ пустого контейнера должен сообщить о себе");
     }
+
     private static <T> void full(Box<T> b, T rejected) throws Throwable {
-        assertFalse(capture(() -> b.put(rejected)).isBlank(), "Полный контейнер должен сообщить об отказе");
+        assertFalse(
+                capture(() -> b.put(rejected)).isBlank(),
+                "Полный контейнер должен сообщить об отказе");
     }
 
     @Test
@@ -63,9 +74,14 @@ class ContractTest {
             var q = new Box<Integer>(new Integer[] {99});
             Object[] value = new Object[1];
             String output = capture(() -> value[0] = q.get());
-            reporter.publishEntry(Map.of("public-case", "boundary-initial", "expected",
-                "Извлечено=null; непустое сообщение об отказе.", "actual",
-                "Извлечено=" + value[0] + "; сообщение=" + !output.isBlank()));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "boundary-initial",
+                            "expected",
+                            "Извлечено=null; непустое сообщение об отказе.",
+                            "actual",
+                            "Извлечено=" + value[0] + "; сообщение=" + !output.isBlank()));
             assertNull(value[0]);
             assertFalse(output.isBlank());
         }
@@ -90,8 +106,13 @@ class ContractTest {
             String output = capture(() -> q.put(8));
             Integer value = q.get();
             reporter.publishEntry(
-                Map.of("public-case", "boundary-full", "expected", "Непустое сообщение; извлечено=7.",
-                    "actual", "Сообщение=" + !output.isBlank() + "; извлечено=" + value));
+                    Map.of(
+                            "public-case",
+                            "boundary-full",
+                            "expected",
+                            "Непустое сообщение; извлечено=7.",
+                            "actual",
+                            "Сообщение=" + !output.isBlank() + "; извлечено=" + value));
             assertFalse(output.isBlank());
             assertEquals(7, value);
         }
@@ -104,8 +125,7 @@ class ContractTest {
             }
             full(q, new Payload(-1));
             full(q, new Payload(-2));
-            for (int j = 0; j < capacity; j++)
-                assertSame(data[j], q.get());
+            for (int j = 0; j < capacity; j++) assertSame(data[j], q.get());
         }
         var i = new Box<Integer>(new Integer[1]);
         i.put(7);
@@ -136,8 +156,14 @@ class ContractTest {
             i.put(30);
             got.add(i.get());
             got.add(i.get());
-            reporter.publishEntry(Map.of("public-case", "normal", "expected",
-                "Извлечено=[А, Б, В, Г, Д, 10, 20, 30].", "actual", "Извлечено=" + got));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "normal",
+                            "expected",
+                            "Извлечено=[А, Б, В, Г, Д, 10, 20, 30].",
+                            "actual",
+                            "Извлечено=" + got));
             assertEquals(List.of("А", "Б", "В", "Г", "Д", 10, 20, 30), got);
         }
         var q = new Box<String>(new String[2]);
@@ -155,14 +181,12 @@ class ContractTest {
         assertSame(x, v.get());
         assertSame(y, v.get());
         var s = new Box<String>(new String[3]);
-        for (String ch : new String[] {"А", "Б", "В"})
-            s.put(ch);
+        for (String ch : new String[] {"А", "Б", "В"}) s.put(ch);
         assertEquals("А", s.get());
         assertEquals("Б", s.get());
         s.put("Г");
         s.put("Д");
-        for (String ch : new String[] {"В", "Г", "Д"})
-            assertEquals(ch, s.get());
+        for (String ch : new String[] {"В", "Г", "Д"}) assertEquals(ch, s.get());
         var i = new Box<Integer>(new Integer[2]);
         i.put(10);
         i.put(20);
@@ -185,8 +209,14 @@ class ContractTest {
             q.get();
             q.put(8);
             Integer value = q.get();
-            reporter.publishEntry(Map.of(
-                "public-case", "boundary-reuse", "expected", "Извлечено=8.", "actual", "Извлечено=" + value));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "boundary-reuse",
+                            "expected",
+                            "Извлечено=8.",
+                            "actual",
+                            "Извлечено=" + value));
             assertEquals(8, value);
         }
         for (int capacity : new int[] {2, 3}) {
@@ -203,18 +233,15 @@ class ContractTest {
                 expected.add(p);
                 q.put(p);
             }
-            while (!expected.isEmpty())
-                assertSame(expected.remove(), q.get());
+            while (!expected.isEmpty()) assertSame(expected.remove(), q.get());
         }
         var four = new Box<Payload>(new Payload[4]);
         Payload[] values = {new Payload(71), new Payload(29), new Payload(83), new Payload(47)};
-        for (Payload p : values)
-            four.put(p);
+        for (Payload p : values) four.put(p);
         full(four, new Payload(-1));
         assertSame(values[0], four.get());
         four.put(values[0]);
-        for (int j : new int[] {1, 2, 3, 0})
-            assertSame(values[j], four.get());
+        for (int j : new int[] {1, 2, 3, 0}) assertSame(values[j], four.get());
         var single = new Box<Integer>(new Integer[1]);
         for (int j = 0; j < 10; j++) {
             Integer p = 1000 + j;
@@ -236,9 +263,14 @@ class ContractTest {
             q.get();
             Object[] value = new Object[1];
             String output = capture(() -> value[0] = q.get());
-            reporter.publishEntry(Map.of("public-case", "boundary-empty", "expected",
-                "Извлечено=null; непустое сообщение об отказе.", "actual",
-                "Извлечено=" + value[0] + "; сообщение=" + !output.isBlank()));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "boundary-empty",
+                            "expected",
+                            "Извлечено=null; непустое сообщение об отказе.",
+                            "actual",
+                            "Извлечено=" + value[0] + "; сообщение=" + !output.isBlank()));
             assertNull(value[0]);
             assertFalse(output.isBlank());
         }

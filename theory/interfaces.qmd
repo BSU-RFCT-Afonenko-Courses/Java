@@ -86,12 +86,12 @@ public final class RecordingSender implements Sender {
 
 ```java
 Sender sender = new ConsoleSender();
-sender.send("A");                    // печатает A
+sender.send("A"); // печатает A
 
 RecordingSender recording = new RecordingSender();
 sender = recording;
-sender.send("B");                    // добавляет B и '\n' в буфер
-System.out.print(recording.text());   // печатает B и перевод строки
+sender.send("B"); // добавляет B и '\n' в буфер
+System.out.print(recording.text()); // печатает B и перевод строки
 ```
 
 В обоих вызовах `sender.send(...)` компилятор находит операцию
@@ -302,7 +302,9 @@ final class CountingSender implements Sender, Counted {
     }
 
     @Override
-    public int count() { return count; }
+    public int count() {
+        return count;
+    }
 }
 ```
 
@@ -383,7 +385,7 @@ public interface Sender {
 ```java
 RecordingSender target = new RecordingSender();
 try {
-    target.sendAll(new String[]{"A", null, "B"});
+    target.sendAll(new String[] {"A", null, "B"});
 } catch (NullPointerException ex) {
     System.out.print(target.text()); // A и перевод строки
 }
@@ -428,10 +430,14 @@ try {
 
 ```java
 interface A {
-    default String label() { return "A"; }
+    default String label() {
+        return "A";
+    }
 }
 interface B {
-    default String label() { return "B"; }
+    default String label() {
+        return "B";
+    }
 }
 final class Both implements A, B {
     @Override
@@ -540,7 +546,7 @@ int size = Limits.MAX_BATCH;
 interface SharedData {
     int[] VALUES = {1, 2};
 }
-SharedData.VALUES[0] = 9;       // компонент массива изменён
+SharedData.VALUES[0] = 9; // компонент массива изменён
 // SharedData.VALUES = new int[]{3}; // ошибка: поле final
 ```
 

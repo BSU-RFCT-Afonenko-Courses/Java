@@ -9,13 +9,16 @@ class HiddenContractTest {
         assertTrue(Double.isFinite(p[0]) && Double.isFinite(p[1]));
         assertArrayEquals(new double[] {r, i}, p, 1e-8);
     }
+
     @Test
     @DisplayName("Знаки при умножении и делении, сохранность элементов массива")
     void distinctSignsAndNoMutation() throws Throwable {
         Object a = TaskBinding.value(-2, 3), b = TaskBinding.value(4, 1);
         eq(-11, 10, TaskBinding.operation(a, b, 2));
-        eq(-5.0 / 17, 14.0 / 17,
-           TaskBinding.operation(TaskBinding.value(-2, 3), TaskBinding.value(4, 1), 3));
+        eq(
+                -5.0 / 17,
+                14.0 / 17,
+                TaskBinding.operation(TaskBinding.value(-2, 3), TaskBinding.value(4, 1), 3));
         Object[] in = TaskBinding.array(TaskBinding.value(0, 1), TaskBinding.value(0, 1));
         eq(-1, 0, TaskBinding.product(in));
         eq(0, 1, in[0]);

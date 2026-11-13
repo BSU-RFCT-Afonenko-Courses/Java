@@ -1,4 +1,5 @@
 import java.util.function.IntPredicate;
+
 class ReassignedCapture {
     void example() {
         int threshold = 80;

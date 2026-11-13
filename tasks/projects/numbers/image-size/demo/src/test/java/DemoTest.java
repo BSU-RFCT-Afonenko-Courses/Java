@@ -17,14 +17,16 @@ class DemoTest {
         long bytes = (long) width * height * depth;
         String[] values = tokens(run(width + "\n\t" + height + " " + depth));
         assertEquals(2, values.length, "Нужны байты и МиБ");
-        assertEquals(bytes,
-                assertDoesNotThrow(()
-                                           -> Long.parseLong(values[0]),
+        assertEquals(
+                bytes,
+                assertDoesNotThrow(
+                        () -> Long.parseLong(values[0]),
                         "Ожидалось целое количество байтов, получено «" + values[0] + "»"),
                 "Точное целое количество байтов");
-        double actual = assertDoesNotThrow(()
-                                                   -> Double.parseDouble(values[1]),
-                "Ожидался размер в МиБ, получено «" + values[1] + "»");
+        double actual =
+                assertDoesNotThrow(
+                        () -> Double.parseDouble(values[1]),
+                        "Ожидался размер в МиБ, получено «" + values[1] + "»");
         assertTrue(
                 Double.isFinite(actual), "Размер в МиБ должен быть конечным; получено " + actual);
         assertEquals(bytes / 1048576.0, actual, 1e-8, "МиБ и абсолютный допуск");

@@ -3,16 +3,30 @@ import java.util.Objects;
 
 public class ArrayRecordsDemo {
     record Vector(int[] values) {}
+
     record Draft(int[] scores) {}
 
     record Scores(int[] values) {
-        Scores { values = Objects.requireNonNull(values).clone(); }
-        public int[] values() { return values.clone(); }
-        @Override public boolean equals(Object other) {
+        Scores {
+            values = Objects.requireNonNull(values).clone();
+        }
+
+        public int[] values() {
+            return values.clone();
+        }
+
+        @Override
+        public boolean equals(Object other) {
             return other instanceof Scores that && Arrays.equals(values, that.values);
         }
-        @Override public int hashCode() { return Arrays.hashCode(values); }
-        @Override public String toString() {
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(values);
+        }
+
+        @Override
+        public String toString() {
             return "Scores[values=" + Arrays.toString(values) + "]";
         }
     }
@@ -25,8 +39,8 @@ public class ArrayRecordsDemo {
         vector.values()[1] = 9;
         System.out.println(input[1]);
         System.out.println(vector.values() == input);
-        Vector a = new Vector(new int[]{1, 2});
-        Vector b = new Vector(new int[]{1, 2});
+        Vector a = new Vector(new int[] {1, 2});
+        Vector b = new Vector(new int[] {1, 2});
         System.out.println(a.equals(b));
 
         int[] original = {80};
@@ -43,7 +57,7 @@ public class ArrayRecordsDemo {
         Scores copy = new Scores(saved.values());
         System.out.println(saved.equals(copy));
         System.out.println(saved.hashCode() == copy.hashCode());
-        System.out.println(saved.equals(new Scores(new int[]{81})));
+        System.out.println(saved.equals(new Scores(new int[] {81})));
         System.out.println(saved.equals(null));
         System.out.println(saved.equals("80"));
         System.out.println(saved);

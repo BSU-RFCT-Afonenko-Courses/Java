@@ -4,8 +4,8 @@ import java.lang.String;
 import java.util.Locale;
 import java.util.Set;
 import java.util.*;
-/** Два PUBLIC наблюдения через выбранную привязку. Критерии исходника оценивает преподаватель. */
 
+/** Два PUBLIC наблюдения через выбранную привязку. Критерии исходника оценивает преподаватель. */
 public class PublicChecks {
     static final String NORMAL_NAME = "Одно слово в разных регистрах";
     static final String NORMAL_WHAT = "Устранение повторов после преобразования регистра.";
@@ -15,12 +15,15 @@ public class PublicChecks {
     static final String BOUNDARY_WHAT = "Независимость состава от языка среды.";
     static final String BOUNDARY_INPUT = "I I, i; tr-TR";
     static final String BOUNDARY_EXPECTED = "Единственный элемент i";
+
     public record Observation(String actual, boolean passed) {}
+
     public static Observation observeNormal() throws Throwable {
         String s = "one, ONE! two";
         var a = TaskBinding.words(s);
         return new Observation(String.valueOf(a), Set.of("one", "two").equals(a));
     }
+
     public static Observation observeBoundary() throws Throwable {
         Locale old = Locale.getDefault();
         try {
@@ -37,8 +40,10 @@ public class PublicChecks {
         if (!o.passed())
             throw new AssertionError("Ожидается: " + NORMAL_EXPECTED + "; получено: " + o.actual());
     }
+
     public static void checkBoundary(Observation o) {
         if (!o.passed())
-            throw new AssertionError("Ожидается: " + BOUNDARY_EXPECTED + "; получено: " + o.actual());
+            throw new AssertionError(
+                    "Ожидается: " + BOUNDARY_EXPECTED + "; получено: " + o.actual());
     }
 }

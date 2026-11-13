@@ -1,4 +1,5 @@
 fun titleLength(title: String): Int = title.length
+
 fun possibleLength(title: String?): Int? = title?.length
 
 fun main() {

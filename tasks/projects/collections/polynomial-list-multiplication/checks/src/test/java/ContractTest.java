@@ -10,7 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class ContractTest {
 
     @Test
-    @org.junit.jupiter.api.DisplayName("Произведение: нулевые коэффициенты, допуск и независимость входов")
+    @org.junit.jupiter.api.DisplayName(
+            "Произведение: нулевые коэффициенты, допуск и независимость входов")
     void independentZeroLengthCancellationTolerance() throws Throwable {
         var a = new ArrayList<>(List.of(2.0, -2.0, 0.0));
         var b = new ArrayList<>(List.of(0.5, 0.5));
@@ -18,10 +19,18 @@ class ContractTest {
         assertEquals(4, r.size());
         double[] expected = {1, 0, -1, 0};
         for (int i = 0; i < 4; i++)
-            assertTrue(Double.isFinite(r.get(i))
-                    && Math.abs(r.get(i) - expected[i]) <= 1e-6 + 1e-12 * Math.abs(expected[i]),
-                "Степень=" + i + "; ожидается=" + expected[i] + "; получено=" + r.get(i)
-                    + "; допуск=" + (1e-6 + 1e-12 * Math.abs(expected[i])));
+            assertTrue(
+                    Double.isFinite(r.get(i))
+                            && Math.abs(r.get(i) - expected[i])
+                                    <= 1e-6 + 1e-12 * Math.abs(expected[i]),
+                    "Степень="
+                            + i
+                            + "; ожидается="
+                            + expected[i]
+                            + "; получено="
+                            + r.get(i)
+                            + "; допуск="
+                            + (1e-6 + 1e-12 * Math.abs(expected[i])));
         assertEquals(List.of(2.0, -2.0, 0.0), a);
         assertEquals(List.of(0.5, 0.5), b);
         assertNotSame(a, r);

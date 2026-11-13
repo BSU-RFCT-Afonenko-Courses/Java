@@ -15,17 +15,21 @@ class ContractTest {
             s.push('A');
             s.push('Б');
             char a = s.pop(), b = s.pop();
-            reporter.publishEntry(Map.of(
-                "public-case", "normal", "expected", "Извлечено=Б,A.", "actual", "Извлечено=" + a + "," + b));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "normal",
+                            "expected",
+                            "Извлечено=Б,A.",
+                            "actual",
+                            "Извлечено=" + a + "," + b));
             assertEquals('Б', a);
             assertEquals('A', b);
         }
         for (char[] data : new char[][] {{'A', 'Б'}, {'￿', '\ud800', '\udc00'}}) {
             var s = new Study(data.length);
-            for (char c : data)
-                s.push(c);
-            for (int i = data.length - 1; i >= 0; i--)
-                assertEquals(data[i], s.pop());
+            for (char c : data) s.push(c);
+            for (int i = data.length - 1; i >= 0; i--) assertEquals(data[i], s.pop());
         }
     }
 
@@ -43,19 +47,22 @@ class ContractTest {
             }
             char actual = s.pop();
             reporter.publishEntry(
-                Map.of("public-case", "boundary-full", "expected", "StackFullException; извлечённый char=0.",
-                    "actual", "StackFullException=" + full + "; извлечённый char=" + (int) actual));
+                    Map.of(
+                            "public-case",
+                            "boundary-full",
+                            "expected",
+                            "StackFullException; извлечённый char=0.",
+                            "actual",
+                            "StackFullException=" + full + "; извлечённый char=" + (int) actual));
             assertTrue(full);
             assertEquals((char) 0, actual);
         }
         for (char[] data : new char[][] {{0}, {'a', 'b', 'c'}}) {
             var s = new Study(data.length);
-            for (char c : data)
-                s.push(c);
+            for (char c : data) s.push(c);
             for (int i = 0; i < 2; i++)
                 assertThrows(Study.StackFullException.class, () -> s.push('X'));
-            for (int i = data.length - 1; i >= 0; i--)
-                assertEquals(data[i], s.pop());
+            for (int i = data.length - 1; i >= 0; i--) assertEquals(data[i], s.pop());
         }
     }
 
@@ -74,15 +81,19 @@ class ContractTest {
             }
             s.push('Я');
             char actual = s.pop();
-            reporter.publishEntry(Map.of("public-case", "boundary-empty", "expected",
-                "StackEmptyException; после нового помещения извлечено=Я.", "actual",
-                "StackEmptyException=" + empty + "; извлечено=" + actual));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "boundary-empty",
+                            "expected",
+                            "StackEmptyException; после нового помещения извлечено=Я.",
+                            "actual",
+                            "StackEmptyException=" + empty + "; извлечено=" + actual));
             assertTrue(empty);
             assertEquals('Я', actual);
         }
         var s = new Study(2);
-        for (int i = 0; i < 2; i++)
-            assertThrows(Study.StackEmptyException.class, () -> s.pop());
+        for (int i = 0; i < 2; i++) assertThrows(Study.StackEmptyException.class, () -> s.pop());
         s.push('Я');
         assertEquals('Я', s.pop());
         assertThrows(Study.StackEmptyException.class, () -> s.pop());

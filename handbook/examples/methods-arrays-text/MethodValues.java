@@ -21,11 +21,11 @@ public class MethodValues {
     }
 
     static void replace(int[] data) {
-        data = new int[]{1, 2};
+        data = new int[] {1, 2};
     }
 
     static int[] pair(int first, int second) {
-        return new int[]{first, second};
+        return new int[] {first, second};
     }
 
     static int[] same(int[] values) {
@@ -33,7 +33,7 @@ public class MethodValues {
     }
 
     static int[] firstTwo(int[] values) {
-        return new int[]{values[0], values[1]};
+        return new int[] {values[0], values[1]};
     }
 
     static void correctFinal(final int[] data) {

@@ -7,8 +7,18 @@ public class DefaultConflictDemo {
     }
 }
 
-interface A { default String label() { return "A"; } }
-interface B { default String label() { return "B"; } }
+interface A {
+    default String label() {
+        return "A";
+    }
+}
+
+interface B {
+    default String label() {
+        return "B";
+    }
+}
+
 final class Both implements A, B {
     @Override
     public String label() {
@@ -17,20 +27,31 @@ final class Both implements A, B {
 }
 
 interface Detail extends A {
-    @Override default String label() { return "detail"; }
+    @Override
+    default String label() {
+        return "detail";
+    }
 }
+
 final class Detailed implements Detail {}
 
 class Base {
-    public String label() { return "base"; }
+    public String label() {
+        return "base";
+    }
 }
+
 final class FromClass extends Base implements A {}
 
 abstract class Required {
     public abstract String label();
 }
+
 final class Completed extends Required implements A {
-    @Override public String label() { return "completed"; }
+    @Override
+    public String label() {
+        return "completed";
+    }
 }
 
 // Каждое из следующих объявлений отдельно вызвало бы ошибку компиляции:

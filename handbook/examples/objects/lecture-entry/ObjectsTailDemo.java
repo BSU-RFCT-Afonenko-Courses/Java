@@ -2,15 +2,18 @@ public class ObjectsTailDemo {
     static void borrow(Book book) {
         book.borrowed = true;
     }
+
     static void replace(Book book) {
         book = new Book();
         book.title = "Replacement";
     }
+
     static Book create(String title) {
         Book result = new Book();
         result.title = title;
         return result;
     }
+
     public static void main(String[] args) {
         Book first = create("Java");
         borrow(first);

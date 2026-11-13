@@ -68,7 +68,7 @@ first ───> A: Book
 Book pending;
 // System.out.println(pending.title); // ошибка компиляции
 pending = new Book();
-System.out.println(pending.title);    // null
+System.out.println(pending.title); // null
 ```
 
 Объявление `pending` создаёт переменную. Перед чтением её значения
@@ -164,7 +164,7 @@ same ──────┘
 Book other = new Book();
 other.title = first.title;
 other.borrowed = first.borrowed;
-System.out.println(first == same);  // true
+System.out.println(first == same); // true
 System.out.println(first == other); // false
 ```
 
@@ -204,7 +204,7 @@ System.out.println(first == other); // false
 ```java
 same = new Book();
 same.title = "Databases";
-System.out.println(first.title);   // Java
+System.out.println(first.title); // Java
 System.out.println(first == same); // false
 ```
 
@@ -355,7 +355,7 @@ copy.title = first.title;
 copy.borrowed = first.borrowed;
 copy.borrowed = false;
 System.out.println(first.borrowed); // true
-System.out.println(copy.borrowed);  // false
+System.out.println(copy.borrowed); // false
 System.out.println(first == copy); // false
 ```
 
@@ -623,7 +623,9 @@ available и изменение при reserve(5) в обоих случаях. 
 
 ```java
 class Box {
-    Box(int width, int height) { /* инициализация */ }
+    Box(int width, int height) {
+        /* инициализация */
+    }
     // void Box(int width, int height) { } // обычный метод
 }
 ```
@@ -649,9 +651,9 @@ class Box {
 class Box {
     private final int width;
     private final int height;
+
     Box(int width, int height) {
-        if (width <= 0 || height <= 0)
-            throw new IllegalArgumentException();
+        if (width <= 0 || height <= 0) throw new IllegalArgumentException();
         this.width = width;
         this.height = height;
     }
@@ -719,12 +721,19 @@ int area() {
 ```java
 class Trace {
     private int value = init();
-    { System.out.println("block: " + value); }
+
+    {
+        System.out.println("block: " + value);
+    }
+
     private int init() {
         System.out.println("field");
         return 7;
     }
-    Trace() { System.out.println("constructor: " + value); }
+
+    Trace() {
+        System.out.println("constructor: " + value);
+    }
 }
 ```
 
@@ -768,9 +777,14 @@ System.out.println(max(9, 2)); // 9
 ### Выбор перегруженного объявления {#sec-lecture-objects-invariants-overload}
 
 ```java
-static String describe(int value) { return "int"; }
-static String describe(String value) { return "String"; }
-System.out.println(describe(3));   // int
+static String describe(int value) {
+    return "int";
+}
+
+static String describe(String value) {
+    return "String";
+}
+System.out.println(describe(3)); // int
 System.out.println(describe("3")); // String
 ```
 
@@ -795,7 +809,10 @@ System.out.println(describe("3")); // String
 final class Ticket {
     private static long nextId = 1;
     private final long id = nextId++;
-    long id() { return id; }
+
+    long id() {
+        return id;
+    }
 }
 ```
 
@@ -818,7 +835,7 @@ final class Ticket {
 ```java
 Ticket first = new Ticket();
 Ticket second = new Ticket();
-System.out.println(first.id());  // 1
+System.out.println(first.id()); // 1
 System.out.println(second.id()); // 2
 ```
 
@@ -843,7 +860,9 @@ Ticket.nextId: 3     first.id: 1     second.id: 2
 
 ```java
 class Numbers {
-    static int add(int a, int b) { return a + b; }
+    static int add(int a, int b) {
+        return a + b;
+    }
 }
 System.out.println(Numbers.add(2, 3)); // 5
 ```
@@ -956,10 +975,11 @@ borrowed будут видны после обоих вызовов и где в
 Book first = new Book("Java");
 Book same = first;
 same.borrow();
-System.out.println(first == same);    // true
+System.out.println(first == same); // true
 System.out.println(first.borrowed()); // true
-try { first.borrow(); }
-catch (IllegalStateException ex) {
+try {
+    first.borrow();
+} catch (IllegalStateException ex) {
     System.out.println(ex.getMessage()); // Книга уже выдана
 }
 System.out.println(first.borrowed()); // true
@@ -1108,13 +1128,19 @@ initial.clear(), затем измените условие на элемент�
 ```java
 final class GuestList {
     private final java.util.List<String> names;
+
     GuestList(java.util.List<String> initial) {
         names = new java.util.ArrayList<>(initial);
     }
-    void add(String name) { names.add(name); }
+
+    void add(String name) {
+        names.add(name);
+    }
+
     java.util.List<String> snapshot() {
         return java.util.List.copyOf(names);
     }
+
     java.util.List<String> view() {
         return java.util.Collections.unmodifiableList(names);
     }
@@ -1140,7 +1166,7 @@ var snapshot = guests.snapshot();
 var view = guests.view();
 guests.add("Bob");
 System.out.println(snapshot); // [Ann]
-System.out.println(view);     // [Ann, Bob]
+System.out.println(view); // [Ann, Bob]
 ```
 
 Снимок сохранил состав на момент вызова `snapshot()`. Через представление
@@ -1218,8 +1244,9 @@ possibleLength(null). Укажите проверку, которая измен
 ### Неоднозначность перегрузки {#sec-lecture-objects-invariants-null-overload}
 
 ```java
-static void show(String value) { }
-static void show(Integer value) { }
+static void show(String value) {}
+
+static void show(Integer value) {}
 // show(null);       // ошибка компиляции: неоднозначность
 show((String) null); // выбран show(String)
 ```
@@ -1244,8 +1271,12 @@ show((String) null); // выбран show(String)
 ```java
 class Parent {
     final int value;
-    Parent(int value) { this.value = value; }
+
+    Parent(int value) {
+        this.value = value;
+    }
 }
+
 class Child extends Parent {
     Child(int value) {
         if (value < 0) throw new IllegalArgumentException();
@@ -1339,7 +1370,7 @@ int checked без инициализатора. Сравните допусти
 ```java
 // В классе Child:
 void inspect(Child child, Parent parent) {
-    System.out.println(child.value);  // допустимо для protected value
+    System.out.println(child.value); // допустимо для protected value
     // System.out.println(parent.value); // ошибка доступа
 }
 ```

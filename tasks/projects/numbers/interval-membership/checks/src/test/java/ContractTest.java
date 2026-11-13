@@ -7,9 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestReporter;
 
 class ContractTest {
-    private static String run(TestReporter publicReporter, String[] publicCaseIds, String input,
-            String... args) throws Exception {
-        return publicOutput(publicReporter, publicCaseIds,
+    private static String run(
+            TestReporter publicReporter, String[] publicCaseIds, String input, String... args)
+            throws Exception {
+        return publicOutput(
+                publicReporter,
+                publicCaseIds,
                 JavaProcess.runCheckingUncaught(Main.class, input, args).stdout());
     }
 
@@ -17,11 +20,19 @@ class ContractTest {
         return text.strip().split("\\p{javaWhitespace}+");
     }
 
-    private static void intervals(TestReporter publicReporter, String[] publicCaseIds, int n, int m,
-            int k) throws Exception {
-        String expected = (n < k && k <= m) + " " + (n <= k && k < m) + " " + (n < k && k < m) + " "
-                + (n <= k && k <= m);
-        assertArrayEquals(expected.split(" "),
+    private static void intervals(
+            TestReporter publicReporter, String[] publicCaseIds, int n, int m, int k)
+            throws Exception {
+        String expected =
+                (n < k && k <= m)
+                        + " "
+                        + (n <= k && k < m)
+                        + " "
+                        + (n < k && k < m)
+                        + " "
+                        + (n <= k && k <= m);
+        assertArrayEquals(
+                expected.split(" "),
                 tokens(run(publicReporter, publicCaseIds, n + "\t" + m + "\n" + k)),
                 "Строгость каждой границы");
     }
@@ -41,9 +52,13 @@ class ContractTest {
     @Test
     @DisplayName("Внутренняя точка входит во все четыре интервала")
     void inside(TestReporter publicReporter) throws Exception {
-        assertArrayEquals(new String[] {"true", "true", "true", "true"},
-                tokens(publicOutput(publicReporter, new String[] {"normal"},
-                        JavaProcess.runCheckingUncaught(Main.class, "-2 4 0").stdout())));
+        assertArrayEquals(
+                new String[] {"true", "true", "true", "true"},
+                tokens(
+                        publicOutput(
+                                publicReporter,
+                                new String[] {"normal"},
+                                JavaProcess.runCheckingUncaught(Main.class, "-2 4 0").stdout())));
         intervals(null, null, -17, 23, 6);
     }
 
@@ -99,8 +114,7 @@ class ContractTest {
     private static String publicOutput(TestReporter reporter, String[] ids, String actual) {
         if (reporter != null) {
             String visible = actual.replaceAll("[\\p{Cntrl}&&[^\n\t]]", "�");
-            if (visible.length() > 2000)
-                visible = visible.substring(0, 2000) + "…";
+            if (visible.length() > 2000) visible = visible.substring(0, 2000) + "…";
             for (String id : ids)
                 reporter.publishEntry(Map.of("public-case", id, "actual", "stdout=" + visible));
         }

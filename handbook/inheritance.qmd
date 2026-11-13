@@ -21,13 +21,22 @@ abstract class Item {
         this.name = java.util.Objects.requireNonNull(name);
     }
 
-    protected String name() { return name; }
+    protected String name() {
+        return name;
+    }
+
     public abstract String describe();
 }
 
 final class PrintedItem extends Item {
-    PrintedItem(String name) { super(name); }
-    @Override public String describe() { return "Item: " + name(); }
+    PrintedItem(String name) {
+        super(name);
+    }
+
+    @Override
+    public String describe() {
+        return "Item: " + name();
+    }
 }
 
 Item item = new PrintedItem("Java");
@@ -75,8 +84,10 @@ System.out.println(item.describe()); // Item: Java
 class Parent {
     Parent(int value) {}
 }
+
 class Child extends Parent {
     private final int value;
+
     Child(int value) {
         if (value < 0) throw new IllegalArgumentException();
         this.value = value;
@@ -163,7 +174,9 @@ if (value instanceof String text) {
 
 ```java
 sealed interface Result permits Ok, Failure {}
+
 record Ok(int value) implements Result {}
+
 record Failure(String reason) implements Result {}
 ```
 

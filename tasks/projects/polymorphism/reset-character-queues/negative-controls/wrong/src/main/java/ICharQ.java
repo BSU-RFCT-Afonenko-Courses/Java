@@ -1,1 +1,7 @@
-public interface ICharQ {void put(char c);char get();void reset();}
+public interface ICharQ {
+    void put(char c);
+
+    char get();
+
+    void reset();
+}

@@ -1,1 +1,27 @@
-import java.util.*;import java.math.*;public class Study {public static Object money(String s){return Float.valueOf(s);}public static Object transform(List<?>p,Object r){List<Float>out=new ArrayList<>();for(Object v:p){float product=((Float)v)*(1.0f+((Float)r));BigDecimal rounded=new BigDecimal((double)product).setScale(2,RoundingMode.HALF_EVEN);out.add(rounded.floatValue());}return out;}public static List<?>values(Object r){return (List<?>)r;}public static Object representation(Object v){return v;}}
+import java.util.*;
+import java.math.*;
+
+public class Study {
+    public static Object money(String s) {
+        return Float.valueOf(s);
+    }
+
+    public static Object transform(List<?> p, Object r) {
+        List<Float> out = new ArrayList<>();
+        for (Object v : p) {
+            float product = ((Float) v) * (1.0f + ((Float) r));
+            BigDecimal rounded =
+                    new BigDecimal((double) product).setScale(2, RoundingMode.HALF_EVEN);
+            out.add(rounded.floatValue());
+        }
+        return out;
+    }
+
+    public static List<?> values(Object r) {
+        return (List<?>) r;
+    }
+
+    public static Object representation(Object v) {
+        return v;
+    }
+}

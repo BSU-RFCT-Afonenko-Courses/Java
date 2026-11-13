@@ -2,16 +2,232 @@ import java.util.*;
 
 /** Связь входов с реальной моделью и её операциями. */
 public class Study {
- public static Object patient(long id, String surname, String name, String patronymic, String address, String phone, long card, String diagnosis){return new Patient(id,surname,name,patronymic,address,phone,card,diagnosis);}
- public static Object secondConstructor(){return new Patient(9,"Short");}
- public static List<?> values(Object patient){Patient p=(Patient)patient;return List.of(p.id(),p.last(),p.first(),p.middle(),p.address(),p.phone(),p.card(),p.diagnosis());}
- public static void edit(Object patient, long id, String surname, String name, String patronymic, String address, String phone, long card, String diagnosis){Patient p=(Patient)patient;p.id(id);p.last(surname);p.first(name);p.middle(patronymic);p.address(address);p.phone(phone);p.card(card);p.diagnosis(diagnosis);}
- public static String text(Object patient){return patient.toString();}
- public static Object[] array(Object... patients){return Arrays.copyOf(patients,patients.length,Patient[].class);}
- public static Object[] withDiagnosis(Object[] patients, String diagnosis){return Patient.diagnosis((Patient[])patients,diagnosis);}
- public static Object[] inCardRange(Object[] patients, long lower, long upper){return Patient.range((Patient[])patients,lower,upper);}
+    public static Object patient(
+            long id,
+            String surname,
+            String name,
+            String patronymic,
+            String address,
+            String phone,
+            long card,
+            String diagnosis) {
+        return new Patient(id, surname, name, patronymic, address, phone, card, diagnosis);
+    }
+
+    public static Object secondConstructor() {
+        return new Patient(9, "Short");
+    }
+
+    public static List<?> values(Object patient) {
+        Patient p = (Patient) patient;
+        return List.of(
+                p.id(),
+                p.last(),
+                p.first(),
+                p.middle(),
+                p.address(),
+                p.phone(),
+                p.card(),
+                p.diagnosis());
+    }
+
+    public static void edit(
+            Object patient,
+            long id,
+            String surname,
+            String name,
+            String patronymic,
+            String address,
+            String phone,
+            long card,
+            String diagnosis) {
+        Patient p = (Patient) patient;
+        p.id(id);
+        p.last(surname);
+        p.first(name);
+        p.middle(patronymic);
+        p.address(address);
+        p.phone(phone);
+        p.card(card);
+        p.diagnosis(diagnosis);
+    }
+
+    public static String text(Object patient) {
+        return patient.toString();
+    }
+
+    public static Object[] array(Object... patients) {
+        return Arrays.copyOf(patients, patients.length, Patient[].class);
+    }
+
+    public static Object[] withDiagnosis(Object[] patients, String diagnosis) {
+        return Patient.diagnosis((Patient[]) patients, diagnosis);
+    }
+
+    public static Object[] inCardRange(Object[] patients, long lower, long upper) {
+        return Patient.range((Patient[]) patients, lower, upper);
+    }
 }
 
-class Main {public static void main(String[]args){Patient a=new Patient(41,"Учебный","Иван","Иванович","Учебный адрес","00123",101,"Грипп"),b=new Patient(42,"Учебный","Иван","Иванович","Учебный адрес","00123",102,"грипп"),c=new Patient(43,"Учебный","Иван","Иванович","Учебный адрес","00123",103,"Грипп");Patient[]input={c,a,b,a};System.out.println(java.util.Arrays.toString(Patient.diagnosis(input,"Грипп")));System.out.println(java.util.Arrays.toString(Patient.range(input,101,102)));System.out.println("Нет совпадений: "+java.util.Arrays.toString(Patient.diagnosis(input,"Иной диагноз")));}}
+class Main {
+    public static void main(String[] args) {
+        Patient
+                a =
+                        new Patient(
+                                41,
+                                "Учебный",
+                                "Иван",
+                                "Иванович",
+                                "Учебный адрес",
+                                "00123",
+                                101,
+                                "Грипп"),
+                b =
+                        new Patient(
+                                42,
+                                "Учебный",
+                                "Иван",
+                                "Иванович",
+                                "Учебный адрес",
+                                "00123",
+                                102,
+                                "грипп"),
+                c =
+                        new Patient(
+                                43,
+                                "Учебный",
+                                "Иван",
+                                "Иванович",
+                                "Учебный адрес",
+                                "00123",
+                                103,
+                                "Грипп");
+        Patient[] input = {c, a, b, a};
+        System.out.println(java.util.Arrays.toString(Patient.diagnosis(input, "Грипп")));
+        System.out.println(java.util.Arrays.toString(Patient.range(input, 101, 102)));
+        System.out.println(
+                "Нет совпадений: "
+                        + java.util.Arrays.toString(Patient.diagnosis(input, "Иной диагноз")));
+    }
+}
 
-class Patient{private long id;private String last;private String first;private String middle;private String address;private String phone;private long card;private String diagnosis;public Patient(long id,String last,String first,String middle,String address,String phone,long card,String diagnosis){this.id=id;this.last=last;this.first=first;this.middle=middle;this.address=address;this.phone=phone;this.card=card;this.diagnosis=diagnosis;}public Patient(long id,String last){this(id,last,"F","M","A","1",1,"D");}public long id(){return id;}public void id(long value){id=value;}public String last(){return last;}public void last(String value){last=value;}public String first(){return first;}public void first(String value){first=value;}public String middle(){return middle;}public void middle(String value){middle=value;}public String address(){return address;}public void address(String value){address=value;}public String phone(){return phone;}public void phone(String value){phone=value;}public long card(){return card;}public void card(long value){card=value;}public String diagnosis(){return diagnosis;}public void diagnosis(String value){diagnosis=value;}public String toString(){return id+"|"+last+"|"+first+"|"+middle+"|"+address+"|"+phone+"|"+card+"|"+diagnosis;}public static Patient[]diagnosis(Patient[]a,String match){int count=0;for(Patient p:a)if(p.diagnosis.equalsIgnoreCase(match))count++;Patient[]out=new Patient[count];int i=0;for(Patient p:a)if(p.diagnosis.equalsIgnoreCase(match))out[i++]=p;return out;}public static Patient[]range(Patient[]a,long lo,long hi){int count=0;for(Patient p:a)if(p.card>=lo&&p.card<=hi)count++;Patient[]out=new Patient[count];int i=0;for(Patient p:a)if(p.card>=lo&&p.card<=hi)out[i++]=p;return out;}}
+class Patient {
+    private long id;
+    private String last;
+    private String first;
+    private String middle;
+    private String address;
+    private String phone;
+    private long card;
+    private String diagnosis;
+
+    public Patient(
+            long id,
+            String last,
+            String first,
+            String middle,
+            String address,
+            String phone,
+            long card,
+            String diagnosis) {
+        this.id = id;
+        this.last = last;
+        this.first = first;
+        this.middle = middle;
+        this.address = address;
+        this.phone = phone;
+        this.card = card;
+        this.diagnosis = diagnosis;
+    }
+
+    public Patient(long id, String last) {
+        this(id, last, "F", "M", "A", "1", 1, "D");
+    }
+
+    public long id() {
+        return id;
+    }
+
+    public void id(long value) {
+        id = value;
+    }
+
+    public String last() {
+        return last;
+    }
+
+    public void last(String value) {
+        last = value;
+    }
+
+    public String first() {
+        return first;
+    }
+
+    public void first(String value) {
+        first = value;
+    }
+
+    public String middle() {
+        return middle;
+    }
+
+    public void middle(String value) {
+        middle = value;
+    }
+
+    public String address() {
+        return address;
+    }
+
+    public void address(String value) {
+        address = value;
+    }
+
+    public String phone() {
+        return phone;
+    }
+
+    public void phone(String value) {
+        phone = value;
+    }
+
+    public long card() {
+        return card;
+    }
+
+    public void card(long value) {
+        card = value;
+    }
+
+    public String diagnosis() {
+        return diagnosis;
+    }
+
+    public void diagnosis(String value) {
+        diagnosis = value;
+    }
+
+    public String toString() {
+        return id + "|" + last + "|" + first + "|" + middle + "|" + address + "|" + phone + "|"
+                + card + "|" + diagnosis;
+    }
+
+    public static Patient[] diagnosis(Patient[] a, String match) {
+        int count = 0;
+        for (Patient p : a) if (p.diagnosis.equalsIgnoreCase(match)) count++;
+        Patient[] out = new Patient[count];
+        int i = 0;
+        for (Patient p : a) if (p.diagnosis.equalsIgnoreCase(match)) out[i++] = p;
+        return out;
+    }
+
+    public static Patient[] range(Patient[] a, long lo, long hi) {
+        int count = 0;
+        for (Patient p : a) if (p.card >= lo && p.card <= hi) count++;
+        Patient[] out = new Patient[count];
+        int i = 0;
+        for (Patient p : a) if (p.card >= lo && p.card <= hi) out[i++] = p;
+        return out;
+    }
+}

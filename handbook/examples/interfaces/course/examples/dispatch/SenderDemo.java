@@ -35,7 +35,7 @@ public class SenderDemo {
 
         RecordingSender partial = new RecordingSender();
         try {
-            partial.sendAll(new String[]{"A", null, "B"});
+            partial.sendAll(new String[] {"A", null, "B"});
         } catch (NullPointerException ex) {
             System.out.print(partial.text());
         }

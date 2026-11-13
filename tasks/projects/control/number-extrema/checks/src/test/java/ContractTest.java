@@ -9,12 +9,15 @@ import org.junit.jupiter.api.TestReporter;
 class ContractTest {
     private static String run(TestReporter publicReporter, String[] publicCaseIds, String input)
             throws Exception {
-        return publicOutput(publicReporter, publicCaseIds,
+        return publicOutput(
+                publicReporter,
+                publicCaseIds,
                 JavaProcess.runCheckingUncaught(Main.class, input).stdout());
     }
 
     private static void exact(String expected, String actual) {
-        assertEquals(expected.strip().replaceAll("\\p{javaWhitespace}+", " "),
+        assertEquals(
+                expected.strip().replaceAll("\\p{javaWhitespace}+", " "),
                 actual.strip().replaceAll("\\p{javaWhitespace}+", " "),
                 "Сопоставьте подписи и значения экстремумов");
     }
@@ -22,7 +25,8 @@ class ContractTest {
     @Test
     @DisplayName("Ввод 4 7 -3 0 7: максимум 7, минимум -3")
     void published(TestReporter publicReporter) throws Exception {
-        exact("Максимум: 7\nМинимум: -3",
+        exact(
+                "Максимум: 7\nМинимум: -3",
                 run(publicReporter, new String[] {"normal"}, "4 7 -3 0 7"));
     }
 
@@ -53,7 +57,8 @@ class ContractTest {
     @Test
     @DisplayName("Экстремумы на границах int")
     void endpoints() throws Exception {
-        exact("Максимум: 2147483647\nМинимум: -2147483648",
+        exact(
+                "Максимум: 2147483647\nМинимум: -2147483648",
                 run(null, null, "3 2147483647 -7 -2147483648"));
     }
 
@@ -66,14 +71,16 @@ class ContractTest {
     @Test
     @DisplayName("Экстремумы в начале последовательности")
     void first_extremes() throws Exception {
-        exact("Максимум: 2147483647\nМинимум: -2147483648",
+        exact(
+                "Максимум: 2147483647\nМинимум: -2147483648",
                 run(null, null, "3 -2147483648 2147483647 5"));
     }
 
     @Test
     @DisplayName("Количество 0: сообщение об ошибке без чтения последовательности")
     void zero(TestReporter publicReporter) throws Exception {
-        exact("Количество должно быть положительным",
+        exact(
+                "Количество должно быть положительным",
                 run(publicReporter, new String[] {"boundary"}, "0"));
     }
 
@@ -93,8 +100,7 @@ class ContractTest {
     private static String publicOutput(TestReporter reporter, String[] ids, String actual) {
         if (reporter != null) {
             String visible = actual.replaceAll("[\\p{Cntrl}&&[^\n\t]]", "�");
-            if (visible.length() > 2000)
-                visible = visible.substring(0, 2000) + "…";
+            if (visible.length() > 2000) visible = visible.substring(0, 2000) + "…";
             for (String id : ids)
                 reporter.publishEntry(Map.of("public-case", id, "actual", "stdout=" + visible));
         }

@@ -16,9 +16,18 @@ pagetitle: Классы и конструкторы
 ```java
 final class Counter {
     private int value;
-    Counter(int initial) { value = initial; }
-    int value() { return value; }
-    void increment() { value = Math.incrementExact(value); }
+
+    Counter(int initial) {
+        value = initial;
+    }
+
+    int value() {
+        return value;
+    }
+
+    void increment() {
+        value = Math.incrementExact(value);
+    }
 }
 Counter counter = new Counter(4);
 counter.increment();
@@ -44,12 +53,16 @@ System.out.println(counter.value()); // 5
 ```java
 // файл p/Base.java
 package p;
-public class Base { protected int value; }
+
+public class Base {
+    protected int value;
+}
 ```
 
 ```java
 // файл q/Child.java
 package q;
+
 public class Child extends p.Base {
     void inspect(Child child, p.Base base) {
         child.value = 1; // допустимо
@@ -65,11 +78,15 @@ public class Child extends p.Base {
 ```java
 class Box {
     private final int side;
+
     Box(int side) {
         if (side <= 0) throw new IllegalArgumentException();
         this.side = side;
     }
-    Box() { this(1); }
+
+    Box() {
+        this(1);
+    }
 }
 ```
 
@@ -95,11 +112,16 @@ class Box {
 при компиляции по типам выражений аргументов:
 
 ```java
-static String kind(Object value) { return "Object"; }
-static String kind(String value) { return "String"; }
+static String kind(Object value) {
+    return "Object";
+}
+
+static String kind(String value) {
+    return "String";
+}
 
 Object text = "Java";
-System.out.println(kind(text));   // Object
+System.out.println(kind(text)); // Object
 System.out.println(kind("Java")); // String
 ```
 
@@ -129,7 +151,10 @@ record Range(int start, int end) {
     Range {
         if (start > end) throw new IllegalArgumentException();
     }
-    Range(int end) { this(0, end); }
+
+    Range(int end) {
+        this(0, end);
+    }
 }
 ```
 

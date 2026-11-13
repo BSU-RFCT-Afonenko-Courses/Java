@@ -43,13 +43,13 @@
 (cd java/capture && javac --release 25 -encoding UTF-8 -Xlint:unchecked -d out Demo.java && java -cp out Demo)
 ```
 
-| Программа | Вывод по строкам |
-|---|---|
-| `swap/Demo` | `Lin` |
-| `maximum/Demo` | `9` |
-| `copy/Demo` | `[1, 2]`; `[0.5, 1, 2]`; `0`; `3.0`; `0.5`; `1`; `2`; `1`; `2` |
+| Программа            | Вывод по строкам                                                     |
+| -------------------- | -------------------------------------------------------------------- |
+| `swap/Demo`          | `Lin`                                                                |
+| `maximum/Demo`       | `9`                                                                  |
+| `copy/Demo`          | `[1, 2]`; `[0.5, 1, 2]`; `0`; `3.0`; `0.5`; `1`; `2`; `1`; `2`       |
 | `copy/RelationsDemo` | `ArrayStoreException`; `1`; `UnsupportedOperationException`; `[0.5]` |
-| `capture/Demo` | `[Lin, Ada]` |
+| `capture/Demo`       | `[Lin, Ada]`                                                         |
 
 `RelationsDemo` показывает два разных ограничения: массив отвергает несовместимую
 запись, а неизменяемый список — типобезопасное добавление. Оба отказа обработаны;

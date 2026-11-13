@@ -9,8 +9,7 @@ class ContractTest {
     static String capture(Runnable action) {
         PrintStream previous = System.out;
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try
-            (PrintStream out = new PrintStream(bytes, true, StandardCharsets.UTF_8)) {
+        try (PrintStream out = new PrintStream(bytes, true, StandardCharsets.UTF_8)) {
             System.setOut(out);
             action.run();
         } finally {
@@ -18,6 +17,7 @@ class ContractTest {
         }
         return bytes.toString(StandardCharsets.UTF_8).replace("\r\n", "\n");
     }
+
     @Test
     @DisplayName("Конструктор и setters соблюдают границы, отказ сохраняет состояние")
     void constructorBoundariesAndSetterState() {
@@ -39,6 +39,7 @@ class ContractTest {
         assertArrayEquals(new int[] {7, 4, 9}, TaskBinding.state(v));
         assertEquals(36, TaskBinding.range(v));
     }
+
     @Test
     @DisplayName("Изменение второго транспортного средства сохраняет первое")
     void separateVehiclesKeepOwnState() {

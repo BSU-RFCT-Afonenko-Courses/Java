@@ -5,8 +5,8 @@ import java.lang.String;
 import java.lang.StringBuilder;
 import java.util.List;
 import java.util.*;
-/** Два PUBLIC наблюдения через выбранную привязку. Критерии исходника оценивает преподаватель. */
 
+/** Два PUBLIC наблюдения через выбранную привязку. Критерии исходника оценивает преподаватель. */
 public class PublicChecks {
     static final String NORMAL_NAME = "Переход через начало круга";
     static final String NORMAL_WHAT = "Одинаковый порядок двух реализаций.";
@@ -16,13 +16,17 @@ public class PublicChecks {
     static final String BOUNDARY_WHAT = "Завершение без удаления последнего.";
     static final String BOUNDARY_INPUT = "N=1";
     static final String BOUNDARY_EXPECTED = "Для обеих:удалений нет, остаётся1";
+
     public record Observation(String actual, boolean passed) {}
+
     public static Observation observeNormal() throws Throwable {
         return circle(5, List.of(2, 4, 1, 5), 3);
     }
+
     public static Observation observeBoundary() throws Throwable {
         return circle(1, List.of(), 1);
     }
+
     static Observation circle(int n, List<Integer> expected, int last) throws Throwable {
         boolean ok = true;
         var actual = new StringBuilder();
@@ -30,19 +34,22 @@ public class PublicChecks {
             var removed = TaskBinding.removed(n, kind);
             int survivor = TaskBinding.survivor(n, kind);
             actual.append(kind == 0 ? "ArrayList: " : "; LinkedList: ")
-                .append(removed)
-                .append("; остался=")
-                .append(survivor);
+                    .append(removed)
+                    .append("; остался=")
+                    .append(survivor);
             ok &= expected.equals(removed) && survivor == last;
         }
         return new Observation(actual.toString(), ok);
     }
+
     public static void checkNormal(Observation o) {
         if (!o.passed())
             throw new AssertionError("Ожидается: " + NORMAL_EXPECTED + "; получено: " + o.actual());
     }
+
     public static void checkBoundary(Observation o) {
         if (!o.passed())
-            throw new AssertionError("Ожидается: " + BOUNDARY_EXPECTED + "; получено: " + o.actual());
+            throw new AssertionError(
+                    "Ожидается: " + BOUNDARY_EXPECTED + "; получено: " + o.actual());
     }
 }

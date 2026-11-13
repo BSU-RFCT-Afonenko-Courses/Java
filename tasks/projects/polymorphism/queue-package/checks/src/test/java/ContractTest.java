@@ -9,8 +9,7 @@ class ContractTest {
     static String capture(Runnable action) {
         PrintStream previous = System.out, oldErr = System.err;
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try
-            (PrintStream out = new PrintStream(bytes, true, StandardCharsets.UTF_8)) {
+        try (PrintStream out = new PrintStream(bytes, true, StandardCharsets.UTF_8)) {
             System.setOut(out);
             System.setErr(out);
             action.run();
@@ -20,6 +19,7 @@ class ContractTest {
         }
         return bytes.toString(StandardCharsets.UTF_8).replace("\r\n", "\n");
     }
+
     @Test
     @DisplayName("Линейное место исчерпывается, кольцевая очередь принимает новый символ")
     void linearCircularGrowthAndDemo() {
@@ -31,10 +31,12 @@ class ContractTest {
         }
         assertEquals("Очередь переполнена\n", capture(() -> TaskBinding.put(fixed, 'C')));
         assertEquals('B', TaskBinding.get(fixed));
-        assertEquals("", capture(() -> {
-            TaskBinding.put(circle, 'C');
-            assertEquals('B', TaskBinding.get(circle));
-            assertEquals('C', TaskBinding.get(circle));
-        }));
+        assertEquals(
+                "",
+                capture(() -> {
+                    TaskBinding.put(circle, 'C');
+                    assertEquals('B', TaskBinding.get(circle));
+                    assertEquals('C', TaskBinding.get(circle));
+                }));
     }
 }

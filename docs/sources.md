@@ -15,12 +15,12 @@
 
 ## Модели программирования
 
-Peter Van Roy, Seif Haridi. *Concepts, Techniques, and Models of Computer Programming*. MIT Press, 2004. ISBN 0-262-22069-5. [Авторская страница](https://webperso.info.ucl.ac.be/~pvr/book.html).
+Peter Van Roy, Seif Haridi. _Concepts, Techniques, and Models of Computer Programming_. MIT Press, 2004. ISBN 0-262-22069-5. [Авторская страница](https://webperso.info.ucl.ac.be/~pvr/book.html).
 
 Книга относится к темам моделей программирования, абстракции данных, состояния и композиции. При использовании конкретной главы требуется полный экземпляр книги или библиотечный доступ. В текущем курсе описание и оглавление не используются как доказательства утверждений из непрочитанных глав.
 
 ## Выступление Тони Хоара
 
-Tony Hoare. *Null References: The Billion Dollar Mistake*. QCon London, 2009. [Страница выступления](https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/).
+Tony Hoare. _Null References: The Billion Dollar Mistake_. QCon London, 2009. [Страница выступления](https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/).
 
 Видеозапись, письменные заметки и дословная расшифровка — разные источники. Развёрнутые цитаты и точная датировка требуют сверки с записью; заметки не выдаются за текст речи. Название выступления не используется как измеренная экономическая оценка. В материалах курса авторская оценка отделяется от подтверждённой связи с ALGOL W.
