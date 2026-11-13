@@ -47,6 +47,8 @@ jobs:
       - name: Подготовить системные инструменты
         env:
           GH_TOKEN: ${{ github.token }}
+          PIPX_HOME: ${{ runner.temp }}/course-pipx
+          PIPX_BIN_DIR: ${{ runner.temp }}/bin
         run: |
           sudo apt-get update
           sudo apt-get install -y shfmt shellcheck clang-format clang-tidy g++ libxml2-utils unzip python3-yaml python3-jsonschema
