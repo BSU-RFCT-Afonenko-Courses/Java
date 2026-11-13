@@ -16,6 +16,8 @@ ARCHIVE_DIRECTORIES = (
     "docs/release-evening-",
 )
 ARCHIVE_FILES = {
+    # Зафиксированный прежний договор с исходными свидетельствами.
+    "tasks/projects/numbers/quadratic-roots/historical-contract.md",
     "docs/release-execution-regulation-20261103.md",
     "docs/release-cycle-20261110.md",
     "docs/refactoring-start-20261030.md",

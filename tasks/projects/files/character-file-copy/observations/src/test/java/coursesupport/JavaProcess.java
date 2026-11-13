@@ -115,7 +115,6 @@ public final class JavaProcess {
     private static Result runCheckingUncaught(
             Path classes, String mainClass, boolean trustedEntry, String input, String... arguments)
             throws Exception {
-
         // CREATE_NEW сохраняет чужие файлы; счётчик не требует источника энтропии
         // в песочнице, где createTempFile запускает медленный резервный механизм SecureRandom.
         Path scratch =
@@ -209,7 +208,6 @@ public final class JavaProcess {
             // Служебный файл статуса открыт через RandomAccessFile до запуска программы.
             // Закрытие или замена stderr оставляет его открытым.
             var status = new RandomAccessFile(arguments[0], "rw");
-
             // Trusted адаптер должен быть найден до отметки готовности:
             // его отсутствие или ошибка инициализации не являются отказом решения.
             if (Boolean.parseBoolean(arguments[2])) {
@@ -297,7 +295,6 @@ public final class JavaProcess {
         if (timeout.isNegative() || timeout.isZero() || outputLimit <= 0) {
             throw new IllegalArgumentException("Время и объём вывода должны быть положительными");
         }
-        long remaining = timeout.toNanos();
         var command =
                 new ArrayList<>(
                         List.of(
@@ -339,7 +336,7 @@ public final class JavaProcess {
             });
             while (true) {
                 throwFailure(failure.get());
-                remaining = timeout.toNanos() - (System.nanoTime() - started);
+                long remaining = timeout.toNanos() - (System.nanoTime() - started);
                 if (remaining <= 0) throw timedOut();
                 if (process.waitFor(
                         Math.min(remaining, TimeUnit.MILLISECONDS.toNanos(10)),

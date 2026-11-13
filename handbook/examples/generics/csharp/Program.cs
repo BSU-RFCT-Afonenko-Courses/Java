@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Globalization;
-class Program
+sealed class Program
 {
     static T Dot<T>(IReadOnlyList<T> left, IReadOnlyList<T> right)
         where T : IAdditionOperators<T, T, T>,

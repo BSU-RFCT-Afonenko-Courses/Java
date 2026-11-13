@@ -30,6 +30,8 @@ BIBTEX_OPTIONS = [
 
 PRETTIER_SUFFIXES = {
     ".css",
+    ".scss",
+    ".html",
     ".js",
     ".jsx",
     ".json",

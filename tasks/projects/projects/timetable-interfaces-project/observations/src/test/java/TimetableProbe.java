@@ -192,7 +192,7 @@ class TimetableProbe {
         Object deleted = fixture(0);
         Map<String, String> before = names(deleted, "teachers");
         List<Lesson> previous = lessons(deleted, "teacherLessons", "t1");
-        boolean refused = false;
+        boolean refused;
         try {
             Object result = call(deleted, "deleteTeacher", "t1");
             refused = Boolean.FALSE.equals(result);
@@ -231,7 +231,7 @@ class TimetableProbe {
                         .filter(l -> l.date().equals("2026-10-19"))
                         .count());
         assertEquals(Boolean.TRUE, call(school, "lessonsPerDayValid", "g1", "2026-10-19"));
-        boolean addRefused = false;
+        boolean addRefused;
         try {
             Object result =
                     call(
@@ -266,7 +266,7 @@ class TimetableProbe {
                 lessons(driving, "groupLessons", "g1").stream().filter(l -> l.kind() == 0).count());
         Object missing = fixture(2);
         call(missing, "setCarAvailable", "absent", false);
-        boolean rejected = false;
+        boolean rejected;
         try {
             Object result =
                     call(

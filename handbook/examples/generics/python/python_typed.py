@@ -7,7 +7,7 @@ def dot(left: Sequence[Number], right: Sequence[Number]) -> Number:
     if len(left) != len(right):
         raise ValueError("Different vector lengths")
     result: Number = 0
-    for a, b in zip(left, right):
+    for a, b in zip(left, right, strict=True):
         result = result + a * b
     return result
 

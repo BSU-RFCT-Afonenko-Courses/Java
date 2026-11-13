@@ -195,7 +195,8 @@ def classify(blocks: list[Fence]) -> tuple[list[str | None], list[str]]:
     for i, block in enumerate(blocks):
         candidates = errors[i * len(kinds) : (i + 1) * len(kinds)]
         chosen = next(
-            (kind for kind, error in zip(kinds, candidates) if not error), None
+            (kind for kind, error in zip(kinds, candidates, strict=True) if not error),
+            None,
         )
         # Java 25 compact source files accept members directly. Report them as
         # members rather than pretending that every pedagogical excerpt is a unit.
@@ -206,7 +207,10 @@ def classify(blocks: list[Fence]) -> tuple[list[str | None], list[str]]:
             chosen = "members"
         selected.append(chosen)
         reasons.append(
-            "; ".join(f"{kind}: {error}" for kind, error in zip(kinds, candidates))
+            "; ".join(
+                f"{kind}: {error}"
+                for kind, error in zip(kinds, candidates, strict=True)
+            )
         )
         if chosen is not None:
             continue
@@ -282,7 +286,7 @@ def main() -> int:
     failures: list[str] = []
     coverage: Counter[str] = Counter()
     accepted: list[tuple[Fence, str, str]] = []
-    for block, kind, error in zip(blocks, kinds, errors):
+    for block, kind, error in zip(blocks, kinds, errors, strict=True):
         key = f"{block.path.relative_to(root).as_posix()}#{block.number}"
         if kind is None:
             exclusion = exclusions.get(key)
@@ -307,7 +311,7 @@ def main() -> int:
                 accepted.append((block, kind, block.source))
     actual = {
         f"{b.path.relative_to(root).as_posix()}#{b.number}": (b, kind)
-        for b, kind in zip(blocks, kinds)
+        for b, kind in zip(blocks, kinds, strict=True)
     }
     for key, exclusion in exclusions.items():
         current = actual.get(key)
@@ -322,7 +326,7 @@ def main() -> int:
     changed: list[str] = []
     with tempfile.TemporaryDirectory(prefix="qmd-quality-") as tmp:
         files: list[Path] = []
-        for i, (block, kind, source) in enumerate(accepted):
+        for i, (_block, kind, source) in enumerate(accepted):
             path = Path(tmp) / f"Snippet{i}.java"
             path.write_text(wrap(source, kind))
             files.append(path)
@@ -353,20 +357,20 @@ def main() -> int:
         # Validate the emitted body after removing temporary wrappers too.
         verify_sources += [
             wrap(unwrap(path.read_text(), kind), kind)
-            for (_, kind, _), path in zip(accepted, files)
+            for (_, kind, _), path in zip(accepted, files, strict=True)
         ]
         verified = syntax_records(verify_sources)
         before, after = verified[: len(files)], verified[len(files) :]
-        for (block, _, _), old, new in zip(accepted, before, after):
+        for (block, _, _), old, new in zip(accepted, before, after, strict=True):
             if old[0] or new[0] or old[1] != new[1]:
                 failures.append(
                     f"{block.path}:{block.line}: formatter changed Java AST/literal values"
                 )
         outputs: dict[tuple[Path, int], list[str]] = {}
-        for (block, kind, source), path in zip(accepted, files):
+        for (block, kind, _source), path in zip(accepted, files, strict=True):
             formatted = unwrap(path.read_text(), kind)
             outputs.setdefault((block.path, block.number), []).append(formatted)
-        for block, kind in zip(blocks, kinds):
+        for block, kind in zip(blocks, kinds, strict=True):
             if kind is None:
                 continue
             formatted = "".join(outputs[(block.path, block.number)])
@@ -411,4 +415,4 @@ if __name__ == "__main__":
         raise SystemExit(main())
     except (OSError, RuntimeError, ValueError) as exc:
         print(f"qmd: {exc}", file=sys.stderr)
-        raise SystemExit(1)
+        raise SystemExit(1) from exc

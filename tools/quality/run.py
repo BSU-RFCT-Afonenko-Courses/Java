@@ -9,6 +9,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from common import source_files
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -21,21 +23,33 @@ def main() -> int:
     success = True
     # Локальный Gradle-комплект получает производную копию общего помощника.
     canonical = root / "tasks/test-support/src/main/java/coursesupport/JavaProcess.java"
-    copy = (
-        root
-        / "tasks/projects/common/java/process/src/test/java/coursesupport/JavaProcess.java"
-    )
-    if canonical.read_bytes() != copy.read_bytes():
-        if args.mode == "format":
-            shutil.copyfile(canonical, copy)
-        else:
-            print(
-                f"Копия JavaProcess отличается от канонического исходника: {copy}",
-                flush=True,
-            )
-            success = False
+    copies = [
+        root / path
+        for path in source_files(root)
+        if path.as_posix().endswith("/coursesupport/JavaProcess.java")
+        and root / path != canonical
+    ]
+    for copy in copies:
+        if canonical.read_bytes() != copy.read_bytes():
+            if args.mode == "format":
+                shutil.copyfile(canonical, copy)
+            else:
+                print(
+                    f"Копия JavaProcess отличается от канонического исходника: {copy}",
+                    flush=True,
+                )
+                success = False
     # Архивы проверяются после всех канонических текстовых входов.
-    for name in ("java", "qmd", "groovy", "examples", "formats", "archives"):
+    for name in (
+        "java",
+        "qmd",
+        "groovy",
+        "examples",
+        "formats",
+        "semantic",
+        "pmd",
+        "archives",
+    ):
         print(f"Качество исходников: {name} / {args.mode}", flush=True)
         result = subprocess.run(
             [

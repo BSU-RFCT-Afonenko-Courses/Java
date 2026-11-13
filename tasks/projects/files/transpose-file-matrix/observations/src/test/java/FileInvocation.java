@@ -9,7 +9,6 @@ final class FileInvocation {
     private static JavaProcess.Result last;
 
     static void run(String... args) throws Exception {
-        last = null;
         Path classes =
                 Path.of(
                         Path.of(

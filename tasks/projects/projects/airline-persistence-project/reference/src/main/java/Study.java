@@ -37,7 +37,7 @@ class Main {
                     Study.save(company, directory);
                     break;
                 case "5":
-                    company = Study.load(directory);
+                    Study.load(directory);
                     Study.updateSeats(directory, "c", 100);
                     company = Study.load(directory);
                     System.out.println(Study.totalSeats(company));

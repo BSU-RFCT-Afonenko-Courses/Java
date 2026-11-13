@@ -1,6 +1,6 @@
 # Происхождение консольного помощника
 
-`process/src/test/java/coursesupport/JavaProcess.java` — производная копия общего помощника курса из `tasks/test-support/src/main/java/coursesupport/JavaProcess.java`. Канонический владелец — Java. Редактируется канонический исходник; `go-task format` синхронизирует копию, а `go-task check-format` и `go-task check` проверяют равенство байтов.
+`process/src/test/java/coursesupport/JavaProcess.java` — производная копия общего помощника курса из `tasks/test-support/src/main/java/coursesupport/JavaProcess.java`. Канонический владелец — Java. Редактируется канонический исходник; `go-task format` синхронизирует все собственные встраивания `coursesupport/JavaProcess.java`, включая локальные `observations`, а `go-task check-format` и `go-task check` проверяют равенство байтов каждого встраивания.
 
 Предметные проверки прямо используют `JavaProcess.runCheckingUncaught(Main.class, input).stdout()`. Сохраняются типизированные timeout/output-limit/uncaught-сбои, отдельная JVM для каждого запуска и отсутствие требования `exitCode == 0`. Локальная поставка не подменяет доверенные ограничения grader.
 

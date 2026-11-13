@@ -93,6 +93,22 @@ def python_types(root: Path, files: list[str]) -> None:
     )
 
 
+def cpp_analysis(root: Path, file: str) -> None:
+    run(
+        root,
+        [
+            "clang-tidy",
+            file,
+            "--config-file=" + str(root / "tools/quality/examples-clang-tidy.yaml"),
+            "--",
+            "-std=c++20",
+            "-Wall",
+            "-Wextra",
+            "-Wpedantic",
+        ],
+    )
+
+
 def cpp_types(root: Path, files: list[str]) -> None:
     negative = "handbook/examples/generics/cpp/negative.cpp"
     for file in files:
@@ -118,9 +134,11 @@ def cpp_types(root: Path, files: list[str]) -> None:
                     + "\n"
                 )
                 run(root, [*args[:-1], str(unit)])
+                cpp_analysis(root, str(unit))
             continue
         if file != negative:
             run(root, args)
+            cpp_analysis(root, file)
             continue
         result = run(root, args, capture=True)
         errors = re.findall(
@@ -254,6 +272,9 @@ def main() -> None:
                     "--verbosity",
                     "quiet",
                     "-warnaserror",
+                    "-p:EnableNETAnalyzers=true",
+                    "-p:RunAnalyzersDuringBuild=true",
+                    "-p:AnalysisLevel=latest-all",
                     "-p:UseSharedCompilation=false",
                     "-p:BuildInParallel=false",
                 ],

@@ -34,6 +34,10 @@ jobs:
         with:
           distribution: temurin
           java-version: "25"
+      - uses: gradle/actions/setup-gradle@7ca78c16c887dc6c5f36fd6d0cb0f5c23d940e69
+        with:
+          gradle-version: current
+          cache-disabled: true
       - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1
         with:
           dotnet-version: "10.0.x"
@@ -43,14 +47,20 @@ jobs:
       - name: Подготовить системные инструменты
         env:
           GH_TOKEN: ${{ github.token }}
+          PIPX_HOME: ${{ runner.temp }}/course-pipx
+          PIPX_BIN_DIR: ${{ runner.temp }}/bin
         run: |
           sudo apt-get update
-          sudo apt-get install -y shfmt shellcheck clang-format g++ libxml2-utils unzip python3-yaml python3-jsonschema
+          sudo apt-get install -y shfmt shellcheck clang-format clang-tidy g++ libxml2-utils unzip python3-yaml python3-jsonschema
           pipx install --force ruff
+          pipx install --force yamllint
+          pipx install --force panache-cli
+          npm ci --ignore-scripts --no-audit --no-fund
           npm install --global pyright typescript prettier npm-groovy-lint bibtex-tidy
           cargo install --locked stylua --features lua54
           cargo install --locked taplo-cli
           go install github.com/go-task/task/v3/cmd/task@latest
+          go install github.com/rhysd/actionlint/cmd/actionlint@latest
           mkdir -p "$RUNNER_TEMP/bin" "$RUNNER_TEMP/quality-jars"
           install "$(go env GOPATH)/bin/task" "$RUNNER_TEMP/bin/go-task"
           gh release download --repo google/google-java-format --pattern '*-all-deps.jar' --output "$RUNNER_TEMP/quality-jars/google-java-format.jar"
@@ -60,10 +70,15 @@ jobs:
             printf '#!/bin/sh\nexec java -jar "%s" "$@"\n' "$RUNNER_TEMP/quality-jars/$tool.jar" > "$RUNNER_TEMP/bin/$tool"
             chmod +x "$RUNNER_TEMP/bin/$tool"
           done
+          gh release download --repo pmd/pmd --pattern 'pmd-dist-*-bin.zip' --output "$RUNNER_TEMP/pmd.zip"
+          unzip -q "$RUNNER_TEMP/pmd.zip" -d "$RUNNER_TEMP/pmd"
           gh release download --repo JetBrains/kotlin --pattern 'kotlin-compiler-*.zip' --output "$RUNNER_TEMP/kotlin-compiler.zip"
           unzip -q "$RUNNER_TEMP/kotlin-compiler.zip" -d "$RUNNER_TEMP/kotlin"
           {
             echo "$RUNNER_TEMP/bin"
+            echo "$GITHUB_WORKSPACE/node_modules/.bin"
+            echo "$(go env GOPATH)/bin"
+            for pmd_bin in "$RUNNER_TEMP"/pmd/pmd-bin-*/bin; do echo "$pmd_bin"; done
             echo "$RUNNER_TEMP/kotlin/kotlinc/bin"
             echo "$HOME/.local/bin"
             echo "$HOME/.cargo/bin"
@@ -75,7 +90,11 @@ jobs:
         env:
           XDG_CACHE_HOME: ${{ runner.temp }}/course-cache
           CI_LOG_DIR: ${{ runner.temp }}/course-build/logs
-        run: go-task build BUILD_DIR="$RUNNER_TEMP/course-build" PLATFORM_ROOT="$GITHUB_WORKSPACE/.platform"
+        run: |
+          export PATH="$JAVA_HOME/bin:$PATH"
+          java -version
+          javac -version | grep -E '^javac 25([.]|$)'
+          go-task build BUILD_DIR="$RUNNER_TEMP/course-build" PLATFORM_ROOT="$GITHUB_WORKSPACE/.platform"
       - name: Упаковать готовые outputs с hidden files и modes
         run: |
           tar -C "$RUNNER_TEMP/course-build" -cf "$RUNNER_TEMP/delivery.tar" site native
