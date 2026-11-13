@@ -1,1 +1,14 @@
-public class Main { public static void main(String[] a) { var s=new java.util.Scanner(System.in);int n=s.nextInt(),m=s.nextInt(),k=s.nextInt();System.out.print((n<=k&&k<m)+" "+(n<k&&k<=m)+" "+(n<k&&k<m)+" "+(n<=k&&k<=m)); } }
+public class Main {
+    public static void main(String[] a) {
+        var s = new java.util.Scanner(System.in);
+        int n = s.nextInt(), m = s.nextInt(), k = s.nextInt();
+        System.out.print(
+                (n <= k && k < m)
+                        + " "
+                        + (n < k && k <= m)
+                        + " "
+                        + (n < k && k < m)
+                        + " "
+                        + (n <= k && k <= m));
+    }
+}

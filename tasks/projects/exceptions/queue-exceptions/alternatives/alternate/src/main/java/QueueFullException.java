@@ -1,2 +1,5 @@
-
-public class QueueFullException extends Exception {public QueueFullException(){super("Очередь переполнена");}}
+public class QueueFullException extends Exception {
+    public QueueFullException() {
+        super("Очередь переполнена");
+    }
+}

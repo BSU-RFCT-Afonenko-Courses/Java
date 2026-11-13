@@ -22,8 +22,8 @@ public class TreeEqualityDemo {
         System.out.println(list.size());
 
         var changedName = new Student("s1", "Grace", 90);
-        Comparator<Student> byScoreAndId = Comparator.comparingInt(Student::score)
-            .reversed().thenComparing(Student::id);
+        Comparator<Student> byScoreAndId =
+                Comparator.comparingInt(Student::score).reversed().thenComparing(Student::id);
         System.out.println(a.equals(changedName));
         System.out.println(byScoreAndId.compare(a, changedName));
 

@@ -1,4 +1,5 @@
 import java.util.*;
+
 class Demo {
     static <T extends Comparable<T>> T maximum(List<T> values) {
         if (values.isEmpty()) {
@@ -13,6 +14,7 @@ class Demo {
         }
         return best;
     }
+
     public static void main(String[] args) {
         System.out.println(maximum(List.of(4, 9, 2))); // 9
     }

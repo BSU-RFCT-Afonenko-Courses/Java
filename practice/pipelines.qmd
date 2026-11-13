@@ -108,7 +108,7 @@ done
 var source = new ArrayList<>(List.of(-2, 3, 0, 3));
 var selected = source.stream().filter(n -> n > 0).toList();
 System.out.println(selected); // [3, 3]
-System.out.println(source);   // [-2, 3, 0, 3]
+System.out.println(source); // [-2, 3, 0, 3]
 ```
 
 Отбор сохраняет обе тройки. Структура источника остаётся прежней;
@@ -142,9 +142,7 @@ System.out.println(label.apply(3)); // n=3
 
 ```java
 Integer[] source = {1, 2, 3};
-String[] result = Arrays.stream(source)
-    .map(n -> "n=" + n)
-    .toArray(String[]::new);
+String[] result = Arrays.stream(source).map(n -> "n=" + n).toArray(String[]::new);
 System.out.println(Arrays.toString(result)); // [n=1, n=2, n=3]
 ```
 
@@ -159,10 +157,10 @@ System.out.println(Arrays.toString(result)); // [n=1, n=2, n=3]
 ### Устойчивая сортировка списка {#sec-practice-pipelines-ordered-sort}
 
 ```java
-var words = List.of("bb", "a", "cc").stream()
-    .sorted((left, right) ->
-        Integer.compare(left.length(), right.length()))
-    .toList();
+var words =
+        List.of("bb", "a", "cc").stream()
+                .sorted((left, right) -> Integer.compare(left.length(), right.length()))
+                .toList();
 System.out.println(words); // [a, bb, cc]
 ```
 
@@ -255,10 +253,11 @@ System.out.println(words); // [a, bb, cc]
 ### Отложенная ветвь на готовом условии {#sec-practice-pipelines-choice-example}
 
 ```java
-Supplier<String> fallback = () -> {
-    System.out.println("fallback");
-    return "none";
-};
+Supplier<String> fallback =
+        () -> {
+            System.out.println("fallback");
+            return "none";
+        };
 boolean missing = false;
 String result = missing ? fallback.get() : "ready";
 System.out.println(result); // ready
@@ -287,9 +286,9 @@ System.out.println(result); // ready
 ### Подсчёт по группам длин {#sec-practice-pipelines-group-count}
 
 ```java
-var counts = List.of("a", "bb", "c").stream()
-    .collect(Collectors.groupingBy(
-        String::length, Collectors.counting()));
+var counts =
+        List.of("a", "bb", "c").stream()
+                .collect(Collectors.groupingBy(String::length, Collectors.counting()));
 System.out.println(counts.get(1)); // 2
 System.out.println(counts.getOrDefault(3, 0L)); // 0
 ```

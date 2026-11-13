@@ -53,10 +53,14 @@ format:
 ```java
 class Document {
     private final String title;
+
     Document(String title) {
         this.title = java.util.Objects.requireNonNull(title);
     }
-    String summary() { return title; }
+
+    String summary() {
+        return title;
+    }
 }
 ```
 
@@ -71,12 +75,16 @@ class Document {
 ```java
 class TextDocument extends Document {
     private final int characters;
+
     TextDocument(String title, int characters) {
         super(title);
         if (characters < 0) throw new IllegalArgumentException();
         this.characters = characters;
     }
-    int characters() { return characters; }
+
+    int characters() {
+        return characters;
+    }
 }
 ```
 
@@ -165,7 +173,7 @@ value: Document ──> TextDocument { title="Notes", characters=120 }
 static void print(Document document) {
     System.out.println(document.summary());
 }
-print(new Document("Guide"));       // Guide
+print(new Document("Guide")); // Guide
 print(new TextDocument("Notes", 120)); // Notes: 120 chars
 ```
 
@@ -180,12 +188,17 @@ print(new TextDocument("Notes", 120)); // Notes: 120 chars
 ### Перегрузка и динамический вызов {#sec-lecture-interfaces-records-overload}
 
 ```java
-static String kind(Document d) { return "Document"; }
-static String kind(TextDocument d) { return "Text"; }
+static String kind(Document d) {
+    return "Document";
+}
+
+static String kind(TextDocument d) {
+    return "Text";
+}
 TextDocument text = new TextDocument("Notes", 120);
 Document value = text;
-System.out.println(kind(value));     // Document
-System.out.println(kind(text));      // Text
+System.out.println(kind(value)); // Document
+System.out.println(kind(text)); // Text
 System.out.println(value.summary()); // Notes: 120 chars
 ```
 
@@ -220,10 +233,19 @@ System.out.println(value.summary()); // Notes: 120 chars
 
 ```java
 class SilentDocument extends Document {
-    SilentDocument(String title) { super(title); }
-    @Override String summary() { return null; }
+    SilentDocument(String title) {
+        super(title);
+    }
+
+    @Override
+    String summary() {
+        return null;
+    }
 }
-static int summaryLength(Document d) { return d.summary().length(); }
+
+static int summaryLength(Document d) {
+    return d.summary().length();
+}
 ```
 
 `summaryLength(new TextDocument("Notes", 120))` возвращает `16`.
@@ -249,6 +271,7 @@ class ConsoleReminder {
     void remind(String title) {
         send("Return: " + java.util.Objects.requireNonNull(title, "title"));
     }
+
     protected void send(String message) {
         System.out.println(java.util.Objects.requireNonNull(message));
     }
@@ -318,9 +341,11 @@ public final class ConsoleSender implements Sender {
 ```java
 public final class Reminder {
     private final Sender sink;
+
     public Reminder(Sender sink) {
         this.sink = java.util.Objects.requireNonNull(sink, "sink");
     }
+
     public void remind(String title) {
         sink.send("Return: " + java.util.Objects.requireNonNull(title, "title"));
     }
@@ -365,11 +390,15 @@ ConsoleSender.send. Клиент Reminder использует ту же дис�
 ```java
 public final class RecordingSender implements Sender {
     private final StringBuilder text = new StringBuilder();
+
     public void send(String message) {
         text.append(java.util.Objects.requireNonNull(message));
         text.append('\n');
     }
-    public String text() { return text.toString(); }
+
+    public String text() {
+        return text.toString();
+    }
 }
 ```
 
@@ -415,8 +444,7 @@ System.out.print(log.text());
 final class NonEmptySender implements Sender {
     public void send(String message) {
         java.util.Objects.requireNonNull(message);
-        if (message.isEmpty())
-            throw new IllegalArgumentException("Пустое сообщение");
+        if (message.isEmpty()) throw new IllegalArgumentException("Пустое сообщение");
         System.out.println(message);
     }
 }
@@ -435,14 +463,17 @@ final class NonEmptySender implements Sender {
 ### Усиление предусловия и допустимые вызовы {#sec-lecture-interfaces-records-precondition-client .continuation}
 
 ```java
-static void sendEmpty(Sender sender) { sender.send(""); }
+static void sendEmpty(Sender sender) {
+    sender.send("");
+}
 
 RecordingSender log = new RecordingSender();
 sendEmpty(log);
 System.out.println(log.text().length()); // 1: только '\n'
 
-try { sendEmpty(new NonEmptySender()); }
-catch (IllegalArgumentException ex) {
+try {
+    sendEmpty(new NonEmptySender());
+} catch (IllegalArgumentException ex) {
     System.out.println("Пустая строка отвергнута");
 }
 ```
@@ -468,10 +499,12 @@ catch (IllegalArgumentException ex) {
 public final class PrefixSender implements Sender {
     private final Sender target;
     private final String prefix;
+
     public PrefixSender(Sender target, String prefix) {
         this.target = java.util.Objects.requireNonNull(target);
         this.prefix = java.util.Objects.requireNonNull(prefix);
     }
+
     public void send(String message) {
         target.send(prefix + java.util.Objects.requireNonNull(message));
     }
@@ -536,18 +569,26 @@ System.out.print(log.text()); // B:A:X и перевод строки
 ## Несколько интерфейсных ролей {#sec-lecture-interfaces-records-multiple-roles}
 
 ```java
-interface Counted { int count(); }
+interface Counted {
+    int count();
+}
+
 final class CountingSender implements Sender, Counted {
     private final Sender target;
     private int count;
+
     CountingSender(Sender target) {
         this.target = java.util.Objects.requireNonNull(target);
     }
+
     public void send(String message) {
         target.send(java.util.Objects.requireNonNull(message));
         count++;
     }
-    public int count() { return count; }
+
+    public int count() {
+        return count;
+    }
 }
 ```
 
@@ -615,8 +656,11 @@ default void sendAll(String[] messages) {
 
 ```java
 RecordingSender log = new RecordingSender();
-try { log.sendAll(new String[]{"A", null, "B"}); }
-catch (NullPointerException e) { System.out.println("rejected"); }
+try {
+    log.sendAll(new String[] {"A", null, "B"});
+} catch (NullPointerException e) {
+    System.out.println("rejected");
+}
 System.out.print(log.text());
 ```
 
@@ -655,7 +699,9 @@ System.out.print(log.text());
 Статическая фабрика в `Sender` создаёт консольного отправителя:
 
 ```java
-static Sender console() { return new ConsoleSender(); }
+static Sender console() {
+    return new ConsoleSender();
+}
 ```
 
 Вызов `Sender.console().send("A")` печатает `A`. Фабрика вызывается
@@ -720,7 +766,7 @@ sender.send("B");
 DispatchStats saved = new DispatchStats(sender.count());
 sender.send("C");
 System.out.println(sender.count()); // 3
-System.out.println(saved.count());  // 2
+System.out.println(saved.count()); // 2
 ```
 
 Конструктор записи получил число `2`. Последующая отправка изменила
@@ -742,9 +788,9 @@ System.out.println(saved.count());  // 2
 record Point(int x, int y) {}
 Point a = new Point(2, 3);
 Point b = new Point(2, 3);
-System.out.println(a.x());       // 2
+System.out.println(a.x()); // 2
 System.out.println(a.equals(b)); // true
-System.out.println(a == b);      // false
+System.out.println(a == b); // false
 ```
 
 Канонический конструктор принимает `x` и `y` в порядке заголовка.
@@ -815,7 +861,10 @@ record Interval(int start, int end) {
     Interval {
         if (start > end) throw new IllegalArgumentException();
     }
-    boolean contains(int x) { return start <= x && x <= end; }
+
+    boolean contains(int x) {
+        return start <= x && x <= end;
+    }
 }
 ```
 
@@ -899,8 +948,8 @@ public record Student(String id, String name, int score) {
 ```java
 Student a = new Student(" s1 ", " Ada ", 90);
 Student b = new Student("s1", "Ada", 80);
-System.out.println(a.id());      // s1
-System.out.println(a.name());    // Ada
+System.out.println(a.id()); // s1
+System.out.println(a.name()); // Ada
 System.out.println(a.equals(b)); // false
 ```
 
@@ -939,7 +988,10 @@ System.out.println(draft.scores()[0]); // 90
 Scores {
     values = java.util.Objects.requireNonNull(values).clone();
 }
-public int[] values() { return values.clone(); }
+
+public int[] values() {
+    return values.clone();
+}
 ```
 
 Это члены `record Scores(int[] values)`. Первая копия изолирует входной
@@ -977,8 +1029,8 @@ System.out.println(scores.values()[0]); // 80
 
 ```java
 record Vector(int[] values) {}
-Vector a = new Vector(new int[]{1, 2});
-Vector b = new Vector(new int[]{1, 2});
+Vector a = new Vector(new int[] {1, 2});
+Vector b = new Vector(new int[] {1, 2});
 System.out.println(a.equals(b)); // false
 ```
 
@@ -1002,9 +1054,9 @@ System.out.println(a.equals(b)); // false
 `other instanceof Scores that` проверяет, ссылается ли он на `Scores`:
 
 ```java
-@Override public boolean equals(Object other) {
-    return other instanceof Scores that
-        && java.util.Arrays.equals(values, that.values);
+@Override
+public boolean equals(Object other) {
+    return other instanceof Scores that && java.util.Arrays.equals(values, that.values);
 }
 ```
 
@@ -1037,7 +1089,8 @@ System.out.println(a.equals(b)); // false
 Хеш вычисляется по тем же элементам:
 
 ```java
-@Override public int hashCode() {
+@Override
+public int hashCode() {
     return java.util.Arrays.hashCode(values);
 }
 ```
@@ -1058,7 +1111,8 @@ System.out.println(a.equals(b)); // false
 представление по числам:
 
 ```java
-@Override public String toString() {
+@Override
+public String toString() {
     return "Scores[values=" + java.util.Arrays.toString(values) + "]";
 }
 ```
@@ -1068,7 +1122,7 @@ System.out.println(a.equals(b)); // false
 ```java
 Scores copy = new Scores(scores.values());
 System.out.println(scores); // Scores[values=[80]]
-System.out.println(copy);   // Scores[values=[80]]
+System.out.println(copy); // Scores[values=[80]]
 System.out.println(scores.toString().equals(copy.toString())); // true
 ```
 
@@ -1086,7 +1140,11 @@ System.out.println(scores.toString().equals(copy.toString())); // true
 ## Фиксированные именованные варианты {#sec-lecture-interfaces-records-enum}
 
 ```java
-enum LoanStatus { AVAILABLE, BORROWED, LOST }
+enum LoanStatus {
+    AVAILABLE,
+    BORROWED,
+    LOST
+}
 LoanStatus state = LoanStatus.BORROWED;
 System.out.println(state == LoanStatus.BORROWED); // true
 ```
@@ -1105,7 +1163,9 @@ System.out.println(state == LoanStatus.BORROWED); // true
 
 ```java
 sealed interface SearchResult permits Found, Missing {}
+
 record Found(String title) implements SearchResult {}
+
 record Missing(String reason) implements SearchResult {}
 ```
 
@@ -1194,8 +1254,12 @@ static String describe(SearchResult value) {
 ### Сокрытие поля {#sec-lecture-interfaces-records-field-hiding}
 
 ```java
-class Base { String label = "base"; }
-class Child extends Base { String label = "child"; }
+class Base {
+    String label = "base";
+}
+class Child extends Base {
+    String label = "child";
+}
 Base value = new Child();
 System.out.println(value.label); // base
 ```
@@ -1209,9 +1273,17 @@ System.out.println(value.label); // base
 ### Сокрытие статического метода {#sec-lecture-interfaces-records-static-hiding}
 
 ```java
-class Base { static String kind() { return "base"; } }
-class Child extends Base { static String kind() { return "child"; } }
-System.out.println(Base.kind());  // base
+class Base {
+    static String kind() {
+        return "base";
+    }
+}
+class Child extends Base {
+    static String kind() {
+        return "child";
+    }
+}
+System.out.println(Base.kind()); // base
 System.out.println(Child.kind()); // child
 ```
 
@@ -1232,12 +1304,18 @@ System.out.println(Child.kind()); // child
 abstract class DocumentSource {
     protected abstract Document load() throws java.io.IOException;
 }
+
 final class MemorySource extends DocumentSource {
     private final TextDocument document;
+
     MemorySource(TextDocument document) {
         this.document = java.util.Objects.requireNonNull(document);
     }
-    @Override public TextDocument load() { return document; }
+
+    @Override
+    public TextDocument load() {
+        return document;
+    }
 }
 ```
 
@@ -1282,7 +1360,10 @@ System.out.println(document == text); // true
 ```java
 abstract class Shape {
     abstract double area();
-    final String report() { return "area=" + area(); }
+
+    final String report() {
+        return "area=" + area();
+    }
 }
 ```
 
@@ -1302,12 +1383,16 @@ abstract class Shape {
 ```java
 final class Square extends Shape {
     private final double side;
+
     Square(double side) {
-        if (!Double.isFinite(side) || side < 0)
-            throw new IllegalArgumentException();
+        if (!Double.isFinite(side) || side < 0) throw new IllegalArgumentException();
         this.side = side;
     }
-    @Override double area() { return side * side; }
+
+    @Override
+    double area() {
+        return side * side;
+    }
 }
 Shape shape = new Square(3);
 System.out.println(shape.report()); // area=9.0
@@ -1329,8 +1414,8 @@ System.out.println(shape.report()); // area=9.0
 
 ```java
 Class<?> type = Student.class;
-System.out.println(type.getName());    // grade.Student
-System.out.println(type.isRecord());   // true
+System.out.println(type.getName()); // grade.Student
+System.out.println(type.isRecord()); // true
 System.out.println(int.class.isPrimitive()); // true
 System.out.println(Integer.class.isPrimitive()); // false
 ```
@@ -1345,8 +1430,7 @@ System.out.println(Integer.class.isPrimitive()); // false
 
 ```java
 for (var component : Student.class.getRecordComponents()) {
-    System.out.println(component.getName() + ":" +
-                       component.getType().getSimpleName());
+    System.out.println(component.getName() + ":" + component.getType().getSimpleName());
 }
 ```
 
@@ -1394,12 +1478,22 @@ Java-присваивание `Document value = new TextDocument(...)` копи�
 
 ```java
 class Parent {
-    Parent() { show(); }
-    void show() { System.out.println("parent"); }
+    Parent() {
+        show();
+    }
+
+    void show() {
+        System.out.println("parent");
+    }
 }
+
 class ChildState extends Parent {
     int value = 7;
-    @Override void show() { System.out.println(value); }
+
+    @Override
+    void show() {
+        System.out.println(value);
+    }
 }
 ```
 
@@ -1457,10 +1551,22 @@ second.remind("C++");
 ### Конфликт методов по умолчанию {#sec-lecture-interfaces-records-default-conflict}
 
 ```java
-interface A { default String label() { return "A"; } }
-interface B { default String label() { return "B"; } }
+interface A {
+    default String label() {
+        return "A";
+    }
+}
+
+interface B {
+    default String label() {
+        return "B";
+    }
+}
+
 class Both implements A, B {
-    public String label() { return A.super.label() + B.super.label(); }
+    public String label() {
+        return A.super.label() + B.super.label();
+    }
 }
 ```
 
@@ -1476,10 +1582,18 @@ class Both implements A, B {
 
 ```java
 enum Priority {
-    LOW(1), NORMAL(5), HIGH(10);
+    LOW(1),
+    NORMAL(5),
+    HIGH(10);
     private final int weight;
-    Priority(int weight) { this.weight = weight; }
-    int weight() { return weight; }
+
+    Priority(int weight) {
+        this.weight = weight;
+    }
+
+    int weight() {
+        return weight;
+    }
 }
 ```
 
@@ -1497,12 +1611,19 @@ enum Priority {
 
 ```java
 sealed interface SearchResult permits Found, Missing, Ambiguous {}
+
 record Found(String title) implements SearchResult {
-    Found { java.util.Objects.requireNonNull(title); }
+    Found {
+        java.util.Objects.requireNonNull(title);
+    }
 }
+
 record Missing(String reason) implements SearchResult {
-    Missing { java.util.Objects.requireNonNull(reason); }
+    Missing {
+        java.util.Objects.requireNonNull(reason);
+    }
 }
+
 record Ambiguous(int count) implements SearchResult {
     Ambiguous {
         if (count < 2) throw new IllegalArgumentException();

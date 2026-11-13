@@ -10,12 +10,12 @@ public final class Reports {
         if (threshold < 0 || threshold > 100) {
             throw new IllegalArgumentException("порог вне диапазона 0..100");
         }
-        Comparator<Student> order = Comparator.comparingInt(Student::score)
-            .reversed().thenComparing(Student::id);
+        Comparator<Student> order =
+                Comparator.comparingInt(Student::score).reversed().thenComparing(Student::id);
         return students.stream()
-            .filter(student -> student.score() >= threshold)
-            .sorted(order)
-            .toList();
+                .filter(student -> student.score() >= threshold)
+                .sorted(order)
+                .toList();
     }
 
     public static String line(Student student) {

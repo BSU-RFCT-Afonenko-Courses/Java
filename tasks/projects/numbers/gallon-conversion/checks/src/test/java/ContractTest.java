@@ -7,9 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestReporter;
 
 class ContractTest {
-    private static String run(TestReporter publicReporter, String[] publicCaseIds, String input,
-            String... args) throws Exception {
-        return publicOutput(publicReporter, publicCaseIds,
+    private static String run(
+            TestReporter publicReporter, String[] publicCaseIds, String input, String... args)
+            throws Exception {
+        return publicOutput(
+                publicReporter,
+                publicCaseIds,
                 JavaProcess.runCheckingUncaught(Main.class, input, args).stdout());
     }
 
@@ -21,13 +24,16 @@ class ContractTest {
             throws Exception {
         String[] values = tokens(run(publicReporter, publicCaseIds, ""));
         assertEquals(2, values.length, "Галлоны затем литры");
-        double gallons = assertDoesNotThrow(()
-                                                    -> Double.parseDouble(values[0]),
-                "Ожидалось количество галлонов, получено «" + values[0] + "»");
-        double litres = assertDoesNotThrow(()
-                                                   -> Double.parseDouble(values[1]),
-                "Ожидалось количество литров, получено «" + values[1] + "»");
-        assertTrue(Double.isFinite(gallons) && Double.isFinite(litres),
+        double gallons =
+                assertDoesNotThrow(
+                        () -> Double.parseDouble(values[0]),
+                        "Ожидалось количество галлонов, получено «" + values[0] + "»");
+        double litres =
+                assertDoesNotThrow(
+                        () -> Double.parseDouble(values[1]),
+                        "Ожидалось количество литров, получено «" + values[1] + "»");
+        assertTrue(
+                Double.isFinite(gallons) && Double.isFinite(litres),
                 "Галлоны и литры должны быть конечными; получено " + gallons + " и " + litres);
         assertEquals(10, gallons, 1e-8, "Количество галлонов, абсолютный допуск 1e-8");
         assertEquals(37.854, litres, 1e-8, "Количество литров, абсолютный допуск 1e-8");
@@ -43,8 +49,7 @@ class ContractTest {
     private static String publicOutput(TestReporter reporter, String[] ids, String actual) {
         if (reporter != null) {
             String visible = actual.replaceAll("[\\p{Cntrl}&&[^\n\t]]", "�");
-            if (visible.length() > 2000)
-                visible = visible.substring(0, 2000) + "…";
+            if (visible.length() > 2000) visible = visible.substring(0, 2000) + "…";
             for (String id : ids)
                 reporter.publishEntry(Map.of("public-case", id, "actual", "stdout=" + visible));
         }

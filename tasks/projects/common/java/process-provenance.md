@@ -1,6 +1,6 @@
 # Происхождение консольного помощника
 
-`process/src/test/java/coursesupport/JavaProcess.java` — точная производная копия общего Java-помощника из `tasks/test-support/src/main/java/coursesupport/JavaProcess.java`, вечернее обновление 5 ноября 2026 года. SHA256: `329d79c702e952f46cd4113bf9e1b6378f737109dc72ad743dac6b38c79ac3d8`. Канонический владелец — общий Java runtime, используемый Platform/C1. Копия не редактируется; обновление требует проверки равенства каноническим байтам.
+`process/src/test/java/coursesupport/JavaProcess.java` — производная копия общего помощника курса из `tasks/test-support/src/main/java/coursesupport/JavaProcess.java`. Канонический владелец — Java. Редактируется канонический исходник; `go-task format` синхронизирует копию, а `go-task check-format` и `go-task check` проверяют равенство байтов.
 
 Предметные проверки прямо используют `JavaProcess.runCheckingUncaught(Main.class, input).stdout()`. Сохраняются типизированные timeout/output-limit/uncaught-сбои, отдельная JVM для каждого запуска и отсутствие требования `exitCode == 0`. Локальная поставка не подменяет доверенные ограничения grader.
 

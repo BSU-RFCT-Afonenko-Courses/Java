@@ -1,2 +1,5 @@
-
-public class Study {public static Class<?>entryPoint(){return BytesMover.class;}}
+public class Study {
+    public static Class<?> entryPoint() {
+        return BytesMover.class;
+    }
+}

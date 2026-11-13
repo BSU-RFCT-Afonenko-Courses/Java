@@ -10,14 +10,13 @@ class StateTest {
         for (int which = 0; which < 3; which++) {
             int k = which;
             int[] before = TaskBinding.state(t);
-            assertThrows(IllegalArgumentException.class, () -> {
-                if (k == 0)
-                    TaskBinding.setPassengers(t, -1);
-                else if (k == 1)
-                    TaskBinding.setFuel(t, -2);
-                else
-                    TaskBinding.setMpg(t, 0);
-            });
+            assertThrows(
+                    IllegalArgumentException.class,
+                    () -> {
+                        if (k == 0) TaskBinding.setPassengers(t, -1);
+                        else if (k == 1) TaskBinding.setFuel(t, -2);
+                        else TaskBinding.setMpg(t, 0);
+                    });
             assertArrayEquals(before, TaskBinding.state(t));
             assertEquals(0, TaskBinding.cargo(t));
         }

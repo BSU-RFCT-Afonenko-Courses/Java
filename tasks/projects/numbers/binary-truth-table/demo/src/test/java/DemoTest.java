@@ -16,9 +16,11 @@ class DemoTest {
     }
 
     private static Map<String, String[]> table() throws Exception {
-        String[] lines = run().lines().filter(s -> !s.isBlank()).toArray(String[] ::new);
+        String[] lines = run().lines().filter(s -> !s.isBlank()).toArray(String[]::new);
         assertEquals(5, lines.length, "Заголовок и четыре строки");
-        assertArrayEquals(new String[] {"P", "Q", "AND", "OR", "XOR", "NOT"}, tokens(lines[0]),
+        assertArrayEquals(
+                new String[] {"P", "Q", "AND", "OR", "XOR", "NOT"},
+                tokens(lines[0]),
                 "Шесть колонок, пробельные разделители");
         var rows = new HashMap<String, String[]>();
         for (int i = 1; i < 5; i++) {

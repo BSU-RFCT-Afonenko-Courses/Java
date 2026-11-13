@@ -10,7 +10,9 @@ import org.junit.jupiter.api.TestReporter;
 class ContractTest {
     private static String run(TestReporter publicReporter, String[] publicCaseIds, String... args)
             throws Exception {
-        return publicOutput(publicReporter, publicCaseIds,
+        return publicOutput(
+                publicReporter,
+                publicCaseIds,
                 JavaProcess.runCheckingUncaught(Main.class, "", args).stdout());
     }
 
@@ -18,12 +20,18 @@ class ContractTest {
         return text.isBlank() ? new String[0] : text.strip().split("\\p{javaWhitespace}+");
     }
 
-    private static void representation(TestReporter publicReporter, String[] publicCaseIds,
-            String expected, String... args) throws Exception {
+    private static void representation(
+            TestReporter publicReporter, String[] publicCaseIds, String expected, String... args)
+            throws Exception {
         String output = run(publicReporter, publicCaseIds, args).strip();
-        assertTrue(output.equals(expected) || output.equals(expected.toUpperCase(Locale.ROOT)),
-                "Ожидалось " + expected + " или " + expected.toUpperCase(Locale.ROOT)
-                        + ", получено «" + output
+        assertTrue(
+                output.equals(expected) || output.equals(expected.toUpperCase(Locale.ROOT)),
+                "Ожидалось "
+                        + expected
+                        + " или "
+                        + expected.toUpperCase(Locale.ROOT)
+                        + ", получено «"
+                        + output
                         + "»; нужен единый регистр и отсутствие ведущих нулей");
     }
 
@@ -64,13 +72,16 @@ class ContractTest {
     }
 
     @Test
-    @DisplayName("Число из 60 десятичных цифр без сужения диапазона. Вход: "
-            + "123456789012345678901234567890123456789012345678901234567890 7")
-    void
-    large_base7() throws Exception {
-        representation(null, null,
+    @DisplayName(
+            "Число из 60 десятичных цифр без сужения диапазона. Вход: "
+                    + "123456789012345678901234567890123456789012345678901234567890 7")
+    void large_base7() throws Exception {
+        representation(
+                null,
+                null,
                 "6010406501403050001163255632406216450612530354214262643555010363621230",
-                "123456789012345678901234567890123456789012345678901234567890", "7");
+                "123456789012345678901234567890123456789012345678901234567890",
+                "7");
     }
 
     @Test
@@ -95,8 +106,7 @@ class ContractTest {
     private static String publicOutput(TestReporter reporter, String[] ids, String actual) {
         if (reporter != null) {
             String visible = actual.replaceAll("[\\p{Cntrl}&&[^\n\t]]", "�");
-            if (visible.length() > 2000)
-                visible = visible.substring(0, 2000) + "…";
+            if (visible.length() > 2000) visible = visible.substring(0, 2000) + "…";
             for (String id : ids)
                 reporter.publishEntry(Map.of("public-case", id, "actual", "stdout=" + visible));
         }

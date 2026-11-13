@@ -1,1 +1,5 @@
-class Main {void main() {System.out.print("0 1");}}
+class Main {
+    void main() {
+        System.out.print("0 1");
+    }
+}

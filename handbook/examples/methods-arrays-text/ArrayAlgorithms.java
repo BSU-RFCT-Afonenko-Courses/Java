@@ -31,7 +31,8 @@ public class ArrayAlgorithms {
         int[] source = {5, -2, 0, 7};
         System.out.println("Положительные: " + Arrays.toString(positiveValues(source)));
         System.out.println("Исходник: " + Arrays.toString(source));
-        System.out.println("Без положительных: " + Arrays.toString(positiveValues(new int[]{-2, 0})));
+        System.out.println(
+                "Без положительных: " + Arrays.toString(positiveValues(new int[] {-2, 0})));
         System.out.println("Пустой вход: " + Arrays.toString(positiveValues(new int[0])));
         int[][] matrix = {{1, 2, 3}, {4, 5, 6}};
         System.out.println("Транспонирование: " + Arrays.deepToString(transpose(matrix)));

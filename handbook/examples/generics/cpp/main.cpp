@@ -10,8 +10,7 @@ concept DotElement = std::semiregular<T> && requires(const T a, const T b) {
     { a + b } -> std::same_as<T>;
     { a * b } -> std::same_as<T>;
 };
-template <DotElement T>
-T dot(const std::vector<T>& left, const std::vector<T>& right) {
+template <DotElement T> T dot(const std::vector<T>& left, const std::vector<T>& right) {
     if (left.size() != right.size()) {
         throw std::invalid_argument("Different vector lengths");
     }

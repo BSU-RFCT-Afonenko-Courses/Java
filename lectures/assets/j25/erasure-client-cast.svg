@@ -1,43 +1,48 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800" role="img" aria-labelledby="title desc"><title id="title">String обещан клиенту; get выполняется с Object-результатом</title><desc id="desc">В Java box имеет тип Box&lt;String&gt;, поэтому результат читается как String. У Box.get дескриптор возвращает Object; Signature описывает T. В BoxClient после вызова get стоит checkcast String, затем text.length() даёт 4.</desc>
-<rect width="1280" height="800" fill="#f8fafc"/>
-<text x="40" y="60" font-family="Noto Sans, sans-serif" font-size="32" fill="#0f172a">String обещан клиенту; get выполняется с Object-результатом</text>
-<rect x="40" y="112" width="540" height="568" rx="12" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
-<rect x="680" y="112" width="560" height="568" rx="12" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
-<text x="60" y="150" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">Java — выдержки исходников</text>
-<text x="700" y="150" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">JVM — фактический javap 25</text>
-<text x="60" y="190" font-family="Noto Sans, sans-serif" font-size="24" fill="#2563eb">A: одна связь T</text>
-<text x="76" y="225" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">private final T value;</text>
-<text x="76" y="252" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">public Box(T value) {</text>
-<text x="76" y="279" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">    this.value = value;</text>
-<text x="76" y="306" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">}</text>
-<text x="76" y="333" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">public T get() {</text>
-<text x="76" y="360" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">    return value;</text>
-<text x="76" y="387" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">}</text>
-<text x="60" y="442" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">BoxClient.main — выдержка</text>
-<text x="76" y="479" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">Box&lt;String&gt; box =</text>
-<text x="76" y="506" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">    new Box&lt;&gt;(&quot;Java&quot;);</text>
-<text x="76" y="533" font-family="Noto Sans Mono, monospace" font-size="24" fill="#b45309">String text = box.get();</text>
-<text x="76" y="560" font-family="Noto Sans Mono, monospace" font-size="24" fill="#b45309">System.out.println(text.length());</text>
-<text x="60" y="610" font-family="Noto Sans, sans-serif" font-size="24" fill="#047857">B: вызов стёртого get</text>
-<text x="60" y="642" font-family="Noto Sans, sans-serif" font-size="24" fill="#b45309">C: клиентский cast</text>
-<text x="700" y="190" font-family="Noto Sans, sans-serif" font-size="24" fill="#047857">B: Box.get — JVM-результат Object</text>
-<text x="724" y="225" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">public T get();</text>
-<text x="724" y="252" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">descriptor: ()Ljava/lang/Object;</text>
-<text x="724" y="292" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">Signature: ()TT;</text>
-<text x="700" y="330" font-family="Noto Sans, sans-serif" font-size="24" fill="#047857">Signature хранит объявление T</text>
-<text x="700" y="407" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">BoxClient.main — после get</text>
-<text x="724" y="444" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">invokevirtual</text>
-<text x="724" y="471" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">Box.get:()Ljava/lang/Object;</text>
-<text x="724" y="511" font-family="Noto Sans Mono, monospace" font-size="24" fill="#b45309">checkcast</text>
-<text x="724" y="538" font-family="Noto Sans Mono, monospace" font-size="24" fill="#b45309">java/lang/String</text>
-<text x="724" y="578" font-family="Noto Sans Mono, monospace" font-size="24" fill="#0f172a">astore_2</text>
-<path d="M 580 531 H 608 V 460 H 680" fill="none" stroke="#047857" stroke-width="3"/><path d="M 670 455 L 680 460 L 670 465" fill="none" stroke="#047857" stroke-width="3"/>
-<rect x="594" y="463.5" width="28" height="29" rx="4" fill="#f8fafc"/>
-<text x="600" y="486.5" font-family="Noto Sans, sans-serif" font-size="24" fill="#047857">B</text>
-<path d="M 580 540 H 647 V 530 H 680" fill="none" stroke="#b45309" stroke-width="3"/><path d="M 670 525 L 680 530 L 670 535" fill="none" stroke="#b45309" stroke-width="3"/>
-<rect x="633" y="503.0" width="28" height="29" rx="4" fill="#f8fafc"/>
-<text x="639" y="526.0" font-family="Noto Sans, sans-serif" font-size="24" fill="#b45309">C</text>
-<text x="40" y="715" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">Вывод: 4. После вызова get клиент выполняет checkcast String.</text>
-<text x="40" y="746" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">Выдержки javap: смещения, индексы constant pool и package prefix опущены.</text>
-<text x="40" y="774" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">A — связь типа; B — стёртый вызов; C — отдельное приведение клиента.</text>
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800" role="img" aria-labelledby="title desc">
+  <title id="title">String &#x43E;&#x431;&#x435;&#x449;&#x430;&#x43D; &#x43A;&#x43B;&#x438;&#x435;&#x43D;&#x442;&#x443;; get &#x432;&#x44B;&#x43F;&#x43E;&#x43B;&#x43D;&#x44F;&#x435;&#x442;&#x441;&#x44F; &#x441; Object-&#x440;&#x435;&#x437;&#x443;&#x43B;&#x44C;&#x442;&#x430;&#x442;&#x43E;&#x43C;</title>
+  <desc id="desc">&#x412; Java box &#x438;&#x43C;&#x435;&#x435;&#x442; &#x442;&#x438;&#x43F; Box&lt;String&gt;, &#x43F;&#x43E;&#x44D;&#x442;&#x43E;&#x43C;&#x443; &#x440;&#x435;&#x437;&#x443;&#x43B;&#x44C;&#x442;&#x430;&#x442; &#x447;&#x438;&#x442;&#x430;&#x435;&#x442;&#x441;&#x44F; &#x43A;&#x430;&#x43A; String. &#x423; Box.get &#x434;&#x435;&#x441;&#x43A;&#x440;&#x438;&#x43F;&#x442;&#x43E;&#x440; &#x432;&#x43E;&#x437;&#x432;&#x440;&#x430;&#x449;&#x430;&#x435;&#x442; Object; Signature &#x43E;&#x43F;&#x438;&#x441;&#x44B;&#x432;&#x430;&#x435;&#x442; T. &#x412; BoxClient &#x43F;&#x43E;&#x441;&#x43B;&#x435; &#x432;&#x44B;&#x437;&#x43E;&#x432;&#x430; get &#x441;&#x442;&#x43E;&#x438;&#x442; checkcast String, &#x437;&#x430;&#x442;&#x435;&#x43C; text.length() &#x434;&#x430;&#x451;&#x442; 4.</desc>
+  <rect width="1280" height="800" fill="#f8fafc"/>
+  <text x="40" y="60" font-family="Noto Sans, sans-serif" font-size="32" fill="#0f172a">String &#x43E;&#x431;&#x435;&#x449;&#x430;&#x43D; &#x43A;&#x43B;&#x438;&#x435;&#x43D;&#x442;&#x443;; get &#x432;&#x44B;&#x43F;&#x43E;&#x43B;&#x43D;&#x44F;&#x435;&#x442;&#x441;&#x44F; &#x441; Object-&#x440;&#x435;&#x437;&#x443;&#x43B;&#x44C;&#x442;&#x430;&#x442;&#x43E;&#x43C;</text>
+  <rect x="40" y="112" width="540" height="568" rx="12" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+  <rect x="680" y="112" width="560" height="568" rx="12" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="60" y="150" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">Java &#x2014; &#x432;&#x44B;&#x434;&#x435;&#x440;&#x436;&#x43A;&#x438; &#x438;&#x441;&#x445;&#x43E;&#x434;&#x43D;&#x438;&#x43A;&#x43E;&#x432;</text>
+  <text x="700" y="150" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">JVM &#x2014; &#x444;&#x430;&#x43A;&#x442;&#x438;&#x447;&#x435;&#x441;&#x43A;&#x438;&#x439; javap 25</text>
+  <text x="60" y="190" font-family="Noto Sans, sans-serif" font-size="24" fill="#2563eb">A: &#x43E;&#x434;&#x43D;&#x430; &#x441;&#x432;&#x44F;&#x437;&#x44C; T</text>
+  <text x="76" y="225" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">private final T value;</text>
+  <text x="76" y="252" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">public Box(T value) {</text>
+  <text x="76" y="279" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">    this.value = value;</text>
+  <text x="76" y="306" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">}</text>
+  <text x="76" y="333" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">public T get() {</text>
+  <text x="76" y="360" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">    return value;</text>
+  <text x="76" y="387" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">}</text>
+  <text x="60" y="442" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">BoxClient.main &#x2014; &#x432;&#x44B;&#x434;&#x435;&#x440;&#x436;&#x43A;&#x430;</text>
+  <text x="76" y="479" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">Box&lt;String&gt; box =</text>
+  <text x="76" y="506" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">    new Box&lt;&gt;("Java");</text>
+  <text x="76" y="533" font-family="Noto Sans Mono, monospace" font-size="24" fill="#b45309">String text = box.get();</text>
+  <text x="76" y="560" font-family="Noto Sans Mono, monospace" font-size="24" fill="#b45309">System.out.println(text.length());</text>
+  <text x="60" y="610" font-family="Noto Sans, sans-serif" font-size="24" fill="#047857">B: &#x432;&#x44B;&#x437;&#x43E;&#x432; &#x441;&#x442;&#x451;&#x440;&#x442;&#x43E;&#x433;&#x43E; get</text>
+  <text x="60" y="642" font-family="Noto Sans, sans-serif" font-size="24" fill="#b45309">C: &#x43A;&#x43B;&#x438;&#x435;&#x43D;&#x442;&#x441;&#x43A;&#x438;&#x439; cast</text>
+  <text x="700" y="190" font-family="Noto Sans, sans-serif" font-size="24" fill="#047857">B: Box.get &#x2014; JVM-&#x440;&#x435;&#x437;&#x443;&#x43B;&#x44C;&#x442;&#x430;&#x442; Object</text>
+  <text x="724" y="225" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">public T get();</text>
+  <text x="724" y="252" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">descriptor: ()Ljava/lang/Object;</text>
+  <text x="724" y="292" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">Signature: ()TT;</text>
+  <text x="700" y="330" font-family="Noto Sans, sans-serif" font-size="24" fill="#047857">Signature &#x445;&#x440;&#x430;&#x43D;&#x438;&#x442; &#x43E;&#x431;&#x44A;&#x44F;&#x432;&#x43B;&#x435;&#x43D;&#x438;&#x435; T</text>
+  <text x="700" y="407" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">BoxClient.main &#x2014; &#x43F;&#x43E;&#x441;&#x43B;&#x435; get</text>
+  <text x="724" y="444" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">invokevirtual</text>
+  <text x="724" y="471" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">Box.get:()Ljava/lang/Object;</text>
+  <text x="724" y="511" font-family="Noto Sans Mono, monospace" font-size="24" fill="#b45309">checkcast</text>
+  <text x="724" y="538" font-family="Noto Sans Mono, monospace" font-size="24" fill="#b45309">java/lang/String</text>
+  <text x="724" y="578" font-family="Noto Sans Mono, monospace" font-size="24" fill="#0f172a">astore_2</text>
+  <path d="M 580 531 H 608 V 460 H 680" fill="none" stroke="#047857" stroke-width="3"/>
+  <path d="M 670 455 L 680 460 L 670 465" fill="none" stroke="#047857" stroke-width="3"/>
+  <rect x="594" y="463.5" width="28" height="29" rx="4" fill="#f8fafc"/>
+  <text x="600" y="486.5" font-family="Noto Sans, sans-serif" font-size="24" fill="#047857">B</text>
+  <path d="M 580 540 H 647 V 530 H 680" fill="none" stroke="#b45309" stroke-width="3"/>
+  <path d="M 670 525 L 680 530 L 670 535" fill="none" stroke="#b45309" stroke-width="3"/>
+  <rect x="633" y="503.0" width="28" height="29" rx="4" fill="#f8fafc"/>
+  <text x="639" y="526.0" font-family="Noto Sans, sans-serif" font-size="24" fill="#b45309">C</text>
+  <text x="40" y="715" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">&#x412;&#x44B;&#x432;&#x43E;&#x434;: 4. &#x41F;&#x43E;&#x441;&#x43B;&#x435; &#x432;&#x44B;&#x437;&#x43E;&#x432;&#x430; get &#x43A;&#x43B;&#x438;&#x435;&#x43D;&#x442; &#x432;&#x44B;&#x43F;&#x43E;&#x43B;&#x43D;&#x44F;&#x435;&#x442; checkcast String.</text>
+  <text x="40" y="746" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">&#x412;&#x44B;&#x434;&#x435;&#x440;&#x436;&#x43A;&#x438; javap: &#x441;&#x43C;&#x435;&#x449;&#x435;&#x43D;&#x438;&#x44F;, &#x438;&#x43D;&#x434;&#x435;&#x43A;&#x441;&#x44B; constant pool &#x438; package prefix &#x43E;&#x43F;&#x443;&#x449;&#x435;&#x43D;&#x44B;.</text>
+  <text x="40" y="774" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">A &#x2014; &#x441;&#x432;&#x44F;&#x437;&#x44C; &#x442;&#x438;&#x43F;&#x430;; B &#x2014; &#x441;&#x442;&#x451;&#x440;&#x442;&#x44B;&#x439; &#x432;&#x44B;&#x437;&#x43E;&#x432;; C &#x2014; &#x43E;&#x442;&#x434;&#x435;&#x43B;&#x44C;&#x43D;&#x43E;&#x435; &#x43F;&#x440;&#x438;&#x432;&#x435;&#x434;&#x435;&#x43D;&#x438;&#x435; &#x43A;&#x43B;&#x438;&#x435;&#x43D;&#x442;&#x430;.</text>
 </svg>

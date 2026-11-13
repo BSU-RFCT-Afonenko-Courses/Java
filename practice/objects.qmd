@@ -101,8 +101,12 @@ final class Reservation {
 ```java
 final class Test {
     int a;
-    Test(int value) { a = value; }
+
+    Test(int value) {
+        a = value;
+    }
 }
+
 static void localSwap(Test left, Test right) {
     Test saved = left;
     left = right;
@@ -129,7 +133,7 @@ Test right = new Test(8);
 Test alias = left;
 localSwap(left, right);
 System.out.println(left.a + " " + right.a); // 3 8
-System.out.println(alias == left);          // true
+System.out.println(alias == left); // true
 ```
 
 После возврата ссылки клиента и поля объектов прежние. Для обмена
@@ -150,8 +154,8 @@ System.out.println(alias == left);          // true
 static void inspect(int... values) {
     System.out.println(values.length);
 }
-inspect();       // 0
-inspect(4, 7);   // 2
+inspect(); // 0
+inspect(4, 7); // 2
 ```
 
 Внутри метода параметр имеет тип `int[]`. Пустой список аргументов создаёт

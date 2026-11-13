@@ -29,7 +29,8 @@ public final class BufferStatesDemo {
     }
 
     private static void state(String label, ByteBuffer buffer) {
-        System.out.printf("%s: position=%d, limit=%d, capacity=%d%n",
+        System.out.printf(
+                "%s: position=%d, limit=%d, capacity=%d%n",
                 label, buffer.position(), buffer.limit(), buffer.capacity());
     }
 }

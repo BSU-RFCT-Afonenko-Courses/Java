@@ -9,10 +9,11 @@ public class ScoreFileDemo {
         }
         try {
             var result = FileDemo.firstScore(Path.of(args[0]));
-            String message = switch (result) {
-                case ExceptionDemo.Score(var value) -> "балл: " + value;
-                case ExceptionDemo.ScoreFailure(var problem) -> "ошибка данных: " + problem;
-            };
+            String message =
+                    switch (result) {
+                        case ExceptionDemo.Score(var value) -> "балл: " + value;
+                        case ExceptionDemo.ScoreFailure(var problem) -> "ошибка данных: " + problem;
+                    };
             System.out.println(message);
         } catch (IOException failure) {
             System.out.println("ошибка чтения: " + failure.getClass().getSimpleName());

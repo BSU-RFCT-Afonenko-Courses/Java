@@ -23,8 +23,7 @@ interface StudentTest {
     boolean test(Student student);
 }
 
-static java.util.List<Student> select(
-        java.util.List<Student> source, StudentTest condition) {
+static java.util.List<Student> select(java.util.List<Student> source, StudentTest condition) {
     var result = new java.util.ArrayList<Student>();
     for (Student student : source) {
         if (condition.test(student)) result.add(student);
@@ -51,15 +50,18 @@ static java.util.List<Student> select(
 в момент вызова из `select`:
 
 ```java
-var students = java.util.List.of(
-    new Student("s1", "Ada", 90),
-    new Student("s2", "Lin", 70),
-    new Student("s3", "Ann", 80));
-StudentTest condition = new StudentTest() {
-    @Override public boolean test(Student student) {
-        return student.score() >= 80;
-    }
-};
+var students =
+        java.util.List.of(
+                new Student("s1", "Ada", 90),
+                new Student("s2", "Lin", 70),
+                new Student("s3", "Ann", 80));
+StudentTest condition =
+        new StudentTest() {
+            @Override
+            public boolean test(Student student) {
+                return student.score() >= 80;
+            }
+        };
 var selected = select(students, condition);
 System.out.println(selected.size());
 ```
@@ -132,10 +134,11 @@ StudentTest second = s -> s.score() >= 80;
 Если в теле несколько действий, используют блок:
 
 ```java
-StudentTest valid = s -> {
-    int score = s.score();
-    return score >= 0 && score <= 100;
-};
+StudentTest valid =
+        s -> {
+            int score = s.score();
+            return score >= 0 && score <= 100;
+        };
 ```
 
 Фигурные скобки не означают автоматический возврат последнего выражения.
@@ -181,8 +184,8 @@ java.util.function.Consumer<String> print = text -> System.out.println(text);
 java.util.function.Supplier<java.util.List<Student>> empty = () -> java.util.List.of();
 
 System.out.println(name.apply(students.get(0))); // Ada
-print.accept("готово");                         // готово
-System.out.println(empty.get().size());         // 0
+print.accept("готово"); // готово
+System.out.println(empty.get().size()); // 0
 ```
 
 Предикат проверяет условие; функция преобразует аргумент в результат;
@@ -220,7 +223,7 @@ System.out.println(empty.get().size());         // 0
 ```java
 java.util.function.Function<String, Integer> parse = Integer::parseInt;
 java.util.function.ToIntFunction<Student> score = Student::score;
-System.out.println(parse.apply("17"));     // 17
+System.out.println(parse.apply("17")); // 17
 System.out.println(score.applyAsInt(students.get(0))); // 90
 ```
 
@@ -285,7 +288,7 @@ static java.util.function.Predicate<Student> atLeast(int threshold) {
 var passed = atLeast(80);
 var excellent = atLeast(90);
 var ann = new Student("s3", "Ann", 80);
-System.out.println(passed.test(ann));    // true
+System.out.println(passed.test(ann)); // true
 System.out.println(excellent.test(ann)); // false
 ```
 
@@ -307,10 +310,12 @@ System.out.println(excellent.test(ann)); // false
 может измениться без создания нового правила:
 
 ```java
-class Settings { int threshold = 80; }
+class Settings {
+    int threshold = 80;
+}
 var settings = new Settings();
 java.util.function.Predicate<Student> dynamic =
-    student -> student.score() >= settings.threshold;
+        student -> student.score() >= settings.threshold;
 System.out.println(dynamic.test(ann)); // true
 settings.threshold = 90;
 System.out.println(dynamic.test(ann)); // false
@@ -348,10 +353,11 @@ System.out.println(condition.test(students.get(2))); // true
 Поставщик позволяет отложить вычисление запасной строки до выбора ветви:
 
 ```java
-java.util.function.Supplier<String> fallback = () -> {
-    System.out.println("fallback");
-    return "none";
-};
+java.util.function.Supplier<String> fallback =
+        () -> {
+            System.out.println("fallback");
+            return "none";
+        };
 boolean needsFallback = false;
 String result = needsFallback ? fallback.get() : "ready";
 System.out.println(result); // ready, fallback не вызван
@@ -383,7 +389,7 @@ System.out.println(result); // ready, fallback не вызван
 
 ```java
 java.util.function.Function<Integer, java.util.function.Predicate<Student>> rules =
-    threshold -> atLeast(threshold);
+        threshold -> atLeast(threshold);
 var check80 = rules.apply(80);
 System.out.println(check80.test(new Student("s4", "Jo", 79))); // false
 System.out.println(check80.test(ann)); // true
@@ -416,6 +422,7 @@ System.out.println(check80.test(ann)); // true
 static String label(Book book) {
     return "Book: " + book.title();
 }
+
 static void announceAndBorrow(Book book) {
     System.out.println(label(book));
     book.borrow();

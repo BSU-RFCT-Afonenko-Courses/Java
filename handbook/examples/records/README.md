@@ -24,17 +24,17 @@ java -cp out ArrayRecordsDemo
 класса из таблицы. Объявления точек, массивных значений и результатов поиска
 находятся внутри соответствующих классов запуска.
 
-| Исходник | Класс запуска | Наблюдение |
-|---|---|---|
-| [RecordDemo.java](RecordDemo.java) | `RecordDemo` | Координаты `(2, 3)`: `equals` даёт `true`, `==` — `false`; разные типы записей не равны; `NaN` и знаки нуля |
-| [ValueClassDemo.java](ValueClassDemo.java) | `ValueClassDemo` | Обычный класс с явно написанными `equals`, `hashCode` и `toString` |
-| [ConstructorDemo.java](ConstructorDemo.java) | `ConstructorDemo` | Интервал включает `4`; обратные границы отвергаются; код `"  A-17  "` нормализуется |
-| [ArrayRecordsDemo.java](ArrayRecordsDemo.java) | `ArrayRecordsDemo` | Чтение общего массива после изменений даёт `7` и `9`; защищённый `Scores` сохраняет `80`; равное восстановленное значение имеет такой же хеш и строку |
-| [EnumDemo.java](EnumDemo.java) | `EnumDemo` | Именованное состояние, вес `10`, точное имя в `valueOf` |
-| [SearchDemo.java](SearchDemo.java) | `SearchDemo` | Два варианта результата; `null` отвергается переключением |
-| [SearchEvolutionDemo.java](SearchEvolutionDemo.java) | `SearchEvolutionDemo` | Третий вариант даёт `Matches: 3`; число `1` отвергается его конструктором |
-| [grade/Student.java](grade/Student.java), [grade/StudentDemo.java](grade/StudentDemo.java) | `grade.StudentDemo` | Нормализация `id/name`, сравнение всех трёх компонентов, отказ неверного балла и разделителя |
-| [grade/ReflectionDemo.java](grade/ReflectionDemo.java) | `grade.ReflectionDemo` | Компоненты `id:String`, `name:String`, `score:int`; имя `grade.Student` и описание примитивного типа |
+| Исходник                                                                                   | Класс запуска          | Наблюдение                                                                                                                                            |
+| ------------------------------------------------------------------------------------------ | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [RecordDemo.java](RecordDemo.java)                                                         | `RecordDemo`           | Координаты `(2, 3)`: `equals` даёт `true`, `==` — `false`; разные типы записей не равны; `NaN` и знаки нуля                                           |
+| [ValueClassDemo.java](ValueClassDemo.java)                                                 | `ValueClassDemo`       | Обычный класс с явно написанными `equals`, `hashCode` и `toString`                                                                                    |
+| [ConstructorDemo.java](ConstructorDemo.java)                                               | `ConstructorDemo`      | Интервал включает `4`; обратные границы отвергаются; код `"  A-17  "` нормализуется                                                                   |
+| [ArrayRecordsDemo.java](ArrayRecordsDemo.java)                                             | `ArrayRecordsDemo`     | Чтение общего массива после изменений даёт `7` и `9`; защищённый `Scores` сохраняет `80`; равное восстановленное значение имеет такой же хеш и строку |
+| [EnumDemo.java](EnumDemo.java)                                                             | `EnumDemo`             | Именованное состояние, вес `10`, точное имя в `valueOf`                                                                                               |
+| [SearchDemo.java](SearchDemo.java)                                                         | `SearchDemo`           | Два варианта результата; `null` отвергается переключением                                                                                             |
+| [SearchEvolutionDemo.java](SearchEvolutionDemo.java)                                       | `SearchEvolutionDemo`  | Третий вариант даёт `Matches: 3`; число `1` отвергается его конструктором                                                                             |
+| [grade/Student.java](grade/Student.java), [grade/StudentDemo.java](grade/StudentDemo.java) | `grade.StudentDemo`    | Нормализация `id/name`, сравнение всех трёх компонентов, отказ неверного балла и разделителя                                                          |
+| [grade/ReflectionDemo.java](grade/ReflectionDemo.java)                                     | `grade.ReflectionDemo` | Компоненты `id:String`, `name:String`, `score:int`; имя `grade.Student` и описание примитивного типа                                                  |
 
 `grade.Student` принимает ненулевые код и имя. После `strip()` они должны
 быть непустыми и не содержать `;`, CR или LF. Балл принадлежит диапазону

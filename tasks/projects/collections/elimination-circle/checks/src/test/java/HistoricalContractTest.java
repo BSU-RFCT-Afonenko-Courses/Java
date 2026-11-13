@@ -16,7 +16,7 @@ class HistoricalContractTest {
     @org.junit.jupiter.api.DisplayName("Ручные трассы и границы числа участников")
     void handTracedSmallAndFullDomainBoundary() throws Throwable {
         List<List<Integer>> expected =
-            List.of(List.of(2), List.of(2, 1), List.of(2, 4, 3), List.of(2, 4, 6, 3, 1));
+                List.of(List.of(2), List.of(2, 1), List.of(2, 4, 3), List.of(2, 4, 6, 3, 1));
         int[] n = {2, 3, 4, 6}, last = {1, 3, 1, 5};
         for (int j = 0; j < n.length; j++)
             for (int k = 0; k < 2; k++) {
@@ -32,8 +32,7 @@ class HistoricalContractTest {
         assertFalse(all.contains(TaskBinding.survivor(limit, 0)));
         all.add(TaskBinding.survivor(limit, 0));
         assertEquals(limit, all.size());
-        for (int i = 1; i <= limit; i++)
-            assertTrue(all.contains(i));
+        for (int i = 1; i <= limit; i++) assertTrue(all.contains(i));
         assertEquals(TaskBinding.survivor(limit, 0), TaskBinding.survivor(limit, 1));
     }
 }

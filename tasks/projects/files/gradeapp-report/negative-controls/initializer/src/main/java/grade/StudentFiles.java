@@ -11,8 +11,7 @@ import java.util.List;
 public final class StudentFiles {
     private StudentFiles() {}
 
-    public static List<Student> read(Path path)
-            throws IOException, DataFormatException {
+    public static List<Student> read(Path path) throws IOException, DataFormatException {
         var result = new ArrayList<Student>();
         var ids = new HashSet<String>();
         try (var reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
@@ -24,7 +23,7 @@ public final class StudentFiles {
                 Student student = StudentParser.parse(line, number);
                 if (!ids.add(student.id())) {
                     throw new DataFormatException(
-                        "строка " + number + ": повтор кода " + student.id());
+                            "строка " + number + ": повтор кода " + student.id());
                 }
                 result.add(student);
             }

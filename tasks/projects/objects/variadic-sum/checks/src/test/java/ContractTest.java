@@ -10,8 +10,7 @@ class ContractTest {
     static String capture(Runnable action) {
         PrintStream previous = System.out;
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try
-            (PrintStream out = new PrintStream(bytes, true, StandardCharsets.UTF_8)) {
+        try (PrintStream out = new PrintStream(bytes, true, StandardCharsets.UTF_8)) {
             System.setOut(out);
             action.run();
         } finally {
@@ -19,6 +18,7 @@ class ContractTest {
         }
         return bytes.toString(StandardCharsets.UTF_8).replace("\r\n", "\n");
     }
+
     @Test
     @DisplayName("Отрицательные слагаемые и сохранность переданного массива")
     void negativeAndArrayUnchanged() throws Throwable {

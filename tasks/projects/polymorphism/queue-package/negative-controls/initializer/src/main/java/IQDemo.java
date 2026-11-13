@@ -1,1 +1,14 @@
-import qpack.*;public class IQDemo{public static void demonstrate(){for(ICharQ q:new ICharQ[]{new FixedQueue(2),new CircularQueue(2),new DynQueue(2)}){q.put('A');System.out.println(q.get());}}public static void main(String[]args){demonstrate();}}
+import qpack.*;
+
+public class IQDemo {
+    public static void demonstrate() {
+        for (ICharQ q : new ICharQ[] {new FixedQueue(2), new CircularQueue(2), new DynQueue(2)}) {
+            q.put('A');
+            System.out.println(q.get());
+        }
+    }
+
+    public static void main(String[] args) {
+        demonstrate();
+    }
+}

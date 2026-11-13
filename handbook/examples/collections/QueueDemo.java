@@ -10,16 +10,18 @@ public class QueueDemo {
         System.out.println(queue.pollFirst());
         System.out.println(queue.pollFirst());
         System.out.println(queue.pollFirst());
-        try { queue.removeFirst(); }
-        catch (java.util.NoSuchElementException ex) {
+        try {
+            queue.removeFirst();
+        } catch (java.util.NoSuchElementException ex) {
             System.out.println(ex.getClass().getSimpleName());
         }
         queue.push("Ada");
         queue.push("Lin");
         System.out.println(queue.pop());
         System.out.println(queue.pop());
-        try { queue.offer(null); }
-        catch (NullPointerException ex) {
+        try {
+            queue.offer(null);
+        } catch (NullPointerException ex) {
             System.out.println(ex.getClass().getSimpleName());
         }
         var priorities = new PriorityQueue<Integer>();

@@ -9,13 +9,27 @@ public class ValueClassDemo {
             this.x = x;
             this.y = y;
         }
-        int x() { return x; }
-        int y() { return y; }
-        @Override public boolean equals(Object other) {
+
+        int x() {
+            return x;
+        }
+
+        int y() {
+            return y;
+        }
+
+        @Override
+        public boolean equals(Object other) {
             return other instanceof PointClass p && x == p.x && y == p.y;
         }
-        @Override public int hashCode() { return Objects.hash(x, y); }
-        @Override public String toString() {
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(x, y);
+        }
+
+        @Override
+        public String toString() {
             return "PointClass[x=" + x + ", y=" + y + "]";
         }
     }

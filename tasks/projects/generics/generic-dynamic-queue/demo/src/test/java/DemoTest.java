@@ -13,6 +13,7 @@ class DemoTest {
     interface Throwing {
         void run() throws Throwable;
     }
+
     private static String capture(Throwing body) throws Throwable {
         var out = System.out;
         var err = System.err;
@@ -27,25 +28,35 @@ class DemoTest {
         }
         return bytes.toString(StandardCharsets.UTF_8);
     }
+
     record Payload(int value) {}
+
     static class Box<T> {
         final Study<T> value;
+
         Box(T[] storage) throws Throwable {
             value = new Study<T>(storage);
         }
+
         void put(T v) throws Throwable {
             value.put(v);
         }
+
         T get() throws Throwable {
             return value.get();
         }
     }
+
     private static void empty(Box<?> b) throws Throwable {
         assertFalse(
-            capture(() -> assertNull(b.get())).isBlank(), "Отказ пустого контейнера должен сообщить о себе");
+                capture(() -> assertNull(b.get())).isBlank(),
+                "Отказ пустого контейнера должен сообщить о себе");
     }
+
     private static <T> void full(Box<T> b, T rejected) throws Throwable {
-        assertFalse(capture(() -> b.put(rejected)).isBlank(), "Полный контейнер должен сообщить об отказе");
+        assertFalse(
+                capture(() -> b.put(rejected)).isBlank(),
+                "Полный контейнер должен сообщить об отказе");
     }
 
     @Test
@@ -57,16 +68,14 @@ class DemoTest {
         s.put("В");
         assertEquals("А", s.get());
         s.put("Г");
-        for (String v : new String[] {"Б", "В", "Г"})
-            assertEquals(v, s.get());
+        for (String v : new String[] {"Б", "В", "Г"}) assertEquals(v, s.get());
         var i = new Box<Integer>(new Integer[2]);
         i.put(10);
         i.put(20);
         i.put(30);
         assertEquals(10, i.get());
         i.put(40);
-        for (int v : new int[] {20, 30, 40})
-            assertEquals(v, i.get());
+        for (int v : new int[] {20, 30, 40}) assertEquals(v, i.get());
     }
 
     @Test

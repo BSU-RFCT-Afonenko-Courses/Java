@@ -132,13 +132,19 @@ public final class Book {
 
     public Book(String title) {
         if (title == null || title.isBlank()) {
-            throw new IllegalArgumentException("Название должно содержать хотя бы один непробельный символ");
+            throw new IllegalArgumentException(
+                    "Название должно содержать хотя бы один непробельный символ");
         }
         this.title = title;
     }
 
-    public String title() { return title; }
-    public boolean borrowed() { return borrowed; }
+    public String title() {
+        return title;
+    }
+
+    public boolean borrowed() {
+        return borrowed;
+    }
 
     public void borrow() {
         if (borrowed) {
@@ -156,7 +162,7 @@ Book book = new Book("Java");
 Book alias = book;
 alias.borrow();
 System.out.println(book.borrowed()); // true
-System.out.println(alias == book);   // true
+System.out.println(alias == book); // true
 try {
     book.borrow();
 } catch (IllegalStateException ex) {
@@ -241,7 +247,7 @@ Java 25 разрешает пролог перед явным `this(...)` или
 Reservation first = new Reservation(30);
 Reservation second = new Reservation(30);
 first.reserve(8);
-System.out.println(first.available());  // 22
+System.out.println(first.available()); // 22
 System.out.println(second.available()); // 30
 ```
 
@@ -256,11 +262,15 @@ System.out.println(second.available()); // 30
 ```java
 final class Counter {
     private int value;
+
     Counter increment() {
         value = Math.incrementExact(value);
         return this;
     }
-    int value() { return value; }
+
+    int value() {
+        return value;
+    }
 }
 
 Counter counter = new Counter();
@@ -277,11 +287,16 @@ System.out.println(same == counter); // true
 Методы могут иметь одинаковое имя и разные списки типов параметров. Перегрузка позволяет назвать одно семейство действий общим именем. Один возвращаемый тип не различает перегрузки.
 
 ```java
-static String describe(int value) { return "int"; }
-static String describe(String value) { return "String"; }
+static String describe(int value) {
+    return "int";
+}
 
-System.out.println(describe(3));      // int
-System.out.println(describe("3"));    // String
+static String describe(String value) {
+    return "String";
+}
+
+System.out.println(describe(3)); // int
+System.out.println(describe("3")); // String
 ```
 
 Компилятор выбирает подходящее объявление по типам выражений аргументов
@@ -294,11 +309,16 @@ System.out.println(describe("3"));    // String
 В другой паре перегрузок есть отношение подтипов:
 
 ```java
-static String kind(Object value) { return "Object"; }
-static String kind(String value) { return "String"; }
+static String kind(Object value) {
+    return "Object";
+}
+
+static String kind(String value) {
+    return "String";
+}
 
 Object text = "Java";
-System.out.println(kind(text));   // Object
+System.out.println(kind(text)); // Object
 System.out.println(kind("Java")); // String
 ```
 
@@ -318,7 +338,9 @@ final class Ticket {
     private static long nextId = 1;
     private final long id = nextId++;
 
-    long id() { return id; }
+    long id() {
+        return id;
+    }
 }
 
 Ticket a = new Ticket();
@@ -346,7 +368,7 @@ System.out.println(a.id() + " " + b.id()); // 1 2
 
 ```java
 final String[] names = {"Ann"};
-names[0] = "Bob";         // допустимо
+names[0] = "Bob"; // допустимо
 // names = new String[]{"Lin"}; // запрещено
 ```
 
@@ -363,8 +385,14 @@ names[0] = "Bob";         // допустимо
 ```java
 final class OpenNames {
     private final String[] names;
-    OpenNames(String[] names) { this.names = names; }
-    String[] names() { return names; }
+
+    OpenNames(String[] names) {
+        this.names = names;
+    }
+
+    String[] names() {
+        return names;
+    }
 }
 ```
 
@@ -385,6 +413,7 @@ System.out.println(input[0]); // Bob
 ```java
 final class Names {
     private final String[] names;
+
     Names(String[] initial) {
         java.util.Objects.requireNonNull(initial, "initial");
         String[] copy = initial.clone();
@@ -395,7 +424,10 @@ final class Names {
         }
         names = copy;
     }
-    String[] names() { return names.clone(); }
+
+    String[] names() {
+        return names.clone();
+    }
 }
 ```
 
@@ -439,14 +471,18 @@ class Trace {
     static {
         System.out.println("класс");
     }
+
     private int value = initialize();
+
     {
         System.out.println("блок: " + value);
     }
+
     private int initialize() {
         System.out.println("поле");
         return 7;
     }
+
     Trace() {
         System.out.println("конструктор: " + value);
     }
@@ -528,12 +564,17 @@ final class IntStack {
         if (capacity <= 0) throw new IllegalArgumentException("capacity");
         data = new int[capacity];
     }
-    int size() { return size; }
+
+    int size() {
+        return size;
+    }
+
     void push(int value) {
         if (size == data.length) throw new IllegalStateException("full");
         data[size] = value;
         size++;
     }
+
     int pop() {
         if (size == 0) throw new IllegalStateException("empty");
         size--;
@@ -550,12 +591,18 @@ final class IntStack {
 ```java
 IntStack stack = new IntStack(1);
 stack.push(7);
-try { stack.push(9); }
-catch (IllegalStateException ex) { System.out.println("full refused"); }
+try {
+    stack.push(9);
+} catch (IllegalStateException ex) {
+    System.out.println("full refused");
+}
 System.out.println(stack.size()); // 1
-System.out.println(stack.pop());  // 7
-try { stack.pop(); }
-catch (IllegalStateException ex) { System.out.println("empty refused"); }
+System.out.println(stack.pop()); // 7
+try {
+    stack.pop();
+} catch (IllegalStateException ex) {
+    System.out.println("empty refused");
+}
 System.out.println(stack.size()); // 0
 ```
 

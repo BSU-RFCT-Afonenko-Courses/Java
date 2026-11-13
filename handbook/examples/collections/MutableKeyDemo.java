@@ -3,11 +3,20 @@ import java.util.HashMap;
 public class MutableKeyDemo {
     static final class Key {
         int code;
-        Key(int code) { this.code = code; }
-        @Override public boolean equals(Object other) {
+
+        Key(int code) {
+            this.code = code;
+        }
+
+        @Override
+        public boolean equals(Object other) {
             return other instanceof Key key && code == key.code;
         }
-        @Override public int hashCode() { return code; }
+
+        @Override
+        public int hashCode() {
+            return code;
+        }
     }
 
     public static void main(String[] args) {

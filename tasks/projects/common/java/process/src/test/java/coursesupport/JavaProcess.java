@@ -53,15 +53,13 @@ import java.util.jar.JarOutputStream;
 public final class JavaProcess {
     private JavaProcess() {}
 
-    private static final AtomicLong launches =
-        new AtomicLong();
+    private static final AtomicLong launches = new AtomicLong();
 
     public record Result(String stdout, String stderr, int exitCode) {}
 
     /** Наблюдённое необработанное исключение в запущенной программе. */
     public static final class UncaughtStudentException extends AssertionError {
-        @Serial
-        private static final long serialVersionUID = 1L;
+        @Serial private static final long serialVersionUID = 1L;
 
         private UncaughtStudentException(String stderr) {
             super("Программа завершила поток необработанным исключением:\n" + stderr);
@@ -70,49 +68,65 @@ public final class JavaProcess {
 
     /** Истечение времени именно вложенного процесса или захвата его вывода. */
     public static final class StudentTimeout extends AssertionError {
-        @Serial
-        private static final long serialVersionUID = 1L;
+        @Serial private static final long serialVersionUID = 1L;
 
-        private StudentTimeout() { super("Программа не завершилась в пределах времени проверки"); }
+        private StudentTimeout() {
+            super("Программа не завершилась в пределах времени проверки");
+        }
     }
 
     /** Превышение совокупного бюджета stdout и stderr вложенного процесса. */
     public static final class StudentOutputLimit extends AssertionError {
-        @Serial
-        private static final long serialVersionUID = 1L;
+        @Serial private static final long serialVersionUID = 1L;
 
-        private StudentOutputLimit(int limit) { super("Превышено ограничение вывода " + limit + " байт"); }
+        private StudentOutputLimit(int limit) {
+            super("Превышено ограничение вывода " + limit + " байт");
+        }
     }
 
-
-    public static Result run(Class<?> entryPoint, String input, String... arguments) throws Exception {
-        Path classes = Path.of(entryPoint.getProtectionDomain().getCodeSource().getLocation().toURI());
-        return run(classes, entryPoint.getName(), input, List.of(arguments), null,
-            Duration.ofSeconds(10), 65536);
+    public static Result run(Class<?> entryPoint, String input, String... arguments)
+            throws Exception {
+        Path classes =
+                Path.of(entryPoint.getProtectionDomain().getCodeSource().getLocation().toURI());
+        return run(
+                classes,
+                entryPoint.getName(),
+                input,
+                List.of(arguments),
+                null,
+                Duration.ofSeconds(10),
+                65536);
     }
 
     /** Проверка необработанного исключения без ограничения кода завершения. */
     public static Result runCheckingUncaught(Class<?> entryPoint, String input, String... arguments)
             throws Exception {
-        Path classes = Path.of(entryPoint.getProtectionDomain().getCodeSource().getLocation().toURI());
+        Path classes =
+                Path.of(entryPoint.getProtectionDomain().getCodeSource().getLocation().toURI());
         return runCheckingUncaught(classes, entryPoint.getName(), false, input, arguments);
     }
 
     /** Тот же наблюдатель для разделённых каталогов trusted адаптера и решения. */
-    public static Result runCheckingUncaught(Path classes, String trustedEntry, String input,
-            String... arguments) throws Exception {
+    public static Result runCheckingUncaught(
+            Path classes, String trustedEntry, String input, String... arguments) throws Exception {
         return runCheckingUncaught(classes, trustedEntry, true, input, arguments);
     }
 
-    private static Result runCheckingUncaught(Path classes, String mainClass,
-            boolean trustedEntry, String input, String... arguments) throws Exception {
-
-
+    private static Result runCheckingUncaught(
+            Path classes, String mainClass, boolean trustedEntry, String input, String... arguments)
+            throws Exception {
         // CREATE_NEW сохраняет чужие файлы; счётчик не требует источника энтропии
         // в песочнице, где createTempFile запускает медленный резервный механизм SecureRandom.
-        Path scratch = Files.createDirectory(Path.of(System.getProperty("java.io.tmpdir"),
-            "course-uncaught-" + ProcessHandle.current().pid() + "-" + launches.incrementAndGet()
-                + "-" + Long.toUnsignedString(System.nanoTime())));
+        Path scratch =
+                Files.createDirectory(
+                        Path.of(
+                                System.getProperty("java.io.tmpdir"),
+                                "course-uncaught-"
+                                        + ProcessHandle.current().pid()
+                                        + "-"
+                                        + launches.incrementAndGet()
+                                        + "-"
+                                        + Long.toUnsignedString(System.nanoTime())));
         Path launcher = scratch.resolve("launcher.jar");
         Path status = scratch.resolve("uncaught.status");
         try {
@@ -120,19 +134,31 @@ public final class JavaProcess {
             String resource = CheckedLauncher.class.getName().replace('.', '/') + ".class";
             try (var bytes = JavaProcess.class.getResourceAsStream("/" + resource);
                     var jar = new JarOutputStream(Files.newOutputStream(launcher))) {
-                if (bytes == null) throw new IOException("Не найден класс запуска проверки исключений");
+                if (bytes == null)
+                    throw new IOException("Не найден класс запуска проверки исключений");
                 jar.putNextEntry(new JarEntry(resource));
                 bytes.transferTo(jar);
                 jar.closeEntry();
             }
-            var launchArguments = new ArrayList<>(List.of(status.toString(), mainClass, Boolean.toString(trustedEntry)));
+            var launchArguments =
+                    new ArrayList<>(
+                            List.of(status.toString(), mainClass, Boolean.toString(trustedEntry)));
             launchArguments.addAll(List.of(arguments));
-            Result result = run(classes, CheckedLauncher.class.getName(), input, launchArguments, null,
-                Duration.ofSeconds(10), 65536,
-                List.of(), launcher);
+            Result result =
+                    run(
+                            classes,
+                            CheckedLauncher.class.getName(),
+                            input,
+                            launchArguments,
+                            null,
+                            Duration.ofSeconds(10),
+                            65536,
+                            List.of(),
+                            launcher);
             byte[] observed = Files.readAllBytes(status);
             if (observed.length == 0 || observed[0] != 'R') {
-                throw new IOException("Не удалось подготовить проверку исключений в JDK 25:\n" + result.stderr());
+                throw new IOException(
+                        "Не удалось подготовить проверку исключений в JDK 25:\n" + result.stderr());
             }
             if (observed.length > 1) {
                 throw new UncaughtStudentException(result.stderr());
@@ -149,25 +175,31 @@ public final class JavaProcess {
     public static final class CheckedLauncher {
         // JLS 12.1.4: String[] имеет приоритет; доступны не private методы void main.
         private static Method findMain(Class<?> type) {
-            for (Class<?>[] parameters : new Class<?>[][]{{String[].class}, {}}) {
+            for (Class<?>[] parameters : new Class<?>[][] {{String[].class}, {}}) {
                 for (Class<?> owner = type; owner != null; owner = owner.getSuperclass()) {
                     try {
                         Method method = owner.getDeclaredMethod("main", parameters);
                         int access = method.getModifiers();
-                        if (method.getReturnType() != void.class || Modifier.isPrivate(access)) continue;
+                        if (method.getReturnType() != void.class || Modifier.isPrivate(access))
+                            continue;
                         if (!Modifier.isPublic(access) && !Modifier.isProtected(access)) {
                             boolean inherited = true;
-                            for (Class<?> child = type; child != owner; child = child.getSuperclass())
-                                if (!child.getPackageName().equals(owner.getPackageName())) inherited = false;
+                            for (Class<?> child = type;
+                                    child != owner;
+                                    child = child.getSuperclass())
+                                if (!child.getPackageName().equals(owner.getPackageName()))
+                                    inherited = false;
                             if (!inherited) continue;
                         }
                         return method;
-                    } catch (NoSuchMethodException absent) { }
+                    } catch (NoSuchMethodException absent) {
+                    }
                 }
                 try {
                     Method method = type.getMethod("main", parameters);
                     if (method.getReturnType() == void.class) return method;
-                } catch (NoSuchMethodException absent) { }
+                } catch (NoSuchMethodException absent) {
+                }
             }
             return null;
         }
@@ -176,32 +208,34 @@ public final class JavaProcess {
             // Служебный файл статуса открыт через RandomAccessFile до запуска программы.
             // Закрытие или замена stderr оставляет его открытым.
             var status = new RandomAccessFile(arguments[0], "rw");
-
-
             // Trusted адаптер должен быть найден до отметки готовности:
             // его отсутствие или ошибка инициализации не являются отказом решения.
             if (Boolean.parseBoolean(arguments[2])) {
-                Class<?> port = Class.forName(arguments[1], true, ClassLoader.getSystemClassLoader());
+                Class<?> port =
+                        Class.forName(arguments[1], true, ClassLoader.getSystemClassLoader());
                 if (findMain(port) == null)
                     throw new NoSuchMethodException("Не найден main в " + port.getName());
             }
             status.write('R');
-            Thread.UncaughtExceptionHandler monitor = (thread, failure) -> {
-                try {
-                    synchronized (status) {
-                        status.seek(1);
-                        status.write('F');
-                    }
-                } catch (IOException problem) {
-                    Runtime.getRuntime().halt(125);
-                }
-                failure.printStackTrace(System.err);
-            };
+            Thread.UncaughtExceptionHandler monitor =
+                    (thread, failure) -> {
+                        try {
+                            synchronized (status) {
+                                status.seek(1);
+                                status.write('F');
+                            }
+                        } catch (IOException problem) {
+                            Runtime.getRuntime().halt(125);
+                        }
+                        failure.printStackTrace(System.err);
+                    };
             Thread.setDefaultUncaughtExceptionHandler(monitor);
             try {
-                Class<?> entry = Class.forName(arguments[1], false, ClassLoader.getSystemClassLoader());
+                Class<?> entry =
+                        Class.forName(arguments[1], false, ClassLoader.getSystemClassLoader());
                 var main = findMain(entry);
-                if (main == null) throw new NoSuchMethodException("Не найден main в " + entry.getName());
+                if (main == null)
+                    throw new NoSuchMethodException("Не найден main в " + entry.getName());
                 Object instance = null;
                 Class.forName(entry.getName(), true, entry.getClassLoader());
                 if (!Modifier.isStatic(main.getModifiers())) {
@@ -214,7 +248,9 @@ public final class JavaProcess {
                 }
                 main.setAccessible(true);
                 if (main.getParameterCount() == 0) main.invoke(instance);
-                else main.invoke(instance, (Object) Arrays.copyOfRange(arguments, 3, arguments.length));
+                else
+                    main.invoke(
+                            instance, (Object) Arrays.copyOfRange(arguments, 3, arguments.length));
             } catch (Throwable failure) {
                 if (failure instanceof InvocationTargetException wrapped) {
                     failure = wrapped.getCause();
@@ -224,37 +260,74 @@ public final class JavaProcess {
         }
     }
 
-    public static Result run(Path classes, String mainClass, String input, List<String> arguments,
-            Path directory, Duration timeout, int outputLimit) throws IOException, InterruptedException {
-        return run(classes, mainClass, input, arguments, directory, timeout, outputLimit, List.of(), null);
+    public static Result run(
+            Path classes,
+            String mainClass,
+            String input,
+            List<String> arguments,
+            Path directory,
+            Duration timeout,
+            int outputLimit)
+            throws IOException, InterruptedException {
+        return run(
+                classes,
+                mainClass,
+                input,
+                arguments,
+                directory,
+                timeout,
+                outputLimit,
+                List.of(),
+                null);
     }
 
-    private static Result run(Path classes, String mainClass, String input, List<String> arguments,
-            Path directory, Duration timeout, int outputLimit, List<String> vmArguments, Path launcher)
+    private static Result run(
+            Path classes,
+            String mainClass,
+            String input,
+            List<String> arguments,
+            Path directory,
+            Duration timeout,
+            int outputLimit,
+            List<String> vmArguments,
+            Path launcher)
             throws IOException, InterruptedException {
         if (timeout.isNegative() || timeout.isZero() || outputLimit <= 0) {
             throw new IllegalArgumentException("Время и объём вывода должны быть положительными");
         }
         long remaining = timeout.toNanos();
-        var command = new ArrayList<>(List.of(
-            Path.of(System.getProperty("java.home"), "bin", "java").toString(),
-            "-Xmx128m", "-XX:TieredStopAtLevel=1", "-XX:ActiveProcessorCount=1",
-            "-XX:-UsePerfData", "-XX:+DisableAttachMechanism", "--illegal-native-access=deny",
-            "-Dfile.encoding=UTF-8", "-Dstdout.encoding=UTF-8", "-Dstderr.encoding=UTF-8"));
+        var command =
+                new ArrayList<>(
+                        List.of(
+                                Path.of(System.getProperty("java.home"), "bin", "java").toString(),
+                                "-Xmx128m",
+                                "-XX:TieredStopAtLevel=1",
+                                "-XX:ActiveProcessorCount=1",
+                                "-XX:-UsePerfData",
+                                "-XX:+DisableAttachMechanism",
+                                "--illegal-native-access=deny",
+                                "-Dfile.encoding=UTF-8",
+                                "-Dstdout.encoding=UTF-8",
+                                "-Dstderr.encoding=UTF-8"));
         command.addAll(vmArguments);
         String classPath = classes.toAbsolutePath().toString();
-        if (launcher != null) classPath = launcher.toAbsolutePath() + File.pathSeparator + classPath;
+        if (launcher != null)
+            classPath = launcher.toAbsolutePath() + File.pathSeparator + classPath;
         command.addAll(List.of("-cp", classPath, mainClass));
         command.addAll(arguments);
-        Process process = new ProcessBuilder(command)
-            .directory(directory == null ? null : directory.toFile()).start();
+        Process process =
+                new ProcessBuilder(command)
+                        .directory(directory == null ? null : directory.toFile())
+                        .start();
         long started = System.nanoTime();
         var failure = new AtomicReference<Throwable>();
         var budget = new OutputBudget(outputLimit);
         ExecutorService workers = Executors.newVirtualThreadPerTaskExecutor();
         try {
-            Future<String> stdout = workers.submit(() -> capture(process.getInputStream(), budget, failure));
-            Future<String> stderr = workers.submit(() -> capture(process.getErrorStream(), budget, failure));
+            Future<String> stdout =
+                    workers.submit(() -> capture(process.getInputStream(), budget, failure));
+            Future<String> stderr =
+                    workers.submit(() -> capture(process.getErrorStream(), budget, failure));
             workers.submit(() -> {
                 try (var stdin = process.getOutputStream()) {
                     stdin.write(input.getBytes(StandardCharsets.UTF_8));
@@ -266,7 +339,8 @@ public final class JavaProcess {
                 throwFailure(failure.get());
                 remaining = timeout.toNanos() - (System.nanoTime() - started);
                 if (remaining <= 0) throw timedOut();
-                if (process.waitFor(Math.min(remaining, TimeUnit.MILLISECONDS.toNanos(10)),
+                if (process.waitFor(
+                        Math.min(remaining, TimeUnit.MILLISECONDS.toNanos(10)),
                         TimeUnit.NANOSECONDS)) break;
             }
             String out = captured(stdout, timeout.toNanos() - (System.nanoTime() - started));
@@ -285,12 +359,13 @@ public final class JavaProcess {
         }
     }
 
-    private static String capture(InputStream stream, OutputBudget budget,
-            AtomicReference<Throwable> failure) throws IOException {
+    private static String capture(
+            InputStream stream, OutputBudget budget, AtomicReference<Throwable> failure)
+            throws IOException {
         try (stream) {
             var bytes = new ByteArrayOutputStream();
             byte[] buffer = new byte[4096];
-            for (int read; (read = stream.read(buffer)) != -1;) {
+            for (int read; (read = stream.read(buffer)) != -1; ) {
                 budget.add(read);
                 bytes.write(buffer, 0, read);
             }
@@ -326,7 +401,11 @@ public final class JavaProcess {
     private static final class OutputBudget {
         private final int limit;
         private long used;
-        OutputBudget(int limit) { this.limit = limit; }
+
+        OutputBudget(int limit) {
+            this.limit = limit;
+        }
+
         synchronized void add(int count) {
             used += count;
             if (used > limit) throw new StudentOutputLimit(limit);

@@ -60,7 +60,7 @@ System.out.println(title.concat("") == title); // true
 ```java
 String literal = "Java";
 String separate = new String("Java");
-System.out.println(literal == separate);      // false
+System.out.println(literal == separate); // false
 System.out.println(literal.equals(separate)); // true
 ```
 
@@ -164,7 +164,7 @@ if (separator >= 0) {
 фрагментов. Поэтому одинаковая строка `"."` задаёт разные действия:
 
 ```java
-System.out.println("a.b".replace(".", "-"));    // a-b
+System.out.println("a.b".replace(".", "-")); // a-b
 System.out.println("a.b".replaceAll(".", "-")); // ---
 ```
 
@@ -183,10 +183,10 @@ System.out.println("a.b".replaceAll(".", "-")); // ---
 ```java
 String literal = ".";
 String replacement = "$1";
-var pattern = java.util.regex.Pattern.compile(
-    java.util.regex.Pattern.quote(literal));
-String result = pattern.matcher("a.b").replaceAll(
-    java.util.regex.Matcher.quoteReplacement(replacement));
+var pattern = java.util.regex.Pattern.compile(java.util.regex.Pattern.quote(literal));
+String result =
+        pattern.matcher("a.b")
+                .replaceAll(java.util.regex.Matcher.quoteReplacement(replacement));
 System.out.println(result); // a$1b
 ```
 
@@ -212,7 +212,7 @@ static String insertAt(String text, int position, String fragment) {
 // В main:
 String title = "Java";
 System.out.println(insertAt(title, 2, "-")); // Ja-va
-System.out.println(title);                 // Java
+System.out.println(title); // Java
 System.out.println(insertAt(title, 0, "-")); // -Java
 System.out.println(insertAt(title, 4, "-")); // Java-
 ```
@@ -234,9 +234,12 @@ System.out.println(insertAt(title, 4, "-")); // Java-
 
 ```java
 static boolean isWordLetter(char c) {
-    return c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z'
-        || c >= 'А' && c <= 'Я' || c >= 'а' && c <= 'я'
-        || c == 'Ё' || c == 'ё';
+    return c >= 'A' && c <= 'Z'
+            || c >= 'a' && c <= 'z'
+            || c >= 'А' && c <= 'Я'
+            || c >= 'а' && c <= 'я'
+            || c == 'Ё'
+            || c == 'ё';
 }
 
 static String markWords(String text) {
@@ -248,8 +251,7 @@ static String markWords(String text) {
             cursor++;
         } else {
             int start = cursor;
-            while (cursor < text.length()
-                    && isWordLetter(text.charAt(cursor))) {
+            while (cursor < text.length() && isWordLetter(text.charAt(cursor))) {
                 cursor++;
             }
             result.append('[');
@@ -279,7 +281,7 @@ static String markWords(String text) {
 Одинаково выглядящий текст может иметь разные последовательности кодовых точек.
 
 ```java
-String first = "\u00E9";   // é, одна кодовая точка
+String first = "\u00E9"; // é, одна кодовая точка
 String second = "e\u0301"; // e и комбинируемое ударение
 System.out.println(first.equals(second)); // false
 ```
@@ -287,8 +289,7 @@ System.out.println(first.equals(second)); // false
 `equals` точно сравнивает содержимое и не выполняет нормализацию. Если приложение считает канонически эквивалентные формы одинаковыми, можно явно привести обе к выбранной форме.
 
 ```java
-String normalized = java.text.Normalizer.normalize(
-    second, java.text.Normalizer.Form.NFC);
+String normalized = java.text.Normalizer.normalize(second, java.text.Normalizer.Form.NFC);
 System.out.println(first.equals(normalized)); // true
 ```
 
@@ -355,7 +356,7 @@ System.out.println(result); // 5, 7, 4
 ```java
 builder.append(", 9");
 System.out.println(builder); // 5, 7, 4, 9
-System.out.println(result);  // 5, 7, 4
+System.out.println(result); // 5, 7, 4
 ```
 
 Здесь изменение ограничено этапом построения: один метод собирает текст
@@ -381,8 +382,7 @@ System.out.println(result);  // 5, 7, 4
 ```java
 byte[] bytes = "Я".getBytes(java.nio.charset.StandardCharsets.UTF_8);
 System.out.println(bytes.length); // 2
-String restored = new String(bytes,
-    java.nio.charset.StandardCharsets.UTF_8);
+String restored = new String(bytes, java.nio.charset.StandardCharsets.UTF_8);
 System.out.println(restored); // Я
 ```
 

@@ -1,2 +1,21 @@
-import java.util.*;import java.util.function.*;import java.nio.file.Path;
-public class Study {public static Object help(Path file){return new Help(file.toString());}public static boolean helpOn(Object help,String topic){return ((Help)help).helpOn(topic);}public static Object select(Object help){return ((Help)help).getSelection();}public static String selectedTopic(Object selection){return (String)selection;}}
+import java.util.*;
+import java.util.function.*;
+import java.nio.file.Path;
+
+public class Study {
+    public static Object help(Path file) {
+        return new Help(file.toString());
+    }
+
+    public static boolean helpOn(Object help, String topic) {
+        return ((Help) help).helpOn(topic);
+    }
+
+    public static Object select(Object help) {
+        return ((Help) help).getSelection();
+    }
+
+    public static String selectedTopic(Object selection) {
+        return (String) selection;
+    }
+}

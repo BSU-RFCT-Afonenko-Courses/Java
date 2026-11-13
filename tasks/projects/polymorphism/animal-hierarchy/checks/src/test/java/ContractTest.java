@@ -9,8 +9,7 @@ class ContractTest {
     static String capture(Runnable action) {
         PrintStream previous = System.out;
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try
-            (PrintStream out = new PrintStream(bytes, true, StandardCharsets.UTF_8)) {
+        try (PrintStream out = new PrintStream(bytes, true, StandardCharsets.UTF_8)) {
             System.setOut(out);
             action.run();
         } finally {
@@ -18,12 +17,14 @@ class ContractTest {
         }
         return bytes.toString(StandardCharsets.UTF_8).replace("\r\n", "\n");
     }
+
     @Test
     @DisplayName("Равенство по точному классу и имени, согласованный хеш")
     void valueEqualityExactClassAndName() {
         for (int i = 0; i < 3; i++) {
-            Object a = TaskBinding.animal(i, "Луна"), b = TaskBinding.animal(i, "Луна"),
-                   c = TaskBinding.animal(i, "Марс");
+            Object a = TaskBinding.animal(i, "Луна"),
+                    b = TaskBinding.animal(i, "Луна"),
+                    c = TaskBinding.animal(i, "Марс");
             assertEquals(a, b);
             assertEquals(b, a);
             assertEquals(a.hashCode(), b.hashCode());

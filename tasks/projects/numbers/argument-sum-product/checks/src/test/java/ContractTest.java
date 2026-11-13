@@ -9,7 +9,9 @@ import org.junit.jupiter.api.TestReporter;
 class ContractTest {
     private static String run(TestReporter publicReporter, String[] publicCaseIds, String... args)
             throws Exception {
-        return publicOutput(publicReporter, publicCaseIds,
+        return publicOutput(
+                publicReporter,
+                publicCaseIds,
                 JavaProcess.runCheckingUncaught(Main.class, "", args).stdout());
     }
 
@@ -17,8 +19,13 @@ class ContractTest {
         return text.isBlank() ? new String[0] : text.strip().split("\\p{javaWhitespace}+");
     }
 
-    private static void values(TestReporter publicReporter, String[] publicCaseIds, long sum,
-            long product, String... args) throws Exception {
+    private static void values(
+            TestReporter publicReporter,
+            String[] publicCaseIds,
+            long sum,
+            long product,
+            String... args)
+            throws Exception {
         String[] words = tokens(run(publicReporter, publicCaseIds, args));
         assertEquals(2, words.length, "Нужны сумма и произведение");
         for (String word : words)
@@ -73,8 +80,7 @@ class ContractTest {
     private static String publicOutput(TestReporter reporter, String[] ids, String actual) {
         if (reporter != null) {
             String visible = actual.replaceAll("[\\p{Cntrl}&&[^\n\t]]", "�");
-            if (visible.length() > 2000)
-                visible = visible.substring(0, 2000) + "…";
+            if (visible.length() > 2000) visible = visible.substring(0, 2000) + "…";
             for (String id : ids)
                 reporter.publishEntry(Map.of("public-case", id, "actual", "stdout=" + visible));
         }

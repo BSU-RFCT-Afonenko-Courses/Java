@@ -21,8 +21,9 @@ public class SetDemo {
         System.out.println(a.equals(Set.of(1, 2)));
         System.out.println(b.equals(Set.of(2, 3)));
         System.out.println(Set.copyOf(List.of("a", "a")).size());
-        try { Set.of("a", "a"); }
-        catch (IllegalArgumentException ex) {
+        try {
+            Set.of("a", "a");
+        } catch (IllegalArgumentException ex) {
             System.out.println(ex.getClass().getSimpleName());
         }
         var neighbors = new TreeSet<>(List.of(10, 20, 40));

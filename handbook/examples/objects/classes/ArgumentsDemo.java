@@ -1,13 +1,18 @@
 public class ArgumentsDemo {
     static final class Test {
         int a;
-        Test(int value) { a = value; }
+
+        Test(int value) {
+            a = value;
+        }
     }
+
     static void localSwap(Test left, Test right) {
         Test saved = left;
         left = right;
         right = saved;
     }
+
     static void inspect(int... values) {
         System.out.println(values.length);
     }

@@ -13,7 +13,9 @@ class DemoTest {
 
     private static void check(String expected, String actual) {
         if (expected.equals("Подходящих чисел нет")) {
-            assertEquals(expected, actual.replaceFirst("\\r?\\n\\z", ""),
+            assertEquals(
+                    expected,
+                    actual.replaceFirst("\\r?\\n\\z", ""),
                     "Сохраните сообщение об отсутствии результата");
             return;
         }
@@ -22,14 +24,18 @@ class DemoTest {
                 actual.isBlank() ? new String[0] : actual.strip().split("\\p{javaWhitespace}+");
         assertEquals(wanted.length, found.length, "Сохраните число значений");
         for (int i = 0; i < wanted.length; i++)
-            assertEquals(new BigInteger(wanted[i]), new BigInteger(found[i]),
+            assertEquals(
+                    new BigInteger(wanted[i]),
+                    new BigInteger(found[i]),
                     "Сохраните знак, порядок и повторы");
     }
 
     private static int[] values() throws Exception {
         return Arrays.stream(run("").strip().split("\\p{javaWhitespace}+"))
-                .mapToInt(value -> assertDoesNotThrow(() -> Integer.parseInt(value),
-                        "Выведите простые числа в виде целых чисел, разделённых пробелами"))
+                .mapToInt(value ->
+                        assertDoesNotThrow(
+                                () -> Integer.parseInt(value),
+                                "Выведите простые числа в виде целых чисел, разделённых пробелами"))
                 .toArray();
     }
 

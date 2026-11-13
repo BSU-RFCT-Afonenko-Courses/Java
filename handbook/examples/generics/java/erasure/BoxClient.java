@@ -2,6 +2,7 @@ class BoxClient {
     static String read(Box<String> box) {
         return box.get();
     }
+
     public static void main(String[] args) {
         System.out.println(read(new Box<>("Java")));
     }
@@ -11,11 +12,19 @@ class BoxClient {
 class ParameterDemo {
     static final class ObjectBox {
         private final Object value;
-        ObjectBox(Object value) { this.value = value; }
-        Object get() { return value; }
+
+        ObjectBox(Object value) {
+            this.value = value;
+        }
+
+        Object get() {
+            return value;
+        }
     }
 
-    static final class Book { boolean borrowed; }
+    static final class Book {
+        boolean borrowed;
+    }
 
     public static void main(String[] args) {
         ObjectBox text = new ObjectBox("Java");

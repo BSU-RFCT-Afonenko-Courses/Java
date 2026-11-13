@@ -7,13 +7,11 @@ import java.nio.file.StandardOpenOption;
 public final class FileChannelDemo {
     public static void main(String[] args) throws IOException {
         if (args.length != 1) {
-            throw new IllegalArgumentException(
-                    "Запуск: java FileChannelDemo <файл>");
+            throw new IllegalArgumentException("Запуск: java FileChannelDemo <файл>");
         }
 
         ByteBuffer buffer = ByteBuffer.allocate(4);
-        try (FileChannel channel = FileChannel.open(
-                Path.of(args[0]), StandardOpenOption.READ)) {
+        try (FileChannel channel = FileChannel.open(Path.of(args[0]), StandardOpenOption.READ)) {
             int count = channel.read(buffer);
             System.out.println("Первая порция, байтов: " + count);
             System.out.println("Позиция файла: " + channel.position());

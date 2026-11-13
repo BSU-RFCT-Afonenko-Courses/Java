@@ -10,21 +10,28 @@ import org.junit.jupiter.api.TestReporter;
 class ContractTest {
     private static String run(TestReporter publicReporter, String[] publicCaseIds, String input)
             throws Exception {
-        return publicOutput(publicReporter, publicCaseIds,
+        return publicOutput(
+                publicReporter,
+                publicCaseIds,
                 JavaProcess.runCheckingUncaught(Main.class, input).stdout());
     }
 
     private static void exact(String expected, String actual) {
         assertTrue(actual.strip().matches("[+-]?[0-9]+"), "Выведите целое число");
-        assertEquals(new BigInteger(expected), new BigInteger(actual.strip()),
+        assertEquals(
+                new BigInteger(expected),
+                new BigInteger(actual.strip()),
                 "Выведите целое количество пробелов");
     }
 
     @Test
     @DisplayName("Ввод a b c.after dot: два пробела до первой точки")
     void published(TestReporter publicReporter) throws Exception {
-        exact("2",
-                publicOutput(publicReporter, new String[] {"normal"},
+        exact(
+                "2",
+                publicOutput(
+                        publicReporter,
+                        new String[] {"normal"},
                         JavaProcess.runCheckingUncaught(Main.class, "a b c.after dot").stdout()));
         exact("2", run(null, null, "a b c.after dot  "));
     }
@@ -75,8 +82,7 @@ class ContractTest {
     private static String publicOutput(TestReporter reporter, String[] ids, String actual) {
         if (reporter != null) {
             String visible = actual.replaceAll("[\\p{Cntrl}&&[^\n\t]]", "�");
-            if (visible.length() > 2000)
-                visible = visible.substring(0, 2000) + "…";
+            if (visible.length() > 2000) visible = visible.substring(0, 2000) + "…";
             for (String id : ids)
                 reporter.publishEntry(Map.of("public-case", id, "actual", "stdout=" + visible));
         }

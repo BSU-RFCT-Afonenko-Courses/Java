@@ -154,10 +154,9 @@ String first = codes.get(0); // s1
 [@bib-collections-sequenced-guide]
 
 ```java
-SequencedCollection<String> codes =
-    new LinkedHashSet<>(List.of("s2", "s1", "s2"));
+SequencedCollection<String> codes = new LinkedHashSet<>(List.of("s2", "s1", "s2"));
 System.out.println(codes.getFirst()); // s2
-System.out.println(codes.getLast());  // s1
+System.out.println(codes.getLast()); // s1
 ```
 
 Порядок обхода этого множества определяется добавлением кодов.
@@ -434,9 +433,9 @@ b ────────> B: строка "Ada"
 ### Сравнение строк {#sec-lecture-equality-collections-step-01}
 
 ```java
-System.out.println(a == b);      // false
+System.out.println(a == b); // false
 System.out.println(a.equals(b)); // true
-System.out.println(alias == a);  // true
+System.out.println(alias == a); // true
 ```
 
 `==` над ссылками проверяет общий объект. `String.equals` сравнивает
@@ -507,7 +506,7 @@ System.out.println(containsCode(codes, "s9")); // false
 ```java
 StudentId first = new StudentId("s17");
 StudentId second = new StudentId("s17");
-System.out.println(first == second);       // false
+System.out.println(first == second); // false
 System.out.println(first.equals(second)); // true
 System.out.println(first.hashCode() == second.hashCode()); // true
 ```
@@ -528,8 +527,8 @@ System.out.println(first.hashCode() == second.hashCode()); // true
 Set<StudentId> ids = new HashSet<>();
 ids.add(first);
 System.out.println(ids.contains(second)); // true
-System.out.println(ids.add(second));      // false
-System.out.println(ids.size());           // 1
+System.out.println(ids.add(second)); // false
+System.out.println(ids.size()); // 1
 ```
 
 Одинаковый хеш направил поиск к сохранённому ключу; `equals` подтвердил
@@ -553,8 +552,8 @@ var collisions = new HashMap<StudentId, Integer>(16);
 collisions.put(aa, 1);
 collisions.put(bb, 2);
 System.out.println(aa.hashCode() == bb.hashCode()); // true
-System.out.println(aa.equals(bb));                  // false
-System.out.println(collisions.size());             // 2
+System.out.println(aa.equals(bb)); // false
+System.out.println(collisions.size()); // 2
 ```
 
 Коллизия — совпадение хешей неравных объектов. Равенство различает ключи,
@@ -596,8 +595,8 @@ flowchart LR
 ```java
 StudentId repeated = new StudentId("BB");
 System.out.println(collisions.put(repeated, 20)); // 2
-System.out.println(collisions.size());           // 2
-System.out.println(collisions.get(bb));          // 20
+System.out.println(collisions.size()); // 2
+System.out.println(collisions.get(bb)); // 20
 ```
 
 | Сохранённый код | До `put` | После `put` |
@@ -622,7 +621,7 @@ System.out.println(collisions.get(bb));          // 20
 ```java
 Student before = new Student("s1", "Ada", 90);
 Student after = new Student("s1", "Ada", 95);
-System.out.println(before.equals(after));           // false
+System.out.println(before.equals(after)); // false
 System.out.println(before.id().equals(after.id())); // true
 ```
 
@@ -642,11 +641,20 @@ System.out.println(before.id().equals(after.id())); // true
 ```java
 final class MutableKey {
     int code;
-    MutableKey(int code) { this.code = code; }
-    @Override public boolean equals(Object other) {
+
+    MutableKey(int code) {
+        this.code = code;
+    }
+
+    @Override
+    public boolean equals(Object other) {
         return other instanceof MutableKey k && code == k.code;
     }
-    @Override public int hashCode() { return code; }
+
+    @Override
+    public int hashCode() {
+        return code;
+    }
 }
 ```
 
@@ -687,7 +695,7 @@ flowchart LR
 ```java
 key.code = 2;
 System.out.println(broken.get(key)); // OpenJDK 25: null
-System.out.println(broken.size());   // OpenJDK 25: 1
+System.out.println(broken.size()); // OpenJDK 25: 1
 ```
 
 ```{mermaid}
@@ -712,7 +720,7 @@ flowchart LR
 ```java
 var entry = broken.entrySet().iterator().next();
 System.out.println(entry.getKey() == key); // true
-System.out.println(entry.getValue());     // stored
+System.out.println(entry.getValue()); // stored
 ```
 
 `entrySet()` предоставляет пары карты, `iterator().next()` получает
@@ -804,7 +812,7 @@ ASCII-символов. Правила сопоставления регистр
 
 ```java
 System.out.println("Ada".compareTo("Lin") < 0); // true
-System.out.println("s10".compareTo("s2") < 0);  // true
+System.out.println("s10".compareTo("s2") < 0); // true
 ```
 
 Отрицательный результат означает «раньше», положительный — «позже»,
@@ -851,9 +859,12 @@ final class ReportOrder implements Comparator<Student> {
 ### Сортировка списка {#sec-lecture-equality-collections-step-12 .continuation}
 
 ```java
-var rows = new ArrayList<>(List.of(
-    new Student("s3", "Ann", 90), new Student("s2", "Lin", 70),
-    new Student("s1", "Ada", 90)));
+var rows =
+        new ArrayList<>(
+                List.of(
+                        new Student("s3", "Ann", 90),
+                        new Student("s2", "Lin", 70),
+                        new Student("s1", "Ada", 90)));
 rows.sort(new ReportOrder());
 for (Student row : rows) System.out.println(row.id());
 // s1
@@ -898,11 +909,12 @@ flowchart TD
 ### Ноль сравнения в TreeSet {#sec-lecture-equality-collections-step-14}
 
 ```java
-Comparator<Student> byScore = new Comparator<>() {
-    public int compare(Student a, Student b) {
-        return Integer.compare(a.score(), b.score());
-    }
-};
+Comparator<Student> byScore =
+        new Comparator<>() {
+            public int compare(Student a, Student b) {
+                return Integer.compare(a.score(), b.score());
+            }
+        };
 Student a = new Student("s1", "Ada", 90);
 Student b = new Student("s2", "Lin", 90);
 var set = new TreeSet<Student>(byScore);
@@ -920,10 +932,10 @@ equals записи и единственный признак данного к
 ### Совпадение по порядку {.continuation}
 
 ```java
-System.out.println(a.equals(b));  // false
-System.out.println(set.add(b));  // false
+System.out.println(a.equals(b)); // false
+System.out.println(set.add(b)); // false
 System.out.println(set.contains(b)); // true
-System.out.println(set.size());  // 1
+System.out.println(set.size()); // 1
 ```
 
 Участники различаются по данным, но оба имеют балл 90. При нулевом результате
@@ -1319,7 +1331,7 @@ flowchart LR
 var codes = new ArrayList<>(List.of("s1", "s2"));
 var reverse = codes.reversed();
 reverse.addFirst("s3");
-System.out.println(codes);   // [s1, s2, s3]
+System.out.println(codes); // [s1, s2, s3]
 System.out.println(reverse); // [s3, s2, s1]
 ```
 
@@ -1394,11 +1406,11 @@ snapshot ───────>    [Java]
 
 ```java
 book.borrow();
-System.out.println(source.get(0).borrowed());   // true
-System.out.println(view.get(0).borrowed());     // true
-System.out.println(copy.get(0).borrowed());     // true
+System.out.println(source.get(0).borrowed()); // true
+System.out.println(view.get(0).borrowed()); // true
+System.out.println(copy.get(0).borrowed()); // true
 System.out.println(snapshot.get(0).borrowed()); // true
-System.out.println(snapshot.get(0) == book);    // true
+System.out.println(snapshot.get(0) == book); // true
 ```
 
 ```{mermaid}
@@ -1428,7 +1440,7 @@ var clientList = new ArrayList<>(List.of(book));
 var owned = new ArrayList<>(clientList);
 clientList.clear();
 System.out.println(clientList.size()); // 0
-System.out.println(owned.size());      // 1
+System.out.println(owned.size()); // 1
 ```
 
 Владелец сохранил самостоятельную последовательность ссылок.
@@ -1472,8 +1484,11 @@ static Student findStudent(Iterable<Student> students, String code) {
 Коды поступают в порядке регистрации `s3, s2, s1`:
 
 ```java
-var input = List.of(new Student("s3", "Ann", 90),
-    new Student("s2", "Lin", 70), new Student("s1", "Ada", 90));
+var input =
+        List.of(
+                new Student("s3", "Ann", 90),
+                new Student("s2", "Lin", 70),
+                new Student("s1", "Ada", 90));
 var current = new LinkedHashMap<StudentId, Student>();
 for (Student student : input) {
     var id = new StudentId(student.id());
@@ -1558,8 +1573,8 @@ current.put(new StudentId("s1"), new Student("s1", "Ada", 95));
 current.put(new StudentId("s4"), new Student("s4", "Max", 80));
 System.out.println(current.get(new StudentId("s1")).score()); // 95
 System.out.println(report.get(0).score()); // 90
-System.out.println(current.size());       // 4
-System.out.println(report.size());        // 3
+System.out.println(current.size()); // 4
+System.out.println(report.size()); // 3
 ```
 
 ```{mermaid}
@@ -1701,7 +1716,9 @@ b, alias ──> B: строка "Ada"
 ### Унаследованное равенство {#sec-lecture-equality-collections-step-03}
 
 ```java
-class Token { int code = 17; }
+class Token {
+    int code = 17;
+}
 Token first = new Token();
 Token second = new Token();
 System.out.println(first.equals(second)); // false
@@ -1764,12 +1781,12 @@ final class StudentId {
 Продолжение того же объявления:
 
 ```java
-    @Override
-    public boolean equals(Object other) {
-        if (this == other) return true;
-        if (!(other instanceof StudentId id)) return false;
-        return value.equals(id.value);
-    }
+@Override
+public boolean equals(Object other) {
+    if (this == other) return true;
+    if (!(other instanceof StudentId id)) return false;
+    return value.equals(id.value);
+}
 ```
 
 Тот же объект равен себе. `null` и объект другого типа отвергаются
@@ -2039,8 +2056,7 @@ System.out.println(map.get(new MutableKey(2))); // stored
 
 ```java
 Comparator<Student> order =
-    Comparator.comparingInt(Student::score).reversed()
-        .thenComparing(Student::id);
+        Comparator.comparingInt(Student::score).reversed().thenComparing(Student::id);
 ```
 
 `Student::score` передаёт чтение балла. `comparingInt` строит возрастающий
@@ -2102,7 +2118,7 @@ names.add("Max"); // UnsupportedOperationException
 var names = new ArrayList<>(List.of("Ada", "Lin"));
 var reverse = names.reversed();
 reverse.set(0, "Max");
-System.out.println(names);   // [Ada, Max]
+System.out.println(names); // [Ada, Max]
 System.out.println(reverse); // [Max, Ada]
 ```
 
@@ -2238,7 +2254,7 @@ var names = new LinkedHashSet<String>();
 System.out.println(names.add("Ada")); // true
 System.out.println(names.add("Lin")); // true
 System.out.println(names.add("Ada")); // false
-System.out.println(names);            // [Ada, Lin]
+System.out.println(names); // [Ada, Lin]
 ```
 
 Второй `Ada` распознан как существующее значение. `add` сообщил
@@ -2323,8 +2339,8 @@ put("s1", 95): какое значение вернётся и сколько к
 
 ```java
 System.out.println(scores.put("s1", 95)); // 90
-System.out.println(scores.get("s1"));     // 95
-System.out.println(scores.size());        // 2
+System.out.println(scores.get("s1")); // 95
+System.out.println(scores.size()); // 2
 ```
 
 Найдено существующее соответствие `s1 → 90`. `put` заменил значение,
@@ -2342,12 +2358,12 @@ System.out.println(scores.size());        // 2
 
 ```java
 scores.put("s3", null);
-System.out.println(scores.get("s3"));                  // null
-System.out.println(scores.get("missing"));             // null
-System.out.println(scores.containsKey("s3"));          // true
-System.out.println(scores.containsKey("missing"));     // false
-System.out.println(scores.getOrDefault("s3", 0));       // null
-System.out.println(scores.getOrDefault("missing", 0));  // 0
+System.out.println(scores.get("s3")); // null
+System.out.println(scores.get("missing")); // null
+System.out.println(scores.containsKey("s3")); // true
+System.out.println(scores.containsKey("missing")); // false
+System.out.println(scores.getOrDefault("s3", 0)); // null
+System.out.println(scores.getOrDefault("missing", 0)); // 0
 ```
 
 `containsKey` различает два состояния. Запасное значение используется

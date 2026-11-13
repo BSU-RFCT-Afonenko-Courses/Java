@@ -15,5 +15,7 @@ final class CountingSender implements Sender, Counted {
     }
 
     @Override
-    public int count() { return count; }
+    public int count() {
+        return count;
+    }
 }

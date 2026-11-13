@@ -16,13 +16,13 @@ public final class AsyncReadDemo {
                     "Запуск: java AsyncReadDemo <future|callback> <файл>");
         }
 
-        try (AsynchronousFileChannel channel = AsynchronousFileChannel.open(
-                Path.of(args[1]), StandardOpenOption.READ)) {
+        try (AsynchronousFileChannel channel =
+                AsynchronousFileChannel.open(Path.of(args[1]), StandardOpenOption.READ)) {
             switch (args[0]) {
                 case "future" -> readWithFutures(channel);
                 case "callback" -> readWithCallback(channel);
-                default -> throw new IllegalArgumentException(
-                        "Режим должен быть future или callback");
+                default ->
+                        throw new IllegalArgumentException("Режим должен быть future или callback");
             }
         }
     }
@@ -45,7 +45,10 @@ public final class AsyncReadDemo {
             throws InterruptedException, ExecutionException {
         ByteBuffer buffer = ByteBuffer.allocate(4);
         CompletableFuture<String> report = new CompletableFuture<>();
-        channel.read(buffer, 0, buffer,
+        channel.read(
+                buffer,
+                0,
+                buffer,
                 new CompletionHandler<Integer, ByteBuffer>() {
                     @Override
                     public void completed(Integer count, ByteBuffer data) {
@@ -67,13 +70,14 @@ public final class AsyncReadDemo {
 
     private static String describe(long offset, int count, ByteBuffer buffer) {
         StringBuilder text = new StringBuilder();
-        text.append("Позиция ").append(offset)
-                .append(", получено байтов: ").append(count)
+        text.append("Позиция ")
+                .append(offset)
+                .append(", получено байтов: ")
+                .append(count)
                 .append(", данные:");
         buffer.flip();
         while (buffer.hasRemaining()) {
-            text.append(' ').append(String.format(
-                    "%02X", Byte.toUnsignedInt(buffer.get())));
+            text.append(' ').append(String.format("%02X", Byte.toUnsignedInt(buffer.get())));
         }
         return text.toString();
     }

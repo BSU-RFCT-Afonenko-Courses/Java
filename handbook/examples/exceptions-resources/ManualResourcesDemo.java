@@ -5,8 +5,7 @@ public class ManualResourcesDemo {
         private final String name;
         private final boolean failClose;
 
-        ManualResource(String name, boolean failOpen, boolean failClose)
-                throws IOException {
+        ManualResource(String name, boolean failOpen, boolean failClose) throws IOException {
             if (failOpen) throw new IOException("open " + name);
             this.name = name;
             this.failClose = failClose;
@@ -19,8 +18,7 @@ public class ManualResourcesDemo {
         }
     }
 
-    static void useManually(boolean failSecondOpen, boolean failSecondClose)
-            throws IOException {
+    static void useManually(boolean failSecondOpen, boolean failSecondClose) throws IOException {
         var first = new ManualResource("A", false, false);
         try {
             var second = new ManualResource("B", failSecondOpen, failSecondClose);

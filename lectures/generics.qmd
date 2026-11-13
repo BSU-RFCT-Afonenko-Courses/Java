@@ -35,8 +35,14 @@ format:
 ```java
 final class ObjectBox {
     private final Object value;
-    ObjectBox(Object value) { this.value = value; }
-    Object get() { return value; }
+
+    ObjectBox(Object value) {
+        this.value = value;
+    }
+
+    Object get() {
+        return value;
+    }
 }
 ```
 
@@ -109,8 +115,14 @@ String text = (String) box.get(); // ClassCastException
 ```java
 final class Box<T> {
     private final T value;
-    Box(T value) { this.value = value; }
-    T get() { return value; }
+
+    Box(T value) {
+        this.value = value;
+    }
+
+    T get() {
+        return value;
+    }
 }
 ```
 
@@ -164,8 +176,8 @@ Box<String> title = new Box<>(25); // ошибка компиляции
 
 ```java
 Box<String> first = new Box<>(null); // Box<String>
-var second = new Box<>(null);        // Box<Object>
-var third = new Box<String>(null);   // Box<String>
+var second = new Box<>(null); // Box<Object>
+var third = new Box<String>(null); // Box<String>
 ```
 
 При `var` компилятор выводит статический тип локальной переменной из инициализатора.
@@ -214,13 +226,15 @@ int number = edition.get();
 Книга может быть выдана читателю. Состояние представим одним полем:
 
 ```java
-final class Book { boolean borrowed; }
+final class Book {
+    boolean borrowed;
+}
 
 Book book = new Book();
 Box<Book> stored = new Box<>(book);
 book.borrowed = true;
 System.out.println(stored.get().borrowed); // true
-System.out.println(stored.get() == book);  // true
+System.out.println(stored.get() == book); // true
 ```
 
 Конструктор сохранил ссылку `book`, поэтому поле коробки и переменная
@@ -316,7 +330,7 @@ static <T extends Number> double twice(T value) {
 ### Порядок значений {#sec-l-generics-comparison-sign}
 
 ```java
-System.out.println("Ada".compareTo("Lin"));   // -11
+System.out.println("Ada".compareTo("Lin")); // -11
 System.out.println("Java".compareTo("Java")); // 0
 System.out.println("Lin".compareTo("Ada") > 0); // true
 ```
@@ -518,13 +532,20 @@ static void addSmallIntegers(List<? super Integer> target) {
 ```java
 class Person implements Comparable<Person> {
     final int rank;
-    Person(int rank) { this.rank = rank; }
+
+    Person(int rank) {
+        this.rank = rank;
+    }
+
     public int compareTo(Person other) {
         return Integer.compare(rank, other.rank);
     }
 }
+
 final class Student extends Person {
-    Student(int rank) { super(rank); }
+    Student(int rank) {
+        super(rank);
+    }
 }
 ```
 
@@ -541,7 +562,7 @@ final class Student extends Person {
 ```java
 Student a = new Student(1);
 Student b = new Student(2);
-Person person = larger(a, b);   // допустимо, T = Person
+Person person = larger(a, b); // допустимо, T = Person
 Student student = larger(a, b); // ошибка компиляции
 ```
 
@@ -566,8 +587,7 @@ Student student = larger(a, b); // ошибка компиляции
 Используем тех же `a` и `b` с рейтингами `1` и `2`:
 
 ```java
-static <T extends Comparable<? super T>>
-T larger(T left, T right) {
+static <T extends Comparable<? super T>> T larger(T left, T right) {
     return left.compareTo(right) >= 0 ? left : right;
 }
 
@@ -592,8 +612,7 @@ System.out.println(student == b); // true
 ### Источник и приёмник {#sec-l-generics-copy}
 
 ```java
-static <T> void copy(List<? extends T> source,
-                     List<? super T> target) {
+static <T> void copy(List<? extends T> source, List<? super T> target) {
     for (T value : source) {
         target.add(value);
     }
@@ -748,8 +767,14 @@ System.out.println(values.size()); // 0
 ```java
 final class Box<T> {
     private final T value;
-    Box(T value) { this.value = value; }
-    T get() { return value; }
+
+    Box(T value) {
+        this.value = value;
+    }
+
+    T get() {
+        return value;
+    }
 }
 ```
 
@@ -826,9 +851,14 @@ System.out.println(text.getClass() == number.getClass()); // true
 ### Мостовой метод после стирания {#sec-l-generics-bridge-source}
 
 ```java
-interface Source<T> { T get(); }
+interface Source<T> {
+    T get();
+}
+
 final class TextSource implements Source<String> {
-    public String get() { return "Java"; }
+    public String get() {
+        return "Java";
+    }
 }
 ```
 
@@ -910,7 +940,7 @@ System.out.println(read(new TextSource())); // Java
 ```java
 List<String> words = new ArrayList<>();
 List raw = words;
-raw.add(25);                // unchecked-предупреждение
+raw.add(25); // unchecked-предупреждение
 String word = words.get(0); // ClassCastException
 ```
 
@@ -970,7 +1000,9 @@ $1\cdot3+2\cdot4=11$. Алгоритму нужны сложение, умнож
 ```java
 interface Arithmetic<T> {
     T zero();
+
     T add(T left, T right);
+
     T multiply(T left, T right);
 }
 ```
@@ -1020,15 +1052,22 @@ static <T> T dot(List<T> left, List<T> right, Arithmetic<T> arithmetic) {
 
 ```java
 final class DoubleArithmetic implements Arithmetic<Double> {
-    public Double zero() { return 0.0; }
-    public Double add(Double a, Double b) { return a + b; }
-    public Double multiply(Double a, Double b) { return a * b; }
+    public Double zero() {
+        return 0.0;
+    }
+
+    public Double add(Double a, Double b) {
+        return a + b;
+    }
+
+    public Double multiply(Double a, Double b) {
+        return a * b;
+    }
 }
 ```
 
 ```java
-double value = dot(List.of(1.0, 2.0), List.of(3.0, 4.0),
-                   new DoubleArithmetic());
+double value = dot(List.of(1.0, 2.0), List.of(3.0, 4.0), new DoubleArithmetic());
 System.out.println(value); // 11.0
 ```
 
@@ -1047,7 +1086,9 @@ System.out.println(value); // 11.0
 В `DoubleArithmetic` изменим только одну строку:
 
 ```java
-public Double zero() { return 1.0; } // было 0.0
+public Double zero() {
+    return 1.0;
+} // было 0.0
 ```
 
 Те же векторы `[1.0, 2.0]` и `[3.0, 4.0]` теперь дают **12.0**.
@@ -1075,10 +1116,11 @@ public Double zero() { return 1.0; } // было 0.0
 ```java
 record Complex(double re, double im) {}
 
-Complex value = dot(
-    List.of(new Complex(1, 1), new Complex(2, 0)),
-    List.of(new Complex(3, 0), new Complex(4, -1)),
-    new ComplexArithmetic());
+Complex value =
+        dot(
+                List.of(new Complex(1, 1), new Complex(2, 0)),
+                List.of(new Complex(3, 0), new Complex(4, -1)),
+                new ComplexArithmetic());
 // value: Complex[re=11.0, im=1.0]
 ```
 
@@ -1497,7 +1539,10 @@ int value = result.value();
 ### Захват неизвестного типа во вспомогательном методе {#sec-l-generics-capture}
 
 ```java
-static void repeatFirst(List<?> values) { repeat(values); }
+static void repeatFirst(List<?> values) {
+    repeat(values);
+}
+
 private static <T> void repeat(List<T> values) {
     if (!values.isEmpty()) values.add(values.get(0));
 }
@@ -1592,13 +1637,16 @@ class Arithmetic[T](Protocol):
 record Complex(double re, double im) {}
 
 final class ComplexArithmetic implements Arithmetic<Complex> {
-    public Complex zero() { return new Complex(0.0, 0.0); }
+    public Complex zero() {
+        return new Complex(0.0, 0.0);
+    }
+
     public Complex add(Complex a, Complex b) {
         return new Complex(a.re() + b.re(), a.im() + b.im());
     }
+
     public Complex multiply(Complex a, Complex b) {
-        return new Complex(a.re() * b.re() - a.im() * b.im(),
-                           a.re() * b.im() + a.im() * b.re());
+        return new Complex(a.re() * b.re() - a.im() * b.im(), a.re() * b.im() + a.im() * b.re());
     }
 }
 ```

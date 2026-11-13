@@ -1,50 +1,50 @@
 project:
   pre-render:
-  - _extensions/Afonenko-Course-Tools/course-core/entrypoints/pre.ts
+    - _extensions/Afonenko-Course-Tools/course-core/entrypoints/pre.ts
   post-render:
-  - _extensions/Afonenko-Course-Tools/reference-catalog/entrypoints/post.ts
-  - ../_extensions/Afonenko-Course-Tools/course-site/entrypoints/collect.ts
-  - _extensions/Afonenko-Course-Tools/course-core/entrypoints/post.ts
+    - _extensions/Afonenko-Course-Tools/reference-catalog/entrypoints/post.ts
+    - ../_extensions/Afonenko-Course-Tools/course-site/entrypoints/collect.ts
+    - _extensions/Afonenko-Course-Tools/course-core/entrypoints/post.ts
   type: book
   output-dir: _output
   resources:
-  - '!**/projects/**'
-  - '!**/_control.qmd'
-  - '!_generated/**'
-  - '!tools/**'
-  - '!docs/**'
-  - '!_extensions/**'
-  - '!**/_*.qmd'
-  - '!_freeze/**'
-  - '!.quarto/**'
-  - '!**/*.qmd'
-  - '!**/*.rmd'
-  - '!**/*.ipynb'
-  - '!**/_output/**'
-  - '!**/_site*/**'
-  - '!**/_generated/**'
-  - '!**/.superpowers/**'
+    - "!**/projects/**"
+    - "!**/_control.qmd"
+    - "!_generated/**"
+    - "!tools/**"
+    - "!docs/**"
+    - "!_extensions/**"
+    - "!**/_*.qmd"
+    - "!_freeze/**"
+    - "!.quarto/**"
+    - "!**/*.qmd"
+    - "!**/*.rmd"
+    - "!**/*.ipynb"
+    - "!**/_output/**"
+    - "!**/_site*/**"
+    - "!**/_generated/**"
+    - "!**/.superpowers/**"
 book:
   repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
   repo-branch: master
   repo-subdir: theory
   repo-actions:
-  - source
-  - issue
+    - source
+    - issue
   navbar:
     title: Программирование на Java
     logo-href: https://bsu-rfct-afonenko-courses.github.io/Java/index.html
     left:
-    - text: Теория
-      href: index.html
-    - text: Задания
-      href: https://bsu-rfct-afonenko-courses.github.io/Java/tasks/index.html
-    - text: Лекции
-      href: https://bsu-rfct-afonenko-courses.github.io/Java/lectures/index.html
-    - text: Введения к лабораторным
-      href: https://bsu-rfct-afonenko-courses.github.io/Java/practice/index.html
-    - text: Справочник
-      href: https://bsu-rfct-afonenko-courses.github.io/Java/handbook/index.html
+      - text: Теория
+        href: index.html
+      - text: Задания
+        href: https://bsu-rfct-afonenko-courses.github.io/Java/tasks/index.html
+      - text: Лекции
+        href: https://bsu-rfct-afonenko-courses.github.io/Java/lectures/index.html
+      - text: Введения к лабораторным
+        href: https://bsu-rfct-afonenko-courses.github.io/Java/practice/index.html
+      - text: Справочник
+        href: https://bsu-rfct-afonenko-courses.github.io/Java/handbook/index.html
   title: Теория Java
   subtitle: Язык, модели программирования и устройство приложений
   search: true
@@ -52,44 +52,44 @@ book:
   sidebar:
     collapse-level: 1
   chapters:
-  - index.qmd
-  - part: Язык и платформа
-    chapters:
-    - languages.qmd
-    - platform.qmd
-  - part: Значения и вычисления
-    chapters:
-    - types.qmd
-    - expressions.qmd
-    - control.qmd
-    - methods.qmd
-    - arrays.qmd
-    - text.qmd
-  - part: Объектная модель
-    chapters:
-    - objects.qmd
-    - classes.qmd
-    - inheritance.qmd
-    - interfaces.qmd
-    - data-classes.qmd
-  - part: Обобщённые типы и коллекции
-    chapters:
-    - type-parameters.qmd
-    - type-relations.qmd
-    - equality.qmd
-    - collections.qmd
-  - part: Функции и последовательности
-    chapters:
-    - functions.qmd
-    - streams.qmd
-  - part: Ошибки, ресурсы и приложение
-    chapters:
-    - exceptions.qmd
-    - resources.qmd
-    - io.qmd
-    - application.qmd
-  - system-practice.qmd
-  - references.qmd
+    - index.qmd
+    - part: Язык и платформа
+      chapters:
+        - languages.qmd
+        - platform.qmd
+    - part: Значения и вычисления
+      chapters:
+        - types.qmd
+        - expressions.qmd
+        - control.qmd
+        - methods.qmd
+        - arrays.qmd
+        - text.qmd
+    - part: Объектная модель
+      chapters:
+        - objects.qmd
+        - classes.qmd
+        - inheritance.qmd
+        - interfaces.qmd
+        - data-classes.qmd
+    - part: Обобщённые типы и коллекции
+      chapters:
+        - type-parameters.qmd
+        - type-relations.qmd
+        - equality.qmd
+        - collections.qmd
+    - part: Функции и последовательности
+      chapters:
+        - functions.qmd
+        - streams.qmd
+    - part: Ошибки, ресурсы и приложение
+      chapters:
+        - exceptions.qmd
+        - resources.qmd
+        - io.qmd
+        - application.qmd
+    - system-practice.qmd
+    - references.qmd
 lang: ru
 language:
   skip-to-content: Перейти к основному содержанию
@@ -105,12 +105,12 @@ format:
 profile:
   default: student
   group:
-  - - student
-    - full
+    - - student
+      - full
 filters:
-- course-core
-- course-presentation
-- reference-catalog
+  - course-core
+  - course-presentation
+  - reference-catalog
 reference-catalog:
   namespace: theory
   imports:
@@ -121,20 +121,21 @@ reference-catalog:
       title: System Practice
 fail-if-warnings: true
 bibliography:
-- ../bibliography/context-data.bib
-- ../bibliography/context-objects.bib
-- ../bibliography/context-foundations.bib
-- ../bibliography/books.bib
-- ../bibliography/data.bib
-- ../bibliography/foundations.bib
-- ../bibliography/history.bib
-- ../bibliography/java.bib
-- ../bibliography/languages.bib
-- ../bibliography/objects.bib
-- ../bibliography/text-api.bib
+  - ../bibliography/context-data.bib
+  - ../bibliography/context-objects.bib
+  - ../bibliography/context-foundations.bib
+  - ../bibliography/books.bib
+  - ../bibliography/data.bib
+  - ../bibliography/foundations.bib
+  - ../bibliography/history.bib
+  - ../bibliography/java.bib
+  - ../bibliography/languages.bib
+  - ../bibliography/objects.bib
+  - ../bibliography/text-api.bib
 csl: ../bibliography/numeric-book-ru.csl
 link-citations: true
-nocite: '@bib-context-collections-design, @bib-context-cpp-map, @bib-context-cpp-raii, @bib-context-epam-exceptions,
+nocite:
+  "@bib-context-collections-design, @bib-context-cpp-map, @bib-context-cpp-raii, @bib-context-epam-exceptions,
   @bib-context-go-defer, @bib-context-go-errors, @bib-context-jep421, @bib-context-jls1-exceptions,
   @bib-context-lambda-design, @bib-context-printstream, @bib-context-python-dataclass,
   @bib-context-python-dictionaries, @bib-context-python-open, @bib-context-python-with, @bib-context-rust-ownership,
@@ -173,14 +174,14 @@ nocite: '@bib-context-collections-design, @bib-context-cpp-map, @bib-context-cpp
   @bib-objects-schildt-classes, @bib-objects-schildt-generics, @bib-objects-schildt-inheritance,
   @bib-objects-schildt-interfaces, @bib-objects-schildt-records, @bib-schildt-bounded-types,
   @bib-schildt-generic-class-example, @bib-schildt-generic-pairs, @bib-schildt-generics-definition,
-  @bib-schildt-wildcards-methods'
+  @bib-schildt-wildcards-methods"
 
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: theory
 repo-actions:
-- source
-- issue
+  - source
+  - issue
 issue-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java/issues/new
 
 course:

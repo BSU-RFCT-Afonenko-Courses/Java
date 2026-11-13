@@ -15,16 +15,19 @@ import java.nio.charset.StandardCharsets;
 class HistoricalContractTest {
     static Map<Integer, Integer> frequency(List<Integer> a) {
         Map<Integer, Integer> counts = new HashMap<>();
-        for (int v : a)
-            counts.merge(v, 1, Integer::sum);
+        for (int v : a) counts.merge(v, 1, Integer::sum);
         return counts;
     }
 
     @Test
     @org.junit.jupiter.api.DisplayName("Пустой список и крайние положения границы")
     void emptyAllNoneAndLinkedList() throws Throwable {
-        for (List<Integer> in : List.of(new ArrayList<Integer>(), new ArrayList<>(List.of(-1, 0, 1)),
-                 new ArrayList<>(List.of(2, 3)), new LinkedList<>(List.of(4, 0, 4, 1)))) {
+        for (List<Integer> in :
+                List.of(
+                        new ArrayList<Integer>(),
+                        new ArrayList<>(List.of(-1, 0, 1)),
+                        new ArrayList<>(List.of(2, 3)),
+                        new LinkedList<>(List.of(4, 0, 4, 1)))) {
             Map<Integer, Integer> before = frequency(in);
             int size = in.size();
             TaskBinding.partition(in, 1);
@@ -32,10 +35,8 @@ class HistoricalContractTest {
             assertEquals(before, frequency(in));
             boolean upper = false;
             for (int v : in) {
-                if (v > 1)
-                    upper = true;
-                else
-                    assertFalse(upper);
+                if (v > 1) upper = true;
+                else assertFalse(upper);
             }
         }
     }

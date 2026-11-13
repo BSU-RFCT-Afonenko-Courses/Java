@@ -8,29 +8,76 @@ import org.prairielearn.api.PlatformApiPrecheck;
 public class ApiContract {
     public static void check(PlatformApiPrecheck.Api api) throws Exception {
         Class<?> type = api.type("Book");
-        api.expect(Modifier.isPublic(type.getModifiers()), "публичный класс Book без пакета", type.toGenericString());
+        api.expect(
+                Modifier.isPublic(type.getModifiers()),
+                "публичный класс Book без пакета",
+                type.toGenericString());
         for (Class<?> authors : new Class<?>[] {String[].class, String.class}) {
             boolean found;
             try {
-                type.getConstructor(int.class, String.class, authors, String.class, int.class, int.class,
-                        double.class, String.class);
+                type.getConstructor(
+                        int.class,
+                        String.class,
+                        authors,
+                        String.class,
+                        int.class,
+                        int.class,
+                        double.class,
+                        String.class);
                 found = true;
-            } catch (NoSuchMethodException ex) { found = false; }
-            api.expect(found, "публичный полный конструктор Book с " + authors.getTypeName(),
+            } catch (NoSuchMethodException ex) {
+                found = false;
+            }
+            api.expect(
+                    found,
+                    "публичный полный конструктор Book с " + authors.getTypeName(),
                     Arrays.toString(type.getConstructors()));
         }
-        String[] names = {"id", "title", "authors", "publisher", "year", "pages", "price", "binding"};
-        Class<?>[] types = {int.class, String.class, String[].class, String.class, int.class, int.class,
-                double.class, String.class};
+        String[] names = {
+            "id", "title", "authors", "publisher", "year", "pages", "price", "binding"
+        };
+        Class<?>[] types = {
+            int.class,
+            String.class,
+            String[].class,
+            String.class,
+            int.class,
+            int.class,
+            double.class,
+            String.class
+        };
         for (int i = 0; i < names.length; i++) {
             api.method("Book", names[i], types[i], Modifier.PUBLIC, Modifier.STATIC);
             api.method("Book", names[i], void.class, Modifier.PUBLIC, Modifier.STATIC, types[i]);
         }
         api.method("Book", "toString", String.class, Modifier.PUBLIC, Modifier.STATIC);
-        api.method("Book", "author", type.arrayType(), Modifier.PUBLIC | Modifier.STATIC, 0, type.arrayType(), String.class);
-        api.method("Book", "publisher", type.arrayType(), Modifier.PUBLIC | Modifier.STATIC, 0, type.arrayType(), String.class);
-        api.method("Book", "after", type.arrayType(), Modifier.PUBLIC | Modifier.STATIC, 0, type.arrayType(), int.class);
-        api.compiles("BookApiClient", """
+        api.method(
+                "Book",
+                "author",
+                type.arrayType(),
+                Modifier.PUBLIC | Modifier.STATIC,
+                0,
+                type.arrayType(),
+                String.class);
+        api.method(
+                "Book",
+                "publisher",
+                type.arrayType(),
+                Modifier.PUBLIC | Modifier.STATIC,
+                0,
+                type.arrayType(),
+                String.class);
+        api.method(
+                "Book",
+                "after",
+                type.arrayType(),
+                Modifier.PUBLIC | Modifier.STATIC,
+                0,
+                type.arrayType(),
+                int.class);
+        api.compiles(
+                "BookApiClient",
+                """
                 import java.lang.String;
                 class BookApiClient {
                     void use() {
@@ -46,6 +93,7 @@ public class ApiContract {
                         Book[] afterYear = Book.after(books, 1);
                     }
                 }
-                """, true);
+                """,
+                true);
     }
 }

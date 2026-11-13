@@ -6,8 +6,9 @@ class SignsTest {
     @Test
     @DisplayName("Нормализация знака, равенство дробей и арифметика")
     void signsEqualityAndSubstantialValues() {
-        Object a = TaskBinding.value(6, -8), b = TaskBinding.value(-3, 4),
-               c = TaskBinding.value(15, -20);
+        Object a = TaskBinding.value(6, -8),
+                b = TaskBinding.value(-3, 4),
+                c = TaskBinding.value(15, -20);
         assertArrayEquals(new long[] {-3, 4}, TaskBinding.parts(a));
         assertEquals(a, b);
         assertEquals(b, c);

@@ -13,8 +13,14 @@ pagetitle: Параметризация программ
 ```java
 final class ObjectBox {
     private final Object value;
-    ObjectBox(Object value) { this.value = value; }
-    Object get() { return value; }
+
+    ObjectBox(Object value) {
+        this.value = value;
+    }
+
+    Object get() {
+        return value;
+    }
 }
 ```
 
@@ -55,8 +61,14 @@ String text = (String) box.get(); // ClassCastException
 ```java
 final class Box<T> {
     private final T value;
-    Box(T value) { this.value = value; }
-    T get() { return value; }
+
+    Box(T value) {
+        this.value = value;
+    }
+
+    T get() {
+        return value;
+    }
 }
 ```
 
@@ -105,13 +117,15 @@ Box<String> title = new Box<>(25); // ошибка компиляции
 могут указывать на одну книгу:
 
 ```java
-final class Book { boolean borrowed; }
+final class Book {
+    boolean borrowed;
+}
 
 Book book = new Book();
 Box<Book> stored = new Box<>(book);
 book.borrowed = true;
 System.out.println(stored.get().borrowed); // true
-System.out.println(stored.get() == book);  // true
+System.out.println(stored.get() == book); // true
 ```
 
 ```text
@@ -146,7 +160,7 @@ System.out.println(missing.get() == null); // true
 ```java
 java.util.Optional<String> found = java.util.Optional.of("Java");
 java.util.Optional<String> missing = java.util.Optional.empty();
-System.out.println(found.orElse("not found"));   // Java
+System.out.println(found.orElse("not found")); // Java
 System.out.println(missing.orElse("not found")); // not found
 ```
 
@@ -237,8 +251,8 @@ System.out.println(value.getClass().getSimpleName()); // Integer
 
 ```java
 Box<String> first = new Box<>(null); // Box<String>
-var second = new Box<>(null);        // Box<Object>
-var third = new Box<String>(null);   // Box<String>
+var second = new Box<>(null); // Box<Object>
+var third = new Box<String>(null); // Box<String>
 Box<String> fourth = Boxes.of("Java");
 ```
 
@@ -324,7 +338,7 @@ static <T extends Number> double twice(T value) {
 числами `-1`, `0`, `1`:
 
 ```java
-System.out.println("Ada".compareTo("Lin"));   // -11
+System.out.println("Ada".compareTo("Lin")); // -11
 System.out.println("Java".compareTo("Java")); // 0
 System.out.println("Lin".compareTo("Ada") > 0); // true
 ```
@@ -370,7 +384,7 @@ values.add(1);
 values.add(2);
 System.out.println(values.size()); // 2
 System.out.println(values.get(0)); // 1
-System.out.println(values);        // [1, 2]
+System.out.println(values); // [1, 2]
 ```
 
 `add` дописывает элемент, `size()` возвращает их количество, `isEmpty()` проверяет
@@ -456,7 +470,9 @@ $$
 ```java
 interface Arithmetic<T> {
     T zero();
+
     T add(T left, T right);
+
     T multiply(T left, T right);
 }
 ```
@@ -490,13 +506,20 @@ static <T> T dot(List<T> left, List<T> right, Arithmetic<T> arithmetic) {
 
 ```java
 final class DoubleArithmetic implements Arithmetic<Double> {
-    public Double zero() { return 0.0; }
-    public Double add(Double a, Double b) { return a + b; }
-    public Double multiply(Double a, Double b) { return a * b; }
+    public Double zero() {
+        return 0.0;
+    }
+
+    public Double add(Double a, Double b) {
+        return a + b;
+    }
+
+    public Double multiply(Double a, Double b) {
+        return a * b;
+    }
 }
 
-double value = dot(List.of(1.0, 2.0), List.of(3.0, 4.0),
-                   new DoubleArithmetic());
+double value = dot(List.of(1.0, 2.0), List.of(3.0, 4.0), new DoubleArithmetic());
 System.out.println(value); // 11.0
 ```
 
@@ -509,13 +532,21 @@ System.out.println(value); // 11.0
 
 ```java
 final class WrongZeroArithmetic implements Arithmetic<Double> {
-    public Double zero() { return 1.0; }
-    public Double add(Double a, Double b) { return a + b; }
-    public Double multiply(Double a, Double b) { return a * b; }
+    public Double zero() {
+        return 1.0;
+    }
+
+    public Double add(Double a, Double b) {
+        return a + b;
+    }
+
+    public Double multiply(Double a, Double b) {
+        return a * b;
+    }
 }
 
-System.out.println(dot(List.of(1.0, 2.0), List.of(3.0, 4.0),
-                       new WrongZeroArithmetic())); // 12.0
+System.out.println(
+        dot(List.of(1.0, 2.0), List.of(3.0, 4.0), new WrongZeroArithmetic())); // 12.0
 ```
 
 Последовательность `1.0 → 4.0 → 12.0` содержит лишнюю единицу. Компилятор проверил
@@ -530,20 +561,25 @@ System.out.println(dot(List.of(1.0, 2.0), List.of(3.0, 4.0),
 record Complex(double re, double im) {}
 
 final class ComplexArithmetic implements Arithmetic<Complex> {
-    public Complex zero() { return new Complex(0.0, 0.0); }
+    public Complex zero() {
+        return new Complex(0.0, 0.0);
+    }
+
     public Complex add(Complex a, Complex b) {
         return new Complex(a.re() + b.re(), a.im() + b.im());
     }
+
     public Complex multiply(Complex a, Complex b) {
-        return new Complex(a.re() * b.re() - a.im() * b.im(),
-                           a.re() * b.im() + a.im() * b.re());
+        return new Complex(
+                a.re() * b.re() - a.im() * b.im(), a.re() * b.im() + a.im() * b.re());
     }
 }
 
-Complex value = dot(
-    List.of(new Complex(1, 1), new Complex(2, 0)),
-    List.of(new Complex(3, 0), new Complex(4, -1)),
-    new ComplexArithmetic());
+Complex value =
+        dot(
+                List.of(new Complex(1, 1), new Complex(2, 0)),
+                List.of(new Complex(3, 0), new Complex(4, -1)),
+                new ComplexArithmetic());
 System.out.println(value); // Complex[re=11.0, im=1.0]
 ```
 

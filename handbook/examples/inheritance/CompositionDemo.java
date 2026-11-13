@@ -1,8 +1,15 @@
 public class CompositionDemo {
     static class Counter {
         private int value;
-        void increment() { value++; }
-        int value() { return value; }
+
+        void increment() {
+            value++;
+        }
+
+        int value() {
+            return value;
+        }
+
         void add(int n) {
             if (n < 0) throw new IllegalArgumentException("Отрицательное приращение");
             for (int i = 0; i < n; i++) {
@@ -13,31 +20,46 @@ public class CompositionDemo {
 
     static class CountingCounter extends Counter {
         private int added;
-        @Override void increment() {
+
+        @Override
+        void increment() {
             added++;
             super.increment();
         }
-        @Override void add(int n) {
+
+        @Override
+        void add(int n) {
             if (n < 0) throw new IllegalArgumentException("Отрицательное приращение");
             added += n;
             super.add(n);
         }
-        int added() { return added; }
+
+        int added() {
+            return added;
+        }
     }
 
     static final class CounterMeter {
         private final Counter counter = new Counter();
         private int added;
+
         void increment() {
             counter.increment();
             added++;
         }
+
         void add(int n) {
             counter.add(n);
             added += n;
         }
-        int value() { return counter.value(); }
-        int added() { return added; }
+
+        int value() {
+            return counter.value();
+        }
+
+        int added() {
+            return added;
+        }
     }
 
     public static void main(String[] args) {

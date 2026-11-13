@@ -15,10 +15,10 @@ categories: [java, java-core, java-optional]
 вызывающий код:
 
 ```java
-var longest = java.util.List.<String>of().stream()
-    .max(java.util.Comparator.comparingInt(String::length));
-String message = longest.map(name -> "Имя: " + name)
-    .orElse("Нет участников");
+var longest =
+        java.util.List.<String>of().stream()
+                .max(java.util.Comparator.comparingInt(String::length));
+String message = longest.map(name -> "Имя: " + name).orElse("Нет участников");
 System.out.println(message); // Нет участников
 ```
 
@@ -65,10 +65,10 @@ System.out.println(java.util.Optional.empty().orElse("нет")); // нет
 
 ```java
 var present = java.util.Optional.of("Ada");
-System.out.println(present.orElse(fallback.get()));    // fallback, Ada
+System.out.println(present.orElse(fallback.get())); // fallback, Ada
 System.out.println(present.orElseGet(fallback)); // Ada
-System.out.println(java.util.Optional.<String>empty()
-    .orElseGet(fallback)); // fallback, none
+System.out.println(
+        java.util.Optional.<String>empty().orElseGet(fallback)); // fallback, none
 ```
 
 Каждое слово комментария здесь печатается на отдельной строке. Уже вычисляемый
@@ -96,8 +96,7 @@ System.out.println(java.util.Optional.<String>empty()
 
 ```java
 var names = java.util.List.of("Ada", "Lin");
-String shown = names.stream().findFirst()
-    .map(String::toUpperCase).orElse("нет участников");
+String shown = names.stream().findFirst().map(String::toUpperCase).orElse("нет участников");
 System.out.println(shown); // ADA
 ```
 

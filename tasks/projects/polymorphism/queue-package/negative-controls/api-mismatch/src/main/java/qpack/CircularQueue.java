@@ -1,2 +1,15 @@
 package qpack;
-public class CircularQueue implements ICharQ {public CircularQueue(int capacity){throw new UnsupportedOperationException("TODO: очередь");}public void put(char c){throw new UnsupportedOperationException("TODO");}public char missing_get(){throw new UnsupportedOperationException("TODO");}}
+
+public class CircularQueue implements ICharQ {
+    public CircularQueue(int capacity) {
+        throw new UnsupportedOperationException("TODO: очередь");
+    }
+
+    public void put(char c) {
+        throw new UnsupportedOperationException("TODO");
+    }
+
+    public char missing_get() {
+        throw new UnsupportedOperationException("TODO");
+    }
+}

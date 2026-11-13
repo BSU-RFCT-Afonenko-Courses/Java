@@ -29,8 +29,14 @@ format:
 ```java
 final class ObjectBox {
     private final Object value;
-    ObjectBox(Object value) { this.value = value; }
-    Object get() { return value; }
+
+    ObjectBox(Object value) {
+        this.value = value;
+    }
+
+    Object get() {
+        return value;
+    }
 }
 
 ObjectBox title = new ObjectBox("Java");
@@ -56,8 +62,14 @@ System.out.println(text.length()); // 4
 ```java
 final class Box<T> {
     private final T value;
-    Box(T value) { this.value = value; }
-    T get() { return value; }
+
+    Box(T value) {
+        this.value = value;
+    }
+
+    T get() {
+        return value;
+    }
 }
 
 Box<String> title = new Box<>("Java");
@@ -83,7 +95,9 @@ String text = title.get();
 Вставим в `Box<T>` ещё один метод:
 
 ```java
-int length() { return value.length(); } // ошибка компиляции
+int length() {
+    return value.length();
+} // ошибка компиляции
 ```
 
 Почему создание `Box<String>` не делает этот метод допустимым? Тело класса должно
@@ -267,7 +281,9 @@ static <T extends Comparable<T>> T maximum(List<T> values) {
 ```java
 interface Arithmetic<T> {
     T zero();
+
     T add(T left, T right);
+
     T multiply(T left, T right);
 }
 ```
@@ -320,17 +336,17 @@ for (int i = 0; i < left.size(); i++) {
 В первом вызове `T` связывает элементы и арифметику для `Double`:
 
 ```java
-double real = dot(List.of(1.0, 2.0), List.of(3.0, 4.0),
-                  new DoubleArithmetic()); // 11.0
+double real = dot(List.of(1.0, 2.0), List.of(3.0, 4.0), new DoubleArithmetic()); // 11.0
 ```
 
 Второй вызов использует `record Complex(double re, double im)` из теории:
 
 ```java
-Complex value = dot(
-    List.of(new Complex(1, 1), new Complex(2, 0)),
-    List.of(new Complex(3, 0), new Complex(4, -1)),
-    new ComplexArithmetic()); // части результата: 11.0 и 1.0
+Complex value =
+        dot(
+                List.of(new Complex(1, 1), new Complex(2, 0)),
+                List.of(new Complex(3, 0), new Complex(4, -1)),
+                new ComplexArithmetic()); // части результата: 11.0 и 1.0
 ```
 
 Произведения равны `3+3i` и `8−2i`; накопленная сумма меняется `0 → 3+3i → 11+i`.
@@ -493,8 +509,11 @@ Number first = source.get(0);
 
 ```java
 static class EmptyException extends Exception {
-    EmptyException(String message) { super(message); }
+    EmptyException(String message) {
+        super(message);
+    }
 }
+
 static int take(boolean empty) throws EmptyException {
     if (empty) throw new EmptyException("empty");
     return 7;

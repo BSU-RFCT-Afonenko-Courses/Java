@@ -9,7 +9,10 @@ public class Main {
             int n = input.nextInt();
             for (int i = 0; i < n; i++) values.push(input.nextInt());
         } else {
-            values.push(6); values.push(-1); values.push(6); values.push(2);
+            values.push(6);
+            values.push(-1);
+            values.push(6);
+            values.push(2);
         }
         while (!values.isEmpty()) System.out.print(values.pop() + " ");
     }

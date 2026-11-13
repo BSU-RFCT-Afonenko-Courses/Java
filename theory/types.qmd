@@ -92,11 +92,11 @@ System.out.println(average); // 2.0
 
 ```java
 String text = "AЯ🙂";
-System.out.println(text.length());             // 4
-System.out.println((int) text.charAt(0));       // 65
-System.out.println((int) text.charAt(1));       // 1071
-System.out.println((int) text.charAt(2));       // 55357
-System.out.println((int) text.charAt(3));       // 56898
+System.out.println(text.length()); // 4
+System.out.println((int) text.charAt(0)); // 65
+System.out.println((int) text.charAt(1)); // 1071
+System.out.println((int) text.charAt(2)); // 55357
+System.out.println((int) text.charAt(3)); // 56898
 ```
 
 Приведение к `int` позволяет напечатать числовое значение единицы UTF-16.
@@ -118,7 +118,7 @@ System.out.println((int) text.charAt(3));       // 56898
 int records = 50_000;
 long wrong = records * records;
 long correct = (long) records * records;
-System.out.println(wrong);   // -1794967296
+System.out.println(wrong); // -1794967296
 System.out.println(correct); // 2500000000
 ```
 
@@ -153,7 +153,7 @@ System.out.println(correct); // 2500000000
 
 ```java
 double total = 0.1 + 0.2;
-System.out.println(total);        // 0.30000000000000004
+System.out.println(total); // 0.30000000000000004
 System.out.println(total == 0.3); // false
 ```
 
@@ -191,11 +191,11 @@ String name = "Java";
 ```java
 int[] pages = {5, 7};
 System.out.println(pages.length); // 2
-System.out.println(pages[0]);     // 5
+System.out.println(pages[0]); // 5
 pages[0] = 9;
-System.out.println(pages[0]);     // 9
-pages = new int[]{1, 2};
-System.out.println(pages[0]);     // 1
+System.out.println(pages[0]); // 9
+pages = new int[] {1, 2};
+System.out.println(pages[0]); // 1
 ```
 
 `int[]` — тип массива целых; переменная этого типа хранит ссылку на массив или `null`. Инициализатор `{5, 7}` создаёт объект с двумя компонентами. `pages[0] = 9` заменяет число внутри этого объекта; `pages = new int[]{1, 2}` создаёт другой массив и меняет ссылку переменной. Квадратные скобки выбирают компонент по индексу. Первый индекс равен `0`, последний — `length - 1`. Поле `length` читается без скобок и не меняется после создания массива.
@@ -204,8 +204,8 @@ System.out.println(pages[0]);     // 1
 int[] zeros = new int[2];
 String[] notes = new String[2];
 int[] empty = new int[0];
-System.out.println(zeros[0]);   // 0
-System.out.println(notes[0]);   // null
+System.out.println(zeros[0]); // 0
+System.out.println(notes[0]); // null
 System.out.println(empty.length); // 0
 // System.out.println(empty[0]); // ArrayIndexOutOfBoundsException
 ```
@@ -409,7 +409,7 @@ Python показывает ещё один вариант: числовые д�
 String comment = null;
 String empty = "";
 System.out.println(comment == null); // true
-System.out.println(empty.length());  // 0
+System.out.println(empty.length()); // 0
 // System.out.println(comment.length()); // NullPointerException при выполнении
 String pending;
 // System.out.println(pending); // ошибка javac: значение не определённо присвоено
@@ -490,6 +490,7 @@ public class NullnessDemo {
     static int length(@Nullable String text) {
         return text.length();
     }
+
     public static void main(String[] args) {
         System.out.println(length(null));
     }

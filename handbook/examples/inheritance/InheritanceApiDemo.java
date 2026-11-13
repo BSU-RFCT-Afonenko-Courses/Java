@@ -1,16 +1,27 @@
 public class InheritanceApiDemo {
     abstract static class Item {
         private final String name;
+
         protected Item(String name) {
             this.name = java.util.Objects.requireNonNull(name);
         }
-        protected String name() { return name; }
+
+        protected String name() {
+            return name;
+        }
+
         public abstract String describe();
     }
 
     static final class PrintedItem extends Item {
-        PrintedItem(String name) { super(name); }
-        @Override public String describe() { return "Item: " + name(); }
+        PrintedItem(String name) {
+            super(name);
+        }
+
+        @Override
+        public String describe() {
+            return "Item: " + name();
+        }
     }
 
     static class Parent {
@@ -19,16 +30,22 @@ public class InheritanceApiDemo {
 
     static class Child extends Parent {
         private final int value;
+
         Child(int value) {
             if (value < 0) throw new IllegalArgumentException();
             this.value = value;
             super(value);
         }
-        int value() { return value; }
+
+        int value() {
+            return value;
+        }
     }
 
     sealed interface Result permits Ok, Failure {}
+
     record Ok(int value) implements Result {}
+
     record Failure(String reason) implements Result {}
 
     public static void main(String[] args) {

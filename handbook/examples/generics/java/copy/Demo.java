@@ -1,11 +1,13 @@
 import java.util.ArrayList;
 import java.util.List;
+
 class Demo {
     static void printAll(List<?> values) {
         for (Object value : values) {
             System.out.println(value);
         }
     }
+
     static double sum(List<? extends Number> values) {
         double total = 0.0;
         for (Number value : values) {
@@ -13,10 +15,12 @@ class Demo {
         }
         return total;
     }
+
     static void addSmallIntegers(List<? super Integer> target) {
         target.add(1);
         target.add(2);
     }
+
     static <T> void copy(List<? extends T> source, List<? super T> target) {
         for (T value : source) {
             target.add(value);

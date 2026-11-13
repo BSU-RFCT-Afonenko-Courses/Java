@@ -158,8 +158,11 @@ try {
 ### Продолжение после обработчика {#sec-lecture-exceptions-resources-step-06}
 
 ```java
-try { parseScore("120"); }
-catch (IllegalArgumentException ex) { System.out.println("ошибка"); }
+try {
+    parseScore("120");
+} catch (IllegalArgumentException ex) {
+    System.out.println("ошибка");
+}
 System.out.println("следующая операция");
 ```
 
@@ -262,8 +265,11 @@ static int forward() throws EmptyException {
 Обработка в месте, где можно выбрать дальнейшее действие:
 
 ```java
-try { System.out.println(take(true)); }
-catch (EmptyException ex) { System.out.println("хранилище пусто"); }
+try {
+    System.out.println(take(true));
+} catch (EmptyException ex) {
+    System.out.println("хранилище пусто");
+}
 ```
 
 Первый метод возвращает `7`, второй фрагмент печатает `хранилище пусто`.
@@ -273,9 +279,13 @@ catch (EmptyException ex) { System.out.println("хранилище пусто");
 ### Порядок обработчиков {#sec-lecture-exceptions-resources-step-13}
 
 ```java
-try { parseScore("ninety"); }
-catch (NumberFormatException ex) { System.out.println("нужно число"); }
-catch (IllegalArgumentException ex) { System.out.println("нужен диапазон"); }
+try {
+    parseScore("ninety");
+} catch (NumberFormatException ex) {
+    System.out.println("нужно число");
+} catch (IllegalArgumentException ex) {
+    System.out.println("нужен диапазон");
+}
 ```
 Вывод — `нужно число`. `NumberFormatException` является подклассом
 `IllegalArgumentException`, поэтому обратный порядок сделал бы частную
@@ -312,10 +322,10 @@ class DataFormatException extends Exception {
 ### Сохранение причины {#sec-lecture-exceptions-resources-step-18}
 
 ```java
-static int parseAt(String text, long number)
-        throws DataFormatException {
-    try { return parseScore(text); }
-    catch (IllegalArgumentException ex) {
+static int parseAt(String text, long number) throws DataFormatException {
+    try {
+        return parseScore(text);
+    } catch (IllegalArgumentException ex) {
         throw new DataFormatException("строка " + number, ex);
     }
 }
@@ -352,8 +362,12 @@ catch (java.io.IOException | DataFormatException failure) {
 interface TextSource {
     String read() throws java.io.IOException;
 }
+
 final class ConstantSource implements TextSource {
-    @Override public String read() { return "90"; }
+    @Override
+    public String read() {
+        return "90";
+    }
 }
 ```
 
@@ -406,8 +420,11 @@ final class ConstantSource implements TextSource {
 
 ```java
 static int withFinally() {
-    try { return 10; }
-    finally { System.out.println("выход"); }
+    try {
+        return 10;
+    } finally {
+        System.out.println("выход");
+    }
 }
 ```
 
@@ -426,8 +443,11 @@ static int withFinally() {
 
 ```java
 static int replacedReturn() {
-    try { return 10; }
-    finally { return 20; }
+    try {
+        return 10;
+    } finally {
+        return 20;
+    }
 }
 ```
 
@@ -436,8 +456,11 @@ static int replacedReturn() {
 всё равно вернёт `20` и скроет этот отказ.
 
 ```java
-try { throw new IllegalStateException("body"); }
-finally { throw new IllegalArgumentException("cleanup"); }
+try {
+    throw new IllegalStateException("body");
+} finally {
+    throw new IllegalArgumentException("cleanup");
+}
 ```
 
 Наружу передаётся `cleanup`. Исключение `body` автоматически не сохраняется
@@ -521,8 +544,9 @@ Try с ресурсами вызывает `close` для успешно ини�
 
 ```java
 static String firstLine(java.nio.file.Path path) throws java.io.IOException {
-    try (var reader = java.nio.file.Files.newBufferedReader(path,
-            java.nio.charset.StandardCharsets.UTF_8)) {
+    try (var reader =
+            java.nio.file.Files.newBufferedReader(
+                    path, java.nio.charset.StandardCharsets.UTF_8)) {
         return reader.readLine();
     }
 }
@@ -540,11 +564,14 @@ static String firstLine(java.nio.file.Path path) throws java.io.IOException {
 ```java
 final class Trace implements AutoCloseable {
     final String name;
+
     Trace(String name) {
         this.name = name;
         System.out.println("open " + name);
     }
-    @Override public void close() {
+
+    @Override
+    public void close() {
         System.out.println("close " + name);
     }
 }
@@ -561,7 +588,8 @@ final class Trace implements AutoCloseable {
 ### Трасса двух ресурсов {#sec-lecture-exceptions-resources-step-31}
 
 ```java
-try (var a = new Trace("A"); var b = new Trace("B")) {
+try (var a = new Trace("A");
+        var b = new Trace("B")) {
     System.out.println("body");
 }
 ```
@@ -613,7 +641,7 @@ A получает вызов close
 var source = java.nio.file.Path.of("input.txt");
 var target = java.nio.file.Path.of("copy.txt");
 try (var input = java.nio.file.Files.newInputStream(source);
-     var output = java.nio.file.Files.newOutputStream(target)) {
+        var output = java.nio.file.Files.newOutputStream(target)) {
     input.transferTo(output);
 }
 ```
@@ -644,7 +672,8 @@ Try с ресурсами передаёт наружу исключение т�
 
 ```java
 class Failing implements AutoCloseable {
-    @Override public void close() throws java.io.IOException {
+    @Override
+    public void close() throws java.io.IOException {
         throw new java.io.IOException("close");
     }
 }
@@ -670,13 +699,11 @@ try (var resource = new Failing()) {
 
 ```java
 try (var resource = new Resource()) {
-    throw new java.io.IOException("read",
-        new IllegalArgumentException("bad bytes"));
+    throw new java.io.IOException("read", new IllegalArgumentException("bad bytes"));
 } catch (java.io.IOException failure) {
     System.out.println("primary: " + failure.getMessage());
     System.out.println("cause: " + failure.getCause().getMessage());
-    System.out.println("suppressed: "
-        + failure.getSuppressed()[0].getMessage());
+    System.out.println("suppressed: " + failure.getSuppressed()[0].getMessage());
 }
 ```
 
@@ -744,8 +771,7 @@ static long countLines(java.io.BufferedReader reader) throws java.io.IOException
 ```java
 static java.util.List<String> nonblankLines(java.nio.file.Path path)
         throws java.io.IOException {
-    try (var lines = java.nio.file.Files.lines(path,
-            java.nio.charset.StandardCharsets.UTF_8)) {
+    try (var lines = java.nio.file.Files.lines(path, java.nio.charset.StandardCharsets.UTF_8)) {
         return lines.filter(s -> !s.isBlank()).toList();
     }
 }
@@ -764,8 +790,7 @@ static java.util.List<String> nonblankLines(java.nio.file.Path path)
 ```java
 var scores = new java.util.ArrayList<Integer>();
 try {
-    for (String text : java.util.List.of("90", "80", "120"))
-        scores.add(parseScore(text));
+    for (String text : java.util.List.of("90", "80", "120")) scores.add(parseScore(text));
 } catch (IllegalArgumentException ex) {
     System.out.println(scores);
 }
@@ -802,6 +827,7 @@ try {
 ```java
 final class Limits {
     final int maximum;
+
     Limits(int maximum, java.util.List<String> events) {
         events.add("начало создания");
         if (maximum < 0) throw new IllegalArgumentException("maximum < 0");
@@ -917,8 +943,14 @@ NumberFormatException
 
 ```java
 sealed interface ScoreResult permits Score, ScoreFailure {}
+
 record Score(int value) implements ScoreResult {}
-enum ScoreProblem { NOT_INTEGER, OUT_OF_RANGE }
+
+enum ScoreProblem {
+    NOT_INTEGER,
+    OUT_OF_RANGE
+}
+
 record ScoreFailure(ScoreProblem problem) implements ScoreResult {}
 ```
 
@@ -938,12 +970,12 @@ record ScoreFailure(ScoreProblem problem) implements ScoreResult {}
 static ScoreResult parseScoreResult(String text) {
     java.util.Objects.requireNonNull(text);
     final int score;
-    try { score = Integer.parseInt(text); }
-    catch (NumberFormatException ex) {
+    try {
+        score = Integer.parseInt(text);
+    } catch (NumberFormatException ex) {
         return new ScoreFailure(ScoreProblem.NOT_INTEGER);
     }
-    if (score < 0 || score > 100)
-        return new ScoreFailure(ScoreProblem.OUT_OF_RANGE);
+    if (score < 0 || score > 100) return new ScoreFailure(ScoreProblem.OUT_OF_RANGE);
     return new Score(score);
 }
 ```
@@ -972,10 +1004,11 @@ static ScoreResult parseScoreResult(String text) {
 а `ScoreFailure(var problem)` — `problem` типа `ScoreProblem`.
 
 ```java
-String message = switch (parseScoreResult("120")) {
-    case Score(var value) -> "балл: " + value;
-    case ScoreFailure(var problem) -> "ошибка: " + problem;
-};
+String message =
+        switch (parseScoreResult("120")) {
+            case Score(var value) -> "балл: " + value;
+            case ScoreFailure(var problem) -> "ошибка: " + problem;
+        };
 System.out.println(message); // ошибка: OUT_OF_RANGE
 ```
 
@@ -1109,6 +1142,7 @@ class TextSnapshot {
         java.nio.file.Files.readString(path);
     }
 }
+
 class NamedSnapshot extends TextSnapshot {
     NamedSnapshot(java.nio.file.Path path) throws java.io.IOException {
         super(path);
@@ -1125,7 +1159,8 @@ class NamedSnapshot extends TextSnapshot {
 
 ```java
 final class Quiet implements AutoCloseable {
-    @Override public void close() {}
+    @Override
+    public void close() {}
 }
 ```
 

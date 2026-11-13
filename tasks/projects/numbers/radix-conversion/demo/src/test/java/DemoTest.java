@@ -16,9 +16,14 @@ class DemoTest {
 
     private static void representation(String expected, String... args) throws Exception {
         String output = run(args).strip();
-        assertTrue(output.equals(expected) || output.equals(expected.toUpperCase(Locale.ROOT)),
-                "Ожидалось " + expected + " или " + expected.toUpperCase(Locale.ROOT)
-                        + ", получено «" + output
+        assertTrue(
+                output.equals(expected) || output.equals(expected.toUpperCase(Locale.ROOT)),
+                "Ожидалось "
+                        + expected
+                        + " или "
+                        + expected.toUpperCase(Locale.ROOT)
+                        + ", получено «"
+                        + output
                         + "»; нужен единый регистр и отсутствие ведущих нулей");
     }
 

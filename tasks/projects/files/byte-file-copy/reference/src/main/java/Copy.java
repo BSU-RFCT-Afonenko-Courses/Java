@@ -1,6 +1,7 @@
 import java.io.*;
 import java.nio.file.*;
 import java.nio.charset.StandardCharsets;
+
 class BytesMover {
     void main(String[] args) throws Exception {
         if (args.length != 2) throw new IllegalArgumentException("Нужны вход и выход");
