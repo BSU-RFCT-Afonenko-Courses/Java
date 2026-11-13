@@ -1,25 +1,35 @@
-version: '3'
+version: "3"
 
 vars:
-  PLATFORM_ROOT: '{{.ROOT_DIR}}/.platform'
-  BUILD_DIR: '{{.ROOT_DIR | dir}}/course-builds/java'
+  PLATFORM_ROOT: "{{.ROOT_DIR}}/.platform"
+  BUILD_DIR: "{{.ROOT_DIR | dir}}/course-builds/java"
   INSTANCE: 2026-2027-s1
   BACKEND: container
 
 env:
-  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONDONTWRITEBYTECODE: "1"
 
 tasks:
+  format:
+    desc: Форматировать канонические исходники и обновить архивы примеров
+    cmds:
+      - python3 tools/quality/run.py format
+  check-format:
+    desc: Проверить форматирование и архивы без изменения исходников
+    cmds:
+      - python3 tools/quality/run.py check-format
   bootstrap:
     desc: Получить закреплённые Git submodules инструментов
     cmds:
       - git submodule update --init
   check:
-    desc: Проверить служебные исходники курса
+    desc: Проверить форматирование и статическое качество исходников курса
     cmds:
+      - python3 tools/quality/run.py check
       - pyright --project pyrightconfig.json
       - bash -n CI/render.sh CI/check-projects.sh
       - shellcheck --shell=bash --severity=style CI/render.sh CI/check-projects.sh
+      - python3 -m unittest discover -s tests/quality -v
   render:
     desc: Один корневой student render и сохранение готового сайта
     cmds:
