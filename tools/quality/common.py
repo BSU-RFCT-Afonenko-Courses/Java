@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import subprocess
 from pathlib import Path
 
@@ -51,14 +52,51 @@ GENERATED_COMPONENTS = {
 
 def source_files(root: Path) -> list[Path]:
     """Вернуть собственные tracked и новые неигнорируемые файлы, без gitlinks."""
-    result = subprocess.run(
-        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
-        cwd=root,
-        check=True,
-        stdout=subprocess.PIPE,
-    )
+    root = root.resolve()
+    # Обе команды читают Git именно этой копии, а не чужой index из окружения.
+    environment = {
+        name: value for name, value in os.environ.items() if not name.startswith("GIT_")
+    }
+    try:
+        context = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"],
+            cwd=root,
+            env=environment,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if context.returncode:
+            raise SystemExit(
+                f"Для проверки исходников нужен собственный Git checkout: {root}\n"
+                + context.stderr.strip()
+            )
+        top = context.stdout.removesuffix("\n")
+        if not Path(top).is_absolute() or Path(top).resolve() != root:
+            raise SystemExit(
+                f"Корень Git {top!r} не совпадает с корнем исходников {str(root)!r}. "
+                "Проверка копии через родительский репозиторий запрещена."
+            )
+        result = subprocess.run(
+            ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+            cwd=root,
+            env=environment,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+    except (OSError, subprocess.CalledProcessError) as error:
+        raise SystemExit(
+            f"Не удалось прочитать Git-инвентарь исходников {root}: {error}"
+        ) from None
+    names = result.stdout.decode("utf-8").split("\0")
+    # Пустой общий инвентарь запрещён; после exclusions/языкового отбора пустота допустима.
+    if not any(names):
+        raise SystemExit(
+            f"Пустой Git-инвентарь исходников: {root}; проверка без входов запрещена."
+        )
     selected: set[Path] = set()
-    for name in result.stdout.decode("utf-8").split("\0"):
+    for name in names:
         if not name:
             continue
         path = Path(name)
