@@ -1,4 +1,15 @@
-
 public class Study extends Algorithms {}
 
-class Algorithms {public static <T extends Comparable<? super T>> T maximum(T[] array,int begin,int end){return new Choice().top(array,begin,end);}}class Choice {<T extends Comparable<? super T>> T top(T[] a,int begin,int end){T result=a[begin];for(int i=begin+1;i<end;i++)if(a[i].compareTo(result)>=0)result=a[i];return result;}}
+class Algorithms {
+    public static <T extends Comparable<? super T>> T maximum(T[] array, int begin, int end) {
+        return new Choice().top(array, begin, end);
+    }
+}
+
+class Choice {
+    <T extends Comparable<? super T>> T top(T[] a, int begin, int end) {
+        T result = a[begin];
+        for (int i = begin + 1; i < end; i++) if (a[i].compareTo(result) >= 0) result = a[i];
+        return result;
+    }
+}

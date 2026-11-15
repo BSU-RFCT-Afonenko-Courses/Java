@@ -1,1 +1,10 @@
-public class Circle extends TwoDShape {public Circle(double radius){super(0,0,"");throw new UnsupportedOperationException("TODO: конструктор Circle");}public double area(){throw new UnsupportedOperationException("TODO: площадь");}}
+public class Circle extends TwoDShape {
+    public Circle(double radius) {
+        super(0, 0, "");
+        throw new UnsupportedOperationException("TODO: конструктор Circle");
+    }
+
+    public double area() {
+        throw new UnsupportedOperationException("TODO: площадь");
+    }
+}

@@ -1,1 +1,17 @@
-public class Study { public static class StackFullException extends Exception {} public static class StackEmptyException extends Exception {} public Study(int capacity) {throw new UnsupportedOperationException("Реализуйте создание");} public void push(char value) throws StackFullException {throw new UnsupportedOperationException("Реализуйте помещение");} public char pop() throws StackEmptyException {throw new UnsupportedOperationException("Реализуйте извлечение");} }
+public class Study {
+    public static class StackFullException extends Exception {}
+
+    public static class StackEmptyException extends Exception {}
+
+    public Study(int capacity) {
+        throw new UnsupportedOperationException("Реализуйте создание");
+    }
+
+    public void push(char value) throws StackFullException {
+        throw new UnsupportedOperationException("Реализуйте помещение");
+    }
+
+    public char pop() throws StackEmptyException {
+        throw new UnsupportedOperationException("Реализуйте извлечение");
+    }
+}

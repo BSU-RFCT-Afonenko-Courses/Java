@@ -14,15 +14,18 @@ import static org.junit.jupiter.api.Assertions.*;
 class DemoTest {
     @TempDir Path dir;
     private int counter;
+
     private Path input(String text) throws Exception {
         var p = dir.resolve("Собственные данные " + counter++ + ".txt");
         Files.writeString(p, text, StandardCharsets.UTF_8);
         return p;
     }
+
     private static void near(double expected, double actual) {
         assertTrue(Double.isFinite(actual), "Результат должен быть конечным");
         assertEquals(expected, actual, Math.max(1e-12, 1e-12 * Math.abs(expected)));
     }
+
     private void bad(String text, long line) throws Exception {
         var p = input(text);
         var rows = Study.read(p);
@@ -30,6 +33,7 @@ class DemoTest {
         assertEquals(line, e.line());
         assertNotNull(e.getCause());
     }
+
     private void second(String line) throws Exception {
         bad("1\ten-US\n" + line + "\n", 2);
     }

@@ -11,8 +11,15 @@ public class Book {
     private double price;
     private String binding;
 
-    public Book(int id, String title, String[] authors, String publisher, int year, int pages,
-                double price, String binding) {
+    public Book(
+            int id,
+            String title,
+            String[] authors,
+            String publisher,
+            int year,
+            int pages,
+            double price,
+            String binding) {
         this.id = id;
         this.title = title;
         this.authors = authors;
@@ -23,39 +30,99 @@ public class Book {
         this.binding = binding;
     }
 
-    public Book(int id, String title, String author, String publisher, int year, int pages,
-                double price, String binding) {
+    public Book(
+            int id,
+            String title,
+            String author,
+            String publisher,
+            int year,
+            int pages,
+            double price,
+            String binding) {
         this(id, title, new String[] {author}, publisher, year, pages, price, binding);
     }
 
-    public int id() { return id; }
-    public void id(int value) { id = value; }
+    public int id() {
+        return id;
+    }
 
-    public String title() { return title; }
-    public void title(String value) { title = value; }
+    public void id(int value) {
+        id = value;
+    }
 
-    public String[] authors() { return authors; }
-    public void authors(String[] value) { authors = value; }
+    public String title() {
+        return title;
+    }
 
-    public String publisher() { return publisher; }
-    public void publisher(String value) { publisher = value; }
+    public void title(String value) {
+        title = value;
+    }
 
-    public int year() { return year; }
-    public void year(int value) { year = value; }
+    public String[] authors() {
+        return authors;
+    }
 
-    public int pages() { return pages; }
-    public void pages(int value) { pages = value; }
+    public void authors(String[] value) {
+        authors = value;
+    }
 
-    public double price() { return price; }
-    public void price(double value) { price = value; }
+    public String publisher() {
+        return publisher;
+    }
 
-    public String binding() { return binding; }
-    public void binding(String value) { binding = value; }
+    public void publisher(String value) {
+        publisher = value;
+    }
+
+    public int year() {
+        return year;
+    }
+
+    public void year(int value) {
+        year = value;
+    }
+
+    public int pages() {
+        return pages;
+    }
+
+    public void pages(int value) {
+        pages = value;
+    }
+
+    public double price() {
+        return price;
+    }
+
+    public void price(double value) {
+        price = value;
+    }
+
+    public String binding() {
+        return binding;
+    }
+
+    public void binding(String value) {
+        binding = value;
+    }
 
     @Override
     public String toString() {
-        return id + ": " + title + ", " + Arrays.toString(authors) + ", " + publisher + ", "
-                + year + ", " + pages + ", " + price + ", " + binding;
+        return id
+                + ": "
+                + title
+                + ", "
+                + Arrays.toString(authors)
+                + ", "
+                + publisher
+                + ", "
+                + year
+                + ", "
+                + pages
+                + ", "
+                + price
+                + ", "
+                + binding;
     }
 
     public static Book[] author(Book[] books, String author) {
@@ -71,8 +138,18 @@ public class Book {
     }
 
     private static Book[] select(Book[] books, Predicate<Book> matches) {
-        return Arrays.stream(books).filter(matches)
-                .map(book -> new Book(book.id, book.title, book.authors.clone(), book.publisher,
-                        book.year, book.pages, book.price, book.binding)).toArray(Book[]::new);
+        return Arrays.stream(books)
+                .filter(matches)
+                .map(book ->
+                        new Book(
+                                book.id,
+                                book.title,
+                                book.authors.clone(),
+                                book.publisher,
+                                book.year,
+                                book.pages,
+                                book.price,
+                                book.binding))
+                .toArray(Book[]::new);
     }
 }

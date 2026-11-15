@@ -23,14 +23,15 @@ if (condition) {
 
 ```java
 int code = 1;
-String name = switch (code) {
-    case 1, 2 -> "basic";
-    case 3 -> {
-        String prefix = "advanced";
-        yield prefix;
-    }
-    default -> throw new IllegalArgumentException();
-};
+String name =
+        switch (code) {
+            case 1, 2 -> "basic";
+            case 3 -> {
+                String prefix = "advanced";
+                yield prefix;
+            }
+            default -> throw new IllegalArgumentException();
+        };
 System.out.println(name); // basic
 ```
 

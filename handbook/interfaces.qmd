@@ -62,8 +62,14 @@ sender.send("Java"); // Java
 ## Несколько интерфейсов {#sec-api-interfaces-multiple}
 
 ```java
-interface Readable { String read(); }
-interface Writable { void write(String value); }
+interface Readable {
+    String read();
+}
+
+interface Writable {
+    void write(String value);
+}
+
 interface Storage extends Readable, Writable {}
 ```
 
@@ -93,8 +99,18 @@ interface Storage extends Readable, Writable {}
 непосредственного суперинтерфейса формой `A.super.method()`:
 
 ```java
-interface A { default String label() { return "A"; } }
-interface B { default String label() { return "B"; } }
+interface A {
+    default String label() {
+        return "A";
+    }
+}
+
+interface B {
+    default String label() {
+        return "B";
+    }
+}
+
 final class Both implements A, B {
     @Override
     public String label() {

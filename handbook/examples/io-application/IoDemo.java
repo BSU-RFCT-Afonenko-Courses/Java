@@ -33,8 +33,7 @@ public final class IoDemo {
                     }
                 }
             }
-            case "text" -> System.out.println(
-                Files.readString(path, StandardCharsets.UTF_8));
+            case "text" -> System.out.println(Files.readString(path, StandardCharsets.UTF_8));
             case "count" -> {
                 try (var lines = Files.lines(path, StandardCharsets.UTF_8)) {
                     System.out.println(lines.filter(line -> !line.isBlank()).count());

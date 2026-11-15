@@ -21,7 +21,7 @@ public class FileDemo {
 
     static void copy(Path source, Path target) throws IOException {
         try (var input = Files.newInputStream(source);
-             var output = Files.newOutputStream(target)) {
+                var output = Files.newOutputStream(target)) {
             input.transferTo(output);
         }
     }

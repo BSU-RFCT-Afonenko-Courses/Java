@@ -1,3 +1,33 @@
-import java.util.*;import java.util.function.*;import java.nio.file.Path;
+import java.util.*;
+import java.util.function.*;
+import java.nio.file.Path;
 import java.util.stream.*;
-public class Study{static {if(java.lang.System.getProperty("course.initializer.marker")!=null){try{java.nio.file.Files.writeString(java.nio.file.Path.of(java.lang.System.getProperty("course.initializer.marker")),"student initializer executed");}catch(java.io.IOException e){throw new java.lang.RuntimeException(e);}throw new java.lang.IllegalStateException("initializer sentinel");}}interface Rule {boolean accepts(int value);}public static Object function(){Rule rule=n->n%31==0;return rule;}public static boolean apply(Object function,int value){return ((Rule)function).accepts(value);}}
+
+public class Study {
+    static {
+        if (java.lang.System.getProperty("course.initializer.marker") != null) {
+            try {
+                java.nio.file.Files.writeString(
+                        java.nio.file.Path.of(
+                                java.lang.System.getProperty("course.initializer.marker")),
+                        "student initializer executed");
+            } catch (java.io.IOException e) {
+                throw new java.lang.RuntimeException(e);
+            }
+            throw new java.lang.IllegalStateException("initializer sentinel");
+        }
+    }
+
+    interface Rule {
+        boolean accepts(int value);
+    }
+
+    public static Object function() {
+        Rule rule = n -> n % 31 == 0;
+        return rule;
+    }
+
+    public static boolean apply(Object function, int value) {
+        return ((Rule) function).accepts(value);
+    }
+}

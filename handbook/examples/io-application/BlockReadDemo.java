@@ -10,8 +10,8 @@ public final class BlockReadDemo {
             int count;
             while ((count = input.read(buffer)) != -1) {
                 System.out.println("n = " + count + ", буфер = " + Arrays.toString(buffer));
-                System.out.println("новые байты = "
-                    + Arrays.toString(Arrays.copyOf(buffer, count)));
+                System.out.println(
+                        "новые байты = " + Arrays.toString(Arrays.copyOf(buffer, count)));
             }
             System.out.println("конец: " + count);
         }

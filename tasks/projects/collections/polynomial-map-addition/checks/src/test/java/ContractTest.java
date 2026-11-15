@@ -28,13 +28,21 @@ class ContractTest {
             assertNotNull(coefficient);
             assertTrue(Double.isFinite(coefficient));
             BigDecimal expected =
-                new BigDecimal(a.getOrDefault(k, 0.0)).add(new BigDecimal(b.getOrDefault(k, 0.0)));
+                    new BigDecimal(a.getOrDefault(k, 0.0))
+                            .add(new BigDecimal(b.getOrDefault(k, 0.0)));
             BigDecimal error = new BigDecimal(coefficient).subtract(expected).abs();
             BigDecimal tolerance =
-                new BigDecimal("1e-9").add(new BigDecimal("1e-12").multiply(expected.abs()));
-            assertTrue(error.compareTo(tolerance) <= 0,
-                "Степень=" + k + "; ожидается=" + expected + "; получено=" + coefficient
-                    + "; допуск=" + tolerance);
+                    new BigDecimal("1e-9").add(new BigDecimal("1e-12").multiply(expected.abs()));
+            assertTrue(
+                    error.compareTo(tolerance) <= 0,
+                    "Степень="
+                            + k
+                            + "; ожидается="
+                            + expected
+                            + "; получено="
+                            + coefficient
+                            + "; допуск="
+                            + tolerance);
         }
         HashMap<Integer, Double> copy = new HashMap<>(actual);
         a.put(999, 123.0);
@@ -43,12 +51,14 @@ class ContractTest {
     }
 
     @Test
-    @org.junit.jupiter.api.DisplayName("Сумма многочленов: сокращение, пустые входы и конечные крайние числа")
+    @org.junit.jupiter.api.DisplayName(
+            "Сумма многочленов: сокращение, пустые входы и конечные крайние числа")
     void emptyCancellationAndExtremeFinite() throws Throwable {
         check(new HashMap<>(), new HashMap<>());
         check(new HashMap<>(Map.of(0, 1.0, 2, 3.0)), new HashMap<>(Map.of(1, 2.0, 2, -3.0)));
-        check(new HashMap<>(Map.of(100, Double.MAX_VALUE, 1, 1e-300)),
-            new HashMap<>(Map.of(100, -Double.MAX_VALUE, 3, 2.0)));
+        check(
+                new HashMap<>(Map.of(100, Double.MAX_VALUE, 1, 1e-300)),
+                new HashMap<>(Map.of(100, -Double.MAX_VALUE, 3, 2.0)));
         check(new HashMap<>(Map.of(12, 1e12)), new HashMap<>(Map.of(12, 0.25)));
         check(new HashMap<>(Map.of(0, -5.5)), new HashMap<>(Map.of(0, 1.25)));
     }

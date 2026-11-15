@@ -70,8 +70,9 @@ JEP 421 прямо указывает на неопределённую заде
 В этой последовательности `close` расположен после чтения:
 
 ```java
-var reader = java.nio.file.Files.newBufferedReader(path,
-    java.nio.charset.StandardCharsets.UTF_8);
+var reader =
+        java.nio.file.Files.newBufferedReader(
+                path, java.nio.charset.StandardCharsets.UTF_8);
 String first = reader.readLine();
 reader.close();
 ```
@@ -85,8 +86,9 @@ reader.close();
 [@bib-exceptions-bloch-resources].
 
 ```java
-var reader = java.nio.file.Files.newBufferedReader(path,
-    java.nio.charset.StandardCharsets.UTF_8);
+var reader =
+        java.nio.file.Files.newBufferedReader(
+                path, java.nio.charset.StandardCharsets.UTF_8);
 try {
     return reader.readLine();
 } finally {
@@ -111,8 +113,7 @@ final class ManualResource {
     private final String name;
     private final boolean failClose;
 
-    ManualResource(String name, boolean failOpen, boolean failClose)
-            throws java.io.IOException {
+    ManualResource(String name, boolean failOpen, boolean failClose) throws java.io.IOException {
         if (failOpen) throw new java.io.IOException("open " + name);
         this.name = name;
         this.failClose = failClose;
@@ -183,8 +184,9 @@ static void useManually(boolean failSecondOpen, boolean failSecondClose)
 
 ```java
 static String firstLine(java.nio.file.Path path) throws java.io.IOException {
-    try (var reader = java.nio.file.Files.newBufferedReader(path,
-            java.nio.charset.StandardCharsets.UTF_8)) {
+    try (var reader =
+            java.nio.file.Files.newBufferedReader(
+                    path, java.nio.charset.StandardCharsets.UTF_8)) {
         return reader.readLine();
     }
 }
@@ -213,7 +215,8 @@ Try с ресурсами можно дополнить `catch` и `finally`. О
 
 ```java
 final class Quiet implements AutoCloseable {
-    @Override public void close() {}
+    @Override
+    public void close() {}
 }
 
 static void concrete() {
@@ -244,7 +247,7 @@ static void throughInterface() throws Exception {
 
 ```java
 try (var input = java.nio.file.Files.newInputStream(source);
-     var output = java.nio.file.Files.newOutputStream(target)) {
+        var output = java.nio.file.Files.newOutputStream(target)) {
     input.transferTo(output);
 }
 ```
@@ -268,11 +271,14 @@ try (var input = java.nio.file.Files.newInputStream(source);
 ```java
 final class Traced implements AutoCloseable {
     private final String name;
+
     Traced(String name) {
         this.name = name;
         System.out.println("open " + name);
     }
-    @Override public void close() {
+
+    @Override
+    public void close() {
         System.out.println("close " + name);
     }
 }
@@ -292,7 +298,8 @@ final class Traced implements AutoCloseable {
 
 ```java
 final class Failing implements AutoCloseable {
-    @Override public void close() throws java.io.IOException {
+    @Override
+    public void close() throws java.io.IOException {
         throw new java.io.IOException("close");
     }
 }
@@ -300,7 +307,7 @@ final class Failing implements AutoCloseable {
 try (var resource = new Failing()) {
     throw new IllegalStateException("body");
 } catch (Exception ex) {
-    System.out.println(ex.getMessage());                    // body
+    System.out.println(ex.getMessage()); // body
     System.out.println(ex.getSuppressed()[0].getMessage()); // close
 }
 ```
@@ -322,7 +329,8 @@ try (var resource = new Failing()) {
 ```java
 public class CauseCloseDemo {
     static final class Resource implements AutoCloseable {
-        @Override public void close() throws java.io.IOException {
+        @Override
+        public void close() throws java.io.IOException {
             System.out.println("close");
             throw new java.io.IOException("cleanup");
         }
@@ -330,13 +338,11 @@ public class CauseCloseDemo {
 
     public static void main(String[] args) {
         try (var resource = new Resource()) {
-            throw new java.io.IOException("read",
-                new IllegalArgumentException("bad bytes"));
+            throw new java.io.IOException("read", new IllegalArgumentException("bad bytes"));
         } catch (java.io.IOException failure) {
             System.out.println("primary: " + failure.getMessage());
             System.out.println("cause: " + failure.getCause().getMessage());
-            System.out.println("suppressed: "
-                + failure.getSuppressed()[0].getMessage());
+            System.out.println("suppressed: " + failure.getSuppressed()[0].getMessage());
         }
     }
 }
@@ -379,8 +385,9 @@ static long countLines(java.io.BufferedReader reader) throws java.io.IOException
 фактически окончательную (effectively final), уже получившую значение:
 
 ```java
-var reader = java.nio.file.Files.newBufferedReader(path,
-    java.nio.charset.StandardCharsets.UTF_8);
+var reader =
+        java.nio.file.Files.newBufferedReader(
+                path, java.nio.charset.StandardCharsets.UTF_8);
 try (reader) {
     System.out.println(reader.readLine());
 }
@@ -458,10 +465,10 @@ try (reader) {
 допустимый балл:
 
 ```java
-static ScoreResult firstScore(java.nio.file.Path path)
-        throws java.io.IOException {
-    try (var reader = java.nio.file.Files.newBufferedReader(path,
-            java.nio.charset.StandardCharsets.UTF_8)) {
+static ScoreResult firstScore(java.nio.file.Path path) throws java.io.IOException {
+    try (var reader =
+            java.nio.file.Files.newBufferedReader(
+                    path, java.nio.charset.StandardCharsets.UTF_8)) {
         String line = reader.readLine();
         if (line == null) {
             return new ScoreFailure(ScoreProblem.NOT_INTEGER);
@@ -490,8 +497,7 @@ static ScoreResult resultBeforeClose() throws java.io.IOException {
     }
 }
 
-static ScoreResult exceptionBeforeClose()
-        throws java.io.IOException, DataFormatException {
+static ScoreResult exceptionBeforeClose() throws java.io.IOException, DataFormatException {
     try (var resource = new Failing()) {
         throw new DataFormatException("неверный балл");
     }

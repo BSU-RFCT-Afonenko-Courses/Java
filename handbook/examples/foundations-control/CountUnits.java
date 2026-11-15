@@ -5,8 +5,7 @@ import java.nio.charset.StandardCharsets;
 
 public class CountUnits {
     public static void main(String[] args) throws IOException {
-        Reader input = new InputStreamReader(
-            System.in, StandardCharsets.UTF_8);
+        Reader input = new InputStreamReader(System.in, StandardCharsets.UTF_8);
         long count = 0;
         int unit;
         while ((unit = input.read()) != -1 && unit != '#') {

@@ -1,3 +1,27 @@
-import java.util.*;import java.util.function.*;import java.nio.file.Path;
+import java.util.*;
+import java.util.function.*;
+import java.nio.file.Path;
 import java.util.stream.*;
-public class Study{static {if(java.lang.System.getProperty("course.initializer.marker")!=null){try{java.nio.file.Files.writeString(java.nio.file.Path.of(java.lang.System.getProperty("course.initializer.marker")),"student initializer executed");}catch(java.io.IOException e){throw new java.lang.RuntimeException(e);}throw new java.lang.IllegalStateException("initializer sentinel");}}public static <T,R> Function<T,R>ternaryOperator(Predicate<? super T>condition,Function<? super T,? extends R>ifTrue,Function<? super T,? extends R>ifFalse){return value->condition.test(value)?ifTrue.apply(value):ifFalse.apply(value);}}
+
+public class Study {
+    static {
+        if (java.lang.System.getProperty("course.initializer.marker") != null) {
+            try {
+                java.nio.file.Files.writeString(
+                        java.nio.file.Path.of(
+                                java.lang.System.getProperty("course.initializer.marker")),
+                        "student initializer executed");
+            } catch (java.io.IOException e) {
+                throw new java.lang.RuntimeException(e);
+            }
+            throw new java.lang.IllegalStateException("initializer sentinel");
+        }
+    }
+
+    public static <T, R> Function<T, R> ternaryOperator(
+            Predicate<? super T> condition,
+            Function<? super T, ? extends R> ifTrue,
+            Function<? super T, ? extends R> ifFalse) {
+        return value -> condition.test(value) ? ifTrue.apply(value) : ifFalse.apply(value);
+    }
+}

@@ -30,6 +30,7 @@ class ContractTest {
         }
         return bytes.toString(StandardCharsets.UTF_8);
     }
+
     interface Throwing {
         void run() throws Throwable;
     }
@@ -41,27 +42,36 @@ class ContractTest {
             var a = CharAccess.select();
             Object q = a.create(2);
             char[] got = new char[2];
-            String output = capture(() -> {
-                a.put(q, 'A');
-                a.put(q, 'Б');
-                got[0] = a.get(q);
-                got[1] = a.get(q);
-            });
-            reporter.publishEntry(Map.of("public-case", "normal", "expected",
-                "Извлечено=[A, Б]; успешные операции ничего не печатают.", "actual",
-                "Извлечено=" + Arrays.toString(got) + "; операции молчат=" + output.isEmpty()));
+            String output =
+                    capture(() -> {
+                        a.put(q, 'A');
+                        a.put(q, 'Б');
+                        got[0] = a.get(q);
+                        got[1] = a.get(q);
+                    });
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "normal",
+                            "expected",
+                            "Извлечено=[A, Б]; успешные операции ничего не печатают.",
+                            "actual",
+                            "Извлечено="
+                                    + Arrays.toString(got)
+                                    + "; операции молчат="
+                                    + output.isEmpty()));
             assertArrayEquals(new char[] {'A', 'Б'}, got);
             assertTrue(output.isEmpty());
         }
         var a = CharAccess.select();
         for (char[] data : new char[][] {{'A', 'Б'}, {'€', '\ud800', 'Z'}}) {
             Object q = a.create(data.length);
-            assertEquals("", capture(() -> {
-                for (char c : data)
-                    a.put(q, c);
-                for (char c : data)
-                    assertEquals(c, a.get(q));
-            }));
+            assertEquals(
+                    "",
+                    capture(() -> {
+                        for (char c : data) a.put(q, c);
+                        for (char c : data) assertEquals(c, a.get(q));
+                    }));
         }
     }
 
@@ -70,12 +80,9 @@ class ContractTest {
     void qa2() throws Throwable {
         var a = CharAccess.select();
         Object q = a.create(3);
-        for (char c : new char[] {'a', 'b', 'c'})
-            a.put(q, c);
-        for (char c : new char[] {'X', 'Y'})
-            assertThrows(a.full, () -> a.put(q, c));
-        for (char c : new char[] {'a', 'b', 'c'})
-            assertEquals(c, a.get(q));
+        for (char c : new char[] {'a', 'b', 'c'}) a.put(q, c);
+        for (char c : new char[] {'X', 'Y'}) assertThrows(a.full, () -> a.put(q, c));
+        for (char c : new char[] {'a', 'b', 'c'}) assertEquals(c, a.get(q));
     }
 
     @Test
@@ -92,18 +99,22 @@ class ContractTest {
             try {
                 a.get(q);
             } catch (Throwable e) {
-                if (!a.empty.isInstance(e))
-                    throw e;
+                if (!a.empty.isInstance(e)) throw e;
                 empty = true;
             }
-            reporter.publishEntry(Map.of("public-case", "boundary-empty", "expected", "QueueEmptyException.",
-                "actual", "QueueEmptyException=" + empty));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "boundary-empty",
+                            "expected",
+                            "QueueEmptyException.",
+                            "actual",
+                            "QueueEmptyException=" + empty));
             assertTrue(empty);
         }
         var a = CharAccess.select();
         Object q = a.create(2);
-        for (int i = 0; i < 2; i++)
-            assertThrows(a.empty, () -> a.get(q));
+        for (int i = 0; i < 2; i++) assertThrows(a.empty, () -> a.get(q));
         a.put(q, 'x');
         a.put(q, 'y');
         assertEquals('x', a.get(q));
@@ -123,14 +134,18 @@ class ContractTest {
             try {
                 a.put(q, 'В');
             } catch (Throwable e) {
-                if (!a.full.isInstance(e))
-                    throw e;
+                if (!a.full.isInstance(e)) throw e;
                 full = true;
             }
             char last = a.get(q);
-            reporter.publishEntry(Map.of("public-case", "boundary-full", "expected",
-                "Извлечено=A,Б; помещение В вызвало QueueFullException.", "actual",
-                "Извлечено=" + first + "," + last + "; QueueFullException=" + full));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "boundary-full",
+                            "expected",
+                            "Извлечено=A,Б; помещение В вызвало QueueFullException.",
+                            "actual",
+                            "Извлечено=" + first + "," + last + "; QueueFullException=" + full));
             assertEquals('A', first);
             assertTrue(full);
             assertEquals('Б', last);
@@ -144,8 +159,7 @@ class ContractTest {
         assertEquals('Б', a.get(q));
         assertThrows(a.empty, () -> a.get(q));
         Object v = a.create(4);
-        for (char c : new char[] {'a', 'a', 'b', 'c'})
-            a.put(v, c);
+        for (char c : new char[] {'a', 'a', 'b', 'c'}) a.put(v, c);
         assertEquals('a', a.get(v));
         assertEquals('a', a.get(v));
         assertThrows(a.full, () -> a.put(v, 'd'));

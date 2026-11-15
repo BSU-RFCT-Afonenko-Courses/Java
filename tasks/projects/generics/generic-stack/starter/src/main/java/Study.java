@@ -1,1 +1,17 @@
-public class Study<T> { public static class StackFullException extends Exception {} public static class StackEmptyException extends Exception {} public Study(T[] storage) {throw new UnsupportedOperationException("Реализуйте создание");} public void push(T value) throws StackFullException {throw new UnsupportedOperationException("Реализуйте помещение");} public T pop() throws StackEmptyException {throw new UnsupportedOperationException("Реализуйте извлечение");} }
+public class Study<T> {
+    public static class StackFullException extends Exception {}
+
+    public static class StackEmptyException extends Exception {}
+
+    public Study(T[] storage) {
+        throw new UnsupportedOperationException("Реализуйте создание");
+    }
+
+    public void push(T value) throws StackFullException {
+        throw new UnsupportedOperationException("Реализуйте помещение");
+    }
+
+    public T pop() throws StackEmptyException {
+        throw new UnsupportedOperationException("Реализуйте извлечение");
+    }
+}

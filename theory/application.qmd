@@ -97,8 +97,10 @@ public record Delivery(String item, long quantity) {
     public Delivery {
         java.util.Objects.requireNonNull(item);
         item = item.strip();
-        if (item.isEmpty() || item.indexOf(';') >= 0
-                || item.indexOf('\r') >= 0 || item.indexOf('\n') >= 0) {
+        if (item.isEmpty()
+                || item.indexOf(';') >= 0
+                || item.indexOf('\r') >= 0
+                || item.indexOf('\n') >= 0) {
             throw new IllegalArgumentException("неверное название товара");
         }
         if (quantity <= 0) {
@@ -135,8 +137,7 @@ final long quantity;
 try {
     quantity = Long.parseLong(fields[1].strip());
 } catch (NumberFormatException ex) {
-    throw new IllegalArgumentException(
-        "количество: нужно целое в диапазоне long", ex);
+    throw new IllegalArgumentException("количество: нужно целое в диапазоне long", ex);
 }
 return new Delivery(fields[0], quantity);
 ```
@@ -180,8 +181,7 @@ while ((line = reader.readLine()) != null) {
     } catch (IllegalArgumentException ex) {
         problems.add(new LineProblem(number, ex.getMessage()));
     } catch (ArithmeticException ex) {
-        problems.add(new LineProblem(number,
-            "сумма количества выходит за диапазон long"));
+        problems.add(new LineProblem(number, "сумма количества выходит за диапазон long"));
     }
 }
 ```
@@ -234,11 +234,9 @@ while ((line = reader.readLine()) != null) {
 `ScanResult` копирует структуру коллекций и ограничивает изменение:
 
 ```java
-public record ScanResult(java.util.Map<String, Long> totals,
-                         java.util.List<LineProblem> problems) {
+public record ScanResult(java.util.Map<String, Long> totals, java.util.List<LineProblem> problems) {
     public ScanResult {
-        totals = java.util.Collections.unmodifiableMap(
-            new java.util.LinkedHashMap<>(totals));
+        totals = java.util.Collections.unmodifiableMap(new java.util.LinkedHashMap<>(totals));
         problems = java.util.List.copyOf(problems);
     }
 }

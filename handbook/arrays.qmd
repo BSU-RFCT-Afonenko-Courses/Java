@@ -13,11 +13,11 @@ categories: [java, java-core, java-arrays]
 @theory:sec-theory-arrays-nested.
 
 ```java
-int[] a = new int[3];       // [0, 0, 0]
+int[] a = new int[3]; // [0, 0, 0]
 int[] b = {5, 7, 4};
-a = new int[]{1, 2};
+a = new int[] {1, 2};
 String[] names = new String[2]; // [null, null]
-int[][] rows = new int[3][];    // три null-ссылки
+int[][] rows = new int[3][]; // три null-ссылки
 ```
 
 `array.length` — поле типа `int` с модификатором `final`; круглые скобки не нужны. Индексный тип после унарного повышения должен быть `int`; этому условию соответствуют `byte`, `short`, `char`, `int` и оболочки с подходящей распаковкой. Индексы типов `long` и `double` недопустимы.
@@ -89,8 +89,8 @@ String[] source = {"Ada", "Lin"};
 String[] grown = java.util.Arrays.copyOf(source, 3);
 grown[0] = "Grace";
 System.out.println(java.util.Arrays.toString(source)); // [Ada, Lin]
-System.out.println(java.util.Arrays.toString(grown));  // [Grace, Lin, null]
-System.out.println(source == grown);                  // false
+System.out.println(java.util.Arrays.toString(grown)); // [Grace, Lin, null]
+System.out.println(source == grown); // false
 ```
 
 Результат имеет заданную длину. Общий диапазон содержит копии ссылочных значений; хвост при увеличении содержит `null`. Уменьшение до `1` оставило бы только первый компонент, длина `0` дала бы существующий пустой массив. Исходник не меняется. Новый массив содержит скопированные ссылки; доступные по ним изменяемые объекты остаются общими.
@@ -98,7 +98,7 @@ System.out.println(source == grown);                  // false
 Фактический класс массива сохраняется и при обращении через переменную более общего типа:
 
 ```java
-Object[] source = new String[]{"Ada"};
+Object[] source = new String[] {"Ada"};
 Object[] grown = java.util.Arrays.copyOf(source, 2);
 System.out.println(grown.getClass() == String[].class); // true
 // grown[1] = 42; // ArrayStoreException при выполнении

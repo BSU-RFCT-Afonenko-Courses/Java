@@ -1,1 +1,3 @@
-class Main { void main() {} }
+class Main {
+    void main() {}
+}

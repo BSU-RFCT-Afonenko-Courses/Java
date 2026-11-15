@@ -10,7 +10,9 @@ class DemoTest {
     }
 
     private static void exact(String expected, String actual) {
-        assertEquals(expected, actual.replaceFirst("\\r?\\n\\z", ""),
+        assertEquals(
+                expected,
+                actual.replaceFirst("\\r?\\n\\z", ""),
                 "Сопоставьте текст результата с условием");
     }
 

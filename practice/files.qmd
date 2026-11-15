@@ -150,10 +150,13 @@ public class ResourcePolicyDemo {
         void read() throws java.io.IOException {
             throw new java.io.IOException("read failed");
         }
-        @Override public void close() {
+
+        @Override
+        public void close() {
             System.out.println("closed");
         }
     }
+
     public static void main(String[] args) {
         try (var resource = new Resource()) {
             resource.read();

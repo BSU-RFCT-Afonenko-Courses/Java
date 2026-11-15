@@ -1,1 +1,37 @@
-import java.util.*;import java.math.*;public class Study {private static class Amount {BigDecimal value;}private static final Amount shared=new Amount();public static Object money(String s){shared.value=new BigDecimal(s);return shared;}public static Object representation(Object a){return ((Amount)a).value;}public static Object transform(List<?>p,Object r){List<Amount>out=new ArrayList<>();for(Object v:p){Amount a=new Amount();a.value=((Amount)v).value.multiply(BigDecimal.ONE.add(((Amount)r).value)).setScale(2,RoundingMode.HALF_UP);out.add(a);}return out;}public static List<?>values(Object a){return (List<?>)a;}}
+import java.util.*;
+import java.math.*;
+
+public class Study {
+    private static class Amount {
+        BigDecimal value;
+    }
+
+    private static final Amount shared = new Amount();
+
+    public static Object money(String s) {
+        shared.value = new BigDecimal(s);
+        return shared;
+    }
+
+    public static Object representation(Object a) {
+        return ((Amount) a).value;
+    }
+
+    public static Object transform(List<?> p, Object r) {
+        List<Amount> out = new ArrayList<>();
+        for (Object v : p) {
+            Amount a = new Amount();
+            a.value =
+                    ((Amount) v)
+                            .value
+                            .multiply(BigDecimal.ONE.add(((Amount) r).value))
+                            .setScale(2, RoundingMode.HALF_UP);
+            out.add(a);
+        }
+        return out;
+    }
+
+    public static List<?> values(Object a) {
+        return (List<?>) a;
+    }
+}

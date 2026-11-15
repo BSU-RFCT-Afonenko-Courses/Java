@@ -16,8 +16,9 @@ public class ListDemo {
         numbers.addAll(whole);
         numbers.add(0.5);
         System.out.println(numbers);
-        try { values.get(values.size()); }
-        catch (IndexOutOfBoundsException ex) {
+        try {
+            values.get(values.size());
+        } catch (IndexOutOfBoundsException ex) {
             System.out.println(ex.getClass().getSimpleName());
         }
     }

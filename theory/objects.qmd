@@ -33,7 +33,7 @@ class Book {
 ```java
 Book first = new Book("Java");
 Book second = new Book("Algorithms");
-System.out.println(first.title);  // Java
+System.out.println(first.title); // Java
 System.out.println(second.title); // Algorithms
 ```
 
@@ -59,7 +59,7 @@ System.out.println(second.title); // Algorithms
 
 ```java
 second.borrowed = true;
-System.out.println(first.borrowed);  // false
+System.out.println(first.borrowed); // false
 System.out.println(second.borrowed); // true
 ```
 
@@ -75,7 +75,7 @@ System.out.println(second.borrowed); // true
 Book pending;
 // System.out.println(pending.title); // ошибка компиляции
 pending = new Book("Networks");
-System.out.println(pending.title);    // Networks
+System.out.println(pending.title); // Networks
 System.out.println(pending.borrowed); // false
 ```
 
@@ -137,7 +137,7 @@ flowchart LR
 ```java
 same.borrowed = true;
 System.out.println(first.borrowed); // true
-System.out.println(first == same);  // true
+System.out.println(first == same); // true
 ```
 
 Оператор `==` для ссылок даёт `true`, если обе ссылаются на один объект
@@ -160,9 +160,9 @@ System.out.println(first == other); // false
 
 ```java
 same = new Book("Databases");
-System.out.println(first.title);    // Java
+System.out.println(first.title); // Java
 System.out.println(first.borrowed); // true
-System.out.println(first == same);  // false
+System.out.println(first == same); // false
 ```
 
 Выражение справа создало новую книгу, а присваивание записало её ссылку
@@ -233,7 +233,7 @@ Book original = new Book("Java");
 borrow(original);
 System.out.println(original.borrowed); // true
 replace(original);
-System.out.println(original.title);    // Java
+System.out.println(original.title); // Java
 ```
 
 В начале `borrow(original)` переменные `original` и `book` содержат
@@ -280,7 +280,7 @@ static Book replacement() {
 }
 
 original = replacement();
-System.out.println(original.title);    // Replacement
+System.out.println(original.title); // Replacement
 System.out.println(original.borrowed); // false
 ```
 
@@ -405,9 +405,9 @@ Book source = new Book("Java");
 source.borrowed = true;
 Book copied = copy(source);
 copied.borrowed = false;
-System.out.println(source == copied);   // false
-System.out.println(source.borrowed);    // true
-System.out.println(copied.borrowed);    // false
+System.out.println(source == copied); // false
+System.out.println(source.borrowed); // true
+System.out.println(copied.borrowed); // false
 ```
 
 У двух объектов собственные поля `borrowed`, поэтому запись в копию
@@ -423,18 +423,21 @@ System.out.println(copied.borrowed);    // false
 ```java
 class TaggedBook {
     String[] tags;
-    TaggedBook(String[] tags) { this.tags = tags; }
+
+    TaggedBook(String[] tags) {
+        this.tags = tags;
+    }
 }
 ```
 
 В этом опыте передаваемые массивы существуют и содержат два элемента:
 
 ```java
-TaggedBook first = new TaggedBook(new String[]{"java", "oop"});
+TaggedBook first = new TaggedBook(new String[] {"java", "oop"});
 TaggedBook copy = new TaggedBook(first.tags);
 copy.tags[0] = "changed";
-System.out.println(first.tags[0]);           // changed
-System.out.println(first == copy);          // false
+System.out.println(first.tags[0]); // changed
+System.out.println(first == copy); // false
 System.out.println(first.tags == copy.tags); // true
 ```
 
@@ -453,7 +456,7 @@ copy  ──> книга 2 ──tags──┘
 ```java
 TaggedBook independent = new TaggedBook(first.tags.clone());
 independent.tags[0] = "independent";
-System.out.println(first.tags[0]);       // changed
+System.out.println(first.tags[0]); // changed
 System.out.println(independent.tags[0]); // independent
 System.out.println(first.tags == independent.tags); // false
 ```

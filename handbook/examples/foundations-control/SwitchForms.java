@@ -20,9 +20,15 @@ public class SwitchForms {
 
     static int statementLimit(String mode) {
         switch (mode) {
-            case "brief" -> { return 10; }
-            case "full" -> { return 30; }
-            default -> { return 0; }
+            case "brief" -> {
+                return 10;
+            }
+            case "full" -> {
+                return 30;
+            }
+            default -> {
+                return 0;
+            }
         }
     }
 

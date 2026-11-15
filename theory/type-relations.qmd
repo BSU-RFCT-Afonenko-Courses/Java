@@ -139,8 +139,7 @@ System.out.println(mutable.size()); // 0
 Источник имеет верхнюю границу, приёмник — нижнюю:
 
 ```java
-static <T> void copy(List<? extends T> source,
-                     List<? super T> target) {
+static <T> void copy(List<? extends T> source, List<? super T> target) {
     for (T value : source) {
         target.add(value);
     }
@@ -156,7 +155,7 @@ List<Integer> ints = List.of(1, 2);
 List<Number> numbers = new ArrayList<>();
 numbers.add(0.5);
 copy(ints, numbers);
-System.out.println(ints);    // [1, 2]
+System.out.println(ints); // [1, 2]
 System.out.println(numbers); // [0.5, 1, 2]
 ```
 
@@ -186,13 +185,20 @@ System.out.println(numbers); // [0.5, 1, 2]
 ```java
 class Person implements Comparable<Person> {
     final int rank;
-    Person(int rank) { this.rank = rank; }
+
+    Person(int rank) {
+        this.rank = rank;
+    }
+
     public int compareTo(Person other) {
         return Integer.compare(rank, other.rank);
     }
 }
+
 final class Student extends Person {
-    Student(int rank) { super(rank); }
+    Student(int rank) {
+        super(rank);
+    }
 }
 ```
 
@@ -281,6 +287,7 @@ static void reverseFirstTwo(List<?> values) {
         swapFirstTwo(values);
     }
 }
+
 private static <T> void swapFirstTwo(List<T> values) {
     T first = values.get(0);
     values.set(0, values.get(1));
@@ -341,8 +348,14 @@ System.out.println(names); // [Lin, Ada]
 ```java
 final class Box<T> {
     private final T value;
-    Box(T value) { this.value = value; }
-    T get() { return value; }
+
+    Box(T value) {
+        this.value = value;
+    }
+
+    T get() {
+        return value;
+    }
 }
 ```
 
@@ -405,9 +418,14 @@ System.out.println(number.get().getClass().getSimpleName()); // Integer
 Стирание меняет форму метода, используемую для полиморфного вызова:
 
 ```java
-interface Source<T> { T get(); }
+interface Source<T> {
+    T get();
+}
+
 final class TextSource implements Source<String> {
-    public String get() { return "Java"; }
+    public String get() {
+        return "Java";
+    }
 }
 ```
 
@@ -472,7 +490,7 @@ System.out.println(read(new TextSource())); // Java
 ```java
 List<String> words = new ArrayList<>();
 List raw = words;
-raw.add(25);                // unchecked-предупреждение
+raw.add(25); // unchecked-предупреждение
 String word = words.get(0); // ClassCastException
 ```
 

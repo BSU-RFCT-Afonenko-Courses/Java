@@ -14,6 +14,7 @@ class DemoTest {
     interface Throwing {
         void run() throws Throwable;
     }
+
     private static String capture(Throwing body) throws Throwable {
         var out = System.out;
         var err = System.err;
@@ -28,24 +29,31 @@ class DemoTest {
         }
         return bytes.toString(StandardCharsets.UTF_8);
     }
+
     record Payload(int value) {}
+
     static class Box<T> {
         final Study<T> value;
         final Class<? extends Throwable> full = Study.StackFullException.class,
-                                         empty = Study.StackEmptyException.class;
+                empty = Study.StackEmptyException.class;
+
         Box(T[] storage) throws Throwable {
             value = new Study<T>(storage);
         }
+
         void put(T v) throws Throwable {
             value.push(v);
         }
+
         T get() throws Throwable {
             return value.pop();
         }
     }
+
     private static void empty(Box<?> b) throws Throwable {
         assertThrows(b.empty, () -> b.get());
     }
+
     private static <T> void full(Box<T> b, T rejected) throws Throwable {
         assertThrows(b.full, () -> b.put(rejected));
     }

@@ -10,6 +10,7 @@ public class FilesLinesDemo {
             return lines.filter(line -> !line.isBlank()).count();
         }
     }
+
     static void report(Path path) {
         try {
             System.out.println(countNonblank(path));
@@ -19,6 +20,7 @@ public class FilesLinesDemo {
             System.err.println("Ошибка чтения или закрытия файла");
         }
     }
+
     public static void main(String[] args) throws IOException {
         if (args.length == 1) {
             report(Path.of(args[0]));

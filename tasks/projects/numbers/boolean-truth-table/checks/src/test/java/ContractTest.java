@@ -9,9 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestReporter;
 
 class ContractTest {
-    private static String run(TestReporter publicReporter, String[] publicCaseIds, String input,
-            String... args) throws Exception {
-        return publicOutput(publicReporter, publicCaseIds,
+    private static String run(
+            TestReporter publicReporter, String[] publicCaseIds, String input, String... args)
+            throws Exception {
+        return publicOutput(
+                publicReporter,
+                publicCaseIds,
                 JavaProcess.runCheckingUncaught(Main.class, input, args).stdout());
     }
 
@@ -22,8 +25,7 @@ class ContractTest {
     private static void table(TestReporter publicReporter, String[] publicCaseIds)
             throws Exception {
         String text = run(publicReporter, publicCaseIds, "").replace("\r\n", "\n");
-        if (text.endsWith("\n"))
-            text = text.substring(0, text.length() - 1);
+        if (text.endsWith("\n")) text = text.substring(0, text.length() - 1);
         String[] lines = text.split("\n", -1);
         assertEquals(5, lines.length, "Заголовок и четыре строки");
         assertEquals(
@@ -33,13 +35,17 @@ class ContractTest {
             String[] values = lines[i].split("\t", -1);
             assertEquals(6, values.length, "Разделитель — табуляция");
             for (String v : values)
-                assertTrue(v.equals("true") || v.equals("false"),
+                assertTrue(
+                        v.equals("true") || v.equals("false"),
                         "Ожидалось true или false, получено «" + v + "»");
             boolean p = Boolean.parseBoolean(values[0]), q = Boolean.parseBoolean(values[1]);
             assertTrue(found.add(p + "/" + q), "Четыре различные пары");
-            assertArrayEquals(new String[] {"" + p, "" + q, "" + (p && q), "" + (p || q),
-                                      "" + (p ^ q), "" + !p},
-                    values, "Операции для P=" + p + ", Q=" + q + "; NOT относится к P");
+            assertArrayEquals(
+                    new String[] {
+                        "" + p, "" + q, "" + (p && q), "" + (p || q), "" + (p ^ q), "" + !p
+                    },
+                    values,
+                    "Операции для P=" + p + ", Q=" + q + "; NOT относится к P");
         }
     }
 
@@ -53,8 +59,7 @@ class ContractTest {
     private static String publicOutput(TestReporter reporter, String[] ids, String actual) {
         if (reporter != null) {
             String visible = actual.replaceAll("[\\p{Cntrl}&&[^\n\t]]", "�");
-            if (visible.length() > 2000)
-                visible = visible.substring(0, 2000) + "…";
+            if (visible.length() > 2000) visible = visible.substring(0, 2000) + "…";
             for (String id : ids)
                 reporter.publishEntry(Map.of("public-case", id, "actual", "stdout=" + visible));
         }

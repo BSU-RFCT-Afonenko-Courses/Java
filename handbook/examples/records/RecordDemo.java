@@ -1,6 +1,8 @@
 public class RecordDemo {
     record Point(int x, int y) {}
+
     record ScreenPoint(int x, int y) {}
+
     record Measurement(double value) {}
 
     public static void main(String[] args) {

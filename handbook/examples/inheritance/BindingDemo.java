@@ -1,15 +1,31 @@
 public class BindingDemo {
     static class Base {
         String label = "base field";
-        String label() { return "base method"; }
-        static String category() { return "base static"; }
+
+        String label() {
+            return "base method";
+        }
+
+        static String category() {
+            return "base static";
+        }
     }
 
     static class Child extends Base {
         String label = "child field";
-        @Override String label() { return "child method"; }
-        static String category() { return "child static"; }
-        String baseLabel() { return super.label(); }
+
+        @Override
+        String label() {
+            return "child method";
+        }
+
+        static String category() {
+            return "child static";
+        }
+
+        String baseLabel() {
+            return super.label();
+        }
     }
 
     public static void main(String[] args) {

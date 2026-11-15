@@ -15,8 +15,7 @@ class HiddenContractTest {
         Object[] range = TaskBinding.range(in, 707, 707);
         List<?> actualRange = PublicChecks.values(range);
         assertEquals(expectedRange, actualRange);
-        for (int k = 0; k < in.length; k++)
-            assertSame(before[k], in[k]);
+        for (int k = 0; k < in.length; k++) assertSame(before[k], in[k]);
         assertEquals(state, PublicChecks.values(in));
         Object[] beforeDiagnosis = in.clone();
         List<?> diagnosisState = PublicChecks.values(in),
@@ -24,8 +23,7 @@ class HiddenContractTest {
         Object[] diagnosed = TaskBinding.diagnosis(in, "X");
         List<?> actualDiagnosis = PublicChecks.values(diagnosed);
         assertEquals(expectedDiagnosis, actualDiagnosis);
-        for (int k = 0; k < in.length; k++)
-            assertSame(beforeDiagnosis[k], in[k]);
+        for (int k = 0; k < in.length; k++) assertSame(beforeDiagnosis[k], in[k]);
         assertEquals(diagnosisState, PublicChecks.values(in));
     }
 }

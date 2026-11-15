@@ -9,6 +9,7 @@ public interface Sender {
             send(message);
         }
     }
+
     static Sender console() {
         return new ConsoleSender();
     }

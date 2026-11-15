@@ -22,15 +22,18 @@ import static org.junit.jupiter.api.Assertions.*;
 class ContractTest {
     @TempDir Path dir;
     private int counter;
+
     private Path input(String text) throws Exception {
         var p = dir.resolve("Собственные данные " + counter++ + ".txt");
         Files.writeString(p, text, StandardCharsets.UTF_8);
         return p;
     }
+
     private static void near(double expected, double actual) {
         assertTrue(Double.isFinite(actual), "Результат должен быть конечным");
         assertEquals(expected, actual, Math.max(1e-12, 1e-12 * Math.abs(expected)));
     }
+
     private void bad(String text, long line) throws Exception {
         var p = input(text);
         var rows = Study.read(p);
@@ -38,6 +41,7 @@ class ContractTest {
         assertEquals(line, e.line());
         assertNotNull(e.getCause());
     }
+
     private void second(String line) throws Exception {
         bad("1\ten-US\n" + line + "\n", 2);
     }
@@ -48,10 +52,15 @@ class ContractTest {
         {
             var rows = Study.read(input("1,5\tru-BY\n2.5\ten-US\n"));
             var texts = new ArrayList<String>();
-            for (var row : rows)
-                texts.add(row.text());
-            reporter.publishEntry(Map.of("public-case", "normal-read", "expected",
-                "Исходные строки=[1,5\\tru-BY, 2.5\\ten-US].", "actual", "Исходные строки=" + texts));
+            for (var row : rows) texts.add(row.text());
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "normal-read",
+                            "expected",
+                            "Исходные строки=[1,5\\tru-BY, 2.5\\ten-US].",
+                            "actual",
+                            "Исходные строки=" + texts));
             assertEquals(List.of("1,5\tru-BY", "2.5\ten-US"), texts);
         }
         String[] lines = {"1,5\tru-BY", "2.5tail\ten-US", "", "1\ten-US\textra"};
@@ -70,10 +79,19 @@ class ContractTest {
     void la2(TestReporter reporter) throws Throwable {
         {
             var result = Study.analyze(Study.read(input("1,5\tru-BY\n2.5\ten-US\n")));
-            reporter.publishEntry(Map.of("public-case", "normal", "expected",
-                "Количество=2; сумма=4; среднее=2; допуск max(1e-12, 1e-12 × |ожидаемое|).", "actual",
-                "Количество=" + result.count() + "; сумма=" + result.sum()
-                    + "; среднее=" + result.average()));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "normal",
+                            "expected",
+                            "Количество=2; сумма=4; среднее=2; допуск max(1e-12, 1e-12 × |ожидаемое|).",
+                            "actual",
+                            "Количество="
+                                    + result.count()
+                                    + "; сумма="
+                                    + result.sum()
+                                    + "; среднее="
+                                    + result.average()));
             assertEquals(2, result.count());
             near(4, result.sum());
             near(2, result.average().orElseThrow());
@@ -94,8 +112,13 @@ class ContractTest {
         {
             var result = Study.analyze(Study.read(input("")));
             reporter.publishEntry(
-                Map.of("public-case", "boundary", "expected", "Количество=0; среднее отсутствует.", "actual",
-                    "Количество=" + result.count() + "; среднее=" + result.average()));
+                    Map.of(
+                            "public-case",
+                            "boundary",
+                            "expected",
+                            "Количество=0; среднее отсутствует.",
+                            "actual",
+                            "Количество=" + result.count() + "; среднее=" + result.average()));
             assertEquals(0, result.count());
             assertTrue(result.average().isEmpty());
         }
@@ -135,8 +158,7 @@ class ContractTest {
     @Test
     @DisplayName("Неразобранное число или непрочитанный хвост")
     void la7() throws Throwable {
-        for (String line : new String[] {"bad\ten-US", "2.5tail\ten-US"})
-            second(line);
+        for (String line : new String[] {"bad\ten-US", "2.5tail\ten-US"}) second(line);
     }
 
     @Test
@@ -165,9 +187,11 @@ class ContractTest {
     @Test
     @DisplayName("Конечный итог после временного переполнения")
     void la10() throws Throwable {
-        String big = "1"
-            + "0".repeat(308);
-        var r = Study.analyze(Study.read(input(big + "\ten-US\n" + big + "\ten-US\n-" + big + "\ten-US\n")));
+        String big = "1" + "0".repeat(308);
+        var r =
+                Study.analyze(
+                        Study.read(
+                                input(big + "\ten-US\n" + big + "\ten-US\n-" + big + "\ten-US\n")));
         assertEquals(3, r.count());
         near(1e308, r.sum());
         near(1e308 / 3, r.average().orElseThrow());
@@ -176,8 +200,7 @@ class ContractTest {
     @Test
     @DisplayName("Переполнение итога и приоритет ошибки записи")
     void la11() throws Throwable {
-        String large = "9"
-            + "0".repeat(307);
+        String large = "9" + "0".repeat(307);
         bad(large + "\ten-US\n" + large + "\ten-US\n", 2);
         bad(large + "\ten-US\n" + large + "\ten-US\nbad\ten-US\n", 3);
     }

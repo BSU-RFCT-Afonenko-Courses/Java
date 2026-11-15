@@ -1,1 +1,10 @@
-import org.junit.jupiter.api.Test;class ContractTest {@Test void independentFrequenciesAndCase(){HuffmanProbe.verify("a b c c d d d d");HuffmanProbe.verify("One one");HuffmanProbe.verify("red blue green black");}}
+import org.junit.jupiter.api.Test;
+
+class ContractTest {
+    @Test
+    void independentFrequenciesAndCase() {
+        HuffmanProbe.verify("a b c c d d d d");
+        HuffmanProbe.verify("One one");
+        HuffmanProbe.verify("red blue green black");
+    }
+}

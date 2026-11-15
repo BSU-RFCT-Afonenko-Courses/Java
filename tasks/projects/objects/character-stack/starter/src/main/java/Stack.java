@@ -1,1 +1,13 @@
-public class Stack {public Stack(int capacity){throw new UnsupportedOperationException("TODO: конструктор");}public void push(char value){throw new UnsupportedOperationException("TODO: push");}public char pop(){throw new UnsupportedOperationException("TODO: pop");}}
+public class Stack {
+    public Stack(int capacity) {
+        throw new UnsupportedOperationException("TODO: конструктор");
+    }
+
+    public void push(char value) {
+        throw new UnsupportedOperationException("TODO: push");
+    }
+
+    public char pop() {
+        throw new UnsupportedOperationException("TODO: pop");
+    }
+}

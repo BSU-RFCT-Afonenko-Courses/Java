@@ -1,8 +1,13 @@
 import java.util.Arrays;
 
 public class MethodCalls {
-    static String kind(long value) { return "long"; }
-    static String kind(Integer value) { return "Integer"; }
+    static String kind(long value) {
+        return "long";
+    }
+
+    static String kind(Integer value) {
+        return "Integer";
+    }
 
     static long sum(int... values) {
         long result = 0;

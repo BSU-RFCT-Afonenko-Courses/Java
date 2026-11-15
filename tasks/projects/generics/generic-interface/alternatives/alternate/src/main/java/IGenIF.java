@@ -1,1 +1,1 @@
-public interface IGenIF<T,V extends T>{}
+public interface IGenIF<T, V extends T> {}

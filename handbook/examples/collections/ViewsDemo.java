@@ -18,8 +18,9 @@ public class ViewsDemo {
         System.out.println(Arrays.toString(array));
         array[1] = "Eva";
         System.out.println(fixed);
-        try { fixed.add("Bob"); }
-        catch (UnsupportedOperationException ex) {
+        try {
+            fixed.add("Bob");
+        } catch (UnsupportedOperationException ex) {
             System.out.println(ex.getClass().getSimpleName());
         }
     }

@@ -15,8 +15,7 @@ import java.nio.charset.StandardCharsets;
 class HistoricalContractTest {
     static Map<String, Integer> bag(List<String> v) {
         Map<String, Integer> m = new HashMap<>();
-        for (String s : v)
-            m.merge(s, 1, Integer::sum);
+        for (String s : v) m.merge(s, 1, Integer::sum);
         return m;
     }
 
@@ -27,8 +26,9 @@ class HistoricalContractTest {
         List<String> in = new ArrayList<>(List.of("😀", "ab", "x", "cd"));
         assertEquals(List.of("x", "😀", "ab", "cd"), TaskBinding.ordered(in));
         assertEquals(List.of("😀", "ab", "x", "cd"), in);
-        List<String> poem = TaskBinding.poem(), before = new ArrayList<>(poem),
-                     out = TaskBinding.ordered(poem);
+        List<String> poem = TaskBinding.poem(),
+                before = new ArrayList<>(poem),
+                out = TaskBinding.ordered(poem);
         assertEquals(before, poem);
         assertEquals(poem.size(), out.size());
         for (int i = 1; i < out.size(); i++)

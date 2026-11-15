@@ -57,9 +57,9 @@ second ────> B: String "Ada"
 проверяется общий объект или последовательность символов?
 
 ```java
-System.out.println(first == second);      // false
+System.out.println(first == second); // false
 System.out.println(first.equals(second)); // true
-System.out.println(alias == first);       // true
+System.out.println(alias == first); // true
 ```
 
 У `first` и `second` разные объекты, поэтому первое сравнение ложно.
@@ -107,8 +107,8 @@ var repeated = new Student("s1", "Ada", 90);
 зависит от выбранных сведений:
 
 ```java
-System.out.println(before.equals(repeated));       // true
-System.out.println(before.equals(after));          // false
+System.out.println(before.equals(repeated)); // true
+System.out.println(before.equals(after)); // false
 System.out.println(before.id().equals(after.id())); // true
 ```
 
@@ -131,7 +131,7 @@ System.out.println(versions.size()); // 2
 ```java
 var codes = new java.util.HashSet<String>();
 System.out.println(codes.add(before.id())); // true
-System.out.println(codes.add(after.id()));  // false
+System.out.println(codes.add(after.id())); // false
 ```
 
 Для поиска сведений по коду подходит `Map<String, Student>`: одному ключу
@@ -226,8 +226,8 @@ final class StudentId {
 ```java
 var id = new StudentId("s17");
 System.out.println(id.equals(new StudentId("s17"))); // true
-System.out.println(id.equals("s17"));                // false
-System.out.println(id.equals(null));                 // false
+System.out.println(id.equals("s17")); // false
+System.out.println(id.equals(null)); // false
 ```
 
 Попытка считать идентификатор равным обычной строке нарушила бы симметрию:
@@ -263,7 +263,9 @@ System.out.println(id.equals(null));                 // false
 final class OverloadedId {
     private final String value;
 
-    OverloadedId(String value) { this.value = value; }
+    OverloadedId(String value) {
+        this.value = value;
+    }
 
     public boolean equals(OverloadedId other) {
         return other != null && value.equals(other.value);
@@ -278,7 +280,7 @@ final class OverloadedId {
 var first = new OverloadedId("s17");
 var second = new OverloadedId("s17");
 Object argument = second;
-System.out.println(first.equals(second));   // true
+System.out.println(first.equals(second)); // true
 System.out.println(first.equals(argument)); // false
 ```
 
@@ -354,13 +356,13 @@ System.out.println(containsCode(java.util.List.of(), "s1")); // false
 var first = new StudentId("s17");
 var second = new StudentId("s17");
 var ids = new java.util.HashSet<StudentId>();
-System.out.println(first == second);                      // false
-System.out.println(first.equals(second));                 // true
+System.out.println(first == second); // false
+System.out.println(first.equals(second)); // true
 System.out.println(first.hashCode() == second.hashCode()); // true
-System.out.println(ids.add(first));                       // true
-System.out.println(ids.add(second));                      // false
-System.out.println(ids.contains(second));                 // true
-System.out.println(ids.size());                           // 1
+System.out.println(ids.add(first)); // true
+System.out.println(ids.add(second)); // false
+System.out.println(ids.contains(second)); // true
+System.out.println(ids.size()); // 1
 ```
 
 Множество содержит одно значение идентификатора. Повторное добавление
@@ -373,7 +375,7 @@ for (StudentId id : java.util.List.of(first, second, new StudentId("s18"))) {
     counts.put(id, counts.getOrDefault(id, 0) + 1);
 }
 System.out.println(counts.get(new StudentId("s17"))); // 2
-System.out.println(counts.size());                    // 2
+System.out.println(counts.size()); // 2
 ```
 
 `getOrDefault` возвращает сохранённый счётчик или начальный ноль.
@@ -397,7 +399,7 @@ System.out.println(counts.size());                    // 2
 var aa = new StudentId("Aa");
 var bb = new StudentId("BB");
 System.out.println(aa.hashCode() == bb.hashCode()); // true
-System.out.println(aa.equals(bb));                  // false
+System.out.println(aa.equals(bb)); // false
 var collisions = new java.util.HashSet<StudentId>();
 collisions.add(aa);
 collisions.add(bb);
@@ -467,8 +469,8 @@ flowchart LR
 ```java
 var repeatedBb = new StudentId("BB");
 System.out.println(values.put(repeatedBb, 20)); // 2
-System.out.println(values.size());             // 2
-System.out.println(values.get(firstBb));       // 20
+System.out.println(values.size()); // 2
+System.out.println(values.get(firstBb)); // 20
 for (StudentId stored : values.keySet()) {
     if (stored.equals(repeatedBb)) {
         System.out.println(stored == firstBb); // true
@@ -494,13 +496,20 @@ for (StudentId stored : values.keySet()) {
 ```java
 final class MutableKey {
     int code;
-    MutableKey(int code) { this.code = code; }
 
-    @Override public boolean equals(Object other) {
+    MutableKey(int code) {
+        this.code = code;
+    }
+
+    @Override
+    public boolean equals(Object other) {
         return other instanceof MutableKey key && code == key.code;
     }
 
-    @Override public int hashCode() { return code; }
+    @Override
+    public int hashCode() {
+        return code;
+    }
 }
 ```
 
@@ -549,10 +558,10 @@ flowchart TB
 
 ```java
 System.out.println(broken.get(key)); // OpenJDK 25: null
-System.out.println(broken.size());   // OpenJDK 25: 1
+System.out.println(broken.size()); // OpenJDK 25: 1
 var entry = broken.entrySet().iterator().next();
 System.out.println(entry.getKey() == key); // OpenJDK 25: true
-System.out.println(entry.getValue());     // OpenJDK 25: stored
+System.out.println(entry.getValue()); // OpenJDK 25: stored
 ```
 
 Узел сохранился и по-прежнему ссылается на тот же ключ, но поиск по новому
@@ -593,7 +602,7 @@ var id = new StudentId("s1");
 students.put(id, new Student("s1", "Ada", 90));
 students.put(id, new Student("s1", "Ada", 95));
 System.out.println(students.get(new StudentId("s1")).score()); // 95
-System.out.println(students.size());                          // 1
+System.out.println(students.size()); // 1
 ```
 
 Вторая запись заменила сведения под устойчивым идентификатором. У `Student`
@@ -619,7 +628,7 @@ System.out.println(students.size());                          // 1
 ```java
 int[] first = {80, 90};
 int[] second = {80, 90};
-System.out.println(first.equals(second));                  // false
+System.out.println(first.equals(second)); // false
 System.out.println(java.util.Arrays.equals(first, second)); // true
 ```
 
@@ -653,7 +662,7 @@ final class ScoreVector {
     @Override
     public boolean equals(Object other) {
         return other instanceof ScoreVector vector
-            && java.util.Arrays.equals(values, vector.values);
+                && java.util.Arrays.equals(values, vector.values);
     }
 
     @Override
@@ -671,7 +680,7 @@ final class ScoreVector {
 ```java
 int[] input = {80, 90};
 var vector = new ScoreVector(input);
-var sameValue = new ScoreVector(new int[]{80, 90});
+var sameValue = new ScoreVector(new int[] {80, 90});
 input[0] = 0;
 vector.values()[1] = 0;
 System.out.println(vector.equals(sameValue)); // true
@@ -716,7 +725,9 @@ final class CodePath {
     }
 
     @Override
-    public int hashCode() { return parts.hashCode(); }
+    public int hashCode() {
+        return parts.hashCode();
+    }
 }
 ```
 
@@ -767,13 +778,14 @@ UTF-16: первая различающаяся пара определяет р
 упорядочивают сначала по убыванию балла, затем по возрастанию кода:
 
 ```java
-java.util.Comparator<Student> byScore = new java.util.Comparator<>() {
-    @Override
-    public int compare(Student a, Student b) {
-        int scoreOrder = Integer.compare(b.score(), a.score());
-        return scoreOrder != 0 ? scoreOrder : a.id().compareTo(b.id());
-    }
-};
+java.util.Comparator<Student> byScore =
+        new java.util.Comparator<>() {
+            @Override
+            public int compare(Student a, Student b) {
+                int scoreOrder = Integer.compare(b.score(), a.score());
+                return scoreOrder != 0 ? scoreOrder : a.id().compareTo(b.id());
+            }
+        };
 ```
 
 Выражение `new Comparator<>() { ... }` создаёт объект анонимного класса,
@@ -787,10 +799,12 @@ java.util.Comparator<Student> byScore = new java.util.Comparator<>() {
 расположите эти записи по двум ступеням правила:
 
 ```java
-var ordered = new java.util.ArrayList<>(java.util.List.of(
-    new Student("s2", "Lin", 70),
-    new Student("s3", "Ann", 90),
-    new Student("s1", "Ada", 90)));
+var ordered =
+        new java.util.ArrayList<>(
+                java.util.List.of(
+                        new Student("s2", "Lin", 70),
+                        new Student("s3", "Ann", 90),
+                        new Student("s1", "Ada", 90)));
 ordered.sort(byScore);
 for (Student student : ordered) System.out.println(student.id());
 ```
@@ -803,9 +817,7 @@ for (Student student : ordered) System.out.println(student.id());
 
 ```java
 java.util.Comparator<Student> byScoreAndId =
-    java.util.Comparator.comparingInt(Student::score)
-        .reversed()
-        .thenComparing(Student::id);
+        java.util.Comparator.comparingInt(Student::score).reversed().thenComparing(Student::id);
 ```
 
 `Student::score` передаёт операцию чтения балла. `comparingInt` строит
@@ -868,8 +880,7 @@ flowchart TD
 ```java
 var a = new Student("s1", "Ada", 90);
 var b = new Student("s2", "Lin", 90);
-java.util.Comparator<Student> onlyScore =
-    java.util.Comparator.comparingInt(Student::score);
+java.util.Comparator<Student> onlyScore = java.util.Comparator.comparingInt(Student::score);
 ```
 
 Предскажите результат добавления `b` после `a` и результат поиска `b`:
@@ -900,10 +911,10 @@ System.out.println(tree.size()); // 1
 
 ```java
 java.util.Comparator<Student> byAllComponents =
-    java.util.Comparator.comparingInt(Student::score)
-        .reversed()
-        .thenComparing(Student::id)
-        .thenComparing(Student::name);
+        java.util.Comparator.comparingInt(Student::score)
+                .reversed()
+                .thenComparing(Student::id)
+                .thenComparing(Student::name);
 ```
 
 Теперь ноль возможен ровно при равенстве балла, кода и имени.

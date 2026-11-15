@@ -42,10 +42,14 @@ class DemoTest {
         assertEquals(expected.length, actual.length, "Количество различных действительных корней");
         boolean correct = near(actual[0], expected[0]);
         if (expected.length == 2)
-            correct = correct && near(actual[1], expected[1])
-                    || near(actual[0], expected[1]) && near(actual[1], expected[0]);
-        assertTrue(correct,
-                "Ожидались корни " + Arrays.toString(expected) + ", получены "
+            correct =
+                    correct && near(actual[1], expected[1])
+                            || near(actual[0], expected[1]) && near(actual[1], expected[0]);
+        assertTrue(
+                correct,
+                "Ожидались корни "
+                        + Arrays.toString(expected)
+                        + ", получены "
                         + Arrays.toString(actual)
                         + ("; для каждого корня допуск 1e-8 + 1e-12 × |ожидаемый корень|; порядок "
                                 + "свободный"));

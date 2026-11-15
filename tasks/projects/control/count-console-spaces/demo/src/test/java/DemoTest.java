@@ -12,7 +12,9 @@ class DemoTest {
 
     private static void exact(String expected, String actual) {
         assertTrue(actual.strip().matches("[+-]?[0-9]+"), "Выведите целое число");
-        assertEquals(new BigInteger(expected), new BigInteger(actual.strip()),
+        assertEquals(
+                new BigInteger(expected),
+                new BigInteger(actual.strip()),
                 "Выведите целое количество пробелов");
     }
 

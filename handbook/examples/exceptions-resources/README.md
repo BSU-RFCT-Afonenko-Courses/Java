@@ -27,16 +27,16 @@ java -cp out EarlyCheckedDemo
 java -cp out CheckedCallerDemo
 ```
 
-| Запуск | Наблюдение |
-|---|---|
-| `scores` | `90 -> 90`, `0 -> 0`, `ninety -> NumberFormatException`, `120 -> IllegalArgumentException`, `null -> NullPointerException` |
-| `flow` | `ошибка: балл вне диапазона 0..100: 120`, затем `следующая операция`; строки успеха пропущены |
-| `handlers` | `нужно число`, `нужен диапазон`, `90` |
-| `cause` | `строка 3`, затем `NumberFormatException` |
-| `state` | `[90, 80]` |
-| `result` | `балл: 90`, `ошибка: OUT_OF_RANGE`, затем два раза `ошибка: NOT_INTEGER` |
-| `EarlyCheckedDemo` | `7`, `empty`, `дальше` |
-| `CheckedCallerDemo` | `7`, `хранилище пусто` |
+| Запуск              | Наблюдение                                                                                                                 |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `scores`            | `90 -> 90`, `0 -> 0`, `ninety -> NumberFormatException`, `120 -> IllegalArgumentException`, `null -> NullPointerException` |
+| `flow`              | `ошибка: балл вне диапазона 0..100: 120`, затем `следующая операция`; строки успеха пропущены                              |
+| `handlers`          | `нужно число`, `нужен диапазон`, `90`                                                                                      |
+| `cause`             | `строка 3`, затем `NumberFormatException`                                                                                  |
+| `state`             | `[90, 80]`                                                                                                                 |
+| `result`            | `балл: 90`, `ошибка: OUT_OF_RANGE`, затем два раза `ошибка: NOT_INTEGER`                                                   |
+| `EarlyCheckedDemo`  | `7`, `empty`, `дальше`                                                                                                     |
+| `CheckedCallerDemo` | `7`, `хранилище пусто`                                                                                                     |
 
 Каждый элемент наблюдения печатается на отдельной строке. В `result`
 четвёртый вход — `2147483648`; он не представим в `int`. В `flow`
@@ -106,16 +106,16 @@ java -cp out ResourceDemo existing
 выбрать отказ конструктора и отказ `close`. Файловые дескрипторы в этих
 опытах не используются.
 
-| Запуск | События до обработчика | Диагностика |
-|---|---|---|
-| `order` | `open A`, `open B`, `body`, `close B`, `close A` | Обработчик не требуется |
-| `partial` | `open A`, `close A` | Основное `open B`, причина `null` |
-| `partial-close` | `open A`, `close A` | Основное `open B`, причина `null`, подавленное `close A` |
-| `body-close` | `open A`, `open B`, `body`, `close B`, `close A` | Основное `body`, причина `null`, подавленные `close B`, `close A` |
-| `close-only` | `open A`, `open B`, `body`, `close B`, `close A` | Основное `close B`, причина `null`, подавленное `close A` |
-| `cause-close` | `close` | Основное `read`, причина `bad bytes`, подавленное `cleanup` |
-| `null` | `open B`, `body`, `close B` | Для ресурса со значением `null` закрытие не вызывается |
-| `existing` | `open A`, `body`, `close A` | После блока печатается `имя доступно: A` |
+| Запуск          | События до обработчика                           | Диагностика                                                       |
+| --------------- | ------------------------------------------------ | ----------------------------------------------------------------- |
+| `order`         | `open A`, `open B`, `body`, `close B`, `close A` | Обработчик не требуется                                           |
+| `partial`       | `open A`, `close A`                              | Основное `open B`, причина `null`                                 |
+| `partial-close` | `open A`, `close A`                              | Основное `open B`, причина `null`, подавленное `close A`          |
+| `body-close`    | `open A`, `open B`, `body`, `close B`, `close A` | Основное `body`, причина `null`, подавленные `close B`, `close A` |
+| `close-only`    | `open A`, `open B`, `body`, `close B`, `close A` | Основное `close B`, причина `null`, подавленное `close A`         |
+| `cause-close`   | `close`                                          | Основное `read`, причина `bad bytes`, подавленное `cleanup`       |
+| `null`          | `open B`, `body`, `close B`                      | Для ресурса со значением `null` закрытие не вызывается            |
+| `existing`      | `open A`, `body`, `close A`                      | После блока печатается `имя доступно: A`                          |
 
 `CauseCloseDemo` — отдельный полный файл опыта из теории; он печатает
 `close`, `primary: read`, `cause: bad bytes`, `suppressed: cleanup`.
@@ -211,10 +211,10 @@ javac -encoding UTF-8 -d experiment/out experiment/MissingThrows.java
 Компилятор должен отклонить вариант. Для следующего опыта укажите
 соответствующее имя файла. Точный текст диагностики зависит от JDK.
 
-| Файл | Причина отказа компиляции |
-|---|---|
-| `MissingThrows.java.txt` | Вызов `take(false)` передаёт необработанное проверяемое исключение |
-| `RelatedMultiCatch.java.txt` | В одном перечне `catch` находятся подкласс и суперкласс |
-| `BroaderOverride.java.txt` | Реализация расширяет проверяемые отказы интерфейса |
-| `UncheckedClose.java.txt` | Не учтён `Exception` неявного вызова `AutoCloseable.close` |
-| `DefaultConstructor.java.txt` | Неявный конструктор не объявляет проверяемый отказ `super()` |
+| Файл                          | Причина отказа компиляции                                          |
+| ----------------------------- | ------------------------------------------------------------------ |
+| `MissingThrows.java.txt`      | Вызов `take(false)` передаёт необработанное проверяемое исключение |
+| `RelatedMultiCatch.java.txt`  | В одном перечне `catch` находятся подкласс и суперкласс            |
+| `BroaderOverride.java.txt`    | Реализация расширяет проверяемые отказы интерфейса                 |
+| `UncheckedClose.java.txt`     | Не учтён `Exception` неявного вызова `AutoCloseable.close`         |
+| `DefaultConstructor.java.txt` | Неявный конструктор не объявляет проверяемый отказ `super()`       |

@@ -19,22 +19,34 @@ public class PublicChecks {
         double area = TaskBinding.area(circle);
 
         assertAll(
-            () -> assertEquals(diameter, TaskBinding.width(circle),
-                "Ширина круга должна равняться диаметру"),
-            () -> assertEquals(diameter, TaskBinding.height(circle),
-                "Высота круга должна равняться диаметру"),
-            () -> assertEquals("circle", TaskBinding.name(circle),
-                "Имя фигуры должно быть circle"),
-            () -> assertTrue(Double.isFinite(area), "Площадь должна быть конечной"),
-            () -> assertEquals(expectedArea, area, tolerance,
-                "Площадь круга должна соответствовать радиусу с заданным допуском")
-        );
+                () ->
+                        assertEquals(
+                                diameter,
+                                TaskBinding.width(circle),
+                                "Ширина круга должна равняться диаметру"),
+                () ->
+                        assertEquals(
+                                diameter,
+                                TaskBinding.height(circle),
+                                "Высота круга должна равняться диаметру"),
+                () ->
+                        assertEquals(
+                                "circle",
+                                TaskBinding.name(circle),
+                                "Имя фигуры должно быть circle"),
+                () -> assertTrue(Double.isFinite(area), "Площадь должна быть конечной"),
+                () ->
+                        assertEquals(
+                                expectedArea,
+                                area,
+                                tolerance,
+                                "Площадь круга должна соответствовать радиусу с заданным допуском"));
     }
 
     /** Консольная самопроверка использует те же assertions, что и открытый JUnit. */
     public static void main(String[] args) {
         boolean success = true;
-        for (double radius : new double[]{2, 1e150}) {
+        for (double radius : new double[] {2, 1e150}) {
             System.out.println("Проверка круга: r=" + radius);
             try {
                 checkCircle(radius);

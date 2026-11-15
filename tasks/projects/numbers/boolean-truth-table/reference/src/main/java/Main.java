@@ -4,8 +4,9 @@ public class Main {
         boolean[] values = {false, true};
         for (boolean p : values) {
             for (boolean q : values) {
-                System.out.println(p + "\t" + q + "\t" + (p && q) + "\t" + (p || q)
-                    + "\t" + (p ^ q) + "\t" + !p);
+                System.out.println(
+                        p + "\t" + q + "\t" + (p && q) + "\t" + (p || q) + "\t" + (p ^ q) + "\t"
+                                + !p);
             }
         }
     }

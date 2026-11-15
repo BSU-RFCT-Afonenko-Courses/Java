@@ -21,6 +21,7 @@ class ContractTest {
     interface Throwing {
         void run() throws Throwable;
     }
+
     private static String capture(Throwing body) throws Throwable {
         var out = System.out;
         var err = System.err;
@@ -35,25 +36,35 @@ class ContractTest {
         }
         return bytes.toString(StandardCharsets.UTF_8);
     }
+
     record Payload(int value) {}
+
     static class Box<T> {
         final Study<T> value;
+
         Box(T[] storage) throws Throwable {
             value = new Study<T>(storage);
         }
+
         void put(T v) throws Throwable {
             value.put(v);
         }
+
         T get() throws Throwable {
             return value.get();
         }
     }
+
     private static void empty(Box<?> b) throws Throwable {
         assertFalse(
-            capture(() -> assertNull(b.get())).isBlank(), "Отказ пустого контейнера должен сообщить о себе");
+                capture(() -> assertNull(b.get())).isBlank(),
+                "Отказ пустого контейнера должен сообщить о себе");
     }
+
     private static <T> void full(Box<T> b, T rejected) throws Throwable {
-        assertFalse(capture(() -> b.put(rejected)).isBlank(), "Полный контейнер должен сообщить об отказе");
+        assertFalse(
+                capture(() -> b.put(rejected)).isBlank(),
+                "Полный контейнер должен сообщить об отказе");
     }
 
     @Test
@@ -63,9 +74,14 @@ class ContractTest {
             var q = new Box<Integer>(new Integer[] {99});
             Object[] value = new Object[1];
             String output = capture(() -> value[0] = q.get());
-            reporter.publishEntry(Map.of("public-case", "boundary-initial", "expected",
-                "Извлечено=null; непустое сообщение об отказе.", "actual",
-                "Извлечено=" + value[0] + "; сообщение=" + !output.isBlank()));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "boundary-initial",
+                            "expected",
+                            "Извлечено=null; непустое сообщение об отказе.",
+                            "actual",
+                            "Извлечено=" + value[0] + "; сообщение=" + !output.isBlank()));
             assertNull(value[0]);
             assertFalse(output.isBlank());
         }
@@ -92,18 +108,22 @@ class ContractTest {
             var got = new ArrayList<Object>();
             got.add(s.get());
             s.put("Г");
-            for (int k = 0; k < 3; k++)
-                got.add(s.get());
+            for (int k = 0; k < 3; k++) got.add(s.get());
             var i = new Box<Integer>(new Integer[2]);
             i.put(10);
             i.put(20);
             i.put(30);
             got.add(i.get());
             i.put(40);
-            for (int k = 0; k < 3; k++)
-                got.add(i.get());
-            reporter.publishEntry(Map.of("public-case", "normal", "expected",
-                "Извлечено=[А, Б, В, Г, 10, 20, 30, 40].", "actual", "Извлечено=" + got));
+            for (int k = 0; k < 3; k++) got.add(i.get());
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "normal",
+                            "expected",
+                            "Извлечено=[А, Б, В, Г, 10, 20, 30, 40].",
+                            "actual",
+                            "Извлечено=" + got));
             assertEquals(List.of("А", "Б", "В", "Г", 10, 20, 30, 40), got);
         }
         {
@@ -111,32 +131,33 @@ class ContractTest {
             q.put(7);
             q.put(8);
             Integer a = q.get(), b = q.get();
-            reporter.publishEntry(Map.of("public-case", "boundary-growth", "expected", "Извлечено=7,8.",
-                "actual", "Извлечено=" + a + "," + b));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "boundary-growth",
+                            "expected",
+                            "Извлечено=7,8.",
+                            "actual",
+                            "Извлечено=" + a + "," + b));
             assertEquals(7, a);
             assertEquals(8, b);
         }
         var s = new Box<String>(new String[2]);
-        for (String v : new String[] {"А", "Б", "В"})
-            s.put(v);
+        for (String v : new String[] {"А", "Б", "В"}) s.put(v);
         assertEquals("А", s.get());
         s.put("Г");
-        for (String v : new String[] {"Б", "В", "Г"})
-            assertEquals(v, s.get());
+        for (String v : new String[] {"Б", "В", "Г"}) assertEquals(v, s.get());
         var i = new Box<Integer>(new Integer[2]);
         i.put(10);
         i.put(20);
         i.put(30);
         assertEquals(10, i.get());
         i.put(40);
-        for (int v : new int[] {20, 30, 40})
-            assertEquals(v, i.get());
+        for (int v : new int[] {20, 30, 40}) assertEquals(v, i.get());
         var p = new Box<Payload>(new Payload[1]);
         Payload[] values = {new Payload(1), new Payload(2), new Payload(3)};
-        for (Payload v : values)
-            p.put(v);
-        for (Payload v : values)
-            assertSame(v, p.get());
+        for (Payload v : values) p.put(v);
+        for (Payload v : values) assertSame(v, p.get());
         var v = new Box<Number>(new Number[1]);
         Number a = Integer.valueOf(17), b = Double.valueOf(2.5);
         v.put(a);
@@ -145,16 +166,12 @@ class ContractTest {
         assertSame(b, v.get());
         var oneS = new Box<String>(new String[1]);
         String[] ss = {new String("a"), new String("b"), new String("c")};
-        for (String e : ss)
-            oneS.put(e);
-        for (String e : ss)
-            assertSame(e, oneS.get());
+        for (String e : ss) oneS.put(e);
+        for (String e : ss) assertSame(e, oneS.get());
         var oneI = new Box<Integer>(new Integer[1]);
         Integer[] ii = {1000, 1001, 1002};
-        for (Integer e : ii)
-            oneI.put(e);
-        for (Integer e : ii)
-            assertSame(e, oneI.get());
+        for (Integer e : ii) oneI.put(e);
+        for (Integer e : ii) assertSame(e, oneI.get());
     }
 
     @Test
@@ -166,12 +183,9 @@ class ContractTest {
         assertEquals("A", q.get());
         q.put("C");
         q.put("D");
-        for (String v : new String[] {"B", "C", "D"})
-            assertEquals(v, q.get());
-        for (int i = 0; i < 20; i++)
-            q.put("V" + i);
-        for (int i = 0; i < 20; i++)
-            assertEquals("V" + i, q.get());
+        for (String v : new String[] {"B", "C", "D"}) assertEquals(v, q.get());
+        for (int i = 0; i < 20; i++) q.put("V" + i);
+        for (int i = 0; i < 20; i++) assertEquals("V" + i, q.get());
         var p = new Box<Payload>(new Payload[2]);
         var expected = new ArrayDeque<Payload>();
         for (int i = 0; i < 3; i++) {
@@ -185,8 +199,7 @@ class ContractTest {
             p.put(v);
             expected.add(v);
         }
-        while (!expected.isEmpty())
-            assertSame(expected.remove(), p.get());
+        while (!expected.isEmpty()) assertSame(expected.remove(), p.get());
     }
 
     @Test
@@ -200,9 +213,14 @@ class ContractTest {
             q.get();
             Object[] value = new Object[1];
             String output = capture(() -> value[0] = q.get());
-            reporter.publishEntry(Map.of("public-case", "boundary-empty", "expected",
-                "Извлечено=null; непустое сообщение об отказе.", "actual",
-                "Извлечено=" + value[0] + "; сообщение=" + !output.isBlank()));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "boundary-empty",
+                            "expected",
+                            "Извлечено=null; непустое сообщение об отказе.",
+                            "actual",
+                            "Извлечено=" + value[0] + "; сообщение=" + !output.isBlank()));
             assertNull(value[0]);
             assertFalse(output.isBlank());
         }

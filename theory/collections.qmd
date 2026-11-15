@@ -76,10 +76,9 @@ SortedSet <|-- NavigableSet
 в систему типов. [@bib-collections-sequenced-guide]
 
 ```java
-SequencedCollection<String> codes =
-    new LinkedHashSet<>(List.of("s2", "s1", "s2"));
+SequencedCollection<String> codes = new LinkedHashSet<>(List.of("s2", "s1", "s2"));
 System.out.println(codes.getFirst()); // s2
-System.out.println(codes.getLast());  // s1
+System.out.println(codes.getLast()); // s1
 ```
 
 Обычное добавление в `LinkedHashSet` сохраняет порядок первого появления.
@@ -337,8 +336,8 @@ printCodes(new LinkedHashSet<>(input));
 var codes = new ArrayList<>(List.of("s1", "s2", "s3"));
 Iterator<String> first = codes.iterator();
 Iterator<String> second = codes.iterator();
-System.out.println(first.next());  // s1
-System.out.println(first.next());  // s2
+System.out.println(first.next()); // s1
+System.out.println(first.next()); // s2
 System.out.println(second.next()); // s1
 ```
 
@@ -574,7 +573,7 @@ List<String> names = new ArrayList<>();
 names.add("Ada");
 names.add("Lin");
 names.add("Ada");
-System.out.println(names);        // [Ada, Lin, Ada]
+System.out.println(names); // [Ada, Lin, Ada]
 System.out.println(names.get(1)); // Lin
 ```
 
@@ -600,9 +599,9 @@ names.add(1, "Lin"); // [Ada, Lin, Max, Ada], размер 4
 
 ```java
 var numbers = new ArrayList<>(List.of(10, 20, 10));
-numbers.remove(1);                    // позиция 1: удалено 20
+numbers.remove(1); // позиция 1: удалено 20
 numbers.remove(Integer.valueOf(10)); // первое значение 10
-System.out.println(numbers);         // [10]
+System.out.println(numbers); // [10]
 ```
 
 `new ArrayList<String>(100)` создаёт пустой список с начальной вместимостью
@@ -916,7 +915,7 @@ Set<String> names = new LinkedHashSet<>();
 System.out.println(names.add("Ada")); // true
 System.out.println(names.add("Lin")); // true
 System.out.println(names.add("Ada")); // false
-System.out.println(names);            // [Ada, Lin]
+System.out.println(names); // [Ada, Lin]
 ```
 
 `add` возвращает, изменился ли состав. Повторный `Ada` сохраняет размер
@@ -978,8 +977,8 @@ Map<String, Integer> scores = new LinkedHashMap<>();
 System.out.println(scores.put("s1", 90)); // null
 System.out.println(scores.put("s2", 70)); // null
 System.out.println(scores.put("s1", 95)); // 90
-System.out.println(scores.get("s1"));     // 95
-System.out.println(scores.size());        // 2
+System.out.println(scores.get("s1")); // 95
+System.out.println(scores.size()); // 2
 ```
 
 Первые два вызова создают соответствия. Третий находит ключ `s1`, заменяет
@@ -994,11 +993,11 @@ System.out.println(scores.size());        // 2
 
 ```java
 scores.put("s3", null);
-System.out.println(scores.get("s3"));                 // null
-System.out.println(scores.get("missing"));            // null
-System.out.println(scores.containsKey("s3"));         // true
-System.out.println(scores.containsKey("missing"));    // false
-System.out.println(scores.getOrDefault("s3", 0));      // null
+System.out.println(scores.get("s3")); // null
+System.out.println(scores.get("missing")); // null
+System.out.println(scores.containsKey("s3")); // true
+System.out.println(scores.containsKey("missing")); // false
+System.out.println(scores.getOrDefault("s3", 0)); // null
 System.out.println(scores.getOrDefault("missing", 0)); // 0
 ```
 
@@ -1036,14 +1035,13 @@ System.out.println(counts.get("s2")); // 1
 для повторных обращений по коду:
 
 ```java
-var input = List.of(new Student("s1", "Ada", 90),
-                    new Student("s2", "Lin", 70));
+var input = List.of(new Student("s1", "Ada", 90), new Student("s2", "Lin", 70));
 Map<String, Student> byId = new LinkedHashMap<>();
 for (Student student : input) byId.put(student.id(), student);
 System.out.println(byId.get("s1").score()); // 90
 byId.put("s1", new Student("s1", "Ada", 95));
-System.out.println(byId.size());           // 2
-System.out.println(input.get(0).score());  // 90
+System.out.println(byId.size()); // 2
+System.out.println(input.get(0).score()); // 90
 ```
 
 Карта получила новую версию `s1`; первая позиция входного списка сохраняет
@@ -1085,8 +1083,11 @@ static Student findStudent(Iterable<Student> students, String code) {
 только строковый код. Новая загрузка получает три записи:
 
 ```java
-var input = List.of(new Student("s3", "Ann", 90),
-    new Student("s2", "Lin", 70), new Student("s1", "Ada", 90));
+var input =
+        List.of(
+                new Student("s3", "Ann", 90),
+                new Student("s2", "Lin", 70),
+                new Student("s1", "Ada", 90));
 var current = new LinkedHashMap<StudentId, Student>();
 for (Student student : input) {
     var id = new StudentId(student.id());
@@ -1130,8 +1131,8 @@ current.put(new StudentId("s1"), new Student("s1", "Ada", 95));
 current.put(new StudentId("s4"), new Student("s4", "Max", 80));
 System.out.println(current.get(new StudentId("s1")).score()); // 95
 System.out.println(report.get(0).score()); // 90
-System.out.println(current.size());       // 4
-System.out.println(report.size());        // 3
+System.out.println(current.size()); // 4
+System.out.println(report.size()); // 3
 ```
 
 ```{mermaid}
@@ -1170,7 +1171,7 @@ var keys = scores.keySet();
 keys.remove("s2");
 System.out.println(scores.containsKey("s2")); // false
 scores.put("s3", 80);
-System.out.println(keys.contains("s3"));     // true
+System.out.println(keys.contains("s3")); // true
 ```
 
 Удаление через изменяемое представление удалило запись карты. Последующая
@@ -1210,9 +1211,9 @@ flowchart LR
 var names = new ArrayList<>(List.of("Ada", "Lin", "Max"));
 var middle = names.subList(1, 3);
 middle.set(0, "Ann");
-System.out.println(names);  // [Ada, Ann, Max]
+System.out.println(names); // [Ada, Ann, Max]
 middle.remove(1);
-System.out.println(names);  // [Ada, Ann]
+System.out.println(names); // [Ada, Ann]
 ```
 
 Изменение через `middle` согласовано с основой. Если структурно изменить
@@ -1236,7 +1237,7 @@ System.out.println(names);  // [Ada, Ann]
 var codes = new ArrayList<>(List.of("s1", "s2"));
 var reverse = codes.reversed();
 reverse.addFirst("s3");
-System.out.println(codes);   // [s1, s2, s3]
+System.out.println(codes); // [s1, s2, s3]
 System.out.println(reverse); // [s3, s2, s1]
 codes.set(0, "s9");
 System.out.println(reverse); // [s3, s2, s9]
@@ -1302,8 +1303,16 @@ var snapshot = List.copyOf(source);
 
 ```java
 source.add(new Book("Types"));
-System.out.println(source.size() + " " + alias.size() + " "
-    + view.size() + " " + copy.size() + " " + snapshot.size());
+System.out.println(
+        source.size()
+                + " "
+                + alias.size()
+                + " "
+                + view.size()
+                + " "
+                + copy.size()
+                + " "
+                + snapshot.size());
 // 2 2 2 1 1
 ```
 
@@ -1321,8 +1330,14 @@ snapshot ───────> снимок:   [ ──> та же книга J
 
 ```java
 book.borrow();
-System.out.println(source.get(0).borrowed() + " " + view.get(0).borrowed()
-    + " " + copy.get(0).borrowed() + " " + snapshot.get(0).borrowed());
+System.out.println(
+        source.get(0).borrowed()
+                + " "
+                + view.get(0).borrowed()
+                + " "
+                + copy.get(0).borrowed()
+                + " "
+                + snapshot.get(0).borrowed());
 // true true true true
 System.out.println(snapshot.get(0) == book); // true
 ```
@@ -1399,7 +1414,7 @@ record BookState(String title, boolean borrowed) {}
 Book book = new Book("Java");
 var saved = new BookState(book.title(), book.borrowed());
 book.borrow();
-System.out.println(book.borrowed());  // true
+System.out.println(book.borrowed()); // true
 System.out.println(saved.borrowed()); // false
 ```
 

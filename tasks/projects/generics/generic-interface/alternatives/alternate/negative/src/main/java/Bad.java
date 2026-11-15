@@ -1,1 +1,3 @@
-class Bad {MyClass<Integer,Number,String> wrong;}
+class Bad {
+    MyClass<Integer, Number, String> wrong;
+}

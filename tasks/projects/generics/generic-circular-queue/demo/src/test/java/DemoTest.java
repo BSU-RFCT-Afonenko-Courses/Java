@@ -13,6 +13,7 @@ class DemoTest {
     interface Throwing {
         void run() throws Throwable;
     }
+
     private static String capture(Throwing body) throws Throwable {
         var out = System.out;
         var err = System.err;
@@ -27,39 +28,47 @@ class DemoTest {
         }
         return bytes.toString(StandardCharsets.UTF_8);
     }
+
     record Payload(int value) {}
+
     static class Box<T> {
         final Study<T> value;
+
         Box(T[] storage) throws Throwable {
             value = new Study<T>(storage);
         }
+
         void put(T v) throws Throwable {
             value.put(v);
         }
+
         T get() throws Throwable {
             return value.get();
         }
     }
+
     private static void empty(Box<?> b) throws Throwable {
         assertFalse(
-            capture(() -> assertNull(b.get())).isBlank(), "Отказ пустого контейнера должен сообщить о себе");
+                capture(() -> assertNull(b.get())).isBlank(),
+                "Отказ пустого контейнера должен сообщить о себе");
     }
+
     private static <T> void full(Box<T> b, T rejected) throws Throwable {
-        assertFalse(capture(() -> b.put(rejected)).isBlank(), "Полный контейнер должен сообщить об отказе");
+        assertFalse(
+                capture(() -> b.put(rejected)).isBlank(),
+                "Полный контейнер должен сообщить об отказе");
     }
 
     @Test
     @DisplayName("FIFO с переходом через конец массива")
     void normal() throws Throwable {
         var s = new Box<String>(new String[3]);
-        for (String x : new String[] {"А", "Б", "В"})
-            s.put(x);
+        for (String x : new String[] {"А", "Б", "В"}) s.put(x);
         assertEquals("А", s.get());
         assertEquals("Б", s.get());
         s.put("Г");
         s.put("Д");
-        for (String x : new String[] {"В", "Г", "Д"})
-            assertEquals(x, s.get());
+        for (String x : new String[] {"В", "Г", "Д"}) assertEquals(x, s.get());
         var i = new Box<Integer>(new Integer[2]);
         i.put(10);
         i.put(20);

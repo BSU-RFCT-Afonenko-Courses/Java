@@ -8,9 +8,11 @@ class ContractTest {
     static void fraction(long m, long n, Object value) throws Throwable {
         long[] a = TaskBinding.parts(value);
         assertNotEquals(0, a[1]);
-        assertEquals(BigInteger.valueOf(m).multiply(BigInteger.valueOf(a[1])),
-                     BigInteger.valueOf(a[0]).multiply(BigInteger.valueOf(n)));
+        assertEquals(
+                BigInteger.valueOf(m).multiply(BigInteger.valueOf(a[1])),
+                BigInteger.valueOf(a[0]).multiply(BigInteger.valueOf(n)));
     }
+
     @Test
     @DisplayName("Повторные ссылки, пустой массив и свободное представление знака")
     void aliasesEmptyAndSignRepresentationFree() throws Throwable {

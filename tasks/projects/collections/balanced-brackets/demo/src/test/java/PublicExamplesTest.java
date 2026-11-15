@@ -10,7 +10,13 @@ class PublicExamplesTest {
     void normal(TestReporter reporter) throws Throwable {
         var observed = PublicChecks.observeNormal();
         reporter.publishEntry(
-            Map.of("public-case", "normal", "expected", "true для ([]{}).", "actual", observed.actual()));
+                Map.of(
+                        "public-case",
+                        "normal",
+                        "expected",
+                        "true для ([]{}).",
+                        "actual",
+                        observed.actual()));
         PublicChecks.checkNormal(observed);
     }
 
@@ -18,8 +24,14 @@ class PublicExamplesTest {
     @org.junit.jupiter.api.DisplayName("Пустая строка и лишняя закрывающая скобка")
     void boundary(TestReporter reporter) throws Throwable {
         var observed = PublicChecks.observeBoundary();
-        reporter.publishEntry(Map.of("public-case", "boundary", "expected",
-            "true для пустой строки; false для ).", "actual", observed.actual()));
+        reporter.publishEntry(
+                Map.of(
+                        "public-case",
+                        "boundary",
+                        "expected",
+                        "true для пустой строки; false для ).",
+                        "actual",
+                        observed.actual()));
         PublicChecks.checkBoundary(observed);
     }
 }

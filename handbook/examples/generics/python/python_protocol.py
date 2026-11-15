@@ -12,7 +12,7 @@ def dot[T](left: Sequence[T], right: Sequence[T], arithmetic: Arithmetic[T]) -> 
     if len(left) != len(right):
         raise ValueError("Different vector lengths")
     result = arithmetic.zero()
-    for a, b in zip(left, right):
+    for a, b in zip(left, right, strict=True):
         result = arithmetic.add(result, arithmetic.multiply(a, b))
     return result
 
@@ -21,17 +21,26 @@ class FloatArithmetic:
     def __init__(self) -> None:
         self.multiplications = 0
 
-    def zero(self) -> float: return 0.0
-    def add(self, a: float, b: float) -> float: return a + b
+    def zero(self) -> float:
+        return 0.0
+
+    def add(self, a: float, b: float) -> float:
+        return a + b
+
     def multiply(self, a: float, b: float) -> float:
         self.multiplications += 1
         return a * b
 
 
 class ComplexArithmetic:
-    def zero(self) -> complex: return 0j
-    def add(self, a: complex, b: complex) -> complex: return a + b
-    def multiply(self, a: complex, b: complex) -> complex: return a * b
+    def zero(self) -> complex:
+        return 0j
+
+    def add(self, a: complex, b: complex) -> complex:
+        return a + b
+
+    def multiply(self, a: complex, b: complex) -> complex:
+        return a * b
 
 
 if __name__ == "__main__":

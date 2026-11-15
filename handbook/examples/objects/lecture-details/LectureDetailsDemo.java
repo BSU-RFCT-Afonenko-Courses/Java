@@ -2,10 +2,19 @@ public class LectureDetailsDemo {
     static int max(int a, int b) {
         return a >= b ? a : b;
     }
-    static String describe(int value) { return "int"; }
-    static String describe(String value) { return "String"; }
-    static void show(String value) { }
-    static void show(Integer value) { }
+
+    static String describe(int value) {
+        return "int";
+    }
+
+    static String describe(String value) {
+        return "String";
+    }
+
+    static void show(String value) {}
+
+    static void show(Integer value) {}
+
     public static void main(String[] args) {
         Reservation room = new Reservation(30);
         room.reserve(8);
@@ -27,21 +36,29 @@ public class LectureDetailsDemo {
         values[0] = 9;
         System.out.println(values[0]); // 9
         System.out.println(new Child(3).value); // 3
-        try { new Child(-1); }
-        catch (IllegalArgumentException ex) { System.out.println("refused"); }
+        try {
+            new Child(-1);
+        } catch (IllegalArgumentException ex) {
+            System.out.println("refused");
+        }
     }
 }
 
 final class Reservation {
     private final int capacity;
     private int occupied;
+
     Reservation(int capacity) {
         if (capacity <= 0) {
             throw new IllegalArgumentException("positive capacity required");
         }
         this.capacity = capacity;
     }
-    int available() { return capacity - occupied; }
+
+    int available() {
+        return capacity - occupied;
+    }
+
     void reserve(int count) {
         if (count <= 0 || count > available()) {
             throw new IllegalArgumentException("invalid size");
@@ -52,21 +69,33 @@ final class Reservation {
 
 class Trace {
     private int value = init();
-    { System.out.println("block: " + value); }
+
+    {
+        System.out.println("block: " + value);
+    }
+
     private int init() {
         System.out.println("field");
         return 7;
     }
-    Trace() { System.out.println("constructor: " + value); }
+
+    Trace() {
+        System.out.println("constructor: " + value);
+    }
 }
 
 class Numbers {
-    static int add(int a, int b) { return a + b; }
+    static int add(int a, int b) {
+        return a + b;
+    }
 }
 
 class Parent {
     final int value;
-    Parent(int value) { this.value = value; }
+
+    Parent(int value) {
+        this.value = value;
+    }
 }
 
 class Child extends Parent {

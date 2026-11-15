@@ -211,7 +211,7 @@ epilogue: 7
 Document plain = new Document("Guide");
 Document text = new TextDocument("Notes", 120);
 System.out.println(plain.summary()); // Guide
-System.out.println(text.summary());  // Notes: 120 chars
+System.out.println(text.summary()); // Notes: 120 chars
 ```
 
 Обе переменные имеют статический тип `Document`, где объявлен `summary()`.
@@ -232,7 +232,7 @@ static void print(Document document) {
 }
 
 print(plain); // Guide
-print(text);  // Notes: 120 chars
+print(text); // Notes: 120 chars
 ```
 
 Параметр `document` получает копию переданной ссылки. Вызов `summary()`
@@ -260,7 +260,7 @@ Java ключевое слово `virtual` не требуется.
 Document value = new TextDocument("Notes", 120);
 if (value instanceof TextDocument text) {
     System.out.println(text.characters()); // 120
-    System.out.println(text == value);     // true
+    System.out.println(text == value); // true
 }
 ```
 
@@ -294,15 +294,20 @@ var same = document; // статический тип same — Document
 [@bib-objects-jls-overriding]
 
 ```java
-static String kind(Document value) { return "Document overload"; }
-static String kind(TextDocument value) { return "Text overload"; }
+static String kind(Document value) {
+    return "Document overload";
+}
+
+static String kind(TextDocument value) {
+    return "Text overload";
+}
 
 TextDocument text = new TextDocument("Notes", 120);
 Document value = text;
-System.out.println(kind(value));     // Document overload
-System.out.println(kind(text));      // Text overload
+System.out.println(kind(value)); // Document overload
+System.out.println(kind(text)); // Text overload
 System.out.println(value.summary()); // Notes: 120 chars
-System.out.println(text.summary());  // Notes: 120 chars
+System.out.println(text.summary()); // Notes: 120 chars
 ```
 
 `value` и `text` ведут к одному объекту. Для `kind(value)` компилятор
@@ -329,24 +334,37 @@ System.out.println(text.summary());  // Notes: 120 chars
 ```java
 class Base {
     String label = "base field";
-    String label() { return "base method"; }
-    static String category() { return "base static"; }
+
+    String label() {
+        return "base method";
+    }
+
+    static String category() {
+        return "base static";
+    }
 }
 
 class Child extends Base {
     String label = "child field";
-    @Override String label() { return "child method"; }
-    static String category() { return "child static"; }
+
+    @Override
+    String label() {
+        return "child method";
+    }
+
+    static String category() {
+        return "child static";
+    }
 }
 
 Child child = new Child();
 Base ref = child;
-System.out.println(ref.label);             // base field
-System.out.println(((Child) ref).label);   // child field
-System.out.println(ref.label());           // child method
+System.out.println(ref.label); // base field
+System.out.println(((Child) ref).label); // child field
+System.out.println(ref.label()); // child method
 System.out.println(((Base) child).label()); // child method
-System.out.println(Base.category());       // base static
-System.out.println(Child.category());      // child static
+System.out.println(Base.category()); // base static
+System.out.println(Child.category()); // child static
 ```
 
 Приведение `((Base) child)` сохраняет ссылку на `Child`, поэтому вызов
@@ -439,7 +457,7 @@ System.out.println(text.characters()); // 120
 
 DocumentSource source = memory;
 Document document = source.load();
-System.out.println(document == text);  // true
+System.out.println(document == text); // true
 ```
 
 Оба вызова выполняют `MemorySource.load()` и возвращают одну ссылку.
@@ -490,8 +508,14 @@ System.out.println(summaryLength(new TextDocument("Notes", 120))); // 16
 
 ```java
 class SilentDocument extends Document {
-    SilentDocument(String title) { super(title); }
-    @Override String summary() { return null; }
+    SilentDocument(String title) {
+        super(title);
+    }
+
+    @Override
+    String summary() {
+        return null;
+    }
 }
 ```
 
@@ -529,7 +553,9 @@ System.out.println(widen(new Rectangle(4, 4))); // 28
 
 ```java
 class MutableSquare extends Rectangle {
-    MutableSquare(int side) { super(side, side); }
+    MutableSquare(int side) {
+        super(side, side);
+    }
 
     @Override
     void setWidth(int width) {
@@ -632,17 +658,26 @@ System.out.println(shape.report()); // area=9.0
 
 ```java
 class Parent {
-    Parent() { show(); }
-    void show() { System.out.println("parent"); }
+    Parent() {
+        show();
+    }
+
+    void show() {
+        System.out.println("parent");
+    }
 }
 
 class ChildState extends Parent {
     private int value = 7;
-    @Override void show() { System.out.println(value); }
+
+    @Override
+    void show() {
+        System.out.println(value);
+    }
 }
 
 ChildState child = new ChildState(); // 0
-child.show();                       // 7
+child.show(); // 7
 ```
 
 До вызова `Parent()` поле `value` получило значение по умолчанию `0`.
@@ -669,11 +704,14 @@ class EarlyChild extends Parent {
         super();
     }
 
-    @Override void show() { System.out.println(value); }
+    @Override
+    void show() {
+        System.out.println(value);
+    }
 }
 
 EarlyChild child = new EarlyChild(); // 7
-child.show();                       // 7
+child.show(); // 7
 ```
 
 При вызове из `Parent()` поле этого подкласса уже равно `7`.
@@ -703,8 +741,13 @@ child.show();                       // 7
 class Counter {
     private int value;
 
-    void increment() { value++; }
-    int value() { return value; }
+    void increment() {
+        value++;
+    }
+
+    int value() {
+        return value;
+    }
 
     void add(int n) {
         if (n < 0) throw new IllegalArgumentException("Отрицательное приращение");
@@ -734,7 +777,9 @@ class CountingCounter extends Counter {
         super.add(n);
     }
 
-    int added() { return added; }
+    int added() {
+        return added;
+    }
 }
 
 CountingCounter counter = new CountingCounter();
@@ -779,8 +824,13 @@ final class CounterMeter {
         added += n;
     }
 
-    int value() { return counter.value(); }
-    int added() { return added; }
+    int value() {
+        return counter.value();
+    }
+
+    int added() {
+        return added;
+    }
 }
 
 CounterMeter meter = new CounterMeter();

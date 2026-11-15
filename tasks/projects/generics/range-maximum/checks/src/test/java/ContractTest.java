@@ -12,26 +12,31 @@ import static org.junit.jupiter.api.Assertions.*;
 class ContractTest {
     static class Item implements Comparable<Item> {
         final int value;
+
         Item(int value) {
             this.value = value;
         }
+
         public int compareTo(Item other) {
             return Integer.compare(value, other.value);
         }
     }
+
     static class Token implements Comparable<Token> {
         final int value;
+
         Token(int value) {
             this.value = value;
         }
+
         public int compareTo(Token other) {
             return 23 * (value - other.value);
         }
     }
+
     private static void kept(Object[] before, Object[] after) {
         assertEquals(before.length, after.length);
-        for (int i = 0; i < before.length; i++)
-            assertSame(before[i], after[i]);
+        for (int i = 0; i < before.length; i++) assertSame(before[i], after[i]);
     }
 
     @Test
@@ -40,9 +45,14 @@ class ContractTest {
         {
             Integer[] a = {99, 2, 7, 4}, before = a.clone();
             Integer actual = Study.maximum(a, 1, 4);
-            reporter.publishEntry(Map.of("public-case", "normal", "expected",
-                "Максимум=7; возвращена исходная ссылка из позиции 2; массив сохранён.", "actual",
-                "Максимум=" + actual + "; исходная ссылка=" + (actual == before[2])));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "normal",
+                            "expected",
+                            "Максимум=7; возвращена исходная ссылка из позиции 2; массив сохранён.",
+                            "actual",
+                            "Максимум=" + actual + "; исходная ссылка=" + (actual == before[2])));
             assertSame(before[2], actual);
             kept(before, a);
         }
@@ -59,9 +69,14 @@ class ContractTest {
         {
             String[] a = {new String("я"), new String("б"), new String("в")}, before = a.clone();
             String actual = Study.maximum(a, 1, 2);
-            reporter.publishEntry(Map.of("public-case", "boundary", "expected",
-                "Максимум=б; возвращена исходная ссылка из позиции 1; массив сохранён.", "actual",
-                "Максимум=" + actual + "; исходная ссылка=" + (actual == before[1])));
+            reporter.publishEntry(
+                    Map.of(
+                            "public-case",
+                            "boundary",
+                            "expected",
+                            "Максимум=б; возвращена исходная ссылка из позиции 1; массив сохранён.",
+                            "actual",
+                            "Максимум=" + actual + "; исходная ссылка=" + (actual == before[1])));
             assertSame(before[1], actual);
             kept(before, a);
         }

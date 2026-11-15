@@ -13,10 +13,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class ContractTest {
 
     @Test
-    @org.junit.jupiter.api.DisplayName("Крайние int, повторы и изменяемый список фиксированного размера")
+    @org.junit.jupiter.api.DisplayName(
+            "Крайние int, повторы и изменяемый список фиксированного размера")
     void extremaDuplicatesAndFixedSizeMutableList() throws Throwable {
-        for (List<Integer> v : List.of(new LinkedList<>(List.of(4, 0, 4, 1, -1)),
-                 Arrays.asList(Integer.MAX_VALUE, Integer.MIN_VALUE, 0, Integer.MIN_VALUE))) {
+        for (List<Integer> v :
+                List.of(
+                        new LinkedList<>(List.of(4, 0, 4, 1, -1)),
+                        Arrays.asList(
+                                Integer.MAX_VALUE, Integer.MIN_VALUE, 0, Integer.MIN_VALUE))) {
             var before = new ArrayList<>(v);
             int x = v.contains(Integer.MIN_VALUE) ? Integer.MIN_VALUE : 1;
             TaskBinding.partition(v, x);
@@ -24,16 +28,14 @@ class ContractTest {
             assertEquals(frequency(before), frequency(v));
             boolean high = false;
             for (int n : v)
-                if (n > x)
-                    high = true;
-                else
-                    assertFalse(high);
+                if (n > x) high = true;
+                else assertFalse(high);
         }
     }
+
     static Map<Integer, Integer> frequency(List<Integer> v) {
         var f = new HashMap<Integer, Integer>();
-        for (int n : v)
-            f.merge(n, 1, Integer::sum);
+        for (int n : v) f.merge(n, 1, Integer::sum);
         return f;
     }
 }

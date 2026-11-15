@@ -6,11 +6,15 @@ public class SignatureDemo {
     }
 
     static final class ConstantSource implements TextSource {
-        @Override public String read() { return "90"; }
+        @Override
+        public String read() {
+            return "90";
+        }
     }
 
     static final class Quiet implements AutoCloseable {
-        @Override public void close() {}
+        @Override
+        public void close() {}
     }
 
     static void concrete() {

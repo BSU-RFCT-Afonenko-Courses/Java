@@ -14,10 +14,13 @@ class DemoTest {
         String[] rows = run("").strip().split("\\R");
         assertEquals(10, rows.length, "Таблица должна содержать десять строк");
         String[] values = rows[multiplier - 1].strip().split("\\p{javaWhitespace}+");
-        assertEquals(10, values.length,
+        assertEquals(
+                10,
+                values.length,
                 "В строке множителя " + multiplier + " должно быть десять значений");
         for (int column = 1; column <= 10; column++) {
-            assertEquals(BigInteger.valueOf((long) multiplier * column),
+            assertEquals(
+                    BigInteger.valueOf((long) multiplier * column),
                     new BigInteger(values[column - 1]),
                     "Произведение в строке " + multiplier + ", столбце " + column);
         }

@@ -41,13 +41,11 @@ categories: [java, java-core, java-strings]
 
 ```java
 String text = "e\u0301";
-String normalized = java.text.Normalizer.normalize(
-    text, java.text.Normalizer.Form.NFC);
-System.out.println(text.length());       // 2
+String normalized = java.text.Normalizer.normalize(text, java.text.Normalizer.Form.NFC);
+System.out.println(text.length()); // 2
 System.out.println(normalized.length()); // 1
 byte[] encoded = text.getBytes(java.nio.charset.StandardCharsets.UTF_8);
-String restored = new String(encoded,
-    java.nio.charset.StandardCharsets.UTF_8);
+String restored = new String(encoded, java.nio.charset.StandardCharsets.UTF_8);
 ```
 
 Нормализация выполняется только по требованиям задачи. Для изменения регистра технических обозначений можно явно выбрать `Locale.ROOT`. В показанном коде байты получены из исходного `text`, поэтому `restored`
@@ -107,9 +105,9 @@ if (numbers.find()) {
 if (numbers.find()) {
     System.out.println(numbers.group()); // 3
 }
-System.out.println(numbers.find());       // false
+System.out.println(numbers.find()); // false
 numbers.reset();
-System.out.println(numbers.find());       // true
+System.out.println(numbers.find()); // true
 ```
 
 Здесь `[0-9]+` означает одну или более ASCII-цифр. Если шаблону нужен
@@ -146,7 +144,7 @@ System.out.println(numbers.find());       // true
 Сигнатура: `public int compareTo(String anotherString)`. Метод сравнивает строки лексикографически по значениям единиц UTF-16. На первом различии раньше идёт строка с меньшей единицей; если одна является префиксом другой, раньше идёт короткая. Фрагмент внутри `main`:
 
 ```java
-System.out.println("Ada".compareTo("Lin"));   // -11
+System.out.println("Ada".compareTo("Lin")); // -11
 System.out.println("Java".compareTo("Java")); // 0
 System.out.println("Java".compareTo("Java course")); // -7
 System.out.println("Lin".compareTo("Ada") > 0); // true

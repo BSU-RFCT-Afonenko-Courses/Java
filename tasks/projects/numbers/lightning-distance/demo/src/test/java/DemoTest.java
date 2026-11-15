@@ -15,13 +15,15 @@ class DemoTest {
 
     private static void distance() throws Exception {
         String first = run("").lines().filter(s -> !s.isBlank()).findFirst().orElse("");
-        assertFalse(first.isBlank(),
+        assertFalse(
+                first.isBlank(),
                 "Ожидалось расстояние 2412 м в первой непустой строке; получен пустой вывод");
         String[] values = tokens(first);
         assertEquals(1, values.length, "В первой непустой строке только расстояние");
-        double actual = assertDoesNotThrow(()
-                                                   -> Double.parseDouble(values[0]),
-                "Ожидалось расстояние в метрах, получено «" + values[0] + "»");
+        double actual =
+                assertDoesNotThrow(
+                        () -> Double.parseDouble(values[0]),
+                        "Ожидалось расстояние в метрах, получено «" + values[0] + "»");
         assertTrue(Double.isFinite(actual), "Расстояние должно быть конечным; получено " + actual);
         assertEquals(2412.0, actual, 1e-8, "Расстояние в метрах, абсолютный допуск 1e-8");
     }

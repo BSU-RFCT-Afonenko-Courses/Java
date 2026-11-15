@@ -1,2 +1,20 @@
+public class FixedQueue implements ICharQ {
+    private final char[] cells;
+    private int nextWrite, remaining;
 
-public class FixedQueue implements ICharQ {private final char[] cells;private int nextWrite,remaining;public FixedQueue(int capacity){if(capacity<1)throw new IllegalArgumentException();cells=new char[capacity];}public void put(char ch)throws QueueFullException{if(nextWrite>=cells.length)throw new QueueFullException();cells[nextWrite++]=ch;remaining++;}public char get()throws QueueEmptyException{if(remaining==0)throw new QueueEmptyException();return cells[nextWrite-remaining--];}}
+    public FixedQueue(int capacity) {
+        if (capacity < 1) throw new IllegalArgumentException();
+        cells = new char[capacity];
+    }
+
+    public void put(char ch) throws QueueFullException {
+        if (nextWrite >= cells.length) throw new QueueFullException();
+        cells[nextWrite++] = ch;
+        remaining++;
+    }
+
+    public char get() throws QueueEmptyException {
+        if (remaining == 0) throw new QueueEmptyException();
+        return cells[nextWrite - remaining--];
+    }
+}

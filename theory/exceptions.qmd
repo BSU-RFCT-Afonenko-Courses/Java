@@ -138,8 +138,7 @@ System.out.println("следующая операция");
 
 ```java
 static String read(java.nio.file.Path path) throws java.io.IOException {
-    return java.nio.file.Files.readString(path,
-        java.nio.charset.StandardCharsets.UTF_8);
+    return java.nio.file.Files.readString(path, java.nio.charset.StandardCharsets.UTF_8);
 }
 ```
 
@@ -186,7 +185,9 @@ static String read(java.nio.file.Path path) throws java.io.IOException {
 ```java
 public class EarlyCheckedDemo {
     static class EmptyException extends Exception {
-        EmptyException(String message) { super(message); }
+        EmptyException(String message) {
+            super(message);
+        }
     }
 
     static int take(boolean empty) throws EmptyException {
@@ -276,7 +277,10 @@ interface TextSource {
 }
 
 final class ConstantSource implements TextSource {
-    @Override public String read() { return "90"; }
+    @Override
+    public String read() {
+        return "90";
+    }
 }
 ```
 
@@ -376,18 +380,27 @@ static int value() {
 
 ```java
 static int replacedReturn() {
-    try { return 10; }
-    finally { return 20; }
+    try {
+        return 10;
+    } finally {
+        return 20;
+    }
 }
 
 static int swallowedFailure() {
-    try { throw new IllegalStateException("body"); }
-    finally { return 20; }
+    try {
+        throw new IllegalStateException("body");
+    } finally {
+        return 20;
+    }
 }
 
 static void replacedFailure() {
-    try { throw new IllegalStateException("body"); }
-    finally { throw new IllegalArgumentException("cleanup"); }
+    try {
+        throw new IllegalStateException("body");
+    } finally {
+        throw new IllegalArgumentException("cleanup");
+    }
 }
 ```
 
@@ -469,6 +482,7 @@ try {
 ```java
 final class Limits {
     final int maximum;
+
     Limits(int maximum, java.util.List<String> events) {
         events.add("начало создания");
         if (maximum < 0) throw new IllegalArgumentException("maximum < 0");
@@ -491,9 +505,9 @@ final class Limits {
 ```java
 class TextSnapshot {
     final String text;
+
     TextSnapshot(java.nio.file.Path path) throws java.io.IOException {
-        text = java.nio.file.Files.readString(path,
-            java.nio.charset.StandardCharsets.UTF_8);
+        text = java.nio.file.Files.readString(path, java.nio.charset.StandardCharsets.UTF_8);
     }
 }
 
@@ -562,8 +576,14 @@ final class NamedSnapshot extends TextSnapshot {
 
 ```java
 sealed interface ScoreResult permits Score, ScoreFailure {}
+
 record Score(int value) implements ScoreResult {}
-enum ScoreProblem { NOT_INTEGER, OUT_OF_RANGE }
+
+enum ScoreProblem {
+    NOT_INTEGER,
+    OUT_OF_RANGE
+}
+
 record ScoreFailure(ScoreProblem problem) implements ScoreResult {}
 ```
 
@@ -606,10 +626,11 @@ static ScoreResult parseScoreResult(String text) {
 соответствующей ветви.
 
 ```java
-String message = switch (parseScoreResult("120")) {
-    case Score(var value) -> "балл: " + value;
-    case ScoreFailure(var problem) -> "ошибка: " + problem;
-};
+String message =
+        switch (parseScoreResult("120")) {
+            case Score(var value) -> "балл: " + value;
+            case ScoreFailure(var problem) -> "ошибка: " + problem;
+        };
 System.out.println(message); // ошибка: OUT_OF_RANGE
 ```
 

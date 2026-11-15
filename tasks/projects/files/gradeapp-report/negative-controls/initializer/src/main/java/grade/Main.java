@@ -5,7 +5,21 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.List;
 
-public final class Main {static {if(java.lang.System.getProperty("course.initializer.marker")!=null){try{java.nio.file.Files.writeString(java.nio.file.Path.of(java.lang.System.getProperty("course.initializer.marker")),"student initializer executed");}catch(java.io.IOException e){throw new java.lang.RuntimeException(e);}throw new java.lang.IllegalStateException("initializer sentinel");}}
+public final class Main {
+    static {
+        if (java.lang.System.getProperty("course.initializer.marker") != null) {
+            try {
+                java.nio.file.Files.writeString(
+                        java.nio.file.Path.of(
+                                java.lang.System.getProperty("course.initializer.marker")),
+                        "student initializer executed");
+            } catch (java.io.IOException e) {
+                throw new java.lang.RuntimeException(e);
+            }
+            throw new java.lang.IllegalStateException("initializer sentinel");
+        }
+    }
+
     public static void main(String[] args) {
         int status = run(args);
         if (status != 0) System.exit(status);
@@ -42,8 +56,7 @@ public final class Main {static {if(java.lang.System.getProperty("course.initial
         }
     }
 
-    static int run(Path input, int threshold)
-            throws IOException, DataFormatException {
+    static int run(Path input, int threshold) throws IOException, DataFormatException {
         var students = StudentFiles.read(input);
         var result = Reports.selected(students, threshold);
         return printReport(result);

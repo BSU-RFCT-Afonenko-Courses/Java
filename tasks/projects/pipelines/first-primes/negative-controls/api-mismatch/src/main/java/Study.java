@@ -1,5 +1,10 @@
-import java.util.*;import java.util.function.*;import java.nio.file.Path;
+import java.util.*;
+import java.util.function.*;
+import java.nio.file.Path;
+
 /** Связь с собственным решением; модель и алгоритм создайте самостоятельно. */
 public class Study {
-    public static void missing_printPrimes(int n) { throw new UnsupportedOperationException("TODO: реализуйте по условию"); }
+    public static void missing_printPrimes(int n) {
+        throw new UnsupportedOperationException("TODO: реализуйте по условию");
+    }
 }

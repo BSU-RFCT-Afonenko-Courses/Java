@@ -10,7 +10,9 @@ import org.junit.jupiter.api.TestReporter;
 class ContractTest {
     private static String run(TestReporter publicReporter, String[] publicCaseIds, String... args)
             throws Exception {
-        return publicOutput(publicReporter, publicCaseIds,
+        return publicOutput(
+                publicReporter,
+                publicCaseIds,
                 JavaProcess.runCheckingUncaught(Main.class, "", args).stdout());
     }
 
@@ -20,12 +22,15 @@ class ContractTest {
 
     private static Map<String, String[]> table(TestReporter publicReporter, String[] publicCaseIds)
             throws Exception {
-        String[] lines = run(publicReporter, publicCaseIds)
-                                 .lines()
-                                 .filter(s -> !s.isBlank())
-                                 .toArray(String[] ::new);
+        String[] lines =
+                run(publicReporter, publicCaseIds)
+                        .lines()
+                        .filter(s -> !s.isBlank())
+                        .toArray(String[]::new);
         assertEquals(5, lines.length, "Заголовок и четыре строки");
-        assertArrayEquals(new String[] {"P", "Q", "AND", "OR", "XOR", "NOT"}, tokens(lines[0]),
+        assertArrayEquals(
+                new String[] {"P", "Q", "AND", "OR", "XOR", "NOT"},
+                tokens(lines[0]),
                 "Шесть колонок, пробельные разделители");
         var rows = new HashMap<String, String[]>();
         for (int i = 1; i < 5; i++) {
@@ -38,9 +43,12 @@ class ContractTest {
         return rows;
     }
 
-    private static void pair(TestReporter publicReporter, String[] publicCaseIds, String key,
-            String... expected) throws Exception {
-        assertArrayEquals(expected, table(publicReporter, publicCaseIds).get(key),
+    private static void pair(
+            TestReporter publicReporter, String[] publicCaseIds, String key, String... expected)
+            throws Exception {
+        assertArrayEquals(
+                expected,
+                table(publicReporter, publicCaseIds).get(key),
                 "Операции и отрицание P для пары " + key);
     }
 
@@ -72,8 +80,7 @@ class ContractTest {
     private static String publicOutput(TestReporter reporter, String[] ids, String actual) {
         if (reporter != null) {
             String visible = actual.replaceAll("[\\p{Cntrl}&&[^\n\t]]", "�");
-            if (visible.length() > 2000)
-                visible = visible.substring(0, 2000) + "…";
+            if (visible.length() > 2000) visible = visible.substring(0, 2000) + "…";
             for (String id : ids)
                 reporter.publishEntry(Map.of("public-case", id, "actual", "stdout=" + visible));
         }

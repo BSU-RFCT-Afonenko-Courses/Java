@@ -17,8 +17,7 @@ public class ArrayEqualityDemo {
 
         @Override
         public boolean equals(Object other) {
-            return other instanceof ScoreVector vector
-                && Arrays.equals(values, vector.values);
+            return other instanceof ScoreVector vector && Arrays.equals(values, vector.values);
         }
 
         @Override
@@ -41,7 +40,7 @@ public class ArrayEqualityDemo {
 
         int[] input = {80, 90};
         var vector = new ScoreVector(input);
-        var sameValue = new ScoreVector(new int[]{80, 90});
+        var sameValue = new ScoreVector(new int[] {80, 90});
         input[0] = 0;
         vector.values()[1] = 0;
         System.out.println(vector.equals(sameValue));

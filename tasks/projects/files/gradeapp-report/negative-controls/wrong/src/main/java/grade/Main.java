@@ -42,8 +42,7 @@ public final class Main {
         }
     }
 
-    static int run(Path input, int threshold)
-            throws IOException, DataFormatException {
+    static int run(Path input, int threshold) throws IOException, DataFormatException {
         var students = StudentFiles.read(input);
         var result = Reports.selected(students, threshold);
         return printReport(result);

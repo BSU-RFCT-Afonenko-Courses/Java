@@ -9,6 +9,7 @@ class ContractTest {
     private interface Selection {
         Object[] get() throws Throwable;
     }
+
     static void select(Object[] input, Object[] expected, Selection call) throws Throwable {
         Object[] refs = input.clone();
         List<?> before = PublicChecks.values(input);
@@ -16,11 +17,11 @@ class ContractTest {
         Object[] out = call.get();
         List<?> actual = PublicChecks.values(out);
         assertNotNull(out);
-        for (int i = 0; i < input.length; i++)
-            assertSame(refs[i], input[i]);
+        for (int i = 0; i < input.length; i++) assertSame(refs[i], input[i]);
         assertEquals(before, PublicChecks.values(input));
         assertEquals(expectedValues, actual);
     }
+
     @Test
     @DisplayName("Точный диагноз, равные границы и свойства пациента")
     void emptyNoMatchesSameBoundaryAndProperties() throws Throwable {

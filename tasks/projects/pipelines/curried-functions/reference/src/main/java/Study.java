@@ -2,8 +2,11 @@ import java.util.function.*;
 
 public class Study {
     private interface Addition extends IntFunction<IntUnaryOperator> {}
+
     private interface TextOuter extends Function<String, Object> {}
+
     private interface TextPredicate extends Predicate<String> {}
+
     private interface TextSplit extends Function<String, String[]> {}
 
     public static Object addition() {
@@ -12,18 +15,20 @@ public class Study {
     }
 
     public static Object matcher() {
-        TextOuter outer = regex -> {
-            TextPredicate inner = text -> text.matches(regex);
-            return inner;
-        };
+        TextOuter outer =
+                regex -> {
+                    TextPredicate inner = text -> text.matches(regex);
+                    return inner;
+                };
         return outer;
     }
 
     public static Object splitter() {
-        TextOuter outer = regex -> {
-            TextSplit inner = text -> text.split(regex, -1);
-            return inner;
-        };
+        TextOuter outer =
+                regex -> {
+                    TextSplit inner = text -> text.split(regex, -1);
+                    return inner;
+                };
         return outer;
     }
 

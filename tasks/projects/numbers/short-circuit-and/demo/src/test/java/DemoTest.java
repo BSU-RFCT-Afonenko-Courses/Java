@@ -14,7 +14,9 @@ class DemoTest {
     }
 
     private static void quotient(String input, boolean expected) throws Exception {
-        assertArrayEquals(new String[] {"" + expected}, tokens(run(input)),
+        assertArrayEquals(
+                new String[] {"" + expected},
+                tokens(run(input)),
                 "Положительность целочисленного частного без исключения");
     }
 

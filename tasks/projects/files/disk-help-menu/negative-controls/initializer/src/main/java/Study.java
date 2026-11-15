@@ -1,2 +1,35 @@
-import java.util.*;import java.util.function.*;import java.nio.file.Path;
-public class Study {static {if(java.lang.System.getProperty("course.initializer.marker")!=null){try{java.nio.file.Files.writeString(java.nio.file.Path.of(java.lang.System.getProperty("course.initializer.marker")),"student initializer executed");}catch(java.io.IOException e){throw new java.lang.RuntimeException(e);}throw new java.lang.IllegalStateException("initializer sentinel");}}public static Object help(Path file){return new Help(file.toString());}public static boolean helpOn(Object help,String topic){return ((Help)help).helpOn(topic);}public static Object select(Object help){return ((Help)help).getSelection();}public static String selectedTopic(Object selection){return (String)selection;}}
+import java.util.*;
+import java.util.function.*;
+import java.nio.file.Path;
+
+public class Study {
+    static {
+        if (java.lang.System.getProperty("course.initializer.marker") != null) {
+            try {
+                java.nio.file.Files.writeString(
+                        java.nio.file.Path.of(
+                                java.lang.System.getProperty("course.initializer.marker")),
+                        "student initializer executed");
+            } catch (java.io.IOException e) {
+                throw new java.lang.RuntimeException(e);
+            }
+            throw new java.lang.IllegalStateException("initializer sentinel");
+        }
+    }
+
+    public static Object help(Path file) {
+        return new Help(file.toString());
+    }
+
+    public static boolean helpOn(Object help, String topic) {
+        return ((Help) help).helpOn(topic);
+    }
+
+    public static Object select(Object help) {
+        return ((Help) help).getSelection();
+    }
+
+    public static String selectedTopic(Object selection) {
+        return (String) selection;
+    }
+}

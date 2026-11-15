@@ -1,1 +1,3 @@
-public class Main { public static void run(String[] args) {} }
+public class Main {
+    public static void run(String[] args) {}
+}

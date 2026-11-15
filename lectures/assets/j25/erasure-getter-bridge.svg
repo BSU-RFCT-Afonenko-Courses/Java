@@ -1,52 +1,58 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800" role="img" aria-labelledby="title desc"><title id="title">Getter bridge делегирует String get(); cast остаётся у клиента</title><desc id="desc">Source.get после стирания возвращает Object. TextSource имеет написанный String get и синтетический Object get с bridge-флагами. Последний вызывает первый и возвращает его результат без checkcast. В SourceClient после интерфейсного вызова находится отдельный checkcast String; вывод — Java.</desc>
-<rect width="1280" height="800" fill="#f8fafc"/>
-<text x="40" y="60" font-family="Noto Sans, sans-serif" font-size="32" fill="#0f172a">Getter bridge делегирует String get(); cast остаётся у клиента</text>
-<rect x="40" y="112" width="540" height="568" rx="12" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
-<rect x="680" y="112" width="560" height="568" rx="12" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
-<text x="60" y="150" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">Java — выдержки исходников</text>
-<text x="700" y="150" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">JVM — фактический javap 25</text>
-<text x="60" y="190" font-family="Noto Sans, sans-serif" font-size="24" fill="#2563eb">A: Source&lt;T&gt; и роль String</text>
-<text x="76" y="225" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">public interface Source&lt;T&gt;</text>
-<text x="76" y="252" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">{ T get(); }</text>
-<text x="60" y="302" font-family="Noto Sans, sans-serif" font-size="24" fill="#047857">B: написанный getter</text>
-<text x="76" y="337" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">public final class TextSource</text>
-<text x="76" y="364" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">implements Source&lt;String&gt; {</text>
-<text x="76" y="391" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">public String get()</text>
-<text x="76" y="418" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">{ return &quot;Java&quot;; }</text>
-<text x="60" y="470" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">SourceClient.main — выдержка</text>
-<text x="76" y="505" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">Source&lt;String&gt; source =</text>
-<text x="76" y="532" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">    new TextSource();</text>
-<text x="76" y="559" font-family="Noto Sans Mono, monospace" font-size="24" fill="#b45309">String text = source.get();</text>
-<text x="60" y="609" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">A: мост для роли; B: делегирование</text>
-<text x="60" y="644" font-family="Noto Sans, sans-serif" font-size="24" fill="#b45309">C: отдельное приведение клиента</text>
-<text x="724" y="190" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">public java.lang.String get();</text>
-<text x="724" y="217" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">descriptor: ()Ljava/lang/String;</text>
-<text x="700" y="270" font-family="Noto Sans, sans-serif" font-size="24" fill="#2563eb">A: синтетический Object-entry</text>
-<text x="724" y="305" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">public java.lang.Object get();</text>
-<text x="724" y="332" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">descriptor: ()Ljava/lang/Object;</text>
-<text x="724" y="359" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">ACC_PUBLIC, ACC_BRIDGE,</text>
-<text x="724" y="386" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">ACC_SYNTHETIC</text>
-<text x="724" y="416" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">aload_0</text>
-<text x="724" y="443" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">invokevirtual</text>
-<text x="724" y="470" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">get:()Ljava/lang/String;</text>
-<text x="724" y="497" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">areturn</text>
-<text x="700" y="535" font-family="Noto Sans, sans-serif" font-size="24" fill="#047857">В этом bridge нет checkcast</text>
-<rect x="692" y="550" width="536" height="127" rx="8" fill="#fff" stroke="#b45309" stroke-width="3"/>
-<text x="700" y="576" font-family="Noto Sans, sans-serif" font-size="24" fill="#b45309">C: SourceClient.main — отдельно</text>
-<text x="724" y="611" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">invokeinterface</text>
-<text x="724" y="638" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">Source.get:()Ljava/lang/Object;</text>
-<text x="724" y="665" font-family="Noto Sans Mono, monospace" font-size="24" fill="#b45309">checkcast</text>
-<text x="881" y="665" font-family="Noto Sans Mono, monospace" font-size="24" fill="#b45309">java/lang/String</text>
-<path d="M 580 365 H 596 V 307 H 680" fill="none" stroke="#2563eb" stroke-width="3"/><path d="M 670 302 L 680 307 L 670 312" fill="none" stroke="#2563eb" stroke-width="3"/>
-<rect x="582" y="304.0" width="28" height="29" rx="4" fill="#f8fafc"/>
-<text x="588" y="327.0" font-family="Noto Sans, sans-serif" font-size="24" fill="#2563eb">A</text>
-<path d="M 580 414 H 627 V 468 H 680" fill="none" stroke="#047857" stroke-width="3"/><path d="M 670 463 L 680 468 L 670 473" fill="none" stroke="#047857" stroke-width="3"/>
-<rect x="613" y="409.0" width="28" height="29" rx="4" fill="#f8fafc"/>
-<text x="619" y="432.0" font-family="Noto Sans, sans-serif" font-size="24" fill="#047857">B</text>
-<path d="M 580 559 H 658 V 664 H 680" fill="none" stroke="#b45309" stroke-width="3"/><path d="M 670 659 L 680 664 L 670 669" fill="none" stroke="#b45309" stroke-width="3"/>
-<rect x="644" y="579.5" width="28" height="29" rx="4" fill="#f8fafc"/>
-<text x="650" y="602.5" font-family="Noto Sans, sans-serif" font-size="24" fill="#b45309">C</text>
-<text x="40" y="715" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">Вывод: Java. Object bridge вызывает String getter; cast выполняет клиент.</text>
-<text x="40" y="746" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">Выдержки javap: смещения, индексы constant pool и package prefix опущены.</text>
-<text x="40" y="774" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">A — роль Object; B — делегирование; C — приведение после interface-call.</text>
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800" role="img" aria-labelledby="title desc">
+  <title id="title">Getter bridge &#x434;&#x435;&#x43B;&#x435;&#x433;&#x438;&#x440;&#x443;&#x435;&#x442; String get(); cast &#x43E;&#x441;&#x442;&#x430;&#x451;&#x442;&#x441;&#x44F; &#x443; &#x43A;&#x43B;&#x438;&#x435;&#x43D;&#x442;&#x430;</title>
+  <desc id="desc">Source.get &#x43F;&#x43E;&#x441;&#x43B;&#x435; &#x441;&#x442;&#x438;&#x440;&#x430;&#x43D;&#x438;&#x44F; &#x432;&#x43E;&#x437;&#x432;&#x440;&#x430;&#x449;&#x430;&#x435;&#x442; Object. TextSource &#x438;&#x43C;&#x435;&#x435;&#x442; &#x43D;&#x430;&#x43F;&#x438;&#x441;&#x430;&#x43D;&#x43D;&#x44B;&#x439; String get &#x438; &#x441;&#x438;&#x43D;&#x442;&#x435;&#x442;&#x438;&#x447;&#x435;&#x441;&#x43A;&#x438;&#x439; Object get &#x441; bridge-&#x444;&#x43B;&#x430;&#x433;&#x430;&#x43C;&#x438;. &#x41F;&#x43E;&#x441;&#x43B;&#x435;&#x434;&#x43D;&#x438;&#x439; &#x432;&#x44B;&#x437;&#x44B;&#x432;&#x430;&#x435;&#x442; &#x43F;&#x435;&#x440;&#x432;&#x44B;&#x439; &#x438; &#x432;&#x43E;&#x437;&#x432;&#x440;&#x430;&#x449;&#x430;&#x435;&#x442; &#x435;&#x433;&#x43E; &#x440;&#x435;&#x437;&#x443;&#x43B;&#x44C;&#x442;&#x430;&#x442; &#x431;&#x435;&#x437; checkcast. &#x412; SourceClient &#x43F;&#x43E;&#x441;&#x43B;&#x435; &#x438;&#x43D;&#x442;&#x435;&#x440;&#x444;&#x435;&#x439;&#x441;&#x43D;&#x43E;&#x433;&#x43E; &#x432;&#x44B;&#x437;&#x43E;&#x432;&#x430; &#x43D;&#x430;&#x445;&#x43E;&#x434;&#x438;&#x442;&#x441;&#x44F; &#x43E;&#x442;&#x434;&#x435;&#x43B;&#x44C;&#x43D;&#x44B;&#x439; checkcast String; &#x432;&#x44B;&#x432;&#x43E;&#x434; &#x2014; Java.</desc>
+  <rect width="1280" height="800" fill="#f8fafc"/>
+  <text x="40" y="60" font-family="Noto Sans, sans-serif" font-size="32" fill="#0f172a">Getter bridge &#x434;&#x435;&#x43B;&#x435;&#x433;&#x438;&#x440;&#x443;&#x435;&#x442; String get(); cast &#x43E;&#x441;&#x442;&#x430;&#x451;&#x442;&#x441;&#x44F; &#x443; &#x43A;&#x43B;&#x438;&#x435;&#x43D;&#x442;&#x430;</text>
+  <rect x="40" y="112" width="540" height="568" rx="12" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+  <rect x="680" y="112" width="560" height="568" rx="12" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="60" y="150" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">Java &#x2014; &#x432;&#x44B;&#x434;&#x435;&#x440;&#x436;&#x43A;&#x438; &#x438;&#x441;&#x445;&#x43E;&#x434;&#x43D;&#x438;&#x43A;&#x43E;&#x432;</text>
+  <text x="700" y="150" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">JVM &#x2014; &#x444;&#x430;&#x43A;&#x442;&#x438;&#x447;&#x435;&#x441;&#x43A;&#x438;&#x439; javap 25</text>
+  <text x="60" y="190" font-family="Noto Sans, sans-serif" font-size="24" fill="#2563eb">A: Source&lt;T&gt; &#x438; &#x440;&#x43E;&#x43B;&#x44C; String</text>
+  <text x="76" y="225" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">public interface Source&lt;T&gt;</text>
+  <text x="76" y="252" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">{ T get(); }</text>
+  <text x="60" y="302" font-family="Noto Sans, sans-serif" font-size="24" fill="#047857">B: &#x43D;&#x430;&#x43F;&#x438;&#x441;&#x430;&#x43D;&#x43D;&#x44B;&#x439; getter</text>
+  <text x="76" y="337" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">public final class TextSource</text>
+  <text x="76" y="364" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">implements Source&lt;String&gt; {</text>
+  <text x="76" y="391" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">public String get()</text>
+  <text x="76" y="418" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">{ return "Java"; }</text>
+  <text x="60" y="470" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">SourceClient.main &#x2014; &#x432;&#x44B;&#x434;&#x435;&#x440;&#x436;&#x43A;&#x430;</text>
+  <text x="76" y="505" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">Source&lt;String&gt; source =</text>
+  <text x="76" y="532" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">    new TextSource();</text>
+  <text x="76" y="559" font-family="Noto Sans Mono, monospace" font-size="24" fill="#b45309">String text = source.get();</text>
+  <text x="60" y="609" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">A: &#x43C;&#x43E;&#x441;&#x442; &#x434;&#x43B;&#x44F; &#x440;&#x43E;&#x43B;&#x438;; B: &#x434;&#x435;&#x43B;&#x435;&#x433;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x435;</text>
+  <text x="60" y="644" font-family="Noto Sans, sans-serif" font-size="24" fill="#b45309">C: &#x43E;&#x442;&#x434;&#x435;&#x43B;&#x44C;&#x43D;&#x43E;&#x435; &#x43F;&#x440;&#x438;&#x432;&#x435;&#x434;&#x435;&#x43D;&#x438;&#x435; &#x43A;&#x43B;&#x438;&#x435;&#x43D;&#x442;&#x430;</text>
+  <text x="724" y="190" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">public java.lang.String get();</text>
+  <text x="724" y="217" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">descriptor: ()Ljava/lang/String;</text>
+  <text x="700" y="270" font-family="Noto Sans, sans-serif" font-size="24" fill="#2563eb">A: &#x441;&#x438;&#x43D;&#x442;&#x435;&#x442;&#x438;&#x447;&#x435;&#x441;&#x43A;&#x438;&#x439; Object-entry</text>
+  <text x="724" y="305" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">public java.lang.Object get();</text>
+  <text x="724" y="332" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">descriptor: ()Ljava/lang/Object;</text>
+  <text x="724" y="359" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">ACC_PUBLIC, ACC_BRIDGE,</text>
+  <text x="724" y="386" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">ACC_SYNTHETIC</text>
+  <text x="724" y="416" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">aload_0</text>
+  <text x="724" y="443" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">invokevirtual</text>
+  <text x="724" y="470" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">get:()Ljava/lang/String;</text>
+  <text x="724" y="497" font-family="Noto Sans Mono, monospace" font-size="24" fill="#047857">areturn</text>
+  <text x="700" y="535" font-family="Noto Sans, sans-serif" font-size="24" fill="#047857">&#x412; &#x44D;&#x442;&#x43E;&#x43C; bridge &#x43D;&#x435;&#x442; checkcast</text>
+  <rect x="692" y="550" width="536" height="127" rx="8" fill="#fff" stroke="#b45309" stroke-width="3"/>
+  <text x="700" y="576" font-family="Noto Sans, sans-serif" font-size="24" fill="#b45309">C: SourceClient.main &#x2014; &#x43E;&#x442;&#x434;&#x435;&#x43B;&#x44C;&#x43D;&#x43E;</text>
+  <text x="724" y="611" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">invokeinterface</text>
+  <text x="724" y="638" font-family="Noto Sans Mono, monospace" font-size="24" fill="#2563eb">Source.get:()Ljava/lang/Object;</text>
+  <text x="724" y="665" font-family="Noto Sans Mono, monospace" font-size="24" fill="#b45309">checkcast</text>
+  <text x="881" y="665" font-family="Noto Sans Mono, monospace" font-size="24" fill="#b45309">java/lang/String</text>
+  <path d="M 580 365 H 596 V 307 H 680" fill="none" stroke="#2563eb" stroke-width="3"/>
+  <path d="M 670 302 L 680 307 L 670 312" fill="none" stroke="#2563eb" stroke-width="3"/>
+  <rect x="582" y="304.0" width="28" height="29" rx="4" fill="#f8fafc"/>
+  <text x="588" y="327.0" font-family="Noto Sans, sans-serif" font-size="24" fill="#2563eb">A</text>
+  <path d="M 580 414 H 627 V 468 H 680" fill="none" stroke="#047857" stroke-width="3"/>
+  <path d="M 670 463 L 680 468 L 670 473" fill="none" stroke="#047857" stroke-width="3"/>
+  <rect x="613" y="409.0" width="28" height="29" rx="4" fill="#f8fafc"/>
+  <text x="619" y="432.0" font-family="Noto Sans, sans-serif" font-size="24" fill="#047857">B</text>
+  <path d="M 580 559 H 658 V 664 H 680" fill="none" stroke="#b45309" stroke-width="3"/>
+  <path d="M 670 659 L 680 664 L 670 669" fill="none" stroke="#b45309" stroke-width="3"/>
+  <rect x="644" y="579.5" width="28" height="29" rx="4" fill="#f8fafc"/>
+  <text x="650" y="602.5" font-family="Noto Sans, sans-serif" font-size="24" fill="#b45309">C</text>
+  <text x="40" y="715" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">&#x412;&#x44B;&#x432;&#x43E;&#x434;: Java. Object bridge &#x432;&#x44B;&#x437;&#x44B;&#x432;&#x430;&#x435;&#x442; String getter; cast &#x432;&#x44B;&#x43F;&#x43E;&#x43B;&#x43D;&#x44F;&#x435;&#x442; &#x43A;&#x43B;&#x438;&#x435;&#x43D;&#x442;.</text>
+  <text x="40" y="746" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">&#x412;&#x44B;&#x434;&#x435;&#x440;&#x436;&#x43A;&#x438; javap: &#x441;&#x43C;&#x435;&#x449;&#x435;&#x43D;&#x438;&#x44F;, &#x438;&#x43D;&#x434;&#x435;&#x43A;&#x441;&#x44B; constant pool &#x438; package prefix &#x43E;&#x43F;&#x443;&#x449;&#x435;&#x43D;&#x44B;.</text>
+  <text x="40" y="774" font-family="Noto Sans, sans-serif" font-size="24" fill="#0f172a">A &#x2014; &#x440;&#x43E;&#x43B;&#x44C; Object; B &#x2014; &#x434;&#x435;&#x43B;&#x435;&#x433;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x435;; C &#x2014; &#x43F;&#x440;&#x438;&#x432;&#x435;&#x434;&#x435;&#x43D;&#x438;&#x435; &#x43F;&#x43E;&#x441;&#x43B;&#x435; interface-call.</text>
 </svg>

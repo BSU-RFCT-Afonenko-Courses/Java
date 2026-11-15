@@ -10,13 +10,17 @@ import org.junit.jupiter.api.TestReporter;
 class ContractTest {
     private static String run(TestReporter publicReporter, String[] publicCaseIds, String input)
             throws Exception {
-        return publicOutput(publicReporter, publicCaseIds,
+        return publicOutput(
+                publicReporter,
+                publicCaseIds,
                 JavaProcess.runCheckingUncaught(Main.class, input).stdout());
     }
 
     private static void check(String expected, String actual) {
         if (expected.equals("Подходящих чисел нет")) {
-            assertEquals(expected, actual.replaceFirst("\\r?\\n\\z", ""),
+            assertEquals(
+                    expected,
+                    actual.replaceFirst("\\r?\\n\\z", ""),
                     "Сохраните сообщение об отсутствии результата");
             return;
         }
@@ -25,7 +29,9 @@ class ContractTest {
                 actual.isBlank() ? new String[0] : actual.strip().split("\\p{javaWhitespace}+");
         assertEquals(wanted.length, found.length, "Сохраните число значений");
         for (int i = 0; i < wanted.length; i++)
-            assertEquals(new BigInteger(wanted[i]), new BigInteger(found[i]),
+            assertEquals(
+                    new BigInteger(wanted[i]),
+                    new BigInteger(found[i]),
                     "Сохраните знак, порядок и повторы");
     }
 
@@ -81,8 +87,7 @@ class ContractTest {
     private static String publicOutput(TestReporter reporter, String[] ids, String actual) {
         if (reporter != null) {
             String visible = actual.replaceAll("[\\p{Cntrl}&&[^\n\t]]", "�");
-            if (visible.length() > 2000)
-                visible = visible.substring(0, 2000) + "…";
+            if (visible.length() > 2000) visible = visible.substring(0, 2000) + "…";
             for (String id : ids)
                 reporter.publishEntry(Map.of("public-case", id, "actual", "stdout=" + visible));
         }

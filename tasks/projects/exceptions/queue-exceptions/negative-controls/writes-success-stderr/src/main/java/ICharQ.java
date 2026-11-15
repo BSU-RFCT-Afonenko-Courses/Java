@@ -1,1 +1,5 @@
-public interface ICharQ {void put(char value)throws QueueFullException;char get()throws QueueEmptyException;}
+public interface ICharQ {
+    void put(char value) throws QueueFullException;
+
+    char get() throws QueueEmptyException;
+}

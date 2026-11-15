@@ -14,7 +14,9 @@ pagetitle: Обобщённые методы
 
 ```java
 final class Values {
-    static <T> T identity(T value) { return value; }
+    static <T> T identity(T value) {
+        return value;
+    }
 }
 ```
 
@@ -46,10 +48,14 @@ Number number = Values.<Number>identity(25);
 ```java
 final class Measurement {
     private final double value;
+
     <N extends Number> Measurement(N source) {
         value = source.doubleValue();
     }
-    double value() { return value; }
+
+    double value() {
+        return value;
+    }
 }
 ```
 

@@ -74,8 +74,8 @@ categories: [java, java-core, java-streams]
 Преобразование чисел в массив строк:
 
 ```java
-String[] labels = java.util.stream.Stream.of(1, 2)
-    .map(n -> "n=" + n).toArray(String[]::new);
+String[] labels =
+        java.util.stream.Stream.of(1, 2).map(n -> "n=" + n).toArray(String[]::new);
 System.out.println(java.util.Arrays.toString(labels)); // [n=1, n=2]
 ```
 
@@ -104,24 +104,32 @@ System.out.println(java.util.Arrays.toString(labels)); // [n=1, n=2]
 
 ```java
 static <T> Collector<T, ?, List<T>> toList();
-static <T, C extends Collection<T>> Collector<T, ?, C>
-    toCollection(Supplier<C> collectionFactory);
+
+static <T, C extends Collection<T>> Collector<T, ?, C> toCollection(
+        Supplier<C> collectionFactory);
+
 static Collector<CharSequence, ?, String> joining(CharSequence delimiter);
-static <T, K> Collector<T, ?, Map<K, List<T>>>
-    groupingBy(Function<? super T, ? extends K> classifier);
-static <T, K, A, D> Collector<T, ?, Map<K, D>>
-    groupingBy(Function<? super T, ? extends K> classifier,
-               Collector<? super T, A, D> downstream);
-static <T, K, D, A, M extends Map<K, D>> Collector<T, ?, M>
-    groupingBy(Function<? super T, ? extends K> classifier,
-               Supplier<M> mapFactory, Collector<? super T, A, D> downstream);
-static <T, K, U> Collector<T, ?, Map<K, U>>
-    toMap(Function<? super T, ? extends K> keyMapper,
-          Function<? super T, ? extends U> valueMapper);
-static <T, K, U> Collector<T, ?, Map<K, U>>
-    toMap(Function<? super T, ? extends K> keyMapper,
-          Function<? super T, ? extends U> valueMapper,
-          BinaryOperator<U> mergeFunction);
+
+static <T, K> Collector<T, ?, Map<K, List<T>>> groupingBy(
+        Function<? super T, ? extends K> classifier);
+
+static <T, K, A, D> Collector<T, ?, Map<K, D>> groupingBy(
+        Function<? super T, ? extends K> classifier, Collector<? super T, A, D> downstream);
+
+static <T, K, D, A, M extends Map<K, D>> Collector<T, ?, M> groupingBy(
+        Function<? super T, ? extends K> classifier,
+        Supplier<M> mapFactory,
+        Collector<? super T, A, D> downstream);
+
+static <T, K, U> Collector<T, ?, Map<K, U>> toMap(
+        Function<? super T, ? extends K> keyMapper,
+        Function<? super T, ? extends U> valueMapper);
+
+static <T, K, U> Collector<T, ?, Map<K, U>> toMap(
+        Function<? super T, ? extends K> keyMapper,
+        Function<? super T, ? extends U> valueMapper,
+        BinaryOperator<U> mergeFunction);
+
 static <T> Collector<T, ?, Long> counting();
 ```
 
@@ -191,8 +199,7 @@ static Stream<String> lines(Path path, Charset cs) throws IOException;
 
 ```java
 static long countNonblank(java.nio.file.Path path) throws java.io.IOException {
-    try (var lines = java.nio.file.Files.lines(
-            path, java.nio.charset.StandardCharsets.UTF_8)) {
+    try (var lines = java.nio.file.Files.lines(path, java.nio.charset.StandardCharsets.UTF_8)) {
         return lines.filter(line -> !line.isBlank()).count();
     }
 }

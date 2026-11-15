@@ -4,16 +4,26 @@ import java.util.Objects;
 
 public class ExceptionDemo {
     sealed interface ScoreResult permits Score, ScoreFailure {}
+
     record Score(int value) implements ScoreResult {}
-    enum ScoreProblem { NOT_INTEGER, OUT_OF_RANGE }
+
+    enum ScoreProblem {
+        NOT_INTEGER,
+        OUT_OF_RANGE
+    }
+
     record ScoreFailure(ScoreProblem problem) implements ScoreResult {}
 
     static class DataFormatException extends Exception {
-        @java.io.Serial
-        private static final long serialVersionUID = 1L;
+        @java.io.Serial private static final long serialVersionUID = 1L;
 
-        DataFormatException(String message) { super(message); }
-        DataFormatException(String message, Throwable cause) { super(message, cause); }
+        DataFormatException(String message) {
+            super(message);
+        }
+
+        DataFormatException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 
     static int parseScore(String text) {
@@ -62,7 +72,7 @@ public class ExceptionDemo {
     }
 
     static void scores() {
-        for (String text : new String[]{"90", "0", "ninety", "120", null}) {
+        for (String text : new String[] {"90", "0", "ninety", "120", null}) {
             try {
                 System.out.println(text + " -> " + parseScore(text));
             } catch (RuntimeException ex) {
@@ -115,10 +125,11 @@ public class ExceptionDemo {
 
     static void result() {
         for (String text : List.of("90", "120", "ninety", "2147483648")) {
-            String message = switch (parseScoreResult(text)) {
-                case Score(var value) -> "балл: " + value;
-                case ScoreFailure(var problem) -> "ошибка: " + problem;
-            };
+            String message =
+                    switch (parseScoreResult(text)) {
+                        case Score(var value) -> "балл: " + value;
+                        case ScoreFailure(var problem) -> "ошибка: " + problem;
+                    };
             System.out.println(message);
         }
     }

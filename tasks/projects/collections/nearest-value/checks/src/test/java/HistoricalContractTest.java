@@ -16,15 +16,16 @@ class HistoricalContractTest {
         Object s = TaskBinding.create();
         TaskBinding.add(s, +0.0);
         TaskBinding.add(s, -0.0);
-        assertEquals(Double.doubleToRawLongBits(-0.0),
-            Double.doubleToRawLongBits(TaskBinding.nearest(s, 0).orElseThrow()));
+        assertEquals(
+                Double.doubleToRawLongBits(-0.0),
+                Double.doubleToRawLongBits(TaskBinding.nearest(s, 0).orElseThrow()));
         TaskBinding.remove(s, -0.0);
-        assertEquals(Double.doubleToRawLongBits(+0.0),
-            Double.doubleToRawLongBits(TaskBinding.nearest(s, 0).orElseThrow()));
+        assertEquals(
+                Double.doubleToRawLongBits(+0.0),
+                Double.doubleToRawLongBits(TaskBinding.nearest(s, 0).orElseThrow()));
         TaskBinding.remove(s, +0.0);
         assertTrue(TaskBinding.nearest(s, 0).isEmpty());
-        for (double v : new double[] {-100, 0, 100})
-            TaskBinding.add(s, v);
+        for (double v : new double[] {-100, 0, 100}) TaskBinding.add(s, v);
         assertEquals(-100, TaskBinding.nearest(s, 1e150).orElseThrow());
         assertEquals(-100, TaskBinding.nearest(s, -1e150).orElseThrow());
     }

@@ -42,7 +42,9 @@ class Document {
         this.title = java.util.Objects.requireNonNull(title);
     }
 
-    String summary() { return title; }
+    String summary() {
+        return title;
+    }
 }
 ```
 
@@ -70,9 +72,12 @@ class TextDocument extends Document {
         this.characters = characters;
     }
 
-    int characters() { return characters; }
+    int characters() {
+        return characters;
+    }
 
-    @Override String summary() {
+    @Override
+    String summary() {
         return super.summary() + ": " + characters + " chars";
     }
 }
@@ -114,7 +119,9 @@ print(value); // Notes: 120 chars
 Консольная реализация печатает его:
 
 ```java
-interface Sender { void send(String message); }
+interface Sender {
+    void send(String message);
+}
 
 final class ConsoleSender implements Sender {
     @Override
@@ -148,7 +155,9 @@ final class RecordingSender implements Sender {
         text.append('\n');
     }
 
-    public String text() { return text.toString(); }
+    public String text() {
+        return text.toString();
+    }
 }
 ```
 
@@ -204,7 +213,7 @@ System.out.print(recording.text()); // Return: Java и перевод строк
 
 ```java
 IVehicle vehicle = new Vehicle(2, 10, 25);
-System.out.println(vehicle.range());         // 250
+System.out.println(vehicle.range()); // 250
 System.out.println(vehicle.fuelNeeded(100)); // 4.0
 ```
 
@@ -251,6 +260,7 @@ System.out.println(vehicle.fuelNeeded(100)); // 4.0
 ```java
 interface ICharQ {
     void put(char ch);
+
     char get();
 }
 ```
@@ -296,9 +306,7 @@ interface ICharQ {
 С готовыми реализациями из условия:
 
 ```java
-ICharQ[] queues = {
-    new FixedQueue(2), new CircularQueue(2), new DynQueue(2)
-};
+ICharQ[] queues = {new FixedQueue(2), new CircularQueue(2), new DynQueue(2)};
 for (ICharQ queue : queues) {
     queue.put('A');
     queue.put('B');

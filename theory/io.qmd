@@ -22,8 +22,7 @@ categories: [java, java-core, java-io]
 [@bib-io-model-epam; @bib-io-model-schildt].
 
 ```java
-static long countBytes(java.io.InputStream input)
-        throws java.io.IOException {
+static long countBytes(java.io.InputStream input) throws java.io.IOException {
     long count = 0;
     while (input.read() != -1) {
         count++;
@@ -56,8 +55,7 @@ static long countBytes(java.io.InputStream input)
 много мелких вызовов. Массив позволяет передавать порции:
 
 ```java
-static long countBlocks(java.io.InputStream input)
-        throws java.io.IOException {
+static long countBlocks(java.io.InputStream input) throws java.io.IOException {
     byte[] block = new byte[4096];
     long total = 0;
     int count;
@@ -119,10 +117,11 @@ FileInputStream  →  InputStreamReader  →  BufferedReader  →  разбор 
 объявляет `throws IOException`:
 
 ```java
-try (var reader = new java.io.BufferedReader(
-        new java.io.InputStreamReader(
-            new java.io.FileInputStream(file),
-            java.nio.charset.StandardCharsets.UTF_8.newDecoder()))) {
+try (var reader =
+        new java.io.BufferedReader(
+                new java.io.InputStreamReader(
+                        new java.io.FileInputStream(file),
+                        java.nio.charset.StandardCharsets.UTF_8.newDecoder()))) {
     String line;
     while ((line = reader.readLine()) != null) {
         System.out.println(line);
@@ -462,8 +461,9 @@ API. Выигрыш связан с организацией ожидания м
 результат. Построчный цикл позволяет обрабатывать записи постепенно:
 
 ```java
-try (var reader = java.nio.file.Files.newBufferedReader(
-        path, java.nio.charset.StandardCharsets.UTF_8)) {
+try (var reader =
+        java.nio.file.Files.newBufferedReader(
+                path, java.nio.charset.StandardCharsets.UTF_8)) {
     String line;
     long number = 0;
     while ((line = reader.readLine()) != null) {

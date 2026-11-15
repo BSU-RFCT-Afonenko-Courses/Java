@@ -7,9 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestReporter;
 
 class ContractTest {
-    private static String run(TestReporter publicReporter, String[] publicCaseIds, String input,
-            String... args) throws Exception {
-        return publicOutput(publicReporter, publicCaseIds,
+    private static String run(
+            TestReporter publicReporter, String[] publicCaseIds, String input, String... args)
+            throws Exception {
+        return publicOutput(
+                publicReporter,
+                publicCaseIds,
                 JavaProcess.runCheckingUncaught(Main.class, input, args).stdout());
     }
 
@@ -17,9 +20,11 @@ class ContractTest {
         return text.strip().split("\\p{javaWhitespace}+");
     }
 
-    private static void quotient(TestReporter publicReporter, String[] publicCaseIds, String input,
-            boolean expected) throws Exception {
-        assertArrayEquals(new String[] {"" + expected},
+    private static void quotient(
+            TestReporter publicReporter, String[] publicCaseIds, String input, boolean expected)
+            throws Exception {
+        assertArrayEquals(
+                new String[] {"" + expected},
                 tokens(run(publicReporter, publicCaseIds, input)),
                 "Положительность целочисленного частного без исключения");
     }
@@ -82,8 +87,7 @@ class ContractTest {
     private static String publicOutput(TestReporter reporter, String[] ids, String actual) {
         if (reporter != null) {
             String visible = actual.replaceAll("[\\p{Cntrl}&&[^\n\t]]", "�");
-            if (visible.length() > 2000)
-                visible = visible.substring(0, 2000) + "…";
+            if (visible.length() > 2000) visible = visible.substring(0, 2000) + "…";
             for (String id : ids)
                 reporter.publishEntry(Map.of("public-case", id, "actual", "stdout=" + visible));
         }

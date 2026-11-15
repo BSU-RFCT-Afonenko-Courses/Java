@@ -11,8 +11,9 @@ class ZeroTransferStateTest {
         assertEquals('Q', TaskBinding.get(dest));
         assertEquals("", ContractTest.capture(() -> TaskBinding.transfer(source, dest, 0)));
         assertEquals(
-            "Очередь переполнена\n", ContractTest.capture(() -> TaskBinding.put(dest, 'X')));
-        assertEquals("Очередь пуста\n",
-                     ContractTest.capture(() -> assertEquals('\0', TaskBinding.get(dest))));
+                "Очередь переполнена\n", ContractTest.capture(() -> TaskBinding.put(dest, 'X')));
+        assertEquals(
+                "Очередь пуста\n",
+                ContractTest.capture(() -> assertEquals('\0', TaskBinding.get(dest))));
     }
 }

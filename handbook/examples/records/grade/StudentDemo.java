@@ -8,9 +8,15 @@ public class StudentDemo {
         System.out.println(a.name());
         System.out.println(a.equals(b));
         System.out.println(a.equals(new Student("s1", "Ada", 90)));
-        try { new Student("s2", "Lin", 101); }
-        catch (IllegalArgumentException ex) { System.out.println("Балл отвергнут"); }
-        try { new Student("s2", "Li;n", 80); }
-        catch (IllegalArgumentException ex) { System.out.println("Разделитель отвергнут"); }
+        try {
+            new Student("s2", "Lin", 101);
+        } catch (IllegalArgumentException ex) {
+            System.out.println("Балл отвергнут");
+        }
+        try {
+            new Student("s2", "Li;n", 80);
+        } catch (IllegalArgumentException ex) {
+            System.out.println("Разделитель отвергнут");
+        }
     }
 }

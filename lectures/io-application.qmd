@@ -126,9 +126,8 @@ int count = input.read(block);
 
 ```java
 new BufferedReader(
-    new InputStreamReader(
-        new FileInputStream(file),
-        StandardCharsets.UTF_8.newDecoder()))
+        new InputStreamReader(
+                new FileInputStream(file), StandardCharsets.UTF_8.newDecoder()))
 ```
 
 `file` — строковый путь. `FileInputStream` получает байты,
@@ -338,10 +337,10 @@ flip():     [10 20 30 |                ]  position=0, limit=3
 `FileChannel` читает байты в буфер:
 
 ```java
-int n = channel.read(buffer);       // текущая позиция файла
+int n = channel.read(buffer); // текущая позиция файла
 // После обработки полученной порции:
 buffer.clear();
-int m = channel.read(buffer, 100);  // явное байтовое смещение
+int m = channel.read(buffer, 100); // явное байтовое смещение
 ```
 
 Первый вызов сдвигает позицию файла на фактически полученное число байтов.

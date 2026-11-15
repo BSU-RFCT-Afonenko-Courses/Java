@@ -43,9 +43,10 @@ categories: [java, java-core, java-functions]
 Predicate<String> nonempty = s -> !s.isEmpty();
 BiFunction<Integer, Integer, Integer> sum = (a, b) -> a + b;
 Supplier<String> title = () -> "каталог";
-Function<String, Integer> length = (String s) -> {
-    return s.length();
-};
+Function<String, Integer> length =
+        (String s) -> {
+            return s.length();
+        };
 ```
 
 Целевой тип обязателен: он определяется присваиванием, аргументом,
@@ -79,7 +80,9 @@ Function<String, Integer> length = (String s) -> {
 
 ```java
 default Predicate<T> and(Predicate<? super T> other);
+
 default Predicate<T> or(Predicate<? super T> other);
+
 default Predicate<T> negate();
 ```
 
@@ -91,20 +94,20 @@ default Predicate<T> negate();
 
 ```java
 Predicate<Integer> positive = n -> n > 0;
-var condition = positive.and(n -> {
-    System.out.println("second");
-    return n < 10;
-});
+var condition =
+        positive.and(n -> {
+            System.out.println("second");
+            return n < 10;
+        });
 System.out.println(condition.test(-1)); // false, second не печатается
 ```
 
 Сигнатуры методов `Function<T, R>`:
 
 ```java
-default <V> Function<T, V> andThen(
-    Function<? super R, ? extends V> after);
-default <V> Function<V, R> compose(
-    Function<? super V, ? extends T> before);
+default <V> Function<T, V> andThen(Function<? super R, ? extends V> after);
+
+default <V> Function<V, R> compose(Function<? super V, ? extends T> before);
 ```
 
 `andThen` применяет текущую функцию, затем `after`; `compose` применяет

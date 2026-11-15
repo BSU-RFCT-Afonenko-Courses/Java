@@ -16,6 +16,7 @@ class DemoTest {
     interface Throwing {
         void run() throws Throwable;
     }
+
     private static String capture(Throwing body) throws Throwable {
         var out = System.out;
         var err = System.err;
@@ -30,12 +31,15 @@ class DemoTest {
         }
         return bytes.toString(StandardCharsets.UTF_8);
     }
+
     record Payload(int value) {}
+
     static class Box<T> {
         private final Class<T> elementType;
         final QueueAccess access;
         final Object value;
         final Class<? extends Throwable> full, empty;
+
         Box(Class<T> elementType, T[] storage) throws Throwable {
             this.elementType = elementType;
             access = QueueAccess.select();
@@ -43,16 +47,20 @@ class DemoTest {
             full = access.full;
             empty = access.empty;
         }
+
         void put(T v) throws Throwable {
             access.put(value, v);
         }
+
         T get() throws Throwable {
             return elementType.cast(access.get(value));
         }
     }
+
     private static void empty(Box<?> b) throws Throwable {
         assertThrows(b.empty, () -> b.get());
     }
+
     private static <T> void full(Box<T> b, T rejected) throws Throwable {
         assertThrows(b.full, () -> b.put(rejected));
     }

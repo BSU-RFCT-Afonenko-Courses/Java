@@ -27,8 +27,8 @@ public final class DeliveryFiles {
                 } catch (IllegalArgumentException ex) {
                     problems.add(new LineProblem(number, ex.getMessage()));
                 } catch (ArithmeticException ex) {
-                    problems.add(new LineProblem(number,
-                        "сумма количества выходит за диапазон long"));
+                    problems.add(
+                            new LineProblem(number, "сумма количества выходит за диапазон long"));
                 }
             }
         }

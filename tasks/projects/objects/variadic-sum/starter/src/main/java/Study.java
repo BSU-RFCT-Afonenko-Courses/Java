@@ -1,4 +1,5 @@
 import java.util.*;
+
 /** Входы к вашему решению. Реализуйте модель и алгоритм по условию.
  * Технический вход Study сохраняется без объявления package; внутренние имена,
  * видимость и наследование свободны в пределах условия. Не заменяйте
@@ -6,5 +7,7 @@ import java.util.*;
  * Законные копии, вычисляемые самим алгоритмом по условию, разрешены. */
 public class Study {
     /** TODO: Сохраняется уже заданный метод sum с параметром переменной длины. */
-    public static int sum(int... values) { throw new UnsupportedOperationException("TODO: реализуйте решение"); }
+    public static int sum(int... values) {
+        throw new UnsupportedOperationException("TODO: реализуйте решение");
+    }
 }

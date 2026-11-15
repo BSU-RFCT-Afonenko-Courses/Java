@@ -5,11 +5,12 @@
     --junit /path/to/junit-platform-console-standalone.jar --output /tmp/files-checks
 Собирает только эталон, наблюдатель и малые регрессии, без Gradle и course build.
 """
+
 import argparse
 import json
-from pathlib import Path
 import subprocess
 import time
+from pathlib import Path
 from typing import Literal, TypedDict
 
 
@@ -23,11 +24,12 @@ class Arguments(argparse.Namespace):
 
 class TaskResult(TypedDict):
     task: str
-    status: Literal['PASS', 'FAIL']
+    status: Literal["PASS", "FAIL"]
     seconds: float
     log: str
 
-READABILITY = r'''
+
+READABILITY = r"""
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 class ObservationReadabilityTest {
@@ -42,8 +44,8 @@ class ObservationReadabilityTest {
   assertTrue(failure.getMessage().contains("Ожида"),"JUnit должен показывать открытое ожидание");
  }
 }
-'''
-INFRASTRUCTURE = r'''
+"""
+INFRASTRUCTURE = r"""
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
@@ -58,8 +60,8 @@ class ObservationInfrastructureTest {
   finally {System.setProperty("java.io.tmpdir",previous);}
  }
 }
-'''
-REFUSAL = r'''
+"""
+REFUSAL = r"""
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -69,9 +71,9 @@ class ObservationRefusalTest {
   assertSame(failure,assertThrows(IOException.class,()->FileInvocation.refused(()->{throw failure;})));
  }
 }
-'''
+"""
 
-PROTOCOL = r'''
+PROTOCOL = r"""
 import coursesupport.JavaProcess;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -89,85 +91,159 @@ class ObservationProtocolTest {
   assertThrows(AssertionError.class,()->FileInvocation.refused(()->FileInvocation.run("silent")));
  }
 }
-'''
-PORT_FIXTURE = r'''
+"""
+PORT_FIXTURE = r"""
 public class ProcessPort {
  public static void main(String[] args) throws Exception {
   if(args[0].equals("printed-marker"))System.err.println("COURSE_PORT_FAILURE=это обычный открытый текст программы");
   if(args[0].equals("student-failure"))throw new java.io.IOException("Отказ чтения входа в программе");
  }
 }
-'''
+"""
+
 
 def main() -> int:
-    parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--java-bin',required=True,type=Path)
-    parser.add_argument('--junit',required=True,type=Path)
-    parser.add_argument('--output',required=True,type=Path)
-    parser.add_argument('--task',action='append')
-    parser.add_argument('--protocol-only',action='store_true')
-    args=parser.parse_args(namespace=Arguments())
-    tasks=sorted(task for task in Path(__file__).parent.iterdir() if (task/'observations/src/test/java').is_dir())
-    unknown=set(args.task or [])-{task.name for task in tasks}
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--java-bin", required=True, type=Path)
+    parser.add_argument("--junit", required=True, type=Path)
+    parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--task", action="append")
+    parser.add_argument("--protocol-only", action="store_true")
+    args = parser.parse_args(namespace=Arguments())
+    tasks = sorted(
+        task
+        for task in Path(__file__).parent.iterdir()
+        if (task / "observations/src/test/java").is_dir()
+    )
+    unknown = set(args.task or []) - {task.name for task in tasks}
     if unknown:
-        parser.error('Неизвестные проекты: '+', '.join(sorted(unknown)))
-    results: list[TaskResult]=[]
+        parser.error("Неизвестные проекты: " + ", ".join(sorted(unknown)))
+    results: list[TaskResult] = []
     for task in tasks:
-        observations=task/'observations/src/test/java'
+        observations = task / "observations/src/test/java"
         if not observations.is_dir() or args.task and task.name not in args.task:
             continue
-        if args.protocol_only and not (observations/'FileInvocation.java').exists():
+        if args.protocol_only and not (observations / "FileInvocation.java").exists():
             continue
-        start=time.monotonic()
-        work=args.output/task.name
-        main_classes=work/'student'
-        test_classes=work/'observations'
-        fixtures=work/'fixtures'
-        for directory in (main_classes,test_classes,fixtures):
-            directory.mkdir(parents=True,exist_ok=True)
-        (fixtures/'ObservationReadabilityTest.java').write_text(READABILITY)
-        public=(observations/'PublicChecks.java').read_text()
-        if 'static int example(' in public:
-            (fixtures/'ObservationInfrastructureTest.java').write_text(INFRASTRUCTURE)
-        if (observations/'FileInvocation.java').exists():
-            (fixtures/'ObservationRefusalTest.java').write_text(REFUSAL)
-        sources=sorted(observations.rglob('*.java'))
-        commands: list[list[str | Path]]=[
-            [args.java_bin/'javac','--release','25','-encoding','UTF-8','-d',main_classes,*sorted((task/'reference/src/main/java').rglob('*.java'))],
-            [args.java_bin/'javac','--release','25','-encoding','UTF-8','-cp',str(main_classes)+':'+str(args.junit),'-d',test_classes,*sources,*sorted(fixtures.glob('*.java'))],
-            [args.java_bin/'java','-jar',args.junit,'execute','--class-path',str(test_classes)+':'+str(main_classes),'--scan-class-path','--disable-banner','--details=summary'],
+        start = time.monotonic()
+        work = args.output / task.name
+        main_classes = work / "student"
+        test_classes = work / "observations"
+        fixtures = work / "fixtures"
+        for directory in (main_classes, test_classes, fixtures):
+            directory.mkdir(parents=True, exist_ok=True)
+        (fixtures / "ObservationReadabilityTest.java").write_text(READABILITY)
+        public = (observations / "PublicChecks.java").read_text()
+        if "static int example(" in public:
+            (fixtures / "ObservationInfrastructureTest.java").write_text(INFRASTRUCTURE)
+        if (observations / "FileInvocation.java").exists():
+            (fixtures / "ObservationRefusalTest.java").write_text(REFUSAL)
+        sources = sorted(observations.rglob("*.java"))
+        commands: list[list[str | Path]] = [
+            [
+                args.java_bin / "javac",
+                "--release",
+                "25",
+                "-encoding",
+                "UTF-8",
+                "-d",
+                main_classes,
+                *sorted((task / "reference/src/main/java").rglob("*.java")),
+            ],
+            [
+                args.java_bin / "javac",
+                "--release",
+                "25",
+                "-encoding",
+                "UTF-8",
+                "-cp",
+                str(main_classes) + ":" + str(args.junit),
+                "-d",
+                test_classes,
+                *sources,
+                *sorted(fixtures.glob("*.java")),
+            ],
+            [
+                args.java_bin / "java",
+                "-jar",
+                args.junit,
+                "execute",
+                "--class-path",
+                str(test_classes) + ":" + str(main_classes),
+                "--scan-class-path",
+                "--disable-banner",
+                "--details=summary",
+            ],
         ]
         if args.protocol_only:
-            commands=[]
-        if (observations/'FileInvocation.java').exists():
-            protocol=work/'protocol'
+            commands = []
+        if (observations / "FileInvocation.java").exists():
+            protocol = work / "protocol"
             protocol.mkdir(exist_ok=True)
-            (protocol/'ProcessPort.java').write_text(PORT_FIXTURE)
-            (protocol/'Study.java').write_text('public class Study {}')
-            (protocol/'ObservationProtocolTest.java').write_text(PROTOCOL)
-            (protocol/'ObservationRefusalTest.java').write_text(REFUSAL)
-            commands.extend([
-                [args.java_bin/'javac','--release','25','-encoding','UTF-8','-cp',args.junit,'-d',protocol,observations/'FileInvocation.java',observations/'coursesupport/JavaProcess.java',*sorted(protocol.glob('*.java'))],
-                [args.java_bin/'java','-jar',args.junit,'execute','--class-path',str(protocol),'--scan-class-path','--disable-banner','--details=summary'],
-            ])
-        log: list[str]=[]
-        result: subprocess.CompletedProcess[str] | None=None
+            (protocol / "ProcessPort.java").write_text(PORT_FIXTURE)
+            (protocol / "Study.java").write_text("public class Study {}")
+            (protocol / "ObservationProtocolTest.java").write_text(PROTOCOL)
+            (protocol / "ObservationRefusalTest.java").write_text(REFUSAL)
+            commands.extend(
+                [
+                    [
+                        args.java_bin / "javac",
+                        "--release",
+                        "25",
+                        "-encoding",
+                        "UTF-8",
+                        "-cp",
+                        args.junit,
+                        "-d",
+                        protocol,
+                        observations / "FileInvocation.java",
+                        observations / "coursesupport/JavaProcess.java",
+                        *sorted(protocol.glob("*.java")),
+                    ],
+                    [
+                        args.java_bin / "java",
+                        "-jar",
+                        args.junit,
+                        "execute",
+                        "--class-path",
+                        str(protocol),
+                        "--scan-class-path",
+                        "--disable-banner",
+                        "--details=summary",
+                    ],
+                ]
+            )
+        log: list[str] = []
+        result: subprocess.CompletedProcess[str] | None = None
         for command in commands:
-            result=subprocess.run(list(map(str,command)),text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-            log.append('$ '+' '.join(map(str,command))+'\n'+result.stdout)
+            result = subprocess.run(
+                list(map(str, command)),
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+            )
+            log.append("$ " + " ".join(map(str, command)) + "\n" + result.stdout)
             if result.returncode:
                 break
         if result is None:
-            parser.error('Для выбранного проекта не сформированы команды проверки')
-        (work/'run.log').write_text('\n'.join(log))
-        record: TaskResult={'task':task.name,'status':'PASS' if result.returncode==0 else 'FAIL','seconds':round(time.monotonic()-start,3),'log':str(work/'run.log')}
+            parser.error("Для выбранного проекта не сформированы команды проверки")
+        (work / "run.log").write_text("\n".join(log))
+        record: TaskResult = {
+            "task": task.name,
+            "status": "PASS" if result.returncode == 0 else "FAIL",
+            "seconds": round(time.monotonic() - start, 3),
+            "log": str(work / "run.log"),
+        }
         results.append(record)
-        print(json.dumps(record,ensure_ascii=False),flush=True)
+        print(json.dumps(record, ensure_ascii=False), flush=True)
     if not results:
-        parser.error('Для выбранного режима не найдено ни одного проекта')
-    args.output.mkdir(parents=True,exist_ok=True)
-    (args.output/'results.json').write_text(json.dumps(results,ensure_ascii=False,indent=2))
-    return int(any(result['status']!='PASS' for result in results))
+        parser.error("Для выбранного режима не найдено ни одного проекта")
+    args.output.mkdir(parents=True, exist_ok=True)
+    (args.output / "results.json").write_text(
+        json.dumps(results, ensure_ascii=False, indent=2)
+    )
+    return int(any(result["status"] != "PASS" for result in results))
 
-if __name__=='__main__':
+
+if __name__ == "__main__":
     raise SystemExit(main())

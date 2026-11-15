@@ -14,23 +14,23 @@ class DemoTest {
     }
 
     private static int[][] views() throws Exception {
-        String[] lines = run().lines().filter(s -> !s.isBlank()).toArray(String[] ::new);
+        String[] lines = run().lines().filter(s -> !s.isBlank()).toArray(String[]::new);
         assertEquals(11, lines.length, "Нужны одна горизонтальная и десять вертикальных строк");
         int horizontal = tokens(lines[0]).length == 10 ? 0 : 10;
         int[][] values = new int[2][10];
         int next = 0;
         for (int row = 0; row < 11; row++) {
             String[] words = tokens(lines[row]);
-            assertEquals(row == horizontal ? 10 : 1, words.length,
+            assertEquals(
+                    row == horizontal ? 10 : 1,
+                    words.length,
                     "Числа в строке соответствуют выбранной форме");
             for (int i = 0; i < words.length; i++) {
                 assertTrue(words[i].matches("[+-]?[0-9]+"), "Нужно десятичное целое");
                 int value = Integer.parseInt(words[i]);
                 assertTrue(value >= 0 && value < 100, "Диапазон 0..99");
-                if (row == horizontal)
-                    values[0][i] = value;
-                else
-                    values[1][next++] = value;
+                if (row == horizontal) values[0][i] = value;
+                else values[1][next++] = value;
             }
         }
         return values;

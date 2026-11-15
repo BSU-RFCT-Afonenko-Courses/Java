@@ -7,6 +7,7 @@ public class NullnessDemo {
         }
         return text.length();
     }
+
     public static void main(String[] args) {
         System.out.println(length(null));
     }

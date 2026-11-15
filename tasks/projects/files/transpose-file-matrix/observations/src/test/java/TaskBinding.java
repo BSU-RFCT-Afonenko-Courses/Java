@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 class TaskBinding {
     record Matrices(int[][] source, int[][] transposed) {}
+
     private record Label(int offset, String text) {}
 
     static void run(Path input, Path output) throws Exception {
@@ -36,8 +37,10 @@ class TaskBinding {
             // Размер в подписи не является элементом матрицы.
             text = text.replaceAll("\\d+\\s*[×xх]\\s*\\d+", "");
             if (text.isBlank()) continue;
-            if (Character.isLetter(text.charAt(0)) && !text.contains(":")
-                    && !text.contains("=") && !text.contains("[")) {
+            if (Character.isLetter(text.charAt(0))
+                    && !text.contains(":")
+                    && !text.contains("=")
+                    && !text.contains("[")) {
                 label(labels, values.size(), text);
                 continue;
             }
@@ -45,7 +48,8 @@ class TaskBinding {
             int end = 0;
             while (matches.find()) {
                 int a = matches.start(), b = matches.end();
-                if ((a > 0 && text.charAt(a - 1) == '.') || (b < text.length() && text.charAt(b) == '.')) {
+                if ((a > 0 && text.charAt(a - 1) == '.')
+                        || (b < text.length() && text.charAt(b) == '.')) {
                     throw new AssertionError("В матрицах ожидаются целые числа");
                 }
                 // Цифры в имени подписи (например, A1) остаются частью подписи.
@@ -64,7 +68,8 @@ class TaskBinding {
         int count = values.size();
         int size = (int) Math.sqrt(count / 2);
         if (size == 0 || 2 * size * size != count) {
-            throw new AssertionError("В отчёте не удалось выделить две квадратные матрицы одного размера");
+            throw new AssertionError(
+                    "В отчёте не удалось выделить две квадратные матрицы одного размера");
         }
         int half = count / 2;
         boolean distinct = false;
@@ -72,7 +77,8 @@ class TaskBinding {
             for (int j = i + 1; j < labels.size(); j++) {
                 var first = labels.get(i);
                 var second = labels.get(j);
-                if (first.offset() <= half && second.offset() >= half
+                if (first.offset() <= half
+                        && second.offset() >= half
                         && !first.text().equals(second.text())) distinct = true;
             }
         }

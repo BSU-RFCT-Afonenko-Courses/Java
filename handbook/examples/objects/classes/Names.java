@@ -1,5 +1,6 @@
 final class Names {
     private final String[] names;
+
     Names(String[] initial) {
         java.util.Objects.requireNonNull(initial, "initial");
         String[] copy = initial.clone();
@@ -10,5 +11,8 @@ final class Names {
         }
         names = copy;
     }
-    String[] names() { return names.clone(); }
+
+    String[] names() {
+        return names.clone();
+    }
 }

@@ -1,98 +1,35 @@
 project:
   pre-render:
-  - _extensions/Afonenko-Course-Tools/course-core/entrypoints/pre.ts
-  - _extensions/Afonenko-Course-Tools/project-download/entrypoints/pre.ts
+    - _extensions/Afonenko-Course-Tools/course-core/entrypoints/pre.ts
+    - _extensions/Afonenko-Course-Tools/project-download/entrypoints/pre.ts
   post-render:
-  - _extensions/Afonenko-Course-Tools/reference-catalog/entrypoints/post.ts
-  - ../_extensions/Afonenko-Course-Tools/course-site/entrypoints/collect.ts
-  - _extensions/Afonenko-Course-Tools/course-core/entrypoints/post.ts
-  - _extensions/Afonenko-Course-Tools/project-download/entrypoints/post.ts
+    - _extensions/Afonenko-Course-Tools/reference-catalog/entrypoints/post.ts
+    - ../_extensions/Afonenko-Course-Tools/course-site/entrypoints/collect.ts
+    - _extensions/Afonenko-Course-Tools/course-core/entrypoints/post.ts
+    - _extensions/Afonenko-Course-Tools/project-download/entrypoints/post.ts
   type: book
   output-dir: _output
   resources:
-  - '!**/projects/**'
-  - '!test-support/**'
-  - '!assessments/**'
-  - '!_generated/**'
-  - '!tools/**'
-  - '!docs/**'
-  - '!_extensions/**'
-  - '!**/_*.qmd'
-  - '!_freeze/**'
-  - '!.quarto/**'
-  - '!**/*.qmd'
-  - '!**/*.rmd'
-  - '!**/*.ipynb'
-  - '!**/_output/**'
-  - '!**/_site*/**'
-  - '!**/_generated/**'
-  - '!**/.superpowers/**'
+    - "!**/projects/**"
+    - "!test-support/**"
+    - "!assessments/**"
+    - "!_generated/**"
+    - "!tools/**"
+    - "!docs/**"
+    - "!_extensions/**"
+    - "!**/_*.qmd"
+    - "!_freeze/**"
+    - "!.quarto/**"
+    - "!**/*.qmd"
+    - "!**/*.rmd"
+    - "!**/*.ipynb"
+    - "!**/_output/**"
+    - "!**/_site*/**"
+    - "!**/_generated/**"
+    - "!**/.superpowers/**"
   render:
-  - index.qmd
-  - labs/index.qmd
-  - labs/numbers.qmd
-  - labs/control.qmd
-  - labs/arrays.qmd
-  - labs/text.qmd
-  - labs/objects.qmd
-  - labs/polymorphism.qmd
-  - labs/generics.qmd
-  - labs/collections.qmd
-  - labs/files.qmd
-  - labs/pipelines.qmd
-  - bank/index.qmd
-  - bank/numbers.qmd
-  - bank/control.qmd
-  - bank/arrays.qmd
-  - bank/text.qmd
-  - bank/objects.qmd
-  - bank/polymorphism.qmd
-  - bank/generics.qmd
-  - bank/collections.qmd
-  - bank/pipelines.qmd
-  - bank/exceptions.qmd
-  - bank/files.qmd
-  - bank/projects.qmd
-  - essays/*.qmd
-  - references.qmd
-profile:
-  default: student
-  group:
-  - - student
-    - full
-filters:
-- course-navigation
-- project-download
-- course-core
-- course-presentation
-- course-prairielearn
-- reference-catalog
-book:
-  repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
-  repo-branch: master
-  repo-subdir: tasks
-  repo-actions:
-  - source
-  - issue
-  navbar:
-    title: Программирование на Java
-    logo-href: https://bsu-rfct-afonenko-courses.github.io/Java/index.html
-    left:
-    - text: Теория
-      href: https://bsu-rfct-afonenko-courses.github.io/Java/theory/index.html
-    - text: Задания
-      href: index.html
-    - text: Лекции
-      href: https://bsu-rfct-afonenko-courses.github.io/Java/lectures/index.html
-    - text: Введения к лабораторным
-      href: https://bsu-rfct-afonenko-courses.github.io/Java/practice/index.html
-    - text: Справочник
-      href: https://bsu-rfct-afonenko-courses.github.io/Java/handbook/index.html
-  title: Задания по Java
-  chapters:
-  - index.qmd
-  - part: labs/index.qmd
-    chapters:
+    - index.qmd
+    - labs/index.qmd
     - labs/numbers.qmd
     - labs/control.qmd
     - labs/arrays.qmd
@@ -101,10 +38,9 @@ book:
     - labs/polymorphism.qmd
     - labs/generics.qmd
     - labs/collections.qmd
-    - labs/pipelines.qmd
     - labs/files.qmd
-  - part: bank/index.qmd
-    chapters:
+    - labs/pipelines.qmd
+    - bank/index.qmd
     - bank/numbers.qmd
     - bank/control.qmd
     - bank/arrays.qmd
@@ -117,20 +53,84 @@ book:
     - bank/exceptions.qmd
     - bank/files.qmd
     - bank/projects.qmd
-  - part: essays/index.qmd
-    chapters:
-    - essays/numbers.qmd
-    - essays/control.qmd
-    - essays/arrays.qmd
-    - essays/text.qmd
-    - essays/objects.qmd
-    - essays/polymorphism.qmd
-    - essays/generics.qmd
-    - essays/collections.qmd
-    - essays/pipelines.qmd
-    - essays/exceptions.qmd
-    - essays/files.qmd
-  - references.qmd
+    - essays/*.qmd
+    - references.qmd
+profile:
+  default: student
+  group:
+    - - student
+      - full
+filters:
+  - course-navigation
+  - project-download
+  - course-core
+  - course-presentation
+  - course-prairielearn
+  - reference-catalog
+book:
+  repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
+  repo-branch: master
+  repo-subdir: tasks
+  repo-actions:
+    - source
+    - issue
+  navbar:
+    title: Программирование на Java
+    logo-href: https://bsu-rfct-afonenko-courses.github.io/Java/index.html
+    left:
+      - text: Теория
+        href: https://bsu-rfct-afonenko-courses.github.io/Java/theory/index.html
+      - text: Задания
+        href: index.html
+      - text: Лекции
+        href: https://bsu-rfct-afonenko-courses.github.io/Java/lectures/index.html
+      - text: Введения к лабораторным
+        href: https://bsu-rfct-afonenko-courses.github.io/Java/practice/index.html
+      - text: Справочник
+        href: https://bsu-rfct-afonenko-courses.github.io/Java/handbook/index.html
+  title: Задания по Java
+  chapters:
+    - index.qmd
+    - part: labs/index.qmd
+      chapters:
+        - labs/numbers.qmd
+        - labs/control.qmd
+        - labs/arrays.qmd
+        - labs/text.qmd
+        - labs/objects.qmd
+        - labs/polymorphism.qmd
+        - labs/generics.qmd
+        - labs/collections.qmd
+        - labs/pipelines.qmd
+        - labs/files.qmd
+    - part: bank/index.qmd
+      chapters:
+        - bank/numbers.qmd
+        - bank/control.qmd
+        - bank/arrays.qmd
+        - bank/text.qmd
+        - bank/objects.qmd
+        - bank/polymorphism.qmd
+        - bank/generics.qmd
+        - bank/collections.qmd
+        - bank/pipelines.qmd
+        - bank/exceptions.qmd
+        - bank/files.qmd
+        - bank/projects.qmd
+    - part: essays/index.qmd
+      chapters:
+        - essays/numbers.qmd
+        - essays/control.qmd
+        - essays/arrays.qmd
+        - essays/text.qmd
+        - essays/objects.qmd
+        - essays/polymorphism.qmd
+        - essays/generics.qmd
+        - essays/collections.qmd
+        - essays/pipelines.qmd
+        - essays/exceptions.qmd
+        - essays/files.qmd
+    - references.qmd
 format:
   html:
     css: ../styles/book.css
@@ -162,36 +162,37 @@ reference-catalog:
       base-url: https://bsu-rfct-afonenko-courses.github.io/Java/
 fail-if-warnings: true
 bibliography:
-- ../bibliography/context-data.bib
-- ../bibliography/context-objects.bib
-- ../bibliography/context-foundations.bib
-- ../bibliography/data.bib
-- ../bibliography/research/arrays.bib
-- ../bibliography/research/collections.bib
-- ../bibliography/research/control.bib
-- ../bibliography/research/exceptions.bib
-- ../bibliography/research/files.bib
-- ../bibliography/research/generics.bib
-- ../bibliography/research/numbers.bib
-- ../bibliography/research/objects.bib
-- ../bibliography/research/pipelines.bib
-- ../bibliography/research/polymorphism.bib
-- ../bibliography/research/text.bib
-- ../bibliography/tasks/arrays.bib
-- ../bibliography/tasks/collections.bib
-- ../bibliography/tasks/control.bib
-- ../bibliography/tasks/exceptions.bib
-- ../bibliography/tasks/files.bib
-- ../bibliography/tasks/generics.bib
-- ../bibliography/tasks/numbers.bib
-- ../bibliography/tasks/objects.bib
-- ../bibliography/tasks/pipelines.bib
-- ../bibliography/tasks/polymorphism.bib
-- ../bibliography/tasks/projects.bib
-- ../bibliography/tasks/text.bib
+  - ../bibliography/context-data.bib
+  - ../bibliography/context-objects.bib
+  - ../bibliography/context-foundations.bib
+  - ../bibliography/data.bib
+  - ../bibliography/research/arrays.bib
+  - ../bibliography/research/collections.bib
+  - ../bibliography/research/control.bib
+  - ../bibliography/research/exceptions.bib
+  - ../bibliography/research/files.bib
+  - ../bibliography/research/generics.bib
+  - ../bibliography/research/numbers.bib
+  - ../bibliography/research/objects.bib
+  - ../bibliography/research/pipelines.bib
+  - ../bibliography/research/polymorphism.bib
+  - ../bibliography/research/text.bib
+  - ../bibliography/tasks/arrays.bib
+  - ../bibliography/tasks/collections.bib
+  - ../bibliography/tasks/control.bib
+  - ../bibliography/tasks/exceptions.bib
+  - ../bibliography/tasks/files.bib
+  - ../bibliography/tasks/generics.bib
+  - ../bibliography/tasks/numbers.bib
+  - ../bibliography/tasks/objects.bib
+  - ../bibliography/tasks/pipelines.bib
+  - ../bibliography/tasks/polymorphism.bib
+  - ../bibliography/tasks/projects.bib
+  - ../bibliography/tasks/text.bib
 csl: ../bibliography/numeric-book-ru.csl
 link-citations: true
-nocite: '@bib-data-map-api, @bib-korneev-io-exceptions, @bib-research-array-list-type-checks-1, @bib-research-array-list-type-checks-2,
+nocite:
+  "@bib-data-map-api, @bib-korneev-io-exceptions, @bib-research-array-list-type-checks-1, @bib-research-array-list-type-checks-2,
   @bib-research-array-list-type-checks-3, @bib-research-boolean-evaluation-actions-1, @bib-research-boolean-evaluation-actions-2,
   @bib-research-boolean-evaluation-actions-3, @bib-research-class-responsibility-design-1, @bib-research-class-responsibility-design-2,
   @bib-research-class-responsibility-design-3, @bib-research-closed-command-model-1, @bib-research-closed-command-model-2,
@@ -247,12 +248,12 @@ nocite: '@bib-data-map-api, @bib-korneev-io-exceptions, @bib-research-array-list
   @bib-task-strong-password, @bib-task-subtract-array-average, @bib-task-sum-text-digits, @bib-task-swap-generic-array, @bib-task-swap-object-fields,
   @bib-task-timetable-interfaces-project, @bib-task-toggle-console-case, @bib-task-transpose-file-matrix, @bib-task-truck-subclass,
   @bib-task-two-type-container, @bib-task-variadic-sum, @bib-task-vehicle-interface, @bib-task-vowels-before-consonants, @bib-task-word-frequency,
-  @bib-task-word-length-extrema'
+  @bib-task-word-length-extrema"
 course:
   assessment-time: false
   id: java-semester-one
   adapters:
-  - prairielearn
+    - prairielearn
 project-download:
   course-model: true
 prairielearn:
@@ -271,27 +272,27 @@ prairielearn:
       options:
         integerManualPoints: true
       topics:
-      - name: Java
-        color: blue2
-        description: Программирование на Java 25
+        - name: Java
+          color: blue2
+          description: Программирование на Java 25
     instances:
       2026-2027-s1:
         publishing:
-          start-date: '1970-01-01T00:00:00Z'
-          end-date: '9999-12-31T00:00:00Z'
+          start-date: "1970-01-01T00:00:00Z"
+          end-date: "9999-12-31T00:00:00Z"
         title: 2026–2027, первый семестр
         self-enrollment: false
         works:
-        - sec-lab-numbers
-        - sec-lab-control
-        - sec-lab-arrays
-        - sec-lab-text
-        - sec-lab-objects
-        - sec-lab-polymorphism
-        - sec-lab-generics
-        - sec-lab-collections
-        - sec-lab-pipelines
-        - sec-lab-files
+          - sec-lab-numbers
+          - sec-lab-control
+          - sec-lab-arrays
+          - sec-lab-text
+          - sec-lab-objects
+          - sec-lab-polymorphism
+          - sec-lab-generics
+          - sec-lab-collections
+          - sec-lab-pipelines
+          - sec-lab-files
   question-defaults:
     topic: Java
     grading:
@@ -307,9 +308,9 @@ project-checks:
       release: 25
       encoding: UTF-8
       compiler-options:
-      - -proc:none
-      - -Xmaxerrs
-      - '5'
+        - -proc:none
+        - -Xmaxerrs
+        - "5"
     limits:
       outer-seconds: 300
       compile-seconds: 120
@@ -317,15 +318,15 @@ project-checks:
       networking: false
       max-output-bytes: 65536
     references:
-    - name: default
-      root: reference
-      optional: false
+      - name: default
+        root: reference
+        optional: false
     verification-tests:
-    - src/api/java/**/*.java
-    - src/test/java/**/*.java
+      - src/api/java/**/*.java
+      - src/test/java/**/*.java
     verification-api-precheck:
       files:
-      - src/api/java/**/*.java
+        - src/api/java/**/*.java
       entry: ApiContract
     verification-expectations:
       reference:
@@ -346,7 +347,7 @@ project-checks:
       mode: implementation
       root: src/main/java
       include:
-      - '**/*.java'
+        - "**/*.java"
   profiles:
     java-console-greeting:
       source-profile: java-gradle
@@ -359,28 +360,28 @@ project-checks:
         allow-additional: false
         primary-required: true
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: lawful1
-        root: author/lawful1/src/main/java
-        optional: false
-      - name: lawful2
-        root: author/lawful2/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: lawful1
+          root: author/lawful1/src/main/java
+          optional: false
+        - name: lawful2
+          root: author/lawful2/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
@@ -396,28 +397,28 @@ project-checks:
         allow-additional: false
         primary-required: true
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: lawful1
-        root: author/lawful1/src/main/java
-        optional: false
-      - name: lawful2
-        root: author/lawful2/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: lawful1
+          root: author/lawful1/src/main/java
+          optional: false
+        - name: lawful2
+          root: author/lawful2/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
@@ -433,28 +434,28 @@ project-checks:
         allow-additional: false
         primary-required: true
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: lawful1
-        root: author/lawful1/src/main/java
-        optional: false
-      - name: lawful2
-        root: author/lawful2/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: lawful1
+          root: author/lawful1/src/main/java
+          optional: false
+        - name: lawful2
+          root: author/lawful2/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
@@ -470,28 +471,28 @@ project-checks:
         allow-additional: false
         primary-required: true
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: helper
-        root: author/helper/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: helper
+          root: author/helper/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
@@ -507,28 +508,28 @@ project-checks:
         allow-additional: false
         primary-required: true
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: helper
-        root: author/helper/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: helper
+          root: author/helper/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
@@ -544,25 +545,25 @@ project-checks:
         allow-additional: false
         primary-required: true
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: recursive
-        root: author/recursive/src/main/java
-        optional: false
-      - name: exitAfterOutput
-        root: author/exitAfterOutput/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: recursive
+          root: author/recursive/src/main/java
+          optional: false
+        - name: exitAfterOutput
+          root: author/exitAfterOutput/src/main/java
+          optional: false
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
@@ -578,25 +579,25 @@ project-checks:
         allow-additional: false
         primary-required: true
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: helper
-        root: author/helper/src/main/java
-        optional: false
-      - name: scientific
-        root: author/scientific/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: helper
+          root: author/helper/src/main/java
+          optional: false
+        - name: scientific
+          root: author/scientific/src/main/java
+          optional: false
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
@@ -612,25 +613,25 @@ project-checks:
         allow-additional: false
         primary-required: true
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: helper
-        root: author/helper/src/main/java
-        optional: false
-      - name: bubble
-        root: author/bubble/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: helper
+          root: author/helper/src/main/java
+          optional: false
+        - name: bubble
+          root: author/bubble/src/main/java
+          optional: false
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
@@ -646,22 +647,22 @@ project-checks:
         allow-additional: false
         primary-required: true
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
@@ -677,22 +678,22 @@ project-checks:
         allow-additional: false
         primary-required: true
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
@@ -708,22 +709,22 @@ project-checks:
         allow-additional: false
         primary-required: true
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       java-build:
         kind: gradle-jar-v1
         artifact: submission.jar
@@ -750,19 +751,19 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: inherited
-        root: author/inherited/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: inherited
+          root: author/inherited/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-objects-swap-object-fields:
@@ -787,19 +788,19 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: inherited
-        root: author/inherited/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: inherited
+          root: author/inherited/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-objects-character-stack:
@@ -824,19 +825,19 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: inherited
-        root: author/inherited/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: inherited
+          root: author/inherited/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-objects-book-selection:
@@ -857,21 +858,21 @@ project-checks:
         primary-required: true
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: copies
-        root: author/copies/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: copies
+          root: author/copies/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -898,22 +899,22 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: flexible
-        root: author/flexible/src/main/java
-        optional: false
-      - name: copied-values
-        root: author/copied-values/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: flexible
+          root: author/flexible/src/main/java
+          optional: false
+        - name: copied-values
+          root: author/copied-values/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-polymorphism-circle-subclass:
@@ -938,16 +939,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-polymorphism-vehicle-interface:
@@ -972,16 +973,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-polymorphism-animal-hierarchy:
@@ -1006,16 +1007,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-polymorphism-reset-character-queues:
@@ -1040,16 +1041,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-polymorphism-copy-character-queues:
@@ -1074,16 +1075,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-generics-range-maximum:
@@ -1104,15 +1105,15 @@ project-checks:
         primary-required: true
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
@@ -1121,7 +1122,7 @@ project-checks:
         artifact: submission.jar
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
     java-generics-property-count:
       verification-expectations:
@@ -1141,15 +1142,15 @@ project-checks:
         primary-required: true
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
@@ -1158,7 +1159,7 @@ project-checks:
         artifact: submission.jar
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
     java-generics-generic-queue:
       verification-expectations:
@@ -1178,18 +1179,18 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: inheritedThrows
-        root: author/inheritedThrows/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: inheritedThrows
+          root: author/inheritedThrows/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
@@ -1198,7 +1199,7 @@ project-checks:
         artifact: submission.jar
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
     java-generics-generic-stack:
       verification-expectations:
@@ -1218,15 +1219,15 @@ project-checks:
         primary-required: true
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
@@ -1235,7 +1236,7 @@ project-checks:
         artifact: submission.jar
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
     java-collections-set-union-intersection:
       verification-expectations:
@@ -1259,19 +1260,19 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-collections-balanced-brackets:
@@ -1296,19 +1297,19 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-collections-polynomial-map-addition:
@@ -1333,22 +1334,22 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: relative-tolerance
-        root: author/relative-tolerance/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: relative-tolerance
+          root: author/relative-tolerance/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-pipelines-divisibility-function:
@@ -1373,16 +1374,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-pipelines-filter-string-array:
@@ -1407,16 +1408,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-pipelines-order-points:
@@ -1441,16 +1442,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-pipelines-count-selected-words:
@@ -1475,16 +1476,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-pipelines-conditional-function:
@@ -1509,16 +1510,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-pipelines-count-characters:
@@ -1543,16 +1544,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-pipelines-discriminant-function:
@@ -1577,16 +1578,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-files-byte-file-copy:
@@ -1611,16 +1612,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-files-character-file-copy:
@@ -1645,16 +1646,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-files-gradeapp-report:
@@ -1680,16 +1681,16 @@ project-checks:
         artifact: gradeapp.jar
         main-class: grade.Main
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-numbers-lunar-weight:
@@ -1703,38 +1704,38 @@ project-checks:
         primary-required: true
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: dividefirst
-        root: author/dividefirst/src/main/java
-        optional: false
-      - name: exactabsoluteboundary
-        root: author/exactabsoluteboundary/src/main/java
-        optional: false
-      - name: multiply
-        root: author/multiply/src/main/java
-        optional: false
-      - name: subnormaldemo
-        root: author/subnormaldemo/src/main/java
-        optional: false
-      - name: withinrelativetolerance
-        root: author/withinrelativetolerance/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: dividefirst
+          root: author/dividefirst/src/main/java
+          optional: false
+        - name: exactabsoluteboundary
+          root: author/exactabsoluteboundary/src/main/java
+          optional: false
+        - name: multiply
+          root: author/multiply/src/main/java
+          optional: false
+        - name: subnormaldemo
+          root: author/subnormaldemo/src/main/java
+          optional: false
+        - name: withinrelativetolerance
+          root: author/withinrelativetolerance/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       scoring:
         mode: weighted
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       runtime: java25-gradle-junit-v1
       java-build:
@@ -1752,23 +1753,23 @@ project-checks:
         primary-required: true
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       scoring:
         mode: weighted
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       runtime: java25-gradle-junit-v1
       java-build:
@@ -1786,23 +1787,23 @@ project-checks:
         primary-required: true
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       scoring:
         mode: weighted
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       runtime: java25-gradle-junit-v1
       java-build:
@@ -1820,26 +1821,26 @@ project-checks:
         primary-required: true
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: validexplicitexit
-        root: author/validexplicitexit/src/main/java
-        optional: false
-      - name: validinstancemain
-        root: author/validinstancemain/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: validexplicitexit
+          root: author/validexplicitexit/src/main/java
+          optional: false
+        - name: validinstancemain
+          root: author/validinstancemain/src/main/java
+          optional: false
       scoring:
         mode: weighted
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       runtime: java25-gradle-junit-v1
       java-build:
@@ -1857,23 +1858,23 @@ project-checks:
         primary-required: true
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       scoring:
         mode: weighted
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       runtime: java25-gradle-junit-v1
       java-build:
@@ -1891,36 +1892,36 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: compact
-        root: author/compact/src/main/java
-        optional: false
-      - name: inherited
-        root: author/inherited/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
-      - name: noargs
-        root: author/noargs/src/main/java
-        optional: false
-      - name: packagemethod
-        root: author/packagemethod/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: compact
+          root: author/compact/src/main/java
+          optional: false
+        - name: inherited
+          root: author/inherited/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
+        - name: noargs
+          root: author/noargs/src/main/java
+          optional: false
+        - name: packagemethod
+          root: author/packagemethod/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -1937,33 +1938,33 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: compact
-        root: author/compact/src/main/java
-        optional: false
-      - name: inherited
-        root: author/inherited/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
-      - name: packagemethod
-        root: author/packagemethod/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: compact
+          root: author/compact/src/main/java
+          optional: false
+        - name: inherited
+          root: author/inherited/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
+        - name: packagemethod
+          root: author/packagemethod/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -1980,33 +1981,33 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: compact
-        root: author/compact/src/main/java
-        optional: false
-      - name: inherited
-        root: author/inherited/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
-      - name: packagemethod
-        root: author/packagemethod/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: compact
+          root: author/compact/src/main/java
+          optional: false
+        - name: inherited
+          root: author/inherited/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
+        - name: packagemethod
+          root: author/packagemethod/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2023,33 +2024,33 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: compact
-        root: author/compact/src/main/java
-        optional: false
-      - name: inherited
-        root: author/inherited/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
-      - name: packagemethod
-        root: author/packagemethod/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: compact
+          root: author/compact/src/main/java
+          optional: false
+        - name: inherited
+          root: author/inherited/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
+        - name: packagemethod
+          root: author/packagemethod/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2066,36 +2067,36 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: compact
-        root: author/compact/src/main/java
-        optional: false
-      - name: inherited
-        root: author/inherited/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
-      - name: noargs
-        root: author/noargs/src/main/java
-        optional: false
-      - name: packagemethod
-        root: author/packagemethod/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: compact
+          root: author/compact/src/main/java
+          optional: false
+        - name: inherited
+          root: author/inherited/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
+        - name: noargs
+          root: author/noargs/src/main/java
+          optional: false
+        - name: packagemethod
+          root: author/packagemethod/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2112,23 +2113,23 @@ project-checks:
         primary-required: true
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       scoring:
         mode: weighted
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       runtime: java25-gradle-junit-v1
       java-build:
@@ -2146,23 +2147,23 @@ project-checks:
         primary-required: true
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       scoring:
         mode: weighted
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       runtime: java25-gradle-junit-v1
       java-build:
@@ -2180,23 +2181,23 @@ project-checks:
         primary-required: true
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       scoring:
         mode: weighted
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       runtime: java25-gradle-junit-v1
       java-build:
@@ -2214,27 +2215,27 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: inherited
-        root: author/inherited/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: inherited
+          root: author/inherited/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2251,27 +2252,27 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: inherited
-        root: author/inherited/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: inherited
+          root: author/inherited/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2288,27 +2289,27 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: inherited
-        root: author/inherited/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: inherited
+          root: author/inherited/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2325,27 +2326,27 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: inherited
-        root: author/inherited/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: inherited
+          root: author/inherited/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2362,20 +2363,20 @@ project-checks:
         primary-required: true
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       scoring:
         mode: weighted
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       runtime: java25-gradle-junit-v1
       java-build:
@@ -2393,20 +2394,20 @@ project-checks:
         primary-required: true
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: instanceexit7
-        root: author/instanceexit7/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: instanceexit7
+          root: author/instanceexit7/src/main/java
+          optional: false
       scoring:
         mode: weighted
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       runtime: java25-gradle-junit-v1
       java-build:
@@ -2431,27 +2432,27 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: mutating
-        root: author/mutating/src/main/java
-        optional: false
-      - name: inheritedChecked
-        root: author/inheritedChecked/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: mutating
+          root: author/mutating/src/main/java
+          optional: false
+        - name: inheritedChecked
+          root: author/inheritedChecked/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2474,24 +2475,24 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: inheritedChecked
-        root: author/inheritedChecked/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: inheritedChecked
+          root: author/inheritedChecked/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2514,30 +2515,30 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: mutating
-        root: author/mutating/src/main/java
-        optional: false
-      - name: inheritedChecked
-        root: author/inheritedChecked/src/main/java
-        optional: false
-      - name: plainCarrier
-        root: author/plainCarrier/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: mutating
+          root: author/mutating/src/main/java
+          optional: false
+        - name: inheritedChecked
+          root: author/inheritedChecked/src/main/java
+          optional: false
+        - name: plainCarrier
+          root: author/plainCarrier/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2560,27 +2561,27 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: inheritedChecked
-        root: author/inheritedChecked/src/main/java
-        optional: false
-      - name: privateHelper
-        root: author/privateHelper/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: inheritedChecked
+          root: author/inheritedChecked/src/main/java
+          optional: false
+        - name: privateHelper
+          root: author/privateHelper/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2603,21 +2604,21 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2640,21 +2641,21 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2677,21 +2678,21 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2714,24 +2715,24 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: edgeSpaces
-        root: author/edgeSpaces/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: edgeSpaces
+          root: author/edgeSpaces/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2754,21 +2755,21 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2791,21 +2792,21 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2828,21 +2829,21 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2865,21 +2866,21 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2902,21 +2903,21 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2939,21 +2940,21 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       java-build:
         kind: gradle-jar-v1
@@ -2980,16 +2981,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-files-poem-word-frequency:
@@ -3014,16 +3015,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-files-poem-letter-word-frequency:
@@ -3048,16 +3049,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-files-compare-files:
@@ -3082,16 +3083,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-files-sort-file-numbers:
@@ -3116,16 +3117,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-files-final-line-words:
@@ -3150,16 +3151,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-files-remove-short-words:
@@ -3184,16 +3185,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-files-phone-owner-records:
@@ -3218,16 +3219,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-files-matching-line-numbers:
@@ -3252,16 +3253,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-files-disk-help-menu:
@@ -3286,16 +3287,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-files-remove-java-comments:
@@ -3320,16 +3321,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-collections-digit-stack:
@@ -3354,25 +3355,25 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: checked-boundary
-        root: author/checked-boundary/src/main/java
-        optional: false
-      - name: extra-study
-        root: author/extra-study/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: checked-boundary
+          root: author/checked-boundary/src/main/java
+          optional: false
+        - name: extra-study
+          root: author/extra-study/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-collections-word-frequency:
@@ -3397,19 +3398,19 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-collections-poem-line-order:
@@ -3434,19 +3435,19 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-collections-distinct-word-set:
@@ -3471,19 +3472,19 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-collections-elimination-circle:
@@ -3508,19 +3509,19 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-collections-partition-list:
@@ -3545,19 +3546,19 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-collections-graph-model:
@@ -3582,19 +3583,19 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-collections-nearest-value:
@@ -3619,19 +3620,19 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-collections-polynomial-list-multiplication:
@@ -3656,22 +3657,22 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: relative-tolerance
-        root: author/relative-tolerance/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: relative-tolerance
+          root: author/relative-tolerance/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-pipelines-longer-string:
@@ -3696,16 +3697,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-pipelines-remove-even-values:
@@ -3730,16 +3731,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-pipelines-descending-array:
@@ -3764,16 +3765,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-pipelines-vowels-before-consonants:
@@ -3798,16 +3799,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-pipelines-first-primes:
@@ -3832,16 +3833,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-pipelines-price-transformation:
@@ -3866,16 +3867,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-pipelines-distinct-object-array:
@@ -3900,16 +3901,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-pipelines-select-initial-length:
@@ -3934,16 +3935,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-pipelines-curried-functions:
@@ -3968,16 +3969,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-exceptions-queue-exceptions:
@@ -3998,15 +3999,15 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
@@ -4015,7 +4016,7 @@ project-checks:
         artifact: submission.jar
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
     java-exceptions-locale-number-errors:
       verification-expectations:
@@ -4035,15 +4036,15 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
@@ -4052,7 +4053,7 @@ project-checks:
         artifact: submission.jar
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
     java-exceptions-stack-exceptions:
       verification-expectations:
@@ -4072,15 +4073,15 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
@@ -4089,7 +4090,7 @@ project-checks:
         artifact: submission.jar
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
     java-objects-customer-registry:
       verification-expectations:
@@ -4113,22 +4114,22 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: range-order-free
-        root: author/range-order-free/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: range-order-free
+          root: author/range-order-free/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-objects-patient-registry:
@@ -4153,19 +4154,19 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-objects-rational-fractions:
@@ -4190,22 +4191,22 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
-      - name: mutable
-        root: author/mutable/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
+        - name: mutable
+          root: author/mutable/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-objects-complex-values:
@@ -4230,19 +4231,19 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-objects-recursive-string-reversal:
@@ -4267,19 +4268,19 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-polymorphism-queue-package:
@@ -4304,16 +4305,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-polymorphism-truck-subclass:
@@ -4338,16 +4339,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-polymorphism-circular-dynamic-queue:
@@ -4372,16 +4373,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-polymorphism-fraction-number-subclass:
@@ -4406,16 +4407,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-polymorphism-compatible-queue-reset:
@@ -4440,16 +4441,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-generics-generic-circular-queue:
@@ -4470,15 +4471,15 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
@@ -4487,7 +4488,7 @@ project-checks:
         artifact: submission.jar
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
     java-generics-generic-dynamic-queue:
       verification-expectations:
@@ -4507,15 +4508,15 @@ project-checks:
         allow-additional: false
       source-profile: java-gradle
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
-      - name: alternate
-        root: author/alternate/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
+        - name: alternate
+          root: author/alternate/src/main/java
+          optional: false
       scoring:
         mode: weighted
       runtime: java25-gradle-junit-v1
@@ -4524,7 +4525,7 @@ project-checks:
         artifact: submission.jar
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
     java-projects-airline-persistence-project:
       verification-expectations:
@@ -4548,16 +4549,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-projects-timetable-interfaces-project:
@@ -4582,16 +4583,16 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
     java-projects-huffman-word-coding-project:
@@ -4616,37 +4617,37 @@ project-checks:
         kind: gradle-jar-v1
         artifact: submission.jar
       tests:
-      - src/api/java/**/*.java
-      - src/test/java/**/*.java
+        - src/api/java/**/*.java
+        - src/test/java/**/*.java
       api-precheck:
         files:
-        - src/api/java/**/*.java
+          - src/api/java/**/*.java
         entry: ApiContract
       references:
-      - name: reference
-        root: author/reference/src/main/java
-        optional: false
+        - name: reference
+          root: author/reference/src/main/java
+          optional: false
       scoring:
         mode: weighted
 repo-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java
 repo-branch: master
 repo-subdir: tasks
 repo-actions:
-- source
-- issue
+  - source
+  - issue
 issue-url: https://github.com/BSU-RFCT-Afonenko-Courses/Java/issues/new
 course-navigation:
   course-url: https://bsu-rfct-afonenko-courses.github.io/Java/
   links:
-  - text: Курс Java
-    href: /index.html
-    scope: course
-  - text: Все задания
-    href: /index.html
-    scope: project
-  - text: Теория
-    href: /theory/index.html
-    scope: course
+    - text: Курс Java
+      href: /index.html
+      scope: course
+    - text: Все задания
+      href: /index.html
+      scope: project
+    - text: Теория
+      href: /theory/index.html
+      scope: course
 project-materialization:
   projects: {}
 course-core-runtime: native-ts

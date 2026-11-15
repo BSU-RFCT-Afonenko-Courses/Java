@@ -1,6 +1,8 @@
 public class Main {
     public static void main(String[] args) throws Exception {
-        var input = new java.util.Scanner(System.in, java.nio.charset.StandardCharsets.UTF_8).useLocale(java.util.Locale.ROOT);
+        var input =
+                new java.util.Scanner(System.in, java.nio.charset.StandardCharsets.UTF_8)
+                        .useLocale(java.util.Locale.ROOT);
         int n = input.nextInt();
         if (n <= 0) {
             System.out.println("Количество должно быть положительным");

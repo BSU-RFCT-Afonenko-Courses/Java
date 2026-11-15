@@ -17,10 +17,11 @@ format:
 ### Исходный каталог {#sec-lecture-functions-streams-source}
 
 ```java
-var students = List.of(
-    new Student("s1", "Ada", 90),
-    new Student("s2", "Lin", 70),
-    new Student("s3", "Ann", 80));
+var students =
+        List.of(
+                new Student("s1", "Ada", 90),
+                new Student("s2", "Lin", 70),
+                new Student("s3", "Ann", 80));
 ```
 
 Запись `grade.Student` хранит код, имя и балл. Методы `id()`, `name()`,
@@ -113,11 +114,13 @@ static List<Student> select(List<Student> source, StudentTest rule) {
 ### Анонимная реализация интерфейса {#sec-lecture-functions-streams-object-callback}
 
 ```java
-StudentTest condition = new StudentTest() {
-    @Override public boolean test(Student student) {
-        return student.score() >= 80;
-    }
-};
+StudentTest condition =
+        new StudentTest() {
+            @Override
+            public boolean test(Student student) {
+                return student.score() >= 80;
+            }
+        };
 System.out.println(select(students, condition).size());
 ```
 
@@ -200,10 +203,11 @@ StudentTest b = s -> s.score() >= 80;
 ### Тело выражения и тело блока {#sec-lecture-functions-streams-step-08}
 
 ```java
-StudentTest valid = s -> {
-    int score = s.score();
-    return score >= 0 && score <= 100;
-};
+StudentTest valid =
+        s -> {
+            int score = s.score();
+            return score >= 0 && score <= 100;
+        };
 ```
 **В теле-выражении результат задаёт выражение; в блоке нужен `return`.**
 Все пути нормального завершения должны дать требуемый `boolean`.
@@ -316,6 +320,7 @@ System.out.println(empty.get().size()); // 0
 static String label(Book book) {
     return "Book: " + book.title();
 }
+
 static void announceAndBorrow(Book book) {
     System.out.println(label(book));
     book.borrow();
@@ -471,7 +476,9 @@ System.out.println(passed.test(ann));
 Предскажите два булевых ответа одного правила:
 
 ```java
-class Settings { int threshold = 80; }
+class Settings {
+    int threshold = 80;
+}
 var config = new Settings();
 var ann = new Student("s3", "Ann", 80);
 Predicate<Student> rule = s -> s.score() >= config.threshold;
@@ -535,8 +542,7 @@ System.out.println(length.andThen(twice).apply("Java")); // 8
 ### Аргументы в двух вызовах {#sec-lecture-functions-streams-curried}
 
 ```java
-Function<Integer, Predicate<Student>> rules =
-    threshold -> atLeast(threshold);
+Function<Integer, Predicate<Student>> rules = threshold -> atLeast(threshold);
 Predicate<Student> check80 = rules.apply(80);
 boolean a = check80.test(new Student("s4", "Jo", 79));
 boolean b = check80.test(new Student("s3", "Ann", 80));
@@ -574,8 +580,7 @@ boolean b = check80.test(new Student("s3", "Ann", 80));
 ### Выбор поставщика {#sec-lecture-functions-streams-conditional-supplier}
 
 ```java
-static String choose(boolean first, Supplier<String> left,
-                     Supplier<String> right) {
+static String choose(boolean first, Supplier<String> left, Supplier<String> right) {
     return first ? left.get() : right.get();
 }
 ```
@@ -592,14 +597,16 @@ static String choose(boolean first, Supplier<String> left,
 Предскажите вывод. Будет ли выполнено тело `right`?
 
 ```java
-Supplier<String> left = () -> {
-    System.out.println("left");
-    return "L";
-};
-Supplier<String> right = () -> {
-    System.out.println("right");
-    return "R";
-};
+Supplier<String> left =
+        () -> {
+            System.out.println("left");
+            return "L";
+        };
+Supplier<String> right =
+        () -> {
+            System.out.println("right");
+            return "R";
+        };
 System.out.println(choose(true, left, right));
 ```
 
@@ -666,11 +673,8 @@ Stream обобщает передачу управления: клиент оп
 ### Конвейер отбора имён {#sec-lecture-functions-streams-step-25}
 
 ```java
-List<String> names = students.stream()
-    .filter(s -> s.score() >= 80)
-    .map(Student::name)
-    .sorted()
-    .toList();
+List<String> names =
+        students.stream().filter(s -> s.score() >= 80).map(Student::name).sorted().toList();
 System.out.println(names); // [Ada, Ann]
 ```
 
@@ -702,12 +706,15 @@ System.out.println(names); // [Ada, Ann]
 ### Сведения до форматирования {#sec-lecture-functions-streams-report-type}
 
 ```java
-var report = students.stream()
-    .filter(s -> s.score() >= 80)
-    .sorted(Comparator.comparingInt(Student::score).reversed()
-        .thenComparing(Student::id))
-    .map(s -> s.id() + ";" + s.name() + ";" + s.score())
-    .toList();
+var report =
+        students.stream()
+                .filter(s -> s.score() >= 80)
+                .sorted(
+                        Comparator.comparingInt(Student::score)
+                                .reversed()
+                                .thenComparing(Student::id))
+                .map(s -> s.id() + ";" + s.name() + ";" + s.score())
+                .toList();
 ```
 Результат: `[s1;Ada;90, s3;Ann;80]`.
 **Сортировка использует запись до превращения в текст.**
@@ -800,10 +807,12 @@ System.out.println(stream.count()); // 3
 после которого ответ уже известен:
 
 ```java
-boolean found = Stream.of(1, 2, 3).anyMatch(x -> {
-    System.out.println("test " + x);
-    return x == 2;
-});
+boolean found =
+        Stream.of(1, 2, 3)
+                .anyMatch(x -> {
+                    System.out.println("test " + x);
+                    return x == 2;
+                });
 System.out.println(found);
 ```
 
@@ -833,8 +842,8 @@ System.out.println(found);
 
 ```java
 System.out.println(Stream.<Student>empty().anyMatch(s -> true)); // false
-System.out.println(Stream.<Student>empty().allMatch(s -> false));// true
-System.out.println(Stream.<Student>empty().noneMatch(s -> true));// true
+System.out.println(Stream.<Student>empty().allMatch(s -> false)); // true
+System.out.println(Stream.<Student>empty().noneMatch(s -> true)); // true
 ```
 **На пустом наборе не найдено совпадение и не найдено нарушение.**
 Если задача требует хотя бы одного участника, непустота — отдельное условие.
@@ -862,10 +871,8 @@ System.out.println(first); // [0, 1, 2]
 Предскажите два списка:
 
 ```java
-var a = Stream.of(1, 2, 3)
-    .filter(n -> n % 2 == 0).limit(1).toList();
-var b = Stream.of(1, 2, 3)
-    .limit(1).filter(n -> n % 2 == 0).toList();
+var a = Stream.of(1, 2, 3).filter(n -> n % 2 == 0).limit(1).toList();
+var b = Stream.of(1, 2, 3).limit(1).filter(n -> n % 2 == 0).toList();
 System.out.println(a);
 System.out.println(b);
 ```
@@ -899,8 +906,7 @@ System.out.println(b);
 
 ```java
 var topics = List.of(List.of("java", "git"), List.of("java", "io"));
-var unique = topics.stream().flatMap(List::stream)
-    .distinct().sorted().toList();
+var unique = topics.stream().flatMap(List::stream).distinct().sorted().toList();
 System.out.println(unique); // [git, io, java]
 ```
 **Каждая группа раскрывается в элементы.** `map(List::stream)` оставил бы
@@ -993,8 +999,7 @@ System.out.println(total); // 240
 
 ```java
 var fixed = students.stream().toList();
-var mutable = students.stream()
-    .collect(Collectors.toCollection(ArrayList::new));
+var mutable = students.stream().collect(Collectors.toCollection(ArrayList::new));
 ```
 **У первого запрещены и `add`, и `set`, и `sort`:
 `fixed.set(0, students.get(0))` даёт `UnsupportedOperationException`.**
@@ -1009,8 +1014,7 @@ var mutable = students.stream()
 ### Группировка участников {#sec-lecture-functions-streams-step-39}
 
 ```java
-var groups = students.stream()
-    .collect(Collectors.groupingBy(Student::score));
+var groups = students.stream().collect(Collectors.groupingBy(Student::score));
 System.out.println(groups.get(90).get(0).name()); // Ada
 ```
 **Ключ связывается с группой участников.** Порядок ключей стандартной формы
@@ -1023,8 +1027,7 @@ System.out.println(groups.get(90).get(0).name()); // Ada
 ### Политика повторных ключей {#sec-lecture-functions-streams-step-40}
 
 ```java
-var scores = students.stream().collect(
-    Collectors.toMap(Student::id, Student::score));
+var scores = students.stream().collect(Collectors.toMap(Student::id, Student::score));
 ```
 **При повторе кода стандартная форма выдаёт `IllegalStateException`.**
 Функция объединения может выбрать первое, последнее или сумму, но это
@@ -1038,9 +1041,9 @@ var scores = students.stream().collect(
 ### Подсчёт внутри группы {#sec-lecture-functions-streams-group-count}
 
 ```java
-var frequencies = List.of("Ada", "Lin", "Jo").stream()
-    .collect(Collectors.groupingBy(
-        String::length, Collectors.counting()));
+var frequencies =
+        List.of("Ada", "Lin", "Jo").stream()
+                .collect(Collectors.groupingBy(String::length, Collectors.counting()));
 System.out.println(frequencies.get(3)); // 2
 System.out.println(frequencies.getOrDefault(4, 0L)); // 0
 ```
@@ -1058,8 +1061,7 @@ System.out.println(frequencies.getOrDefault(4, 0L)); // 0
 не находит участника; ноль баллов был бы свойством существующей записи.
 
 ```java
-Optional<Student> best = students.stream()
-    .max(Comparator.comparingInt(Student::score));
+Optional<Student> best = students.stream().max(Comparator.comparingInt(Student::score));
 String text = best.map(Student::name).orElse("нет участников");
 ```
 
@@ -1088,10 +1090,11 @@ String text = best.map(Student::name).orElse("нет участников");
 ### Запасное вычисление {#sec-lecture-functions-streams-step-42}
 
 ```java
-Supplier<String> fallback = () -> {
-    System.out.println("fallback");
-    return "нет участников";
-};
+Supplier<String> fallback =
+        () -> {
+            System.out.println("fallback");
+            return "нет участников";
+        };
 Optional<String> present = Optional.of("Ada");
 Optional<String> empty = Optional.empty();
 ```
@@ -1145,8 +1148,7 @@ System.out.println(empty.orElseGet(fallback));
 Предскажите, какие строки обязательны:
 
 ```java
-long count = Stream.of(1, 2, 3)
-    .peek(System.out::println).count();
+long count = Stream.of(1, 2, 3).peek(System.out::println).count();
 System.out.println("count " + count);
 ```
 
@@ -1231,8 +1233,7 @@ static long countNonblank(Path path) throws IOException {
 ```java
 Predicate<Student> check = atLeast(80);
 boolean first = students.stream().anyMatch(check);
-boolean second = students.stream()
-    .filter(check).map(Student::name).anyMatch("Lin"::equals);
+boolean second = students.stream().filter(check).map(Student::name).anyMatch("Lin"::equals);
 ```
 
 Что используется повторно: правило или экземпляр Stream?
@@ -1380,11 +1381,18 @@ print([s.name for s in select(students, bad)])
 ```java
 class Context {
     String title = "outer";
-    Supplier<String> lambda() { return () -> this.title; }
+
+    Supplier<String> lambda() {
+        return () -> this.title;
+    }
+
     Supplier<String> anonymous() {
         return new Supplier<String>() {
             String title = "inner";
-            public String get() { return this.title; }
+
+            public String get() {
+                return this.title;
+            }
         };
     }
 }
@@ -1437,6 +1445,7 @@ T → текущая функция → R → следующий шаг → V
 interface TextReader {
     String read(Path path) throws IOException;
 }
+
 TextReader read = Files::readString;
 ```
 
@@ -1478,8 +1487,10 @@ students.parallelStream().forEach(s -> shared.add(s.name()));
 теряться. Сборка результата задаёт другой порядок владения:
 
 ```java
-var names = students.parallelStream()
-    .map(Student::name).collect(Collectors.toCollection(ArrayList::new));
+var names =
+        students.parallelStream()
+                .map(Student::name)
+                .collect(Collectors.toCollection(ArrayList::new));
 ```
 
 Коллектор управляет накопителями и объединением частичных результатов.
@@ -1512,10 +1523,7 @@ var names = students.parallelStream()
 ### Тип накопителя и тип элемента {#sec-lecture-functions-streams-reduce-three}
 
 ```java
-int total = students.stream().reduce(
-    0,
-    (sum, student) -> sum + student.score(),
-    Integer::sum);
+int total = students.stream().reduce(0, (sum, student) -> sum + student.score(), Integer::sum);
 ```
 
 Накопитель: `Integer × Student → Integer`.

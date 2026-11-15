@@ -6,10 +6,12 @@ import grade.Student;
 
 public class OrderingDemo {
     static final class ByScore implements Comparator<Student> {
-        @Override public int compare(Student a, Student b) {
+        @Override
+        public int compare(Student a, Student b) {
             return Integer.compare(a.score(), b.score());
         }
     }
+
     public static void main(String[] args) {
         Student a = new Student("s17", "Ada", 90);
         Student b = new Student("s18", "Lin", 90);

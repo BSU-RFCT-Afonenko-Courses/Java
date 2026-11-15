@@ -16,7 +16,8 @@ class HistoricalContractTest {
     @Test
     @org.junit.jupiter.api.DisplayName("Старшие нулевые коэффициенты и длинное произведение")
     void zeroHighTermsCancellationAndIndependentInputs() throws Throwable {
-        List<Double> a = new ArrayList<>(List.of(1.0, 1.0, 0.0)), b = new ArrayList<>(List.of(1.0, -1.0));
+        List<Double> a = new ArrayList<>(List.of(1.0, 1.0, 0.0)),
+                b = new ArrayList<>(List.of(1.0, -1.0));
         List<Double> out = TaskBinding.multiply(a, b);
         assertEquals(4, out.size());
         assertEquals(4, out.size());
@@ -28,7 +29,7 @@ class HistoricalContractTest {
         for (int i = 0; i < 4; i++)
             assertEquals(expectedSmall[i], out.get(i), 1e-6 + 1e-12 * Math.abs(expectedSmall[i]));
         List<Double> x = new ArrayList<>(Collections.nCopies(64, 1000.0)),
-                     y = new ArrayList<>(Collections.nCopies(64, -1000.0));
+                y = new ArrayList<>(Collections.nCopies(64, -1000.0));
         List<Double> z = TaskBinding.multiply(x, y);
         assertEquals(127, z.size());
         for (int k = 0; k < 127; k++) {

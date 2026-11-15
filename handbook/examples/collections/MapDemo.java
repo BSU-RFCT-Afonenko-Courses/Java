@@ -12,8 +12,9 @@ public class MapDemo {
         System.out.println(values.containsKey("s2"));
         System.out.println(values.getOrDefault("s2", 0));
         System.out.println(values.getOrDefault("missing", 0));
-        try { int count = values.getOrDefault("s2", 0) + 1; }
-        catch (NullPointerException ex) {
+        try {
+            int count = values.getOrDefault("s2", 0) + 1;
+        } catch (NullPointerException ex) {
             System.out.println(ex.getClass().getSimpleName());
         }
 
@@ -30,8 +31,9 @@ public class MapDemo {
         for (Map.Entry<String, Integer> entry : prices.entrySet()) {
             System.out.println(entry.getKey() + "=" + entry.getValue());
         }
-        try { keys.add("d"); }
-        catch (UnsupportedOperationException ex) {
+        try {
+            keys.add("d");
+        } catch (UnsupportedOperationException ex) {
             System.out.println(ex.getClass().getSimpleName());
         }
     }

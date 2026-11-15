@@ -4,5 +4,6 @@ public class Main {
         System.err.close();
         throw new ArithmeticException("constructor");
     }
+
     void main(String[] args) {}
 }

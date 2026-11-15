@@ -2,9 +2,12 @@ import java.util.regex.Pattern;
 
 public class WordRanges {
     static boolean isWordLetter(char c) {
-        return c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z'
-            || c >= 'А' && c <= 'Я' || c >= 'а' && c <= 'я'
-            || c == 'Ё' || c == 'ё';
+        return c >= 'A' && c <= 'Z'
+                || c >= 'a' && c <= 'z'
+                || c >= 'А' && c <= 'Я'
+                || c >= 'а' && c <= 'я'
+                || c == 'Ё'
+                || c == 'ё';
     }
 
     static String markWords(String text) {

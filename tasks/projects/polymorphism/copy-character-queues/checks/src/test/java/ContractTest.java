@@ -9,8 +9,7 @@ class ContractTest {
     static String capture(Runnable action) {
         PrintStream previous = System.out;
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try
-            (PrintStream out = new PrintStream(bytes, true, StandardCharsets.UTF_8)) {
+        try (PrintStream out = new PrintStream(bytes, true, StandardCharsets.UTF_8)) {
             System.setOut(out);
             action.run();
         } finally {
@@ -18,11 +17,13 @@ class ContractTest {
         }
         return bytes.toString(StandardCharsets.UTF_8).replace("\r\n", "\n");
     }
+
     @Test
     @DisplayName("Повторное использование места линейной, кольцевой и растущей очереди")
     void linearCircularAndGrowth() {
-        Object f = TaskBinding.queue(0, 2), c = TaskBinding.queue(1, 2),
-               d = TaskBinding.queue(2, 2);
+        Object f = TaskBinding.queue(0, 2),
+                c = TaskBinding.queue(1, 2),
+                d = TaskBinding.queue(2, 2);
         for (Object q : new Object[] {f, c, d}) {
             TaskBinding.put(q, 'A');
             TaskBinding.put(q, 'B');
@@ -30,17 +31,20 @@ class ContractTest {
         }
         assertEquals("Очередь переполнена\n", capture(() -> TaskBinding.put(f, 'C')));
         assertEquals('B', TaskBinding.get(f));
-        assertEquals("", capture(() -> {
-            TaskBinding.put(c, 'C');
-            assertEquals('B', TaskBinding.get(c));
-            assertEquals('C', TaskBinding.get(c));
-            TaskBinding.put(d, 'C');
-            TaskBinding.put(d, 'D');
-            assertEquals('B', TaskBinding.get(d));
-            assertEquals('C', TaskBinding.get(d));
-            assertEquals('D', TaskBinding.get(d));
-        }));
+        assertEquals(
+                "",
+                capture(() -> {
+                    TaskBinding.put(c, 'C');
+                    assertEquals('B', TaskBinding.get(c));
+                    assertEquals('C', TaskBinding.get(c));
+                    TaskBinding.put(d, 'C');
+                    TaskBinding.put(d, 'D');
+                    assertEquals('B', TaskBinding.get(d));
+                    assertEquals('C', TaskBinding.get(d));
+                    assertEquals('D', TaskBinding.get(d));
+                }));
     }
+
     @Test
     @DisplayName("Все пары очередей: FIFO, прежние объекты и нулевой перенос")
     void allPairsSameObjectsFifoAndZero() {
@@ -48,27 +52,31 @@ class ContractTest {
             for (int b = 0; b < 3; b++) {
                 Object source = TaskBinding.queue(a, 3), dest = TaskBinding.queue(b, 3);
                 Object oldSource = source, oldDest = dest;
-                assertEquals("", capture(() -> {
-                    TaskBinding.put(source, 'A');
-                    TaskBinding.put(source, 'B');
-                    TaskBinding.put(source, 'C');
-                    TaskBinding.transfer(source, dest, 3);
-                    assertEquals('A', TaskBinding.get(dest));
-                    assertEquals('B', TaskBinding.get(dest));
-                    assertEquals('C', TaskBinding.get(dest));
-                }));
+                assertEquals(
+                        "",
+                        capture(() -> {
+                            TaskBinding.put(source, 'A');
+                            TaskBinding.put(source, 'B');
+                            TaskBinding.put(source, 'C');
+                            TaskBinding.transfer(source, dest, 3);
+                            assertEquals('A', TaskBinding.get(dest));
+                            assertEquals('B', TaskBinding.get(dest));
+                            assertEquals('C', TaskBinding.get(dest));
+                        }));
                 assertSame(oldSource, source);
                 assertSame(oldDest, dest);
                 assertEquals(
-                    "Очередь пуста\n", capture(() -> assertEquals('\0', TaskBinding.get(source))));
+                        "Очередь пуста\n",
+                        capture(() -> assertEquals('\0', TaskBinding.get(source))));
                 Object s = TaskBinding.queue(a, 1), d = TaskBinding.queue(b, 1);
                 assertEquals("", capture(() -> TaskBinding.transfer(s, d, 0)));
                 assertEquals(
-                    "Очередь пуста\n", capture(() -> assertEquals('\0', TaskBinding.get(s))));
+                        "Очередь пуста\n", capture(() -> assertEquals('\0', TaskBinding.get(s))));
                 assertEquals(
-                    "Очередь пуста\n", capture(() -> assertEquals('\0', TaskBinding.get(d))));
+                        "Очередь пуста\n", capture(() -> assertEquals('\0', TaskBinding.get(d))));
             }
     }
+
     @Test
     @DisplayName("Перенос использует оставшиеся позиции линейного приёмника")
     void linearDestinationRemainingPositions() {

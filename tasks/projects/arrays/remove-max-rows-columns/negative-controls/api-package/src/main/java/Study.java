@@ -1,4 +1,5 @@
 package moved;
+
 public class Study {
     public static MatrixResult remove(int[][] matrix) {
         int[] flat = FlatRemoval.remove(matrix);

@@ -3,6 +3,7 @@ package coursesupport;
 /** Разбирает числовой вывод; ожидаемые значения и допуск задаются в тесте. */
 public final class OutputNumbers {
     private OutputNumbers() {}
+
     public static double[] finiteNumbers(String output) {
         String text = output.strip();
         if (text.isEmpty()) return new double[0];
@@ -20,9 +21,11 @@ public final class OutputNumbers {
         }
         return result;
     }
+
     public static double[][] finiteMatrix(String output, int rows, int columns) {
         if (rows <= 0 || columns <= 0) {
-            throw new IllegalArgumentException("Размеры проверяемой матрицы должны быть положительными");
+            throw new IllegalArgumentException(
+                    "Размеры проверяемой матрицы должны быть положительными");
         }
         String[] lines = output.strip().split("\\R", -1);
         if (lines.length != rows) {
@@ -32,8 +35,13 @@ public final class OutputNumbers {
         for (int row = 0; row < rows; row++) {
             result[row] = finiteNumbers(lines[row]);
             if (result[row].length != columns) {
-                throw new AssertionError("Строка " + (row + 1) + ": ожидалось чисел " + columns
-                    + ", получено " + result[row].length);
+                throw new AssertionError(
+                        "Строка "
+                                + (row + 1)
+                                + ": ожидалось чисел "
+                                + columns
+                                + ", получено "
+                                + result[row].length);
             }
         }
         return result;

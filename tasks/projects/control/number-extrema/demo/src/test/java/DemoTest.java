@@ -10,7 +10,8 @@ class DemoTest {
     }
 
     private static void exact(String expected, String actual) {
-        assertEquals(expected.strip().replaceAll("\\p{javaWhitespace}+", " "),
+        assertEquals(
+                expected.strip().replaceAll("\\p{javaWhitespace}+", " "),
                 actual.strip().replaceAll("\\p{javaWhitespace}+", " "),
                 "Сопоставьте подписи и значения экстремумов");
     }

@@ -39,8 +39,13 @@ pagetitle: Обобщённые классы
 final class Box<T> {
     private final T value;
 
-    Box(T value) { this.value = value; }
-    T get() { return value; }
+    Box(T value) {
+        this.value = value;
+    }
+
+    T get() {
+        return value;
+    }
 }
 ```
 
@@ -60,8 +65,8 @@ int number = count.get();
 
 ```java
 Box<String> first = new Box<>(null); // Box<String>
-var second = new Box<>(null);        // Box<Object>
-var third = new Box<String>(null);   // Box<String>
+var second = new Box<>(null); // Box<Object>
+var third = new Box<String>(null); // Box<String>
 ```
 
 В первой строке создаваемый тип ограничен контекстом слева. Во второй `var` получает
@@ -90,9 +95,18 @@ var third = new Box<String>(null);   // Box<String>
 ```java
 final class Numeric<T extends Number> {
     private final T value;
-    Numeric(T value) { this.value = value; }
-    double asDouble() { return value.doubleValue(); }
-    T get() { return value; }
+
+    Numeric(T value) {
+        this.value = value;
+    }
+
+    double asDouble() {
+        return value.doubleValue();
+    }
+
+    T get() {
+        return value;
+    }
 }
 ```
 
@@ -131,14 +145,26 @@ final class Numeric<T extends Number> {
 ```java
 class Container<T> {
     private final T value;
-    Container(T value) { this.value = value; }
-    T get() { return value; }
+
+    Container(T value) {
+        this.value = value;
+    }
+
+    T get() {
+        return value;
+    }
 }
+
 class TextContainer extends Container<String> {
-    TextContainer(String value) { super(value); }
+    TextContainer(String value) {
+        super(value);
+    }
 }
+
 class NamedContainer<T> extends Container<T> {
-    NamedContainer(T value) { super(value); }
+    NamedContainer(T value) {
+        super(value);
+    }
 }
 ```
 

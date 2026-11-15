@@ -11,11 +11,11 @@ class ContractTest {
     interface Action {
         void run() throws Throwable;
     }
+
     static String capture(Action action) throws Throwable {
         PrintStream previous = System.out;
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try
-            (PrintStream out = new PrintStream(bytes, true, StandardCharsets.UTF_8)) {
+        try (PrintStream out = new PrintStream(bytes, true, StandardCharsets.UTF_8)) {
             System.setOut(out);
             action.run();
         } finally {
@@ -23,16 +23,19 @@ class ContractTest {
         }
         return bytes.toString(StandardCharsets.UTF_8).replace("\r\n", "\n");
     }
+
     @Test
     @DisplayName("Пустой стек и повторное использование для разных char")
     void reuseAndEveryCharDomain() throws Throwable {
         Object q = TaskBinding.create(1);
         assertEquals("Стек пуст\n", capture(() -> assertEquals('\0', TaskBinding.pop(q))));
-        assertEquals("", capture(() -> {
-            TaskBinding.push(q, '\uffff');
-            assertEquals('\uffff', TaskBinding.pop(q));
-            TaskBinding.push(q, '\n');
-            assertEquals('\n', TaskBinding.pop(q));
-        }));
+        assertEquals(
+                "",
+                capture(() -> {
+                    TaskBinding.push(q, '\uffff');
+                    assertEquals('\uffff', TaskBinding.pop(q));
+                    TaskBinding.push(q, '\n');
+                    assertEquals('\n', TaskBinding.pop(q));
+                }));
     }
 }

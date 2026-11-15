@@ -1,6 +1,7 @@
 public class Main {
     public static void main(String[] args) throws Exception {
-        var input = new java.io.InputStreamReader(System.in, java.nio.charset.StandardCharsets.UTF_8);
+        var input =
+                new java.io.InputStreamReader(System.in, java.nio.charset.StandardCharsets.UTF_8);
         StringBuilder transformed = new StringBuilder();
         int changes = 0;
         int value;

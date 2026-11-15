@@ -181,7 +181,7 @@ System.out.println(snapshot);
 
 ```java
 copy.add("Clara");
-System.out.println(copy);   // [Ann, Clara]
+System.out.println(copy); // [Ann, Clara]
 System.out.println(source); // [Ann, Bob]
 // view.add("Dan");     // UnsupportedOperationException
 // snapshot.add("Dan"); // UnsupportedOperationException
@@ -205,8 +205,8 @@ Book book = new Book("Java");
 var source = new ArrayList<>(List.of(book));
 var snapshot = List.copyOf(source);
 book.borrow();
-System.out.println(snapshot.get(0) == book);      // true
-System.out.println(snapshot.get(0).borrowed());   // true
+System.out.println(snapshot.get(0) == book); // true
+System.out.println(snapshot.get(0).borrowed()); // true
 ```
 
 Снимок состава хранит ссылку на ту же книгу. Операция `borrow` меняет книгу;
@@ -228,7 +228,7 @@ var clientList = new ArrayList<>(List.of("Ann"));
 var owned = new ArrayList<>(clientList);
 clientList.clear();
 System.out.println(clientList.size()); // 0
-System.out.println(owned.size());      // 1
+System.out.println(owned.size()); // 1
 ```
 
 У владельца независимый состав. Для класса со списком книг этот выбор
@@ -266,7 +266,7 @@ Set<Integer> original = new HashSet<>(Set.of(1, 2));
 Set<Integer> result = new HashSet<>(original);
 result.add(3);
 System.out.println(original.size()); // 2
-System.out.println(result.size());   // 3
+System.out.println(result.size()); // 3
 ```
 
 @tasks:exr-collections-set-union-intersection требует самостоятельных

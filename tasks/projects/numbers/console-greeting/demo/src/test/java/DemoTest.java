@@ -15,7 +15,8 @@ class DemoTest {
 
     private static void greeting(String expected, String... args) throws Exception {
         String value = run("stdin не имя", args).replace("\r\n", "\n").replace("\r", "\n");
-        assertEquals(expected,
+        assertEquals(
+                expected,
                 value.endsWith("\n") ? value.substring(0, value.length() - 1) : value,
                 "Сохраните сообщение, имя и одну строку без лишнего вывода");
     }

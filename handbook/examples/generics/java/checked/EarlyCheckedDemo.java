@@ -1,7 +1,6 @@
 public class EarlyCheckedDemo {
     static class EmptyException extends Exception {
-        @java.io.Serial
-        private static final long serialVersionUID = 1L;
+        @java.io.Serial private static final long serialVersionUID = 1L;
 
         EmptyException(String message) {
             super(message);
@@ -9,8 +8,7 @@ public class EarlyCheckedDemo {
     }
 
     static int take(boolean empty) throws EmptyException {
-        if (empty)
-            throw new EmptyException("empty");
+        if (empty) throw new EmptyException("empty");
         return 7;
     }
 

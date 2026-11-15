@@ -11,8 +11,7 @@ import java.util.List;
 public final class StudentFiles {
     private StudentFiles() {}
 
-    public static List<Student> read(Path path)
-            throws IOException, DataFormatException {
+    public static List<Student> read(Path path) throws IOException, DataFormatException {
         // TODO: прочитайте файл в UTF-8, проверьте записи и уникальность кодов.
         // Верните список в порядке записей файла.
         // Требования к изменяемости списка приведены в README.md.
