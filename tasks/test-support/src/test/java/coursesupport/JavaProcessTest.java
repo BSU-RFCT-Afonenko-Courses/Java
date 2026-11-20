@@ -270,6 +270,33 @@ class JavaProcessTest {
     }
 
     @Test
+    void checkedLaunchPreservesArgumentBoundaries() throws Exception {
+        String[] args = {"", " a b ", "Анна🙂\r\n", "\"\\", "", " ", ""};
+        String expected = "7\n[][ a b ][Анна🙂\r\n][\"\\][][ ][]";
+        assertEquals(
+                expected,
+                JavaProcess.runCheckingUncaught(ArgumentsProgram.class, "", args).stdout());
+        Path classes =
+                Path.of(
+                        ArgumentsProgram.class
+                                .getProtectionDomain()
+                                .getCodeSource()
+                                .getLocation()
+                                .toURI());
+        assertEquals(
+                expected, checkedPath(classes, ArgumentsProgram.class.getName(), args).stdout());
+        assertEquals("0\n[]", JavaProcess.runCheckingUncaught(ArgumentsProgram.class, "").stdout());
+        assertEquals(
+                "1\n[]", JavaProcess.runCheckingUncaught(ArgumentsProgram.class, "", "").stdout());
+    }
+
+    public static final class ArgumentsProgram {
+        public static void main(String[] args) {
+            System.out.print(args.length + "\n[" + String.join("][", args) + "]");
+        }
+    }
+
+    @Test
     void checkedPathRejectsMissingTrustedEntryAsInfrastructure() throws Exception {
         Path empty = java.nio.file.Files.createDirectory(directory.resolve("empty"));
         assertThrows(java.io.IOException.class, () -> checkedPath(empty, "MissingTrustedPort"));
