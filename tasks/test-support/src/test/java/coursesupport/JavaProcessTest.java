@@ -92,6 +92,11 @@ class JavaProcessTest {
         assertEquals("diagnostic\n", result.stderr());
     }
 
+    @Test void checkedLaunchPreservesEmptyUnicodeAndQuotedArguments() throws Exception {
+        var result = JavaProcess.runCheckingUncaught(Program.class, "", "exact-arguments", "", "Анна", "a b\"c\\");
+        assertEquals("0:|4:Анна|6:a b\"c\\|", result.stdout());
+    }
+
     @Test void checkedLaunchRejectsCorrectPrintFollowedByUncaughtFailure() {
         assertInstanceOf(JavaProcess.UncaughtStudentException.class, assertThrows(AssertionError.class,
             () -> JavaProcess.runCheckingUncaught(Program.class, "", "print-then-throw")));
@@ -256,6 +261,11 @@ class JavaProcessTest {
                     System.err.print("e".repeat(100000));
                     System.err.flush();
                     System.out.print(System.in.readAllBytes().length);
+                }
+                case "exact-arguments" -> {
+                    for (int i = 1; i < args.length; i++) {
+                        System.out.print(args[i].length() + ":" + args[i] + "|");
+                    }
                 }
                 case "checked-protocol" -> {
                     String input = new String(System.in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);

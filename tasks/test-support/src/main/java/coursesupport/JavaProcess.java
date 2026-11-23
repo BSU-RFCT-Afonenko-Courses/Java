@@ -34,9 +34,11 @@ import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -52,6 +54,8 @@ import java.util.jar.JarOutputStream;
 /** Запускает программу в отдельной JVM и получает её вывод и код завершения. */
 public final class JavaProcess {
     private JavaProcess() {}
+
+    private static final String ARGUMENTS_FILE = "arguments.base64";
 
     private static final AtomicLong launches =
         new AtomicLong();
@@ -113,8 +117,14 @@ public final class JavaProcess {
                 + "-" + Long.toUnsignedString(System.nanoTime())));
         Path launcher = scratch.resolve("launcher.jar");
         Path status = scratch.resolve("uncaught.status");
+        Path argumentFile = scratch.resolve(ARGUMENTS_FILE);
         try {
             Files.createFile(status);
+            // Windows java.exe преобразует argv в системную кодовую страницу.
+            var encoder = Base64.getEncoder();
+            Files.write(argumentFile, Arrays.stream(arguments)
+                .map(argument -> encoder.encodeToString(argument.getBytes(StandardCharsets.UTF_8)))
+                .toList(), StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW);
             String resource = CheckedLauncher.class.getName().replace('.', '/') + ".class";
             try (var bytes = JavaProcess.class.getResourceAsStream("/" + resource);
                     var jar = new JarOutputStream(Files.newOutputStream(launcher))) {
@@ -123,8 +133,7 @@ public final class JavaProcess {
                 bytes.transferTo(jar);
                 jar.closeEntry();
             }
-            var launchArguments = new ArrayList<>(List.of(status.toString(), mainClass, Boolean.toString(trustedEntry)));
-            launchArguments.addAll(List.of(arguments));
+            var launchArguments = List.of(status.toString(), mainClass, Boolean.toString(trustedEntry));
             Result result = run(classes, CheckedLauncher.class.getName(), input, launchArguments, null,
                 Duration.ofSeconds(10), 65536,
                 List.of(), launcher);
@@ -138,6 +147,7 @@ public final class JavaProcess {
             return result;
         } finally {
             Files.deleteIfExists(launcher);
+            Files.deleteIfExists(argumentFile);
             Files.deleteIfExists(status);
             Files.deleteIfExists(scratch);
         }
@@ -173,7 +183,13 @@ public final class JavaProcess {
         public static void main(String[] arguments) throws Exception {
             // Служебный файл статуса открыт через RandomAccessFile до запуска программы.
             // Закрытие или замена stderr оставляет его открытым.
-            var status = new RandomAccessFile(arguments[0], "rw");
+            var statusPath = Path.of(arguments[0]);
+            var status = new RandomAccessFile(statusPath.toFile(), "rw");
+            var decoder = Base64.getDecoder();
+            var studentArguments = Files.readAllLines(statusPath.resolveSibling(ARGUMENTS_FILE),
+                StandardCharsets.UTF_8).stream()
+                .map(argument -> new String(decoder.decode(argument), StandardCharsets.UTF_8))
+                .toArray(String[]::new);
             // Trusted адаптер должен быть найден до отметки готовности:
             // его отсутствие или ошибка инициализации не являются отказом решения.
             if (Boolean.parseBoolean(arguments[2])) {
@@ -210,7 +226,7 @@ public final class JavaProcess {
                 }
                 main.setAccessible(true);
                 if (main.getParameterCount() == 0) main.invoke(instance);
-                else main.invoke(instance, (Object) Arrays.copyOfRange(arguments, 3, arguments.length));
+                else main.invoke(instance, (Object) studentArguments);
             } catch (Throwable failure) {
                 if (failure instanceof InvocationTargetException wrapped) {
                     failure = wrapped.getCause();
